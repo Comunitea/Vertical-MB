@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+      <!-- Wizard process unregister partner form -->
+        <record id="view_process_unregister_partner_form" model="ir.ui.view">
+            <field name="name">view.process.unregister.partner.form</field>
+            <field name="model">process.unregister.partner</field>
+            <field name="arch" type="xml">
+              <form string="Process unregister partner" version="7.0">
+                  <label for="reason_id"/>
+                  <field name="reason_id"/>
+                  <footer>
+                      <button name="unregister_partner" string="Unregister" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel" />
+                  </footer>
+              </form>
+            </field>
+        </record>
+
+        <!-- Action wizard unregister partner, it is referenced in product_view.xml in a unregister button -->
+        <record id="action_process_unregister_partner" model="ir.actions.act_window">
+            <field name="name">Process unregister partner</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">process.unregister.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_process_unregister_partner_form"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

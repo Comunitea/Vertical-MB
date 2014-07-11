@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="product_normal_form_view_substitutes" model="ir.ui.view">
+            <field name="name">midban.product.form.view.substitutes</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Information']/group/group[2]" position="inside">
+                     <field name="products_substitute_ids" widget="many2many_tags"/>
+                 </xpath>
+             </field>
+        </record>
+    </data>
+</openerp>

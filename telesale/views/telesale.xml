@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim:fdn=3:
+-->
+<openerp>
+    <data>
+        <template id="assets_backend" name="point_of_sale assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/telesale/static/src/js/db.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/models.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/base_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/call_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/screens.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/buttons_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/new_order_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/order_history_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/mousetrap.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/product_catalog_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/summary_orders_widgets.js"></script>
+                <script type="text/javascript" src="/telesale/static/src/js/main.js"></script>
+            </xpath>
+        </template>
+    </data>
+</openerp>

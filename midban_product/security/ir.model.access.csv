@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_history,access_product_history,model_product_history,base.group_user,1,1,1,1
+access_unregister_product_reason,access_unregister_product_reason,model_unregister_product_reason,base.group_user,1,1,1,1
+access_product_allergen,access_product_allergen,model_product_allergen,base.group_user,1,1,1,1
+access_deny_product_reason,access_deny_product_reason,model_deny_product_reason,base.group_user,1,1,1,1
+access_temp_type,access_temp_type,model_temp_type,base.group_user,1,1,1,1

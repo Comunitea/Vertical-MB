@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <templates id="template" xml:space="preserve">
+    
+    <t t-name="Order-History-Screen-Widget">
+        <div class="order-history-screen">
+            <div id="placeholder-order-history-widget">
+            </div>
+        </div>
+    </t>
+
+    <t t-name="Order-History-Widget">
+            <div class="order-history-search">
+                <div class="input-column">
+                    <div class="center-content">
+                        <label for="customer">Customer:</label>
+                        <input type="text" id="input-customer" name="customer"/>
+                    </div>
+                </div>
+                <div class="input-column">
+                    <div class="center-content">
+                        <label for="date_start">Date Start:</label>
+                        <input type="date" id='input-date_start' name="date_start"/>
+                    </div>
+                </div>
+                <div class="input-column">
+                    <div class="center-content">
+                        <label for="date_end">Date End:</label>
+                        <input type="date" id='input-date_end' name="date_end"/>
+                    </div>
+                </div>
+                <div class="input-column">
+                    <div class="center-content">
+                        <button id="search-customer">SEARCH</button>   
+                        <button id="search-customer-week">Week</button>   
+                        <button id="search-customer-month">Month</button>   
+                        <button id="search-customer-trimester">Trimester</button>   
+                    </div>
+                </div>
+            </div>
+            <div class="order-history-content">
+                <table class="history-line-table">
+                    <thead>
+                        <th class="head-name">Name</th>
+                        <th class="head-date">Date</th>
+                        <th class="head-total">Total</th>
+                        <th class="head-state">State</th>
+                        <th class="head-add">Add Lines</th>
+                        <th class="head-create">Show order</th>
+                    </thead>
+                    <tbody class="historylines">
+
+                    </tbody>
+                </table>
+            </div>
+
+    </t>
+
+    <t t-name="History-Line-Widget">
+        <tr>
+            <td class="cell-name">
+                <span class="history-cell"><t t-esc="widget.order.name"/></span>
+            </td>
+            <td class="cell-date">
+                <span class="history-cell"><t t-esc="widget.ts_model.localFormatDate(widget.order.date_order)"/></span>
+            </td>
+            <td class="cell-total">
+                <span class="history-cell"><t t-esc="widget.order.amount_total"/></span>
+            </td>
+            <td class="cell-state">
+                <!-- <span class="history-cell"><t t-esc="widget.order.state"/></span> -->
+                <span class="history-cell">
+                    <t t-if="widget.order.state == 'progress'">
+                        Confirmed
+                    </t>
+                    <t t-if="widget.order.state == 'draft'">
+                        Draft
+                    </t>
+                    <t t-if="widget.order.state == 'cancel'">
+                        Canceled
+                    </t>
+                </span>
+            </td>
+            <td class="cell-add">
+                <button id="button-line-adding">Add</button>
+            </td>
+            <td class="cell-create">
+                <button id="button-order-creating">Show</button>
+            </td>
+        </tr>
+    </t>
+
+</templates> 

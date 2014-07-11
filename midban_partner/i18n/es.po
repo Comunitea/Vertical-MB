@@ -1,0 +1,346 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* midban_partner
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-24 10:28+0000\n"
+"PO-Revision-Date: 2013-12-24 10:28+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Information"
+msgstr "Information"
+
+#. module: midban_partner
+#: model:ir.model,name:midban_partner.model_unregister_partner_reason
+msgid "unregister.partner.reason"
+msgstr "unregister.partner.reason"
+
+#. module: midban_partner
+#: selection:res.partner,state2:0
+msgid "Logistic validation pending"
+msgstr "Pendiente validación logística"
+
+#. module: midban_partner
+#: model:ir.actions.act_window,help:midban_partner.action_supplier_transport
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new supplier transport.\n"
+"              </p><p>\n"
+"                Manage the supplier transport. You can see the supplier transport\n"
+"                list on supllier's view.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Pulsa aquí para crear un transporte de proveedor.\n"
+"              </p><p>\n"
+"                Gestiona los transportes de proveedor. Puedes definir los transportes\n"
+"                en la vista de proveedores.\n"
+"              </p>\n"
+"            "
+
+#. module: midban_partner
+#: field:res.partner,supp_service_days_ids:0
+msgid "Supplier service days"
+msgstr "Días de servicio proveedor"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:144
+#, python-format
+msgid "Pending logistic and commercial validate"
+msgstr "Pendiente de validación logistica y comercial"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Suplliers Info"
+msgstr "Información Proveedor"
+
+#. module: midban_partner
+#: model:ir.model,name:midban_partner.model_process_unregister_partner
+msgid "Unregister partner and update the associated reasons"
+msgstr "Dar de baja y crear el motivo asociado"
+
+#. module: midban_partner
+#: model:ir.model,name:midban_partner.model_supplier_service_days
+msgid "supplier.service.days"
+msgstr "supplier.service.days"
+
+#. module: midban_partner
+#: field:supplier.transport,usable_height:0
+msgid "Usable height"
+msgstr "Altura útil"
+
+#. module: midban_partner
+#: model:ir.actions.report.xml,name:midban_partner.report_client_contract_template
+msgid "Client Contract template"
+msgstr "Plantilla contrato del cliente"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Logistic Validated"
+msgstr "Logistica Validada"
+
+#. module: midban_partner
+#: field:partner.history,partner_id:0
+msgid "partner"
+msgstr "Empresa"
+
+#. module: midban_partner
+#: field:supplier.transport,supplier_id:0
+msgid "Supplier"
+msgstr "Proveedor"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "In registering process"
+msgstr "En proceso de alta"
+
+#. module: midban_partner
+#: model:ir.model,name:midban_partner.model_partner_history
+msgid "Partner history register changes in partner state2 field"
+msgstr "Partner history register changes in partner state2 field"
+
+#. module: midban_partner
+#: field:res.partner,state2:0
+msgid "Status"
+msgstr "Estatado"
+
+#. module: midban_partner
+#: model:ir.actions.report.xml,name:midban_partner.aeroo_midban_supplier_contract_template
+msgid "Supplier contract template"
+msgstr "Supplier contract template"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:152
+#, python-format
+msgid "Logistic validate done"
+msgstr "Validación logistica realizada"
+
+#. module: midban_partner
+#: view:unregister.partner.reason:0
+msgid "Unregister reasons"
+msgstr "Motivos de baja"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:179
+#: selection:res.partner,state2:0
+#, python-format
+msgid "Registered"
+msgstr "Alta"
+
+#. module: midban_partner
+#: field:partner.history,reason:0
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: midban_partner
+#: model:ir.actions.report.xml,name:midban_partner.aeroo_midban_client_contract_template
+msgid "Client contract template"
+msgstr "Plantilla contrato del cliente"
+
+#. module: midban_partner
+#: selection:res.partner,state2:0
+msgid "Comercial validation pending"
+msgstr "Pendiente validación comercial"
+
+#. module: midban_partner
+#: field:partner.history,date:0
+msgid "Date"
+msgstr "Fecha"
+
+#. module: midban_partner
+#: model:ir.actions.act_window,name:midban_partner.action_unregister_partner_reason
+msgid "Partner unregister reasons"
+msgstr "Motivos de baja"
+
+#. module: midban_partner
+#: model:ir.actions.act_window,name:midban_partner.action_supplier_transport
+#: view:res.partner:0
+msgid "Supplier transports"
+msgstr "Transportes proveedor"
+
+#. module: midban_partner
+#: code:addons/midban_partner/wizard/process_unregister_partner.py:40
+#: view:res.partner:0
+#, python-format
+msgid "Unregistered"
+msgstr "Dado de baja"
+
+#. module: midban_partner
+#: model:ir.actions.report.xml,name:midban_partner.report_supplier_contract_template
+msgid "Supplier Contract template"
+msgstr "Plantilla contrato del proveedor "
+
+#. module: midban_partner
+#: field:supplier.service.days,name:0
+#: field:supplier.transport,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: midban_partner
+#: model:ir.actions.act_window,name:midban_partner.action_process_unregister_partner
+#: view:process.unregister.partner:0
+msgid "Process unregister partner"
+msgstr "Procesar baja"
+
+#. module: midban_partner
+#: view:process.unregister.partner:0
+#: view:res.partner:0
+msgid "Unregister"
+msgstr "Dar de Baja"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Register"
+msgstr "Dar de alta"
+
+#. module: midban_partner
+#: view:res.partner:0
+#: field:res.partner,restricted_catalog_ids:0
+msgid "Restricted catalog"
+msgstr "Catálogo restringido"
+
+#. module: midban_partner
+#: field:unregister.partner.reason,name:0
+msgid "Unregister reason"
+msgstr "Motivo de baja"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:170
+#, python-format
+msgid "Comercial and validate done. Pending to register"
+msgstr "Validación comercial realizada. Pendiente de dar de alta"
+
+#. module: midban_partner
+#: field:partner.history,activity:0
+msgid "Activity"
+msgstr "Actividad"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Commercial Validated"
+msgstr "Validación comercial realizada"
+
+#. module: midban_partner
+#: field:supplier.transport,npalets:0
+msgid "Number of palets"
+msgstr "Nº Palets"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Transports"
+msgstr "Transportes"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "History"
+msgstr "Historial"
+
+#. module: midban_partner
+#: field:partner.history,comment:0
+msgid "Comment"
+msgstr "Comentario"
+
+#. module: midban_partner
+#: model:ir.ui.menu,name:midban_partner.menu_unregister_partner_reason_purchases
+#: model:ir.ui.menu,name:midban_partner.menu_unregister_partner_reason_sales
+msgid "Unregister partner reasons"
+msgstr "Motivos de baja"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:161
+#, python-format
+msgid "Comercial validate done"
+msgstr "Validación comercial realizada"
+
+#. module: midban_partner
+#: selection:res.partner,state2:0
+msgid "Validate pending"
+msgstr "Pendiente de validación"
+
+#. module: midban_partner
+#: view:res.partner:0
+msgid "Back"
+msgstr "Atrás"
+
+#. module: midban_partner
+#: view:process.unregister.partner:0
+msgid "or"
+msgstr "o"
+
+#. module: midban_partner
+#: field:process.unregister.partner,reason_id:0
+#: field:res.partner,unregister_reason_id:0
+msgid "Unregister Reason"
+msgstr "Motivo de baja"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:188
+#, python-format
+msgid "Registered again"
+msgstr "Volver a dar de alta"
+
+#. module: midban_partner
+#: field:partner.history,user_id:0
+msgid "User"
+msgstr "Usuario"
+
+#. module: midban_partner
+#: model:ir.actions.act_window,help:midban_partner.action_unregister_partner_reason
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new unregister reason.\n"
+"              </p><p>\n"
+"                Manage the unregister reasons. Reasons defined here can be selected on the\n"
+"                unregister wizard.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new unregister reason.\n"
+"              </p><p>\n"
+"                Gestion los motivos de baja. Los motivos definidos aquí pueden ser selecionados\n"
+"                en el asistente de baja de los productos.\n"
+"              </p>\n"
+"            "
+
+#. module: midban_partner
+#: selection:res.partner,state2:0
+msgid "unregistered"
+msgstr "Baja"
+
+#. module: midban_partner
+#: view:process.unregister.partner:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: midban_partner
+#: model:ir.model,name:midban_partner.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: midban_partner
+#: selection:res.partner,state2:0
+msgid "Validated"
+msgstr "Validado"
+
+#. module: midban_partner
+#: view:res.partner:0
+#: field:res.partner,history_ids:0
+msgid "Partner History"
+msgstr "Historial"
+
+#. module: midban_partner
+#: model:ir.model,name:midban_partner.model_supplier_transport
+#: model:ir.ui.menu,name:midban_partner.menu_supplier_transports
+#: field:res.partner,supp_transport_ids:0
+#: view:supplier.transport:0
+msgid "Supplier Transports"
+msgstr "Transportes Proveedor"
+

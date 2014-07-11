@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Inherit product form view to add cmc button update cmc, button show pvp changes and field product class -->
+        <record id="product_normal_add_cmc_form_view" model="ir.ui.view">
+            <field name="name">product.normal.add.c.c.view.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">                                    
+                <field name="standard_price" position="after">
+                    <group>
+                        <field name="cmc"/>
+                        <button name="%(action_update_cmc)d" string="Update"
+                                    type="action"
+                                    class="oe_link"/>
+                        <newline/>
+                        <field name="sec_margin"/>
+                    </group>
+                </field>
+                <field name="type" position="after">
+                    <field name="product_class"/> 
+                </field>
+                <div name="buttons" position="inside">
+                    <button class="oe_inline oe_stat_button" type="object"  name="show_pvp_changes" string="Show pvp changes" icon="fa-star"/>
+                </div>
+            </field>
+        </record>
+    </data>
+</openerp>

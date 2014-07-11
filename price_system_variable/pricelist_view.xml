@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- ***********************************************************************************************************-->
+<!-- *************************************VARIABLE PRICELIST ***************************************************-->
+<!-- ***********************************************************************************************************-->
+        <!-- Form view variable.pricelist -->
+        <record id="variable_pricelist_view_form" model="ir.ui.view">
+            <field name="name">variable.pricelist.view.form</field>
+            <field name="model">variable.pricelist</field>
+            <field name="arch" type="xml">
+                <form string="Variable Pticelist" version="7.0">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="product_id"/>
+                        <field name="categ_id"/>
+                    </group>
+                    <newline/>
+                    <group>
+                        <field name="range_ids" nolabel="1" colspan="2">
+                            <tree editable="top">
+                                <field name="var_pricelist_id" invisible="1"/>
+                                <field name="from_cost"/>
+                                <field name="to_cost"/>
+                                <field name="security_margin"/>
+                            </tree>
+                        </field>
+                        <button name="update_taxes" type="object" string="Update taxes"/>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view variable.pricelist -->
+        <record id="variable_pricelist_view_tree" model="ir.ui.view">
+            <field name="name">variable.pricelist.view.tree</field>
+            <field name="model">variable.pricelist</field>
+            <field name="arch" type="xml">
+                <tree string="Variable Pticelist" version="7.0">
+                    <field name="name"/>
+                    <field name="sequence"/>
+                    <field name="product_id"/>
+                    <field name="categ_id"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Search view variable.pricelist -->
+        <record id="variable_pricelist_view_search" model="ir.ui.view">
+            <field name="name">variable.pricelist.view.search</field>
+            <field name="model">variable.pricelist</field>
+            <field name="arch" type="xml">
+                <search string="Change Filter">
+                    <field name="name" string="Name"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="categ_id" string="Category"/>
+                    <field name="sequence" string="Sequence"/>
+                    <filter string="Product" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter string="Category" domain="[]" context="{'group_by': 'categ_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for variable.pricelist -->
+        <record id="action_variable_pricelist" model="ir.actions.act_window">
+            <field name="name">Variable Pricelist</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">variable.pricelist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a variable pricelist.
+                </p><p>
+                You can define and view the margins table here.
+                </p>
+            </field>
+        </record>
+        <!-- Menu variable pricelist under Sales/Configuration/Pricelists menu -->
+        <menuitem id="menu_variable_pricelist"
+                  action="action_variable_pricelist" 
+                  name="Variable pricelist" 
+                  parent="product.menu_product_pricelist_main"
+                  groups="product.group_sale_pricelist"
+                  sequence="80"/>
+        <!-- Menu variable pricelist under Purchases/Configuration/Pricelists menu -->
+        <menuitem id="menu_variable_pricelist_purchase"
+                  action="action_variable_pricelist" 
+                  name="Variable pricelist" 
+                  parent="purchase.menu_purchase_config_pricelist"
+                  groups="product.group_sale_pricelist"
+                  sequence="80"/>
+
+<!-- ***********************************************************************************************************-->
+<!-- *************************************CHANGE VARIABLE PRICELIST ********************************************-->
+<!-- ***********************************************************************************************************-->
+        <!-- Tree view change variable price -->
+        <record id="change_variable_pricelist_view_tree" model="ir.ui.view">
+            <field name="name">change.variable.pricelist.view.tree</field>
+            <field name="model">change.variable.pricelist</field>
+            <field name="arch" type="xml">
+                <tree string=" Change Variable Pricelist" version="7.0">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="product_id"/>
+                    <field name="purchase_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Form view change variable price -->
+        <record id="change_variable_pricelist_view_form" model="ir.ui.view">
+            <field name="name">change.variable.pricelist.view.form</field>
+            <field name="model">change.variable.pricelist</field>
+            <field name="arch" type="xml">
+                <form string=" Change Variable Pticelist" version="7.0">
+                <header>
+                    <button name="update_sale_prices"  string="Update Prices" states="draft" type="object" class="oe_highlight"/>
+                    <button name="get_prices_back"  string="Cancel" states="updated" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,updated" readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="product_id"/>
+                        <field name="purchase_id"/>
+                        <field name="label" invisible="1"/>
+                    </group>
+                    <group string="Variable Pricelist">
+                        <field name="change_line_ids" colspan="4" nolabel="1">
+                            <tree editable="top">
+                                <field name="pricelist_id"/>
+                                <field name="previous_cost"/>
+                                <field name="current_cost"/>
+                                <field name="real_margin"/>
+                                <field name="previous_pvp"/>
+                                <field name="current_pvp"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group attrs="{'invisible': [('label','=',False)]}">
+                          <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- Search view change variable price -->
+        <record id="change_variable_pricelist_view_search" model="ir.ui.view">
+            <field name="name">change.variable.pricelist.view.search</field>
+            <field name="model">change.variable.pricelist</field>
+            <field name="arch" type="xml">
+                <search string="Change Filter">
+                    <field name="name" string="Name"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="purchase_id" string="Purchase"/>
+                    <field name="date" string="Date"/>
+                    <field name="state" string="State"/>
+                    <filter string="Product" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter string="Purchase" domain="[]" context="{'group_by': 'purchase_id'}"/>
+                    <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                </search>
+            </field>
+        </record>
+        <!-- Action for variable pricelist -->
+        <record id="action_change_variable_pricelist" model="ir.actions.act_window">
+            <field name="name">Change Variable Pricelist</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">change.variable.pricelist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a change variable pricelist.
+                </p><p>
+                This model is created automatically. It's no recomended to be
+                created by user.
+                </p>
+            </field>
+        </record>
+        <!-- Menu variable pricelist under Sales/Configuration/Pricelists menu -->
+        <menuitem id="menu_change_variable_pricelist"
+                  action="action_change_variable_pricelist" 
+                  name="Change Variable pricelist" 
+                  parent="product.menu_product_pricelist_main"
+                  groups="product.group_sale_pricelist"
+                  sequence="90"/>
+        <!-- Menu variable pricelist under Purchase/Configuration/Pricelists menu -->
+        <menuitem id="menu_change_variable_pricelist_purchase"
+                  action="action_change_variable_pricelist" 
+                  name="Change Variable pricelist" 
+                  parent="purchase.menu_purchase_config_pricelist"
+                  groups="product.group_sale_pricelist"
+                  sequence="90"/>
+
+<!-- ***********************************************************************************************************-->
+<!-- *************************************CHANGE SUPPLIER COSTS ************************************************-->
+<!-- ***********************************************************************************************************-->
+        <!-- Tree view change supplier costs -->
+        <record id="change_supplier_cost_view_tree" model="ir.ui.view">
+            <field name="name">change.supplier.cost.view.tree</field>
+            <field name="model">change.supplier.cost</field>
+            <field name="arch" type="xml">
+                <tree string=" Change Supplier Costs" version="7.0">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="partner_id" domain="{('supplier','=',True)}"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Form view change supplier costs -->
+        <record id="change_supplier_cost_view_form" model="ir.ui.view">
+            <field name="name">change.supplier.cost.view.form</field>
+            <field name="model">change.supplier.cost</field>
+            <field name="arch" type="xml">
+                <form string=" Change Supplier Costs" version="7.0">
+                <header>
+                    <button name="update_prices"  string="Update Prices" states="draft" type="object" class="oe_highlight"/>
+                    <button name="get_prices_back"  string="Cancel" states="updated" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,updated" readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" attrs="{'readonly': [('state', '=', 'updated')]}"/>
+                        <field name="date" attrs="{'readonly': [('state', '=', 'updated')]}"/>
+                        <field name="partner_id" domain="[('supplier','=',True)]" attrs="{'readonly': [('state', '=', 'updated')]}"/>
+                    </group>
+                    <group string="Change supplier costs">
+                        <field name="line_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state', '=', 'updated')]}">
+                            <tree editable="top">
+                                <field name="product_id" on_change="onchange_product_id(product_id, parent.partner_id,context)"/>
+                                <field name="sup_code"/>
+                                <field name="cost"/>
+                                <field name="new_cost" on_change="onchange_new_cost(new_cost, cost, context)"/>
+                                <field name="percentage"/>
+                                <field name="net_cost"/>
+                                <field name="new_net_cost"/>
+                                <field name="date"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- Search view change change supplier costs -->
+        <record id="change_supplier_cost_view_search" model="ir.ui.view">
+            <field name="name">change.supplier.cost.view.search</field>
+            <field name="model">change.supplier.cost</field>
+            <field name="arch" type="xml">
+                <search string="Change Filter">
+                    <field name="name" string="Name"/>
+                    <field name="partner_id" string="Supplier"/>
+                    <field name="date" string="Date"/>
+                    <field name="state" string="State"/>
+                    <filter string="Supplier" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for change supplier costs -->
+        <record id="action_change_supplier_cost" model="ir.actions.act_window">
+            <field name="name">Change Supplier Cost</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">change.supplier.cost</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a change supplier cost.
+                </p><p>
+                This model is not created automatically.
+                </p>
+            </field>
+        </record>
+        <!-- Menu change supplier costs under Sales/Configuration/Pricelists menu -->
+        <menuitem id="menu_change_supplier_cost"
+                  action="action_change_supplier_cost" 
+                  name="Change Supplier Costs" 
+                  parent="product.menu_product_pricelist_main"
+                  groups="product.group_sale_pricelist"
+                  sequence="90"/>
+        <!-- Menu change supplier costs under Purchase/Configuration/Pricelists menu -->
+        <menuitem id="menu_change_supplier_cost_purchase"
+                  action="action_change_supplier_cost" 
+                  name="Change Supplier Costs" 
+                  parent="purchase.menu_purchase_config_pricelist"
+                  groups="product.group_sale_pricelist"
+                  sequence="100"/>
+
+<!-- ***********************************************************************************************************-->
+<!-- *************************************CHANGE PRODUCT PVP ***************************************************-->
+<!-- ***********************************************************************************************************-->
+
+         <!-- Tree view change product pvp -->
+        <record id="change_product_pvp_view_tree" model="ir.ui.view">
+            <field name="name">change.product.pvp.view.tree</field>
+            <field name="model">change.product.pvp</field>
+            <field name="arch" type="xml">
+                <tree string=" Change Product PVP" version="7.0">
+                    <field name="product_id"/>
+                    <field name="date_cmc"/>
+                    <field name="cmp"/>
+                    <field name="cmc"/>
+                    <field name="sec_margin"/>
+                    <field name="real_stock"/>
+                    <field name="virt_stock"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Form view change product pvp -->
+        <record id="change_product_pvp_view_form" model="ir.ui.view">
+            <field name="name">change.product.pvp.view.form</field>
+            <field name="model">change.product.pvp</field>
+            <field name="arch" type="xml">
+                <form string=" Change Product PVP" version="7.0">
+                    <header>
+                        <button name="update_pricelists_pvp"  string="Update Prices" states="draft" type="object" class="oe_highlight"/>
+                        <button name="cancel_pricelists_pvp"  string="Cancel" states="updated" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,updated" readonly="1"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="cmc"/>
+                            <button name="%(action_update_cmc_from_change)d" string="Update"
+                                    type="action"
+                                    class="oe_link" attrs="{'invisible': [('state', '=', 'updated')]}"/>
+                            <newline/>
+                            <field name="date_cmc"/>
+                            <field name="cmp"/>
+                            <field name="sec_margin"/>
+                            <field name="real_stock"/>
+                            <field name="virt_stock"/>
+                        </group>
+                        <group string="Pricelists PVP">
+                            <field name="pricelist_ids" colspan="4" nolabel="1" attrs="{'readonly': [('state', '=', 'updated')]}">
+                                <tree editable="top">
+                                    <field name="pricelist_id"/>
+                                    <field name="pvp" on_change="onchange_pvp(pvp, parent.cmc)"/>
+                                    <field name="margin" on_change="onchange_margin(margin, parent.cmc)"/>
+                                    <field name="min_price" on_change="onchange_min_price(min_price, parent.cmc)"/>
+                                    <field name="min_margin" on_change="onchange_min_margin(min_margin, parent.cmc)"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- Search view change product pvp -->
+        <record id="change_product_pvp_view_search" model="ir.ui.view">
+            <field name="name">change.product.pvp.view.search</field>
+            <field name="model">change.product.pvp</field>
+            <field name="arch" type="xml">
+                <search string="Change Filter">
+                    <field name="product_id" string="Product"/>
+                    <field name="date_cmc" string="Date"/>
+                    <field name="state" string="State"/>
+                    <filter string="Product" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for change product pvp -->
+        <record id="action_change_product_pvp" model="ir.actions.act_window">
+            <field name="name">Change Product PVP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">change.product.pvp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a change product.
+                </p><p>
+                This model is generated automatically.
+                </p>
+            </field>
+        </record>
+        <!-- Menu change change product pvp under Sales/Configuration/Pricelists menu -->
+        <menuitem id="menu_change_product_pvp"
+                  action="action_change_product_pvp" 
+                  name="Change Product PVP" 
+                  parent="product.menu_product_pricelist_main"
+                  groups="product.group_sale_pricelist"
+                  sequence="90"/>
+        <!-- Menu change change product pvp under Purchase/Configuration/Pricelists menu -->
+        <menuitem id="menu_change_product_pvp_purchase"
+                  action="action_change_product_pvp" 
+                  name="Change Product PVP" 
+                  parent="purchase.menu_purchase_config_pricelist"
+                  groups="product.group_sale_pricelist"
+                  sequence="100"/>
+
+<!-- ***********************************************************************************************************-->
+<!-- *************************************SPECIFIC CUSTOMER PVP *************************************************-->
+<!-- ***********************************************************************************************************-->
+
+        <!-- Tree view specific custometr pvp -->
+        <record id="specific_customer_pvp_view_tree" model="ir.ui.view">
+            <field name="name">specific.customer.pvp.view.tree</field>
+            <field name="model">specific.customer.pvp</field>
+            <field name="arch" type="xml">
+                <tree string="Specific Customer PVP" version="7.0">
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <!-- Form view specific custometr pvp-->
+        <record id="specific_customer_pvp_view_form" model="ir.ui.view">
+            <field name="name">specific.customer.pvp.view.form</field>
+            <field name="model">specific.customer.pvp</field>
+            <field name="arch" type="xml">
+                <form string="Specific Customer PVP" version="7.0">
+                    <header>
+                        <button name="approve_specific_pvp" string="Approved" states="draft" type="object" class="oe_highlight"/>
+                        <button name="cancel_specific_pvp" string="Cancel" states="updated" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,updated" readonly="1"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                        <group string="Products PVP">
+                            <field name="product_ids" colspan="4" nolabel="1">
+                                <tree editable="top">
+                                    <field name="product_id" on_change="onchange_product_id(product_id, parent.partner_id, context)"/>
+                                    <field name="cmc"/>
+                                    <field name="pvp"/>
+                                    <field name="margin" on_change="onchange_margin(margin, cmc, do_onchange, context)"/>
+                                    <field name="specific_pvp" on_change="onchange_specific_pvp(specific_pvp, cmc, do_onchange, context)"/>
+                                    <field name="2net_margin"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="note"/>
+                                    <field name="do_onchange" invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- sEARCH view specific custometr pvp-->
+        <record id="specific_customer_pvp_view_search" model="ir.ui.view">
+            <field name="name">specific.customer.pvp.view.search</field>
+            <field name="model">specific.customer.pvp</field>
+            <field name="arch" type="xml">
+                <search string="Specific Filter">
+                    <field name="partner_id" string="Customer"/>
+                    <field name="state" string="State"/>
+                    <filter string="Customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for change supplier costs -->
+        <record id="action_specific_customer_pvp" model="ir.actions.act_window">
+            <field name="name">Specific Customer PVP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">specific.customer.pvp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add specific customer pvp.
+                </p><p>
+                This model has priority over pricelists.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu specific customer pvp under Sales/Configuration/Pricelists menu -->
+        <menuitem id="menu_specific_customer_pvp"
+                  action="action_specific_customer_pvp" 
+                  name="Specific Customer PVP" 
+                  parent="product.menu_product_pricelist_main"
+                  groups="product.group_sale_pricelist"
+                  sequence="90"/>
+        <!-- Menu specific customer pvp under Purchase/Configuration/Pricelists menu -->
+        <menuitem id="menu_specific_customer_pvp_purchase"
+                  action="action_specific_customer_pvp" 
+                  name="Specific Customer PVP" 
+                  parent="purchase.menu_purchase_config_pricelist"
+                  groups="product.group_sale_pricelist"
+                  sequence="100"/>
+    </data>
+</openerp>
+

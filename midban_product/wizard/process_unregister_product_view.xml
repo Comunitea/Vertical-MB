@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+       <!-- Wizard process unregister product form view -->
+        <record id="view_process_unregister_product_form" model="ir.ui.view">
+            <field name="name">view.process.unregister.product.form</field>
+            <field name="model">process.unregister.product</field>
+            <field name="arch" type="xml">
+              <form string="Process unregister product" version="7.0">
+                  <label for="reason_id"/>
+                  <field name="reason_id"/>
+                  <footer>
+                      <button name="unregister_product" string="Unregister" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel" />
+                  </footer>
+              </form>
+            </field>
+        </record>
+
+        <!-- Action called in unregister button in form view -->
+        <record id="action_process_unregister_product" model="ir.actions.act_window">
+            <field name="name">Process unregister product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">process.unregister.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_process_unregister_product_form"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>
