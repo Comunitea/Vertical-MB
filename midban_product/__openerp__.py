@@ -70,7 +70,7 @@
              "product_sequence.xml",
              "product_workflow.xml",
              'security/ir.model.access.csv',
-             'data/product_data.xml'],
+             'product_data.xml'],
     "demo": [],
     "test": [],
     "installable": True,

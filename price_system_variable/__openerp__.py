@@ -42,7 +42,7 @@
              'wizard/pvp_change_cmc_view.xml',
              'product_view.xml',
              'pricelist_view.xml',
-             'data/price_data.xml',
+             'price_data.xml',
              'purchase_view.xml'],
     "demo": [],
     "test": [],

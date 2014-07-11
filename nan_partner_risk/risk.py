@@ -22,7 +22,7 @@
 ##############################################################################
 
 from openerp.osv import osv, fields
-from Date import now
+import time
 from openerp.tools.translate import _
 
 
@@ -110,7 +110,7 @@ class partner(osv.osv):
 
     def _unpayed_amount(self, cr, uid, ids, name, arg, context=None):
         res = {}
-        today = now().strftime('%Y-%m-%d')
+        today = time.strftime('%Y-%m-%d')
         for partner in self.browse(cr, uid, ids, context):
             accounts = []
             if partner.property_account_receivable:
@@ -134,7 +134,7 @@ class partner(osv.osv):
 
     def _circulating_amount(self, cr, uid, ids, name, arg, context=None):
         res = {}
-        today = now().strftime('%Y-%m-%d')
+        today = time.strftime('%Y-%m-%d')
         for partner in self.browse(cr, uid, ids, context):
             accounts = []
             if partner.property_account_receivable:
@@ -158,7 +158,7 @@ class partner(osv.osv):
 
     def _pending_amount(self, cr, uid, ids, name, arg, context=None):
         res = {}
-        today = now().strftime('%Y-%m-%d')
+        today = time.strftime('%Y-%m-%d')
         for partner in self.browse(cr, uid, ids, context):
             accounts = []
             if partner.property_account_receivable:
@@ -182,7 +182,7 @@ class partner(osv.osv):
 
     def _draft_invoices_amount(self, cr, uid, ids, name, arg, context=None):
         res = {}
-        today = now().strftime('%Y-%m-%d')
+        today = time.strftime('%Y-%m-%d')
         for id in ids:
             invids = self.pool.get('account.invoice').search( cr, uid, [
                 ('partner_id','=',id), 

@@ -64,7 +64,7 @@
                 # "report_aeroo"
                 ],
     "data": ['wizard/process_unregister_partner_view.xml',
-             "data/partner_data.xml",
+             "partner_data.xml",
              "partner_view.xml",
              # "partner_report.xml",
              "partner_workflow.xml",
