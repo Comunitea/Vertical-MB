@@ -203,12 +203,6 @@ class product_template(osv.Model):
                                                dp.get_precision('Account'),
                                                method=True,
                                                readonly=True),
-        # 'categ_id': fields.many2one('product.category','Internal Category',
-        #                             required=True, change_default=True,
-        #                             domain="[('type','=','normal')]",
-        #                             help=
-        #                             "Select category for the current product"),
-
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',
@@ -226,6 +220,9 @@ class product(osv.Model):
         It adds supplier units for purchases and mandatory units for sales"""
 
     _inherit = 'product.product'
+    _defaults = {
+        'active': False,  # Product desuctived until register state is reached
+    }
 
     def copy(self, cr, uid, id, default=None, context=None):
         """ Overwrites copy methos in order to no duplicate the history,
@@ -316,11 +313,15 @@ class product(osv.Model):
     def act_active(self, cr, uid, ids, context=None):
         """ Fix state in registered, product active,
             update history. It's a flow method."""
+        t_template = self.pool.get("product.template")
         for product in self.pool.get("product.product").browse(cr, uid, ids):
             message = _("Product registered")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'registered', 'active': True,
                            'sale_ok': True, 'purchase_ok': True})
+            template = t_template.browse(cr, uid, product.product_tmpl_id.id,
+                                         context)
+            template.write({'active': True})
         return True
 
     def act_denied(self, cr, uid, ids, context=None):
