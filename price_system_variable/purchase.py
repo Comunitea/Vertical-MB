@@ -249,8 +249,7 @@ class purchase_order_line(osv.Model):
         Onchange handler of product_unit. If price_unit is different than
         product standard_price we mark line a update_pricelist
         """
-        res = {'value': {'price_unit': price_unit or 0.0,
-                         'update_pricelist': False}}
+        res = {'value': {'update_pricelist': False}}
         if context is None:
             context = {}
         product = self.pool.get("product.product").browse(cr, uid, product_id,
@@ -270,7 +269,6 @@ class purchase_order_line(osv.Model):
         purchase pricelist rule is based on change_supplier_costs (base = -4)
         or raise a warning if anyone was found.
         """
-
         sup = super(purchase_order_line, self)
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
@@ -317,7 +315,7 @@ class purchase_order_line(osv.Model):
                                                 [(prod_obj, qty or 1.0,
                                                  partner_id)],
                                                 context=context2)
-            if res_multi[product_id] == dict:
+            if type(res_multi[product_id]) == dict:
                 item_id = res_multi[product_id].get('item_id', False)
             else:
                 item_id = False
