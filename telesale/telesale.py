@@ -227,7 +227,8 @@ class stock_invoice_onshipping(osv.osv_memory):
         res_ids = context and context.get('active_ids', [])
         browse_picking = model_pool.browse(cr, uid, res_ids, context=context)
         for pick in browse_picking:
-            if pick.type == 'out' and pick.sale_id:
+            type = pick.picking_type_id.code
+            if type == 'out' and pick.sale_id:
                 return pick.sale_id.date_invoice
         return False
 
