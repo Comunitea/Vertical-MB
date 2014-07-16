@@ -183,7 +183,6 @@ class sale_order_line(osv.osv):
                                           'message': spa
                                           }
                     res['value']['price_unit'] = price
-
         return res
 
     def onchange_price_unit(self, cr, uid, ids, product_id, price_unit,

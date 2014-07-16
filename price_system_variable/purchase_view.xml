@@ -24,7 +24,7 @@
             <field name="arch" type="xml">
                   <div class="oe_right oe_button_box" position="inside">
                         <button type="object"  name="change_pricelist_open"
-                            string="Pricelist Change" attrs="{'invisible': ['|',('state', '=', 'draft'), ('state', '=', 'cancel')]}"/>
+                            string="Pricelist Change" attrs="{'invisible': ['|',('state', '=', 'draft'), ('state', '=', 'cancel')]}" class="oe_inline oe_stat_button" icon="fa-star"/>
                   </div>
             </field>
         </record>
