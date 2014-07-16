@@ -137,7 +137,7 @@ class sale_order_line(osv.osv):
                                                  [(prod_obj, qty or 1.0,
                                                   partner_id)],
                                                  context=context2)
-            if res_multi[product] == dict:
+            if type(res_multi[product]) == dict:
                 item_id = res_multi[product].get('item_id', False)
             else:
                 item_id = False
