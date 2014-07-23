@@ -7,15 +7,13 @@
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">                                    
-                <field name="standard_price" position="after">
-                    <group>
-                        <field name="cmc"/>
-                        <button name="%(action_update_cmc)d" string="Update"
-                                    type="action"
-                                    class="oe_link"/>
-                        <newline/>
-                        <field name="sec_margin"/>
-                    </group>
+                <field name="uom_po_id" position="after">
+                    <field name="cmc" class="oe_inline"/>
+                    <button name="%(action_update_cmc)d" string="Update"
+                                type="action"
+                                class="oe_link"/>
+                    <newline/>
+                    <field name="sec_margin"/>
                 </field>
                 <field name="type" position="after">
                     <field name="product_class"/> 
