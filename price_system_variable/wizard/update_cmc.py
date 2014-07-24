@@ -65,9 +65,7 @@ class wzd_update_cmc(osv.osv_memory):
             context = {}
         t_product = self.pool.get("product.product")
         res = {'value': {}}
-        # import ipdb; ipdb.set_trace()
         if context.get('active_id', False) and do_onchange:
-            # import ipdb; ipdb.set_trace()
             prod = t_product.browse(cr, uid, context['active_id'], context)
             prod_cmp = prod.standard_price
             res = {'value': {'new_cmc': 0.0}}
@@ -89,9 +87,7 @@ class wzd_update_cmc(osv.osv_memory):
             context = {}
         t_product = self.pool.get("product.product")
         res = {'value': {}}
-        # import ipdb; ipdb.set_trace()
         if context.get('active_id', False) and do_onchange:
-            # import ipdb; ipdb.set_trace()
             prod = t_product.browse(cr, uid, context['active_id'], context)
             prod_cmp = prod.standard_price
             digitsp = dp.get_precision('Product Price')(cr)[1]

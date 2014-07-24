@@ -269,17 +269,19 @@ class purchase_order_line(osv.Model):
         purchase pricelist rule is based on change_supplier_costs (base = -4)
         or raise a warning if anyone was found.
         """
+        if context is None:
+            context = {}
         sup = super(purchase_order_line, self)
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
+                                      context=context,
                                       date_order=date_order,
                                       fiscal_position_id=
                                       fiscal_position_id,
                                       date_planned=date_planned,
                                       name=name,
                                       price_unit=price_unit,
-                                      state=state,
-                                      context=context)
+                                      state=state)
         # All this COPY-PASTED in order to found the pricelist rule type
         # (field base) apply to current purchase
         if not product_id:
@@ -325,16 +327,22 @@ class purchase_order_line(osv.Model):
             if item_id:
                 item = t_item.browse(cr, uid, item_id)
                 if item.base == -4:
-                    price_dic = t_plist.price_get(cr, uid,
-                                                  [pricelist_id],
-                                                  product_id,
-                                                  qty or 1.0,
-                                                  partner_id or False,
-                                                  {'uom': uom_id,
-                                                   'date': date_order})
+                    # price_dic = t_plist.price_get(cr, uid,
+                    #                               [pricelist_id],
+                    #                               product_id,
+                    #                               qty or 1.0,
+                    #                               partner_id or False,
+                    #                               {'uom': uom_id,
+                    #                                'date': date_order})
+                    product2 = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+                    res_multi = t_plist.price_get_multi(cr, uid, ids,
+                                         products_by_qty_by_partner=
+                                         [(product2, qty, partner_id)],
+                                         context=context)
+                    price_dic = res_multi[product_id]
                     price_code = price_dic[pricelist_id]
                     price = price_code[0]
-                    if price == "warn":
+                    if price == 'warn':
                         price = 0.0
                         res['warning'] = {'title': _('Warning!'),
                                           'message': _('There is no supplier \

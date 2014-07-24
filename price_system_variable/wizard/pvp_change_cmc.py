@@ -61,8 +61,6 @@ class pvp_change_cmc(osv.osv_memory):
         """
         if context is None:
             context = {}
-        # import ipdb
-        # ipdb.set_trace()
         t_product = self.pool.get("product.product")
         t_change = self.pool.get("change.product.pvp")
         digitsp = dp.get_precision('Product Price')(cr)[1]

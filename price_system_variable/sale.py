@@ -170,7 +170,7 @@ class sale_order_line(osv.osv):
                                               product, qty or 1.0, partner_id,
                                               {'uom': uom or uom_or,
                                                'date': date_order})[pricelist]
-                    if price == "warn":
+                    if price == -2.0:
                         price = 0.0
                         spa = u"No existe Cambio PVP de producto adecuado \
                                 para el producto y la tarifa de venta \

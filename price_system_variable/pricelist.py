@@ -332,6 +332,29 @@ class product_pricelist(osv.Model):
             results[product.id] = price
         return results
 
+    def price_get(self, cr, uid, ids, prod_id, qty, partner=None,
+                  context=None):
+        """
+        Overwrite in order to avoid propagation of price in format
+        ['pricre/warn', item_id] returned by price_get_multi.
+        Return a -2.0 price to launch a sale order warning, when no price
+        found.
+        """
+        product = self.pool.get('product.product').browse(cr, uid, prod_id, 
+                                                          context=context)
+        res_multi = self.price_get_multi(cr, uid, ids,
+                                         products_by_qty_by_partner=
+                                         [(product, qty, partner)],
+                                         context=context)
+        res = res_multi[prod_id]
+        for key in res:
+            if (type(key) == int) and (type(res[key]) not in [int, float]):
+                if type(res[key]) == list:
+                    res[key] = res[key][0] == 'warn' and -2.0 or res[key][0]
+                else:
+                    res[key] = -2.0
+        return res
+
 # ****************************************************************************
 # ********************** VARIABLE PRICELIST MODEL*****************************
 # ****************************************************************************
@@ -987,7 +1010,6 @@ class pricelist_pvp_line(osv.Model):
         if new_pvp and cmc:
             operation = (1 - float(cmc) / float(new_pvp)) * 100.0
             res['value']['margin'] = round(operation, digitsp)
-            # import ipdb; ipdb.set_trace()
         return res
 
     def onchange_min_price(self, cr, uid, ids, min_price, cmc, context=None):
@@ -1002,7 +1024,6 @@ class pricelist_pvp_line(osv.Model):
         if min_price and cmc:
             operation = (1 - float(cmc) / float(min_price)) * 100.0
             res['value']['min_margin'] = round(operation, digitsp)
-            # import ipdb; ipdb.set_trace()
         return res
 
     def onchange_margin(self, cr, uid, ids, margin, cmc, context=None):
@@ -1016,7 +1037,6 @@ class pricelist_pvp_line(osv.Model):
         if margin and cmc:
             operation = float(cmc) / (1 - (float(margin) / 100.0))
             res['value']['pvp'] = round(operation, digitsp)
-            # import ipdb; ipdb.set_trace()
         return res
 
     def onchange_min_margin(self, cr, uid, ids, min_margin, cmc, context=None):
@@ -1031,7 +1051,6 @@ class pricelist_pvp_line(osv.Model):
         if min_margin and cmc:
             operation = float(cmc) / (1 - (float(min_margin) / 100.0))
             res['value']['min_price'] = round(operation, digitsp)
-            # import ipdb; ipdb.set_trace()
         return res
 
 # ****************************************************************************
@@ -1243,7 +1262,6 @@ class specific_pvp_line(osv.Model):
             res['value']['do_onchange'] = False
         if not do_onchange:
             res['value']['do_onchange'] = True
-            # import ipdb; ipdb.set_trace()
         return res
 
     def onchange_margin(self, cr, uid, ids, margin, cmc, do_onchange,
