@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Marta Vázquez Rodríguez$ <marta@pexego.es>
+#    $Javier CFolmenero Fernández$ <javier@pexego.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,4 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# from openerp.osv import osv, fields
+from openerp.osv import osv
+from openerp import api
+
+
+class stock_picking(osv.osv):
+    _inherit = "stock.picking"
+    
+    @api.cr_uid_ids_context
+    def do_partial_no_open_barcode(self, cr, uid, picking_ids, context=None):
+        self.do_prepare_partial(cr, uid, picking_ids, context=context)
+        return True
+

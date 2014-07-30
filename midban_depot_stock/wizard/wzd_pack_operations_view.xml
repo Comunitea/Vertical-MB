@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_wzd_pack_operations" model="ir.ui.view">
+            <field name="name">view.wzd.pack.operations</field>
+            <field name="model">wzd.pack.operations</field>
+            <field name="arch" type="xml">
+              <form string="Do Pack Operations">
+                  <group>
+                      <field name="package_id"/>
+                      <field name="type"/>
+                      <field name="qty"/>
+                  </group>
+                  <footer>
+                      <button name="create_operations" string="Unregister" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel" />
+                  </footer>
+              </form>
+            </field>
+        </record>
+
+        <!-- Action called in unregister button in form view -->
+        <record id="action_wzd_pack_operations" model="ir.actions.act_window">
+            <field name="name">Create Pack Operations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wzd.pack.operations</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_wzd_pack_operations"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

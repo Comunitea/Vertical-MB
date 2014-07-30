@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier Colmenero Fernández$ <javier@pexego.es>
+#    $Javier CFolmenero Fernández$ <javier@pexego.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,5 +18,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import stock
-import wizard
+import openerp.addons.decimal_precision as dp
+from openerp.osv import fields, osv
+
+
+class wzd_pack_operations(osv.TransientModel):
+    """ Used to pack and set lots without using the barcode interface"""
+    _name = "wzd.pack.operations"
+    _columns = {
+        'package_id': fields.many2one('stock.quant.package', 'Package'),
+        'type': fields.selection([('box', 'Box'), ('mantle', 'Mantle'),
+                                  ('palet', 'Palet')], 'Type'),
+        'qty': fields.float('Quantity',
+                            digits_compute=
+                            dp.get_precision('Product Unit of Measure'),
+                            required=True),
+    }
+
+    def create_operations(self, cr, uid, ids, context=None):
+        """ Alternative way to barcode UI to create operations """
+        print "--------------------------------------->Tranqui Tronco"
+        return True

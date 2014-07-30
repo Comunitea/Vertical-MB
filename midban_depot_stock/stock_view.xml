@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        
+        <record id="view_picking_form_add_operations" model="ir.ui.view">
+            <field name="name">stock.picking.form.add.operations</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+            	<button name="do_transfer" position="after">
+                    <!-- put "%(action_wzd_pack_operations)d" to open wizard -->
+            		<button name="do_partial_no_open_barcode" string="Do operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': [('state','not in',('assigned', 'partially_available'))]}"/>
+            	</button>
+
+                <button name="do_transfer" position="replace">
+                    <button name="do_transfer" states="assigned" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                </button>
+
+                <page string="Operations Done" position="replace">
+                    <page string="Operations">
+                            <field name="pack_operation_ids">
+                                <tree editable="top">   
+                                    <field name="location_id"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_id" groups="product.group_uom"/>
+                                    <field name="lot_id" domain="[('product_id','=?', product_id)]" context="{'product_id': product_id}" groups="stock.group_production_lot"/>
+                                    <field name="package_id" groups="stock.group_tracking_lot"/>
+                                    <field name="owner_id" groups="stock.group_tracking_owner"/>
+                                    <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="result_package_id" groups="stock.group_tracking_lot"/>
+                                </tree>
+                            </field>
+                        </page>   
+                </page>
+
+            </field>
+        </record>
     </data>
 </openerp>

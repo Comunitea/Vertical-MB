@@ -31,13 +31,13 @@
     "images": [],
     "depends": [
         "base",
-        "mail",
-        "email_template",
         "sale_stock",
+        "stock"
     ],
     "data": [
         'security/ir.model.access.csv',
-        'stock_view.xml'
+        'stock_view.xml',
+        'wizard/wzd_pack_operations_view.xml',
     ],
     "demo": [],
     "test": [],
