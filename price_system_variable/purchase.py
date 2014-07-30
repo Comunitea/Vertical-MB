@@ -342,7 +342,7 @@ class purchase_order_line(osv.Model):
                     price_dic = res_multi[product_id]
                     price_code = price_dic[pricelist_id]
                     price = price_code[0]
-                    if price == -2.0:
+                    if price == 'warn':
                         price = 0.0
                         res['warning'] = {'title': _('Warning!'),
                                           'message': _('There is no supplier \
