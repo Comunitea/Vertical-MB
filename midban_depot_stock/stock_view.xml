@@ -32,7 +32,17 @@
                             </field>
                         </page>   
                 </page>
+            </field>
+        </record>
 
+        <record id="vview_quant_package_form_add_type" model="ir.ui.view">
+            <field name="name">stock.quant.package.form.add.type</field>
+            <field name="model">stock.quant.package</field>
+            <field name="inherit_id" ref="stock.view_quant_package_form"/>
+            <field name="arch" type="xml">
+                <field name="ul_id" position="before">
+                    <field name="pack_type"/>
+                </field>
             </field>
         </record>
     </data>
