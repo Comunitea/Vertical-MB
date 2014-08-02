@@ -21,7 +21,6 @@
 from openerp.osv import osv, fields
 from openerp import api
 
-
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
 
@@ -80,7 +79,7 @@ class stock_picking(osv.osv):
             'location_dest_id': op.location_dest_id.id,
             'picking_id': op.picking_id.id,
         }
-        if pack_type not in ['palet', 'mantle', 'box']:
+        if pack_type not in ['PALET', 'MANTO', 'CAJA']:
             op_vals.update({
                 'product_qty': num,
             })
@@ -90,14 +89,17 @@ class stock_picking(osv.osv):
                 ma_pa = op.product_id.supplier_ma_pa
                 ca_ma = op.product_id.supplier_ca_ma
                 un_ca = op.product_id.supplier_un_ca
-                if pack_type == 'palet':
+                if pack_type == 'PALET':
                     pack_units = ma_pa * ca_ma * un_ca
-                elif pack_type == 'mantle':
+                elif pack_type == 'MANTO':
                     pack_units = ca_ma * un_ca
-                elif pack_type == 'box':
+                elif pack_type == 'CAJA':
                     pack_units = un_ca
-                package_id = t_pack.create(cr, uid, {'pack_type': 'palet'},
+                package_id = t_pack.create(cr, uid, {'pack_type': pack_type},
                                            context=context)
+                pack_obj = t_pack.browse(cr, uid, package_id, context=context)
+                new_name = pack_obj.name.replace("PACK", pack_type)
+                pack_obj.write({'name': new_name})
                 op_vals.update({
                     'result_package_id': package_id,
                     'product_qty': pack_units,
@@ -120,7 +122,7 @@ class stock_picking(osv.osv):
             palets = conv['palets']
             int_pal = int(palets)
             dec_pal = abs(palets) - abs(int(palets))
-            pa_dics = self._get_pack_type_operation(cr, uid, ids, op, 'palet',
+            pa_dics = self._get_pack_type_operation(cr, uid, ids, op, 'PALET',
                                                     int_pal, context=context)
             res.extend(pa_dics)
             if dec_pal != 0:  # Get a integer number of mantles or boxes
@@ -129,7 +131,7 @@ class stock_picking(osv.osv):
                     int_man = int(num_mant)
                     dec_man = abs(num_mant) - abs(int(num_mant))
                     ma_dics = self._get_pack_type_operation(cr, uid, ids, op,
-                                                            'mantle', int_man,
+                                                            'MANTO', int_man,
                                                             context=context)
                     res.extend(ma_dics)
                     if dec_man != 0:  # Ubicate boxes
@@ -139,7 +141,7 @@ class stock_picking(osv.osv):
                             dec_box = abs(num_box) - abs(int(num_box))
                             bo_dics = self._get_pack_type_operation(cr, uid,
                                                                     ids, op,
-                                                                    'box',
+                                                                    'CAJA',
                                                                     int_box,
                                                                     context=
                                                                     context)
@@ -149,7 +151,7 @@ class stock_picking(osv.osv):
                                 un_dic = self._get_pack_type_operation(cr,
                                                                        uid,
                                                                        ids, op,
-                                                                       'unit',
+                                                                       'UNIT',
                                                                        units,
                                                                        context=
                                                                        context)
@@ -159,7 +161,7 @@ class stock_picking(osv.osv):
                             units = prod_obj.supplier_un_ca * num_box
                             un_dics = self._get_pack_type_operation(cr, uid,
                                                                     ids, op,
-                                                                    'unit',
+                                                                    'UNIT',
                                                                     units,
                                                                     context=
                                                                     context)
@@ -171,7 +173,7 @@ class stock_picking(osv.osv):
                         dec_box = abs(num_box) - abs(int(num_box))
                         bo_dics = self._get_pack_type_operation(cr, uid,
                                                                 ids, op,
-                                                                'box',
+                                                                'CAJA',
                                                                 int_box,
                                                                 context=
                                                                 context)
@@ -180,7 +182,7 @@ class stock_picking(osv.osv):
                             units = prod_obj.supplier_un_ca * dec_box
                             un_dics = self._get_pack_type_operation(cr, uid,
                                                                     ids, op,
-                                                                    'unit',
+                                                                    'UNIT',
                                                                     units,
                                                                     context=
                                                                     context)
@@ -189,68 +191,68 @@ class stock_picking(osv.osv):
                         units = prod_obj.supplier_un_ca * num_box
                         un_dics = self._get_pack_type_operation(cr, uid,
                                                                 ids, op,
-                                                                'unit',
+                                                                'UNIT',
                                                                 units,
                                                                 context=
                                                                 context)
                         res.extend(un_dics)
 
-            elif conv['mantles'] >= 1:
-                mantles = conv['mantles']
-                int_man = int(mantles)
-                dec_man = abs(mantles) - abs(int(mantles))
-                ma_dics = self._get_pack_type_operation(cr, uid, ids, op,
-                                                        'mantle', int_man,
-                                                        context=context)
-                res.extend(ma_dics)
-                if dec_man != 0:  # Ubicate boxes
-                    num_box = prod_obj.supplier_ca_ma * num_mant
-                    if num_box >= 1:  # Get boxes and maybe some units
-                        int_box = int(num_box)
-                        dec_box = abs(num_box) - abs(int(num_box))
-                        bo_dics = self._get_pack_type_operation(cr, uid,
-                                                                ids, op,
-                                                                'box',
-                                                                int_box,
-                                                                context=
-                                                                context)
-                        res.extend(bo_dics)
-                        if dec_box != 0:  # Get operations for units
-                            units = prod_obj.supplier_un_ca * dec_box
-                            un_dic = self._get_pack_type_operation(cr, uid,
-                                                                   ids, op,
-                                                                   'unit',
-                                                                   units,
-                                                                   context=
-                                                                   context)
-                            res.extend(un_dic)
+        elif conv['mantles'] >= 1:
+            mantles = conv['mantles']
+            int_man = int(mantles)
+            dec_man = abs(mantles) - abs(int(mantles))
+            ma_dics = self._get_pack_type_operation(cr, uid, ids, op,
+                                                    'MANTO', int_man,
+                                                    context=context)
+            res.extend(ma_dics)
+            if dec_man != 0:  # Ubicate boxes
+                num_box = prod_obj.supplier_ca_ma * num_mant
+                if num_box >= 1:  # Get boxes and maybe some units
+                    int_box = int(num_box)
+                    dec_box = abs(num_box) - abs(int(num_box))
+                    bo_dics = self._get_pack_type_operation(cr, uid,
+                                                            ids, op,
+                                                            'CAJA',
+                                                            int_box,
+                                                            context=
+                                                            context)
+                    res.extend(bo_dics)
+                    if dec_box != 0:  # Get operations for units
+                        units = prod_obj.supplier_un_ca * dec_box
+                        un_dics = self._get_pack_type_operation(cr, uid,
+                                                               ids, op,
+                                                               'UNIT',
+                                                               units,
+                                                               context=
+                                                               context)
+                        res.extend(un_dics)
 
-            elif conv['boxes'] > 0:
-                boxes = conv['boxes']
-                int_box = int(boxes)
-                dec_box = abs(boxes) - abs(int(boxes))
-                bo_dics = self._get_pack_type_operation(cr, uid, ids, op,
-                                                        'box', int_box,
-                                                        context=context)
-                res.extend(bo_dics)
-                if dec_box != 0:  # Get operations for units
-                    units = prod_obj.supplier_un_ca * dec_box
-                    un_dics = self._get_pack_type_operation(cr, uid, ids, op,
-                                                            'unit', units,
-                                                            context=context)
-                    res.extend(un_dic)
-
-            else:
-                units = conv['units']
+        elif conv['boxes'] > 0:
+            boxes = conv['boxes']
+            int_box = int(boxes)
+            dec_box = abs(boxes) - abs(int(boxes))
+            bo_dics = self._get_pack_type_operation(cr, uid, ids, op,
+                                                    'CAJA', int_box,
+                                                    context=context)
+            res.extend(bo_dics)
+            if dec_box != 0:  # Get operations for units
+                units = prod_obj.supplier_un_ca * dec_box
                 un_dics = self._get_pack_type_operation(cr, uid, ids, op,
-                                                        'unit', units,
+                                                        'UNIT', units,
                                                         context=context)
-                res.extend(un_dic)
+                res.extend(un_dics)
+
+        else:
+            units = conv['units']
+            un_dics = self._get_pack_type_operation(cr, uid, ids, op,
+                                                    'UNIT', units,
+                                                    context=context)
+            res.extend(un_dics)
 
         return res
 
     @api.cr_uid_ids_context
-    def do_partial_no_open_barcode(self, cr, uid, ids, context=None):
+    def prepare_package_type_operations(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         t_pack_op = self.pool.get('stock.pack.operation')
@@ -259,15 +261,54 @@ class stock_picking(osv.osv):
             for op in pick.pack_operation_ids:
                 vals_ops = self._propose_pack_operations(cr, uid, ids, op,
                                                          context=context)
+                #  If val_ ops:  #  Indent to get default operations # TODO?
                 t_pack_op.unlink(cr, uid, [op.id], context=context)
                 for vals in vals_ops:  # Create proposed operations
                     t_pack_op.create(cr, uid, vals, context=context)
+            pick.write({'show_': 'show_approve'}, context=context)
+        return True
+
+    @api.cr_uid_ids_context
+    def approve_pack_operations(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        for pick in self.browse(cr, uid, ids, context=context):
+            for op in pick.pack_operation_ids:
+            	op.write({
+            		'qty_done': op.product_qty,
+            		'processed': 'true',
+            	})
+        self.do_transfer(cr, uid, ids, context=context)
         return True
 
 
 class stock_package(osv.osv):
     _inherit = "stock.quant.package"
     _columns = {
-        'pack_type': fields.selection([('box', 'Box'), ('mantle', 'Mantle'),
-                                       ('palet', 'Palet')], 'Pack Type'),
+        'pack_type': fields.selection([('CAJA', 'Box'), ('MANTO', 'Mantle'),
+                                       ('PALET', 'Palet')], 'Pack Type'),
     }
+
+
+# class stock_pack_operation(osv.osv):
+#     _inherit = "stock.pack.operation"
+# Falla al darle a aprovar operacions, por ejemplo con 310, no se por que
+# no le mola el function
+    # def _get_pack_type(self, cr, uid, ids, name, args, context=None):
+    # 	if context is None:
+    # 		context={}
+    # 	res = {}
+    # 	for ops in self.browse(cr, uid, ids, context=context):
+    # 		pack_type = False
+    # 		if ops.package_id:
+    # 			pack_type = ops.package_id.pack_type
+    # 		elif ops.result_package_id:
+    # 			pack_type = ops.result_package_id.pack_type
+    # 		if pack_type:
+    # 			res[ops.id]= pack_type
+    # 		return res
+
+    # _columns = {
+    #     'pack_type': fields.function(_get_pack_type, type='char',
+    #     	                         string='Pack Type', readonly=True),
+    # }

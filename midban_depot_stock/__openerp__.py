@@ -37,7 +37,7 @@
     "data": [
         'security/ir.model.access.csv',
         'stock_view.xml',
-        'wizard/wzd_pack_operations_view.xml',
+        # 'wizard/wzd_pack_operations_view.xml',
     ],
     "demo": [],
     "test": [],

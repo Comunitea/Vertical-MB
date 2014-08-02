@@ -6,18 +6,20 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-            	<button name="do_transfer" position="after">
-                    <!-- put "%(action_wzd_pack_operations)d" to open wizard -->
-            		<button name="do_partial_no_open_barcode" string="Do operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': [('state','not in',('assigned', 'partially_available'))]}"/>
-            	</button>
 
                 <button name="do_transfer" position="replace">
-                    <button name="do_transfer" states="assigned" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                    <button name="do_transfer" states="assigned" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True)]}"/>
                 </button>
+            	<button name="do_transfer" position="after">
+            		<button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/>
+
+                    <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
+            	</button>
 
                 <page string="Operations Done" position="replace">
                     <page string="Operations">
                             <field name="pack_operation_ids">
+                                <field name="show_approve_ops" invisible="1"/>
                                 <tree editable="top">   
                                     <field name="location_id"/>
                                     <field name="product_id"/>
@@ -28,6 +30,7 @@
                                     <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
                                     <field name="location_dest_id"/>
                                     <field name="result_package_id" groups="stock.group_tracking_lot"/>
+                                    <!-- <field name="pack_type" groups="stock.group_tracking_lot"/> -->
                                 </tree>
                             </field>
                         </page>   
