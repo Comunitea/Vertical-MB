@@ -7,19 +7,32 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
 
+                <!-- Quit class="oe_highlight" -->
                 <button name="do_transfer" position="replace">
-                    <button name="do_transfer" states="assigned" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True)]}"/>
+                    <button name="do_transfer" states="assigned" string="Transfer" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True)]}"/>
                 </button>
+
+                <!-- Quit class="oe_highlight" -->
+                <button name="do_partial_open_barcode" position="replace">
+                   <button name="do_partial_open_barcode" string="Enter Transfer Details" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|',('pack_operation_exist', '=', True),('state','not in',('assigned', 'partially_available'))]}"/>
+                </button>
+
+                <!-- Quit class="oe_highlight" -->
+                <button name="open_barcode_interface" position="replace">
+                    <button name="open_barcode_interface" string="Open Barcode interface" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|',('pack_operation_exist', '=', False),('state','not in',('assigned', 'partially_available'))]}"/>
+                </button>
+
+                <!-- New Buttons to manage stock system without the barcode interface" -->
             	<button name="do_transfer" position="after">
             		<button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/>
 
                     <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
             	</button>
 
+                <!-- Show page operations -->
                 <page string="Operations Done" position="replace">
                     <page string="Operations">
                             <field name="pack_operation_ids">
-                                <field name="show_approve_ops" invisible="1"/>
                                 <tree editable="top">   
                                     <field name="location_id"/>
                                     <field name="product_id"/>
@@ -38,7 +51,8 @@
             </field>
         </record>
 
-        <record id="vview_quant_package_form_add_type" model="ir.ui.view">
+        <!-- Only to informative propose right now -->
+        <record id="view_quant_package_form_add_type" model="ir.ui.view">
             <field name="name">stock.quant.package.form.add.type</field>
             <field name="model">stock.quant.package</field>
             <field name="inherit_id" ref="stock.view_quant_package_form"/>

@@ -265,7 +265,6 @@ class stock_picking(osv.osv):
                 t_pack_op.unlink(cr, uid, [op.id], context=context)
                 for vals in vals_ops:  # Create proposed operations
                     t_pack_op.create(cr, uid, vals, context=context)
-            pick.write({'show_': 'show_approve'}, context=context)
         return True
 
     @api.cr_uid_ids_context
@@ -279,6 +278,13 @@ class stock_picking(osv.osv):
             		'processed': 'true',
             	})
         self.do_transfer(cr, uid, ids, context=context)
+
+        # Prepare operations for the next chained picking if it exist
+        for pick in self.browse(cr, uid, ids, context=context):
+        	if pick.move_lines and pick.move_lines[0].move_dest_id:
+	        	related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
+	        	self.do_prepare_partial(cr, uid, [related_pick_id],
+	        		                    context=context)
         return True
 
 
@@ -286,7 +292,8 @@ class stock_package(osv.osv):
     _inherit = "stock.quant.package"
     _columns = {
         'pack_type': fields.selection([('CAJA', 'Box'), ('MANTO', 'Mantle'),
-                                       ('PALET', 'Palet')], 'Pack Type'),
+                                       ('PALET', 'Palet')], 'Pack Type',
+                                       readonly=True),
     }
 
 
