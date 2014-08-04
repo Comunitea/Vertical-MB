@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Product form view. Add picking location -->
+        <record id="view_template_property_form_add_picking_location" model="ir.ui.view">
+            <field name="name">view.template.property.form.add.picking.location</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_template_property_form" />
+            <field name="arch" type="xml">
+                <field name="property_stock_inventory" position="after">
+                    <field name="picking_location_id" attrs="{'readonly':[('type','=','service')]}"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

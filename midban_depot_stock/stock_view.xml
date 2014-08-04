@@ -43,7 +43,7 @@
                                     <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
                                     <field name="location_dest_id"/>
                                     <field name="result_package_id" groups="stock.group_tracking_lot"/>
-                                    <!-- <field name="pack_type" groups="stock.group_tracking_lot"/> -->
+                                    <field name="pack_type" groups="stock.group_tracking_lot"/>
                                 </tree>
                             </field>
                         </page>   

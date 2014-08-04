@@ -305,28 +305,30 @@ class stock_package(osv.osv):
     }
 
 
-# class stock_pack_operation(osv.osv):
-#     _inherit = "stock.pack.operation"
-# Falla al darle a aprovar operacions, por ejemplo con 310, no se por que
-# no le mola el function
-    # def _get_pack_type(self, cr, uid, ids, name, args, context=None):
-    # 	if context is None:
-    # 		context={}
-    # 	res = {}
-    # 	for ops in self.browse(cr, uid, ids, context=context):
-    # 		pack_type = False
-    # 		if ops.package_id:
-    # 			pack_type = ops.package_id.pack_type
-    # 		elif ops.result_package_id:
-    # 			pack_type = ops.result_package_id.pack_type
-    # 		if pack_type:
-    # 			res[ops.id]= pack_type
-    # 		return res
+class stock_pack_operation(osv.osv):
+    _inherit = "stock.pack.operation"
+    # Falla al darle a aprovar operacions, por ejemplo con 310, no se por que
+    # no le mola el function
 
-    # _columns = {
-    #     'pack_type': fields.function(_get_pack_type, type='char',
-    #     	                         string='Pack Type', readonly=True),
-    # }
+    def _get_pack_type(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for ops in self.browse(cr, uid, ids, context=context):
+            res[ops.id] = False
+            pack_type = False
+            if ops.package_id:
+                pack_type = ops.package_id.pack_type
+            elif ops.result_package_id:
+                pack_type = ops.result_package_id.pack_type
+            if pack_type:
+                res[ops.id] = pack_type
+        return res
+
+    _columns = {
+        'pack_type': fields.function(_get_pack_type, type='char',
+                                     string='Pack Type', readonly=True),
+    }
 
 
 class stock_warehouse(osv.osv):

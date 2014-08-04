@@ -23,3 +23,4 @@ import stock_task
 import stock_machine
 import res_users
 import wizard
+import product

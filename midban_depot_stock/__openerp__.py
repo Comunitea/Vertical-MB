@@ -38,6 +38,7 @@
         'res_users_view.xml',
         'stock_task_view.xml',
         'stock_view.xml',
+        'product_view.xml',
         'stock_machine_view.xml',
         'wizard/assign_task_wzd_view.xml',
         'security/ir.model.access.csv',
