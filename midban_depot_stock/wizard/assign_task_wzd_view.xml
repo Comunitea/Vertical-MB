@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="assign_task_wzd_view" model="ir.ui.view">
+            <field name="name">assign.task.wzd.view</field>
+            <field name="model">assign.task.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Task Schedule" version="7.0">
+                    <group>
+                        <field name="operator_id"/>
+                        <field name="machine_id"/>
+                        <field name="warehouse_id"/>
+                    </group>
+                    <footer>
+                        <button name="get_task" string="Get Task" type="object" class="oe_highlight"/>
+                        <button name="get_location_task" string="Get Location Task" type="object"/>
+                        <button name="get_reposition_task" string="Get Replacement Task" type="object"/>
+                        <button name="get_picking_task" string="Get Picking Task" type="object"/>
+                        <button name="reprint_task" string="Reprint Task" type="object"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_assign_task_wzd" model="ir.actions.act_window">
+            <field name="name">Task Schedule</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">assign.task.wzd</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_assign_task_wzd" id="assign_task_wzd_menu"  name="Task Schedule" parent="menu_stock_task_mgmt"/>
+
+
+    </data>
+</openerp>

@@ -18,32 +18,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp.osv import osv, fields
 
-{
-    "name": "Midban Depot Stock",
-    "version": "0.1",
-    "author": "Pexego",
-    "category": "Custom",
-    "website": "www.pexego.es",
-    "description": """
-    Add Custom management of Midban Depot Stock Warehouse
-    """,
-    "images": [],
-    "depends": [
-        "base",
-        "sale_stock",
-        "stock",
-    ],
-    "data": [
-        'res_users_view.xml',
-        'stock_task_view.xml',
-        'stock_view.xml',
-        'stock_machine_view.xml',
-        'wizard/assign_task_wzd_view.xml',
-        'security/ir.model.access.csv',
-    ],
-    "demo": [],
-    "test": [],
-    "installable": True,
-    "application": True,
-}
+
+class stock_picking_in(osv.osv):
+    _inherit = 'res.users'
+    _columns = {
+        'operator': fields.boolean('Operator'),
+    }

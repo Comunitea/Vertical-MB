@@ -21,8 +21,16 @@
 from openerp.osv import osv, fields
 from openerp import api
 
+
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
+    _columns = {
+        'operator_id': fields.many2one('res.users', 'Operator',
+                                       readonly=True,
+                                       domain=[('operator', '=', 'True')]),
+        'machine_id': fields.many2one('stock.machine', 'Machine',
+                                      readonly=True),
+    }
 
     def _get_unit_conversions(self, cr, uid, ids, op_obj, context=None):
         """
@@ -220,11 +228,11 @@ class stock_picking(osv.osv):
                     if dec_box != 0:  # Get operations for units
                         units = prod_obj.supplier_un_ca * dec_box
                         un_dics = self._get_pack_type_operation(cr, uid,
-                                                               ids, op,
-                                                               'UNIT',
-                                                               units,
-                                                               context=
-                                                               context)
+                                                                ids, op,
+                                                                'UNIT',
+                                                                units,
+                                                                context=
+                                                                context)
                         res.extend(un_dics)
 
         elif conv['boxes'] > 0:
@@ -273,18 +281,18 @@ class stock_picking(osv.osv):
             context = {}
         for pick in self.browse(cr, uid, ids, context=context):
             for op in pick.pack_operation_ids:
-            	op.write({
-            		'qty_done': op.product_qty,
-            		'processed': 'true',
-            	})
+                op.write({
+                    'qty_done': op.product_qty,
+                    'processed': 'true'
+                })
         self.do_transfer(cr, uid, ids, context=context)
 
         # Prepare operations for the next chained picking if it exist
         for pick in self.browse(cr, uid, ids, context=context):
-        	if pick.move_lines and pick.move_lines[0].move_dest_id:
-	        	related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
-	        	self.do_prepare_partial(cr, uid, [related_pick_id],
-	        		                    context=context)
+            if pick.move_lines and pick.move_lines[0].move_dest_id:
+                related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
+                self.do_prepare_partial(cr, uid, [related_pick_id],
+                                        context=context)
         return True
 
 
@@ -293,7 +301,7 @@ class stock_package(osv.osv):
     _columns = {
         'pack_type': fields.selection([('CAJA', 'Box'), ('MANTO', 'Mantle'),
                                        ('PALET', 'Palet')], 'Pack Type',
-                                       readonly=True),
+                                      readonly=True),
     }
 
 
@@ -319,3 +327,19 @@ class stock_package(osv.osv):
     #     'pack_type': fields.function(_get_pack_type, type='char',
     #     	                         string='Pack Type', readonly=True),
     # }
+
+
+class stock_warehouse(osv.osv):
+    _inherit = "stock.warehouse"
+    _columns = {
+        'storage_loc_id': fields.many2one('stock.location',
+                                          'Storage Location'),
+        'picking_loc_id': fields.many2one('stock.location',
+                                          'Picking Location'),
+        'ubication_type_id': fields.many2one('stock.picking.type',
+                                             'Ubication Task Type'),
+        'reposition_type_id': fields.many2one('stock.picking.type',
+                                              'Reposition Task Type'),
+        'picking_type_id': fields.many2one('stock.picking.type',
+                                           'Picking Task Type'),
+    }

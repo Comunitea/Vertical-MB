@@ -48,6 +48,12 @@
                             </field>
                         </page>   
                 </page>
+
+                <!-- Add fields from assign_task_wzd.py -->
+                <field name="partner_id" position="after">
+                    <field name="operator_id"/>
+                    <field name="machine_id"/>
+                </field>
             </field>
         </record>
 
@@ -59,6 +65,25 @@
             <field name="arch" type="xml">
                 <field name="ul_id" position="before">
                     <field name="pack_type"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Add storage and picking locations to warehouse -->
+         <record id="view_warehouse_add_locations" model="ir.ui.view">
+            <field name="name">view.warehouse.add.locations</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+                <field name="wh_output_stock_loc_id" position="after">
+                    <field name="storage_loc_id"/>
+                    <field name="picking_loc_id"/>
+                </field>
+
+                <field name="out_type_id" position="after">
+                    <field name="ubication_type_id"/>
+                    <field name="reposition_type_id"/>
+                    <field name="picking_type_id"/>
                 </field>
             </field>
         </record>
