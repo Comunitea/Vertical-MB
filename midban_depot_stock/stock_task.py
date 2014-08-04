@@ -72,7 +72,7 @@ class stock_task(osv.Model):
                 'date_end': time.strftime("%Y-%m-%d %H:%M:%S"),
                 'duration': duration.seconds / float(60)
             }
-            task.write(vals, context=context)
+            task.write(vals)
 
         return self.write(cr, uid, ids, {'state': 'done'}, context=context)
 

@@ -14,10 +14,12 @@
                     </group>
                     <footer>
                         <button name="get_task" string="Get Task" type="object" class="oe_highlight"/>
+                        <button name="finish_task" string="Finish Task" type="object"/>
+                        <button name="cancel_task" string="Cancel Task" type="object"/>
+                        <button name="reprint_task" string="Reprint Task" type="object"/>
                         <button name="get_location_task" string="Get Location Task" type="object"/>
                         <button name="get_reposition_task" string="Get Replacement Task" type="object"/>
                         <button name="get_picking_task" string="Get Picking Task" type="object"/>
-                        <button name="reprint_task" string="Reprint Task" type="object"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
                  </form>

@@ -35,6 +35,10 @@ class assign_task_wzd(osv.TransientModel):
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
     }
+    _defaults = {
+        'warehouse_id': lambda self, cr, uid, ctx=None:
+        self.pool.get('stock.warehouse').search(cr, uid, [])[0],
+    }
 
     def get_location_task(self, cr, uid, ids, context=None):
         """
@@ -81,7 +85,7 @@ class assign_task_wzd(osv.TransientModel):
         # Create task and associate picking
         vals = {
             'user_id': wzd_obj.operator_id.id,
-            'type': 'location',
+            'type': 'ubication',
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
             'picking_id': pick.id,
             'state': 'assigned',
@@ -97,3 +101,37 @@ class assign_task_wzd(osv.TransientModel):
         domain = str([('id', '=', task_id)])
         action['domain'] = domain
         return action
+
+    def cancel_task(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        t_task = self.pool.get("stock.task")
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        # Check if operator has a task on course
+        domain = [
+            ('user_id', '=', wzd_obj.operator_id.id),
+            ('state', '=', 'assigned')
+        ]
+        on_course_tasks = t_task.search(cr, uid, domain, context=context,
+                                        limit=1)
+        if not on_course_tasks:
+            raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
+                                                You haven't a task assigned."))
+        t_task.cancel_task(cr, uid, on_course_tasks, context=context)
+
+    def finish_task(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        t_task = self.pool.get("stock.task")
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        # Check if operator has a task on course
+        domain = [
+            ('user_id', '=', wzd_obj.operator_id.id),
+            ('state', '=', 'assigned')
+        ]
+        on_course_tasks = t_task.search(cr, uid, domain, context=context,
+                                        limit=1)
+        if not on_course_tasks:
+            raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
+                                                You haven't a task assigned."))
+        t_task.finish_task(cr, uid, on_course_tasks, context=context)
