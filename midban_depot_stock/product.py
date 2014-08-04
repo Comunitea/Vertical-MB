@@ -32,6 +32,7 @@ class product_putaway_strategy(osv.osv):
         """
         if context is None:
             context = {}
+        import ipdb; ipdb.set_trace()
         sup = super(product_putaway_strategy, self)
         res = sup._get_putaway_options(cr, uid, context)
         res.extend([('midban_storage', 'Midban Storage')])
@@ -52,6 +53,11 @@ class product_putaway_strategy(osv.osv):
         if putaway_strat.method == 'midban_storage':
             res = res
         return res
+
+    _columns = {
+        'method': fields.selection(_get_putaway_options, "Method",
+                                   required=True),
+    }
 
 
 class product_template(osv.Model):
