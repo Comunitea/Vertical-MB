@@ -30,6 +30,12 @@ class stock_picking(osv.osv):
                                        domain=[('operator', '=', 'True')]),
         'machine_id': fields.many2one('stock.machine', 'Machine',
                                       readonly=True),
+        'warehouse_id': fields.many2one('stock.warehouse',
+                                        'Moves warehouse', readonly=True),
+        'task_type': fields.selection([('ubication', 'Ubication',),
+                                       ('reposition', 'Reposition'),
+                                       ('picking', 'Picking')],
+                                      'Task Type', readonly=True),
     }
 
     def _get_unit_conversions(self, cr, uid, ids, op_obj, context=None):
@@ -323,6 +329,29 @@ class stock_pack_operation(osv.osv):
                 pack_type = ops.result_package_id.pack_type
             if pack_type:
                 res[ops.id] = pack_type
+        return res
+
+    def change_location_dest_id(self, cr, uid, operations, wh_obj,
+                                context=None):
+        """
+        Change the storage location for a specific one
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for ops in operations:
+            import ipdb; ipdb.set_trace()
+            prod_obj = False
+            if ops.package_id:
+                for quant in ops.package_id.quant_ids:
+                    prod_obj = quant.product_id
+                    break
+                #si no hay producto??
+                self._get_location(cr, uid, prod_obj, wh_obj)
+
+            else:
+
+                print "aver como lo gestiono"
         return res
 
     _columns = {

@@ -53,6 +53,8 @@
                 <field name="partner_id" position="after">
                     <field name="operator_id"/>
                     <field name="machine_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="task_type"/>
                 </field>
             </field>
         </record>

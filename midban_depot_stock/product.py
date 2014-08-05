@@ -27,12 +27,11 @@ class product_putaway_strategy(osv.osv):
 
     def _get_putaway_options(self, cr, uid, context=None):
         """
-        Overwrite to define a Midban custom putaway strategu for
+        Overwrite to define a Midban custom putaway strategy for
         storage location
         """
         if context is None:
             context = {}
-        import ipdb; ipdb.set_trace()
         sup = super(product_putaway_strategy, self)
         res = sup._get_putaway_options(cr, uid, context)
         res.extend([('midban_storage', 'Midban Storage')])
@@ -47,12 +46,14 @@ class product_putaway_strategy(osv.osv):
         if context is None:
             context = {}
         sup = super(product_putaway_strategy, self)
+        
         res = sup.putaway_apply(cr, uid, putaway_strat, product,
                                 context=context)
-
-        if putaway_strat.method == 'midban_storage':
-            res = res
-        return res
+        # No hay manera de saber el paquete o la cantidad, cagoensuuus
+        # import ipdb; ipdb.set_trace()
+        # if putaway_strat.method == 'midban_storage':
+        #     res = res
+        # return res
 
     _columns = {
         'method': fields.selection(_get_putaway_options, "Method",

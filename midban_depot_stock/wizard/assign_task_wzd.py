@@ -40,6 +40,19 @@ class assign_task_wzd(osv.TransientModel):
         self.pool.get('stock.warehouse').search(cr, uid, [])[0],
     }
 
+    def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
+        if context is None:
+            context = {}
+        t_pick = self.pool.get("stock.picking")
+        t_pack_op = self.pool.get("stock.pack.operation")
+        pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
+        if pick_obj.warehouse_id:  # Writed when a ubication task is assigned
+            wh_obj = pick_obj.warehouse_id
+            ops_ids = pick_obj.pack_operation_ids
+            t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
+                                              context=context)
+        return True
+
     def get_location_task(self, cr, uid, ids, context=None):
         """
         Search pickings wich picking type equals to location task, and create
@@ -48,7 +61,6 @@ class assign_task_wzd(osv.TransientModel):
         """
         if context is None:
             context = {}
-
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
@@ -80,7 +92,12 @@ class assign_task_wzd(osv.TransientModel):
 
         pick = t_pick.browse(cr, uid, pick_id[0], context)
         pick.write({'operator_id': wzd_obj.operator_id.id,
-                    'machine_id': wzd_obj.machine_id.id})
+                    'machine_id': wzd_obj.machine_id.id,
+                    'task_type': 'ubication',
+                    'warehouse_id': wzd_obj.warehouse_id.id})
+
+        self._change_operations_location_dest(cr, uid, pick.id,
+                                              context=context)
 
         # Create task and associate picking
         vals = {
@@ -92,15 +109,16 @@ class assign_task_wzd(osv.TransientModel):
         }
         task_id = t_task.create(cr, uid, vals, context=context)
 
-        data_obj = self.pool.get('ir.model.data')
-        res = data_obj.get_object_reference(cr, uid, 'midban_depot_stock',
-                                            'action_stock_task')
-        action = self.pool.get(res[0]).read(cr, uid, res[1],
-                                            context=context)
+        # data_obj = self.pool.get('ir.model.data')
+        # res = data_obj.get_object_reference(cr, uid, 'midban_depot_stock',
+        #                                     'action_stock_task')
+        # action = self.pool.get(res[0]).read(cr, uid, res[1],
+        #                                     context=context)
 
-        domain = str([('id', '=', task_id)])
-        action['domain'] = domain
-        return action
+        # domain = str([('id', '=', task_id)])
+        # action['domain'] = domain
+        # return action
+        return task_id
 
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
