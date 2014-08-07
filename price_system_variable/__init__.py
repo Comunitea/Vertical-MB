@@ -24,3 +24,4 @@ import sale
 import product
 import account
 import wizard
+import table_pricelist_prices

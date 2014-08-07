@@ -340,7 +340,7 @@ class stock_pack_operation(osv.osv):
             context = {}
         res = {}
         for ops in operations:
-            import ipdb; ipdb.set_trace()
+            # import ipdb; ipdb.set_trace()
             prod_obj = False
             if ops.package_id:
                 for quant in ops.package_id.quant_ids:

@@ -334,7 +334,9 @@ class purchase_order_line(osv.Model):
                     #                               partner_id or False,
                     #                               {'uom': uom_id,
                     #                                'date': date_order})
-                    product2 = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+                    t_product = self.pool.get('product.product')
+                    product2 = t_product.browse(cr, uid, product_id,
+                                                context=context)
                     res_multi = t_plist.price_get_multi(cr, uid, ids,
                                          products_by_qty_by_partner=
                                          [(product2, qty, partner_id)],

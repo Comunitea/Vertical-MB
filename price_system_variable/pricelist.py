@@ -146,30 +146,38 @@ class product_pricelist(osv.Model):
         price_and_min[1] = line.min_price
         return price_and_min
 
-    def price_get_multi(self, cr, uid, pricelist_ids, products_by_qty_by_partner, context=None):
+    def price_get_multi(self, cr, uid, pricelist_ids,
+                        products_by_qty_by_partner, context=None):
         """multi products 'price_get'.
            @param pricelist_ids:
            @param products_by_qty:
            @param partner:
            @param context: {
              'date': Date of the pricelist (%Y-%m-%d),}
-           @return: a dict of dict with product_id as key and a dict 'price by pricelist' as value
+           @return: a dict of dict with product_id as key and a dict 'price by
+           pricelist' as value
         """
         if not pricelist_ids:
-            pricelist_ids = self.pool.get('product.pricelist').search(cr, uid, [], context=context)
+            pricelist_ids = self.pool.get('product.pricelist').search(cr, uid,
+                                                                      [],
+                                                                      context=
+                                                                      context)
         results = {}
         for pricelist in self.browse(cr, uid, pricelist_ids, context=context):
-            subres = self._price_get_multi(cr, uid, pricelist, products_by_qty_by_partner, context=context)
-            for product_id,price in subres.items():
+            subres = self._price_get_multi(cr, uid, pricelist,
+                                           products_by_qty_by_partner,
+                                           context=context)
+            for product_id, price in subres.items():
                 results.setdefault(product_id, {})
-                if  type(price) == list:
+                if type(price) == list:
                     results[product_id][pricelist.id] = price[0]
                     results[product_id]['item_id'] = price[1]
                 else:
                     results[product_id][pricelist.id] = price
         return results
 
-    def _price_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
+    def _price_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner,
+                         context=None):
         context = context or {}
         date = context.get('date') or time.strftime('%Y-%m-%d')
 
@@ -181,14 +189,17 @@ class product_pricelist(osv.Model):
 
         if not products:
             return {}
-        
+
         version = False
         for v in pricelist.version_id:
-            if ((v.date_start is False) or (v.date_start <= date)) and ((v.date_end is False) or (v.date_end >= date)):
+            if ((v.date_start is False) or (v.date_start <= date)) and\
+               ((v.date_end is False) or (v.date_end >= date)):
                 version = v
                 break
         if not version:
-            raise osv.except_osv(_('Warning!'), _("At least one pricelist has no active version !\nPlease create or activate one."))
+            raise osv.except_osv(_('Warning!'), _("At least one pricelist has\
+                                                  no active version !\nPlease\
+                                                  create or activate one."))
         categ_ids = {}
         for p in products:
             categ = p.categ_id
@@ -200,24 +211,28 @@ class product_pricelist(osv.Model):
         is_product_template = products[0]._name == "product.template"
         if is_product_template:
             prod_tmpl_ids = [tmpl.id for tmpl in products]
-            prod_ids = [product.id for product in tmpl.product_variant_ids for tmpl in products]
+            prod_ids = [product.id for product in tmpl.product_variant_ids
+                        for tmpl in products]
         else:
             prod_ids = [product.id for product in products]
-            prod_tmpl_ids = [product.product_tmpl_id.id for product in products]
+            prod_tmpl_ids = [product.product_tmpl_id.id
+                             for product in products]
 
         # Load all rules
         cr.execute(
             'SELECT i.id '
             'FROM product_pricelist_item AS i '
             'WHERE (product_tmpl_id IS NULL OR product_tmpl_id = any(%s)) '
-                'AND (product_id IS NULL OR (product_id = any(%s))) '
-                'AND ((categ_id IS NULL) OR (categ_id = any(%s))) '
-                'AND (price_version_id = %s) '
+            'AND (product_id IS NULL OR (product_id = any(%s))) '
+            'AND ((categ_id IS NULL) OR (categ_id = any(%s))) '
+            'AND (price_version_id = %s) '
             'ORDER BY sequence, min_quantity desc',
             (prod_tmpl_ids, prod_ids, categ_ids, version.id))
-        
+
         item_ids = [x[0] for x in cr.fetchall()]
-        items = self.pool.get('product.pricelist.item').browse(cr, uid, item_ids, context=context)
+        items = self.pool.get('product.pricelist.item').browse(cr, uid,
+                                                               item_ids,
+                                                               context=context)
 
         price_types = {}
 
@@ -228,17 +243,18 @@ class product_pricelist(osv.Model):
             price = False
             custom_way = False
             for rule in items:
-                if rule.min_quantity and qty<rule.min_quantity:
+                if rule.min_quantity and qty < rule.min_quantity:
                     continue
                 if is_product_template:
-                    if rule.product_tmpl_id and product.id<>rule.product_tmpl_id.id:
+                    if rule.product_tmpl_id and product.id != \
+                       rule.product_tmpl_id.id:
                         continue
                     if rule.product_id:
                         continue
                 else:
-                    if rule.product_tmpl_id and product.product_tmpl_id.id<>rule.product_tmpl_id.id:
+                    if rule.product_tmpl_id and product.product_tmpl_id.id != rule.product_tmpl_id.id:
                         continue
-                    if rule.product_id and product.id<>rule.product_id.id:
+                    if rule.product_id and product.id !=rule.product_id.id:
                         continue
 
                 if rule.categ_id:
@@ -249,7 +265,7 @@ class product_pricelist(osv.Model):
                         cat = cat.parent_id
                     if not cat:
                         continue
-
+                # import ipdb; ipdb.set_trace()
                 if rule.base == -1:
                     if rule.base_pricelist_id:
                         price_tmp = self._price_get_multi(cr, uid,
@@ -263,7 +279,7 @@ class product_pricelist(osv.Model):
                                 context=context)
                 elif rule.base == -2:
                     for seller in product.seller_ids:
-                        if (not partner) or (seller.name.id<>partner):
+                        if (not partner) or (seller.name.id != partner):
                             continue
                         qty_in_seller_uom = qty
                         from_uom = context.get('uom') or product.uom_id.id
@@ -280,7 +296,7 @@ class product_pricelist(osv.Model):
                 elif rule.base == -3:
                     price = -1  # price when we sale fresh products
                     custom_way = True
-                    price = [price, rule.id] #put itm_id
+                    price = [price, rule.id]  # put itm_id
 
                 # BASED ON CHANGE_SUPPLIER_COST MODEL
                 elif rule.base == -4:
@@ -292,42 +308,49 @@ class product_pricelist(osv.Model):
                     # product onchange
                     price = price_cod
                     custom_way = True
-                    price = [price, rule.id] #put itm_id
+                    price = [price, rule.id]  # put itm_id
 
                 # BASED ON CHANGE_PRODUCT_PVP MODEL
                 elif rule.base == -5:
                     price = self._get_product_pvp(cr, uid, product.id,
                                                   pricelist.id)[0]
                     custom_way = True
-                    price = [price, rule.id] #put itm_id
+                    price = [price, rule.id]  # put itm_id
 
                 else:
                     if rule.base not in price_types:
-                        price_types[rule.base] = price_type_obj.browse(cr, uid, int(rule.base))
+                        price_types[rule.base] = price_type_obj.browse(cr, uid,
+                                                                       int(rule.base))
                     price_type = price_types[rule.base]
 
                     uom_price_already_computed = True
                     price = currency_obj.compute(cr, uid,
-                            price_type.currency_id.id, pricelist.currency_id.id,
-                            product_obj._price_get(cr, uid, [product],
+                                                 price_type.currency_id.id,
+                                                 pricelist.currency_id.id,
+                                                 product_obj._price_get(cr,
+                                                                        uid,
+                                                                        [product],
                             price_type.field, context=context)[product.id], round=False, context=context)
 
                 if price is not False and not custom_way:
                     price_limit = price
                     price = price * (1.0+(rule.price_discount or 0.0))
                     if rule.price_round:
-                        price = tools.float_round(price, precision_rounding=rule.price_round)
+                        price = tools.float_round(price,
+                                                  precision_rounding=
+                                                  rule.price_round)
                     price += (rule.price_surcharge or 0.0)
                     if rule.price_min_margin:
-                        price = max(price, price_limit+rule.price_min_margin)
+                        price = max(price, price_limit + rule.price_min_margin)
                     if rule.price_max_margin:
-                        price = min(price, price_limit+rule.price_max_margin)
+                        price = min(price, price_limit + rule.price_max_margin)
                 break
 
             if price and not custom_way:
                 if 'uom' in context and not uom_price_already_computed:
                     uom = product.uos_id or product.uom_id
-                    price = product_uom_obj._compute_price(cr, uid, uom.id, price, context['uom'])
+                    price = product_uom_obj._compute_price(cr, uid, uom.id,
+                                                           price, context['uom'])
 
             results[product.id] = price
         return results
@@ -340,7 +363,7 @@ class product_pricelist(osv.Model):
         Return a -2.0 price to launch a sale order warning, when no price
         found.
         """
-        product = self.pool.get('product.product').browse(cr, uid, prod_id, 
+        product = self.pool.get('product.product').browse(cr, uid, prod_id,
                                                           context=context)
         res_multi = self.price_get_multi(cr, uid, ids,
                                          products_by_qty_by_partner=
@@ -710,7 +733,7 @@ class change_supplier_cost(osv.Model):
 
     def get_prices_back(self, cr, uid, ids, context=None):
         """
-        Button method to get back ti draft state in order to be considered
+        Button method to get back if draft state in order to be considered
         when we search into this model.
         """
         if context is None:

@@ -60,31 +60,6 @@ class sale_order_line(osv.osv):
         res = super(sale_order_line, self).write(cr, uid, ids, vals, context)
         return res
 
-# def create(self, cr, uid, vals, context=None):
-#     """
-#     Overwrite to raise a exception if price unit is less than min price.
-#     """
-#     t_pricelist = self.pool.get("product.pricelist")
-#     t_product = self.pool.get("product.product")
-#     t_sale = self.pool.get("sale.order")
-#     if 'price_unit' in vals and 'product_id' in vals:
-#         product = t_product.browse(cr, uid, vals['product_id'], context)
-#         if product.product_class not in ['fresh', 'no_class']:
-#             order = t_sale.browse(cr, uid, vals['order_id'], context)
-#             pricelist_id = order.pricelist_id.id
-#             min_price = t_pricelist._get_product_pvp(cr, uid,
-#                                                      product.id,
-#                                                      pricelist_id)[1]
-#             if vals['price_unit'] < min_price:
-#                     msg = "Product {} has a price unit ({}) less than his \
-#                            minimum price ({}) for current purchase \
-#                            pricelist".format(product.name,
-#                                              vals['price_unit'], min_price)
-#                     raise osv.except_osv(_('Error!'), msg)
-
-#     res = super(sale_order_line, self).create(cr, uid, vals, context)
-#     return res
-
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
                           partner_id=False, lang=False, update_tax=True,
