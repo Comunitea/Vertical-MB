@@ -46,7 +46,8 @@ class assign_task_wzd(osv.TransientModel):
         t_pick = self.pool.get("stock.picking")
         t_pack_op = self.pool.get("stock.pack.operation")
         pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
-        if pick_obj.warehouse_id:  # Writed when a ubication task is assigned
+        # Writed when a ubication task is assigned
+        if pick_obj.task_type == 'ubications':  
             wh_obj = pick_obj.warehouse_id
             ops_ids = pick_obj.pack_operation_ids
             t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,

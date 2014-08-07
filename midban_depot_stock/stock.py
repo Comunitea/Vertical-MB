@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import osv, fields
 from openerp import api
+from openerp.tools.translate import _
 
 
 class stock_picking(osv.osv):
@@ -80,7 +81,7 @@ class stock_picking(osv.osv):
                                  context=None):
         """
         Return a dictionary containing the values to create a pack operation
-        with pack an his type setted.
+        with pack and his pack type setted.
         """
         if context is None:
             context = {}
@@ -313,8 +314,46 @@ class stock_package(osv.osv):
 
 class stock_pack_operation(osv.osv):
     _inherit = "stock.pack.operation"
-    # Falla al darle a aprovar operacions, por ejemplo con 310, no se por que
-    # no le mola el function
+
+    def _get_location(self, cr, uid, prod_obj, wh_obj, pack_type, 
+                      context=None):
+        """
+        For a product, choose between put it in picking zone (if it is empty
+        and no older reference stored in storage zone or put it in closest
+        storage zone to product picking location
+        """
+        location_id = False
+        
+        return location_id
+    def change_location_dest_id(self, cr, uid, operations, wh_obj,
+                                context=None,):
+        """
+        Change the storage location for a specific one
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for ops in operations:
+            # import ipdb; ipdb.set_trace()
+            prod_obj = False
+            if ops.package_id:
+                for quant in ops.package_id.quant_ids:
+                    if prod_obj and prod_obj.id !=  quant.product_id.id:
+                        msg = 'Can not manage packages with different products'
+                        raise osv.except_osv(_('Error!'), _(msg))
+                    else:
+                        prod_obj = quant.product_id
+            else:
+                prod_obj = ops.product_id and ops.product_id or False
+            if not prod_obj:
+                 raise osv.except_osv(_('Error!'), _('No product founded\
+                                                      inside package'))
+            location_id = self._get_location(cr, uid, prod_obj, wh_obj,
+                                             ops.pack_type, context=context)
+            if location_id:
+                ops.write({'location_dest_id': location_id})
+
+        return res
 
     def _get_pack_type(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -329,29 +368,6 @@ class stock_pack_operation(osv.osv):
                 pack_type = ops.result_package_id.pack_type
             if pack_type:
                 res[ops.id] = pack_type
-        return res
-
-    def change_location_dest_id(self, cr, uid, operations, wh_obj,
-                                context=None):
-        """
-        Change the storage location for a specific one
-        """
-        if context is None:
-            context = {}
-        res = {}
-        for ops in operations:
-            # import ipdb; ipdb.set_trace()
-            prod_obj = False
-            if ops.package_id:
-                for quant in ops.package_id.quant_ids:
-                    prod_obj = quant.product_id
-                    break
-                #si no hay producto??
-                self._get_location(cr, uid, prod_obj, wh_obj)
-
-            else:
-
-                print "aver como lo gestiono"
         return res
 
     _columns = {
