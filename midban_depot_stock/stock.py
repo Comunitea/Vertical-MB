@@ -21,6 +21,7 @@
 from openerp.osv import osv, fields
 from openerp import api
 from openerp.tools.translate import _
+import openerp.addons.decimal_precision as dp
 
 
 class stock_picking(osv.osv):
@@ -315,7 +316,7 @@ class stock_package(osv.osv):
 class stock_pack_operation(osv.osv):
     _inherit = "stock.pack.operation"
 
-    def _get_location(self, cr, uid, prod_obj, wh_obj, pack_type, 
+    def _get_location(self, cr, uid, prod_obj, wh_obj, pack_type,
                       context=None):
         """
         For a product, choose between put it in picking zone (if it is empty
@@ -323,8 +324,8 @@ class stock_pack_operation(osv.osv):
         storage zone to product picking location
         """
         location_id = False
-        
         return location_id
+
     def change_location_dest_id(self, cr, uid, operations, wh_obj,
                                 context=None,):
         """
@@ -338,7 +339,7 @@ class stock_pack_operation(osv.osv):
             prod_obj = False
             if ops.package_id:
                 for quant in ops.package_id.quant_ids:
-                    if prod_obj and prod_obj.id !=  quant.product_id.id:
+                    if prod_obj and prod_obj.id != quant.product_id.id:
                         msg = 'Can not manage packages with different products'
                         raise osv.except_osv(_('Error!'), _(msg))
                     else:
@@ -346,8 +347,8 @@ class stock_pack_operation(osv.osv):
             else:
                 prod_obj = ops.product_id and ops.product_id or False
             if not prod_obj:
-                 raise osv.except_osv(_('Error!'), _('No product founded\
-                                                      inside package'))
+                raise osv.except_osv(_('Error!'), _('No product founded\
+                                                    inside package'))
             location_id = self._get_location(cr, uid, prod_obj, wh_obj,
                                              ops.pack_type, context=context)
             if location_id:
@@ -390,3 +391,54 @@ class stock_warehouse(osv.osv):
         'picking_type_id': fields.many2one('stock.picking.type',
                                            'Picking Task Type'),
     }
+
+
+class stock_location(osv.Model):
+    _inherit = 'stock.location'
+    _columns = {
+        'width': fields.float('Width',
+                              digits_compute=
+                              dp.get_precision('Product Price')),
+        'height': fields.float('Height',
+                               digits_compute=
+                               dp.get_precision('Product Price')),
+        # 'available_height': fields.float('Available Height',
+        #                                  digits_compute=
+        #                                  dp.get_precision('Product Price')),
+        'length': fields.float('Lenght',
+                               digits_compute=
+                               dp.get_precision('Product Price')),
+        # 'volume': fields.float('Volume',
+        #                        digits_compute=
+        #                        dp.get_precision('Product Price')),
+        # 'available_volume': fields.float('Available Volume',
+        #                                  digits_compute=
+        #                                  dp.get_precision('Product Price')),
+        'storage_type': fields.selection([('standard', 'Standard'),
+                                         ('boxes', 'Boxes'),
+                                         ('mantles', 'Mantles'),
+                                         ('palets', 'Palets')],
+                                         'Storage Type'),
+        # 'ref': fields.char("Reference", size=64),
+    }
+    _defaults = {
+        'storage_type': 'standard',
+        # 'available_height': -1,
+        # 'available_volume': -1,
+    }
+    _sql_constraints = [
+        ('name_uniq', 'unique(storage_type)',
+         _("Field Storage type must be unique!"))
+    ]
+
+    def onchange_storage_type(self, cr, uid, ids, location_type, context=None):
+        """ Avoid set manually a storage type of mantles or palets"""
+        if context is None:
+            context = {}
+        res = {'value': {}}
+        if location_type in ['mantles', 'palets']:
+            res['warning'] = {'title': _('Warning!'),
+                              'message': _("This type can be only managed by\
+                                            the task schedule")}
+            res['value']['storage_type'] = 'standard'
+        return res

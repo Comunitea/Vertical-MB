@@ -89,5 +89,30 @@
                 </field>
             </field>
         </record>
+
+        <!-- Location View Form -->
+        <record id="view_location_form_depot" model="ir.ui.view">
+            <field name="name">stock.location.form.depot</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <!-- <group string="Logistics" position="after">
+                    <group string="Information"> -->
+                    <field name="posx" position="before">
+                        <field name="storage_type" on_change="onchange_storage_type(storage_type)"/>
+                       <!--  <field name="ref"/> -->
+                        <field name="width"/>
+                        <field name="length"/>
+                        <field name="height"/>
+                        <!-- <field name="available_height" attrs="{'invisible': [('storage_type','!=', 'mantles')]}"/> -->
+                        <!-- <field name="available_height"/>
+                        <field name="volume"/> -->
+                        <!-- <field name="available_volume" attrs="{'invisible': [('storage_type','!=', 'boxes')]}"/> -->
+                        <!-- <field name="available_volume"/> -->
+                    </field>
+              <!--   </group> -->
+            </field>
+        
+        </record>
     </data>
 </openerp>

@@ -63,8 +63,8 @@ class stock_task(osv.Model):
         for task in self.browse(cr, uid, ids, context):
             pick_obj = task.picking_id
 
-            # if pick_obj.state not in done draft ?
-            pick_obj.approve_pack_operations()
+            if pick_obj.state not in ['done', 'draft', 'cancel']:
+                pick_obj.approve_pack_operations()
             # Write duration
             duration = datetime.now() - \
                 datetime.strptime(task.date_start,
