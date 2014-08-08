@@ -139,11 +139,12 @@ class stock_picking(osv.osv):
         res = []
         prod_obj = op.product_id
         conv = self._get_unit_conversions(cr, uid, ids, op, context)
+        import ipdb; ipdb.set_trace()
         if conv['palets'] >= 1:
             palets = conv['palets']
             int_pal = int(palets)
             dec_pal = abs(palets) - abs(int(palets))
-            pa_dics = self._get_pack_type_operation(cr, uid, ids, op, 'palete',
+            pa_dics = self._get_pack_type_operation(cr, uid, ids, op, 'palet',
                                                     int_pal, context=context)
             res.extend(pa_dics)
             if dec_pal != 0:  # Get a integer number of mantles or boxes
