@@ -55,6 +55,7 @@
                     <field name="machine_id"/>
                     <field name="warehouse_id"/>
                     <field name="task_type"/>
+                    <!-- <field name="reposition"/> -->
                 </field>
             </field>
         </record>

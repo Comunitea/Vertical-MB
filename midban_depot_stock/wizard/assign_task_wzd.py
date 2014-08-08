@@ -47,7 +47,7 @@ class assign_task_wzd(osv.TransientModel):
         t_pack_op = self.pool.get("stock.pack.operation")
         pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
         # Writed when a ubication task is assigned
-        if pick_obj.task_type == 'ubications':  
+        if pick_obj.task_type == 'ubications':
             wh_obj = pick_obj.warehouse_id
             ops_ids = pick_obj.pack_operation_ids
             t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
@@ -154,3 +154,43 @@ class assign_task_wzd(osv.TransientModel):
             raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
                                                 You haven't a task assigned."))
         t_task.finish_task(cr, uid, on_course_tasks, context=context)
+
+    def get_reposition_task(self, cr, uid, ids, context=None):
+        """
+        Get reposition task assigned in reposition wizard.
+        """
+        if context is None:
+            context = {}
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        t_pick = self.pool.get("stock.picking")
+        t_task = self.pool.get("stock.task")
+        # Get oldest internal pick in assigned state
+        if not wzd_obj.warehouse_id.reposition_type_id:
+            raise osv.except_osv(_('Error!'), _('No reposition type founded\
+                                                 You must define the picking\
+                                                 type in the warehouse.'))
+        reposition_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
+        pick_id = t_pick.search(cr, uid, [('state', '=', 'assigned'),
+                                          ('picking_type_id',
+                                           '=',
+                                           reposition_task_type_id)],
+                                limit=1, order="id asc", context=context)
+        if not pick_id:
+            raise osv.except_osv(_('Error!'), _('No internal reposition \
+                                                 pickings to schedule'))
+
+        pick = t_pick.browse(cr, uid, pick_id[0], context)
+        pick.write({'operator_id': wzd_obj.operator_id.id,
+                    'machine_id': wzd_obj.machine_id.id,
+                    'warehouse_id': wzd_obj.warehouse_id.id,
+                    'task_type': 'reposition'})
+        # Create task and associate picking
+        vals = {
+            'user_id': wzd_obj.operator_id.id,
+            'type': 'replenishment',
+            'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
+            'picking_id': pick.id,
+            'state': 'assigned',
+        }
+        t_task.create(cr, uid, vals, context=context)
+        return
