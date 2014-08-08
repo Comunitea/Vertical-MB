@@ -41,6 +41,7 @@
         'product_view.xml',
         'stock_machine_view.xml',
         'wizard/assign_task_wzd_view.xml',
+        'wizard/reposition_wizard_view.xml',
         'security/ir.model.access.csv',
     ],
     "demo": [],
