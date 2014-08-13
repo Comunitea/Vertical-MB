@@ -139,7 +139,7 @@ class stock_picking(osv.osv):
         res = []
         prod_obj = op.product_id
         conv = self._get_unit_conversions(cr, uid, ids, op, context)
-        import ipdb; ipdb.set_trace()
+        #import ipdb; ipdb.set_trace()
         if conv['palets'] >= 1:
             palets = conv['palets']
             int_pal = int(palets)
