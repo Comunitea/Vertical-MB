@@ -23,17 +23,17 @@
                 </button>
 
                 <!-- New Buttons to manage stock system without the barcode interface" -->
-            	<button name="do_transfer" position="after">
-            		<button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/>
+                <button name="do_transfer" position="after">
+                    <button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/>
 
                     <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
-            	</button>
+                </button>
 
                 <!-- Show page operations -->
                 <page string="Operations Done" position="replace">
                     <page string="Operations">
                             <field name="pack_operation_ids">
-                                <tree editable="top">   
+                                <tree editable="top">
                                     <field name="location_id"/>
                                     <field name="product_id"/>
                                     <field name="product_uom_id" groups="product.group_uom"/>
@@ -46,7 +46,7 @@
                                     <field name="pack_type" groups="stock.group_tracking_lot"/>
                                 </tree>
                             </field>
-                        </page>   
+                        </page>
                 </page>
 
                 <!-- Add fields from assign_task_wzd.py -->
@@ -100,11 +100,13 @@
                 <!-- <group string="Logistics" position="after">
                     <group string="Information"> -->
                     <field name="posx" position="before">
-                        <field name="storage_type" on_change="onchange_storage_type(storage_type)"/>
+                       <field name="storage_type"/>
                        <!--  <field name="ref"/> -->
                         <field name="width"/>
                         <field name="length"/>
                         <field name="height"/>
+                        <field name="volume"/>
+                        <field name="available_volume"/>
                         <!-- <field name="available_height" attrs="{'invisible': [('storage_type','!=', 'mantles')]}"/> -->
                         <!-- <field name="available_height"/>
                         <field name="volume"/> -->
@@ -113,7 +115,7 @@
                     </field>
               <!--   </group> -->
             </field>
-        
+
         </record>
     </data>
 </openerp>

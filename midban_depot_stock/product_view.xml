@@ -10,6 +10,10 @@
                 <field name="property_stock_inventory" position="after">
                     <field name="picking_location_id" attrs="{'readonly':[('type','=','service')]}"/>
                 </field>
+                <field name="loc_case" position="after">
+                    <field name="palet_wood_height" attrs="{'invisible':[('type','=','service')]}"/>
+                    <field name="mantle_wood_height" attrs="{'invisible':[('type','=','service')]}"/>
+                </field>
             </field>
         </record>
     </data>

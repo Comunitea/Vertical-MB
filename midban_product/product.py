@@ -196,6 +196,9 @@ class product_template(osv.Model):
                                            required=True),
         'supplier_ca_length': fields.float("CA Length Supplier", digits=(4, 2),
                                            required=True),
+        'palet_wood_height': fields.float("Palet Wood Height", digits=(5, 3)),
+        'mantle_wood_height': fields.float("Mantle Wood Height",
+                                           digits=(5, 3)),
         'last_purchase_price': fields.function(_get_last_price,
                                                string="Last purchase change",
                                                type="float",
@@ -207,6 +210,8 @@ class product_template(osv.Model):
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',
         'state2': 'val_pending',
+        'palet_wood_height': 0.145,
+        'mantle_wood_height': 0.02,
         'active': False,  # Product desuctived until register state is reached
     }
     # _sql_constraints = [('ref_uniq', 'unique(default_code)',

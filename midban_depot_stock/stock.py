@@ -139,7 +139,6 @@ class stock_picking(osv.osv):
         res = []
         prod_obj = op.product_id
         conv = self._get_unit_conversions(cr, uid, ids, op, context)
-        #import ipdb; ipdb.set_trace()
         if conv['palets'] >= 1:
             palets = conv['palets']
             int_pal = int(palets)
@@ -161,62 +160,48 @@ class stock_picking(osv.osv):
                         if num_box >= 1:  # Get boxes and maybe some units
                             int_box = int(num_box)
                             dec_box = abs(num_box) - abs(int(num_box))
-                            bo_dics = self._get_pack_type_operation(cr, uid,
-                                                                    ids, op,
-                                                                    'box',
-                                                                    int_box,
-                                                                    context=
-                                                                    context)
+                            bo_dics = self.\
+                                _get_pack_type_operation(cr, uid, ids, op,
+                                                         'box', int_box,
+                                                         context=context)
                             res.extend(bo_dics)
                             if dec_box != 0:  # Get operations for units
                                 units = prod_obj.supplier_un_ca * dec_box
-                                un_dic = self._get_pack_type_operation(cr,
-                                                                       uid,
-                                                                       ids, op,
-                                                                       'units',
-                                                                       units,
-                                                                       context=
-                                                                       context)
+                                un_dic = self.\
+                                    _get_pack_type_operation(cr, uid, ids, op,
+                                                             'units', units,
+                                                             context=context)
                                 res.extend(un_dic)
 
                         else:  # ubicate the rest of units
                             units = prod_obj.supplier_un_ca * num_box
-                            un_dics = self._get_pack_type_operation(cr, uid,
-                                                                    ids, op,
-                                                                    'units',
-                                                                    units,
-                                                                    context=
-                                                                    context)
+                            un_dics = self.\
+                                _get_pack_type_operation(cr, uid, ids, op,
+                                                         'units', units,
+                                                         context=context)
                             res.extend(un_dics)
                 else:  # Ubicate Boxes
                     num_box = prod_obj.supplier_ca_ma * num_mant
                     if num_box >= 1:  # Get boxes and maybe some units
                         int_box = int(num_box)
                         dec_box = abs(num_box) - abs(int(num_box))
-                        bo_dics = self._get_pack_type_operation(cr, uid,
-                                                                ids, op,
-                                                                'box',
-                                                                int_box,
-                                                                context=
-                                                                context)
+                        bo_dics = self.\
+                            _get_pack_type_operation(cr, uid, ids, op, 'box',
+                                                     int_box, context=context)
                         res.extend(bo_dics)
                         if dec_box != 0:  # Get operations for units
                             units = prod_obj.supplier_un_ca * dec_box
-                            un_dics = self._get_pack_type_operation(cr, uid,
-                                                                    ids, op,
-                                                                    'units',
-                                                                    units,
-                                                                    context=
-                                                                    context)
+                            un_dics = self.\
+                                _get_pack_type_operation(cr, uid, ids, op,
+                                                         'units', units,
+                                                         context=context)
                             res.extend(un_dics)
                     else:  # Ubicate the rest of units
                         units = prod_obj.supplier_un_ca * num_box
-                        un_dics = self._get_pack_type_operation(cr, uid,
-                                                                ids, op,
-                                                                'units',
-                                                                units,
-                                                                context=
-                                                                context)
+                        un_dics = self.\
+                            _get_pack_type_operation(cr, uid, ids, op,
+                                                     'units', units,
+                                                     context=context)
                         res.extend(un_dics)
 
         elif conv['mantles'] >= 1:
@@ -232,21 +217,15 @@ class stock_picking(osv.osv):
                 if num_box >= 1:  # Get boxes and maybe some units
                     int_box = int(num_box)
                     dec_box = abs(num_box) - abs(int(num_box))
-                    bo_dics = self._get_pack_type_operation(cr, uid,
-                                                            ids, op,
-                                                            'box',
-                                                            int_box,
-                                                            context=
-                                                            context)
+                    bo_dics = self.\
+                        _get_pack_type_operation(cr, uid, ids, op, 'box',
+                                                 int_box, context=context)
                     res.extend(bo_dics)
                     if dec_box != 0:  # Get operations for units
                         units = prod_obj.supplier_un_ca * dec_box
-                        un_dics = self._get_pack_type_operation(cr, uid,
-                                                                ids, op,
-                                                                'units',
-                                                                units,
-                                                                context=
-                                                                context)
+                        un_dics = self.\
+                            _get_pack_type_operation(cr, uid, ids, op, 'units',
+                                                     units, context=context)
                         res.extend(un_dics)
 
         elif conv['boxes'] > 0:
@@ -316,25 +295,87 @@ class stock_package(osv.osv):
         'pack_type': fields.selection([('box', 'Box'), ('mantle', 'Mantle'),
                                        ('palet', 'Palet')], 'Pack Type',
                                       readonly=True),
+        'product_id': fields.related('quant_ids', 'product_id', readonly=True,
+                                     type="many2one", string="Product",
+                                     relation="product.product")
     }
 
 
 class stock_pack_operation(osv.osv):
     _inherit = "stock.pack.operation"
 
-    def _get_location(self, cr, uid, prod_obj, wh_obj, pack_type,
-                      context=None):
+    def _search_closest_pick_location(self, cr, uid, prod_obj,
+                                      free_loc_ids, context=None):
+        if context is None:
+            context = {}
+        if not free_loc_ids:
+            raise osv.except_osv(_('Error!'), _('No empty locations.'))
+
+        names = []
+        loc_names = []
+        loc_t = self.pool.get('stock.location')
+        for loc in loc_t.browse(cr, uid, free_loc_ids, context):
+            names.append(loc.name)
+        names.append(prod_obj.picking_location_id.name)
+        loc_names = sorted(names)
+        i = loc_names.index(prod_obj.picking_location_id.name)
+        # TODO MEJORAR INTELIGENCIA, COMPARADOR UBICACIONES
+        if i == len(free_loc_ids) - 1:
+            i = i - 1
+        return free_loc_ids[i]
+
+    def _get_location(self, cr, uid, ops, wh_obj, context=None):
         """
         For a product, choose between put it in picking zone (if it is empty
         and no older reference stored in storage zone or put it in closest
         storage zone to product picking location
         """
+        if context is None:
+            context = {}
         location_id = False
+        loc_obj = self.pool.get('stock.location')
+        storage_id = wh_obj.storage_loc_id.id
+        if (ops.operation_product_id and
+                ops.operation_product_id.picking_location_id):
+            product = ops.operation_product_id
+            pick_loc = ops.operation_product_id.picking_location_id
+            if (pick_loc.volume == pick_loc.available_volume and
+                    ops.volume <= pick_loc.available_volume):
+                location_id = pick_loc.id
+            else:
+                if ops.pack_type and ops.pack_type == 'box':
+                    loc_type = "boxes"
+                elif ops.pack_type:
+                    loc_type = "standard"
+                else:
+                    loc_type = False
+
+                if loc_type:
+                    loc_ids = loc_obj.search(cr, uid,
+                                             [('storage_type', '=', loc_type),
+                                              ('location_id', 'child_of',
+                                               [storage_id])],
+                                             context=context)
+                    free_locs = []
+                    for loc in loc_obj.browse(cr, uid, loc_ids,
+                                              context=context):
+                        if ((not loc.current_product_id or
+                             loc.current_product_id.id == product.id) and
+                                loc.available_volume >= ops.volume):
+                            free_locs.append(loc.id)
+
+                    location_id = self.\
+                        _search_closest_pick_location(cr, uid, product,
+                                                      free_locs,
+                                                      context=context)
+                else:
+                    # TODO: A donde van las unidades sueltas?????
+                    location_id = False
 
         return location_id
 
     def change_location_dest_id(self, cr, uid, operations, wh_obj,
-                                context=None,):
+                                context=None):
         """
         Change the storage location for a specific one
         """
@@ -342,7 +383,7 @@ class stock_pack_operation(osv.osv):
             context = {}
         res = {}
         for ops in operations:
-            # import ipdb; ipdb.set_trace()
+            ops = self.browse(cr, uid, ops.id, context=context)
             prod_obj = False
             if ops.package_id:
                 for quant in ops.package_id.quant_ids:
@@ -356,8 +397,8 @@ class stock_pack_operation(osv.osv):
             if not prod_obj:
                 raise osv.except_osv(_('Error!'), _('No product founded\
                                                     inside package'))
-            location_id = self._get_location(cr, uid, prod_obj, wh_obj,
-                                             ops.pack_type, context=context)
+            location_id = self._get_location(cr, uid, ops, wh_obj,
+                                             context=context)
             if location_id:
                 ops.write({'location_dest_id': location_id})
 
@@ -378,9 +419,67 @@ class stock_pack_operation(osv.osv):
                 res[ops.id] = pack_type
         return res
 
+    def _get_real_product(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for ops in self.browse(cr, uid, ids, context=context):
+            if ops.product_id:
+                res[ops.id] = ops.product_id.id
+            elif ops.lot_id:
+                res[ops.id] = ops.lot_id.product_id.id
+            elif ops.package_id and ops.package_id.product_id:
+                res[ops.id] = ops.package_id.product_id.id
+            elif ops.result_package_id and ops.result_package_id.product_id:
+                res[ops.id] = ops.result_package_id.product_id.id
+            else:
+                res[ops.id] = False
+
+        return res
+
+    def _get_operation_volume(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for ope in self.browse(cr, uid, ids, context=context):
+            volume = 0.0
+            if ope.pack_type:
+                if ope.pack_type == "palet":
+                    volume = ope.operation_product_id.supplier_pa_width * \
+                        (ope.operation_product_id.supplier_pa_height +
+                         ope.operation_product_id.palet_wood_height) * \
+                        ope.operation_product_id.supplier_pa_length
+                elif ope.pack_type == "mantle":
+                    volume = ope.operation_product_id.supplier_ma_width * \
+                        (ope.operation_product_id.supplier_ma_height +
+                         ope.operation_product_id.mantle_wood_height) * \
+                        ope.operation_product_id.supplier_ma_length
+                elif ope.pack_type == "box":
+                    volume = ope.operation_product_id.supplier_ca_width * \
+                        ope.operation_product_id.supplier_ca_height * \
+                        ope.operation_product_id.supplier_ca_length
+            else:
+                volume = ope.operation_product_id.supplier_un_width * \
+                    ope.operation_product_id.supplier_un_height * \
+                    ope.operation_product_id.supplier_un_length * \
+                    ope.product_qty
+
+            res[ope.id] = volume
+
+        return res
+
     _columns = {
         'pack_type': fields.function(_get_pack_type, type='char',
                                      string='Pack Type', readonly=True),
+        'volume': fields.
+        function(_get_operation_volume, readonly=True, type="float",
+                 string="Volume",
+                 digits_compute=dp.get_precision('Product Price')),
+        'operation_product_id': fields.function(_get_real_product,
+                                                type="many2one",
+                                                relation="product.product",
+                                                readonly=True,
+                                                string="Product")
     }
 
 
@@ -402,50 +501,136 @@ class stock_warehouse(osv.osv):
 
 class stock_location(osv.Model):
     _inherit = 'stock.location'
-    _columns = {
-        'width': fields.float('Width',
-                              digits_compute=
-                              dp.get_precision('Product Price')),
-        'height': fields.float('Height',
-                               digits_compute=
-                               dp.get_precision('Product Price')),
-        # 'available_height': fields.float('Available Height',
-        #                                  digits_compute=
-        #                                  dp.get_precision('Product Price')),
-        'length': fields.float('Lenght',
-                               digits_compute=
-                               dp.get_precision('Product Price')),
-        # 'volume': fields.float('Volume',
-        #                        digits_compute=
-        #                        dp.get_precision('Product Price')),
-        # 'available_volume': fields.float('Available Volume',
-        #                                  digits_compute=
-        #                                  dp.get_precision('Product Price')),
-        'storage_type': fields.selection([('standard', 'Standard'),
-                                         ('boxes', 'Boxes'),
-                                         ('mantles', 'Mantles'),
-                                         ('palets', 'Palets')],
-                                         'Storage Type'),
-        # 'ref': fields.char("Reference", size=64),
-    }
-    _defaults = {
-        'storage_type': 'standard',
-        # 'available_height': -1,
-        # 'available_volume': -1,
-    }
-    _sql_constraints = [
-        ('name_uniq', 'unique(storage_type)',
-         _("Field Storage type must be unique!"))
-    ]
 
-    def onchange_storage_type(self, cr, uid, ids, location_type, context=None):
-        """ Avoid set manually a storage type of mantles or palets"""
+    def _get_location_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
-        res = {'value': {}}
-        if location_type in ['mantles', 'palets']:
-            res['warning'] = {'title': _('Warning!'),
-                              'message': _("This type can be only managed by\
-                                            the task schedule")}
-            res['value']['storage_type'] = 'standard'
+        res = {}
+        for loc in self.browse(cr, uid, ids, context=context):
+            res[loc.id] = loc.width * loc.height * loc.length
+
         return res
+
+    def _get_available_volume(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        quant_obj = self.pool.get('stock.quant')
+        ope_obj = self.pool.get('stock.pack.operation')
+        for loc in self.browse(cr, uid, ids, context=context):
+            volume = 0.0
+            quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
+                                                    loc.id)],
+                                         context=context)
+            for quant in quant_obj.browse(cr, uid, quant_ids, context=context):
+                volume += quant.volume
+
+            operation_ids = ope_obj.search(cr, uid, [('location_dest_id', '=',
+                                                      loc.id), ('processed',
+                                                                '=',
+                                                                'false')],
+                                           context=context)
+            for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
+                volume += ope.volume
+
+            res[loc.id] = loc.volume - volume
+
+        return res
+
+    def _get_current_product_id(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        quant_obj = self.pool.get('stock.quant')
+        ope_obj = self.pool.get('stock.pack.operation')
+        for loc in self.browse(cr, uid, ids, context=context):
+            res[loc.id] = False
+            quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
+                                                    loc.id)],
+                                         context=context, limit=1)
+            if quant_ids:
+                res[loc.id] = quant_obj.browse(cr, uid, quant_ids[0],
+                                               context=context).product_id.id
+            else:
+                operation_ids = ope_obj.search(cr, uid, [('location_dest_id',
+                                                          '=', loc.id),
+                                                         ('processed', '=',
+                                                          'false')],
+                                               context=context, limit=1)
+                if operation_ids:
+                    res[loc.id] = ope_obj.browse(cr, uid, operation_ids[0],
+                                                 context=context).\
+                        operation_product_id.id
+
+        return res
+
+    _columns = {
+        'width': fields.
+        float('Width', digits_compute=dp.get_precision('Product Price')),
+        'height': fields.
+        float('Height', digits_compute=dp.get_precision('Product Price')),
+        'length': fields.
+        float('Lenght', digits_compute=dp.get_precision('Product Price')),
+        'volume': fields.
+        function(_get_location_volume, readonly=True, string='Volume',
+                 type="float",
+                 digits_compute=dp.get_precision('Product Price')),
+        'available_volume': fields.
+        function(_get_available_volume, readonly=True, type="float",
+                 string="Available volume",
+                 digits_compute=dp.get_precision('Product Price')),
+        'storage_type': fields.selection([('standard', 'Standard'),
+                                         ('boxes', 'Boxes')],
+                                         'Storage Type'),
+        'current_product_id': fields.function(_get_current_product_id,
+                                              string="Product",
+                                              readonly=True,
+                                              type="many2one",
+                                              relation="product.product")
+    }
+
+    _defaults = {
+        'storage_type': 'standard',
+    }
+
+
+class stock_quant(osv.Model):
+    _inherit = "stock.quant"
+
+    def _get_quant_volume(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for quant in self.browse(cr, uid, ids, context=context):
+            volume = 0.0
+            if quant.package_id and quant.package_id.pack_type:
+                if quant.package_id.pack_type == "palet":
+                    volume = quant.product_id.supplier_pa_width * \
+                        (quant.product_id.supplier_pa_height +
+                         quant.product_id.palet_wood_height) * \
+                        quant.product_id.supplier_pa_length
+                elif quant.package_id.pack_type == "mantle":
+                    volume = quant.product_id.supplier_ma_width * \
+                        (quant.product_id.supplier_ma_height +
+                         quant.product_id.mantle_wood_height) * \
+                        quant.product_id.supplier_ma_length
+                elif quant.package_id.pack_type == "box":
+                    volume = quant.product_id.supplier_ca_width * \
+                        quant.product_id.supplier_ca_height * \
+                        quant.product_id.supplier_ca_length
+            else:
+                volume = quant.product_id.supplier_un_width * \
+                    quant.product_id.supplier_un_height * \
+                    quant.product_id.supplier_un_length * \
+                    quant.qty
+
+            res[quant.id] = volume
+
+        return res
+
+    _columns = {
+        'volume': fields.
+        function(_get_quant_volume, readonly=True, type="float",
+                 string="Volume",
+                 digits_compute=dp.get_precision('Product Price')),
+    }
