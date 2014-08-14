@@ -30,7 +30,6 @@ class product_template(osv.Model):
     _columns = {
         'picking_location_id': fields.many2one('stock.location',
                                                'Location Picking',
-                                               required=True,
                                                domain=[('usage', '=',
                                                         'internal')]),
     }
