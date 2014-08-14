@@ -27,9 +27,9 @@ class reposition_wizard(osv.TransientModel):
     _name = "reposition.wizard"
     _rec_name = "warehouse_id"
     _columns = {
-        'capacity': fields.float("Filled Percentage", required=True,
-                                 digits_compute=
-                                 dp.get_precision('Product Price')),
+        'capacity': fields.
+        float("Filled Percentage", required=True,
+              digits_compute=dp.get_precision('Product Price')),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
     }
@@ -47,8 +47,37 @@ class reposition_wizard(osv.TransientModel):
         """
         if context is None:
             context = {}
-        res = []
-        return res
+        newm = False
+        obj = self.browse(cr, uid, ids[0], context=context)
+        pick_type = obj.warehouse_id.reposition_type_id
+        move_obj = self.pool.get('stock.move')
+        prod_obj = self.pool.get('product.product')
+        prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
+                                              dest_id)], context=context,
+                                   limit=1)
+        if prod_ids:
+            context['compute_child'] = True
+            context['location'] = obj.warehouse_id.storage_loc_id.id
+            product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
+            unit_volume = product.supplier_un_width * \
+                product.supplier_un_height * product.supplier_un_length
+
+            requested_units = obj.capacity / unit_volume
+            if product.virtual_available >= requested_units:
+                newm = move_obj.create(cr, uid,
+                                       {'product_id': product.id,
+                                        'product_uom_qty': requested_units,
+                                        'location_id': pick_type.
+                                        default_location_src_id.id,
+                                        'location_dest_id': pick_type.
+                                        default_location_dest_id.id,
+                                        'product_uom': product.uom_id.id,
+                                        'picking_id': pick_id,
+                                        'picking_type_id': pick_type.id,
+                                        'warehouse_id': obj.warehouse_id.id},
+                                       context=context)
+
+        return newm
 
     def get_reposition_list(self, cr, uid, ids, context=None):
         """
@@ -62,7 +91,7 @@ class reposition_wizard(osv.TransientModel):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         pick_loc_id = wzd_obj.warehouse_id.picking_loc_id.id
 
-        domain = [('location_id', '=', pick_loc_id)]
+        domain = [('location_id', 'child_of', [pick_loc_id])]
         # Get all picking locations
         picking_loc_ids = loc_t.search(cr, uid, domain, context=context)
         if not picking_loc_ids:
@@ -73,14 +102,14 @@ class reposition_wizard(osv.TransientModel):
         # menores que el dado por el asistente
         selected_ids = []
         # get list of locations under wizard capacity filled
-        # for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
-        #     volume = loc.volume
-        #     available = loc.available_volume == -1 and volume \
-        #         or loc.available_volume
-        #     filled = volume - available
-        #     fill_per = (filled / volume) * 100
-        #     if (fill_per <= wzd_obj.capacity):
-        #         selected_ids.append(loc.id)
+        for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
+            volume = loc.volume
+            if volume:
+                available = loc.available_volume
+                filled = volume - available
+                fill_per = (filled / volume) * 100.0
+                if (fill_per <= wzd_obj.capacity):
+                    selected_ids.append(loc.id)
 
         if not selected_ids:
             raise osv.except_osv(_('Error!'),
@@ -93,15 +122,24 @@ class reposition_wizard(osv.TransientModel):
             raise osv.except_osv(_('Error!'), _('No reposition type founded\
                                                  You must define the picking\
                                                  type in the warehouse.'))
-        reposition_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
-        for loc_id in selected_ids:
-            vals = {
-                'state': 'draft',
+        reposition_task_type_id = wzd_obj.warehouse_id.reposition_type_id.id
+        vals = {'state': 'draft',
                 'name': '/',
-                # 'reposition': True,
-                'picking_type_id': reposition_task_type_id,
-            }
-            pick_id = t_pick.create(cr, uid, vals, context=context)
-            self._get_reposition_ops(cr, uid, ids, loc_id, pick_id,
-                                     context=context)
+                'picking_type_id': reposition_task_type_id}
+        pick_id = t_pick.create(cr, uid, vals, context=context)
+        created_moves = []
+        for loc_id in selected_ids:
+            newm = self._get_reposition_operations(cr, uid, ids, loc_id,
+                                                   pick_id, context=context)
+            if newm:
+                created_moves.append(newm)
+        if created_moves:
+            t_pick.action_confirm(cr, uid, [pick_id], context=context)
+            t_pick.action_assign(cr, uid, [pick_id], context=context)
+            t_pick.prepare_package_type_operations(cr, uid, [pick_id],
+                                                   context=context)
+        else:
+            raise osv.except_osv(_('Error!'),
+                                 _('Nothing to do.'))
+
         return

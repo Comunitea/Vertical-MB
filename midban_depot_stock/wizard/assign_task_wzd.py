@@ -234,7 +234,8 @@ class assign_task_wzd(osv.TransientModel):
                     new_qty = obj.warehouse_id.max_boxes_move - pick_qty
                     new_qty = new_qty * boxes_div
                     new_move = move_obj.copy(cr, uid, move.id,
-                                             {'product_uom_qty': new_qty},
+                                             {'product_uom_qty': new_qty,
+                                              'split_from': move.id},
                                              context=context)
                     move.write({'product_uom_qty':
                                 move.product_uom_qty - new_qty})
