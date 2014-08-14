@@ -92,8 +92,9 @@ class stock_picking(osv.osv):
         t_pack = self.pool.get('stock.quant.package')
         op_vals = {
             'location_id': op.location_id.id,
-            'product_id': op.product_id.id,
-            'product_uom_id': op.product_uom_id.id,
+            'product_id': op.operation_product_id.id,
+            'product_uom_id': (op.product_uom_id and op.product_uom_id.id or
+                               op.operation_product_id.uom_id.id),
             'location_dest_id': op.location_dest_id.id,
             'picking_id': op.picking_id.id,
         }
@@ -213,7 +214,7 @@ class stock_picking(osv.osv):
                                                     context=context)
             res.extend(ma_dics)
             if dec_man != 0:  # Ubicate boxes
-                num_box = prod_obj.supplier_ca_ma * num_mant
+                num_box = prod_obj.supplier_ca_ma * mantles
                 if num_box >= 1:  # Get boxes and maybe some units
                     int_box = int(num_box)
                     dec_box = abs(num_box) - abs(int(num_box))
@@ -259,13 +260,15 @@ class stock_picking(osv.osv):
         t_pack_op = self.pool.get('stock.pack.operation')
         self.do_prepare_partial(cr, uid, ids, context=context)
         for pick in self.browse(cr, uid, ids, context=context):
-            for op in pick.pack_operation_ids:
-                vals_ops = self._propose_pack_operations(cr, uid, ids, op,
-                                                         context=context)
-                #  If val_ ops:  #  Indent to get default operations # TODO?
-                t_pack_op.unlink(cr, uid, [op.id], context=context)
-                for vals in vals_ops:  # Create proposed operations
-                    t_pack_op.create(cr, uid, vals, context=context)
+            if pick.picking_type_id.code == 'incoming':
+                for op in pick.pack_operation_ids:
+                    vals_ops = self._propose_pack_operations(cr, uid, ids, op,
+                                                             context=context)
+                    #  If val_ ops:
+                    #  Indent to get default operations # TODO?
+                    t_pack_op.unlink(cr, uid, [op.id], context=context)
+                    for vals in vals_ops:  # Create proposed operations
+                        t_pack_op.create(cr, uid, vals, context=context)
         return True
 
     @api.cr_uid_ids_context
@@ -634,3 +637,20 @@ class stock_quant(osv.Model):
                  string="Volume",
                  digits_compute=dp.get_precision('Product Price')),
     }
+
+
+class product_putaway_strategy(osv.osv):
+    _inherit = 'product.putaway'
+
+    def _get_putaway_options(self, cr, uid, context=None):
+        return [('product_pick_location', 'Product picking location')] + \
+            super(product_putaway_strategy, self).\
+            _get_putaway_options(cr, uid, context=context)
+
+    def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
+        import ipdb; ipdb.set_trace()
+        if putaway_strat.method == 'product_pick_location':
+            return product.picking_location_id.id
+        else:
+            return super(product_putaway_strategy, self).\
+                putaway_apply(cr, uid, putaway_strat, product, context=context)

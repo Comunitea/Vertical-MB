@@ -21,46 +21,6 @@
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 
-
-class product_putaway_strategy(osv.osv):
-    _inherit = 'product.putaway'
-
-    def _get_putaway_options(self, cr, uid, context=None):
-        """
-        Overwrite to define a Midban custom putaway strategy for
-        storage location
-        """
-        if context is None:
-            context = {}
-        sup = super(product_putaway_strategy, self)
-        res = sup._get_putaway_options(cr, uid, context)
-        res.extend([('midban_storage', 'Midban Storage')])
-        return res
-
-    def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
-        """
-        Define the strategy to move product from input location (beach)
-        to a specific storage location.
-        This function is called in _prepare_pack_ops in stock.picking
-        """
-        if context is None:
-            context = {}
-        sup = super(product_putaway_strategy, self)
-        
-        res = sup.putaway_apply(cr, uid, putaway_strat, product,
-                                context=context)
-        # No hay manera de saber el paquete o la cantidad, cagoensuuus
-        # import ipdb; ipdb.set_trace()
-        # if putaway_strat.method == 'midban_storage':
-        #     res = res
-        # return res
-
-    _columns = {
-        'method': fields.selection(_get_putaway_options, "Method",
-                                   required=True),
-    }
-
-
 class product_template(osv.Model):
     """
     Adding field picking location
