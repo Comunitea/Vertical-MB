@@ -33,6 +33,8 @@
         "base",
         "sale_stock",
         "stock",
+        "procurement_jit",
+        "stock_picking_wave"
     ],
     "data": [
         'res_users_view.xml',

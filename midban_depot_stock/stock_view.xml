@@ -88,6 +88,12 @@
                     <field name="reposition_type_id"/>
                     <field name="picking_type_id"/>
                 </field>
+                <field name="reception_steps" position="before">
+                    <group colspan="4">
+                        <field name="min_boxes_move"/>
+                        <field name="max_boxes_move"/>
+                    </group>
+                </field>
             </field>
         </record>
 

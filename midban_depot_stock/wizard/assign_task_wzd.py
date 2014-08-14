@@ -34,6 +34,7 @@ class assign_task_wzd(osv.TransientModel):
                                       required=True),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
+        'temp_id': fields.many2one('temp.type', 'Temperature')
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -119,7 +120,7 @@ class assign_task_wzd(osv.TransientModel):
         # domain = str([('id', '=', task_id)])
         # action['domain'] = domain
         # return action
-        return task_id
+        return task_id  # PRINT
 
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -193,4 +194,92 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         t_task.create(cr, uid, vals, context=context)
-        return
+        return  # PRINT
+
+    def get_picking_task(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        move_obj = self.pool.get('stock.move')
+        pick_obj = self.pool.get('stock.picking')
+        wave_obj = self.pool.get('stock.picking.wave')
+        task_obj = self.pool.get("stock.task")
+        obj = self.browse(cr, uid, ids[0], context=context)
+        if not obj.temp_id:
+            raise osv.except_osv(_('Error!'), _('Temperature is required to \
+                                                 do a picking task'))
+
+        to_pick_moves = move_obj.search(cr, uid, [('picking_type_id', '=',
+                                                  obj.warehouse_id.
+                                                  pick_type_id.id),
+                                                  ('product_id.temp_type', '=',
+                                                   obj.temp_id.id),
+                                                  ('state', '=', 'assigned'),
+                                                  ('picking_id.wave_id',
+                                                   '=', False)],
+                                        context=context)
+        if not to_pick_moves:
+            raise osv.except_osv(_('Error!'), _('Anything pending of \
+                                                 picking'))
+        pick_qty = 0.0
+        pickings_to_wave = []
+        for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
+            new_move = False
+            boxes_div = (move.product_id.supplier_un_ca or 1)
+            if move.picking_id and len(move.picking_id.move_lines) > 1:
+                if pick_qty >= obj.warehouse_id.max_boxes_move:
+                    break
+                elif (move.product_uom_qty / boxes_div) + \
+                        pick_qty > obj.warehouse_id.max_boxes_move:
+                    # split move
+                    new_qty = obj.warehouse_id.max_boxes_move - pick_qty
+                    new_qty = new_qty * boxes_div
+                    new_move = move_obj.copy(cr, uid, move.id,
+                                             {'product_uom_qty': new_qty},
+                                             context=context)
+                    move.write({'product_uom_qty':
+                                move.product_uom_qty - new_qty})
+                    pick_qty = obj.warehouse_id.max_boxes_move
+                else:
+                    pick_qty += move.product_uom_qty / boxes_div
+
+                # split picking
+                new_pick = pick_obj.copy(cr, uid, move.picking_id.id,
+                                         {'move_lines': [],
+                                          'group_id': move.picking_id.
+                                          group_id.id})
+                if new_move:
+                    move_obj.write(cr, uid, [new_move],
+                                   {'picking_id': new_pick}, context=context)
+                else:
+                    move.write({'picking_id': new_pick})
+
+                pickings_to_wave.append(new_pick)
+            elif move.picking_id:
+                pickings_to_wave.append(move.picking_id.id)
+
+        if pickings_to_wave:
+            pickings_to_wave = list(set(pickings_to_wave))
+            pick_obj.write(cr, uid, pickings_to_wave,
+                           {'operator_id': obj.operator_id.id,
+                            'machine_id': obj.machine_id.id,
+                            'warehouse_id': obj.warehouse_id.id,
+                            'task_type': 'picking'},
+                           context=context)
+            pick_obj.prepare_package_type_operations(cr, uid, pickings_to_wave,
+                                                    context=context)
+
+            wave_id = wave_obj.create(cr, uid, {'user_id': obj.operator_id.id,
+                                                'picking_ids':
+                                                [(6, 0, pickings_to_wave)]},
+                                      context=context)
+            wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
+            # Create task and associate to picking wave
+            vals = {
+                'user_id': obj.operator_id.id,
+                'type': 'picking',
+                'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
+                'wave_id': wave_id,
+                'state': 'assigned',
+            }
+            task_obj.create(cr, uid, vals, context=context)
+            return  # PRINT

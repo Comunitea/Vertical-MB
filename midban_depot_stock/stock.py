@@ -38,7 +38,6 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        # 'reposition': fields.boolean('Reposition', readonly=True),
     }
 
     def _get_unit_conversions(self, cr, uid, ids, op_obj, context=None):
@@ -323,7 +322,7 @@ class stock_pack_operation(osv.osv):
         loc_names = sorted(names)
         i = loc_names.index(prod_obj.picking_location_id.name)
         # TODO MEJORAR INTELIGENCIA, COMPARADOR UBICACIONES
-        if i == len(free_loc_ids) - 1:
+        if i == len(free_loc_ids):
             i = i - 1
         return free_loc_ids[i]
 
@@ -499,6 +498,8 @@ class stock_warehouse(osv.osv):
                                               'Reposition Task Type'),
         'picking_type_id': fields.many2one('stock.picking.type',
                                            'Picking Task Type'),
+        'min_boxes_move': fields.integer('Min. boxes to move in picking'),
+        'max_boxes_move': fields.integer('Max. boxes to move in picking')
     }
 
 
@@ -648,7 +649,6 @@ class product_putaway_strategy(osv.osv):
             _get_putaway_options(cr, uid, context=context)
 
     def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
-        import ipdb; ipdb.set_trace()
         if putaway_strat.method == 'product_pick_location':
             return product.picking_location_id.id
         else:

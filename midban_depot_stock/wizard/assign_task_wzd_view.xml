@@ -11,6 +11,7 @@
                         <field name="operator_id"/>
                         <field name="machine_id"/>
                         <field name="warehouse_id"/>
+                        <field name="temp_id"/>
                     </group>
                     <footer>
                         <button name="get_task" string="Get Task" type="object" class="oe_highlight"/>

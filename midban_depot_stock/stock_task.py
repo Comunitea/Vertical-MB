@@ -47,8 +47,8 @@ class stock_task(osv.Model):
                                    ('done', 'Finished')],
                                   'State', readonly=True, required=True),
         'picking_id': fields.many2one('stock.picking', 'Picking',
-                                      readonly=True, required=True)
-        # 'picking_ids'
+                                      readonly=True),
+        'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
     }
     _defaults = {
         'state': 'assigned',
@@ -61,10 +61,16 @@ class stock_task(osv.Model):
         if context is None:
             context = {}
         for task in self.browse(cr, uid, ids, context):
-            pick_obj = task.picking_id
+            if task.picking_id:
+                pick_obj = task.picking_id
 
-            if pick_obj.state not in ['done', 'draft', 'cancel']:
-                pick_obj.approve_pack_operations()
+                if pick_obj.state not in ['done', 'draft', 'cancel']:
+                    pick_obj.approve_pack_operations()
+            else:
+                for picking in task.wave_id.picking_ids:
+                    if picking.state not in ['done', 'draft', 'cancel']:
+                        picking.approve_pack_operations()
+                task.wave_id.done()
             # Write duration
             duration = datetime.now() - \
                 datetime.strptime(task.date_start,
