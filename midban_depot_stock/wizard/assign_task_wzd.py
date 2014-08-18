@@ -55,6 +55,20 @@ class assign_task_wzd(osv.TransientModel):
                                               context=context)
         return True
 
+
+    def _check_on_course(self, cr, uid, ids, context=None):
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        t_task = self.pool.get("stock.task")
+
+        # Check if operator has a task on course
+        domain = [
+            ('user_id', '=', wzd_obj.operator_id.id),
+            ('state', '=', 'assigned')
+        ]
+        on_course_tasks = t_task.search(cr, uid, domain, context=context)
+        if on_course_tasks:
+            raise osv.except_osv(_('Error!'), _('You have a task on course.'))
+
     def get_location_task(self, cr, uid, ids, context=None):
         """
         Search pickings wich picking type equals to location task, and create
@@ -68,13 +82,7 @@ class assign_task_wzd(osv.TransientModel):
         t_task = self.pool.get("stock.task")
 
         # Check if operator has a task on course
-        domain = [
-            ('user_id', '=', wzd_obj.operator_id.id),
-            ('state', '=', 'assigned')
-        ]
-        on_course_tasks = t_task.search(cr, uid, domain, context=context)
-        if on_course_tasks:
-            raise osv.except_osv(_('Error!'), _('You have a task on course.'))
+        self._check_on_course(cr, uid, ids, context=context)
 
         # Get oldest internal pick in assigned state
         if not wzd_obj.warehouse_id.ubication_type_id:
@@ -165,12 +173,16 @@ class assign_task_wzd(osv.TransientModel):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
+
+        # Check if operator has a task on course
+        self._check_on_course(cr, uid, ids, context=context)
+
         # Get oldest internal pick in assigned state
         if not wzd_obj.warehouse_id.reposition_type_id:
             raise osv.except_osv(_('Error!'), _('No reposition type founded\
                                                  You must define the picking\
                                                  type in the warehouse.'))
-        reposition_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
+        reposition_task_type_id = wzd_obj.warehouse_id.reposition_type_id.id
         pick_id = t_pick.search(cr, uid, [('state', '=', 'assigned'),
                                           ('picking_type_id',
                                            '=',
@@ -188,7 +200,7 @@ class assign_task_wzd(osv.TransientModel):
         # Create task and associate picking
         vals = {
             'user_id': wzd_obj.operator_id.id,
-            'type': 'replenishment',
+            'type': 'reposition',
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
             'picking_id': pick.id,
             'state': 'assigned',
@@ -204,6 +216,10 @@ class assign_task_wzd(osv.TransientModel):
         wave_obj = self.pool.get('stock.picking.wave')
         task_obj = self.pool.get("stock.task")
         obj = self.browse(cr, uid, ids[0], context=context)
+
+        # Check if operator has a task on course
+        self._check_on_course(cr, uid, ids, context=context)
+
         if not obj.temp_id:
             raise osv.except_osv(_('Error!'), _('Temperature is required to \
                                                  do a picking task'))
