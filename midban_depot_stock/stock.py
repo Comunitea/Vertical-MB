@@ -660,3 +660,12 @@ class product_putaway_strategy(osv.osv):
         else:
             return super(product_putaway_strategy, self).\
                 putaway_apply(cr, uid, putaway_strat, product, context=context)
+
+
+class procurement_order(osv.osv):
+    _inherit = "procurement.order"
+
+    _columns = {
+        'route_id': fields.many2one('route', 'Route', domain=[('state', '=',
+                                                               'active')]),
+    }

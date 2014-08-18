@@ -34,7 +34,9 @@
         "sale_stock",
         "stock",
         "procurement_jit",
-        "stock_picking_wave"
+        "stock_picking_wave",
+        "sale",
+        "procurement"
     ],
     "data": [
         'res_users_view.xml',
@@ -44,7 +46,14 @@
         'stock_machine_view.xml',
         'wizard/assign_task_wzd_view.xml',
         'wizard/reposition_wizard_view.xml',
+        "security/midban_depot_stock_security.xml",
         'security/ir.model.access.csv',
+        'stock_vehicle_view.xml',
+        'route_view.xml',
+        'partner_view.xml',
+        'sale_view.xml',
+        "wizard/route_assign_wizard_view.xml",
+        "wizard/route_orders_wizard_view.xml"
     ],
     "demo": [],
     "test": [],

@@ -24,3 +24,8 @@ import stock_machine
 import res_users
 import wizard
 import product
+import stock_vehicle
+import route
+import partner
+import sale
+import stock

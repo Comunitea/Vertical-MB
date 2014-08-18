@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_stock_task,access_stock_task,model_stock_task,base.group_user,1,1,1,1
 access_stock_machine,access_stocvehiclek_machine,model_stock_machine,base.group_user,1,1,1,1
+access_route,access_route,model_route,base.group_user,1,1,1,0
+access_route_manager,access_route_manager,model_route,midban_depot_stock.routes_manager,1,1,1,1
+access_stock_vehicle,access_stock_vehicle,model_stock_vehicle,base.group_user,1,1,1,0
+access_stock_vehicle_manager,access_stock_vehicle_manager,model_stock_vehicle,midban_depot_stock.routes_manager,1,1,1,1
