@@ -159,7 +159,7 @@ class assign_task_wzd(osv.TransientModel):
             'picking_id': pick.id,
             'state': 'assigned',
         }
-        task_id = t_task.create(cr, uid, vals, context=context)
+        t_task.create(cr, uid, vals, context=context)
         return self._print_report(cr, uid, ids, picking_id=pick.id,
                                   context=context)
 
@@ -335,3 +335,17 @@ class assign_task_wzd(osv.TransientModel):
             task_obj.create(cr, uid, vals, context=context)
             return self._print_report(cr, uid, ids, wave_id=wave_id,
                                       context=context)
+
+    def get_task(self, cr, uid, ids, context=None):
+        try:
+            return self.get_location_task(cr, uid, ids, context=context)
+        except:
+            pass
+        try:
+            return self.get_reposition_task(cr, uid, ids, context=context)
+        except:
+            pass
+        try:
+            return self.get_picking_task(cr, uid, ids, context=context)
+        except Exception, e:
+            raise e
