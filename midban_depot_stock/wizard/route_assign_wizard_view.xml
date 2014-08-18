@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="rote_assign_wizard_view" model="ir.ui.view">
+            <field name="name">route.assign.wizard.view</field>
+            <field name="model">route.assign.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Route Assign Wizard">
+                    <group>
+                        <field name="start_date" placeholder="Scheduled Date"/>
+                        <field name="end_date" placeholder="Scheduled Date"/>
+                    </group>
+                    <footer>
+                        <button name="assign_route" string="Assign Route" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_route_assign_wizard" model="ir.actions.act_window">
+            <field name="name">Assign Route Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.assign.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_route_assign_wizard" id="route_assign_wizard__menu"  name="Assign Route WIzard" parent="menu_stock_vehicle_route_mgmt" groups="midban_depot_stock.routes_manager"/>
+
+    </data>
+</openerp>
