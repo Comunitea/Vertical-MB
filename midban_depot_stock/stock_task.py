@@ -28,7 +28,7 @@ import time
 
 class stock_task(osv.Model):
     _name = 'stock.task'
-    _description = 'Warehouse task to organaice products and locations'
+    _description = 'Warehouse task to organice products and locations'
     _order = "id desc"
     _columns = {
         'user_id': fields.many2one('res.users', 'User', required=True,

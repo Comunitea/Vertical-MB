@@ -41,6 +41,32 @@ class assign_task_wzd(osv.TransientModel):
         self.pool.get('stock.warehouse').search(cr, uid, [])[0],
     }
 
+    def _print_report(self, cr, uid, ids, picking_id=False, wave_id=False,
+                      context=None):
+        if context is None:
+            context = {}
+        ctx = dict(context)
+        if picking_id:
+            ctx['active_ids'] = [picking_id]
+            ctx['active_model'] = 'stock.picking'
+            return self.pool.get("report").\
+                get_action(cr, uid, [], 'stock.action_report_picking',
+                           context=ctx)
+        elif wave_id:
+            ctx['active_model'] = 'stock.picking'
+            wave = self.pool.get('stock.picking.wave').browse(cr, uid,
+                                                              wave_id,
+                                                              context=ctx)
+            picking_ids = [picking.id for picking in wave.picking_ids]
+            if not picking_ids:
+                raise osv.except_osv(_('Error!'), _('Nothing to print.'))
+            context['active_ids'] = picking_ids
+            return self.pool.get("report").\
+                get_action(cr, uid, [], 'stock.report_picking',
+                           context=context)
+        else:
+            return
+
     def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
         if context is None:
             context = {}
@@ -55,7 +81,6 @@ class assign_task_wzd(osv.TransientModel):
                                               context=context)
         return True
 
-
     def _check_on_course(self, cr, uid, ids, context=None):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_task = self.pool.get("stock.task")
@@ -66,8 +91,25 @@ class assign_task_wzd(osv.TransientModel):
             ('state', '=', 'assigned')
         ]
         on_course_tasks = t_task.search(cr, uid, domain, context=context)
-        if on_course_tasks:
+        if on_course_tasks and not context.get('no_raise', False):
             raise osv.except_osv(_('Error!'), _('You have a task on course.'))
+        return on_course_tasks
+
+    def reprint_task(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        ctx = dict(context)
+        ctx['no_raise'] = True
+        on_course_task = self._check_on_course(cr, uid, ids, context=ctx)
+        task = self.pool.get("stock.task").browse(cr, uid, on_course_task[0],
+                                                  context=context)
+        if task.wave_id:
+            return self._print_report(cr, uid, ids, wave_id=task.wave_id.id,
+                                      context=context)
+        else:
+            return self._print_report(cr, uid, ids,
+                                      picking_id=task.picking_id.id,
+                                      context=context)
 
     def get_location_task(self, cr, uid, ids, context=None):
         """
@@ -118,17 +160,8 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         task_id = t_task.create(cr, uid, vals, context=context)
-
-        # data_obj = self.pool.get('ir.model.data')
-        # res = data_obj.get_object_reference(cr, uid, 'midban_depot_stock',
-        #                                     'action_stock_task')
-        # action = self.pool.get(res[0]).read(cr, uid, res[1],
-        #                                     context=context)
-
-        # domain = str([('id', '=', task_id)])
-        # action['domain'] = domain
-        # return action
-        return task_id  # PRINT
+        return self._print_report(cr, uid, ids, picking_id=pick.id,
+                                  context=context)
 
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -206,7 +239,8 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         t_task.create(cr, uid, vals, context=context)
-        return  # PRINT
+        return self._print_report(cr, uid, ids, picking_id=pick.id,
+                                  context=context)
 
     def get_picking_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -283,7 +317,7 @@ class assign_task_wzd(osv.TransientModel):
                             'task_type': 'picking'},
                            context=context)
             pick_obj.prepare_package_type_operations(cr, uid, pickings_to_wave,
-                                                    context=context)
+                                                     context=context)
 
             wave_id = wave_obj.create(cr, uid, {'user_id': obj.operator_id.id,
                                                 'picking_ids':
@@ -299,4 +333,5 @@ class assign_task_wzd(osv.TransientModel):
                 'state': 'assigned',
             }
             task_obj.create(cr, uid, vals, context=context)
-            return  # PRINT
+            return self._print_report(cr, uid, ids, wave_id=wave_id,
+                                      context=context)
