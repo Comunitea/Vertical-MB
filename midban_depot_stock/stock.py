@@ -608,21 +608,27 @@ class stock_quant(osv.Model):
         for quant in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if quant.package_id and quant.package_id.pack_type:
-                if quant.package_id.pack_type == "palet":
+                if quant.package_id.pack_type == "palet" and quant.qty == \
+                    quant.product_id.supplier_ma_pa * \
+                    quant.product_id.supplier_ca_ma * \
+                        quant.product_id.supplier_un_ca:
                     volume = quant.product_id.supplier_pa_width * \
                         (quant.product_id.supplier_pa_height +
                          quant.product_id.palet_wood_height) * \
                         quant.product_id.supplier_pa_length
-                elif quant.package_id.pack_type == "mantle":
+                elif quant.package_id.pack_type == "mantle" and quant.qty == \
+                    quant.product_id.supplier_ca_ma * \
+                        quant.product_id.supplier_un_ca:
                     volume = quant.product_id.supplier_ma_width * \
                         (quant.product_id.supplier_ma_height +
                          quant.product_id.mantle_wood_height) * \
                         quant.product_id.supplier_ma_length
-                elif quant.package_id.pack_type == "box":
+                elif quant.package_id.pack_type == "box" and quant.qty == \
+                        quant.product_id.supplier_un_ca:
                     volume = quant.product_id.supplier_ca_width * \
                         quant.product_id.supplier_ca_height * \
                         quant.product_id.supplier_ca_length
-            else:
+            if not volume:
                 volume = quant.product_id.supplier_un_width * \
                     quant.product_id.supplier_un_height * \
                     quant.product_id.supplier_un_length * \

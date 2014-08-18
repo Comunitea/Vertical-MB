@@ -52,9 +52,11 @@ class reposition_wizard(osv.TransientModel):
         pick_type = obj.warehouse_id.reposition_type_id
         move_obj = self.pool.get('stock.move')
         prod_obj = self.pool.get('product.product')
+        loc_obj = self.pool.get('stock.location')
         prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
                                               dest_id)], context=context,
                                    limit=1)
+        loc = loc_obj.browse(cr, uid, dest_id, context=context)
         if prod_ids:
             context['compute_child'] = True
             context['location'] = obj.warehouse_id.storage_loc_id.id
@@ -62,7 +64,12 @@ class reposition_wizard(osv.TransientModel):
             unit_volume = product.supplier_un_width * \
                 product.supplier_un_height * product.supplier_un_length
 
-            requested_units = obj.capacity / unit_volume
+            requested_units = round(((obj.capacity / 100.0) * loc.volume) /
+                                    unit_volume, 2)
+            context['location'] = dest_id
+            context['compute_child'] = False
+            prod_loc = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
+            requested_units -= prod_loc.qty_available
             if product.virtual_available >= requested_units:
                 newm = move_obj.create(cr, uid,
                                        {'product_id': product.id,
@@ -74,7 +81,8 @@ class reposition_wizard(osv.TransientModel):
                                         'product_uom': product.uom_id.id,
                                         'picking_id': pick_id,
                                         'picking_type_id': pick_type.id,
-                                        'warehouse_id': obj.warehouse_id.id},
+                                        'warehouse_id': obj.warehouse_id.id,
+                                        'name': _("Reposition")},
                                        context=context)
 
         return newm
