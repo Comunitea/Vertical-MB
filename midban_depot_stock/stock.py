@@ -497,8 +497,6 @@ class stock_warehouse(osv.osv):
                                              'Ubication Task Type'),
         'reposition_type_id': fields.many2one('stock.picking.type',
                                               'Reposition Task Type'),
-        'picking_type_id': fields.many2one('stock.picking.type',
-                                           'Picking Task Type'),
         'min_boxes_move': fields.integer('Min. boxes to move in picking'),
         'max_boxes_move': fields.integer('Max. boxes to move in picking')
     }
@@ -651,9 +649,15 @@ class product_putaway_strategy(osv.osv):
     _inherit = 'product.putaway'
 
     def _get_putaway_options(self, cr, uid, context=None):
-        return [('product_pick_location', 'Product picking location')] + \
-            super(product_putaway_strategy, self).\
-            _get_putaway_options(cr, uid, context=context)
+        res = super(product_putaway_strategy, self).\
+                _get_putaway_options(cr, uid, context=context)
+        res.extend([('product_pick_location', 'Product picking location')])
+        return res
+
+    columns = {
+        'method': fields.selection(_get_putaway_options, "Method",
+                                   required=True),
+    }
 
     def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
         if putaway_strat.method == 'product_pick_location':

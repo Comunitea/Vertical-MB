@@ -86,7 +86,6 @@
                 <field name="out_type_id" position="after">
                     <field name="ubication_type_id"/>
                     <field name="reposition_type_id"/>
-                    <field name="picking_type_id"/>
                 </field>
                 <field name="reception_steps" position="before">
                     <group colspan="4">
