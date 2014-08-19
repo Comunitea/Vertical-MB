@@ -709,3 +709,40 @@ class stock_move(osv.osv):
                                        {'route_id': procurement.route_id.id},
                                        context=context)
         return res
+
+
+class stock_inventory(osv.osv):
+
+    _inherit = "stock.inventory"
+
+    def _get_available_filters(self, cr, uid, context=None):
+        res = super(stock_inventory, self).\
+            _get_available_filters(cr, uid, context=context)
+        res.append(('category', _('Product Category')))
+        return res
+
+    _columns = {
+        'category_ids': fields.many2many('product.category',
+                                         'product_category_inventory_rel',
+                                         'inventory_id', 'categ_id',
+                                         string="Categories"),
+        'filter': fields.selection(_get_available_filters, 'Selection Filter',
+                                   required=True),
+    }
+
+    def _get_inventory_lines(self, cr, uid, inventory, context=None):
+        vals = super(stock_inventory, self).\
+            _get_inventory_lines(cr, uid, inventory, context=context)
+        new_vals = []
+        if inventory.category_ids:
+            categories = [x.id for x in inventory.category_ids]
+            prod_obj = self.pool.get('product.product')
+            for pline in vals:
+                prod = prod_obj.browse(cr, uid, pline['product_id'],
+                                       context=context)
+                if prod.categ_id.id in categories:
+                    new_vals.append(pline)
+        else:
+            new_vals = vals
+
+        return new_vals
