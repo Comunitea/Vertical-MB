@@ -47,7 +47,8 @@ class route_assign_wizard(osv.TransientModel):
             ('state', 'not in', ['done', 'cancel']),
             ('min_date', '>=', wzd_obj.start_date),
             ('min_date', '<=', wzd_obj.end_date),
-            ('picking_type_id.code', '=', 'outgoing'),
+            ('picking_type_id.code', 'in', ['outgoing', 'internal']),
+            ('partner_id', '!=', False)
         ]
         model_ids = pick_t.search(cr, uid, domain, context=context)
         for pick in pick_t.browse(cr, uid, model_ids, context):

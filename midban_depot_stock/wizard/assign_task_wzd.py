@@ -135,7 +135,9 @@ class assign_task_wzd(osv.TransientModel):
         pick_id = t_pick.search(cr, uid, [('state', '=', 'assigned'),
                                           ('picking_type_id',
                                            '=',
-                                           location_task_type_id)],
+                                           location_task_type_id),
+                                          ('picking_id.operator_id', '=',
+                                           False)],
                                 limit=1, order="id asc",
                                 context=context)
         if not pick_id:
@@ -219,7 +221,9 @@ class assign_task_wzd(osv.TransientModel):
         pick_id = t_pick.search(cr, uid, [('state', '=', 'assigned'),
                                           ('picking_type_id',
                                            '=',
-                                           reposition_task_type_id)],
+                                           reposition_task_type_id),
+                                          ('picking_id.operator_id', '=',
+                                           False)],
                                 limit=1, order="id asc", context=context)
         if not pick_id:
             raise osv.except_osv(_('Error!'), _('No internal reposition \
@@ -264,15 +268,22 @@ class assign_task_wzd(osv.TransientModel):
                                                   ('product_id.temp_type', '=',
                                                    obj.temp_id.id),
                                                   ('state', '=', 'assigned'),
-                                                  ('picking_id.wave_id',
-                                                   '=', False)],
+                                                  ('picking_id.operator_id',
+                                                   '=', False),
+                                                  ('procurement_id.route_id',
+                                                   '!=', False)],
                                         context=context)
         if not to_pick_moves:
             raise osv.except_osv(_('Error!'), _('Anything pending of \
                                                  picking'))
         pick_qty = 0.0
         pickings_to_wave = []
+        selected_route = False
         for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
+            if not selected_route:
+                selected_route = move.route_id.id
+            if move.route_id.id != selected_route:
+                continue
             new_move = False
             boxes_div = (move.product_id.supplier_un_ca or 1)
             if move.picking_id and len(move.picking_id.move_lines) > 1:

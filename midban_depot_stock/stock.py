@@ -669,3 +669,19 @@ class procurement_order(osv.osv):
         'route_id': fields.many2one('route', 'Route', domain=[('state', '=',
                                                                'active')]),
     }
+
+
+class stock_move(osv.osv):
+    _inherit = "stock.move"
+
+    _columns = {
+        'route_id': fields.related('procurement_id', 'route_id', readonly=True,
+                                   string='Route', relation="route",
+                                   type="many2one"),
+    }
+
+    def _prepare_procurement_from_move(self, cr, uid, move, context=None):
+        res = super(stock_move, self).\
+            _prepare_procurement_from_move(cr, uid, move, context=context)
+        res['route_id'] = move.route_id.id
+        return res

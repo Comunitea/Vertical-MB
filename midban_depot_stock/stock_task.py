@@ -89,6 +89,20 @@ class stock_task(osv.Model):
         """
         if context is None:
             context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        for task in self.browse(cr, uid, ids, context=context):
+            if task.picking_id:
+                task.picking_id.write({'operator_id': False,
+                                       'machine_id': False})
+            elif task.wave_id:
+                for picking in task.wave_id.picking_ids:
+                    picking.write({'operator_id': False,
+                                   'machine_id': False,
+                                   'wave_id': False})
+                task.wave_id.refresh()
+                task.wave_id.cancel_picking()
+
         return self.write(cr, uid, ids, {'state': 'canceled'}, context=context)
 
     def assign_task(self, cr, uid, ids, context=None):
