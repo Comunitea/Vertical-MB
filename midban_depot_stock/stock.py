@@ -38,6 +38,7 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
+        'route_id': fields.many2one('route', 'Route', readonly=True),
     }
 
     def _get_unit_conversions(self, cr, uid, ids, op_obj, context=None):
@@ -684,4 +685,27 @@ class stock_move(osv.osv):
         res = super(stock_move, self).\
             _prepare_procurement_from_move(cr, uid, move, context=context)
         res['route_id'] = move.route_id.id
+        return res
+
+    def write(self, cr, uid, ids, vals, context=None):
+        res = super(stock_move, self).write(cr, uid, ids, vals,
+                                            context=context)
+
+        if vals.get('picking_id', False):
+            pick_obj = self.pool.get('stock.picking')
+            proc_obj = self.pool.get('procurement.order')
+            for move in self.browse(cr, uid, ids, context=context):
+                procurement = False
+                if vals.get('procurement_id', False):
+                    procurement = vals['procurement_id']
+                else:
+                    procurement = move.procurement_id.id
+
+                if procurement:
+                    procurement = proc_obj.browse(cr, uid, procurement,
+                                                  context=context)
+                    if procurement.route_id:
+                        pick_obj.write(cr, uid, vals['picking_id'],
+                                       {'route_id': procurement.route_id.id},
+                                       context=context)
         return res

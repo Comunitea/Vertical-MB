@@ -50,6 +50,7 @@ class route_order_wizard(osv.TransientModel):
         active_ids = context.get('active_ids', [])
         procurement_obj = self.pool.get('procurement.order')
         move_obj = self.pool.get('stock.move')
+        pick_obj = self.pool.get('stock.picking')
         obj = self.browse(cr, uid, ids[0], context=context)
         for order in order_obj.browse(cr, uid, active_ids, context):
             if context['active_model'] == "sale.order":
@@ -64,6 +65,9 @@ class route_order_wizard(osv.TransientModel):
                 move_ids = move_obj.search(cr, uid, [('picking_id', 'in',
                                                       context['active_ids'])],
                                            context=context)
+                pick_obj.write(cr, uid, context['active_ids'],
+                               {'route_id': obj.route_id.id},
+                               context=context)
                 for move in move_obj.browse(cr, uid, move_ids,
                                             context=context):
                     move.procurement_id.write({'route_id': obj.route_id.id})

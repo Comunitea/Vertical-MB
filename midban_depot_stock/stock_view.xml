@@ -55,6 +55,7 @@
                     <field name="machine_id"/>
                     <field name="warehouse_id"/>
                     <field name="task_type"/>
+                    <field name="route_id"/>
                 </field>
             </field>
         </record>
@@ -130,6 +131,17 @@
                 <field name="string_availability_info" position="after">
                     <field name="route_id"/>
                 </field>
+            </field>
+        </record>
+
+        <record id="view_picking_internal_search_add_route" model="ir.ui.view">
+            <field name="name">stock.picking.internal.search.add_route</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <filter string="Procurement Group" position="after">
+                    <filter string="Route" domain="[]" context="{'group_by':'route_id'}"/>
+                </filter>
             </field>
         </record>
 
