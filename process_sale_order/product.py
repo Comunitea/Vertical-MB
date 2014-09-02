@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier CFolmenero Fernández$ <javier@pexego.es>
+#    $Javier Colmenero Fernández$ <javier@pexego.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,4 +18,22 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import product
+from openerp.osv import osv, fields
+
+
+class product_template(osv.Model):
+    """
+    Adding field minimum unit of sale.
+    """
+    _inherit = "product.template"
+    _columns = {
+        'min_unit': fields.selection([('box', 'Only Boxes'),
+                                      ('unit', 'Only Unit'),
+                                      ('both', 'Both, unit/boxe')],
+                                     'Minimum Sale Unit',
+                                     required=True),
+    }
+
+    _defaults = {
+        'min_unit': 'both',
+    }

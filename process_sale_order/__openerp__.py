@@ -37,7 +37,7 @@
     "depends": ["base",
                 "product",
                 "sale"],
-    "data": [],
+    "data": ['product_view.xml'],
     "demo": [],
     "test": [],
     "installable": True,
