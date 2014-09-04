@@ -23,7 +23,10 @@ from openerp import models, fields
 
 class product_template(models.Model):
     """
-    Adding field minimum unit of sale.
+    Adding field minimum unit of sale, and box prices, this fields are Only
+    shown in product.product view (Product variants) in order to avoid conflict
+    betwen onchanges because of fields list_price of product.template and
+    lst_price of product.producr models.
     """
     _inherit = "product.template"
 
@@ -63,40 +66,50 @@ class product_template(models.Model):
     #         self.price_box_unit = unit_price
     #         self.box_price = self.price_box_unit * self.un_ca
 
-    def onchange_box_prices_fields(self, cr, uid, ids, list_price,
-                                   price_box_unit, box_price, box_discount,
-                                   flag, integer):
-        res = {}
-        prod = self.browse(cr, uid, ids[0])
-        if integer in [0, 3]:
-            if flag == "price_box_unit":
-                diff = list_price - price_box_unit
-                res['value'] = {
-                    'box_price': price_box_unit * prod.un_ca,
-                    'box_discount': (diff / list_price) * 100.0
-                }
+    # def onchange_box_prices_fields(self, cr, uid, ids, list_price,
+    #                                price_box_unit, box_price, box_discount,
+    #                                flag, integer):
+        #  """
+        # Integer is used like workarround to avoid change fields more than one
+        # time. a change in one field triggers two more calls, we need to avoid
+        # the changes the second and third time.
+        # Due to odoo takes the previous change in a field if the last value
+        # is the same to the begining we need to use a integer to count like
+        # this:
+        # first with integer=0 ---> 1,2,3(first group  3 calls)  then
+        # integer=3 --->4,5,0 (second group of 3 calls), etc...
+        # """
+    #     res = {}
+    #     prod = self.browse(cr, uid, ids[0])
+    #     if integer in [0, 3]:
+    #         if flag == "price_box_unit":
+    #             diff = list_price - price_box_unit
+    #             res['value'] = {
+    #                 'box_price': price_box_unit * prod.un_ca,
+    #                 'box_discount': (diff / list_price) * 100.0
+    #             }
 
-            elif flag == "box_price":
-                unit_price = prod.un_ca and box_price / prod.un_ca or 0.0
-                diff = list_price - unit_price
-                res['value'] = {
-                    'price_box_unit': unit_price,
-                    'box_discount': (diff / list_price) * 100.0
-                }
-            elif flag == "box_discount":
-                unit_price = list_price * (1 - box_discount / 100.0)
-                res['value'] = {
-                    'price_box_unit': unit_price,
-                    'box_price': unit_price * prod.un_ca
-                }
-            res['value']['integer'] = (integer == 0) and 1 or 4
+    #         elif flag == "box_price":
+    #             unit_price = prod.un_ca and box_price / prod.un_ca or 0.0
+    #             diff = list_price - unit_price
+    #             res['value'] = {
+    #                 'price_box_unit': unit_price,
+    #                 'box_discount': (diff / list_price) * 100.0
+    #             }
+    #         elif flag == "box_discount":
+    #             unit_price = list_price * (1 - box_discount / 100.0)
+    #             res['value'] = {
+    #                 'price_box_unit': unit_price,
+    #                 'box_price': unit_price * prod.un_ca
+    #             }
+    #         res['value']['integer'] = (integer == 0) and 1 or 4
 
-        elif integer in [1, 4]:
-            res = {'value': {'integer': (integer == 1) and 2 or 5}}
+    #     elif integer in [1, 4]:
+    #         res = {'value': {'integer': (integer == 1) and 2 or 5}}
 
-        elif integer in [2, 5]:
-            res = {'value': {'integer': (integer == 2) and 3 or 0}}
-        return res
+    #     elif integer in [2, 5]:
+    #         res = {'value': {'integer': (integer == 2) and 3 or 0}}
+    #     return res
 
 
 class product_product(models.Model):
@@ -108,6 +121,16 @@ class product_product(models.Model):
     def onchange_box_prices_fields2(self, cr, uid, ids, lst_price,
                                     price_box_unit, box_price, box_discount,
                                     flag, integer):
+        """
+        Integer is used like workarround to avoid change fields more than one
+        time. a change in one field triggers two more calls, we need to avoid
+        the changes the second and third time.
+        Due to odoo takes the previous change in a field if the last value
+        is the same to the begining we need to use a integer to count like
+        this:
+        first with integer=0 ---> 1,2,3(first group 3 calls) then
+        integer=3 --->4,5,0 (second group of 3 calls), etc...
+        """
         # import ipdb; ipdb.set_trace()
         res = {}
         prod = self.browse(cr, uid, ids[0])
@@ -142,29 +165,3 @@ class product_product(models.Model):
         elif integer in [2, 5]:
             res = {'value': {'integer': (integer == 2) and 3 or 0}}
         return res
-
-    # # @api.onchange('lst_price')
-    # def onchange_lst_price(self, cr, uid, ids, lst_price, box_discount,
-    #                        price_box_unit, box_price):
-    #     import ipdb; ipdb.set_trace()
-    #     # if self.lst_price:
-    #     #     unit_price = self.lst_price * (1 - self.box_discount / 100.0)
-    #     #     self.price_box_unit = unit_price
-    #     #     self.box_price = self.price_box_unit * self.un_ca
-
-    #     res = {'value': {'price_box_unit': 0.0,
-    #                      'box_price': 0.0}}
-    #     integer = 0
-    #     prod = self.browse(cr, uid, ids[0])
-    #     if box_discount:
-    #         unit_price = lst_price * (1 - box_discount / 100.0)
-    #         res['value']['price_box_unit'] = unit_price
-    #         res['value']['box_price'] = unit_price * prod.un_ca
-
-    #         if res['value']['price_box_unit'] != price_box_unit:
-    #             integer = integer - 1
-    #         if res['value']['box_price'] != box_price:
-    #             integer = integer - 1
-    #         if integer < 0:
-    #             res['value']['integer'] = integer
-    #     return res
