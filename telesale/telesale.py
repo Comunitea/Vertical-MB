@@ -273,6 +273,11 @@ class product_uom(osv.Model):
         'like_type': '',
     }
 
+    # _sql_constraints = [
+    #     ('like_type_uniq', 'unique(like_type)',
+    #      _("Field Equals to is already setted"))
+    # ]
+
 
 class res_company(osv.Model):
     _inherit = 'res.company'

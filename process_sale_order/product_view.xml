@@ -7,15 +7,15 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view" />
             <field name="arch" type="xml">
-                <field name="uos_id" position="before">
+                <field name="uos_id" position="after">
                     <field name="min_unit"/>
                 </field>
-                <!-- <field name="list_price" position="after">
+                <field name="list_price" position="after">
                     <field name="integer"/>
                     <field name="price_box_unit" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'price_box_unit',integer)"/>
                     <field name="box_price" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_price',integer)"/>
                     <field name="box_discount" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_discount',integer)"/>
-                </field> -->
+                </field>
             </field>
         </record>
 <!-- 

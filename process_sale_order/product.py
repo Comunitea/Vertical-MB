@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields
+from openerp import models, fields, api, _
 
 
 class product_template(models.Model):
@@ -41,75 +41,97 @@ class product_template(models.Model):
     box_discount = fields.Float('Box Discount')
     integer = fields.Integer('Integer', readonly=True)
 
-# @api.onchange('price_box_unit')
-    # def change_box_price_and_discount(self):
-    #     import ipdb; ipdb.set_trace()
-    #     if self.list_price:
-    #         self.box_price = self.price_box_unit * self.un_ca
-    #         diff = self.list_price - self.price_box_unit
-    #         self.box_discount = (diff / self.list_price) * 100.0
+    def onchange_box_prices_fields(self, cr, uid, ids, lst_price,
+                                   price_box_unit, box_price, box_discount,
+                                   flag, integer):
+        """
+        Integer is used like workarround to avoid change fields more than one
+        time. a change in one field triggers two more calls, we need to avoid
+        the changes the second and third time.
+        Due to odoo takes the previous change in a field if the last value
+        is the same to the begining we need to use a integer to count like
+        this:
+        first with integer=0 ---> 1,2,3(first group 3 calls) then
+        integer=3 --->4,5,0 (second group of 3 calls), etc...
+        """
+        # import ipdb; ipdb.set_trace()
+        res = {}
+        prod = self.browse(cr, uid, ids[0])
+        if integer < 0:
+            res = {'value': {'integer': integer + 1}}
+        elif integer in [0, 3]:
+            if flag == "price_box_unit":
+                diff = lst_price - price_box_unit
+                res['value'] = {
+                    'box_price': price_box_unit * prod.un_ca,
+                    'box_discount': (diff / lst_price) * 100.0
+                }
 
-    # @api.onchange('box_price')
-    # def change_price_box_unit_and_discount(self):
-    #     import ipdb; ipdb.set_trace()
-    #     if self.list_price:
-    #         self.price_box_unit = self.un_ca and \
-    #             self.price_box_unit / self.un_ca or 0.0
-    #         diff = self.list_price - self.price_box_unit
-    #         self.box_discount = (diff / self.list_price) * 100.0
+            elif flag == "box_price":
+                unit_price = prod.un_ca and box_price / prod.un_ca or 0.0
+                diff = lst_price - unit_price
+                res['value'] = {
+                    'price_box_unit': unit_price,
+                    'box_discount': (diff / lst_price) * 100.0
+                }
+            elif flag in ["box_discount", "lst_price"]:
+                unit_price = lst_price * (1 - box_discount / 100.0)
+                res['value'] = {
+                    'price_box_unit': unit_price,
+                    'box_price': unit_price * prod.un_ca
+                }
+            res['value']['integer'] = (integer == 0) and 1 or 4
 
-    # @api.onchange('box_discount')
-    # def change_unit_and_box_price(self):
-    #     import ipdb; ipdb.set_trace()
-    #     if self.list_price
-    #         unit_price = self.list_price * (1 - self.box_discount / 100.0)
-    #         self.price_box_unit = unit_price
-    #         self.box_price = self.price_box_unit * self.un_ca
+        elif integer in [1, 4]:
+            res = {'value': {'integer': (integer == 1) and 2 or 5}}
 
-    # def onchange_box_prices_fields(self, cr, uid, ids, list_price,
-    #                                price_box_unit, box_price, box_discount,
-    #                                flag, integer):
-        #  """
-        # Integer is used like workarround to avoid change fields more than one
-        # time. a change in one field triggers two more calls, we need to avoid
-        # the changes the second and third time.
-        # Due to odoo takes the previous change in a field if the last value
-        # is the same to the begining we need to use a integer to count like
-        # this:
-        # first with integer=0 ---> 1,2,3(first group  3 calls)  then
-        # integer=3 --->4,5,0 (second group of 3 calls), etc...
-        # """
-    #     res = {}
-    #     prod = self.browse(cr, uid, ids[0])
-    #     if integer in [0, 3]:
-    #         if flag == "price_box_unit":
-    #             diff = list_price - price_box_unit
-    #             res['value'] = {
-    #                 'box_price': price_box_unit * prod.un_ca,
-    #                 'box_discount': (diff / list_price) * 100.0
-    #             }
+        elif integer in [2, 5]:
+            res = {'value': {'integer': (integer == 2) and 3 or 0}}
+        return res
 
-    #         elif flag == "box_price":
-    #             unit_price = prod.un_ca and box_price / prod.un_ca or 0.0
-    #             diff = list_price - unit_price
-    #             res['value'] = {
-    #                 'price_box_unit': unit_price,
-    #                 'box_discount': (diff / list_price) * 100.0
-    #             }
-    #         elif flag == "box_discount":
-    #             unit_price = list_price * (1 - box_discount / 100.0)
-    #             res['value'] = {
-    #                 'price_box_unit': unit_price,
-    #                 'box_price': unit_price * prod.un_ca
-    #             }
-    #         res['value']['integer'] = (integer == 0) and 1 or 4
+    @api.onchange('min_unit')
+    def onchange_min_unit(self):
+        box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
+        un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+        res = {}
+        if self.min_unit == 'box':
+            if not len(box_uom):
+                res['warning'] = {'title': _('Warning'),
+                                  'message': _('Box unit does not exist.\
+                You must configured one unit like boxes')}
+            else:
+                self.uos_id = box_uom.id
 
-    #     elif integer in [1, 4]:
-    #         res = {'value': {'integer': (integer == 1) and 2 or 5}}
+        else:  # Units or both
+            if not len(un_uom):
+                res['warning'] = {'title': _('Warning'),
+                                  'message': _('Box unit does not exist.\
+                You must configured one unit like units')}
+            else:
+                self.uos_id = un_uom.id
+        return res
 
-    #     elif integer in [2, 5]:
-    #         res = {'value': {'integer': (integer == 2) and 3 or 0}}
-    #     return res
+    @api.onchange('uos_id')
+    def onchange_uos_id(self):
+        res = {}
+        box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
+        un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+        like_type = self.uos_id.like_type
+        if like_type not in ['units', 'boxes']:
+            res['warning'] = {'title': _('Error'),
+                              'message': _('Only units or boxes allowed.')}
+            self.uos_id = un_uom.id
+        else:
+            if like_type == 'units' and self.min_unit == 'box':
+                res['warning'] = {'title': _('Error'),
+                                  'message': _('Only boxes allowed.')}
+                self.uos_id = box_uom.id
+            if like_type == 'boxes' and self.min_unit == 'unit':
+                res['warning'] = {'title': _('Error'),
+                                  'message': _('Only units allowed.')}
+                self.uos_id = un_uom.id
+
+        return res
 
 
 class product_product(models.Model):
