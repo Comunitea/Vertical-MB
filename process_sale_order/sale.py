@@ -38,7 +38,7 @@ class sale_order_line(models.Model):
         # import ipdb
         # ipdb.set_trace()
         res = sup.product_id_change(cr, uid, ids, pricelist, product,
-                                    qty=0, uom=uom, qty_uos=qty_uos, uos=uos,
+                                    qty=qty, uom=uom, qty_uos=qty_uos, uos=uos,
                                     name=name, partner_id=partner_id,
                                     lang=lang, update_tax=update_tax,
                                     date_order=date_order,
