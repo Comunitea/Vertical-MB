@@ -19,9 +19,13 @@
 #
 ##############################################################################
 from openerp import models, fields, api
+# from openerp import api
+# from openerp.osv import fields, osv
+import openerp.addons.decimal_precision as dp
 
 
 class sale_order_line(models.Model):
+# class sale_order_line(osv.Model):
     """
     We must only do sale orders in units or boxes. Same products are only
     in units or only boxes, or maybe we can sale it in boxes and units.
@@ -30,10 +34,18 @@ class sale_order_line(models.Model):
     """
     _inherit = "sale.order.line"
 
-    do_onchange = fields.Integer('Do onchange')
+    do_onchange = fields.Integer('Do onchange', readonly=True, default=0)
+    min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
+                                readonly=True)
+    product_uom_qty = fields.Float('Quantity',
+                                   digits_compute=
+                                   dp.get_precision('Product UoS'),
+                                   required=True)
+    choose_unit = fields.Selection([('unit', 'Unit'),
+                                    ('box', 'Box')], 'Selected Unit')
 
     @api.onchange('product_uos_qty')
-    def product_uos_qty_ochange(self):
+    def product_uos_qty_onchange(self):
         """
         We change the uos of product
         """
@@ -49,6 +61,17 @@ class sale_order_line(models.Model):
             else:
                 self.do_onchange = 2
         return
+
+    @api.onchange('choose_unit')
+    def product_choose_unit_onchange(self):
+        """
+        We change the uos of product
+        """
+        # import ipdb; ipdb.set_trace()
+        if self.choose_unit == 'box':
+            self.price_unit = self.product_id.box_price
+        else:
+            self.price_unit = self.product_id.lst_price  # TODO el de la tarifa
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
@@ -77,5 +100,11 @@ class sale_order_line(models.Model):
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
                                         flag=flag, context=None)
+            prod = self.pool.get("product.product").browse(cr, uid, product)
+            min_unit = prod.min_unit
+            if min_unit == 'box':
+                res['value']['price_unit'] = prod.box_price
+            # elif min_unit == 'both':
+            #     res['value']['choose_unit'] = 'unit'
             res['value']['do_onchange'] = do_onchange in [2, 4] and 3 or 1
         return res

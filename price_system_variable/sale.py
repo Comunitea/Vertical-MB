@@ -176,7 +176,7 @@ class sale_order_line(osv.osv):
             if product.product_class in ['dry', 'frozen', 'chilled']:
                 min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
                                                          pricelist_id)[1]
-                if price_unit < min_price:
+                if min_price != 0 and price_unit < min_price:
                     # msg = "Product {} has a price unit ({}) less than his \
                     #      minimum price ({}) for current purchase pricelist" \
                     #         .format(product.name, price_unit, min_price)
