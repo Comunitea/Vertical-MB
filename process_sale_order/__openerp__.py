@@ -38,7 +38,10 @@
                 "product",
                 "sale",
                 "telesale"],
-    "data": ['product_view.xml'],
+    "data": [
+        'product_view.xml',
+        'sale_view.xml',
+    ],
     "demo": [],
     "test": [],
     "installable": True,
