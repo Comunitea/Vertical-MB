@@ -63,34 +63,40 @@ class sale_order_line(models.Model):
         #         self.do_onchange = 2
         return
 
-    @api.onchange('choose_unit')
-    def product_choose_unit_onchange(self):
-        """
-        We change the uos of product
-        """
-        # import ipdb; ipdb.set_trace()
-        if self.choose_unit == 'box':
-            self.price_unit = self.product_id.box_price
-        else:
-            self.price_unit = self.product_id.lst_price
+    # @api.onchange('choose_unit')
+    # def product_choose_unit_onchange(self):
+    #     """
+    #     We change the uos of product
+    #     """
+    #     # import ipdb; ipdb.set_trace()
+    #     if self.choose_unit == 'box':
+    #         self.price_unit = self.product_id.box_price
+    #     else:
+    #         self.price_unit = self.product_id.lst_price
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
                           partner_id=False, lang=False, update_tax=True,
                           date_order=False, packaging=False,
                           fiscal_position=False, flag=False,
-                          do_onchange=4, context=None):
+                          do_onchange=4, choose_unit='unit', context=None):
         """
         do_onchange controlls the calls to this function
         """
         res = {'value': {'do_onchange': 0}}
-        # import ipdb; ipdb.set_trace()
+        if context is None:
+            context = {}
         if do_onchange < 0:
             if do_onchange in [-1, -2]:
                 res['value']['do_onchange'] = do_onchange == -1 and -3 or -4
             elif do_onchange in [-3, -4]:
                 res['value']['do_onchange'] = do_onchange == -3 and 2 or 0
         else:
+            prod = self.pool.get("product.product").browse(cr, uid, product)
+            min_unit = prod.min_unit
+            if min_unit == 'box' or \
+                    (min_unit == 'both' and choose_unit == 'box'):
+                context = {'sale_in_boxes': True}
             sup = super(sale_order_line, self)
             res = sup.product_id_change(cr, uid, ids, pricelist, product,
                                         qty=qty, uom=uom, qty_uos=qty_uos,
@@ -100,12 +106,9 @@ class sale_order_line(models.Model):
                                         date_order=date_order,
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
-                                        flag=flag, context=None)
-            prod = self.pool.get("product.product").browse(cr, uid, product)
-            min_unit = prod.min_unit
-            if min_unit == 'box':
-                res['value']['price_unit'] = prod.box_price
-            # elif min_unit == 'both':
-            #     res['value']['choose_unit'] = 'unit'
+                                        flag=flag, context=context)
+            
+            # if min_unit == 'box':
+            #     res['value']['price_unit'] = prod.box_price
             res['value']['do_onchange'] = do_onchange in [2, 4] and 3 or 1
         return res

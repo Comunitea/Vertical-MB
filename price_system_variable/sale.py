@@ -101,7 +101,8 @@ class sale_order_line(osv.osv):
                 date_order = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
             context2 = {
                 'uom': uom or product_obj.uom_id.id,
-                'date': date_order
+                'date': date_order,
+                'sale_in_boxes': context.get('sale_in_boxes', False)
             }
             # price_get_multi return a dict with the property pricelit rule
             # for the product
@@ -138,6 +139,9 @@ class sale_order_line(osv.osv):
                     if spc_ids:
                         spc_line = t_specific.browse(cr, uid, spc_ids[0])
                         price = spc_line.specific_pvp
+                        if context.get('sale_in_boxes', False):
+                            new = (price * (1 - prod_obj.box_discount / 100.0))
+                            price = prod_obj.un_ca * new
                         res['value']['price_unit'] = price
                         return res
                     #SEARCH FOR CHANGE PRODUCT PVP
@@ -145,6 +149,9 @@ class sale_order_line(osv.osv):
                                               product, qty or 1.0, partner_id,
                                               {'uom': uom or uom_or,
                                                'date': date_order})[pricelist]
+                    if context.get('sale_in_boxes', False):
+                            new = (price * (1 - prod_obj.box_discount / 100.0))
+                            price = prod_obj.un_ca * new
                     if price == -2.0:
                         price = 0.0
                         spa = u"No existe Cambio PVP de producto adecuado \
@@ -157,6 +164,7 @@ class sale_order_line(osv.osv):
                         res['warning'] = {'title': _('Warning!'),
                                           'message': spa
                                           }
+
                     res['value']['price_unit'] = price
 
             else:  # No rule founded for this product

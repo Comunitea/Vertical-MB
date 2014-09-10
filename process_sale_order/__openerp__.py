@@ -37,7 +37,8 @@
     "depends": ["base",
                 "product",
                 "sale",
-                "telesale"],
+                "telesale",
+                "price_system_variable"],
     "data": [
         'product_view.xml',
         'sale_view.xml',

@@ -8,15 +8,15 @@
             <field name="inherit_id" ref="product.product_template_form_view" />
             <field name="arch" type="xml">
                 <field name="uos_id" position="replace">
-                    <field name="uos_id" readonly="1"/>
+                    <field name="uos_id" invisible="1"/>
                     <field name="min_unit"/>
                 </field>
-                <!-- <field name="list_price" position="after">
-                    <field name="integer"/>
-                    <field name="price_box_unit" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'price_box_unit',integer)"/>
+                <field name="list_price" position="after">
+                    <field name="box_discount"/>
+                    <!-- <field name="price_box_unit" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'price_box_unit',integer)"/>
                     <field name="box_price" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_price',integer)"/>
-                    <field name="box_discount" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_discount',integer)"/>
-                </field> -->
+                    <field name="box_discount" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_discount',integer)"/> -->
+                </field>
             </field>
         </record>
 <!-- 
@@ -37,7 +37,7 @@
             </field>
         </record> -->
 
-        <record id="product_normal_form_view_add_min_unit" model="ir.ui.view">
+        <!-- <record id="product_normal_form_view_add_min_unit" model="ir.ui.view">
             <field name="name">product_normal_form_view_add_min_unit</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view" />
@@ -50,7 +50,7 @@
                     <field name="box_discount" on_change="onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'box_discount',integer)"/>
                 </field>
             </field>
-        </record>
+        </record> -->
 
     </data>
 </openerp>
