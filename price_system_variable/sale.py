@@ -158,6 +158,9 @@ class sale_order_line(osv.osv):
                                           'message': spa
                                           }
                     res['value']['price_unit'] = price
+
+            else:  # No rule founded for this product
+                res['value']['price_unit'] = 0.0
         return res
 
     def onchange_price_unit(self, cr, uid, ids, product_id, price_unit,

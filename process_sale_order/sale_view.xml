@@ -22,12 +22,12 @@
                     context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id,'uom':product_uom}"
                     name="product_uom_qty" class="oe_inline"
                     on_change="product_id_change(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,parent.partner_id, False, False, parent.date_order, False, parent.fiscal_position, True, do_onchange,context)"
-                    attrs="{'readonly': [('min_unit','=','box')]}"/>
+                    attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/>
                 </xpath>
 
                 <xpath expr="//field[@name='order_line']/form/group/group/div[@groups='product.group_uos']/field[@name='product_uos_qty']" position="replace">
-                    <!-- <field name="product_uos_qty" class="oe_inline"  attrs="{'readonly': ['|', ('min_unit','=','unit'),('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/> -->
-                     <field name="product_uos_qty" class="oe_inline"  attrs="{'readonly': [('min_unit','=','unit')]}"/>
+                    <field name="product_uos_qty" class="oe_inline"  attrs="{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/>
+                    <!--  <field name="product_uos_qty" class="oe_inline"  attrs="{'readonly': [('min_unit','=','unit')]}"/> -->
                 </xpath>
 
                 <!-- Add do_onchange to onchange tree method to controll the number of calls -->

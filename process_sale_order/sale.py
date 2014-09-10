@@ -50,16 +50,16 @@ class sale_order_line(models.Model):
         We change the uos of product
         """
         # import ipdb; ipdb.set_trace()
-        if self.do_onchange in [0, 2]:
-            self.product_uom_qty = self.product_id.uos_coeff != 0 and \
-                self.product_uos_qty / self.product_id.uos_coeff or \
-                self.product_uom_qty
-            self.do_onchange = self.do_onchange == 0 and -1 or -2
-        else:
-            if self.do_onchange == 3:
-                self.do_onchange = 0
-            else:
-                self.do_onchange = 2
+        # if self.do_onchange in [0, 2]:
+        self.product_uom_qty = self.product_id.uos_coeff != 0 and \
+            self.product_uos_qty / self.product_id.uos_coeff or \
+            self.product_uom_qty
+            # self.do_onchange = self.do_onchange == 0 and -1 or -2
+        # else:
+        #     if self.do_onchange == 3:
+        #         self.do_onchange = 0
+        #     else:
+        #         self.do_onchange = 2
         return
 
     @api.onchange('choose_unit')
@@ -82,8 +82,8 @@ class sale_order_line(models.Model):
         """
         do_onchange controlls the calls to this function
         """
-        # import ipdb; ipdb.set_trace()
         res = {'value': {'do_onchange': 0}}
+        # import ipdb; ipdb.set_trace()
         if do_onchange < 0:
             if do_onchange in [-1, -2]:
                 res['value']['do_onchange'] = do_onchange == -1 and -3 or -4
