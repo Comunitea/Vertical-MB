@@ -94,7 +94,7 @@ class product_template(models.Model):
         box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
         un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
         res = {}
-        if self.min_unit == 'box':
+        if self.min_unit == 'box' or self.min_unit == 'both':
             if not len(box_uom):
                 res['warning'] = {'title': _('Warning'),
                                   'message': _('Box unit does not exist.\
@@ -102,7 +102,7 @@ class product_template(models.Model):
             else:
                 self.uos_id = box_uom.id
 
-        else:  # Units or both
+        else:  # Units
             if not len(un_uom):
                 res['warning'] = {'title': _('Warning'),
                                   'message': _('Box unit does not exist.\
@@ -186,4 +186,48 @@ class product_product(models.Model):
 
         elif integer in [2, 5]:
             res = {'value': {'integer': (integer == 2) and 3 or 0}}
+        return res
+
+    @api.onchange('min_unit')
+    def onchange_min_unit(self):
+        box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
+        un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+        res = {}
+        if self.min_unit == 'box' or self.min_unit == 'both':
+            if not len(box_uom):
+                res['warning'] = {'title': _('Warning'),
+                                  'message': _('Box unit does not exist.\
+                You must configured one unit like boxes')}
+            else:
+                self.uos_id = box_uom.id
+
+        else:  # Units
+            if not len(un_uom):
+                res['warning'] = {'title': _('Warning'),
+                                  'message': _('Box unit does not exist.\
+                You must configured one unit like units')}
+            else:
+                self.uos_id = un_uom.id
+        return res
+
+    @api.onchange('uos_id')
+    def onchange_uos_id(self):
+        res = {}
+        box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
+        un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+        like_type = self.uos_id.like_type
+        if like_type not in ['units', 'boxes']:
+            res['warning'] = {'title': _('Error'),
+                              'message': _('Only units or boxes allowed.')}
+            self.uos_id = un_uom.id
+        else:
+            if like_type == 'units' and self.min_unit == 'box':
+                res['warning'] = {'title': _('Error'),
+                                  'message': _('Only boxes allowed.')}
+                self.uos_id = box_uom.id
+            if like_type == 'boxes' and self.min_unit == 'unit':
+                res['warning'] = {'title': _('Error'),
+                                  'message': _('Only units allowed.')}
+                self.uos_id = un_uom.id
+
         return res

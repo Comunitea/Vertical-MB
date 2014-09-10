@@ -42,7 +42,8 @@ class sale_order_line(models.Model):
                                    dp.get_precision('Product UoS'),
                                    required=True)
     choose_unit = fields.Selection([('unit', 'Unit'),
-                                    ('box', 'Box')], 'Selected Unit')
+                                    ('box', 'Box')], 'Selected Unit',
+                                   default='unit')
 
     @api.onchange('product_uos_qty')
     def product_uos_qty_onchange(self):
@@ -71,7 +72,7 @@ class sale_order_line(models.Model):
         if self.choose_unit == 'box':
             self.price_unit = self.product_id.box_price
         else:
-            self.price_unit = self.product_id.lst_price  # TODO el de la tarifa
+            self.price_unit = self.product_id.lst_price
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
