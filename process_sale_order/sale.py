@@ -21,7 +21,7 @@
 from openerp import models, fields, api
 # from openerp import api
 # from openerp.osv import fields, osv
-import openerp.addons.decimal_precision as dp
+# import openerp.addons.decimal_precision as dp
 
 
 class sale_order_line(models.Model):
@@ -37,10 +37,10 @@ class sale_order_line(models.Model):
     do_onchange = fields.Integer('Do onchange', readonly=True, default=0)
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
                                 readonly=True)
-    product_uom_qty = fields.Float('Quantity',
-                                   digits_compute=
-                                   dp.get_precision('Product UoS'),
-                                   required=True)
+    # product_uom_qty = fields.Float('Quantity',
+    #                                digits_compute=
+    #                                dp.get_precision('Product UoS'),
+    #                                required=True)
     choose_unit = fields.Selection([('unit', 'Unit'),
                                     ('box', 'Box')], 'Selected Unit',
                                    default='unit')
@@ -50,29 +50,10 @@ class sale_order_line(models.Model):
         """
         We change the uos of product
         """
-        # import ipdb; ipdb.set_trace()
-        # if self.do_onchange in [0, 2]:
         self.product_uom_qty = self.product_id.uos_coeff != 0 and \
             self.product_uos_qty / self.product_id.uos_coeff or \
             self.product_uom_qty
-            # self.do_onchange = self.do_onchange == 0 and -1 or -2
-        # else:
-        #     if self.do_onchange == 3:
-        #         self.do_onchange = 0
-        #     else:
-        #         self.do_onchange = 2
         return
-
-    # @api.onchange('choose_unit')
-    # def product_choose_unit_onchange(self):
-    #     """
-    #     We change the uos of product
-    #     """
-    #     # import ipdb; ipdb.set_trace()
-    #     if self.choose_unit == 'box':
-    #         self.price_unit = self.product_id.box_price
-    #     else:
-    #         self.price_unit = self.product_id.lst_price
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
@@ -107,8 +88,5 @@ class sale_order_line(models.Model):
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
                                         flag=flag, context=context)
-            
-            # if min_unit == 'box':
-            #     res['value']['price_unit'] = prod.box_price
             res['value']['do_onchange'] = do_onchange in [2, 4] and 3 or 1
         return res

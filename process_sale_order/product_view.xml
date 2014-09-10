@@ -13,44 +13,8 @@
                 </field>
                 <field name="list_price" position="after">
                     <field name="box_discount"/>
-                    <!-- <field name="price_box_unit" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'price_box_unit',integer)"/>
-                    <field name="box_price" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_price',integer)"/>
-                    <field name="box_discount" on_change="onchange_box_prices_fields(list_price,price_box_unit, box_price, box_discount,'box_discount',integer)"/> -->
                 </field>
             </field>
         </record>
-<!-- 
-        <record id="product_normal_form_view_add_min_unit" model="ir.ui.view">
-            <field name="name">product_normal_form_view_add_min_unit</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product_template_form_view_add_min_unit" />
-            <field name="arch" type="xml">
-                <field name="priceAAAAAAAAA_box_unit" string="aaa" position="atributes">
-                    <attribute name="on_change">onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'price_box_unit',integer)</attribute>    
-                </field>
-                <field name="box_price" position="atributes">
-                    <attribute name="on_change">onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'box_price',integer)</attribute>    
-                </field>
-                <field name="box_discount" position="atributes">
-                    <attribute name="on_change">onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'box_discount',integer)</attribute>    
-                </field>
-            </field>
-        </record> -->
-
-        <!-- <record id="product_normal_form_view_add_min_unit" model="ir.ui.view">
-            <field name="name">product_normal_form_view_add_min_unit</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view" />
-            <field name="arch" type="xml">
-                <field name="lst_price" position="replace">
-                    <field name="lst_price" on_change="onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'lst_price',integer)"/>
-                    <field name="integer"/>
-                    <field name="price_box_unit" on_change="onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'price_box_unit',integer)"/>
-                    <field name="box_price" on_change="onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'box_price',integer)"/>
-                    <field name="box_discount" on_change="onchange_box_prices_fields2(lst_price,price_box_unit, box_price, box_discount,'box_discount',integer)"/>
-                </field>
-            </field>
-        </record> -->
-
     </data>
 </openerp>
