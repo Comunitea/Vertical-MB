@@ -34,7 +34,7 @@ class sale_order_line(models.Model):
     """
     _inherit = "sale.order.line"
 
-    do_onchange = fields.Integer('Do onchange', readonly=True, default=0)
+    # do_onchange = fields.Integer('Do onchange', readonly=True, default=0)
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
                                 readonly=True)
     # product_uom_qty = fields.Float('Quantity',
@@ -60,23 +60,25 @@ class sale_order_line(models.Model):
                           partner_id=False, lang=False, update_tax=True,
                           date_order=False, packaging=False,
                           fiscal_position=False, flag=False,
-                          do_onchange=4, choose_unit='unit', context=None):
+                          choose_unit='unit', context=None):
         """
         do_onchange controlls the calls to this function
         """
-        res = {'value': {'do_onchange': 0}}
+        # res = {'value': {'do_onchange': 0, 'choose_unit': 'unit'}}
+        # import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
-        if do_onchange < 0:
-            if do_onchange in [-1, -2]:
-                res['value']['do_onchange'] = do_onchange == -1 and -3 or -4
-            elif do_onchange in [-3, -4]:
-                res['value']['do_onchange'] = do_onchange == -3 and 2 or 0
+        # if do_onchange < 0:
+        #     if do_onchange in [-1, -2]:
+        #         res['value']['do_onchange'] = do_onchange == -1 and -3 or -4
+        #     elif do_onchange in [-3, -4]:
+        #         res['value']['do_onchange'] = do_onchange == -3 and 2 or 0
         else:
             prod = self.pool.get("product.product").browse(cr, uid, product)
             min_unit = prod.min_unit
             if min_unit == 'box' or \
                     (min_unit == 'both' and choose_unit == 'box'):
+
                 context = {'sale_in_boxes': True}
             sup = super(sale_order_line, self)
             res = sup.product_id_change(cr, uid, ids, pricelist, product,
@@ -88,5 +90,6 @@ class sale_order_line(models.Model):
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
                                         flag=flag, context=context)
-            res['value']['do_onchange'] = do_onchange in [2, 4] and 3 or 1
+            res['value']['choose_unit'] = min_unit == 'box' and 'box' or 'unit'
+            # res['value']['do_onchange'] = do_onchange in [2, 4] and 3 or 1
         return res
