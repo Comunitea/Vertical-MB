@@ -136,7 +136,7 @@ class assign_task_wzd(osv.TransientModel):
                                           ('picking_type_id',
                                            '=',
                                            location_task_type_id),
-                                          ('picking_id.operator_id', '=',
+                                          ('operator_id', '=',
                                            False)],
                                 limit=1, order="id asc",
                                 context=context)
