@@ -31,8 +31,8 @@
     "images": [],
     "depends": [
         "base",
-        "sale_stock",
         "stock",
+        "sale_stock",
         "procurement_jit",
         "stock_picking_wave",
         "sale",

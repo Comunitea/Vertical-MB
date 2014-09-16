@@ -649,8 +649,7 @@ class product_putaway_strategy(osv.osv):
     _inherit = 'product.putaway'
 
     def _get_putaway_options(self, cr, uid, context=None):
-        res = super(product_putaway_strategy, self).\
-                _get_putaway_options(cr, uid, context=context)
+        res = super(product_putaway_strategy, self)._get_putaway_options(cr, uid, context=context)
         res.extend([('product_pick_location', 'Product picking location')])
         return res
 
