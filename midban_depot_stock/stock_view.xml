@@ -56,6 +56,7 @@
                     <field name="warehouse_id"/>
                     <field name="task_type"/>
                     <field name="route_id"/>
+                    <field name="drop_code"/>
                 </field>
             </field>
         </record>

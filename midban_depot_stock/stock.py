@@ -38,7 +38,8 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        'route_id': fields.many2one('route', 'Route', readonly=True),
+        'route_id': fields.many2one('route', 'Transport Route', readonly=True),
+        'drop_code': fields.integer('Drop Code', readonly=True),
     }
 
     def _get_unit_conversions(self, cr, uid, ids, op_obj, context=None):
@@ -649,7 +650,8 @@ class product_putaway_strategy(osv.osv):
     _inherit = 'product.putaway'
 
     def _get_putaway_options(self, cr, uid, context=None):
-        res = super(product_putaway_strategy, self)._get_putaway_options(cr, uid, context=context)
+        res = super(product_putaway_strategy, self).\
+            _get_putaway_options(cr, uid, context=context)
         res.extend([('product_pick_location', 'Product picking location')])
         return res
 
@@ -670,8 +672,8 @@ class procurement_order(osv.osv):
     _inherit = "procurement.order"
 
     _columns = {
-        'route_id': fields.many2one('route', 'Route', domain=[('state', '=',
-                                                               'active')]),
+        'route_id': fields.many2one('route', 'Transport Route',
+                                    domain=[('state', '=', 'active')]),
     }
 
 
@@ -680,7 +682,7 @@ class stock_move(osv.osv):
 
     _columns = {
         'route_id': fields.related('procurement_id', 'route_id', readonly=True,
-                                   string='Route', relation="route",
+                                   string='Transport Route', relation="route",
                                    type="many2one"),
     }
 
