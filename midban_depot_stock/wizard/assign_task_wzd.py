@@ -50,7 +50,7 @@ class assign_task_wzd(osv.TransientModel):
             ctx['active_ids'] = [picking_id]
             ctx['active_model'] = 'stock.picking'
             return self.pool.get("report").\
-                get_action(cr, uid, [], 'stock.action_report_picking',
+                get_action(cr, uid, [], 'stock.report_picking',
                            context=ctx)
         elif wave_id:
             ctx['active_model'] = 'stock.picking'
