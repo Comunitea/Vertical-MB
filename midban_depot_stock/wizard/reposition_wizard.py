@@ -63,7 +63,9 @@ class reposition_wizard(osv.TransientModel):
             product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
             unit_volume = product.supplier_un_width * \
                 product.supplier_un_height * product.supplier_un_length
-
+            if not unit_volume:
+                raise osv.except_osv(_('Error!'),
+                                     _('Product Unit volume equals to zero.'))
             requested_units = round(((obj.capacity / 100.0) * loc.volume) /
                                     unit_volume, 2)
             context['location'] = dest_id
