@@ -205,6 +205,7 @@ class assign_task_wzd(osv.TransientModel):
         """
         if context is None:
             context = {}
+        import ipdb; ipdb.set_trace()
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
@@ -222,7 +223,7 @@ class assign_task_wzd(osv.TransientModel):
                                           ('picking_type_id',
                                            '=',
                                            reposition_task_type_id),
-                                          ('picking_id.operator_id', '=',
+                                          ('operator_id', '=',
                                            False)],
                                 limit=1, order="id asc", context=context)
         if not pick_id:
