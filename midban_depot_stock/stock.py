@@ -328,6 +328,23 @@ class stock_pack_operation(osv.osv):
             i = i - 1
         return free_loc_ids[i]
 
+    def _older_refernce_in_storage(self, cr, uid, product, wh_obj,
+                                   context=None):
+        if context is None:
+            context = {}
+        res = False
+        t_quant = self.pool.get("stock.quant")
+        domain = [
+            ('company_id', '=', wh_obj.company_id.id),
+            ('product_id', '=', product.id),
+            ('qty', '>', 0),
+            ('location_id', 'child_of', [wh_obj.storage_loc_id.id]),
+        ]
+        quant_ids = t_quant.search(cr, uid, domain, context=context)
+        if quant_ids:
+            res = True
+        return res
+
     def _get_location(self, cr, uid, ops, wh_obj, context=None):
         """
         For a product, choose between put it in picking zone (if it is empty
@@ -343,8 +360,9 @@ class stock_pack_operation(osv.osv):
                 ops.operation_product_id.picking_location_id):
             product = ops.operation_product_id
             pick_loc = ops.operation_product_id.picking_location_id
-            if (pick_loc.volume == pick_loc.available_volume and
-                    ops.volume <= pick_loc.available_volume):
+            old_ref = self._older_refernce_in_storage(cr, uid, product, wh_obj,
+                                                      context=context)
+            if (not old_ref and ops.volume <= pick_loc.available_volume):
                 location_id = pick_loc.id
             else:
                 if ops.pack_type and ops.pack_type == 'box':
