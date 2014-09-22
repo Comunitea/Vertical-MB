@@ -101,6 +101,8 @@ class assign_task_wzd(osv.TransientModel):
         ctx = dict(context)
         ctx['no_raise'] = True
         on_course_task = self._check_on_course(cr, uid, ids, context=ctx)
+        if not on_course_task:
+            raise osv.except_osv(_('Error!'), _('No tasks to print.'))
         task = self.pool.get("stock.task").browse(cr, uid, on_course_task[0],
                                                   context=context)
         if task.wave_id:
@@ -205,7 +207,6 @@ class assign_task_wzd(osv.TransientModel):
         """
         if context is None:
             context = {}
-        import ipdb; ipdb.set_trace()
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
