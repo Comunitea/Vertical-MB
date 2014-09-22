@@ -824,7 +824,7 @@ msgstr "Warehouse task to organice products and locations"
 #: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_form
 #: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_tree
 msgid "Warehouse vehicles"
-msgstr "Vehículos almacén"
+msgstr "Vehículos transporte"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/route_orders_wizard.py:43
