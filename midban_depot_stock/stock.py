@@ -91,6 +91,15 @@ class stock_picking(osv.osv):
             context = {}
         res = []
         t_pack = self.pool.get('stock.quant.package')
+        t_op_move_link = self.pool.get('stock.move.operation.link')
+        move_link_ids = t_op_move_link.search(cr, uid,
+                                              [('operation_id', '=', op.id)],
+                                              context=context)
+        lot_id = False
+        if move_link_ids:
+            op_link = t_op_move_link.browse(cr, uid, move_link_ids[0],
+                                            context=context)
+            lot_id = op_link.move_id.lot_id.id
         op_vals = {
             'location_id': op.location_id.id,
             'product_id': op.operation_product_id.id,
@@ -98,6 +107,7 @@ class stock_picking(osv.osv):
                                op.operation_product_id.uom_id.id),
             'location_dest_id': op.location_dest_id.id,
             'picking_id': op.picking_id.id,
+            'lot_id': lot_id
         }
         if pack_type not in ['palet', 'mantle', 'box']:
             op_vals.update({
@@ -290,6 +300,10 @@ class stock_picking(osv.osv):
                 related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
                 self.do_prepare_partial(cr, uid, [related_pick_id],
                                         context=context)
+
+            for move in pick.move_lines:
+                if move.move_dest_id:
+                    move.move_dest_id.write({'lot_id': move.lot_id.id})
         return True
 
 
@@ -702,6 +716,8 @@ class stock_move(osv.osv):
         'route_id': fields.related('procurement_id', 'route_id', readonly=True,
                                    string='Transport Route', relation="route",
                                    type="many2one"),
+        'lot_id': fields.many2one('stock.production.lot', 'Lot'),
+
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
