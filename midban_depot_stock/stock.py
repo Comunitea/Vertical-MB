@@ -40,6 +40,7 @@ class stock_picking(osv.osv):
                                       'Task Type', readonly=True),
         'route_id': fields.many2one('route', 'Transport Route', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
+        'midban_operations': fields.boolean("Exist midban operation")
     }
 
     def _get_unit_conversions(self, cr, uid, ids, op_obj, context=None):
@@ -91,15 +92,6 @@ class stock_picking(osv.osv):
             context = {}
         res = []
         t_pack = self.pool.get('stock.quant.package')
-        t_op_move_link = self.pool.get('stock.move.operation.link')
-        move_link_ids = t_op_move_link.search(cr, uid,
-                                              [('operation_id', '=', op.id)],
-                                              context=context)
-        lot_id = False
-        if move_link_ids:
-            op_link = t_op_move_link.browse(cr, uid, move_link_ids[0],
-                                            context=context)
-            lot_id = op_link.move_id.lot_id.id
         op_vals = {
             'location_id': op.location_id.id,
             'product_id': op.operation_product_id.id,
@@ -107,7 +99,6 @@ class stock_picking(osv.osv):
                                op.operation_product_id.uom_id.id),
             'location_dest_id': op.location_dest_id.id,
             'picking_id': op.picking_id.id,
-            'lot_id': lot_id
         }
         if pack_type not in ['palet', 'mantle', 'box']:
             op_vals.update({
@@ -225,7 +216,7 @@ class stock_picking(osv.osv):
                                                     context=context)
             res.extend(ma_dics)
             if dec_man != 0:  # Ubicate boxes
-                num_box = prod_obj.supplier_ca_ma * mantles
+                num_box = prod_obj.supplier_ca_ma * dec_man
                 if num_box >= 1:  # Get boxes and maybe some units
                     int_box = int(num_box)
                     dec_box = abs(num_box) - abs(int(num_box))
@@ -266,6 +257,9 @@ class stock_picking(osv.osv):
 
     @api.cr_uid_ids_context
     def prepare_package_type_operations(self, cr, uid, ids, context=None):
+        """
+        No llamado de momento, se metió este metodo en el wizard
+        """
         if context is None:
             context = {}
         t_pack_op = self.pool.get('stock.pack.operation')
@@ -300,11 +294,15 @@ class stock_picking(osv.osv):
                 related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
                 self.do_prepare_partial(cr, uid, [related_pick_id],
                                         context=context)
-
-            for move in pick.move_lines:
-                if move.move_dest_id:
-                    move.move_dest_id.write({'lot_id': move.lot_id.id})
+                self.write(cr, uid, [related_pick_id],
+                           {'midban_operations': True}, context=context)
         return True
+
+    @api.one
+    def delete_picking_package_operations(self):
+        for op in self.pack_operation_ids:
+            op.unlink()
+        self.write({'midban_operations': False})
 
 
 class stock_package(osv.osv):
@@ -716,7 +714,6 @@ class stock_move(osv.osv):
         'route_id': fields.related('procurement_id', 'route_id', readonly=True,
                                    string='Transport Route', relation="route",
                                    type="many2one"),
-        'lot_id': fields.many2one('stock.production.lot', 'Lot'),
 
     }
 

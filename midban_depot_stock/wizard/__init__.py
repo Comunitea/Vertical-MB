@@ -22,3 +22,4 @@ import assign_task_wzd
 import reposition_wizard
 import route_assign_wizard
 import route_orders_wizard
+import stock_transfer_details

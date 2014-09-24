@@ -93,6 +93,15 @@ class assign_task_wzd(osv.TransientModel):
         on_course_tasks = t_task.search(cr, uid, domain, context=context)
         if on_course_tasks and not context.get('no_raise', False):
             raise osv.except_osv(_('Error!'), _('You have a task on course.'))
+
+        domain = [
+            ('picking_id.machine_id', '=', wzd_obj.machine_id.id),
+            ('state', '=', 'assigned')
+        ]
+        on_course_machine = t_task.search(cr, uid, domain, context=context)
+        if on_course_machine and not context.get('no_raise', False):
+            raise osv.except_osv(_('Error!'), _('You have the machine\
+                                                 currently assigned.'))
         return on_course_tasks
 
     def reprint_task(self, cr, uid, ids, context=None):

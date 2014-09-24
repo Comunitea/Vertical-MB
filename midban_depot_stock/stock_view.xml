@@ -9,7 +9,7 @@
 
                 <!-- Quit class="oe_highlight" -->
                 <button name="do_enter_transfer_details" position="replace">
-                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True)]}"/>
+                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('midban_operations', '=', True)]}"/>
                 </button>
 
                 <!-- Quit class="oe_highlight" -->
@@ -24,14 +24,18 @@
 
                 <!-- New Buttons to manage stock system without the barcode interface" -->
                 <button name="do_enter_transfer_details" position="after">
-                    <button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/>
-
+                   <!--  <button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/> -->
+                    
                     <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
+
+                    <button name="delete_picking_package_operations" string="Delete operations" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|', '|', ('picking_type_code', '!=', 'incoming'), ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
+
                 </button>
 
                 <!-- Show page operations -->
                 <page string="Operations" position="replace">
                     <page string="Operations">
+                            <field name="midban_operations"/>
                             <field name="pack_operation_ids">
                                 <tree editable="top">
                                     <field name="location_id"/>
@@ -130,7 +134,6 @@
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
                     <field name="route_id"/>
-                    <field name="lot_id"/>
                 </field>
             </field>
         </record>
@@ -142,7 +145,6 @@
             <field name="arch" type="xml">
                 <field name="string_availability_info" position="after">
                     <field name="route_id"/>
-                    <field name="lot_id"/>
                 </field>
             </field>
         </record>

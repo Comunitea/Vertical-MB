@@ -54,7 +54,8 @@
         'purchase_view.xml',
         'sale_view.xml',
         "wizard/route_assign_wizard_view.xml",
-        "wizard/route_orders_wizard_view.xml"
+        "wizard/route_orders_wizard_view.xml",
+        "wizard/stock_transfer_details.xml",
     ],
     "demo": [],
     "test": [],
