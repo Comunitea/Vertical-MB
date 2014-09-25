@@ -217,7 +217,6 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
-        import ipdb; ipdb.set_trace()
         mant_group = self._get_mants_groups(cr, uid, ids,
                                             context=context)
         print mant_group
