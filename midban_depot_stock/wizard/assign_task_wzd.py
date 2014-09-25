@@ -76,7 +76,7 @@ class assign_task_wzd(osv.TransientModel):
         # Writed when a ubication task is assigned
         if pick_obj.task_type == 'ubication':
             wh_obj = pick_obj.warehouse_id
-            ops_ids = pick_obj.pack_operation_ids
+            ops_ids = [x.id for x in pick_obj.pack_operation_ids]
             t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
                                               context=context)
         return True

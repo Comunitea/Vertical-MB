@@ -158,6 +158,9 @@ class stock_pack_operation(osv.osv):
                                                [storage_id])],
                                              context=context)
                     free_locs = []
+                    # Remove Storage location from the list
+                    if loc_ids:
+                        loc_ids.remove(storage_id)
                     for loc in loc_obj.browse(cr, uid, loc_ids,
                                               context=context):
                         if ((not loc.current_product_id or
@@ -175,13 +178,14 @@ class stock_pack_operation(osv.osv):
 
         return location_id
 
-    def _get_mants_groups(self, cr, uid, operations, context=None):
+    def _get_mants_groups(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         res = {}
         prod_id = False
         lot_id = False
-        for ops in operations:
+        for op_id in ids:
+            ops = self.browse(cr, uid, op_id, context=context)
             if ops.pack_type == 'mantle':
                 # Get product inside the mantle
                 for quant in ops.package_id.quant_ids:
@@ -194,6 +198,9 @@ class stock_pack_operation(osv.osv):
                     else:
                         prod_id = quant.product_id.id
                         lot_id = quant.lot_id.id
+                if not prod_id:
+                    raise osv.except_osv(_('Error!'), _('No product founded\
+                                                        inside package'))
                 if not prod_id in res:
                     res[prod_id] = {lot_id: [ops.id]}
                 elif not lot_id in res[prod_id]:
@@ -202,7 +209,7 @@ class stock_pack_operation(osv.osv):
                     res[prod_id][lot_id].extend([ops.id])
         return res
 
-    def change_location_dest_id(self, cr, uid, operations, wh_obj,
+    def change_location_dest_id(self, cr, uid, ids, wh_obj,
                                 context=None):
         """
         Change the storage location for a specific one
@@ -210,11 +217,12 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
-        mant_group = self._get_mants_groups(cr, uid, operations,
+        import ipdb; ipdb.set_trace()
+        mant_group = self._get_mants_groups(cr, uid, ids,
                                             context=context)
         print mant_group
-        for ops in operations:
-            ops = self.browse(cr, uid, ops.id, context=context)
+        for op_id in ids:
+            ops = self.browse(cr, uid, op_id, context=context)
             prod_obj = False
             if ops.package_id:
                 for quant in ops.package_id.quant_ids:
