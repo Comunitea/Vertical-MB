@@ -152,7 +152,7 @@ class stock_transfer_details(models.TransientModel):
                 res.append(dict(op_vals))
         return res
 
-    def _get_unit_conversions2(self, item):
+    def _get_unit_conversions(self, item):
         res = [0, 0, 0, 0]
         prod_obj = item.product_id
         item_qty = item.quantity
@@ -187,11 +187,11 @@ class stock_transfer_details(models.TransientModel):
         res = [int_pal, int_man, int_box, int_units]
         return res
 
-    def _propose_pack_operations2(self, item):
+    def _propose_pack_operations(self, item):
         res = []
         # import ipdb
         # ipdb.set_trace()
-        int_pal, int_man, int_box, units = self._get_unit_conversions2(item)
+        int_pal, int_man, int_box, units = self._get_unit_conversions(item)
 
         if int_pal:
             pa_dics = self._get_pack_type_operation(item, 'palet', int_pal)
@@ -207,105 +207,7 @@ class stock_transfer_details(models.TransientModel):
             res.extend(un_dic)
         return res
 
-    def _propose_pack_operations(self, item):
-        res = []
-        # import ipdb
-        # ipdb.set_trace()
-        prod_obj = item.product_id
-        conv = self._get_unit_conversions(item)
-        if conv['palets'] >= 1:
-            palets = conv['palets']
-            int_pal = int(palets)
-            dec_pal = abs(palets) - abs(int(palets))
-            pa_dics = self._get_pack_type_operation(item, 'palet', int_pal)
-            res.extend(pa_dics)
-            if dec_pal != 0:  # Get a integer number of mantles or boxes
-                num_mant = prod_obj.supplier_ma_pa * dec_pal
-                if num_mant >= 1:  # Get mantles and maybe some boxes
-                    int_man = int(num_mant)
-                    dec_man = abs(num_mant) - abs(int(num_mant))
-                    ma_dics = self._get_pack_type_operation(item, 'mantle',
-                                                            int_man)
-                    res.extend(ma_dics)
-                    if dec_man != 0:  # Ubicate boxes
-                        num_box = prod_obj.supplier_ca_ma * dec_man
-                        if num_box >= 1:  # Get boxes and maybe some units
-                            int_box = int(num_box)
-                            dec_box = abs(num_box) - abs(int(num_box))
-                            bo_dics = self._get_pack_type_operation(item,
-                                                                    'box',
-                                                                    int_box)
-                            res.extend(bo_dics)
-                            if dec_box != 0:  # Get operations for units
-                                units = prod_obj.supplier_un_ca * dec_box
-                                un_dic = self._get_pack_type_operation(item,
-                                                                       'units',
-                                                                       units)
-                                res.extend(un_dic)
 
-                        else:  # ubicate the rest of units
-                            units = prod_obj.supplier_un_ca * num_box
-                            un_dics = self._get_pack_type_operation(item,
-                                                                    'units',
-                                                                    units)
-                            res.extend(un_dics)
-                else:  # Ubicate Boxes
-                    num_box = prod_obj.supplier_ca_ma * num_mant
-                    if num_box >= 1:  # Get boxes and maybe some units
-                        int_box = int(num_box)
-                        dec_box = abs(num_box) - abs(int(num_box))
-                        bo_dics = self._get_pack_type_operation(item, 'box',
-                                                                int_box)
-                        res.extend(bo_dics)
-                        if dec_box != 0:  # Get operations for units
-                            units = prod_obj.supplier_un_ca * dec_box
-                            un_dics = self._get_pack_type_operation(item,
-                                                                    'units',
-                                                                    units)
-                            res.extend(un_dics)
-                    else:  # Ubicate the rest of units
-                        units = prod_obj.supplier_un_ca * num_box
-                        un_dics = self._get_pack_type_operation(item, 'units',
-                                                                units)
-                        res.extend(un_dics)
-
-        elif conv['mantles'] >= 1:
-            mantles = conv['mantles']
-            int_man = int(mantles)
-            dec_man = abs(mantles) - abs(int(mantles))
-            ma_dics = self._get_pack_type_operation(item, 'mantle', int_man)
-            res.extend(ma_dics)
-            if dec_man != 0:  # Ubicate boxes
-                num_box = prod_obj.supplier_ca_ma * dec_man
-                if num_box >= 1:  # Get boxes and maybe some units
-                    int_box = int(num_box)
-                    dec_box = abs(num_box) - abs(int(num_box))
-                    bo_dics = self._get_pack_type_operation(item, 'box',
-                                                            int_box)
-                    res.extend(bo_dics)
-                    if dec_box != 0:  # Get operations for units
-                        units = prod_obj.supplier_un_ca * dec_box
-                        un_dics = self._get_pack_type_operation(item, 'units',
-                                                                units)
-                        res.extend(un_dics)
-
-        elif conv['boxes'] > 0:
-            boxes = conv['boxes']
-            int_box = int(boxes)
-            dec_box = abs(boxes) - abs(int(boxes))
-            bo_dics = self._get_pack_type_operation(item, 'box', int_box)
-            res.extend(bo_dics)
-            if dec_box != 0:  # Get operations for units
-                units = prod_obj.supplier_un_ca * dec_box
-                un_dics = self._get_pack_type_operation(item, 'units', units)
-                res.extend(un_dics)
-
-        else:
-            units = conv['units']
-            un_dics = self._get_pack_type_operation(item, 'units', units)
-            res.extend(un_dics)
-
-        return res
 
     @api.one
     def prepare_package_type_operations(self):
@@ -321,7 +223,7 @@ class stock_transfer_details(models.TransientModel):
             # for vals in item_vals:
             #     # vals['transfer_id'] = created_id.id
             #     t_operations.create(vals)
-            vals_ops = self._propose_pack_operations2(item)
+            vals_ops = self._propose_pack_operations(item)
             if vals_ops:
                 self.picking_id.write({'midban_operations': True})
             for vals in vals_ops:
