@@ -29,14 +29,14 @@ class product_template(osv.Model):
     _inherit = "product.template"
     # Add 4 decimals in standard_price (defined in data/price_data.xml)
     _columns = {
-        'standard_price': fields.float('Cost',
-                                       digits_compute=
-                                       dp.get_precision('Product Cost'),
-                                       help="Cost price of the product used \
-                                       for standard stock valuation in \
-                                       accounting and used as a base price on \
-                                       purchase orders.",
-                                       groups="base.group_user"),
+        # 'standard_price': fields.float('Cost',
+        #                                digits_compute=
+        #                                dp.get_precision('Product Cost'),
+        #                                help="Cost price of the product used \
+        #                                for standard stock valuation in \
+        #                                accounting and used as a base price on \
+        #                                purchase orders.",
+        #                                groups="base.group_user"),
     }
 
 
