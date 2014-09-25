@@ -51,40 +51,6 @@ class stock_transfer_details(models.TransientModel):
     picking_type_code = fields.Char('Picking code', related=
                                     'picking_id.picking_type_code')
 
-    def _get_unit_conversions(self, item_obj):
-        res = {
-            'units': 0.0,
-            'boxes': 0.0,
-            'mantles': 0.0,
-            'palets': 0.0,
-        }
-        unit_type = item_obj.product_uom_id.like_type or 'units'
-        un_ca = item_obj.product_id.supplier_un_ca
-        ca_ma = item_obj.product_id.supplier_ca_ma
-        ma_pa = item_obj.product_id.supplier_ma_pa
-        qty = item_obj.quantity
-        if unit_type == 'units':
-            res['units'] = qty
-            res['boxes'] = un_ca and (res['units'] / un_ca) or 0.0
-            res['mantles'] = ca_ma and (res['boxes'] / ca_ma) or 0.0
-            res['palets'] = ma_pa and (res['mantles'] / ma_pa) or 0.0
-        elif unit_type == 'boxes':
-            res['units'] = un_ca and (qty * un_ca, 2) or 0.0
-            res['boxes'] = qty
-            res['mantles'] = ca_ma and (res['boxes'] / ca_ma) or 0.0
-            res['palets'] = ma_pa and (res['mantles'] / ma_pa) or 0.0
-        elif unit_type == 'mantles':
-            res['units'] = un_ca and (res['boxes'] * un_ca) or 0.0
-            res['boxes'] = ca_ma and (res['mantles'] * ca_ma) or 0.0
-            res['mantles'] = qty
-            res['palets'] = ma_pa and (res['mantles'] / ma_pa) or 0.0
-        elif unit_type == 'palets':
-            res['units'] = un_ca and (res['boxes'] * un_ca) or 0.0
-            res['boxes'] = ca_ma and (res['mantles'] * ca_ma) or 0.0
-            res['mantles'] = ma_pa and (res['palets'] * ma_pa) or 0.0
-            res['palets'] = qty
-        return res
-
     def _get_pack_type_operation(self, item, pack_type, num):
         """
         Return a dictionary containing the values to create a pack operation
@@ -206,8 +172,6 @@ class stock_transfer_details(models.TransientModel):
             un_dic = self._get_pack_type_operation(item, 'units', units)
             res.extend(un_dic)
         return res
-
-
 
     @api.one
     def prepare_package_type_operations(self):
