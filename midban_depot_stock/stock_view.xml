@@ -7,25 +7,13 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
 
-                <!-- Quit class="oe_highlight" -->
+                <!-- Show only when no custom operations" -->
                 <button name="do_enter_transfer_details" position="replace">
                     <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('midban_operations', '=', True)]}"/>
                 </button>
 
-                <!-- Quit class="oe_highlight" -->
-                <!-- <button name="do_partial_open_barcode" position="replace">
-                   <button name="do_partial_open_barcode" string="Enter Transfer Details" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|',('pack_operation_exist', '=', True),('state','not in',('assigned', 'partially_available'))]}"/>
-                </button> -->
-
-                <!-- Quit class="oe_highlight" -->
-                <!-- <button name="open_barcode_interface" position="replace">
-                    <button name="open_barcode_interface" string="Open Barcode interface" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|',('pack_operation_exist', '=', False),('state','not in',('assigned', 'partially_available'))]}"/>
-                </button> -->
-
-                <!-- New Buttons to manage stock system without the barcode interface" -->
-                <button name="do_enter_transfer_details" position="after">
-                   <!--  <button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('pack_operation_exist', '=', True), ('state','not in',('assigned', 'partially_available'))]}"/> -->
-                    
+                <!-- New Buttons to manage pack operations" -->
+                <button name="do_enter_transfer_details" position="after">  
                     <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
 
                     <button name="delete_picking_package_operations" string="Delete operations" groups="stock.group_stock_user" type="object" attrs="{'invisible': ['|', '|', ('picking_type_code', '!=', 'incoming'), ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
@@ -107,23 +95,13 @@
             <field name="model">stock.location</field>
             <field name="inherit_id" ref="stock.view_location_form"/>
             <field name="arch" type="xml">
-                <!-- <group string="Logistics" position="after">
-                    <group string="Information"> -->
-                    <field name="posx" position="before">
-                       <field name="storage_type"/>
-                       <!--  <field name="ref"/> -->
-                        <field name="width"/>
-                        <field name="length"/>
-                        <field name="height"/>
-                        <field name="volume"/>
-                        <field name="available_volume"/>
-                        <!-- <field name="available_height" attrs="{'invisible': [('storage_type','!=', 'mantles')]}"/> -->
-                        <!-- <field name="available_height"/>
-                        <field name="volume"/> -->
-                        <!-- <field name="available_volume" attrs="{'invisible': [('storage_type','!=', 'boxes')]}"/> -->
-                        <!-- <field name="available_volume"/> -->
-                    </field>
-              <!--   </group> -->
+                <field name="posx" position="before">
+                    <field name="width"/>
+                    <field name="length"/>
+                    <field name="height"/>
+                    <field name="volume"/>
+                    <field name="available_volume"/>
+                </field>
             </field>
         </record>
 
