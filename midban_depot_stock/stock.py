@@ -408,6 +408,32 @@ class stock_pack_operation(osv.osv):
 
         return location_id
 
+    def _get_mants_groups(self, cr, uid, operations, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        prod_id = False
+        lot_id = False
+        for ops in operations:
+            if ops.pack_type == 'mantle':
+                # Get product inside the mantle
+                for quant in ops.package_id.quant_ids:
+                    if prod_id and prod_id != quant.product_id.id:
+                        msg = 'Can not manage packages with different products'
+                        raise osv.except_osv(_('Error!'), _(msg))
+                    # if lot_id and lot_id != quant.lot_id.id:
+                    #     msg = 'Can not manage packages with different lots'
+                    #     raise osv.except_osv(_('Error!'), _(msg))
+                    else:
+                        prod_id = quant.product_id.id
+                        lot_id = quant.lot_id.id
+                if not prod_id in res:
+                    res[prod_id] = {lot_id: [ops.id]}
+                elif not lot_id in res[prod_id]:
+                    res[prod_id][lot_id] = [ops.id]
+                else:
+                    res[prod_id][lot_id].extend([ops.id])
+        return res
     def change_location_dest_id(self, cr, uid, operations, wh_obj,
                                 context=None):
         """
@@ -416,6 +442,9 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
+        mant_group = self._get_mants_groups(cr, uid, operations,
+                                             context=context)
+        print mant_group
         for ops in operations:
             ops = self.browse(cr, uid, ops.id, context=context)
             prod_obj = False
