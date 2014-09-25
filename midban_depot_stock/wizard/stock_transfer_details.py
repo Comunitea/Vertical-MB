@@ -152,6 +152,61 @@ class stock_transfer_details(models.TransientModel):
                 res.append(dict(op_vals))
         return res
 
+    def _get_unit_conversions2(self, item):
+        res = [0, 0, 0, 0]
+        prod_obj = item.product_id
+        item_qty = item.quantity
+
+        un_ca = prod_obj.supplier_un_ca
+        ca_ma = prod_obj.supplier_ca_ma
+        ma_pa = prod_obj.supplier_ma_pa
+
+        box_units = un_ca
+        mantle_units = un_ca * ca_ma
+        palet_units = un_ca * ca_ma * ma_pa
+
+        remaining_qty = item_qty
+        int_pal = 0
+        int_man = 0
+        int_box = 0
+        int_units = 0
+
+        while remaining_qty > 0:
+            if remaining_qty >= palet_units:
+                remaining_qty -= palet_units
+                int_pal += 1
+            elif remaining_qty >= mantle_units:
+                remaining_qty -= mantle_units
+                int_man += 1
+            elif remaining_qty >= box_units:
+                remaining_qty -= box_units
+                int_box += 1
+            else:
+                int_units = remaining_qty
+                remaining_qty = 0
+        res = [int_pal, int_man, int_box, int_units]
+        return res
+
+    def _propose_pack_operations2(self, item):
+        res = []
+        # import ipdb
+        # ipdb.set_trace()
+        int_pal, int_man, int_box, units = self._get_unit_conversions2(item)
+
+        if int_pal:
+            pa_dics = self._get_pack_type_operation(item, 'palet', int_pal)
+            res.extend(pa_dics)
+        if int_man:
+            ma_dics = self._get_pack_type_operation(item, 'mantle', int_man)
+            res.extend(ma_dics)
+        if int_box:
+            bo_dics = self._get_pack_type_operation(item, 'box', int_box)
+            res.extend(bo_dics)
+        if units:
+            un_dic = self._get_pack_type_operation(item, 'units', units)
+            res.extend(un_dic)
+        return res
+
     def _propose_pack_operations(self, item):
         res = []
         # import ipdb
@@ -266,7 +321,7 @@ class stock_transfer_details(models.TransientModel):
             # for vals in item_vals:
             #     # vals['transfer_id'] = created_id.id
             #     t_operations.create(vals)
-            vals_ops = self._propose_pack_operations(item)
+            vals_ops = self._propose_pack_operations2(item)
             if vals_ops:
                 self.picking_id.write({'midban_operations': True})
             for vals in vals_ops:
