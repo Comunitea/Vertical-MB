@@ -56,6 +56,7 @@ class stock_transfer_details(models.TransientModel):
         Return a dictionary containing the values to create a pack operation
         with pack and his pack type setted when we can, or a operation without
         package in other case.
+        MANTLES WILL BE GROUPED INTO PALETES
         """
         res = []
         t_pack = self.env['stock.quant.package']
@@ -80,7 +81,11 @@ class stock_transfer_details(models.TransientModel):
             'picking_id': item.transfer_id.picking_id.id,
             'lot_id': item.lot_id.id
         }
-        if pack_type not in ['palet', 'mantle', 'box']:
+        ma_pa = item.product_id.supplier_ma_pa
+        ca_ma = item.product_id.supplier_ca_ma
+        un_ca = item.product_id.supplier_un_ca
+
+        if pack_type not in ['palet', 'mantle', 'box']:  # Only Units
             # item_vals.update({
             #     'quantity': num,
             # })
@@ -89,17 +94,27 @@ class stock_transfer_details(models.TransientModel):
                 'product_qty': num,
             })
             res.append(op_vals)
-        else:
+
+        elif pack_type == 'mantle':  # Group in a same palet the mantles.
+            pack_obj = t_pack.create({'pack_type': 'var_palet'})
+            new_name = pack_obj.name.replace("PACK", 'VAR PALET')
+            pack_obj.write({'name': new_name})
+            pack_units = ca_ma * un_ca
             for n in range(num):
-                ma_pa = item.product_id.supplier_ma_pa
-                ca_ma = item.product_id.supplier_ca_ma
-                un_ca = item.product_id.supplier_un_ca
+                op_vals.update({
+                    'result_package_id': pack_obj.id,
+                    'product_qty': pack_units,
+                })
+                res.append(dict(op_vals))
+
+        else:  # create a different pack and operation if box or palet
+            for n in range(num):
                 if pack_type == 'palet':
                     pack_units = ma_pa * ca_ma * un_ca
                     pack_name = 'PALET'
-                elif pack_type == 'mantle':
-                    pack_units = ca_ma * un_ca
-                    pack_name = 'MANTO'
+                # elif pack_type == 'mantle':
+                #     pack_units = ca_ma * un_ca
+                #     pack_name = 'MANTO'
                 elif pack_type == 'box':
                     pack_units = un_ca
                     pack_name = 'CAJA'

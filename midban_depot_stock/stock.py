@@ -76,7 +76,9 @@ class stock_package(osv.osv):
     _inherit = "stock.quant.package"
     _columns = {
         'pack_type': fields.selection([('box', 'Box'), ('mantle', 'Mantle'),
-                                       ('palet', 'Palet')], 'Pack Type',
+                                       ('palet', 'Palet'),
+                                       ('var_palet', 'Var Palet')],
+                                      'Pack Type',
                                       readonly=True),
         'product_id': fields.related('quant_ids', 'product_id', readonly=True,
                                      type="many2one", string="Product",
@@ -135,6 +137,7 @@ class stock_pack_operation(osv.osv):
         location_id = False
         loc_obj = self.pool.get('stock.location')
         storage_id = wh_obj.storage_loc_id.id
+        # import ipdb; ipdb.set_trace()
         if (ops.operation_product_id and
                 ops.operation_product_id.picking_location_id):
             product = ops.operation_product_id
@@ -159,13 +162,14 @@ class stock_pack_operation(osv.osv):
                                              context=context)
                     free_locs = []
                     # Remove Storage location from the list
-                    if loc_ids:
+                    if loc_ids and storage_id in loc_ids:
                         loc_ids.remove(storage_id)
                     for loc in loc_obj.browse(cr, uid, loc_ids,
                                               context=context):
-                        if ((not loc.current_product_id or
-                             loc.current_product_id.id == product.id) and
-                                loc.available_volume >= ops.volume):
+                        condition = True
+                        if ops.pack_type == 'palet':
+                            condition = not loc.current_product_id
+                        if condition and loc.available_volume >= ops.volume:
                             free_locs.append(loc.id)
 
                     location_id = self.\
@@ -178,36 +182,36 @@ class stock_pack_operation(osv.osv):
 
         return location_id
 
-    def _get_mants_groups(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        res = {}
-        prod_id = False
-        lot_id = False
-        for op_id in ids:
-            ops = self.browse(cr, uid, op_id, context=context)
-            if ops.pack_type == 'mantle':
-                # Get product inside the mantle
-                for quant in ops.package_id.quant_ids:
-                    if prod_id and prod_id != quant.product_id.id:
-                        msg = 'Can not manage packages with different products'
-                        raise osv.except_osv(_('Error!'), _(msg))
-                    # if lot_id and lot_id != quant.lot_id.id:
-                    #     msg = 'Can not manage packages with different lots'
-                    #     raise osv.except_osv(_('Error!'), _(msg))
-                    else:
-                        prod_id = quant.product_id.id
-                        lot_id = quant.lot_id.id
-                if not prod_id:
-                    raise osv.except_osv(_('Error!'), _('No product founded\
-                                                        inside package'))
-                if not prod_id in res:
-                    res[prod_id] = {lot_id: [ops.id]}
-                elif not lot_id in res[prod_id]:
-                    res[prod_id][lot_id] = [ops.id]
-                else:
-                    res[prod_id][lot_id].extend([ops.id])
-        return res
+    # def _get_mants_groups(self, cr, uid, ids, context=None):
+    #     if context is None:
+    #         context = {}
+    #     res = {}
+    #     prod_id = False
+    #     lot_id = False
+    #     for op_id in ids:
+    #         ops = self.browse(cr, uid, op_id, context=context)
+    #         if ops.pack_type == 'mantle':
+    #             # Get product inside the mantle
+    #             for quant in ops.package_id.quant_ids:
+    #                 if prod_id and prod_id != quant.product_id.id:
+    #                     msg = 'Can not manage packages with different products'
+    #                     raise osv.except_osv(_('Error!'), _(msg))
+    #                 # if lot_id and lot_id != quant.lot_id.id:
+    #                 #     msg = 'Can not manage packages with different lots'
+    #                 #     raise osv.except_osv(_('Error!'), _(msg))
+    #                 else:
+    #                     prod_id = quant.product_id.id
+    #                     lot_id = quant.lot_id.id
+    #             if not prod_id:
+    #                 raise osv.except_osv(_('Error!'), _('No product founded\
+    #                                                     inside package'))
+    #             if not prod_id in res:
+    #                 res[prod_id] = {lot_id: [ops.id]}
+    #             elif not lot_id in res[prod_id]:
+    #                 res[prod_id][lot_id] = [ops.id]
+    #             else:
+    #                 res[prod_id][lot_id].extend([ops.id])
+    #     return res
 
     def change_location_dest_id(self, cr, uid, ids, wh_obj,
                                 context=None):
@@ -217,9 +221,9 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
-        mant_group = self._get_mants_groups(cr, uid, ids,
-                                            context=context)
-        print mant_group
+        # mant_group = self._get_mants_groups(cr, uid, ids,
+        #                                     context=context)
+        # print mant_group
         for op_id in ids:
             ops = self.browse(cr, uid, op_id, context=context)
             prod_obj = False
@@ -279,6 +283,7 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
+        # import ipdb; ipdb.set_trace()
         for ope in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if ope.pack_type:
@@ -287,10 +292,18 @@ class stock_pack_operation(osv.osv):
                         (ope.operation_product_id.supplier_pa_height +
                          ope.operation_product_id.palet_wood_height) * \
                         ope.operation_product_id.supplier_pa_length
+                elif ope.pack_type == "var_palet":
+                    num_mant = len(ope.package_id.quant_ids)
+                    width_wood = ope.operation_product_id.supplier_pa_width
+                    length_wood = ope.operation_product_id.supplier_pa_length
+                    height_mant = ope.operation_product_id.supplier_ma_height
+                    wood_height = ope.operation_product_id.palet_wood_height
+                    height_var_pal = (num_mant * height_mant) + wood_height
+                    volume = width_wood * length_wood * height_var_pal
+
                 elif ope.pack_type == "mantle":
                     volume = ope.operation_product_id.supplier_ma_width * \
-                        (ope.operation_product_id.supplier_ma_height +
-                         ope.operation_product_id.mantle_wood_height) * \
+                        ope.operation_product_id.supplier_ma_height * \
                         ope.operation_product_id.supplier_ma_length
                 elif ope.pack_type == "box":
                     volume = ope.operation_product_id.supplier_ca_width * \
@@ -301,9 +314,7 @@ class stock_pack_operation(osv.osv):
                     ope.operation_product_id.supplier_un_height * \
                     ope.operation_product_id.supplier_un_length * \
                     ope.product_qty
-
             res[ope.id] = volume
-
         return res
 
     _columns = {
@@ -352,6 +363,7 @@ class stock_location(osv.Model):
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
+        # import ipdb; ipdb.set_trace()
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
@@ -439,6 +451,7 @@ class stock_quant(osv.Model):
         if context is None:
             context = {}
         res = {}
+        # import ipdb; ipdb.set_trace()
         for quant in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if quant.package_id and quant.package_id.pack_type:
@@ -450,12 +463,25 @@ class stock_quant(osv.Model):
                         (quant.product_id.supplier_pa_height +
                          quant.product_id.palet_wood_height) * \
                         quant.product_id.supplier_pa_length
+                elif quant.package_id.pack_type == "var_palet" and \
+                    quant.qty == len(quant.package_id.quant_ids) * \
+                    quant.product_id.supplier_ca_ma * \
+                        quant.product_id.supplier_un_ca:
+                        num_mant = len(quant.package_id.quant_ids)
+                        width_wood = quant.product_id.supplier_pa_width
+                        length_wood = quant.product_id.supplier_pa_length
+
+                        height_mant = quant.product_id.supplier_ma_height
+                        wood_height = quant.product_id.palet_wood_height
+                        height_var_pal = (num_mant * height_mant) + wood_height
+
+                        volume = width_wood * length_wood * height_var_pal
+
                 elif quant.package_id.pack_type == "mantle" and quant.qty == \
                     quant.product_id.supplier_ca_ma * \
                         quant.product_id.supplier_un_ca:
                     volume = quant.product_id.supplier_ma_width * \
-                        (quant.product_id.supplier_ma_height +
-                         quant.product_id.mantle_wood_height) * \
+                        quant.product_id.supplier_ma_height * \
                         quant.product_id.supplier_ma_length
                 elif quant.package_id.pack_type == "box" and quant.qty == \
                         quant.product_id.supplier_un_ca:
