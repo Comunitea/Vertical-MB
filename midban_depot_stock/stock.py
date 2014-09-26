@@ -138,6 +138,7 @@ class stock_pack_operation(osv.osv):
         loc_obj = self.pool.get('stock.location')
         storage_id = wh_obj.storage_loc_id.id
         # import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         if (ops.operation_product_id and
                 ops.operation_product_id.picking_location_id):
             product = ops.operation_product_id
@@ -239,6 +240,7 @@ class stock_pack_operation(osv.osv):
             if not prod_obj:
                 raise osv.except_osv(_('Error!'), _('No product founded\
                                                     inside package'))
+            # import ipdb; ipdb.set_trace()
             location_id = self._get_location(cr, uid, ops, wh_obj,
                                              context=context)
             if location_id:
@@ -363,10 +365,10 @@ class stock_location(osv.Model):
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
-        # import ipdb; ipdb.set_trace()
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
+        # import ipdb; ipdb.set_trace()
         for loc in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
@@ -375,11 +377,13 @@ class stock_location(osv.Model):
             for quant in quant_obj.browse(cr, uid, quant_ids, context=context):
                 volume += quant.volume
 
-            operation_ids = ope_obj.search(cr, uid, [('location_dest_id', '=',
-                                                      loc.id), ('processed',
-                                                                '=',
-                                                                'false')],
-                                           context=context)
+            domain = [
+                ('location_dest_id', '=', loc.id),
+                ('processed', '=', 'false'),
+                ('picking_id.state', 'in', ['assigned'])
+
+            ]
+            operation_ids = ope_obj.search(cr, uid, domain, context=context)
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
 
@@ -402,11 +406,13 @@ class stock_location(osv.Model):
                 res[loc.id] = quant_obj.browse(cr, uid, quant_ids[0],
                                                context=context).product_id.id
             else:
-                operation_ids = ope_obj.search(cr, uid, [('location_dest_id',
-                                                          '=', loc.id),
-                                                         ('processed', '=',
-                                                          'false')],
-                                               context=context, limit=1)
+                domain = [
+                    ('location_dest_id', '=', loc.id),
+                    ('processed', '=', 'false'),
+                    ('picking_id.state', 'in', ['assigned'])
+                ]
+                operation_ids = ope_obj.search(cr, uid, domain, limit=1,
+                                               context=context)
                 if operation_ids:
                     res[loc.id] = ope_obj.browse(cr, uid, operation_ids[0],
                                                  context=context).\
