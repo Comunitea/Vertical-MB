@@ -22,10 +22,22 @@ from openerp.osv import osv, fields
 from openerp import api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+import time
 
 
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
+
+    def _get_is_today_picking(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for pick in self.browse(cr, uid, ids, context=context):
+            date_picking = pick.min_date.split(" ")[0]
+            today = time.strftime('%Y-%m-%d')
+            res[pick.id] = date_picking == today and True or False
+        return res
+
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        readonly=True,
@@ -40,7 +52,9 @@ class stock_picking(osv.osv):
                                       'Task Type', readonly=True),
         'route_id': fields.many2one('route', 'Transport Route', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
-        'midban_operations': fields.boolean("Exist midban operation")
+        'midban_operations': fields.boolean("Exist midban operation"),
+        'today': fields.function(_get_is_today_picking, type="boolean",
+                                 readonly=True, string="Is today picking"),
     }
 
     @api.cr_uid_ids_context

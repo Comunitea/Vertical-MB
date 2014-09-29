@@ -272,7 +272,6 @@ class assign_task_wzd(osv.TransientModel):
         if not obj.temp_id:
             raise osv.except_osv(_('Error!'), _('Temperature is required to \
                                                  do a picking task'))
-
         to_pick_moves = move_obj.search(cr, uid, [('picking_type_id', '=',
                                                   obj.warehouse_id.
                                                   pick_type_id.id),

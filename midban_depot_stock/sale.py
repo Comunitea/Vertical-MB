@@ -19,10 +19,22 @@
 #
 ##############################################################################
 from openerp.osv import osv, fields
+import time
 
 
 class sale_order(osv.Model):
     _inherit = 'sale.order'
+
+    def _get_is_today_order(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for order in self.browse(cr, uid, ids, context=context):
+            date_order = order.date_order.split(" ")[0]
+            today = time.strftime('%Y-%m-%d')
+            res[order.id] = date_order == today and True or False
+        return res
+
     _columns = {
         'route_id': fields.many2one('route', 'Route', domain=[('state', '=',
                                                                'active')],
@@ -31,7 +43,9 @@ class sale_order(osv.Model):
                                                              False)],
                                                            'sent':
                                                            [('readonly',
-                                                             False)]})
+                                                             False)]}),
+        'today': fields.function(_get_is_today_order, type="boolean",
+                                 readonly=True, string="Is today order"),
     }
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):

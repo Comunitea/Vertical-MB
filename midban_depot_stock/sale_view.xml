@@ -12,5 +12,43 @@
                 </field>
              </field>
          </record>
+
+         <record id="view_order_tree_add_route" model="ir.ui.view">
+            <field name="name">view_order_tree_add_route</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name='state' position="after">
+                    <field name="route_id"/>
+                    <field name="today" invisible="1"/>
+                </field>
+             </field>
+         </record>
+
+         <record id="view_quotation_tree_add_route" model="ir.ui.view">
+            <field name="name">view_quotation_tree_add_route</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <field name='state' position="after">
+                    <field name="route_id"/>
+                    <field name="today" invisible="1"/>
+                </field>
+             </field>
+         </record>
+
+         <record id="view_sales_order_filter_add_route_today" model="ir.ui.view">
+            <field name="name">sale.order.list.select</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <filter name="today" domain="[('today','=',True)]"/>
+                </field>
+                <filter string="Order Month" position="after">
+                    <filter string="Route" context="{'group_by':'route_id'}"/>
+                </filter>
+            </field>
+        </record>
     </data>
 </openerp>
