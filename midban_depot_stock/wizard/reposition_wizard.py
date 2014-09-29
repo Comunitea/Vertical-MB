@@ -159,7 +159,7 @@ class reposition_wizard(osv.TransientModel):
                 'picking_type_id': reposition_task_type_id}
         pick_id = t_pick.create(cr, uid, vals, context=context)
         created_moves = []
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         for loc_id in selected_ids:
             newm = self._get_reposition_operations(cr, uid, ids, loc_id,
                                                    pick_id, context=context)
