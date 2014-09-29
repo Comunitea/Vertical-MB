@@ -41,9 +41,14 @@ class sale_order_line(osv.osv):
         t_priclist = self.pool.get("product.pricelist")
         for line in self.browse(cr, uid, ids, context):
             pricelist_id = line.order_id.pricelist_id.id
-            result = t_priclist._get_product_pvp(cr, uid, line.product_id.id,
-                                                 pricelist_id)
-            res[line.id] = result[0] or 0.0
+            # result = t_priclist._get_product_pvp(cr, uid, line.product_id.id,
+            #                                      pricelist_id)
+            price = t_priclist.price_get(cr, uid, [pricelist_id],
+                                              line.product_id.id, line.product_uom_qty or 1.0, line.order_id.partner_id.id,
+                                              {'uom': line.product_uom.id ,
+                                               'date': line.order_id.date_order})[pricelist_id]
+
+            res[line.id] = price or 0.0
         return res
 
     _columns = {

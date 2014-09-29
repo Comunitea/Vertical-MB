@@ -48,6 +48,7 @@ class reposition_wizard(osv.TransientModel):
         if context is None:
             context = {}
         newm = False
+        import ipdb; ipdb.set_trace()
         obj = self.browse(cr, uid, ids[0], context=context)
         pick_type = obj.warehouse_id.reposition_type_id
         move_obj = self.pool.get('stock.move')
@@ -59,34 +60,52 @@ class reposition_wizard(osv.TransientModel):
         loc = loc_obj.browse(cr, uid, dest_id, context=context)
         if prod_ids:
             context['compute_child'] = True
-            context['location'] = obj.warehouse_id.storage_loc_id.id
+            storage_id = obj.warehouse_id.storage_loc_id.id
             product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
-            unit_volume = product.supplier_un_width * \
-                product.supplier_un_height * product.supplier_un_length
-            if not unit_volume:
-                raise osv.except_osv(_('Error!'),
-                                     _('Product Unit volume equals to zero.'))
-            requested_units = round(((obj.capacity / 100.0) * loc.volume) /
-                                    unit_volume, 2)
-            context['location'] = dest_id
-            context['compute_child'] = False
-            prod_loc = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
-            requested_units -= prod_loc.qty_available
-            if product.virtual_available >= requested_units:
-                newm = move_obj.create(cr, uid,
+
+            # un_ca = product.supplier_un_ca
+            # ca_ma = product.supplier_ca_ma
+            # ma_pa = product.supplier_ma_pa
+
+            # box_units = un_ca
+            # mantle_units = un_ca * ca_ma
+            # palet_units = un_ca * ca_ma * ma_pa
+
+            vol_aval = loc.available_volume
+            vol_palet = product.supplier_pa_length * \
+                product.supplier_pa_width * product.supplier_pa_height
+            vol_mantle = product.supplier_ma_length * \
+                product.supplier_ma_width * product.supplier_ma_height
+            t_quant = self.pool.get('stock.quant')
+            domain = [
+                ('location_id', 'child_of', [storage_id]),
+                ('package_id.pack_type', '=', 'palet'),
+                ('qty', '>', 0)
+            ]
+            quant_pal_ids = t_quant.search(cr, uid, domain, context=context)
+            quant_ids = quant_pal_ids
+            domain = [
+                ('location_id', 'child_of', [storage_id]),
+                ('package_id.pack_type', '=', 'var_palet'),
+                ('qty', '>', 0)
+            ]
+            quant_ma_ids = t_quant.search(cr, uid, domain, context=context)
+            quant_ids.extend(quant_ma_ids)
+            for quant in t_quant.browse(cr, uid, quant_ids, context):
+                if quant.volume < vol_aval:
+                    newm = move_obj.create(cr, uid,
                                        {'product_id': product.id,
-                                        'product_uom_qty': requested_units,
-                                        'location_id': pick_type.
-                                        default_location_src_id.id,
-                                        'location_dest_id': pick_type.
-                                        default_location_dest_id.id,
+                                        'product_uom_qty': quant.qty,
+                                        'location_id': quant.location_id.id,
+                                        'location_dest_id': loc.id,
                                         'product_uom': product.uom_id.id,
                                         'picking_id': pick_id,
                                         'picking_type_id': pick_type.id,
                                         'warehouse_id': obj.warehouse_id.id,
                                         'name': _("Reposition")},
                                        context=context)
-
+                    vol_aval -= quant.volume
+                    
         return newm
 
     def get_reposition_list(self, cr, uid, ids, context=None):
@@ -111,6 +130,7 @@ class reposition_wizard(osv.TransientModel):
         # Obtener ubicaciones con un porcentaje de capacidad de ocupación
         # menores que el dado por el asistente
         selected_ids = []
+        # import ipdb; ipdb.set_trace()
         # get list of locations under wizard capacity filled
         for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
             volume = loc.volume
@@ -138,6 +158,7 @@ class reposition_wizard(osv.TransientModel):
                 'picking_type_id': reposition_task_type_id}
         pick_id = t_pick.create(cr, uid, vals, context=context)
         created_moves = []
+        selected_ids = [34]
         for loc_id in selected_ids:
             newm = self._get_reposition_operations(cr, uid, ids, loc_id,
                                                    pick_id, context=context)
@@ -146,8 +167,9 @@ class reposition_wizard(osv.TransientModel):
         if created_moves:
             t_pick.action_confirm(cr, uid, [pick_id], context=context)
             t_pick.action_assign(cr, uid, [pick_id], context=context)
-            t_pick.prepare_package_type_operations(cr, uid, [pick_id],
-                                                   context=context)
+            # t_pick.prepare_package_type_operations(cr, uid, [pick_id],
+            #                                        context=context)
+            t_pick.do_prepare_partial(cr, uid, [pick_id], context=context)
         else:
             raise osv.except_osv(_('Error!'),
                                  _('Nothing to do.'))

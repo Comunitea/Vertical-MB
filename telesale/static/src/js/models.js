@@ -111,6 +111,7 @@ function openerp_ts_models(instance, module){
         },
         // helper function to load data from the server
         fetch: function(model, fields, domain, ctx){
+            console.log("BBBBBBBBBB")
             return new instance.web.Model(model).query(fields).filter(domain).context(ctx).all()
         },
          // helper function to load last_
@@ -783,12 +784,14 @@ function openerp_ts_models(instance, module){
             // console.log(date_str);
             var self=this;
             var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done']]]
+            console.log("AAAAAAAAAAAA")
             var loaded = self.ts_model.fetch('sale.order.line',
                                             ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp'],
                                             domain
                                             )
                 .then(function(order_lines){
                     // console.log(order_lines);
+                    console.log("CCCCCCCCC")
                     self.add_lines_to_current_order(order_lines);
                 })
             return loaded

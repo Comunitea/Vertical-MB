@@ -338,8 +338,8 @@ class assign_task_wzd(osv.TransientModel):
                             'warehouse_id': obj.warehouse_id.id,
                             'task_type': 'picking'},
                            context=context)
-            pick_obj.prepare_package_type_operations(cr, uid, pickings_to_wave,
-                                                     context=context)
+            pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
+                                        context=context)
 
             wave_id = wave_obj.create(cr, uid, {'user_id': obj.operator_id.id,
                                                 'picking_ids':

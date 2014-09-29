@@ -74,6 +74,7 @@
                 <field name="wh_output_stock_loc_id" position="after">
                     <field name="storage_loc_id"/>
                     <field name="picking_loc_id"/>
+                    <field name="lot_stock_id"/>
                 </field>
 
                 <field name="out_type_id" position="after">
