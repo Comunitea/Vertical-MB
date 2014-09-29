@@ -13,5 +13,17 @@
             </field>
         </record>
 
+        <record id="view_purchase_order_filter_add_today" model="ir.ui.view">
+            <field name="name">view_purchase_order_filter_add_today</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+               <filter name="draft" position="before">
+                   <filter string="Today" domain="[('date_order','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59')),('date_order','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]"/>
+                   <separator/>
+                </filter>
+            </field>
+        </record>
+
     </data>
 </openerp>

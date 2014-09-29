@@ -24,6 +24,6 @@ from openerp.osv import osv, fields
 class res_partner(osv.Model):
     _inherit = 'res.partner'
     _columns = {
-        'route_id': fields.many2one('route', 'Route', domain=[('state', '=',
-                                                               'active')])
+        'route_id': fields.many2one('route', 'Transport Route',
+        	                        domain=[('state', '=', 'active')])
     }

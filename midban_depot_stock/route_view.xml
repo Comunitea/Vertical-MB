@@ -6,7 +6,7 @@
             <field name="name">route.view.tree</field>
             <field name="model">route</field>
             <field name="arch" type="xml">
-                <tree string="Routes">
+                <tree string="Transport Routes">
                     <field name="code"/>
                     <field name="name"/>
                     <field name="vehicle_id"/>
@@ -46,7 +46,7 @@
             </field>
         </record>
 
-        <menuitem action="action_route" id="menu_routes_sales_order" name="Routes" sequence="2" parent="menu_stock_vehicle_route_mgmt"/>
+        <menuitem action="action_route" id="menu_routes_sales_order" name="Transport Routes" sequence="2" parent="menu_stock_vehicle_route_mgmt"/>
 
 
     </data>

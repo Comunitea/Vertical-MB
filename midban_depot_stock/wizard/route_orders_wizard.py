@@ -26,7 +26,7 @@ class route_order_wizard(osv.TransientModel):
     _name = "route.order.wizard"
     _rec_name = "route_id"
     _columns = {
-        'route_id': fields.many2one('route', 'Route',
+        'route_id': fields.many2one('route', 'Transport Route',
                                     required=True,
                                     domain=[('state', '=', 'active')]),
     }

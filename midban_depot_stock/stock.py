@@ -22,22 +22,11 @@ from openerp.osv import osv, fields
 from openerp import api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-import time
+# import time
 
 
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
-
-    def _get_is_today_picking(self, cr, uid, ids, name, args, context=None):
-        if context is None:
-            context = {}
-        res = {}
-        for pick in self.browse(cr, uid, ids, context=context):
-            date_picking = pick.min_date.split(" ")[0]
-            today = time.strftime('%Y-%m-%d')
-            res[pick.id] = date_picking == today and True or False
-        return res
-
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        readonly=True,
@@ -53,8 +42,6 @@ class stock_picking(osv.osv):
         'route_id': fields.many2one('route', 'Transport Route', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
-        'today': fields.function(_get_is_today_picking, type="boolean",
-                                 readonly=True, string="Is today picking"),
     }
 
     @api.cr_uid_ids_context
@@ -151,8 +138,6 @@ class stock_pack_operation(osv.osv):
         location_id = False
         loc_obj = self.pool.get('stock.location')
         storage_id = wh_obj.storage_loc_id.id
-        # import ipdb; ipdb.set_trace()
-        # import ipdb; ipdb.set_trace()
         if (ops.operation_product_id and
                 ops.operation_product_id.picking_location_id):
             product = ops.operation_product_id
@@ -197,37 +182,6 @@ class stock_pack_operation(osv.osv):
 
         return location_id
 
-    # def _get_mants_groups(self, cr, uid, ids, context=None):
-    #     if context is None:
-    #         context = {}
-    #     res = {}
-    #     prod_id = False
-    #     lot_id = False
-    #     for op_id in ids:
-    #         ops = self.browse(cr, uid, op_id, context=context)
-    #         if ops.pack_type == 'mantle':
-    #             # Get product inside the mantle
-    #             for quant in ops.package_id.quant_ids:
-    #                 if prod_id and prod_id != quant.product_id.id:
-    #                     msg = 'Can not manage packages with different products'
-    #                     raise osv.except_osv(_('Error!'), _(msg))
-    #                 # if lot_id and lot_id != quant.lot_id.id:
-    #                 #     msg = 'Can not manage packages with different lots'
-    #                 #     raise osv.except_osv(_('Error!'), _(msg))
-    #                 else:
-    #                     prod_id = quant.product_id.id
-    #                     lot_id = quant.lot_id.id
-    #             if not prod_id:
-    #                 raise osv.except_osv(_('Error!'), _('No product founded\
-    #                                                     inside package'))
-    #             if not prod_id in res:
-    #                 res[prod_id] = {lot_id: [ops.id]}
-    #             elif not lot_id in res[prod_id]:
-    #                 res[prod_id][lot_id] = [ops.id]
-    #             else:
-    #                 res[prod_id][lot_id].extend([ops.id])
-    #     return res
-
     def change_location_dest_id(self, cr, uid, ids, wh_obj,
                                 context=None):
         """
@@ -236,9 +190,6 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
-        # mant_group = self._get_mants_groups(cr, uid, ids,
-        #                                     context=context)
-        # print mant_group
         for op_id in ids:
             ops = self.browse(cr, uid, op_id, context=context)
             prod_obj = False
@@ -254,7 +205,6 @@ class stock_pack_operation(osv.osv):
             if not prod_obj:
                 raise osv.except_osv(_('Error!'), _('No product founded\
                                                     inside package'))
-            # import ipdb; ipdb.set_trace()
             location_id = self._get_location(cr, uid, ops, wh_obj,
                                              context=context)
             if location_id:
@@ -564,7 +514,6 @@ class stock_move(osv.osv):
         'route_id': fields.related('procurement_id', 'route_id', readonly=True,
                                    string='Transport Route', relation="route",
                                    type="many2one"),
-
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
