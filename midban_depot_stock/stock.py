@@ -332,7 +332,6 @@ class stock_location(osv.Model):
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
-        # import ipdb; ipdb.set_trace()
         for loc in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
@@ -352,7 +351,24 @@ class stock_location(osv.Model):
                 volume += ope.volume
 
             res[loc.id] = loc.volume - volume
+        return res
 
+    def _search_available_volume(self, cr, uid, obj, name, args, context=None):
+        if context is None:
+            context = {}
+        sel_loc_ids = []
+        volume = args and args[0][2] or False
+        if args and context.get('operation', False):
+            op = context['operation']
+            loc_ids = obj.search(cr, uid, [], context=context)
+            for loc in obj.browse(cr, uid, loc_ids, context=context):
+                if op == 'equal' and loc.available_volume == volume:
+                    sel_loc_ids.append(loc.id)
+                elif op == 'greater'and loc.available_volume > volume:
+                    sel_loc_ids.append(loc.id)
+                elif op == 'less'and loc.available_volume < volume:
+                    sel_loc_ids.append(loc.id)
+        res = [('id', 'in', sel_loc_ids)]
         return res
         
     def _get_filled_percentage(self, cr, uid, ids, name, args, context=None):
@@ -361,8 +377,8 @@ class stock_location(osv.Model):
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
-        # import ipdb; ipdb.set_trace()
         for loc in self.browse(cr, uid, ids, context=context):
+            
             volume = 0.0
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
                                                     loc.id)],
@@ -380,8 +396,26 @@ class stock_location(osv.Model):
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
 
-            res[loc.id] = loc.volume and volume * 100 / loc.volume - volume \
-                or 0.0
+            res[loc.id] = loc.volume and ((volume * 100) / loc.volume) or 0.0
+        return res
+
+    def _search_filled_percent(self, cr, uid, obj, name, args, context=None):
+        if context is None:
+            context = {}
+        sel_loc_ids = []
+        percentage = args and args[0][2] or False
+        if args and context.get('operation', False):
+            op = context['operation']
+            loc_ids = obj.search(cr, uid, [], context=context)
+            for loc in obj.browse(cr, uid, loc_ids, context=context):
+                if op == 'equal' and loc.filled_percent == percentage:
+                    sel_loc_ids.append(loc.id)
+                elif op == 'greater'and loc.filled_percent > percentage:
+                    sel_loc_ids.append(loc.id)
+                elif op == 'less'and loc.filled_percent < percentage:
+                    sel_loc_ids.append(loc.id)
+        res = [('id', 'in', sel_loc_ids)]
+
         return res
 
     def _get_current_product_id(self, cr, uid, ids, name, args, context=None):
@@ -410,7 +444,6 @@ class stock_location(osv.Model):
                     res[loc.id] = ope_obj.browse(cr, uid, operation_ids[0],
                                                  context=context).\
                         operation_product_id.id
-
         return res
 
     _columns = {
@@ -427,12 +460,13 @@ class stock_location(osv.Model):
         'available_volume': fields.
         function(_get_available_volume, readonly=True, type="float",
                  string="Available volume",
-                 digits_compute=dp.get_precision('Product Price')),
+                 digits_compute=dp.get_precision('Product Price'),
+                 fnct_search=_search_available_volume),
         'filled_percent': fields.function(_get_filled_percentage, type="float",
                                           string="Filled %",
                                           digits_compute=
                                           dp.get_precision('Product Price'),
-                                          store=True),
+                                          fnct_search=_search_filled_percent),
         'storage_type': fields.selection([('standard', 'Standard'),
                                          ('boxes', 'Boxes')],
                                          'Storage Type'),

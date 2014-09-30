@@ -6,14 +6,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-30 11:33+0000\n"
-"PO-Revision-Date: 2014-09-30 11:33+0000\n"
+"POT-Creation-Date: 2014-09-30 15:31+0000\n"
+"PO-Revision-Date: 2014-09-30 15:31+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "% Filled equals"
+msgstr "% Ocupación igual"
+
+#. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "% Filled greater"
+msgstr "% Ocupación mayor"
+
+#. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "% Filled less"
+msgstr "% Ocupación menor"
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,help:midban_depot_stock.action_stock_machine
@@ -115,6 +130,21 @@ msgid "Assigned"
 msgstr "Asignada"
 
 #. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "Available equals"
+msgstr "Disponible igual"
+
+#. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "Available greater"
+msgstr "Disponible mayor"
+
+#. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "Available less"
+msgstr "Disponible menor"
+
+#. module: midban_depot_stock
 #: field:stock.location,available_volume:0
 msgid "Available volume"
 msgstr "Volumen disponible"
@@ -123,6 +153,11 @@ msgstr "Volumen disponible"
 #: selection:stock.quant.package,pack_type:0
 msgid "Box"
 msgstr "Caja"
+
+#. module: midban_depot_stock
+#: model:product.uom,name:midban_depot_stock.product_uom_box
+msgid "Box(es)"
+msgstr "Caja(s)"
 
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
@@ -260,7 +295,7 @@ msgid "Exist midban operation"
 msgstr "Existe operación de midban"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:38
+#: code:addons/midban_depot_stock/product.py:44
 #: sql_constraint:product.template:0
 #, python-format
 msgid "Field Location picking is already setted"
@@ -274,7 +309,7 @@ msgstr "% Ocupación"
 #. module: midban_depot_stock
 #: field:reposition.wizard,capacity:0
 msgid "Filled Percentage"
-msgstr "Porcentaje ocupación"
+msgstr "Porcentaje llenado"
 
 #. module: midban_depot_stock
 #: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
@@ -416,6 +451,11 @@ msgid "Mantle"
 msgstr "Manto"
 
 #. module: midban_depot_stock
+#: model:product.uom,name:midban_depot_stock.product_uom_mantle
+msgid "Mantle(s)"
+msgstr "Manto(s)"
+
+#. module: midban_depot_stock
 #: field:stock.warehouse,max_boxes_move:0
 msgid "Max. boxes to move in picking"
 msgstr "Cajas máximas a move en picking"
@@ -536,6 +576,11 @@ msgid "Palet"
 msgstr "Palet"
 
 #. module: midban_depot_stock
+#: model:product.uom,name:midban_depot_stock.product_uom_palet
+msgid "Palet(s)"
+msgstr "Palet(s)"
+
+#. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_res_partner
 msgid "Partner"
 msgstr "Empresa"
@@ -596,7 +641,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:590
+#: code:addons/midban_depot_stock/stock.py:624
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -669,7 +714,7 @@ msgstr "Modelo ruta"
 #: model:ir.actions.act_window,name:midban_depot_stock.action_route
 #: view:route:midban_depot_stock.route_view_form
 msgid "Routes"
-msgstr "Rutas de transporte"
+msgstr "Rutas"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.menu_stock_vehicle_route_mgmt
@@ -679,7 +724,7 @@ msgstr "Rutas y vehículos"
 #. module: midban_depot_stock
 #: model:res.groups,name:midban_depot_stock.routes_manager
 msgid "Routes manager"
-msgstr "Gestor rutas transporte"
+msgstr "Gestor rutas"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_sale_order
@@ -709,7 +754,7 @@ msgstr "Buscar vehículos"
 #. module: midban_depot_stock
 #: view:route.order.wizard:midban_depot_stock.route_order_wizard_view
 msgid "Select Route"
-msgstr "Seleccionar ruta transporte"
+msgstr "Seleccionar ruta"
 
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
@@ -930,10 +975,10 @@ msgstr "picking_id"
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_search
 msgid "type"
-msgstr "tipo"
+msgstr "type"
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,name:midban_depot_stock.action_stock_vehicle
 msgid "vehicles"
-msgstr "Vehículos"
+msgstr "vehicles"
 
