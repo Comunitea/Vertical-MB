@@ -260,30 +260,6 @@ class crm_phonecall(osv.Model):
     }
 
 
-class product_uom(osv.Model):
-    """
-    like_type field let the sistem know wich is the unit type.
-    It defines units, kg, boxes, mantles and palets.
-    """
-    _inherit = "product.uom"
-
-    _columns = {
-        'like_type': fields.selection([('units', 'Units'),
-                                       ('kg', 'Kg'),
-                                       ('boxes', 'Boxes'),
-                                       ('mantles', 'Mantles'),
-                                       ('palets', 'Palets')], 'Equals to'),
-    }
-    _defaults = {
-        'like_type': '',
-    }
-
-    # _sql_constraints = [
-    #     ('like_type_uniq', 'unique(like_type)',
-    #      _("Field Equals to is already setted"))
-    # ]
-
-
 class res_company(osv.Model):
     _inherit = 'res.company'
 

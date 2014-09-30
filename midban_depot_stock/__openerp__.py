@@ -36,7 +36,9 @@
         "procurement_jit",
         "stock_picking_wave",
         "sale",
-        "procurement"
+        "procurement",
+        "product",
+        "midban_product"
     ],
     "data": [
         'res_users_view.xml',
@@ -56,6 +58,7 @@
         "wizard/route_assign_wizard_view.xml",
         "wizard/route_orders_wizard_view.xml",
         "wizard/stock_transfer_details.xml",
+        "data/product_data.xml",
     ],
     "demo": [],
     "test": [],

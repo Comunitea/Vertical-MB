@@ -20,6 +20,8 @@
 ##############################################################################
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
+import openerp.addons.decimal_precision as dp
+
 
 class product_template(osv.Model):
     """
@@ -32,8 +34,32 @@ class product_template(osv.Model):
                                                'Location Picking',
                                                domain=[('usage', '=',
                                                         'internal')]),
+        'volume': fields.float('Volume', help="The volume in m3.",
+                               digits_compute=
+                               dp.get_precision('Product Volume')),
+
     }
     _sql_constraints = [
         ('location_id_uniq', 'unique(picking_location_id)',
          _("Field Location picking is already setted"))
     ]
+
+
+class product_uom(osv.Model):
+    """
+    like_type field let the sistem know wich is the unit type.
+    It defines units, kg, boxes, mantles and palets.
+    """
+    _inherit = "product.uom"
+
+    _columns = {
+        'like_type': fields.selection([('units', 'Units'),
+                                       ('kg', 'Kg'),
+                                       ('boxes', 'Boxes'),
+                                       ('mantles', 'Mantles'),
+                                       ('palets', 'Palets')], 'Equals to',
+                                      readonly=True),
+    }
+    _defaults = {
+        'like_type': '',
+    }
