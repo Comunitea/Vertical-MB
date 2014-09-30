@@ -265,7 +265,6 @@ class product_pricelist(osv.Model):
                         cat = cat.parent_id
                     if not cat:
                         continue
-                # import ipdb; ipdb.set_trace()
                 if rule.base == -1:
                     if rule.base_pricelist_id:
                         price_tmp = self._price_get_multi(cr, uid,

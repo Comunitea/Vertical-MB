@@ -170,8 +170,6 @@ class stock_transfer_details(models.TransientModel):
 
     def _propose_pack_operations(self, item):
         res = []
-        # import ipdb
-        # ipdb.set_trace()
         int_pal, int_man, int_box, units = self._get_unit_conversions(item)
 
         if int_pal:

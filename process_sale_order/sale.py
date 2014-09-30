@@ -65,7 +65,6 @@ class sale_order_line(models.Model):
         do_onchange controlls the calls to this function
         """
         # res = {'value': {'do_onchange': 0, 'choose_unit': 'unit'}}
-        # import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         # if do_onchange < 0:

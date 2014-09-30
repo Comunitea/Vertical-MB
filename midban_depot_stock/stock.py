@@ -249,7 +249,6 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
-        # import ipdb; ipdb.set_trace()
         for ope in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if ope.pack_type:
@@ -489,7 +488,6 @@ class stock_quant(osv.Model):
         if context is None:
             context = {}
         res = {}
-        # import ipdb; ipdb.set_trace()
         for quant in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if quant.package_id and quant.package_id.pack_type:

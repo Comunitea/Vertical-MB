@@ -173,8 +173,9 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         t_task.create(cr, uid, vals, context=context)
-        return self._print_report(cr, uid, ids, picking_id=pick.id,
-                                  context=context)
+        self._print_report(cr, uid, ids, picking_id=pick.id,
+                           context=context)
+        return True
 
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -254,8 +255,9 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         t_task.create(cr, uid, vals, context=context)
-        return self._print_report(cr, uid, ids, picking_id=pick.id,
-                                  context=context)
+        self._print_report(cr, uid, ids, picking_id=pick.id,
+                           context=context)
+        return True
 
     def get_picking_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -354,12 +356,13 @@ class assign_task_wzd(osv.TransientModel):
                 'state': 'assigned',
             }
             task_obj.create(cr, uid, vals, context=context)
-            return self._print_report(cr, uid, ids, wave_id=wave_id,
-                                      context=context)
+            self._print_report(cr, uid, ids, wave_id=wave_id,
+                               context=context)
+            return True
 
     def get_task(self, cr, uid, ids, context=None):
         try:
-            return self.get_location_task(cr, uid, ids, context=context)
+            self.get_location_task(cr, uid, ids, context=context)
         except:
             pass
         try:
