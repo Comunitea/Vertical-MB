@@ -21,6 +21,7 @@
 from openerp.osv import osv, fields
 import time
 from openerp.tools.translate import _
+from openerp import workflow
 
 
 class supplier_transport(osv.Model):
@@ -121,6 +122,23 @@ class res_partner(osv.Model):
         'active': False,  # it's fixed true when you register a product
         'state2': 'val_pending',
     }
+
+    def create(self, cr, uid, vals, context=None):
+        """
+        When a contact is created from a parent partner, validate it
+        automatically.
+        """
+        if not context:
+            context = {}
+        partner_id = super(res_partner, self).create(cr, uid, vals, context)
+        if vals.get('parent_id', False):
+            workflow.trg_validate(uid, 'res.partner', partner_id,
+                                  'logic_validated', cr)
+            workflow.trg_validate(uid, 'res.partner', partner_id,
+                                  'commercial_validated', cr)
+            workflow.trg_validate(uid, 'res.partner', partner_id,
+                                  'active', cr)
+        return partner_id
 
     def _update_history(self, cr, uid, ids, context, partner_obj, activity):
         """ Update partner history model for the argument partner_obj whith
