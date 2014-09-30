@@ -354,6 +354,35 @@ class stock_location(osv.Model):
             res[loc.id] = loc.volume - volume
 
         return res
+        
+    def _get_filled_percentage(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        quant_obj = self.pool.get('stock.quant')
+        ope_obj = self.pool.get('stock.pack.operation')
+        # import ipdb; ipdb.set_trace()
+        for loc in self.browse(cr, uid, ids, context=context):
+            volume = 0.0
+            quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
+                                                    loc.id)],
+                                         context=context)
+            for quant in quant_obj.browse(cr, uid, quant_ids, context=context):
+                volume += quant.volume
+
+            domain = [
+                ('location_dest_id', '=', loc.id),
+                ('processed', '=', 'false'),
+                ('picking_id.state', 'in', ['assigned'])
+
+            ]
+            operation_ids = ope_obj.search(cr, uid, domain, context=context)
+            for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
+                volume += ope.volume
+
+            res[loc.id] = loc.volume and volume * 100 / loc.volume - volume \
+                or 0.0
+        return res
 
     def _get_current_product_id(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -399,6 +428,11 @@ class stock_location(osv.Model):
         function(_get_available_volume, readonly=True, type="float",
                  string="Available volume",
                  digits_compute=dp.get_precision('Product Price')),
+        'filled_percent': fields.function(_get_filled_percentage, type="float",
+                                          string="Filled %",
+                                          digits_compute=
+                                          dp.get_precision('Product Price'),
+                                          store=True),
         'storage_type': fields.selection([('standard', 'Standard'),
                                          ('boxes', 'Boxes')],
                                          'Storage Type'),
@@ -476,26 +510,26 @@ class stock_quant(osv.Model):
     }
 
 
-class product_putaway_strategy(osv.osv):
-    _inherit = 'product.putaway'
+# class product_putaway_strategy(osv.osv):
+#     _inherit = 'product.putaway'
 
-    def _get_putaway_options(self, cr, uid, context=None):
-        res = super(product_putaway_strategy, self).\
-            _get_putaway_options(cr, uid, context=context)
-        res.extend([('product_pick_location', 'Product picking location')])
-        return res
+#     def _get_putaway_options(self, cr, uid, context=None):
+#         res = super(product_putaway_strategy, self).\
+#             _get_putaway_options(cr, uid, context=context)
+#         res.extend([('product_pick_location', 'Product picking location')])
+#         return res
 
-    columns = {
-        'method': fields.selection(_get_putaway_options, "Method",
-                                   required=True),
-    }
+#     columns = {
+#         'method': fields.selection(_get_putaway_options, "Method",
+#                                    required=True),
+#     }
 
-    def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
-        if putaway_strat.method == 'product_pick_location':
-            return product.picking_location_id.id
-        else:
-            return super(product_putaway_strategy, self).\
-                putaway_apply(cr, uid, putaway_strat, product, context=context)
+#     def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
+#         if putaway_strat.method == 'product_pick_location':
+#             return product.picking_location_id.id
+#         else:
+#             return super(product_putaway_strategy, self).\
+#                 putaway_apply(cr, uid, putaway_strat, product, context=context)
 
 
 class procurement_order(osv.osv):
