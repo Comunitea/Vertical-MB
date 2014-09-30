@@ -669,7 +669,7 @@ msgstr "Modelo ruta"
 #: model:ir.actions.act_window,name:midban_depot_stock.action_route
 #: view:route:midban_depot_stock.route_view_form
 msgid "Routes"
-msgstr "Rutas"
+msgstr "Rutas de transporte"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.menu_stock_vehicle_route_mgmt
@@ -679,7 +679,7 @@ msgstr "Rutas y vehículos"
 #. module: midban_depot_stock
 #: model:res.groups,name:midban_depot_stock.routes_manager
 msgid "Routes manager"
-msgstr "Gestor rutas"
+msgstr "Gestor rutas transporte"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_sale_order
@@ -709,7 +709,7 @@ msgstr "Buscar vehículos"
 #. module: midban_depot_stock
 #: view:route.order.wizard:midban_depot_stock.route_order_wizard_view
 msgid "Select Route"
-msgstr "Seleccionar ruta"
+msgstr "Seleccionar ruta transporte"
 
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
@@ -930,10 +930,10 @@ msgstr "picking_id"
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_search
 msgid "type"
-msgstr "type"
+msgstr "tipo"
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,name:midban_depot_stock.action_stock_vehicle
 msgid "vehicles"
-msgstr "vehicles"
+msgstr "Vehículos"
 
