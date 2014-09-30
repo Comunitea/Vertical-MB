@@ -6,13 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2014-09-30 10:10+0000\n"
-"PO-Revision-Date: 2014-09-30 10:10+0000\n"
-=======
 "POT-Creation-Date: 2014-09-30 11:33+0000\n"
 "PO-Revision-Date: 2014-09-30 11:33+0000\n"
->>>>>>> dev
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -128,11 +123,6 @@ msgstr "Volumen disponible"
 #: selection:stock.quant.package,pack_type:0
 msgid "Box"
 msgstr "Caja"
-
-#. module: midban_depot_stock
-#: model:product.uom,name:midban_depot_stock.product_uom_box
-msgid "Box(es)"
-msgstr "Caja(s)"
 
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
@@ -270,11 +260,7 @@ msgid "Exist midban operation"
 msgstr "Existe operación de midban"
 
 #. module: midban_depot_stock
-<<<<<<< HEAD
-#: code:addons/midban_depot_stock/product.py:43
-=======
 #: code:addons/midban_depot_stock/product.py:38
->>>>>>> dev
 #: sql_constraint:product.template:0
 #, python-format
 msgid "Field Location picking is already setted"
@@ -430,11 +416,6 @@ msgid "Mantle"
 msgstr "Manto"
 
 #. module: midban_depot_stock
-#: model:product.uom,name:midban_depot_stock.product_uom_mantle
-msgid "Mantle(s)"
-msgstr "Manto(s)"
-
-#. module: midban_depot_stock
 #: field:stock.warehouse,max_boxes_move:0
 msgid "Max. boxes to move in picking"
 msgstr "Cajas máximas a move en picking"
@@ -555,11 +536,6 @@ msgid "Palet"
 msgstr "Palet"
 
 #. module: midban_depot_stock
-#: model:product.uom,name:midban_depot_stock.product_uom_palet
-msgid "Palet(s)"
-msgstr "Palet(s)"
-
-#. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_res_partner
 msgid "Partner"
 msgstr "Empresa"
@@ -620,11 +596,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-<<<<<<< HEAD
-#: code:addons/midban_depot_stock/stock.py:556
-=======
 #: code:addons/midban_depot_stock/stock.py:590
->>>>>>> dev
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -635,14 +607,11 @@ msgid "Product Template"
 msgstr "Plantilla de producto"
 
 #. module: midban_depot_stock
-<<<<<<< HEAD
-=======
 #: model:ir.model,name:midban_depot_stock.model_product_uom
 msgid "Product Unit of Measure"
 msgstr "Unidad de medida del producto"
 
 #. module: midban_depot_stock
->>>>>>> dev
 #: model:ir.model,name:midban_depot_stock.model_purchase_order
 msgid "Purchase Order"
 msgstr "Pedido de compra"
@@ -700,7 +669,7 @@ msgstr "Modelo ruta"
 #: model:ir.actions.act_window,name:midban_depot_stock.action_route
 #: view:route:midban_depot_stock.route_view_form
 msgid "Routes"
-msgstr "Rutas de transporte"
+msgstr "Rutas"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.menu_stock_vehicle_route_mgmt
@@ -740,7 +709,7 @@ msgstr "Buscar vehículos"
 #. module: midban_depot_stock
 #: view:route.order.wizard:midban_depot_stock.route_order_wizard_view
 msgid "Select Route"
-msgstr "Seleccionar ruta transporte"
+msgstr "Seleccionar ruta"
 
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
@@ -961,10 +930,10 @@ msgstr "picking_id"
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_search
 msgid "type"
-msgstr "tipo"
+msgstr "type"
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,name:midban_depot_stock.action_stock_vehicle
 msgid "vehicles"
-msgstr "vehiculos"
+msgstr "vehicles"
 
