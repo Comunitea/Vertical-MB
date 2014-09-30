@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!--
+             Precisions
+        -->
+        <record forcecreate="True" id="decimal_volume" model="decimal.precision">
+            <field name="name">Product Volume</field>
+            <field name="digits">4</field>
+        </record>
+
+        <!--
+            Resource: product.uom
+        -->
+        <record id="product.product_uom_unit" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">Unit(s)</field>
+            <field name="factor" eval="1.0"/>
+            <field name="rounding" eval="1.0"/>
+            <field name="like_type">units</field>
+        </record>
+        <record id="product.product_uom_kgm" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_kgm"/>
+            <field name="name">kg</field>
+            <field name="factor" eval="1"/>
+            <field name="rounding" eval="0.001"/>
+            <field name="like_type">kg</field>
+        </record>
+
+       <record id="product_uom_box" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">Box(es)</field>
+            <field name="factor" eval="1"/>
+            <field name="uom_type">bigger</field>
+            <field name="like_type">boxes</field>
+        </record>
+        <record id="product_uom_mantle" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">Mantle(s)</field>
+            <field name="factor" eval="1"/>
+            <field name="uom_type">bigger</field>
+            <field name="like_type">mantles</field>
+        </record>
+        <record id="product_uom_palet" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">Palet(s)</field>
+            <field name="factor" eval="1"/>
+            <field name="uom_type">bigger</field>
+            <field name="like_type">palets</field>
+        </record>
+    </data>
+</openerp>
