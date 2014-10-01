@@ -22,7 +22,6 @@ from openerp.osv import osv, fields
 from openerp import api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-# import time
 
 
 class stock_picking(osv.osv):
@@ -288,7 +287,7 @@ class stock_pack_operation(osv.osv):
         'volume': fields.
         function(_get_operation_volume, readonly=True, type="float",
                  string="Volume",
-                 digits_compute=dp.get_precision('Product Price')),
+                 digits_compute=dp.get_precision('Product Volume')),
         'operation_product_id': fields.function(_get_real_product,
                                                 type="many2one",
                                                 relation="product.product",
@@ -353,6 +352,7 @@ class stock_location(osv.Model):
         return res
 
     def _search_available_volume(self, cr, uid, obj, name, args, context=None):
+        """ Function search to use available volume like a filter """
         if context is None:
             context = {}
         sel_loc_ids = []
@@ -371,13 +371,13 @@ class stock_location(osv.Model):
         return res
         
     def _get_filled_percentage(self, cr, uid, ids, name, args, context=None):
+        """ Function search to use filled % like a filter. """
         if context is None:
             context = {}
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
         for loc in self.browse(cr, uid, ids, context=context):
-            
             volume = 0.0
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
                                                     loc.id)],
@@ -455,11 +455,11 @@ class stock_location(osv.Model):
         'volume': fields.
         function(_get_location_volume, readonly=True, string='Volume',
                  type="float",
-                 digits_compute=dp.get_precision('Product Price')),
+                 digits_compute=dp.get_precision('Product Volume')),
         'available_volume': fields.
         function(_get_available_volume, readonly=True, type="float",
                  string="Available volume",
-                 digits_compute=dp.get_precision('Product Price'),
+                 digits_compute=dp.get_precision('Product Volume'),
                  fnct_search=_search_available_volume),
         'filled_percent': fields.function(_get_filled_percentage, type="float",
                                           string="Filled %",
@@ -510,7 +510,6 @@ class stock_quant(osv.Model):
                         height_mant = quant.product_id.supplier_ma_height
                         wood_height = quant.product_id.palet_wood_height
                         height_var_pal = (num_mant * height_mant) + wood_height
-
                         volume = width_wood * length_wood * height_var_pal
 
                 elif quant.package_id.pack_type == "mantle" and quant.qty == \
@@ -538,30 +537,8 @@ class stock_quant(osv.Model):
         'volume': fields.
         function(_get_quant_volume, readonly=True, type="float",
                  string="Volume",
-                 digits_compute=dp.get_precision('Product Price')),
+                 digits_compute=dp.get_precision('Product Volume')),
     }
-
-
-# class product_putaway_strategy(osv.osv):
-#     _inherit = 'product.putaway'
-
-#     def _get_putaway_options(self, cr, uid, context=None):
-#         res = super(product_putaway_strategy, self).\
-#             _get_putaway_options(cr, uid, context=context)
-#         res.extend([('product_pick_location', 'Product picking location')])
-#         return res
-
-#     columns = {
-#         'method': fields.selection(_get_putaway_options, "Method",
-#                                    required=True),
-#     }
-
-#     def putaway_apply(self, cr, uid, putaway_strat, product, context=None):
-#         if putaway_strat.method == 'product_pick_location':
-#             return product.picking_location_id.id
-#         else:
-#             return super(product_putaway_strategy, self).\
-#                 putaway_apply(cr, uid, putaway_strat, product, context=context)
 
 
 class procurement_order(osv.osv):

@@ -20,25 +20,6 @@
 ##############################################################################
 
 from openerp import models, api, fields
-# from openerp import models, fields, api
-# from openerp.tools.translate import _
-# import openerp.addons.decimal_precision as dp
-# from datetime import datetime
-
-
-def _reopen(self, res_id, model):
-    return {'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'view_type': 'form',
-            'res_id': res_id,
-            'res_model': self._name,
-            'target': 'new',
-            # save original model in context, because selecting the list of
-            #available templates requires a model in context
-            'context': {
-                'default_model': model,
-            },
-            }
 
 
 class stock_transfer_details(models.TransientModel):
@@ -60,19 +41,6 @@ class stock_transfer_details(models.TransientModel):
         """
         res = []
         t_pack = self.env['stock.quant.package']
-        # item_vals = {
-        #     'transfer_id': item.transfer_id.id,
-        #     'product_id': item.product_id.id,
-        #     'product_uom_id': item.product_uom_id.id,
-        #     'quantity': 0,  # To set
-        #     'package_id': False,
-        #     'lot_id': item.lot_id.id,
-        #     'sourceloc_id': item.sourceloc_id.id,
-        #     'destinationloc_id': item.destinationloc_id.id,
-        #     'result_package_id': False,  # To set
-        #     'date': item.date if item.date else datetime.now(),
-        #     'owner_id': item.owner_id.id,
-        # }
         op_vals = {
             'location_id': item.sourceloc_id.id,
             'product_id': item.product_id.id,
@@ -86,10 +54,6 @@ class stock_transfer_details(models.TransientModel):
         un_ca = item.product_id.supplier_un_ca
 
         if pack_type not in ['palet', 'mantle', 'box']:  # Only Units
-            # item_vals.update({
-            #     'quantity': num,
-            # })
-            # res.append(item_vals)
             op_vals.update({
                 'product_qty': num,
             })
@@ -112,20 +76,12 @@ class stock_transfer_details(models.TransientModel):
                 if pack_type == 'palet':
                     pack_units = ma_pa * ca_ma * un_ca
                     pack_name = 'PALET'
-                # elif pack_type == 'mantle':
-                #     pack_units = ca_ma * un_ca
-                #     pack_name = 'MANTO'
                 elif pack_type == 'box':
                     pack_units = un_ca
                     pack_name = 'CAJA'
                 pack_obj = t_pack.create({'pack_type': pack_type})
                 new_name = pack_obj.name.replace("PACK", pack_name)
                 pack_obj.write({'name': new_name})
-                # item_vals.update({
-                #     'result_package_id': pack_obj.id,
-                #     'quantity': pack_units,
-                # })
-                # res.append(dict(item_vals))
                 op_vals.update({
                     'result_package_id': pack_obj.id,
                     'product_qty': pack_units,
@@ -192,18 +148,9 @@ class stock_transfer_details(models.TransientModel):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
         for item in self.item_ids:
-            # retornaba los links para que se vieran en la misma ventana de los
-            # nuevos links, pero hay que reabrir el wizard y no se como se hace
-            # con el _reopen quizás se pueda, (buscar ejem)
-            # item_vals = self._proposepack_operations(item)
-            # item.unlink()
-            # for vals in item_vals:
-            #     # vals['transfer_id'] = created_id.id
-            #     t_operations.create(vals)
             vals_ops = self._propose_pack_operations(item)
             if vals_ops:
                 self.picking_id.write({'midban_operations': True})
             for vals in vals_ops:
                 t_pack_op.create(vals)
-        # return _reopen(self, self.id, self._name)
         return True

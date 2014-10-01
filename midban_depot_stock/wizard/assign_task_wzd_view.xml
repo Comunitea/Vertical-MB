@@ -36,7 +36,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem action="action_assign_task_wzd" id="assign_task_wzd_menu"  name="Task Schedule" parent="menu_stock_task_mgmt"/>
+        <menuitem action="action_assign_task_wzd" id="assign_task_wzd_menu"  name="Task Schedule" parent="menu_stock_task_mgmt" sequence="1"/>
 
 
     </data>

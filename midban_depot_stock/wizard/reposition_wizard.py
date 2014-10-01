@@ -140,7 +140,6 @@ class reposition_wizard(osv.TransientModel):
                 fill_per = (filled / volume) * 100.0
                 if (fill_per <= wzd_obj.capacity):
                     selected_ids.append(loc.id)
-
         if not selected_ids:
             raise osv.except_osv(_('Error!'),
                                  _('No picking location matching with \

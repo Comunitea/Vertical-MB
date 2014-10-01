@@ -220,7 +220,6 @@ class assign_task_wzd(osv.TransientModel):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
-
         # Check if operator has a task on course
         self._check_on_course(cr, uid, ids, context=context)
 
