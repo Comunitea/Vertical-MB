@@ -22,6 +22,7 @@ from openerp.osv import osv, fields
 from openerp import api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+import math
 
 
 class stock_picking(osv.osv):
@@ -74,6 +75,61 @@ class stock_picking(osv.osv):
 
 class stock_package(osv.osv):
     _inherit = "stock.quant.package"
+
+    def _get_package_lot_id(self, cr, uid, ids, name, args, context=None):
+        """
+        Returns lot of products inside the QUANTS of the pack.
+        We not check childrens packages. # TODO??
+        We assume no exist pack of diferents lots, in that case return False.
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            lot_id = False
+            for quant in pack.quant_ids:
+                lot_id = quant.lot_id and quant.lot_id.id or False
+                if lot_id != quant.lot_id.id:  # Founded diferents lots in pack
+                    lot_id = False
+            res[pack.id] = lot_id
+        return res
+
+    def _get_packed_qty(self, cr, uid, ids, name, args, context=None):
+        """
+        Returns units qty inside the QUANTS of the pack.
+        We not check childrens packages. # TODO??
+        We assume no exist pack of diferents lots, in that case return False.
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            qty = 0.0
+            for quant in pack.quant_ids:
+                qty += quant.qty
+            res[pack.id] = qty
+        return res
+
+    def _get_pack_mantles(self, cr, uid, ids, name, args, context=None):
+        """
+        Returns the number of mantles inside the package by getting the
+        total qty inside the pack and rounding up the number of mantles.
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            mantles = 0
+            if pack.pack_type:
+                pack_type = pack.pack_type
+                if pack_type in ['palet', 'var_palet'] and pack.product_id:
+                    units_in_mantle = pack.product_id.supplier_un_ca * \
+                        pack.product_id.supplier_ca_ma
+                    if units_in_mantle:
+                        mantles = math.ceil(pack.packed_qty / units_in_mantle)
+            res[pack.id] = mantles
+        return res
+
     _columns = {
         'pack_type': fields.selection([('box', 'Box'), ('mantle', 'Mantle'),
                                        ('palet', 'Palet'),
@@ -82,7 +138,22 @@ class stock_package(osv.osv):
                                       readonly=True),
         'product_id': fields.related('quant_ids', 'product_id', readonly=True,
                                      type="many2one", string="Product",
-                                     relation="product.product")
+                                     relation="product.product"),
+        'packed_lot_id': fields.function(_get_package_lot_id,
+                                         string="Packed Lot",
+                                         readonly=True,
+                                         type="many2one",
+                                         relation="stock.production.lot"),
+
+        'packed_qty': fields.function(_get_packed_qty, type="float",
+                                      string="PAcked qty",
+                                      readonly=True,
+                                      digits_compute=
+                                      dp.get_precision('Product Price'),),
+        'num_mantles': fields.function(_get_pack_mantles,
+                                       type="integer",
+                                       string="Nº mantles",
+                                       readonly=True,)
     }
 
 
@@ -292,7 +363,20 @@ class stock_pack_operation(osv.osv):
                                                 type="many2one",
                                                 relation="product.product",
                                                 readonly=True,
-                                                string="Product")
+                                                string="Product"),
+        'packed_lot_id': fields.related('package_id', 'packed_lot_id',
+                                        type='many2one',
+                                        relation='stock.production.lot',
+                                        string='Packed Lot',
+                                        readonly=True),
+        'packed_qty': fields.related('package_id', 'packed_qty',
+                                     type='float',
+                                     string='Packed qty',
+                                     readonly=True),
+        'num_mantles': fields.related('package_id', 'num_mantles',
+                                      type='float',
+                                      string='Nº Mantles',
+                                      readonly=True)
     }
 
 
@@ -369,7 +453,7 @@ class stock_location(osv.Model):
                     sel_loc_ids.append(loc.id)
         res = [('id', 'in', sel_loc_ids)]
         return res
-        
+
     def _get_filled_percentage(self, cr, uid, ids, name, args, context=None):
         """ Function search to use filled % like a filter. """
         if context is None:

@@ -50,7 +50,8 @@ class assign_task_wzd(osv.TransientModel):
             ctx['active_ids'] = [picking_id]
             ctx['active_model'] = 'stock.picking'
             return self.pool.get("report").\
-                get_action(cr, uid, [], 'stock.report_picking',
+                get_action(cr, uid, [],
+                           'midban_depot_stock.report_picking_task',
                            context=ctx)
         elif wave_id:
             ctx['active_model'] = 'stock.picking'
@@ -62,7 +63,8 @@ class assign_task_wzd(osv.TransientModel):
                 raise osv.except_osv(_('Error!'), _('Nothing to print.'))
             context['active_ids'] = picking_ids
             return self.pool.get("report").\
-                get_action(cr, uid, [], 'stock.report_picking',
+                get_action(cr, uid, [],
+                           'midban_depot_stock.report_picking_task',
                            context=context)
         else:
             return
@@ -173,9 +175,9 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         t_task.create(cr, uid, vals, context=context)
-        self._print_report(cr, uid, ids, picking_id=pick.id,
-                           context=context)
-        return True
+
+        return self._print_report(cr, uid, ids, picking_id=pick.id,
+                                  context=context)
 
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -254,9 +256,8 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
         }
         t_task.create(cr, uid, vals, context=context)
-        self._print_report(cr, uid, ids, picking_id=pick.id,
-                           context=context)
-        return True
+        return self._print_report(cr, uid, ids, picking_id=pick.id,
+                                  context=context)
 
     def get_picking_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -355,9 +356,8 @@ class assign_task_wzd(osv.TransientModel):
                 'state': 'assigned',
             }
             task_obj.create(cr, uid, vals, context=context)
-            self._print_report(cr, uid, ids, wave_id=wave_id,
-                               context=context)
-            return True
+            return self._print_report(cr, uid, ids, wave_id=wave_id,
+                                      context=context)
 
     def get_task(self, cr, uid, ids, context=None):
         try:
