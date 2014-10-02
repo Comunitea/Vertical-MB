@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report 
+            string="Warehouse Task Report" 
+            id="action_report_task_picking" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_picking_task" 
+            file="midban_depot_stock.report_picking_task" 
+        />
+    </data>
+</openerp>
