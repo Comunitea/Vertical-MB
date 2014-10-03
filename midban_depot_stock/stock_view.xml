@@ -67,6 +67,7 @@
                     <field name="packed_lot_id"/>
                     <field name="packed_qty"/>
                     <field name="num_mantles"/>
+                    <field name="volume"/>
                 </field>
             </field>
         </record>

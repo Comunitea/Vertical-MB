@@ -130,8 +130,38 @@ class stock_package(osv.osv):
             res[pack.id] = mantles
         return res
 
+    def _get_pack_volume(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            volume = 0.0
+            if pack.product_id:
+                prod = pack.product_id
+
+                if pack.pack_type:  # Get volume of box,palet or var_palet
+                    if pack.pack_type == 'box':
+                        volume = prod.supplier_ca_width * \
+                            prod.supplier_ca_height * prod.supplier_ca_length
+                    elif pack.pack_type in ['palet', 'var_palet']:
+                        num_mant = pack.num_mantles
+                        width_wood = prod.supplier_pa_width
+                        length_wood = prod.supplier_pa_length
+                        height_mant = prod.supplier_ma_height
+                        wood_height = prod.palet_wood_height
+                        height_var_pal = (num_mant * height_mant) + wood_height
+                        volume = width_wood * length_wood * height_var_pal
+                if not volume:  # Get volume of individual units
+                    volume = pack.product_id.supplier_un_width * \
+                        pack.product_id.supplier_un_height * \
+                        pack.product_id.supplier_un_length * \
+                        pack.packed_qty
+            res[pack.id] = volume
+
+        return res
+
     _columns = {
-        'pack_type': fields.selection([('box', 'Box'), ('mantle', 'Mantle'),
+        'pack_type': fields.selection([('box', 'Box'),
                                        ('palet', 'Palet'),
                                        ('var_palet', 'Var Palet')],
                                       'Pack Type',
@@ -146,14 +176,19 @@ class stock_package(osv.osv):
                                          relation="stock.production.lot"),
 
         'packed_qty': fields.function(_get_packed_qty, type="float",
-                                      string="PAcked qty",
+                                      string="Packed qty",
                                       readonly=True,
                                       digits_compute=
                                       dp.get_precision('Product Price'),),
         'num_mantles': fields.function(_get_pack_mantles,
                                        type="integer",
                                        string="Nº mantles",
-                                       readonly=True,)
+                                       readonly=True,),
+        'volume': fields.function(_get_pack_volume, readonly=True,
+                                  type="float",
+                                  string="Volume",
+                                  digits_compute=
+                                  dp.get_precision('Product Volume')),
     }
 
 
@@ -214,7 +249,8 @@ class stock_pack_operation(osv.osv):
             pick_loc = ops.operation_product_id.picking_location_id
             old_ref = self._older_refernce_in_storage(cr, uid, product, wh_obj,
                                                       context=context)
-            if (not old_ref and ops.volume <= pick_loc.available_volume):
+            if (not old_ref and ops.volume <= pick_loc.available_volume) or \
+                    not ops.package_id:
                 location_id = pick_loc.id
             else:
                 if ops.pack_type and ops.pack_type == 'box':
@@ -328,7 +364,8 @@ class stock_pack_operation(osv.osv):
                          ope.operation_product_id.palet_wood_height) * \
                         ope.operation_product_id.supplier_pa_length
                 elif ope.pack_type == "var_palet":
-                    num_mant = len(ope.package_id.quant_ids)
+                    # num_mant = len(ope.package_id.quant_ids)
+                    num_mant = ope.package_id.num_mantles
                     width_wood = ope.operation_product_id.supplier_pa_width
                     length_wood = ope.operation_product_id.supplier_pa_length
                     height_mant = ope.operation_product_id.supplier_ma_height
@@ -336,10 +373,6 @@ class stock_pack_operation(osv.osv):
                     height_var_pal = (num_mant * height_mant) + wood_height
                     volume = width_wood * length_wood * height_var_pal
 
-                elif ope.pack_type == "mantle":
-                    volume = ope.operation_product_id.supplier_ma_width * \
-                        ope.operation_product_id.supplier_ma_height * \
-                        ope.operation_product_id.supplier_ma_length
                 elif ope.pack_type == "box":
                     volume = ope.operation_product_id.supplier_ca_width * \
                         ope.operation_product_id.supplier_ca_height * \
@@ -405,8 +438,34 @@ class stock_location(osv.Model):
         res = {}
         for loc in self.browse(cr, uid, ids, context=context):
             res[loc.id] = loc.width * loc.height * loc.length
-
         return res
+
+    def _get_quants_volume(self, cr, uid, quant_ids, context=None):
+        """
+        Function that return the total volume of quant_ids, gruping the
+        packages in order to find the corect volume of var_palets.
+        Palets or Var palets returns a volume by his number of mantles inside
+        because when you quit some product from a palet, we discount the volume
+        mantle by mantle.
+        """
+        t_quant = self.pool.get('stock.quant')
+        t_pack = self.pool.get('stock.quant.package')
+        if context is None:
+            context = {}
+        volume = 0.0
+        pack_ids = set()
+        for quant in t_quant.browse(cr, uid, quant_ids, context=context):
+            if quant.package_id and quant.package_id.pack_type:
+                pack_ids.add(quant.package_id.id)
+            else:
+                volume += quant.product_id.supplier_un_width * \
+                    quant.product_id.supplier_un_height * \
+                    quant.product_id.supplier_un_length * \
+                    quant.qty
+        pack_ids = list(pack_ids)
+        for pack in t_pack.browse(cr, uid, pack_ids, context):
+            volume += pack.volume
+        return volume
 
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -419,8 +478,8 @@ class stock_location(osv.Model):
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
                                                     loc.id)],
                                          context=context)
-            for quant in quant_obj.browse(cr, uid, quant_ids, context=context):
-                volume += quant.volume
+            volume = self._get_quants_volume(cr, uid, quant_ids,
+                                             context=context)
 
             domain = [
                 ('location_dest_id', '=', loc.id),
@@ -466,8 +525,8 @@ class stock_location(osv.Model):
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
                                                     loc.id)],
                                          context=context)
-            for quant in quant_obj.browse(cr, uid, quant_ids, context=context):
-                volume += quant.volume
+            volume = self._get_quants_volume(cr, uid, quant_ids,
+                                             context=context)
 
             domain = [
                 ('location_dest_id', '=', loc.id),
@@ -562,66 +621,6 @@ class stock_location(osv.Model):
 
     _defaults = {
         'storage_type': 'standard',
-    }
-
-
-class stock_quant(osv.Model):
-    _inherit = "stock.quant"
-
-    def _get_quant_volume(self, cr, uid, ids, name, args, context=None):
-        if context is None:
-            context = {}
-        res = {}
-        for quant in self.browse(cr, uid, ids, context=context):
-            volume = 0.0
-            if quant.package_id and quant.package_id.pack_type:
-                if quant.package_id.pack_type == "palet" and quant.qty == \
-                    quant.product_id.supplier_ma_pa * \
-                    quant.product_id.supplier_ca_ma * \
-                        quant.product_id.supplier_un_ca:
-                    volume = quant.product_id.supplier_pa_width * \
-                        (quant.product_id.supplier_pa_height +
-                         quant.product_id.palet_wood_height) * \
-                        quant.product_id.supplier_pa_length
-                elif quant.package_id.pack_type == "var_palet" and \
-                    quant.qty == len(quant.package_id.quant_ids) * \
-                    quant.product_id.supplier_ca_ma * \
-                        quant.product_id.supplier_un_ca:
-                        num_mant = len(quant.package_id.quant_ids)
-                        width_wood = quant.product_id.supplier_pa_width
-                        length_wood = quant.product_id.supplier_pa_length
-
-                        height_mant = quant.product_id.supplier_ma_height
-                        wood_height = quant.product_id.palet_wood_height
-                        height_var_pal = (num_mant * height_mant) + wood_height
-                        volume = width_wood * length_wood * height_var_pal
-
-                elif quant.package_id.pack_type == "mantle" and quant.qty == \
-                    quant.product_id.supplier_ca_ma * \
-                        quant.product_id.supplier_un_ca:
-                    volume = quant.product_id.supplier_ma_width * \
-                        quant.product_id.supplier_ma_height * \
-                        quant.product_id.supplier_ma_length
-                elif quant.package_id.pack_type == "box" and quant.qty == \
-                        quant.product_id.supplier_un_ca:
-                    volume = quant.product_id.supplier_ca_width * \
-                        quant.product_id.supplier_ca_height * \
-                        quant.product_id.supplier_ca_length
-            if not volume:
-                volume = quant.product_id.supplier_un_width * \
-                    quant.product_id.supplier_un_height * \
-                    quant.product_id.supplier_un_length * \
-                    quant.qty
-
-            res[quant.id] = volume
-
-        return res
-
-    _columns = {
-        'volume': fields.
-        function(_get_quant_volume, readonly=True, type="float",
-                 string="Volume",
-                 digits_compute=dp.get_precision('Product Volume')),
     }
 
 
