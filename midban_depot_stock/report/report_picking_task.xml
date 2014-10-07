@@ -96,7 +96,7 @@
                                     </td>
 
                                     <!-- Mantles -->
-                                    <td>
+                                    <td class="text-right">
                                         <span  t-field="pack_operation.package_id.num_mantles"/>
                                     </td>
 
