@@ -64,7 +64,7 @@ class reposition_wizard(osv.TransientModel):
             storage_id = obj.warehouse_id.storage_loc_id.id
             product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
 
-            # vol_aval = loc.available_volume
+            vol_aval = loc.available_volume
             t_quant = self.pool.get('stock.quant')
             domain = [
                 ('location_id', 'child_of', [storage_id]),
@@ -75,7 +75,44 @@ class reposition_wizard(osv.TransientModel):
             orderby = 'removal_date, in_date, id'  # aplly fefo
             quant_ids = t_quant.search(cr, uid, domain, order=orderby,
                                        context=context)
+
             import ipdb; ipdb.set_trace()
+            lot_ids = []  # order fefo LOT_ids
+            lot_quant_ids = []  # order fefo QUANTS_ids wit lot orderby
+            lot_none_quant_ids = []  # order fefo QUANTS_ids without lot
+            for quant in t_quant.browse(cr, uid, quant_ids, context=context):
+                if quant.lot_id and quant.lot_id.id not in lot_ids:
+                    lot_ids.append(quant.lot_id.id)
+                elif not quant.lot_id:
+                    lot_none_quant_ids.append(quant.id)
+
+            if lot_ids or lot_none_quant_ids:
+                result_dics= []  # list of dics to create pick operation and moves
+                if lot_ids:
+                    while vol_aval > 0:
+                        for lot_id in lot_ids:
+                            domain = [
+                                ('id', 'in', quant_ids),
+                                ('lot_id', '=', lot_id)
+                            ]
+                            lot_quant_ids = t_quant.search(cr, uid, domain,
+                                           context=context)
+                            if lot_quant_ids:
+                                packs_objs = self._get_packs_order(cr, uid,
+                                                                   lot_quant_ids,
+                                                                   context=context)  #TODO
+                                for pack in pack_objs:
+                                    if pack.volume <= vol_aval
+                                        vol_aval -= pack.volume
+                                        res_dic = get_res_dic()  # TODO
+                                        result_dics.append(res_dic)
+                                        pack_objs.remove(pack)
+                            # quitar el while paraabajo, la idea esobtener una lista de listas con candidatos ordenados e iterar en ellos
+
+                if lot_none_quant_ids:
+
+
+
 
         return created_moves
 
