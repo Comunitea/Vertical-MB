@@ -135,12 +135,14 @@
             <field name="inherit_id" ref="stock.view_location_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="filled_percent" string="% Filled equals"  domain="[('filled_percent', '=', self)]" context="{'operation':'equal'}"/>
-                    <field name="filled_percent" string="% Filled greater" domain="[('filled_percent', '=', self)]" context="{'operation':'greater'}"/>
-                    <field name="filled_percent" string="% Filled less" domain="[('filled_percent', '=', self)]" context="{'operation':'less'}"/>
-                    <field name="available_volume" string="Available equals"  domain="[('available_volume', '=', self)]" context="{'operation':'equal'}"/>
-                    <field name="available_volume" string="Available greater"  domain="[('available_volume', '=', self)]" context="{'operation':'greater'}"/>
-                    <field name="available_volume" string="Available less"  domain="[('available_volume', '=', self)]" context="{'operation':'less'}"/>
+                    <field name="filled_percent" string="% Filled equals"   context="{'operation':'equal'}"/>
+                    <field name="filled_percent" string="% Filled greater"  context="{'operation':'greater'}"/>
+                    <field name="filled_percent" string="% Filled less"  context="{'operation':'less'}"/>
+                    <field name="filter_percent" string="% Filled between x-y"/>
+                    <field name="filter_available"/>
+                    <field name="available_volume" string="Available equals"  context="{'operation':'equal'}"/>
+                    <field name="available_volume" string="Available greater"  context="{'operation':'greater'}"/>
+                    <field name="available_volume" string="Available less"  context="'operation':'less'}"/>
                 </field>
             </field>
         </record>

@@ -122,7 +122,8 @@ class stock_package(osv.osv):
             mantles = 0
             if pack.pack_type:
                 pack_type = pack.pack_type
-                if pack_type in ['palet', 'var_palet'] and pack.product_id:
+                # if pack_type in ['palet', 'var_palet'] and pack.product_id:
+                if pack_type == 'palet' and pack.product_id:
                     units_in_mantle = pack.product_id.supplier_un_ca * \
                         pack.product_id.supplier_ca_ma
                     if units_in_mantle:
@@ -143,7 +144,8 @@ class stock_package(osv.osv):
                     if pack.pack_type == 'box':
                         volume = prod.supplier_ca_width * \
                             prod.supplier_ca_height * prod.supplier_ca_length
-                    elif pack.pack_type in ['palet', 'var_palet']:
+                    # elif pack.pack_type in ['palet', 'var_palet']:
+                    elif pack.pack_type == 'palet':
                         num_mant = pack.num_mantles
                         width_wood = prod.supplier_pa_width
                         length_wood = prod.supplier_pa_length
@@ -162,8 +164,8 @@ class stock_package(osv.osv):
 
     _columns = {
         'pack_type': fields.selection([('box', 'Box'),
-                                       ('palet', 'Palet'),
-                                       ('var_palet', 'Var Palet')],
+                                       ('palet', 'Palet')],
+                                      # ('var_palet', 'Var Palet')],
                                       'Pack Type',
                                       readonly=True),
         'product_id': fields.related('quant_ids', 'product_id', readonly=True,
@@ -358,12 +360,13 @@ class stock_pack_operation(osv.osv):
         for ope in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if ope.pack_type:
+                # if ope.pack_type == "palet":
+                    # volume = ope.operation_product_id.supplier_pa_width * \
+                    #     (ope.operation_product_id.supplier_pa_height +
+                    #      ope.operation_product_id.palet_wood_height) * \
+                    #     ope.operation_product_id.supplier_pa_length
+                # elif ope.pack_type == "var_palet":
                 if ope.pack_type == "palet":
-                    volume = ope.operation_product_id.supplier_pa_width * \
-                        (ope.operation_product_id.supplier_pa_height +
-                         ope.operation_product_id.palet_wood_height) * \
-                        ope.operation_product_id.supplier_pa_length
-                elif ope.pack_type == "var_palet":
                     # num_mant = len(ope.package_id.quant_ids)
                     num_mant = ope.package_id.num_mantles
                     width_wood = ope.operation_product_id.supplier_pa_width
@@ -383,6 +386,30 @@ class stock_pack_operation(osv.osv):
                     ope.operation_product_id.supplier_un_length * \
                     ope.product_qty
             res[ope.id] = volume
+        return res
+
+    def _get_num_mantles(self, cr, uid, ids, name, args, context=None):
+        """
+        Return number of mantles of each operation. If we already have a pack
+        we return the mantles number inside, else we return the mantles number
+        of product_qty operation.
+        We suppose to return a integer number, so we round up the number of
+        mantles.
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for ope in self.browse(cr, uid, ids, context=context):
+            res[ope.id] = 0
+            if ope.package_id:
+                res[ope.id] = ope.package_id.num_mantles
+            elif ope.product_id and ope.product_qty:
+                un_ca = ope.product_id.supplier_un_ca
+                ca_ma = ope.product_id.supplier_ca_ma
+                mant_units = un_ca * ca_ma
+                if mant_units:
+                    res[ope.id] = int(math.ceil(ope.product_qty / mant_units))
+        # import ipdb; ipdb.set_trace()
         return res
 
     _columns = {
@@ -406,10 +433,14 @@ class stock_pack_operation(osv.osv):
                                      type='float',
                                      string='Packed qty',
                                      readonly=True),
-        'num_mantles': fields.related('package_id', 'num_mantles',
-                                      type='float',
-                                      string='Nº Mantles',
-                                      readonly=True)
+        # 'num_mantles': fields.related('package_id', 'num_mantles',
+        #                               type='float',
+        #                               string='Nº Mantles',
+        #                               readonly=True)
+        'num_mantles': fields.function(_get_num_mantles,
+                                       type='integer',
+                                       string='Nº Mantles',
+                                       readonly=True),
     }
 
 
@@ -560,6 +591,60 @@ class stock_location(osv.Model):
 
         return res
 
+    def _get_filter_percentage(self, cr, uid, ids, name, args, context=None):
+        """ Function search to use filled % like a filter. """
+        if context is None:
+            context = {}
+        res = {}
+        for loc in self.browse(cr, uid, ids, context=context):
+            res[loc.id] = 'cualquier_cosa'
+        return res
+
+    def _search_filter_percent(self, cr, uid, obj, name, args, context=None):
+        if context is None:
+            context = {}
+        sel_loc_ids = []
+        percentage = args and args[0][2] or False
+        if args:
+            loc_ids = obj.search(cr, uid, [], context=context)
+            for loc in obj.browse(cr, uid, loc_ids, context=context):
+                if len(percentage.split('-')) == 2:
+                    inf = int(percentage.split('-')[0])
+                    sup = int(percentage.split('-')[1])
+                    fill = loc.filled_percent
+                    if fill > inf and fill < sup:
+                        sel_loc_ids.append(loc.id)
+        res = [('id', 'in', sel_loc_ids)]
+
+        return res
+
+    def _get_filter_available(self, cr, uid, ids, name, args, context=None):
+        """ Function search to use filled % like a filter. """
+        if context is None:
+            context = {}
+        res = {}
+        for loc in self.browse(cr, uid, ids, context=context):
+            res[loc.id] = 'cualquier_cosa'
+        return res
+
+    def _search_filter_aval(self, cr, uid, obj, name, args, context=None):
+        if context is None:
+            context = {}
+        sel_loc_ids = []
+        available = args and args[0][2] or False
+        if args:
+            loc_ids = obj.search(cr, uid, [], context=context)
+            for loc in obj.browse(cr, uid, loc_ids, context=context):
+                if len(available.split('-')) == 2:
+                    inf = int(available.split('-')[0])
+                    sup = int(available.split('-')[1])
+                    aval = loc.available_volume
+                    if aval > inf and aval < sup:
+                        sel_loc_ids.append(loc.id)
+        res = [('id', 'in', sel_loc_ids)]
+
+        return res
+
     def _get_current_product_id(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
@@ -604,11 +689,19 @@ class stock_location(osv.Model):
                  string="Available volume",
                  digits_compute=dp.get_precision('Product Volume'),
                  fnct_search=_search_available_volume),
+        'filter_available': fields.function(_get_filter_available,
+                                            type="char",
+                                            string="Available Between X-Y",
+                                            fnct_search=_search_filter_aval),
         'filled_percent': fields.function(_get_filled_percentage, type="float",
                                           string="Filled %",
                                           digits_compute=
                                           dp.get_precision('Product Price'),
                                           fnct_search=_search_filled_percent),
+        'filter_percent': fields.function(_get_filter_percentage,
+                                          type="char",
+                                          string="Filled Between X-Y",
+                                          fnct_search=_search_filter_percent),
         'storage_type': fields.selection([('standard', 'Standard'),
                                          ('boxes', 'Boxes')],
                                          'Storage Type'),

@@ -60,16 +60,21 @@ class stock_transfer_details(models.TransientModel):
             res.append(op_vals)
 
         elif pack_type == 'mantle':  # Group in a same palet the mantles.
-            pack_obj = t_pack.create({'pack_type': 'var_palet'})
-            new_name = pack_obj.name.replace("PACK", 'VAR PALET')
+            # pack_obj = t_pack.create({'pack_type': 'var_palet'})
+            pack_obj = t_pack.create({'pack_type': 'palet'})
+            new_name = pack_obj.name.replace("PACK", 'PALET')
             pack_obj.write({'name': new_name})
             pack_units = ca_ma * un_ca
-            for n in range(num):
-                op_vals.update({
-                    'result_package_id': pack_obj.id,
-                    'product_qty': pack_units,
-                })
-                res.append(dict(op_vals))
+            # for n in range(num):
+            #     op_vals.update({
+            #         'result_package_id': pack_obj.id,
+            #         'product_qty': pack_units,
+            #     })
+            op_vals.update({
+                'result_package_id': pack_obj.id,
+                'product_qty': pack_units * num
+            })
+            res.append(dict(op_vals))
 
         else:  # create a different pack and operation if box or palet
             for n in range(num):

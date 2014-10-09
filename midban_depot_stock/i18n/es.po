@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-02 17:15+0000\n"
-"PO-Revision-Date: 2014-10-02 17:15+0000\n"
+"POT-Creation-Date: 2014-10-08 12:42+0000\n"
+"PO-Revision-Date: 2014-10-08 12:42+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: midban_depot_stock
+#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+msgid "% Filled between x-y"
+msgstr "% Ocupación entre x-y"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
@@ -128,6 +133,11 @@ msgstr "Asistente asignación rutas"
 #: selection:stock.task,state:0
 msgid "Assigned"
 msgstr "Asignada"
+
+#. module: midban_depot_stock
+#: field:stock.location,filter_available:0
+msgid "Available Between X-Y"
+msgstr "Disponible entre X-Y"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
@@ -281,9 +291,9 @@ msgid "Duration in Minutes"
 msgstr "Duración en minutos"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:168
-#: code:addons/midban_depot_stock/stock.py:270
-#: code:addons/midban_depot_stock/stock.py:276
+#: code:addons/midban_depot_stock/stock.py:203
+#: code:addons/midban_depot_stock/stock.py:306
+#: code:addons/midban_depot_stock/stock.py:312
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:63
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:97
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:105
@@ -296,10 +306,10 @@ msgstr "Duración en minutos"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:242
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:275
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:289
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:128
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:144
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:151
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:172
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:175
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:192
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:199
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:228
 #, python-format
 msgid "Error!"
 msgstr "¡Error!"
@@ -320,6 +330,11 @@ msgstr "Esa ubicación de picking ya está asignada"
 #: field:stock.location,filled_percent:0
 msgid "Filled %"
 msgstr "% Ocupación"
+
+#. module: midban_depot_stock
+#: field:stock.location,filter_percent:0
+msgid "Filled Between X-Y"
+msgstr "Ocupación entre X-Y"
 
 #. module: midban_depot_stock
 #: field:reposition.wizard,capacity:0
@@ -466,11 +481,6 @@ msgid "Management of vehicles"
 msgstr "Gestión de vehículos"
 
 #. module: midban_depot_stock
-#: selection:stock.quant.package,pack_type:0
-msgid "Mantle"
-msgstr "Manto"
-
-#. module: midban_depot_stock
 #: model:product.uom,name:midban_depot_stock.product_uom_mantle
 msgid "Mantle(s)"
 msgstr "Manto(s)"
@@ -502,7 +512,7 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:168
+#: code:addons/midban_depot_stock/stock.py:203
 #, python-format
 msgid "No empty locations."
 msgstr "Sin ubicaciones libres"
@@ -520,20 +530,20 @@ msgid "No internal reposition                                                  p
 msgstr "Sin reposiciones internas para planificar"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:145
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:193
 #, python-format
 msgid "No picking location matching with                                     specified capacity."
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:276
+#: code:addons/midban_depot_stock/stock.py:312
 #, python-format
 msgid "No product founded                                                    inside package"
 msgstr "Sin producto dentro del paquete"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:230
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:151
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:199
 #, python-format
 msgid "No reposition type founded                                                 You must define the picking                                                 type in the warehouse."
 msgstr "No se ha encontrado el tipo reposición. Debe definirlo en el almacén."
@@ -551,7 +561,7 @@ msgid "No ubication type founded                                                
 msgstr "No se ha encontrado el tipo ubicación. Debe definir el tipo de albarán en el almacén."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:173
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:229
 #, python-format
 msgid "Nothing to do."
 msgstr "Nada que hacer."
@@ -600,11 +610,6 @@ msgid "Order Month"
 msgstr "Mes del pedido"
 
 #. module: midban_depot_stock
-#: field:stock.quant.package,packed_qty:0
-msgid "PAcked qty"
-msgstr "Packed qty"
-
-#. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_task
 msgid "Pack"
 msgstr "Paquete"
@@ -623,6 +628,7 @@ msgstr "Lote paquete"
 
 #. module: midban_depot_stock
 #: field:stock.pack.operation,packed_qty:0
+#: field:stock.quant.package,packed_qty:0
 msgid "Packed qty"
 msgstr "Qty paquete"
 
@@ -669,7 +675,7 @@ msgid "Picking Location"
 msgstr "Ubicación picking"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:129
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:176
 #, python-format
 msgid "Picking locations does not exist"
 msgstr "Las ubicaciones de picking no existen"
@@ -692,7 +698,7 @@ msgstr "Abastecimiento"
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
 msgid "Procurement Group"
-msgstr "Grupo abastecimiento"
+msgstr "Grupo de abastecimiento"
 
 #. module: midban_depot_stock
 #: field:stock.location,current_product_id:0
@@ -703,7 +709,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:683
+#: code:addons/midban_depot_stock/stock.py:744
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -739,7 +745,7 @@ msgid "Quants"
 msgstr "Quants"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:106
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:102
 #: selection:stock.picking,task_type:0
 #: selection:stock.task,type:0
 #, python-format
@@ -832,7 +838,7 @@ msgstr "Origen"
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
 msgid "Standard"
-msgstr "Standard"
+msgstr "Estandard"
 
 #. module: midban_depot_stock
 #: field:route,state:0
@@ -901,7 +907,7 @@ msgstr "Hoy"
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Transfer"
-msgstr "Traspasar"
+msgstr "Transferir"
 
 #. module: midban_depot_stock
 #: field:procurement.order,route_id:0
@@ -977,7 +983,7 @@ msgstr "Número vehículo"
 #. module: midban_depot_stock
 #: field:stock.location,volume:0
 #: field:stock.pack.operation,volume:0
-#: field:stock.quant,volume:0
+#: field:stock.quant.package,volume:0
 msgid "Volume"
 msgstr "Volumen"
 
