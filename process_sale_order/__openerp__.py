@@ -36,6 +36,7 @@
     "images": [],
     "depends": ["base",
                 "product",
+                "product_expiry",
                 "sale",
                 "telesale",
                 "price_system_variable"],

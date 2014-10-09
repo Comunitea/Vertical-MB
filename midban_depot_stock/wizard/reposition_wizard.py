@@ -49,13 +49,13 @@ class reposition_wizard(osv.TransientModel):
         """
         if context is None:
             context = {}
-        created_moves = []
-        newm = False
-        obj = self.browse(cr, uid, ids[0], context=context)
-        pick_type = obj.warehouse_id.reposition_type_id
-        move_obj = self.pool.get('stock.move')
         prod_obj = self.pool.get('product.product')
         loc_obj = self.pool.get('stock.location')
+
+        created_moves = []
+        obj = self.browse(cr, uid, ids[0], context=context)
+        # pick_type = obj.warehouse_id.reposition_type_id
+        # move_obj = self.pool.get('stock.move')
         prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
                                               dest_id)], context=context,
                                    limit=1)
@@ -64,95 +64,18 @@ class reposition_wizard(osv.TransientModel):
             storage_id = obj.warehouse_id.storage_loc_id.id
             product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
 
-            vol_aval = loc.available_volume
+            # vol_aval = loc.available_volume
             t_quant = self.pool.get('stock.quant')
             domain = [
                 ('location_id', 'child_of', [storage_id]),
-                ('package_id.pack_type', '=', 'palet'),
+                ('package_id.pack_type', 'in', ['palet', 'box']),
                 ('product_id', '=', product.id),
                 ('qty', '>', 0),
             ]
-            quant_pal_ids = t_quant.search(cr, uid, domain, context=context)
-            quant_ids = quant_pal_ids
-            # domain = [
-            #     ('location_id', 'child_of', [storage_id]),
-            #     ('package_id.pack_type', '=', 'var_palet'),
-            #     ('product_id', '=', product.id),
-            #     ('qty', '>', 0)
-            # ]
-            # quant_ma_ids = t_quant.search(cr, uid, domain, context=context)
-            # quant_ids.extend(quant_ma_ids)
-
-            # package_ids = set()
-            # for quant in t_quant.browse(cr, uid, quant_ids, context):
-            #     package_ids.add(quant.id)
-            # package_ids = list(package_ids)
-            # In order, try to reposition palets and var_palets complete
-            for quant in t_quant.browse(cr, uid, quant_ids, context):
-                if quant.package_id.volume < vol_aval:
-                    vals = {
-                        'product_id': product.id,
-                        'product_uom_qty': quant.package_id.packed_qty,
-                        'location_id': quant.location_id.id,
-                        'location_dest_id': loc.id,
-                        'product_uom': product.uom_id.id,
-                        'picking_id': pick_id,
-                        'picking_type_id': pick_type.id,
-                        'warehouse_id': obj.warehouse_id.id,
-                        'name': _("Reposition")
-                    }
-                    newm = move_obj.create(cr, uid, vals, context=context)
-                    created_moves.append(newm)
-                    vol_aval -= quant.volume
-                    # remove all quants related with the palet
-                    quants_in_pal = [x.id for x in quant.package_id.quant_ids]
-                    for q_id in quants_in_pal:
-                        if q_id in quant_ids:
-                            quant_ids.remove(q_id)
-
-            # Then if we have volume available, try to convert palet to var
-            # palet
-            # width_wood = product.supplier_pa_width
-            # length_wood = product.supplier_pa_length
-            # height_mant = product.supplier_ma_height
-            # wood_height = product.palet_wood_height
-            # height_var_pal = (1 * height_mant) + wood_height
-            # mantle_vol = width_wood * length_wood * height_var_pal
-            # mantle_units = product.un_ca * product.ca_ma
-            # if mantle_vol and vol_aval >= mantle_vol and quant_ids:
-            #     num = math.floor(vol_aval / mantle_vol)
-            #     num_units = num * mantle_units
-            #     for quant in t_quant.browse(cr, uid, quant_ids, context):
-            #         if quant.package_id.pack_type == 'palet':
-            #             quant.package_id.write({'pack_type': 'var_palet'})
-            #             vals = {
-            #                 'product_id': product.id,
-            #                 'product_uom_qty': num_units,
-            #                 'location_id': quant.location_id.id,
-            #                 'location_dest_id': loc.id,
-            #                 'product_uom': product.uom_id.id,
-            #                 'picking_id': pick_id,
-            #                 'picking_type_id': pick_type.id,
-            #                 'warehouse_id': obj.warehouse_id.id,
-            #                 'name': _("Reposition")
-            #             }
-            #             newm = move_obj.create(cr, uid, vals, context=context)
-            #             created_moves.append(newm)
-            #         else:
-            #             if quant.pack_id.num_mantles >= num:
-            #                 vals = {
-            #                     'product_id': product.id,
-            #                     'product_uom_qty': num_units,
-            #                     'location_id': quant.location_id.id,
-            #                     'location_dest_id': loc.id,
-            #                     'product_uom': product.uom_id.id,
-            #                     'picking_id': pick_id,
-            #                     'picking_type_id': pick_type.id,
-            #                     'warehouse_id': obj.warehouse_id.id,
-            #                     'name': _("Reposition")
-            #                 }
-            #             newm = move_obj.create(cr, uid, vals, context=context)
-            #             created_moves.append(newm)
+            orderby = 'removal_date, in_date, id'  # aplly fefo
+            quant_ids = t_quant.search(cr, uid, domain, order=orderby,
+                                       context=context)
+            import ipdb; ipdb.set_trace()
 
         return created_moves
 
@@ -207,6 +130,8 @@ class reposition_wizard(osv.TransientModel):
 
         #A pick for each location, if nor operations delete the pick.
         for loc_id in selected_ids:
+            if loc_id == 20:
+                import ipdb; ipdb.set_trace()
             vals = {'state': 'draft',
                     'name': '/',
                     'picking_type_id': reposition_task_type_id}

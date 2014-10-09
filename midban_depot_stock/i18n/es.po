@@ -787,7 +787,7 @@ msgstr "Modelo ruta"
 #: model:ir.actions.act_window,name:midban_depot_stock.action_route
 #: view:route:midban_depot_stock.route_view_form
 msgid "Routes"
-msgstr "Rutas"
+msgstr "Rutas de transporte"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.menu_stock_vehicle_route_mgmt
