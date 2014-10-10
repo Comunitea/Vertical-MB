@@ -409,7 +409,6 @@ class stock_pack_operation(osv.osv):
                 mant_units = un_ca * ca_ma
                 if mant_units:
                     res[ope.id] = int(math.ceil(ope.product_qty / mant_units))
-        # import ipdb; ipdb.set_trace()
         return res
 
     _columns = {

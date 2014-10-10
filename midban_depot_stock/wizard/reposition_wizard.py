@@ -96,8 +96,8 @@ class reposition_wizard(osv.TransientModel):
                     res.append(packs_ordered)
         return res
 
-    def get_reposition_picking(self, cr, uid, ids, dest_id, prod, pack_cands,
-                               context=None):
+    def _get_reposition_picking(self, cr, uid, ids, dest_id, prod, pack_cands,
+                                context=None):
         """
         Get a reposition picking for ubication dest_id if its possible.
         We check pack_cands and try to replenish the maximum possible.
@@ -113,6 +113,7 @@ class reposition_wizard(osv.TransientModel):
         t_pick = self.pool.get('stock.picking')
         move_obj = self.pool.get('stock.move')
         t_pack_op = self.pool.get("stock.pack.operation")
+        t_pack = self.pool.get("stock.quant.package")
 
         obj = self.browse(cr, uid, ids[0], context=context)
         reposition_task_type_id = obj.warehouse_id.reposition_type_id.id
@@ -135,7 +136,7 @@ class reposition_wizard(osv.TransientModel):
                     to_replenish_packs.append(pack_obj)
                 elif pack_obj.pack_type == 'palet':
                     packs_to_split.append(pack_obj)
-                    vol_aval = 0
+                    idx = limit + 1  # force out of while
             idx += 1
 
         if to_replenish_packs:
@@ -147,28 +148,35 @@ class reposition_wizard(osv.TransientModel):
                     'product_uom_id': False,
                     'product_qty': 1,
                     'package_id': pack.id,
+                    'location_id': pack.location_id.id,
                     'location_dest_id': dest_id,
                     'result_package_id': False,
                 }
                 operation_dics.append(op_vals)
 
         if packs_to_split:
+            #split the pack with lowest volume
             packs_to_split = sorted(packs_to_split, key=lambda p: p.volume)
             vol_mant = prod.supplier_pa_width * prod.supplier_pa_length * \
                 prod.supplier_ma_height
-            mant_units = prod.supplier.un_ca * prod.supplier.ca_ma
-            num_mantles = vol_mant and math.floor(vol_aval / vol_mant) or False
+            mant_units = prod.supplier_un_ca * prod.supplier_ca_ma
+            num_mantles = vol_mant and math.floor(vol_aval / vol_mant) or 0.0
             if num_mantles:
                 total_move_qty += num_mantles * mant_units
-                pack_obj = packs_to_split[0]
+                pack_obj = packs_to_split[0]  # the little pack
+                new_pack_id = t_pack.create(cr, uid, {'pack_type': 'palet'})
+                new_pack_obj = t_pack.browse(cr, uid, new_pack_id, context)
+                new_name = new_pack_obj.name.replace("PACK", 'PALET')
+                new_pack_obj.write({'name': new_name})
                 op_vals = {
                     'picking_id': False,  # to set later, when pick created
-                    'product_id': False,
-                    'product_uom_id': False,
-                    'product_qty': 1,
-                    'package_id': pack.id,
+                    'product_id': prod.id,
+                    'product_uom_id': prod.uom_id.id,
+                    'product_qty': num_mantles * mant_units,
+                    'package_id': pack_obj.id,
+                    'location_id': pack_obj.location_id.id,
                     'location_dest_id': dest_id,
-                    'result_package_id': False,
+                    'result_package_id': new_pack_id,
                 }
                 operation_dics.append(op_vals)
 
@@ -182,13 +190,12 @@ class reposition_wizard(osv.TransientModel):
             vals = {
                 'product_id': prod.id,
                 'product_uom_qty': total_move_qty,
-                'location_id': picking_loc_id,
-                'location_dest_id': storage_loc_id,
+                'location_id': storage_loc_id,
+                'location_dest_id': picking_loc_id,
                 'product_uom': prod.uom_id.id,
                 'picking_id': pick_id,
-                # 'picking_type_id': pick_type.id,
                 'warehouse_id': obj.warehouse_id.id,
-                # 'name': _("Reposition")
+                'name': _("Reposition")
             }
             move_obj.create(cr, uid, vals, context=context)
             t_pick.action_confirm(cr, uid, [pick_id], context=context)
@@ -212,7 +219,7 @@ class reposition_wizard(osv.TransientModel):
         if context is None:
             context = {}
         prod_obj = self.pool.get('product.product')
-        pick_ids = []
+        pick_id = False
         obj = self.browse(cr, uid, ids[0], context=context)
         prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
                                               dest_id)], context=context,
@@ -231,7 +238,6 @@ class reposition_wizard(osv.TransientModel):
             quant_ids = t_quant.search(cr, uid, domain, order=orderby,
                                        context=context)
 
-            import ipdb; ipdb.set_trace()
             lot_ids = []  # order fefo LOT IDS
             quant_ids_no_lot = []  # order fefo QUANTS IDS without lot
 
@@ -247,10 +253,10 @@ class reposition_wizard(osv.TransientModel):
                                                    quant_ids_no_lot,
                                                    context=context)
             if pack_cands:
-                pick_ids = self.get_reposition_pickings(cr, uid, ids, dest_id,
-                                                        product, pack_cands,
-                                                        context=context)
-        return pick_ids
+                pick_id = self._get_reposition_picking(cr, uid, ids, dest_id,
+                                                       product, pack_cands,
+                                                       context=context)
+        return pick_id
 
     def get_reposition_list(self, cr, uid, ids, context=None):
         """
@@ -296,8 +302,6 @@ class reposition_wizard(osv.TransientModel):
                                                  type in the warehouse.'))
         #A pick for each location, if nor operations delete the pick.
         for loc_id in selected_ids:
-            if loc_id == 20:
-                import ipdb; ipdb.set_trace()
             pick_id = self._get_reposition_operations(cr, uid, ids, loc_id,
                                                       context=context)
             if pick_id:
