@@ -151,6 +151,7 @@ class reposition_wizard(osv.TransientModel):
                     'location_id': pack.location_id.id,
                     'location_dest_id': dest_id,
                     'result_package_id': False,
+                    'lot_id': False,
                 }
                 operation_dics.append(op_vals)
 
@@ -177,6 +178,7 @@ class reposition_wizard(osv.TransientModel):
                     'location_id': pack_obj.location_id.id,
                     'location_dest_id': dest_id,
                     'result_package_id': new_pack_id,
+                    'lot_id': pack_obj.lot_id and pack_obj.lot_id.id or False,
                 }
                 operation_dics.append(op_vals)
 
