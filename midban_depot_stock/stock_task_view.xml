@@ -63,6 +63,7 @@
                     <field name="state" string="State"/>
                     <filter string="Assigned" domain="[('state', '=', 'assigned')]"/>
                     <filter string="Finished" domain="[('state', '=', 'done')]"/>
+                    <filter string="Finished" domain="[('state', '=', 'canceled')]"/>
                     <group expand="1" string="Group By...">
                         <filter string="User" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
