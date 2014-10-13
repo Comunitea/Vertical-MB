@@ -135,11 +135,19 @@ class stock_package(osv.osv):
         if context is None:
             context = {}
         res = {}
+        t_loc = self.pool.get('stock.location')
+        t_whs = self.pool.get('stock.warehouse')
         for pack in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if pack.product_id:
                 prod = pack.product_id
-
+                whs_id = t_loc.get_warehouse(cr, uid, pack.location_id,
+                                             context=context)
+                warehouse = t_whs.browse(cr, uid, whs_id, context=context)
+                picking_loc_id = warehouse.picking_loc_id.id
+                loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
+                                            context=context)
+                parent_loc_id = loc_dest_obj.location_id.id
                 if pack.pack_type:  # Get volume of box,palet or var_palet
                     if pack.pack_type == 'box':
                         volume = prod.supplier_ca_width * \
@@ -151,6 +159,8 @@ class stock_package(osv.osv):
                         length_wood = prod.supplier_pa_length
                         height_mant = prod.supplier_ma_height
                         wood_height = prod.palet_wood_height
+                        if parent_loc_id == picking_loc_id:
+                            wood_height = 0  # No wood in picking location
                         height_var_pal = (num_mant * height_mant) + wood_height
                         volume = width_wood * length_wood * height_var_pal
                 if not volume:  # Get volume of individual units
@@ -357,22 +367,26 @@ class stock_pack_operation(osv.osv):
         if context is None:
             context = {}
         res = {}
+        t_loc = self.pool.get('stock.location')
+        t_whs = self.pool.get('stock.warehouse')
         for ope in self.browse(cr, uid, ids, context=context):
             volume = 0.0
+            whs_id = t_loc.get_warehouse(cr, uid, ope.location_dest_id,
+                                         context=context)
+            warehouse = t_whs.browse(cr, uid, whs_id, context=context)
+            picking_loc_id = warehouse.picking_loc_id.id
+            loc_dest_obj = t_loc.browse(cr, uid, ope.location_dest_id.id,
+                                        context=context)
+            parent_loc_id = loc_dest_obj.location_id.id
             if ope.pack_type:
-                # if ope.pack_type == "palet":
-                    # volume = ope.operation_product_id.supplier_pa_width * \
-                    #     (ope.operation_product_id.supplier_pa_height +
-                    #      ope.operation_product_id.palet_wood_height) * \
-                    #     ope.operation_product_id.supplier_pa_length
-                # elif ope.pack_type == "var_palet":
                 if ope.pack_type == "palet":
-                    # num_mant = len(ope.package_id.quant_ids)
                     num_mant = ope.package_id.num_mantles
                     width_wood = ope.operation_product_id.supplier_pa_width
                     length_wood = ope.operation_product_id.supplier_pa_length
                     height_mant = ope.operation_product_id.supplier_ma_height
                     wood_height = ope.operation_product_id.palet_wood_height
+                    if parent_loc_id == picking_loc_id:
+                        wood_height = 0  # No wood in picking location
                     height_var_pal = (num_mant * height_mant) + wood_height
                     volume = width_wood * length_wood * height_var_pal
 
@@ -432,10 +446,6 @@ class stock_pack_operation(osv.osv):
                                      type='float',
                                      string='Packed qty',
                                      readonly=True),
-        # 'num_mantles': fields.related('package_id', 'num_mantles',
-        #                               type='float',
-        #                               string='Nº Mantles',
-        #                               readonly=True)
         'num_mantles': fields.function(_get_num_mantles,
                                        type='integer',
                                        string='Nº Mantles',
@@ -493,7 +503,7 @@ class stock_location(osv.Model):
                     quant.product_id.supplier_un_length * \
                     quant.qty
         pack_ids = list(pack_ids)
-        for pack in t_pack.browse(cr, uid, pack_ids, context):
+        for pack in t_pack.browse(cr, uid, pack_ids, context=context):
             volume += pack.volume
         return volume
 
@@ -503,6 +513,8 @@ class stock_location(osv.Model):
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
+        wh_obj = self.pool.get('stock.warehouse')
+        t_prod = self.pool.get('product.product')
         for loc in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
@@ -515,13 +527,30 @@ class stock_location(osv.Model):
                 ('location_dest_id', '=', loc.id),
                 ('processed', '=', 'false'),
                 ('picking_id.state', 'in', ['assigned'])
-
             ]
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
 
+            whs_id = self.get_warehouse(cr, uid, loc, context=context)
+            warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
+            picking_loc_id = warehouse.picking_loc_id.id
+            if loc.location_id and loc.location_id.id == picking_loc_id:
+                 # Add wood volume, only one wood
+                prod_id = t_prod.search(cr, uid,
+                                        [('picking_location_id', '=', loc.id)],
+                                        context=context, limit=1)
+                if prod_id:
+                    prod_obj = t_prod.browse(cr, uid, prod_id, context=context)
+                    width_wood = prod_obj.supplier_pa_width
+                    length_wood = prod_obj.supplier_pa_length
+                    height_wood = prod_obj.palet_wood_height
+                    wood_volume = width_wood * length_wood * height_wood
+
+                    volume += wood_volume
+
             res[loc.id] = loc.volume - volume
+
         return res
 
     def _search_available_volume(self, cr, uid, obj, name, args, context=None):
@@ -550,6 +579,8 @@ class stock_location(osv.Model):
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
+        wh_obj = self.pool.get('stock.warehouse')
+        t_prod = self.pool.get('product.product')
         for loc in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
@@ -568,10 +599,27 @@ class stock_location(osv.Model):
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
 
+            whs_id = self.get_warehouse(cr, uid, loc, context=context)
+            warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
+            picking_loc_id = warehouse.picking_loc_id.id
+            if loc.location_id and loc.location_id.id == picking_loc_id:
+                 # Add wood volume. Only one wood
+                prod_id = t_prod.search(cr, uid,
+                                        [('picking_location_id', '=', loc.id)],
+                                        context=context, limit=1)
+                if prod_id:
+                    prod_obj = t_prod.browse(cr, uid, prod_id, context=context)
+                    width_wood = prod_obj.supplier_pa_width
+                    length_wood = prod_obj.supplier_pa_length
+                    height_wood = prod_obj.palet_wood_height
+                    wood_volume = width_wood * length_wood * height_wood
+
+                    volume += wood_volume
             res[loc.id] = loc.volume and ((volume * 100) / loc.volume) or 0.0
         return res
 
     def _search_filled_percent(self, cr, uid, obj, name, args, context=None):
+        """ Function search to use filled % like a filter. """
         if context is None:
             context = {}
         sel_loc_ids = []
