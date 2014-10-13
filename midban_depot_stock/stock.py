@@ -261,7 +261,15 @@ class stock_pack_operation(osv.osv):
             pick_loc = ops.operation_product_id.picking_location_id
             old_ref = self._older_refernce_in_storage(cr, uid, product, wh_obj,
                                                       context=context)
-            if (not old_ref and ops.volume <= pick_loc.available_volume) or \
+            if not pick_loc.filled_percent:  # If empty add wood volume
+                width_wood = product.supplier_pa_width
+                length_wood = product.supplier_pa_length
+                height_wood = product.palet_wood_height
+                wood_volume = width_wood * length_wood * height_wood
+                vol_aval = pick_loc.available_volume - wood_volume
+            else:
+                vol_aval = pick_loc.available_volume
+            if (not old_ref and ops.volume <= vol_aval) or \
                     not ops.package_id:
                 location_id = pick_loc.id
             else:
@@ -535,7 +543,10 @@ class stock_location(osv.Model):
             whs_id = self.get_warehouse(cr, uid, loc, context=context)
             warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
             picking_loc_id = warehouse.picking_loc_id.id
-            if loc.location_id and loc.location_id.id == picking_loc_id:
+            # import ipdb; ipdb.set_trace()
+            cond1 = loc.location_id and loc.location_id.id == picking_loc_id
+            cond2 = quant_ids or operation_ids
+            if cond1 and cond2:
                  # Add wood volume, only one wood
                 prod_id = t_prod.search(cr, uid,
                                         [('picking_location_id', '=', loc.id)],
@@ -602,7 +613,9 @@ class stock_location(osv.Model):
             whs_id = self.get_warehouse(cr, uid, loc, context=context)
             warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
             picking_loc_id = warehouse.picking_loc_id.id
-            if loc.location_id and loc.location_id.id == picking_loc_id:
+            cond1 = loc.location_id and loc.location_id.id == picking_loc_id
+            cond2 = quant_ids or operation_ids
+            if cond1 and cond2:
                  # Add wood volume. Only one wood
                 prod_id = t_prod.search(cr, uid,
                                         [('picking_location_id', '=', loc.id)],
