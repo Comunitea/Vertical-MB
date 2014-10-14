@@ -378,6 +378,7 @@ class assign_task_wzd(osv.TransientModel):
                 picking_ids = self._get_pickings(cr, uid, ids, move_ids,
                                                  context=context)
                 res.extend(picking_ids)
+        res = list(set(res))
         return res
 
     def get_picking_task(self, cr, uid, ids, context=None):
