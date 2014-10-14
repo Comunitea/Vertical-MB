@@ -472,8 +472,11 @@ class stock_warehouse(osv.osv):
                                              'Ubication Task Type'),
         'reposition_type_id': fields.many2one('stock.picking.type',
                                               'Reposition Task Type'),
-        'min_boxes_move': fields.integer('Min. boxes to move in picking'),
-        'max_boxes_move': fields.integer('Max. boxes to move in picking')
+        # 'min_boxes_move': fields.integer('Min. boxes to move in picking'),
+        # 'max_boxes_move': fields.integer('Max. boxes to move in picking'),
+        'max_volume': fields.float('Max. volume to move in picking',
+                                   digits_compute=
+                                   dp.get_precision('Product Volume')),
     }
 
 

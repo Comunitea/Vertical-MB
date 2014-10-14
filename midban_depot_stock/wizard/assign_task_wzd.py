@@ -34,7 +34,9 @@ class assign_task_wzd(osv.TransientModel):
                                       required=True),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
-        'temp_id': fields.many2one('temp.type', 'Temperature')
+        'temp_id': fields.many2one('temp.type', 'Temperature'),
+        'route_id': fields.many2one('route', 'Transport Route',
+                                    domain=[('state', '=', 'active')]),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -69,20 +71,6 @@ class assign_task_wzd(osv.TransientModel):
         else:
             return
 
-    def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
-        if context is None:
-            context = {}
-        t_pick = self.pool.get("stock.picking")
-        t_pack_op = self.pool.get("stock.pack.operation")
-        pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
-        # Writed when a ubication task is assigned
-        if pick_obj.task_type == 'ubication':
-            wh_obj = pick_obj.warehouse_id
-            ops_ids = [x.id for x in pick_obj.pack_operation_ids]
-            t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
-                                              context=context)
-        return True
-
     def _check_on_course(self, cr, uid, ids, context=None):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_task = self.pool.get("stock.task")
@@ -106,6 +94,54 @@ class assign_task_wzd(osv.TransientModel):
                                                  currently assigned.'))
         return on_course_tasks
 
+    def get_task(self, cr, uid, ids, context=None):
+        try:
+            self.get_location_task(cr, uid, ids, context=context)
+        except:
+            pass
+        try:
+            return self.get_reposition_task(cr, uid, ids, context=context)
+        except:
+            pass
+        try:
+            return self.get_picking_task(cr, uid, ids, context=context)
+        except Exception, e:
+            raise e
+
+    def cancel_task(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        t_task = self.pool.get("stock.task")
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        # Check if operator has a task on course
+        domain = [
+            ('user_id', '=', wzd_obj.operator_id.id),
+            ('state', '=', 'assigned')
+        ]
+        on_course_tasks = t_task.search(cr, uid, domain, context=context,
+                                        limit=1)
+        if not on_course_tasks:
+            raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
+                                                You haven't a task assigned."))
+        t_task.cancel_task(cr, uid, on_course_tasks, context=context)
+
+    def finish_task(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        t_task = self.pool.get("stock.task")
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        # Check if operator has a task on course
+        domain = [
+            ('user_id', '=', wzd_obj.operator_id.id),
+            ('state', '=', 'assigned')
+        ]
+        on_course_tasks = t_task.search(cr, uid, domain, context=context,
+                                        limit=1)
+        if not on_course_tasks:
+            raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
+                                                You haven't a task assigned."))
+        t_task.finish_task(cr, uid, on_course_tasks, context=context)
+
     def reprint_task(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -123,6 +159,24 @@ class assign_task_wzd(osv.TransientModel):
             return self._print_report(cr, uid, ids,
                                       picking_id=task.picking_id.id,
                                       context=context)
+
+##############################################################################
+############################### UBICATION ####################################
+##############################################################################
+
+    def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
+        if context is None:
+            context = {}
+        t_pick = self.pool.get("stock.picking")
+        t_pack_op = self.pool.get("stock.pack.operation")
+        pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
+        # Writed when a ubication task is assigned
+        if pick_obj.task_type == 'ubication':
+            wh_obj = pick_obj.warehouse_id
+            ops_ids = [x.id for x in pick_obj.pack_operation_ids]
+            t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
+                                              context=context)
+        return True
 
     def get_location_task(self, cr, uid, ids, context=None):
         """
@@ -179,39 +233,9 @@ class assign_task_wzd(osv.TransientModel):
         return self._print_report(cr, uid, ids, picking_id=pick.id,
                                   context=context)
 
-    def cancel_task(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        t_task = self.pool.get("stock.task")
-        wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        # Check if operator has a task on course
-        domain = [
-            ('user_id', '=', wzd_obj.operator_id.id),
-            ('state', '=', 'assigned')
-        ]
-        on_course_tasks = t_task.search(cr, uid, domain, context=context,
-                                        limit=1)
-        if not on_course_tasks:
-            raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
-                                                You haven't a task assigned."))
-        t_task.cancel_task(cr, uid, on_course_tasks, context=context)
-
-    def finish_task(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        t_task = self.pool.get("stock.task")
-        wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        # Check if operator has a task on course
-        domain = [
-            ('user_id', '=', wzd_obj.operator_id.id),
-            ('state', '=', 'assigned')
-        ]
-        on_course_tasks = t_task.search(cr, uid, domain, context=context,
-                                        limit=1)
-        if not on_course_tasks:
-            raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
-                                                You haven't a task assigned."))
-        t_task.finish_task(cr, uid, on_course_tasks, context=context)
+##############################################################################
+############################### REPOSITION ###################################
+##############################################################################
 
     def get_reposition_task(self, cr, uid, ids, context=None):
         """
@@ -259,80 +283,142 @@ class assign_task_wzd(osv.TransientModel):
         return self._print_report(cr, uid, ids, picking_id=pick.id,
                                   context=context)
 
+##############################################################################
+################################ PICKING #####################################
+##############################################################################
+
+    def _get_moves_from_route(self, cr, uid, ids, context=None):
+        """
+        Search all the assigned moves which picking has route_id and
+        temperature equals to wizard temp_id.
+        If not route_id in wizard we get a random pending route
+        """
+        if context is None:
+            context = {}
+        move_obj = self.pool.get('stock.move')
+
+        res = []
+        obj = self.browse(cr, uid, ids[0], context=context)
+        selected_route = obj.route_id and obj.route_id.id or False
+        if not selected_route:
+            raise osv.except_osv(_('Error!'), _('TODO Get random route'))
+        domain = [
+            ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
+            ('product_id.temp_type', '=', obj.temp_id.id),
+            ('state', '=', 'assigned'),
+            ('picking_id.operator_id', '=', False),
+            ('picking_id.route_id', '=', selected_route)
+        ]
+        res = move_obj.search(cr, uid, domain, context=context)
+        return res
+
+    def _get_pickings(self, cr, uid, ids, move_ids, context=None):
+        """
+        For all moves from a same product, get the new pickings, or the
+        original picking if it only have one move.
+        """
+        res = set()
+        if context is None:
+            context = {}
+        pick_obj = self.pool.get('stock.picking')
+        move_obj = self.pool.get('stock.move')
+        for move in move_obj.browse(cr, uid, move_ids, context=context):
+            if move.picking_id and len(move.picking_id.move_lines) <= 1:
+                res.add(move.picking_id.id)
+            else:  # Pick of move has more than one move
+                new_pick = pick_obj.copy(cr, uid, move.picking_id.id,
+                                         {'move_lines': [],
+                                          'group_id': move.picking_id.
+                                          group_id.id})
+                move.write({'picking_id': new_pick}, context=context)
+                res.add(new_pick)
+        return list(res)
+
+    def _get_pickings_to_wave(self, cr, uid, ids, moves_by_product,
+                              context=None):
+        """
+        @param moves_by_product: Dict: Keys are product_id and value is a list
+                                 of moves with that products.
+        @param return: List of created picking ids to add to the wave.
+        """
+        if context is None:
+            context = {}
+        move_obj = self.pool.get('stock.move')
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        res = []
+        max_volume = wzd_obj.warehouse_id.max_volume
+        if not max_volume:
+            raise osv.except_osv(_('Error'), _('No max volume defined in \
+                                                warehouse'))
+        for key in moves_by_product:
+            move_ids = moves_by_product[key]
+            product = False
+            total_qty = 0.0
+            # Can we pick all the product
+            for move in move_obj.browse(cr, uid, move_ids, context=context):
+                total_qty += move.product_uom_qty
+                if not product:
+                    product = move.product_id
+
+            boxes_div = product.supplier_un_ca or 1
+            vol_box = product.supplier_ca_width * \
+                product.supplier_ca_height * product.supplier_ca_length
+            num_boxes = total_qty / boxes_div
+            all_moves_vol = num_boxes * vol_box
+
+            if all_moves_vol >= max_volume:
+                if not res:  # Wave is empty so we force put in it
+                    picking_ids = self._get_pickings(cr, uid, ids, move_ids,
+                                                     context=context)
+                    res.extend(picking_ids)
+                    break
+                else:  # wave is not empty so we check for another product
+                    continue
+            else:  # We can pick all the products
+                picking_ids = self._get_pickings(cr, uid, ids, move_ids,
+                                                 context=context)
+                res.extend(picking_ids)
+        return res
+
     def get_picking_task(self, cr, uid, ids, context=None):
+        """
+        Assign picking task to operator. The task will be linked to a
+        wave of picks.
+        """
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')
         pick_obj = self.pool.get('stock.picking')
         wave_obj = self.pool.get('stock.picking.wave')
         task_obj = self.pool.get("stock.task")
-        obj = self.browse(cr, uid, ids[0], context=context)
 
+        obj = self.browse(cr, uid, ids[0], context=context)
         # Check if operator has a task on course
         self._check_on_course(cr, uid, ids, context=context)
 
         if not obj.temp_id:
             raise osv.except_osv(_('Error!'), _('Temperature is required to \
                                                  do a picking task'))
-        to_pick_moves = move_obj.search(cr, uid, [('picking_type_id', '=',
-                                                  obj.warehouse_id.
-                                                  pick_type_id.id),
-                                                  ('product_id.temp_type', '=',
-                                                   obj.temp_id.id),
-                                                  ('state', '=', 'assigned'),
-                                                  ('picking_id.operator_id',
-                                                   '=', False),
-                                                  ('procurement_id.route_id',
-                                                   '!=', False)],
-                                        context=context)
+
+        to_pick_moves = self._get_moves_from_route(cr, uid, ids, context)
         if not to_pick_moves:
             raise osv.except_osv(_('Error!'), _('Anything pending of \
                                                  picking'))
-        pick_qty = 0.0
+
         pickings_to_wave = []
-        selected_route = False
+        moves_by_product = {}
         for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
-            if not selected_route:
-                selected_route = move.route_id.id
-            if move.route_id.id != selected_route:
-                continue
-            new_move = False
-            boxes_div = (move.product_id.supplier_un_ca or 1)
-            if move.picking_id and len(move.picking_id.move_lines) > 1:
-                if pick_qty >= obj.warehouse_id.max_boxes_move:
-                    break
-                elif (move.product_uom_qty / boxes_div) + \
-                        pick_qty > obj.warehouse_id.max_boxes_move:
-                    # split move
-                    new_qty = obj.warehouse_id.max_boxes_move - pick_qty
-                    new_qty = new_qty * boxes_div
-                    new_move = move_obj.copy(cr, uid, move.id,
-                                             {'product_uom_qty': new_qty,
-                                              'split_from': move.id},
-                                             context=context)
-                    move.write({'product_uom_qty':
-                                move.product_uom_qty - new_qty})
-                    pick_qty = obj.warehouse_id.max_boxes_move
-                else:
-                    pick_qty += move.product_uom_qty / boxes_div
+            if move.product_id.id not in moves_by_product:
+                moves_by_product[move.product_id.id] = [move.id]
+            else:
+                moves_by_product[move.product_id.id].append(move.id)
 
-                # split picking
-                new_pick = pick_obj.copy(cr, uid, move.picking_id.id,
-                                         {'move_lines': [],
-                                          'group_id': move.picking_id.
-                                          group_id.id})
-                if new_move:
-                    move_obj.write(cr, uid, [new_move],
-                                   {'picking_id': new_pick}, context=context)
-                else:
-                    move.write({'picking_id': new_pick})
-
-                pickings_to_wave.append(new_pick)
-            elif move.picking_id:
-                pickings_to_wave.append(move.picking_id.id)
+        # Get pickings to put in a wave
+        pickings_to_wave = self._get_pickings_to_wave(cr, uid, ids,
+                                                      moves_by_product,
+                                                      context=context)
 
         if pickings_to_wave:
-            pickings_to_wave = list(set(pickings_to_wave))
             pick_obj.write(cr, uid, pickings_to_wave,
                            {'operator_id': obj.operator_id.id,
                             'machine_id': obj.machine_id.id,
@@ -358,17 +444,3 @@ class assign_task_wzd(osv.TransientModel):
             task_obj.create(cr, uid, vals, context=context)
             return self._print_report(cr, uid, ids, wave_id=wave_id,
                                       context=context)
-
-    def get_task(self, cr, uid, ids, context=None):
-        try:
-            self.get_location_task(cr, uid, ids, context=context)
-        except:
-            pass
-        try:
-            return self.get_reposition_task(cr, uid, ids, context=context)
-        except:
-            pass
-        try:
-            return self.get_picking_task(cr, uid, ids, context=context)
-        except Exception, e:
-            raise e
