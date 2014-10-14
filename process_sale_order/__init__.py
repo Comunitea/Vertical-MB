@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier CFolmenero Fernández$ <javier@pexego.es>
+#    $Javier Colmenero Fernández$ <javier@pexego.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published

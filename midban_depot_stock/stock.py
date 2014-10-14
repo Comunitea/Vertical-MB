@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier CFolmenero Fernández$ <javier@pexego.es>
+#    $Javier Colmenero Fernández$ <javier@pexego.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -863,3 +863,12 @@ class stock_inventory(osv.osv):
             new_vals = vals
 
         return new_vals
+
+
+class stock_picking_wave(osv.osv):
+    _inherit = "stock.picking.wave"
+
+    _columns = {
+        'wave_report_ids': fields.one2many('wave.report', 'wave_id',
+                                           'Picking List', readonly=True),
+    }

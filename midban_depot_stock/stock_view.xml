@@ -195,5 +195,17 @@
             </field>
         </record>
 
+        <record id="view_picking_wave_form_add_wave_report_ids" model="ir.ui.view">
+            <field name="name">picking.wave.form.add.wave.report.ids</field>
+            <field name="model">stock.picking.wave</field>
+            <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_form"/>
+            <field name="arch" type="xml">
+                <field name="picking_ids" position="after">
+                    <separator string="Picking List"/>
+                    <field name="wave_report_ids"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

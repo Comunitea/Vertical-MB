@@ -60,7 +60,8 @@
         "wizard/route_orders_wizard_view.xml",
         "wizard/stock_transfer_details.xml",
         "data/product_data.xml",
-        "report/report_picking_task.xml",
+        "qweb_report/report_picking_task.xml",
+        "report/wave_report_view.xml"
     ],
     "demo": [],
     "test": [],

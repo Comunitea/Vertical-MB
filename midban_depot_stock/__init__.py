@@ -30,3 +30,4 @@ import partner
 import sale
 import stock
 import purchase
+import report
