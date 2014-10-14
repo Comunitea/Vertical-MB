@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_picking_task">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="report.external_layout">
+                        <div class="page">
+                             <div t-if="o.picking_type_id.code=='incoming' and o.partner_id">
+                                 <span><strong>Supplier Address:</strong></span>
+                             </div>
+                             <div t-if="o.picking_type_id.code=='internal' and o.partner_id">
+                                 <span><strong>Warehouse Address:</strong></span>
+                             </div>
+                             <div t-if="o.picking_type_id.code=='outgoing' and o.partner_id">
+                                 <span><strong>Customer Address:</strong></span>
+                             </div>
+                             <div t-if="o.partner_id" name="partner_header">
+                                 <div t-field="o.partner_id" 
+                                    t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true}'/>
+                                <p t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></p>
+                             </div>
+                             
+                             <h2>
+                             <span t-field="o.picking_type_id"/>: 
+                             <span t-field="o.name"/>
+                             </h2>
+                             <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th><strong>Order (Origin)</strong></th>
+                                    <th><strong>State</strong></th>
+                                    <th><strong>Commitment Date</strong></th>
+                                    <th name="td_sched_date_h"><strong>Scheduled Date</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-field="o.origin"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.state"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.date"/>
+                                    </td>
+                                    <td name="td_sched_date">
+                                        <span t-field="o.min_date"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            <br/>
+                            <br/>
+                            <table class="table table-condensed" t-if="o.pack_operation_ids">
+                              <thead>
+                                <tr>
+                                    <th><strong>Product</strong></th>
+                                    <th><strong>Lot</strong></th>
+                                    <th><strong>Pack</strong></th>
+                                    <th class="text-right"><strong>Quantity</strong></th>
+                                    <th class="text-right"><strong>Mantles</strong></th>
+                                    <th><strong>Source</strong></th>
+                                    <th><strong>Destination</strong></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr t-foreach="o.pack_operation_ids" t-as="pack_operation">
+
+                                    <!-- Product -->
+                                    <td><span t-field="pack_operation.product_id"/>
+                                        <t t-if="not pack_operation.product_id and pack_operation.package_id">
+                                            <span  t-field="pack_operation.operation_product_id"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- Lot -->
+                                    <td>
+                                        <span t-field="pack_operation.package_id.packed_lot_id"/>
+                                    </td>
+
+                                    <!-- Pack -->
+                                    <td>
+                                        <span  t-field="pack_operation.package_id"/>
+                                    </td>
+
+                                    <!-- Quantity -->
+                                    <td class="text-right">
+                                        <!-- <span t-field="pack_operation.product_qty"/>
+                                        <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/> -->
+                                        <span t-field="pack_operation.package_id.packed_qty"/>
+                                        <t t-if="not pack_operation.package_id ">
+                                            <span t-field="pack_operation.product_qty"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- Mantles -->
+                                    <td class="text-right">
+                                        <span  t-field="pack_operation.package_id.num_mantles"/>
+                                    </td>
+
+                                    <!-- Source -->
+                                    <t t-if="o.picking_type_id.code != 'incoming'">
+                                    <td>
+                                        <span t-field="pack_operation.location_id"/>
+                                        <!-- <span t-if="pack_operation.package_id">:</span>
+                                        <span t-field="pack_operation.package_id"/> -->
+                                        <span t-if="pack_operation.lot_id">:</span>
+                                        <span t-field="pack_operation.lot_id"/>
+                                      </td>
+                                    </t>
+                                    
+                                    <!-- Destination -->
+                                    <t t-if="o.picking_type_id.code != 'outgoing'">
+                                      <td>
+                                          <span t-field="pack_operation.location_dest_id"/>
+                                          <span t-if="pack_operation.result_package_id">:</span>
+                                          <span t-field="pack_operation.result_package_id"/>
+                                      </td>
+                                    </t>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </div>
+                    </t>
+                 </t>
+             </t>
+        </template>
+    </data>
+</openerp>
