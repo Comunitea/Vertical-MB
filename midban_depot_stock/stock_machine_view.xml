@@ -10,6 +10,7 @@
                     <sheet>
                         <group>
                             <field name="code"/>
+                            <field name="type"/>
                         </group>
                     </sheet>
                 </form>
@@ -23,6 +24,7 @@
             <field name="arch" type="xml">
                 <tree string="Machines" version="7.0">
                     <field name="code"/>
+                    <field name="type"/>
                 </tree>
             </field>
         </record>
@@ -34,6 +36,7 @@
             <field name="arch" type="xml">
                 <search string="Search Machines" version="7.0">
                     <field name="code" string="Code"/>
+                    <filter string="Type" context="{'group_by':'type'}"/>
                 </search>
             </field>
         </record>

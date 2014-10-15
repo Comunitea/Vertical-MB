@@ -30,8 +30,7 @@ class assign_task_wzd(osv.TransientModel):
         'operator_id': fields.many2one('res.users', 'Operator',
                                        required=True,
                                        domain=[('operator', '=', 'True')]),
-        'machine_id': fields.many2one('stock.machine', 'Machine',
-                                      required=True),
+        'machine_id': fields.many2one('stock.machine', 'Machine'),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
         'temp_id': fields.many2one('temp.type', 'Temperature'),
@@ -88,19 +87,28 @@ class assign_task_wzd(osv.TransientModel):
                                                  currently assigned.'))
         return on_course_tasks
 
-    def get_task(self, cr, uid, ids, context=None):
-        try:
-            self.get_location_task(cr, uid, ids, context=context)
-        except:
-            pass
-        try:
-            return self.get_reposition_task(cr, uid, ids, context=context)
-        except:
-            pass
-        try:
-            return self.get_picking_task(cr, uid, ids, context=context)
-        except Exception, e:
-            raise e
+    def _get_machine_from_user(self, cr, uid, ids, task_type, context=None):
+        """
+        Returns the property user machin for the task type, or raises and Error
+        if the no machine for the task type in the user sheet.
+        """
+        res = False
+        if context is None:
+            context = {}
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        operator = wzd_obj.operator_id
+        if task_type == 'ubication' and operator.location_mac_id:
+            res = operator.location_mac_id.id
+        elif task_type == 'reposition' and operator.reposition_mac_id:
+            res = operator.reposition_mac_id.id
+        elif task_type == 'picking' and operator.picking_mac_id:
+            res = operator.picking_mac_id.id
+
+        if not res:
+            raise osv.except_osv(_('Error!'), _("Machine not defined either\
+                                                 operator sheet or picking \
+                                                 wizard"))
+        return res
 
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -204,10 +212,13 @@ class assign_task_wzd(osv.TransientModel):
         if not pick_id:
             raise osv.except_osv(_('Error!'), _('No internal pickings to\
                                                  schedule'))
-
+        machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
+        if not machine_id:
+            machine_id = self._get_machine_from_user(cr, uid, ids, 'ubication',
+                                                     context=context)
         pick = t_pick.browse(cr, uid, pick_id[0], context)
         pick.write({'operator_id': wzd_obj.operator_id.id,
-                    'machine_id': wzd_obj.machine_id.id,
+                    'machine_id': machine_id,
                     'task_type': 'ubication',
                     'warehouse_id': wzd_obj.warehouse_id.id})
 
@@ -261,8 +272,13 @@ class assign_task_wzd(osv.TransientModel):
                                                  pickings to schedule'))
 
         pick = t_pick.browse(cr, uid, pick_id[0], context)
+        machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
+        if not machine_id:
+            machine_id = self._get_machine_from_user(cr, uid, ids,
+                                                     'reposition',
+                                                     context=context)
         pick.write({'operator_id': wzd_obj.operator_id.id,
-                    'machine_id': wzd_obj.machine_id.id,
+                    'machine_id': machine_id,
                     'warehouse_id': wzd_obj.warehouse_id.id,
                     'task_type': 'reposition'})
         # Create task and associate picking
@@ -416,9 +432,14 @@ class assign_task_wzd(osv.TransientModel):
                                                       context=context)
 
         if pickings_to_wave:
+            machine_id = obj.machine_id and obj.machine_id.id or False
+            if not machine_id:
+                machine_id = self._get_machine_from_user(cr, uid, ids,
+                                                         'picking',
+                                                         context=context)
             pick_obj.write(cr, uid, pickings_to_wave,
                            {'operator_id': obj.operator_id.id,
-                            'machine_id': obj.machine_id.id,
+                            'machine_id': machine_id,
                             'warehouse_id': obj.warehouse_id.id,
                             'task_type': 'picking'},
                            context=context)

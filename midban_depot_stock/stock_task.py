@@ -95,6 +95,7 @@ class stock_task(osv.Model):
             if task.picking_id:
                 task.picking_id.write({'operator_id': False,
                                        'machine_id': False})
+                task.picking_id.action_cancel()
             elif task.wave_id:
                 for picking in task.wave_id.picking_ids:
                     picking.write({'operator_id': False,

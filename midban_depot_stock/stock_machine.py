@@ -29,8 +29,9 @@ class stock_task(osv.Model):
         'code': fields.char('Code', required=True, size=128),
         'type': fields.selection([('retractil', 'Retractil'),
                                   ('prep_order', 'Order Prepare'),
-                                  ('transpalet', 'Transpalet'),
-                                 ])
+                                  ('transpalet', 'Transpalet')],
+                                 'Type Machine',
+                                 required=True)
     }
     _sql_constraints = [
         ('code_uniq', 'unique(code)', 'Code can not be repeated.'),
