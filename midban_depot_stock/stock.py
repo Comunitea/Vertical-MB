@@ -871,4 +871,8 @@ class stock_picking_wave(osv.osv):
     _columns = {
         'wave_report_ids': fields.one2many('wave.report', 'wave_id',
                                            'Picking List', readonly=True),
+        'temp_id': fields.many2one('temp.type', 'Temperature'),
+        'route_id': fields.many2one('route', 'Transport Route',
+                                    domain=[('state', '=', 'active')]),
+        'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
     }

@@ -9,5 +9,16 @@
             name="midban_depot_stock.report_picking_task" 
             file="midban_depot_stock.report_picking_task" 
         />
+
+        <report 
+            string="Picking List" 
+            id="action_report_picking_list" 
+            model="stock.picking.wave" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_picking_list" 
+            file="midban_depot_stock.report_picking_list" 
+        />
+
+
     </data>
 </openerp>

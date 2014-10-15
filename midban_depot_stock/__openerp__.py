@@ -61,6 +61,7 @@
         "wizard/stock_transfer_details.xml",
         "data/product_data.xml",
         "qweb_report/report_picking_task.xml",
+        "qweb_report/report_picking_list.xml",
         "report/wave_report_view.xml"
     ],
     "demo": [],

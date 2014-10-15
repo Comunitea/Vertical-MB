@@ -26,7 +26,11 @@ class stock_task(osv.Model):
     _rec_name = 'code'
     _description = 'Machines to move palets between locations'
     _columns = {
-        'code': fields.char('Code', required=True, size=128)
+        'code': fields.char('Code', required=True, size=128),
+        'type': fields.selection([('retractil', 'Retractil'),
+                                  ('prep_order', 'Order Prepare'),
+                                  ('transpalet', 'Transpalet'),
+                                 ])
     }
     _sql_constraints = [
         ('code_uniq', 'unique(code)', 'Code can not be repeated.'),

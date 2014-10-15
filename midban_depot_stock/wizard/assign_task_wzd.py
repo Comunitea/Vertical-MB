@@ -56,17 +56,11 @@ class assign_task_wzd(osv.TransientModel):
                            'midban_depot_stock.report_picking_task',
                            context=ctx)
         elif wave_id:
-            ctx['active_model'] = 'stock.picking'
-            wave = self.pool.get('stock.picking.wave').browse(cr, uid,
-                                                              wave_id,
-                                                              context=ctx)
-            picking_ids = [picking.id for picking in wave.picking_ids]
-            if not picking_ids:
-                raise osv.except_osv(_('Error!'), _('Nothing to print.'))
-            context['active_ids'] = picking_ids
+            ctx['active_model'] = 'stock.picking.wave'
+            context['active_ids'] = [wave_id]
             return self.pool.get("report").\
                 get_action(cr, uid, [],
-                           'midban_depot_stock.report_picking_task',
+                           'midban_depot_stock.report_picking_list',
                            context=context)
         else:
             return
@@ -310,7 +304,7 @@ class assign_task_wzd(osv.TransientModel):
             ('picking_id.route_id', '=', selected_route)
         ]
         res = move_obj.search(cr, uid, domain, context=context)
-        return res
+        return (res, selected_route)
 
     def _get_pickings(self, cr, uid, ids, move_ids, context=None):
         """
@@ -401,7 +395,9 @@ class assign_task_wzd(osv.TransientModel):
             raise osv.except_osv(_('Error!'), _('Temperature is required to \
                                                  do a picking task'))
 
-        to_pick_moves = self._get_moves_from_route(cr, uid, ids, context)
+        to_pick_moves, selected_route = self._get_moves_from_route(cr, uid,
+                                                                   ids,
+                                                                   context)
         if not to_pick_moves:
             raise osv.except_osv(_('Error!'), _('Anything pending of \
                                                  picking'))
@@ -428,11 +424,12 @@ class assign_task_wzd(osv.TransientModel):
                            context=context)
             pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
                                         context=context)
-
-            wave_id = wave_obj.create(cr, uid, {'user_id': obj.operator_id.id,
-                                                'picking_ids':
-                                                [(6, 0, pickings_to_wave)]},
-                                      context=context)
+            vals = {'user_id': obj.operator_id.id,
+                    'temp_id': obj.temp_id.id,
+                    'route_id': selected_route,
+                    'warehouse_id': obj.warehouse_id.id,
+                    'picking_ids': [(6, 0, pickings_to_wave)]}
+            wave_id = wave_obj.create(cr, uid, vals, context=context)
             wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
             # Create task and associate to picking wave
             vals = {
