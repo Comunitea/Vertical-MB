@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- Load a sequence for field code in issues.It's a internal code -->
+        <record id="type1" model="issue.type">
+            <field name="name">Regularización inventario</field>
+            <field name="code">type1</field>
+        </record>
+        <record id="type2" model="issue.type">
+            <field name="name">Pedido de compra no servible</field>
+            <field name="code">type2</field>
+        </record>
+        <record id="type3" model="issue.type">
+            <field name="name">Comunicaciones</field>
+            <field name="code">type3</field>
+        </record>
+        <record id="type4" model="issue.type">
+            <field name="name">Incidencia de stock</field>
+            <field name="code">type4</field>
+        </record>
+        <record id="type5" model="issue.type">
+            <field name="name">Expedición incorrecta</field>
+            <field name="code">type5</field>
+        </record>
+        <record id="type6" model="issue.type">
+            <field name="name">Devolución</field>
+            <field name="code">type6</field>
+        </record>
+        <record id="type7" model="issue.type">
+            <field name="name">Recepción incorrecta</field>
+            <field name="code">type7</field>
+        </record>
+
+        <!-- Reasons for type1 -->
+        <record id="reason1" model="issue.reason">
+            <field name="name">Merma por caducidad</field>
+            <field name="type_id" ref="type1"/>
+            <field name="code">reason1</field>
+        </record>
+        <record id="reason2" model="issue.reason">
+            <field name="name">Merma por manipulación en almacén</field>
+            <field name="type_id" ref="type1"/>
+            <field name="code">reason2</field>
+        </record>
+        <record id="reason3" model="issue.reason">
+            <field name="name">Merma por error en preparación pedido</field>
+            <field name="type_id" ref="type1"/>
+            <field name="code">reason3</field>
+        </record>
+        <record id="reason4" model="issue.reason">
+            <field name="name">Merma por manipulación fuera almacén</field>
+            <field name="type_id" ref="type1"/>
+            <field name="code">reason4</field>
+        </record>
+        <record id="reason5" model="issue.reason">
+            <field name="name">Merma desconocida</field>
+            <field name="type_id" ref="type1"/>
+            <field name="code">reason5</field>
+        </record>
+        <!-- Reasons for type2 -->
+        <record id="reason6" model="issue.reason">
+            <field name="name">Cantidad solicitada no disponible</field>
+            <field name="type_id" ref="type2"/>
+            <field name="code">reason6</field>
+        </record>
+        <record id="reason7" model="issue.reason">
+            <field name="name">Imposible servir en plazo pactado</field>
+            <field name="type_id" ref="type2"/>
+            <field name="code">reason7</field>
+        </record>
+        <!-- Reasons for type3 -->
+        <record id="reason8" model="issue.reason">
+            <field name="name">Aviso de expedición no recibido</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason8</field>
+        </record>
+        <record id="reason9" model="issue.reason">
+            <field name="name">Aviso de expedición no coincide con compra</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason9</field>
+        </record>
+        <record id="reason25" model="issue.reason">
+            <field name="name">Aviso de expedición no coincide con venta</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason25</field>
+        </record>
+
+    <record id="reason12" model="issue.reason">
+            <field name="name">Recepción de almacén no confirmada</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason12</field>
+        </record>
+        <record id="reason13" model="issue.reason">
+            <field name="name">Recepción de almacén distinta al aviso de expedición</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason13</field>
+        </record>
+        <record id="reason14" model="issue.reason">
+            <field name="name">Recepción de Depot difiere de lo enviado por MIDBAN</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason14</field>
+        </record>
+        <record id="reason26" model="issue.reason">
+            <field name="name">Recepción de Depot no confirmada</field>
+            <field name="type_id" ref="type3"/>
+            <field name="code">reason26</field>
+        </record>
+
+        <!-- Reasons for type4 -->
+        <record id="reason10" model="issue.reason">
+            <field name="name">Producto sustituido</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">reason10</field>
+        </record>
+        <record id="reason11" model="issue.reason">
+            <field name="name">Producto no disponible</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">reason11</field>
+        </record>
+
+        <record id="1" model="issue.reason">
+            <field name="name">Disponible</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">1</field>
+        </record>
+        <record id="16" model="issue.reason">
+            <field name="name">SSL</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">16</field>
+        </record>
+        <record id="33" model="issue.reason">
+            <field name="name">Bloqueado</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">33</field>
+        </record>
+        <record id="1" model="issue.reason">
+            <field name="name">Disponible</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">1</field>
+        </record>
+        <record id="22" model="issue.reason">
+            <field name="name">En Observ.</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">22</field>
+        </record>
+        <record id="26" model="issue.reason">
+            <field name="name">QI</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">26</field>
+        </record>
+        <record id="36" model="issue.reason">
+            <field name="name">Caducado</field>
+            <field name="type_id" ref="type4"/>
+            <field name="code">36</field>
+        </record>
+        <!-- Reasons for type5 -->
+        <record id="4" model="issue.reason">
+            <field name="name">Producto bloqueado</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">4</field>
+        </record>
+    <record id="5" model="issue.reason">
+            <field name="name">Ajuste rellano PO Cliente (Plataformas)</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">5</field>
+        </record>
+    <record id="6" model="issue.reason">
+            <field name="name">Error carga</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">6</field>
+        </record>
+    <record id="7" model="issue.reason">
+            <field name="name">Diferencia Inventario físico OL</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">7</field>
+        </record>
+    <record id="3" model="issue.reason">
+            <field name="name">Falta stock</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">3</field>
+        </record>
+    <record id="34" model="issue.reason">
+            <field name="name">Error en preparación</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">34</field>
+        </record>
+    <record id="18" model="issue.reason">
+            <field name="name">Error Cliente</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">18</field>
+        </record>
+    <record id="13" model="issue.reason">
+            <field name="name">Confirmado a 0 - PO Cliente</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">13</field>
+        </record>
+    <record id="17" model="issue.reason">
+            <field name="name">No cumple la caducidad exigida por el cliente</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">17</field>
+        </record>
+    <record id="14" model="issue.reason">
+            <field name="name">Anulación Entregas Cliente con reason</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">14</field>
+        </record>
+    <record id="A00" model="issue.reason">
+            <field name="name">CAPACIDAD CAMION</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">A00</field>
+        </record>
+    <record id="2B" model="issue.reason">
+            <field name="name">Diferencia Stock (Físico-Sistema)</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">2B</field>
+        </record>
+    <record id="2C" model="issue.reason">
+            <field name="name">Pallet incompleto o Ajuste rellano</field>
+            <field name="type_id" ref="type5"/>
+            <field name="code">2C</field>
+        </record>
+        <!-- Reasons for type6 -->
+        <record id="reason15" model="issue.reason">
+            <field name="name">Fin de temporada</field>
+            <field name="type_id" ref="type6"/>
+            <field name="code">reason15</field>
+        </record>
+        <record id="reason16" model="issue.reason">
+            <field name="name">No nos gusta</field>
+            <field name="type_id" ref="type6"/>
+            <field name="code">reason16</field>
+        </record>
+        <record id="reason17" model="issue.reason">
+            <field name="name">Mercancía rota</field>
+            <field name="type_id" ref="type6"/>
+            <field name="code">reason17</field>
+        </record>
+        <record id="reason18" model="issue.reason">
+            <field name="name">Producto en mal Estado</field>
+            <field name="type_id" ref="type6"/>
+            <field name="code">reason18</field>
+        </record>
+        <record id="reason19" model="issue.reason">
+            <field name="name">Mercancía mal servida</field>
+            <field name="type_id" ref="type6"/>
+            <field name="code">reason19</field>
+        </record>
+        <record id="reason20" model="issue.reason">
+            <field name="name">No es lo que se había pedido</field>
+            <field name="type_id" ref="type6"/>
+            <field name="code">reason20</field>
+        </record>
+        <!-- Reasons for type7 -->
+        <record id="reason21" model="issue.reason">
+            <field name="name">Producto no entregado</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">reason21</field>
+        </record>
+        <record id="reason22" model="issue.reason">
+            <field name="name">Vida útil inferior a pactada</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">reason22</field>
+        </record>
+        <record id="reason23" model="issue.reason">
+            <field name="name">Producto en mal estado</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">reason23</field>
+        </record>
+        <record id="reason24" model="issue.reason">
+            <field name="name">Incumple temperatura</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">reason24</field>
+        </record>
+        <record id="reason25" model="issue.reason">
+            <field name="name">Producto no pedido</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">reason25</field>
+        </record>
+        <record id="38" model="issue.reason">
+            <field name="name">PROBLEMAS DE PROVEEDOR</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">38</field>
+        </record>
+        <record id="61" model="issue.reason">
+            <field name="name">Cajas rotas, chafadas</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">61</field>
+        </record>
+        <record id="62" model="issue.reason">
+            <field name="name">Falta mercancia</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">62</field>
+        </record>
+        <record id="63" model="issue.reason">
+            <field name="name">Error referencia</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">63</field>
+        </record>
+        <record id="64" model="issue.reason">
+            <field name="name">Cajas sueltas, remontadas</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">64</field>
+        </record>
+        <record id="24" model="issue.reason">
+            <field name="name">Siniestros Ultralogistic</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">24</field>
+        </record>
+        <record id="71" model="issue.reason">
+            <field name="name">Temperatura elevada, incorrecta</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">71</field>
+        </record>
+        <record id="72" model="issue.reason">
+            <field name="name">Error codigo EAN proveedor</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">72</field>
+        </record>
+        <record id="73" model="issue.reason">
+            <field name="name">Mercancia mal plastificada</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">73</field>
+        </record>
+        <record id="74" model="issue.reason">
+            <field name="name">Pallets exceso altura/galibo</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">74</field>
+        </record>
+        <record id="75" model="issue.reason">
+            <field name="name">Mercancia desplazada</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">75</field>
+        </record>
+        <record id="76" model="issue.reason">
+            <field name="name">Diferencia maderas</field>
+            <field name="type_id" ref="type7"/>
+            <field name="code">76</field>
+        </record>
+    </data>
+</openerp>
