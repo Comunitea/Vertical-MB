@@ -71,6 +71,9 @@
 .telesale li.selected-order button {
     font-weight: 900;
 }
+.telesale  button.select-order{
+    background: linear-gradient(#FC1616, #F5DAD6);
+}
 .telesale #topheader button {
     color: black;
     height:98%;

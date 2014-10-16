@@ -59,35 +59,6 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
         hide: function(){ this.$el.hide(); },
     });
 
-    // Class to change navigate buttons
-    // module.ButtonBlockSelector = instance.web.Class.extend({
-    //     init: function(options){
-    //         this.block_set = options.block_set || {};
-    //         this.default_button_block = options.default_button_block;
-    //         this.current_block = null;
-    //         this.current_block_name = null;
-    //         for (block_name in this.block_set){
-    //             this.block_set[block_name].hide();
-    //         }
-    //     },
-    //     set_current_block: function(block_name){
-    //         var new_block = this.block_set[block_name];
-    //         if(!new_block){
-    //             console.error("ERROR: set_current_block("+block_name+") : screen not found");
-    //         }
-    //         if (this.current_block){
-    //             this.current_block.hide();
-    //         }
-    //         this.current_block = new_block;
-    //         this.current_block_name = block_name;
-    //         this.current_block.show();
-    //     },
-    //     set_default_block: function(){
-    //         this.set_current_block(this.default_button_block);
-    //     },
-    // });
-
-
      module.ButtonBlockWidget = module.TsBaseWidget.extend({
         init: function(parent,options){
             this._super(parent,options);

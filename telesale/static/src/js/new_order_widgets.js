@@ -41,8 +41,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             });
         },
         setButtonSelected: function() {
-            $('.selected-order').removeClass('selected-order');
-            this.$el.addClass('selected-order');
+            /*TODO NO SE PONE EL COLOR BIEN, YA QUE COJE UNA LISTA Y NO EL BOTON*/
+            $('.select-order').removeClass('selected-order');
+            this.$el.addClass('select-order');
         },
         closeOrder: function(event) {
             this.order.destroy();
@@ -103,8 +104,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
                     this.order_model.set('partner', partner_obj.name);
-                    this.order_model.set('limit_credit', partner_obj.credit_limit);
-                    this.order_model.set('customer_debt', partner_obj.credit);
+                    this.order_model.set('limit_credit', my_round(partner_obj.credit_limit, 2));
+                    this.order_model.set('customer_debt', my_round(partner_obj.credit, 2));
                     contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
                     this.order_model.set('contact_name', contact_obj.name);
                     this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
@@ -123,8 +124,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
                     this.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
-                    this.order_model.set('limit_credit', partner_obj.credit_limit);
-                    this.order_model.set('customer_debt', partner_obj.credit);
+                    this.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
+                    this.order_model.set('customer_debt', my_round(partner_obj.credit,2));
                     contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
                     this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
                     this.order_model.set('contact_name', contact_obj.name);
@@ -355,7 +356,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('margin', line_margin);
                                 // self.model.set('discount', my_round(discount,2));
                                 self.model.set('discount', discount);
-                                var val2 = self.model.get('qty');
+                                var val2 = self.model.get('qty')*1;
                                 self.model.set('total', my_round(value * val2,2));
                                 self.refresh();
                         });
@@ -676,11 +677,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                 }
             }, this));
-            this.order_model.set('total_base', my_round(self.base, 2).toFixed(2));
-            this.order_model.set('total_iva', my_round(self.iva, 2).toFixed(2));
-            this.order_model.set('total', my_round(self.total, 2).toFixed(2));
-            this.order_model.set('total_weight', my_round(self.weight, 2).toFixed(2));
-            this.order_model.set('total_discount', my_round(self.discount, 2).toFixed(2));
+            this.order_model.set('total_base', my_round(self.base, 2));
+            this.order_model.set('total_iva', my_round(self.iva, 2));
+            this.order_model.set('total', my_round(self.total, 2));
+            this.order_model.set('total_weight', my_round(self.weight, 2));
+            this.order_model.set('total_discount', my_round(self.discount, 2));
             var discount_per = (0).toFixed(2) + "%";
             if (self.pvp_ref != 0){
                 var discount_num = (self.discount/self.pvp_ref) * 100 ;
@@ -690,7 +691,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var discount_per = my_round( discount_num , 2).toFixed(2) + "%";
             }
             this.order_model.set('total_discount_per', discount_per);
-            this.order_model.set('total_margin', my_round(self.margin, 2).toFixed(2));
+            this.order_model.set('total_margin', my_round(self.margin, 2));
             var margin_per = (0).toFixed(2) + "%";
             var margin_per_num = 0
             if (self.base != 0) {
@@ -719,7 +720,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
                 alert(_t('You cant confirm an order which state is diferent than draft.'));
             }
-            else if (currentOrder.get('limit_credit') != 0 && currentOrder.get('customer_debt') + currentOrder.get('total') > currentOrder.get('limit_credit')){
+            else if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
                     alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
             }         
            else if ( currentOrder.check() ){
@@ -767,9 +768,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.mark = "";
             this.unit_weight = "";
             this.min_price = "";
-            this.margin = ""
+            this.margin = "";
             this.discount = "";
             this.n_line = "";
+            this.class = "";
         },
         bind_selectedline_events: function(){
             this.order_model = this.ts_model.get('selectedOrder');
@@ -823,16 +825,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var model = new instance.web.Model('product.product');
                     model.call("get_product_info",[product_id,partner_id,pricelist_id],{context:new instance.web.CompoundContext()})
                         .then(function(result){
-                            // console.log("AVEEEER")
-                            // console.log(result)
-
-                            self.stock = result.stock;
+                            self.stock = my_round(result.stock,2).toFixed(2);
                             self.date = result.last_date != "-" ? self.ts_model.localFormatDate(result.last_date.split(" ")[0]) : "-"; 
-                            self.qty = result.last_qty; 
-                            self.price = result.last_price; 
-                            self.min_price = result.min_price; 
+                            self.qty = my_round(result.last_qty,2).toFixed(2); 
+                            self.price = my_round(result.last_price,2).toFixed(2); 
+                            self.min_price = my_round(result.min_price,2).toFixed(2); 
                             self.mark = result.product_mark; 
-                            self.unit_weight = result.weight_unit; 
+                            self.class = result.product_class; 
+                            self.unit_weight = my_round(result.weight_unit,2).toFixed(2); 
                             self.renderElement();
                         });
                 }

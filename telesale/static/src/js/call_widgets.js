@@ -38,8 +38,8 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             var order_model = this.ts_model.get('selectedOrder');
             order_model.set('partner', partner_obj.name);
             order_model.set('partner_code', partner_obj.ref || "");
-            order_model.set('limit_credit', partner_obj.credit_limit);
-            order_model.set('customer_debt', partner_obj.credit);
+            order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
+            order_model.set('customer_debt', my_round(partner_obj.credit, 2));
             contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
             order_model.set('contact_name', contact_obj.name);
             this.ts_widget.new_order_screen.data_order_widget.renderElement()

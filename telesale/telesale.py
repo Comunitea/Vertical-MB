@@ -44,11 +44,13 @@ class sale_order_line(osv.osv):
             # result = t_priclist._get_product_pvp(cr, uid, line.product_id.id,
             #                                      pricelist_id)
             price = t_priclist.price_get(cr, uid, [pricelist_id],
-                                              line.product_id.id, line.product_uom_qty or 1.0, line.order_id.partner_id.id,
-                                              {'uom': line.product_uom.id ,
-                                               'date': line.order_id.date_order})[pricelist_id]
+                                         line.product_id.id,
+                                         line.product_uom_qty or 1.0,
+                                         line.order_id.partner_id.id,
+                                         {'uom': line.product_uom.id,
+                                          'date': line.order_id.date_order})
 
-            res[line.id] = price or 0.0
+            res[line.id] = price and price[pricelist_id] or 0.0
         return res
 
     _columns = {
@@ -137,16 +139,16 @@ class product_product(osv.Model):
         """ return data of widget productInfo"""
         if context is None:
             context = {}
-        res = {'stock': "-",
+        res = {'stock': 0.0,
                'last_date': "-",
-               'last_qty': "-",
-               'last_price': "-",
-               'prodct_mark': "-",
-               'prodct_class': "-",
-               'weight_unit': "-",
-               'min_price': "-",
-               'product_margin': "-",
-               'discount': "-",
+               'last_qty': 0.0,
+               'last_price': 0.0,
+               'product_mark': "-",
+               'product_class': "-",
+               'weight_unit': 0.0,
+               'min_price': 0.0,
+               'product_margin': 0.0,
+               'discount': 0.0,
                'n_line': "-"}
         t_sol = self.pool.get("sale.order.line")
         t_pricelist = self.pool.get("product.pricelist")
@@ -154,7 +156,7 @@ class product_product(osv.Model):
             raise osv.except_osv(_('Error!'), _("product_id or partrner_id\
                                                  must be defined"))
         product_obj = self.browse(cr, uid, product_id, context=context)
-        res['stock'] = str(product_obj.virtual_stock_conservative)
+        res['stock'] = product_obj.virtual_stock_conservative
 
         res['product_mark'] = product_obj.mark or "-"
         res['product_class'] = product_obj.product_class or "-"
@@ -168,14 +170,14 @@ class product_product(osv.Model):
         if line_ids:  # Last sale info
             line_obj = t_sol.browse(cr, uid, line_ids[0], context=context)
             res['last_date'] = line_obj.order_id.date_order
-            res['last_qty'] = str(line_obj.product_uom_qty)
-            res['last_price'] = str(line_obj.price_unit)
+            res['last_qty'] = line_obj.product_uom_qty
+            res['last_price'] = line_obj.price_unit
         # Calc min price
-        min_price = 0
+        min_price = 0.0
         if product_obj.product_class in ['dry', 'frozen', 'chilled']:
             min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
                                                      pricelist_id)[1]
-        res['min_price'] = min_price and str(min_price) or "0.00"
+        res['min_price'] = min_price
         return res
 
 

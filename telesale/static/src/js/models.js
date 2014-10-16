@@ -111,7 +111,6 @@ function openerp_ts_models(instance, module){
         },
         // helper function to load data from the server
         fetch: function(model, fields, domain, ctx){
-            console.log("BBBBBBBBBB")
             return new instance.web.Model(model).query(fields).filter(domain).context(ctx).all()
         },
          // helper function to load last_
@@ -305,8 +304,8 @@ function openerp_ts_models(instance, module){
             var partner_obj = this.db.get_partner_by_id(order_obj.partner_id[0]);
             order_model.set('partner', partner_obj.name);
             order_model.set('partner_code', partner_obj.ref || "");
-            order_model.set('customer_debt', partner_obj.credit);
-            order_model.set('limit_credit', partner_obj.credit_limit);
+            order_model.set('customer_debt', my_round(partner_obj.credit,2));
+            order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
             order_model.set('erp_id', order_obj.id);
             order_model.set('erp_state', order_obj.state);
             var state = order_obj.state
@@ -624,19 +623,19 @@ function openerp_ts_models(instance, module){
                 contact_name: '',
                 date_order: this.getStrDate(),
                 date_invoice: '',
-                limit_credit: '',
-                customer_debt: '',
+                limit_credit: (0),
+                customer_debt: (0),
                 //order #bottompart values
-                total_boxes: (0).toFixed(2),
-                total_weight: (0).toFixed(2),
-                total_discount: (0).toFixed(2),
+                total_boxes: (0),
+                total_weight: (0),
+                total_discount: (0),
                 total_discount_per: (0).toFixed(2)+" %",
                 total_margin_per: (0).toFixed(2)+" %",
-                total: (0).toFixed(2),
-                total_base: (0).toFixed(2),
-                total_iva: (0).toFixed(2),
-                total_margin: (0).toFixed(2),
-                total_fresh: (0).toFixed(2),
+                total: (0),
+                total_base: (0),
+                total_iva: (0),
+                total_margin: (0),
+                total_fresh: (0),
                 selected_line: null,
                 //to pas the button action to the server
                 action_button: null,
