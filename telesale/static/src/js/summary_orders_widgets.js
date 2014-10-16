@@ -116,17 +116,18 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
         },
         load_partner_orders: function(date_start,date_end){
             var self=this;
-            var domain =   [['telesale', '=', true]]
+            var domain =   [['create_uid', '=', this.ts_model.get('user').id],['telesale', '=', true]]
             if (date_start != ""){
                 domain.push(['date_order', '>=', date_start])
             }
             if (date_end != ""){
                 domain.push(['date_order', '<=', date_end])
-            }                  
+            }                       
             var loaded = self.ts_model.fetch('sale.order',
                                             ['name','date_order','state','amount_total',],  //faltan los impuestos etc
                                             domain)
                 .then(function(orders){
+                    // console.log(orders);
                 self.partner_orders = orders;
                  })
 
