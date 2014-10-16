@@ -97,6 +97,9 @@
                     <t t-if="widget.order.state == 'done'">
                         Done
                     </t>
+                    <t t-if="widget.order.state == 'wait_risk'">
+                        Waiting Risk Approval
+                    </t>
                 </span>
             </td>
             <td class="cell-add">
