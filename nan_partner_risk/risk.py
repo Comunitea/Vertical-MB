@@ -123,11 +123,11 @@ class partner(osv.osv):
                 ('reconcile_id','=',False), 
                 ('date_maturity','<',today),
             ], context=context) 
-            # Those that have amount_to_pay == 0, will mean that they're circulating. The payment request has been sent
+            # Those that have amount_residual == 0, will mean that they're circulating. The payment request has been sent
             # to the bank but have not yet been reconciled (or the date_maturity has not been reached).
             amount = 0.0
             for line in self.pool.get('account.move.line').browse( cr, uid, line_ids, context ):
-                #amount += -line.amount_to_pay
+                #amount += -line.amount_residual
                 amount += line.debit - line.credit
             res[partner.id] = amount
         return res
@@ -147,12 +147,12 @@ class partner(osv.osv):
                 ('reconcile_id','=',False), 
                 '|', ('date_maturity','>=',today), ('date_maturity','=',False)
             ], context=context) 
-            # Those that have amount_to_pay == 0, will mean that they're circulating. The payment request has been sent
+            # Those that have amount_residual == 0, will mean that they're circulating. The payment request has been sent
             # to the bank but have not yet been reconciled (or the date_maturity has not been reached).
             amount = 0.0
             for line in self.pool.get('account.move.line').browse( cr, uid, line_ids, context ):
                 #amount += line.debit - line.credit
-                amount += line.debit - line.credit + line.amount_to_pay
+                amount += line.debit - line.credit + line.amount_residual
             res[partner.id] = amount
         return res
 
@@ -171,12 +171,12 @@ class partner(osv.osv):
                 ('reconcile_id','=',False), 
                 '|', ('date_maturity','>=',today), ('date_maturity','=',False)
             ], context=context) 
-            # Those that have amount_to_pay == 0, will mean that they're circulating. The payment request has been sent
+            # Those that have amount_residual == 0, will mean that they're circulating. The payment request has been sent
             # to the bank but have not yet been reconciled (or the date_maturity has not been reached).
             amount = 0.0
             for line in self.pool.get('account.move.line').browse( cr, uid, line_ids, context ):
                 #amount += line.debit - line.credit
-                amount += -line.amount_to_pay
+                amount += -line.amount_residual
             res[partner.id] = amount
         return res
 
