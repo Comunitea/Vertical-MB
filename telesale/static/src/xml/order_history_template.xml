@@ -70,14 +70,32 @@
             <td class="cell-state">
                 <!-- <span class="history-cell"><t t-esc="widget.order.state"/></span> -->
                 <span class="history-cell">
-                    <t t-if="widget.order.state == 'progress'">
-                        Confirmed
-                    </t>
                     <t t-if="widget.order.state == 'draft'">
                         Draft
                     </t>
+                    <t t-if="widget.order.state == 'sent'">
+                        Quotation Sent
+                    </t>
                     <t t-if="widget.order.state == 'cancel'">
                         Canceled
+                    </t>
+                     <t t-if="widget.order.state == 'waiting_date'">
+                        Waiting Schedule
+                    </t>
+                    <t t-if="widget.order.state == 'progress'">
+                        Confirmed
+                    </t>
+                    <t t-if="widget.order.state == 'manual'">
+                        Sale to Invoice
+                    </t>
+                    <t t-if="widget.order.state == 'shipping_except'">
+                        Shipping Exception
+                    </t>
+                    <t t-if="widget.order.state == 'invoice_except'">
+                        Invoice Exception
+                    </t>
+                    <t t-if="widget.order.state == 'done'">
+                        Done
                     </t>
                 </span>
             </td>

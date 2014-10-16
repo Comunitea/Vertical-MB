@@ -309,14 +309,16 @@ function openerp_ts_models(instance, module){
             order_model.set('erp_id', order_obj.id);
             order_model.set('erp_state', order_obj.state);
             var state = order_obj.state
-            if (order_obj.state == "draft")
+            console.log(state)
+/*            if (order_obj.state == "draft")
                 state = "borrador";
             else if(order_obj.state == "progress") 
                 state = "En progreso";
             else if(order_obj.state == "cancel") 
                 state = "Cancelado";
             else if(order_obj.state == "done")
-                state = "Realizado";
+                state = "Realizado";*/
+            console.log(state)
             order_model.set('state', state);
             order_model.set('date_invoice', order_obj.date_invoice);
             order_model.set('num_order',order_obj.name);
@@ -642,7 +644,7 @@ function openerp_ts_models(instance, module){
                 //to check save confirm cancel butons
                 erp_id: false,
                 erp_state: false,
-                state:"new",
+                state:"draft",
                 comercial: '',
                 coment: '',
             });

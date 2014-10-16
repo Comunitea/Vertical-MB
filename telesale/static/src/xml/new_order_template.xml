@@ -130,18 +130,41 @@
             </div>
             <!-- <span class="span-state">State Order:  <t t-esc="widget.ts_model.get('selectedOrder').get('state')"/> -->
             <span class="span-state">State Order:
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'new'">
+<!--             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'new'">
                 New
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'progress'">
-                Confirmed
+            </t> -->
+            
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'sent'">
+                Draft
             </t>
             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'draft'">
-                Draft
+                Quotation Sent
             </t>
             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'cancel'">
                 Canceled
             </t>
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'waiting_date'">
+                Waiting Schedule
+            </t>
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'progress'">
+                Confirmed
+            </t>
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'manual'">
+                Sale to Invoice
+            </t>
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'shipping_except'">
+                Shipping Exception
+            </t>
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'invoice_except'">
+                Invoice Exception
+            </t>
+            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'done'">
+                Done
+            </t>
+             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'wait_risk'">
+                Waiting Risk Approval
+            </t>
+
             </span>
         </header>
         <div class="order-container">
@@ -274,9 +297,11 @@
                         
                 </div>
                 <div class="form-col">
-                    <button class="save-button">SAVE</button>
-                    <button class="cancel-button">CANCEL</button>
-                    <button class="confirm-button">CONFIRM</button>
+                    <t t-if="widget.order_model.get('state') == 'draft'">
+                        <button class="save-button">SAVE</button>
+                        <button class="cancel-button">CANCEL</button>
+                        <button class="confirm-button">CONFIRM</button>
+                    </t>
                 </div>
             </div>
         </div>

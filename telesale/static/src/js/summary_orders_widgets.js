@@ -127,7 +127,6 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                                             ['name','date_order','state','amount_total',],  //faltan los impuestos etc
                                             domain)
                 .then(function(orders){
-                    // console.log(orders);
                 self.partner_orders = orders;
                  })
 
