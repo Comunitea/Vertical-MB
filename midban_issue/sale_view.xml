@@ -9,8 +9,9 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/h1" position="before">
                     <div class="oe_right oe_button_box" name="buttons">
-                        <button class="oe_stat_button" icon="fa-star" type="object"  name="issues_open"
-                            string="Issues"/>
+                        <button class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="issues_open">
+                            <field string="Issues" name="issue_count" widget="statinfo"/>
+                        </button>
                     </div>
                 </xpath>
             </field>
@@ -21,7 +22,8 @@
             view_mode="form"
             target="current"
             key2="client_action_multi"
-            id="action_create_issue"
+            id="action_create_issue_sale"
+            context="{'active_model2': 'sale.order', 'active_id2': active_id}"
             />
 
     </data>

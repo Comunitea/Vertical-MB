@@ -9,8 +9,9 @@
             <field name="inherit_id" ref="purchase.purchase_order_2_stock_picking"/>
             <field name="arch" type="xml">
                   <div class="oe_right oe_button_box" position="inside">
-                        <button class="oe_stat_button" icon="fa-star" type="object"  name="issues_open"
-                            string="Issues" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <button class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="issues_open">
+                            <field string="Issues" name="issue_count" widget="statinfo"/>
+                        </button>
                   </div>
             </field>
         </record>
@@ -21,7 +22,8 @@
             view_mode="form"
             target="current"
             key2="client_action_multi"
-            id="action_create_issue"
+            id="action_create_issue_purchase"
+            context="{'active_model2': 'purchase.order', 'active_id2': active_id}"
             />
 
     </data>
