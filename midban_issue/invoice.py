@@ -18,12 +18,28 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv
+from openerp.osv import osv, fields
 
 
 class account_invoice(osv.Model):
 
     _inherit = "account.invoice"
+
+    def _issue_count(self, cr, uid, ids, field_name, arg, context=None):
+        t_issue = self.pool.get('issue')
+        return {
+            invoice_id: t_issue.search_count(cr, uid,
+                                             [('res_model', '=',
+                                               'account.invoice'),
+                                              ('res_id', 'in', ids)],
+                                             context=context)
+            for invoice_id in ids
+        }
+
+    _columns = {
+        'issue_count': fields.function(_issue_count, string='# Issues',
+                                       type='integer'),
+    }
 
     def issues_open(self, cr, uid, ids, context=None):
         """open issues related to invoices"""

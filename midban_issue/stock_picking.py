@@ -30,7 +30,7 @@ class stock_picking(osv.Model):
         """
         Because of no procurement group in purchase order, search the related
         purchase order to incoming picking by name of the procurement group.
-        This is made cause we need to know the purchase related in the 
+        This is made cause we need to know the purchase related in the
         default_get method of issue object.
         """
         purchase_obj = self.pool.get("purchase.order")
@@ -47,10 +47,23 @@ class stock_picking(osv.Model):
                     res[picking.id] = purchase_ids[0]
         return res
 
+    def _issue_count(self, cr, uid, ids, field_name, arg, context=None):
+        t_issue = self.pool.get('issue')
+        return {
+            picking_id: t_issue.search_count(cr, uid,
+                                             [('res_model', '=',
+                                              'stock.picking'),
+                                              ('res_id', 'in', ids)],
+                                             context=context)
+            for picking_id in ids
+        }
+
     _columns = {
         'purchase_id': fields.function(_get_purchase_id, type="many2one",
                                        relation="purchase.order",
                                        string="Purchase Order"),
+        'issue_count': fields.function(_issue_count, string='# Issues',
+                                       type='integer'),
     }
 
     def issues_open(self, cr, uid, ids, context=None):

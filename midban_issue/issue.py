@@ -121,10 +121,10 @@ class issue(osv.Model):
         flow = ''
         caused = False
         affected = False
-        if context.get('active_model', '') and \
-           context.get('active_id', False):
-            model = context['active_model']
-            id = context['active_id']
+        if context.get('active_model2', '') and \
+           context.get('active_id2', False):
+            model = context['active_model2']
+            id = context['active_id2']
             cur = self.pool.get(model).browse(cr, uid, id)
             if model == 'purchase.order':
                 object = model + "," + str(id)

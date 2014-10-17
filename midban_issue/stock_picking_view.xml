@@ -36,7 +36,9 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <div class="oe_right oe_button_box" position="inside">
-                    <button class="oe_stat_button" icon="fa-star" type="object"  name="issues_open" string="Issues" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <button class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="issues_open">
+                            <field string="Issues" name="issue_count" widget="statinfo"/>
+                        </button>
                 </div>
 
                 <field name="group_id" position="after">
@@ -52,7 +54,8 @@
             view_mode="form"
             target="current"
             key2="client_action_multi"
-            id="action_create_issue"
+            id="action_create_issue_stock"
+            context="{'active_model2': 'stock.picking', 'active_id2': active_id}"
             />
          <!-- <aact_window name="Create issue"
             res_model="issue"

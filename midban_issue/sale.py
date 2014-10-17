@@ -19,12 +19,27 @@
 #
 ##############################################################################
 
-from openerp.osv import osv
+from openerp.osv import osv, fields
 
 
 class sale_order(osv.Model):
 
     _inherit = "sale.order"
+
+    def _issue_count(self, cr, uid, ids, field_name, arg, context=None):
+        t_issue = self.pool.get('issue')
+        return {
+            order_id: t_issue.search_count(cr, uid,
+                                           [('res_model', '=', 'sale.order'),
+                                            ('res_id', 'in', ids)],
+                                           context=context)
+            for order_id in ids
+        }
+
+    _columns = {
+        'issue_count': fields.function(_issue_count, string='# Issues',
+                                       type='integer'),
+    }
 
     def issues_open(self, cr, uid, ids, context=None):
         """open issues related to sales"""

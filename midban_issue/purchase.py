@@ -18,12 +18,28 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv
+from openerp.osv import osv, fields
 
 
 class purchase_order(osv.Model):
 
     _inherit = 'purchase.order'
+
+    def _issue_count(self, cr, uid, ids, field_name, arg, context=None):
+        t_issue = self.pool.get('issue')
+        return {
+            purchase_id: t_issue.search_count(cr, uid,
+                                              [('res_model', '=',
+                                                'purchase.order'),
+                                               ('res_id', 'in', ids)],
+                                              context=context)
+            for purchase_id in ids
+        }
+
+    _columns = {
+        'issue_count': fields.function(_issue_count, string='# Issues',
+                                       type='integer'),
+    }
 
     def issues_open(self, cr, uid, ids, context=None):
         """open issues related to purchases"""
