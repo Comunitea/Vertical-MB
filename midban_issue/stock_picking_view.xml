@@ -54,7 +54,7 @@
             key2="client_action_multi"
             id="action_create_issue"
             />
-         <!-- <act_window name="Create issue"
+         <!-- <aact_window name="Create issue"
             res_model="issue"
             src_model="stock.picking.out"
             view_mode="form"
