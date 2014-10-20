@@ -154,6 +154,8 @@
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
                     <field name="route_id"/>
+                    <!-- <field name="real_weight" on_change="onchange_real_weight(product_id, real_weight)"/> -->
+                    <field name="real_weight"/>
                 </field>
             </field>
         </record>
@@ -165,6 +167,8 @@
             <field name="arch" type="xml">
                 <field name="string_availability_info" position="after">
                     <field name="route_id"/>
+                    <!-- <field name="real_weight" on_change="onchange_real_weight(product_id, real_weight)"/> -->
+                    <field name="real_weight"/>
                 </field>
             </field>
         </record>

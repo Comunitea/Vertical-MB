@@ -40,6 +40,10 @@
                 <field name="volume" position="replace">
                     <field name="volume"/>
                 </field>
+
+                <field name="uom_id" position="after">
+                    <field name="price_kg"/>
+                </field>
             </field>
         </record>
     </data>

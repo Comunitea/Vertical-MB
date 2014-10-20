@@ -796,6 +796,7 @@ class stock_move(osv.osv):
         'route_id': fields.related('procurement_id', 'route_id', readonly=True,
                                    string='Transport Route', relation="route",
                                    type="many2one"),
+        'real_weight': fields.float('Real weight'),
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
@@ -825,6 +826,64 @@ class stock_move(osv.osv):
                         pick_obj.write(cr, uid, vals['picking_id'],
                                        {'route_id': procurement.route_id.id},
                                        context=context)
+        if vals.get('real_weight', False):
+            t_uom = self.pool.get('product.uom')
+            real_weight = vals['real_weight']
+            if real_weight:
+                uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
+                if uom_ids:
+                    vals = {
+                        'product_uos': uom_ids[0],
+                        'product_uos_qty': real_weight
+                    }
+                    self.write(cr, uid, ids, vals, context=context)
+        return res
+
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('real_weight', False):
+            t_uom = self.pool.get('product.uom')
+            real_weight = vals['real_weight']
+            if real_weight:
+                uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
+                if uom_ids:
+                    vals2 = {
+                        'product_uos': uom_ids[0],
+                        'product_uos_qty': real_weight
+                    }
+                    vals.update(vals2)
+        res = super(stock_move, self).create(cr, uid, vals, context=context)
+        return res
+    # def onchange_real_weight(self, cr, uid, ids, product_id, real_weight):
+    #     """ On change of product quantity finds UoM and UoS quantities
+    #     @param product_id: Product id
+    #     @param product_uos_qty: Changed UoS Quantity of product
+    #     @param product_uom: Unit of measure of product
+    #     @param product_uos: Unit of sale of product
+    #     @return: Dictionary of values
+    #     """
+    #     t_uom = self.pool.get('product.uom')
+    #     result = {
+    #         'product_uos_qty': 0.00,
+    #         'product_uos': False
+    #     }
+    #     import ipdb; ipdb.set_trace()
+    #     if not product_id:
+    #         return result
+
+    #     if real_weight:
+    #         uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
+    #         if uom_ids:
+    #             result['product_uos_qty'] = real_weight
+    #             result['product_uos'] = uom_ids[0]
+    #     return {'value': result}
+
+    def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
+                               context=None):
+        res = super(stock_move, self)._get_invoice_line_vals(cr, uid, move,
+                                                             partner, inv_type,
+                                                             context=context)
+        if move.real_weight:
+            res['price_unit'] = move.product_id.price_kg
         return res
 
 

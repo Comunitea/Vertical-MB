@@ -37,6 +37,7 @@ class product_template(osv.Model):
         'volume': fields.float('Volume', help="The volume in m3.",
                                digits_compute=
                                dp.get_precision('Product Volume')),
+        'price_kg': fields.float('Price kg'),
 
     }
     _sql_constraints = [
