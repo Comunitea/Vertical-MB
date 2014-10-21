@@ -546,7 +546,6 @@ class stock_location(osv.Model):
             whs_id = self.get_warehouse(cr, uid, loc, context=context)
             warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
             picking_loc_id = warehouse.picking_loc_id.id
-            # import ipdb; ipdb.set_trace()
             cond1 = loc.location_id and loc.location_id.id == picking_loc_id
             cond2 = quant_ids or operation_ids
             if cond1 and cond2:
@@ -866,7 +865,6 @@ class stock_move(osv.osv):
     #         'product_uos_qty': 0.00,
     #         'product_uos': False
     #     }
-    #     import ipdb; ipdb.set_trace()
     #     if not product_id:
     #         return result
 
@@ -935,3 +933,47 @@ class stock_picking_wave(osv.osv):
                                     domain=[('state', '=', 'active')]),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
     }
+
+
+class stock_quant(osv.osv):
+    _inherit = 'stock.quant'
+
+    def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
+                               removal_strategy, context=None):
+        """
+        If not enought qty in the picking location, we search in storage \
+        location.
+        Then by overwriting action_assign of stock move, we will find the
+        reserved quants of storage location.
+        """
+        t_location = self.pool.get('stock.location')
+        t_warehouse = self.pool.get('stock.warehouse')
+
+        if removal_strategy == 'depot_fefo':
+            order = 'removal_date, in_date, id'
+
+            res = self._quants_get_order(cr, uid, location, product, qty,
+                                         domain, order, context=context)
+            check_storage_qty = 0.0
+            for record in res:
+                if record[0] is None:
+                    check_storage_qty += record[1]
+                    res.remove(record)
+            wh_id = t_location.get_warehouse(cr, uid, location,
+                                             context=context)
+            wh_obj = t_warehouse.browse(cr, uid, wh_id, context=context)
+            storage_id = wh_obj.storage_loc_id.id
+            storage_loc = storage_id and \
+                t_location.browse(cr, uid, storage_id) or False
+
+            # Search quants in storage location
+            domain = [('reservation_id', '=', False), ('qty', '>', 0)]
+            if check_storage_qty and storage_loc:
+                res += self._quants_get_order(cr, uid, storage_loc, product,
+                                              check_storage_qty, domain, order,
+                                              context=context)
+            return res
+        sup = super(stock_quant, self).\
+            apply_removal_strategy(cr, uid, location, product, qty, domain,
+                                   removal_strategy, context=context)
+        return sup

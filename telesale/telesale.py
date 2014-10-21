@@ -208,7 +208,7 @@ class product_template(osv.Model):
                                      uid,
                                      id,
                                      context=context).outgoing_qty
-                res[id] = realqty + outqty
+                res[id] = realqty - outqty
         return res
 
     _columns = {

@@ -49,5 +49,10 @@
             <field name="uom_type">bigger</field>
             <field name="like_type">palets</field>
         </record>
+
+        <record id="depot_fefo" model="product.removal">
+            <field name="name">Midban Depot FEFO</field>
+            <field name="method">depot_fefo</field>
+        </record>
     </data>
 </openerp>

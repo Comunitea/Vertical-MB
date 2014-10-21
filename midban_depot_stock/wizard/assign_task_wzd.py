@@ -87,29 +87,6 @@ class assign_task_wzd(osv.TransientModel):
                                                  currently assigned.'))
         return on_course_tasks
 
-    def _get_machine_from_user(self, cr, uid, ids, task_type, context=None):
-        """
-        Returns the property user machin for the task type, or raises and Error
-        if the no machine for the task type in the user sheet.
-        """
-        res = False
-        if context is None:
-            context = {}
-        wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        operator = wzd_obj.operator_id
-        if task_type == 'ubication' and operator.location_mac_id:
-            res = operator.location_mac_id.id
-        elif task_type == 'reposition' and operator.reposition_mac_id:
-            res = operator.reposition_mac_id.id
-        elif task_type == 'picking' and operator.picking_mac_id:
-            res = operator.picking_mac_id.id
-
-        if not res:
-            raise osv.except_osv(_('Error!'), _("Machine not defined either\
-                                                 operator sheet or picking \
-                                                 wizard"))
-        return res
-
     def cancel_task(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -322,6 +299,29 @@ class assign_task_wzd(osv.TransientModel):
         res = move_obj.search(cr, uid, domain, context=context)
         return (res, selected_route)
 
+    def _get_machine_from_user(self, cr, uid, ids, task_type, context=None):
+        """
+        Returns the property user machin for the task type, or raises and Error
+        if the no machine for the task type in the user sheet.
+        """
+        res = False
+        if context is None:
+            context = {}
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        operator = wzd_obj.operator_id
+        if task_type == 'ubication' and operator.location_mac_id:
+            res = operator.location_mac_id.id
+        elif task_type == 'reposition' and operator.reposition_mac_id:
+            res = operator.reposition_mac_id.id
+        elif task_type == 'picking' and operator.picking_mac_id:
+            res = operator.picking_mac_id.id
+
+        if not res:
+            raise osv.except_osv(_('Error!'), _("Machine not defined either\
+                                                 operator sheet or picking \
+                                                 wizard"))
+        return res
+
     def _get_pickings(self, cr, uid, ids, move_ids, context=None):
         """
         For all moves from a same product, get the new pickings, or the
@@ -332,7 +332,23 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         pick_obj = self.pool.get('stock.picking')
         move_obj = self.pool.get('stock.move')
+        loc_obj = self.pool.get('stock.location')
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        if not wzd_obj.warehouse_id.storage_loc_id:
+            raise osv.except_osv(_('Error!'), _("Storage location not defined \
+                                                in warehouse"))
+        storage_loc_id = wzd_obj.warehouse_id.storage_loc_id.id
+        # picking_loc_id = wzd_obj.warehouse_id.picking_loc_id.id
+        storage_reserved_quants = []
         for move in move_obj.browse(cr, uid, move_ids, context=context):
+            # Check quants reserved from storage location
+            # for quant in move.reseved_quant_ids:
+            #     child_ids = loc_obj.search(cr, uid, [('id', 'child_of',
+            #                                           [storage_loc_id])],
+            #                                context=context)
+            #     if quant.location_id.id in child_ids:
+            #         storage_reserved_quants.append(quant)
+
             if move.picking_id and len(move.picking_id.move_lines) <= 1:
                 res.add(move.picking_id.id)
             else:  # Pick of move has more than one move
@@ -342,6 +358,7 @@ class assign_task_wzd(osv.TransientModel):
                                           group_id.id})
                 move.write({'picking_id': new_pick}, context=context)
                 res.add(new_pick)
+
         return list(res)
 
     def _get_pickings_to_wave(self, cr, uid, ids, moves_by_product,
@@ -350,6 +367,8 @@ class assign_task_wzd(osv.TransientModel):
         @param moves_by_product: Dict: Keys are product_id and value is a list
                                  of moves with that products.
         @param return: List of created picking ids to add to the wave.
+        If all the moves of a same product has a volume higher than max defined
+        if the wave is empty we force it, else we check for another product.
         """
         if context is None:
             context = {}
@@ -364,7 +383,7 @@ class assign_task_wzd(osv.TransientModel):
             move_ids = moves_by_product[key]
             product = False
             total_qty = 0.0
-            # Can we pick all the product
+            # Can we pick all the product??
             for move in move_obj.browse(cr, uid, move_ids, context=context):
                 total_qty += move.product_uom_qty
                 if not product:
@@ -420,6 +439,7 @@ class assign_task_wzd(osv.TransientModel):
 
         pickings_to_wave = []
         moves_by_product = {}
+        # Get the moves grouped by product
         for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
             if move.product_id.id not in moves_by_product:
                 moves_by_product[move.product_id.id] = [move.id]
