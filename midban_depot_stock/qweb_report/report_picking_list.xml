@@ -39,7 +39,8 @@
                                       <tr>
                                           <th class="text-center c">Reference</th>
                                           <th class="text-center col-xs-2">Ean13</th>
-                                          <th class="text-center col-xs-3">Description</th>
+                                          <th class="text-center col-xs-2">Description</th>
+                                          <th class="text-center col-xs-1">Lot</th>
                                           <th class="text-center col-xs-1" >Location</th>
                                           <th class="text-center col-xs-1" >Units</th>
                                           <th class="text-center col-xs-1">Boxes</th>
@@ -55,8 +56,11 @@
                                           <td class="text-center col-xs-2">
                                               <span t-field="line.ean13"/>
                                           </td>
-                                          <td class="text-center col-xs-3">
+                                          <td class="text-center col-xs-2">
                                               <span t-field="line.product_id.name"/>
+                                          </td>
+                                          <td class="text-center col-xs-1">
+                                              <span t-field="line.lot_id.name"/>
                                           </td>
                                           <td class="text-center col-xs-1">
                                               <span t-field="line.location_id.name"/>

@@ -61,6 +61,8 @@ class sale_report(osv.osv):
                                  multi='mult', string='Units', readonly=True),
         'boxes': fields.function(_get_units_and_boxes, type='integer',
                                  multi='mult', string='Boxes', readonly=True),
+        # 'lot_id': fields.many2one('stock.production.lot', 'Lot',
+        #                           readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
     }
 
@@ -90,6 +92,33 @@ class sale_report(osv.osv):
                      P.wave_id
         """
         return group_by_str
+
+    # def _select(self):
+    #     select_str = """
+    #         SELECT min(Q.id) as id,
+    #                Q.product_id as product_id,
+    #                LOT.id as lot_id,
+    #                LOC.id as location_id,
+    #                sum(Q.qty) as product_qty,
+    #                P.wave_id as wave_id
+    #     """
+    #     return select_str
+
+    # def _from(self):
+    #     from_str = """
+    #         stock_pack_operation OP
+    #             INNER JOIN stock_move_operation_link MOL on MOL.operation_id = OP.product_id
+    #     """
+    #     return from_str
+
+    # def _group_by(self):
+    #     group_by_str = """
+    #         GROUP BY SM.product_id,
+    #                  L.id,
+    #                  LOT.id,
+    #                  P.wave_id
+    #     """
+    #     return group_by_str
 
     def init(self, cr):
         # self._table = sale_report

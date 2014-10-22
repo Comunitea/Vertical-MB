@@ -433,6 +433,21 @@ class stock_pack_operation(osv.osv):
                     res[ope.id] = int(math.ceil(ope.product_qty / mant_units))
         return res
 
+    def _get_qty_package(self, cr, uid, ids, name, args, context=None):
+        """
+        Get the qty inside the package or the qty going to a new package
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for ope in self.browse(cr, uid, ids, context=context):
+            res[ope.id] = 0
+            if ope.package_id:
+                res[ope.id] = ope.package_id.packed_qty
+            elif ope.result_package_id and ope.product_qty:
+                res[ope.id] = ope.product_qty
+        return res
+
     _columns = {
         'pack_type': fields.function(_get_pack_type, type='char',
                                      string='Pack Type', readonly=True),
@@ -450,10 +465,9 @@ class stock_pack_operation(osv.osv):
                                         relation='stock.production.lot',
                                         string='Packed Lot',
                                         readonly=True),
-        'packed_qty': fields.related('package_id', 'packed_qty',
-                                     type='float',
-                                     string='Packed qty',
-                                     readonly=True),
+        'packed_qty': fields.function(_get_qty_package, type='float',
+                                      string='Packed qty',
+                                      readonly=True),
         'num_mantles': fields.function(_get_num_mantles,
                                        type='integer',
                                        string='Nº Mantles',

@@ -292,7 +292,7 @@ class assign_task_wzd(osv.TransientModel):
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.temp_type', '=', obj.temp_id.id),
-            ('state', '=', 'assigned'),
+            ('state', '=', 'confirmed'),
             ('picking_id.operator_id', '=', False),
             ('picking_id.route_id', '=', selected_route)
         ]
@@ -332,14 +332,14 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         pick_obj = self.pool.get('stock.picking')
         move_obj = self.pool.get('stock.move')
-        loc_obj = self.pool.get('stock.location')
+        # loc_obj = self.pool.get('stock.location')
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         if not wzd_obj.warehouse_id.storage_loc_id:
             raise osv.except_osv(_('Error!'), _("Storage location not defined \
                                                 in warehouse"))
-        storage_loc_id = wzd_obj.warehouse_id.storage_loc_id.id
+        # storage_loc_id = wzd_obj.warehouse_id.storage_loc_id.id
         # picking_loc_id = wzd_obj.warehouse_id.picking_loc_id.id
-        storage_reserved_quants = []
+        # storage_reserved_quants = []
         for move in move_obj.browse(cr, uid, move_ids, context=context):
             # Check quants reserved from storage location
             # for quant in move.reseved_quant_ids:
@@ -348,7 +348,9 @@ class assign_task_wzd(osv.TransientModel):
             #                                context=context)
             #     if quant.location_id.id in child_ids:
             #         storage_reserved_quants.append(quant)
-
+            move.action_assign()
+            if move.state != 'assigned':
+                continue
             if move.picking_id and len(move.picking_id.move_lines) <= 1:
                 res.add(move.picking_id.id)
             else:  # Pick of move has more than one move
@@ -358,7 +360,6 @@ class assign_task_wzd(osv.TransientModel):
                                           group_id.id})
                 move.write({'picking_id': new_pick}, context=context)
                 res.add(new_pick)
-
         return list(res)
 
     def _get_pickings_to_wave(self, cr, uid, ids, moves_by_product,
@@ -436,7 +437,6 @@ class assign_task_wzd(osv.TransientModel):
         if not to_pick_moves:
             raise osv.except_osv(_('Error!'), _('Anything pending of \
                                                  picking'))
-
         pickings_to_wave = []
         moves_by_product = {}
         # Get the moves grouped by product
@@ -471,7 +471,7 @@ class assign_task_wzd(osv.TransientModel):
                     'warehouse_id': obj.warehouse_id.id,
                     'picking_ids': [(6, 0, pickings_to_wave)]}
             wave_id = wave_obj.create(cr, uid, vals, context=context)
-            wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
+            # wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
             # Create task and associate to picking wave
             vals = {
                 'user_id': obj.operator_id.id,
