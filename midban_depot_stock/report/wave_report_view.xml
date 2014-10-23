@@ -6,6 +6,7 @@
          <field name="model">wave.report</field>
          <field name="arch" type="xml">
              <tree string="Picking List">
+                 <field name="sequence"/>
                  <field name="reference"/>
                  <field name="ean13"/>
                  <field name="product_id"/>

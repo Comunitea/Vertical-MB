@@ -28,6 +28,7 @@ class sale_report(osv.osv):
     _description = "Group picks of waves"
     _auto = False
     _rec_name = 'product_id'
+    _order = 'sequence'
 
     def _get_units_and_boxes(self, cr, uid, ids, field_names, args,
                              context=None):
@@ -63,6 +64,7 @@ class sale_report(osv.osv):
                                  multi='mult', string='Boxes', readonly=True),
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
+        'sequence': fields.integer('Sequence', readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
     }
 
@@ -114,7 +116,8 @@ class sale_report(osv.osv):
                    Q.lot_id as lot_id,
                    OP.location_id ,
                    sum(Q.qty) as product_qty,
-                   W.id as wave_id
+                   W.id as wave_id,
+                   L.sequence as sequence
         """
         return select_str
 
@@ -125,6 +128,7 @@ class sale_report(osv.osv):
                 INNER JOIN stock_pack_operation OP on OP.package_id = PA.id
                 INNER JOIN stock_picking P on P.id = OP.picking_id
                 INNER JOIN stock_picking_wave W on W.id = P.wave_id
+                INNER JOIN stock_location L on L.id = OP.location_id
             WHERE OP.product_id is null
         """
         return from_str
@@ -135,7 +139,8 @@ class sale_report(osv.osv):
                 Q.product_id,
                 Q.lot_id,
                 OP.location_id,
-                W.id
+                W.id,
+                L.sequence
         """
         return group_by_str
 
@@ -146,7 +151,8 @@ class sale_report(osv.osv):
                    OP.lot_id as lot_id,
                    OP.location_id ,
                    sum(OP.product_qty) as product_qty,
-                   W.id as wave_id
+                   W.id as wave_id,
+                   L.sequence as sequence
         """
         return select_str
 
@@ -155,6 +161,7 @@ class sale_report(osv.osv):
             stock_pack_operation OP
                 INNER JOIN stock_picking P on P.id = OP.picking_id
                 INNER JOIN stock_picking_wave W on W.id = P.wave_id
+                INNER JOIN stock_location L on L.id = OP.location_id
             WHERE OP.product_id is not null
         """
         return from_str
@@ -165,7 +172,8 @@ class sale_report(osv.osv):
                 OP.product_id,
                 OP.lot_id,
                 OP.location_id,
-                W.id
+                W.id,
+                L.sequence
         """
         return group_by_str
 
