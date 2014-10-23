@@ -104,12 +104,16 @@
             <field name="arch" type="xml">
                 <field name="posx" position="before">
                     <field name="storage_type"/>
+                    <field name="temp_type_id"/>
                     <field name="width"/>
                     <field name="length"/>
                     <field name="height"/>
                     <field name="volume"/>
                     <field name="available_volume"/>
                     <field name="filled_percent"/>
+                </field>
+                <field name="active" position="after">
+                    <field name="sequence"/>
                 </field>
             </field>
         </record>
@@ -124,7 +128,11 @@
                     <field name="volume"/>
                     <field name="available_volume"/>
                     <field name="filled_percent"/>
+                    <field name="temp_type_id"/>
+                    <field name="sequence"/>
+
                 </field>
+
             </field>
         </record>
 
@@ -144,6 +152,9 @@
                     <field name="available_volume" string="Available greater"  context="{'operation':'greater'}"/>
                     <field name="available_volume" string="Available less"  context="'operation':'less'}"/>
                 </field>
+                <filter name="supplier" position="after">
+                    <filter string="Temp type" context="{'group_by':'temp_type_id'}"/>   
+                </filter>
             </field>
         </record>
 

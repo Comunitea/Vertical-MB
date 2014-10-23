@@ -270,19 +270,17 @@ class stock_pack_operation(osv.osv):
             else:
                 vol_aval = pick_loc.available_volume
             if (not old_ref and ops.volume <= vol_aval) or \
-                    not ops.package_id:
+                    not ops.package_id:  # Only units forced going to picking
                 location_id = pick_loc.id
             else:
+                loc_type = "standard"
                 if ops.pack_type and ops.pack_type == 'box':
                     loc_type = "boxes"
-                elif ops.pack_type:
-                    loc_type = "standard"
-                else:
-                    loc_type = False
-
+                temp_type = product.temp_type and product.temp_type.id or False
                 if loc_type:
                     loc_ids = loc_obj.search(cr, uid,
                                              [('storage_type', '=', loc_type),
+                                              ('temp_type_id', '=', temp_type)
                                               ('location_id', 'child_of',
                                                [storage_id])],
                                              context=context)
@@ -302,9 +300,6 @@ class stock_pack_operation(osv.osv):
                         _search_closest_pick_location(cr, uid, product,
                                                       free_locs,
                                                       context=context)
-                else:
-                    # TODO: A donde van las unidades sueltas?????
-                    location_id = False
 
         return location_id
 
@@ -785,11 +780,14 @@ class stock_location(osv.Model):
                                               string="Product",
                                               readonly=True,
                                               type="many2one",
-                                              relation="product.product")
+                                              relation="product.product"),
+        'temp_type_id': fields.many2one('temp.type', 'Temperature Type'),
+        'sequence': fields.integer('Sequence', required=True)
     }
 
     _defaults = {
         'storage_type': 'standard',
+        'sequence': 0
     }
 
 

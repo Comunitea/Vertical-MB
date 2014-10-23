@@ -34,6 +34,8 @@ class temp_type(osv.Model):
         'temp_id': fields.integer('Temp id', readonly="True"),
         'name': fields.char('Temp name', size=256, required="True",
                             readonly="True"),
+        'type': fields.selection([('chilled', 'Chilled'), ('frozen', 'Frozen'),
+                                 ('dry', 'Dry')], "Type"),
     }
 
 
@@ -115,11 +117,7 @@ class product_template(osv.Model):
         'glazed': fields.boolean("Glazed"),
         'glazed_percent': fields.float("%", digits=(4, 2)),
         'web': fields.char('Web', size=128),
-        # 'minimum_stock': fields.integer('Minimum Stock'),
         'life': fields.integer('Useful life'),
-        # 'price': fields.float('Price',
-        # digits_compute=dp.get_precision(
-        # 'Product Price')),
         'first_course': fields.boolean("First Course"),
         'second_course': fields.boolean("Second Course"),
         'dessert': fields.boolean("Dessert"),

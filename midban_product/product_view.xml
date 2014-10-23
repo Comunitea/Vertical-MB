@@ -334,5 +334,56 @@
          <!-- Menu for product deny reasons under Stock/Configuration/Products) -->
         <menuitem action="action_deny_product_reason" id="menu_deny_product_reason_stock" name="Deny product reasons" sequence="4" parent="stock.menu_product_in_config_stock"/>
 
+
+        <!-- Tree view for product deny reason model -->
+        <record id="midban_product_temp_type_view_tree" model="ir.ui.view">
+            <field name="name">midban_product_temp_type_view_tree</field>
+            <field name="model">temp.type</field>
+            <field name="arch" type="xml">
+                <tree string="Temp Type">
+                    <field name="name"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for product temp type model -->
+        <record id="midban_product_temp_type_view_form" model="ir.ui.view">
+            <field name="name">midban_product_temp_type_view_form</field>
+            <field name="model">temp.type</field>
+            <field name="arch" type="xml">
+                <form string="Temp Type" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for product tempo type model -->
+        <record id="action_temp_type" model="ir.actions.act_window">
+            <field name="name">Temperature type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">temp.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new temperature type.
+              </p><p>
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu for product temp type under Sales/Configuration/Products) -->
+        <menuitem action="action_temp_type" id="menu_temp_type_sales" name="Temperature type" sequence="6" parent="product.prod_config_main"/>
+        <!-- Menu for product temp type under Purchases/Configuration/Products) -->
+        <menuitem action="action_temp_type" id="menu_temp_type_purchases" name="Temperature type" sequence="6" parent="purchase.menu_product_in_config_purchase"/>
+         <!-- Menu for product temp type under Stock/Configuration/Products) -->
+        <menuitem action="action_temp_type" id="menu_temp_type_stock" name="Temperature type" sequence="6" parent="stock.menu_product_in_config_stock"/>
+
     </data>
 </openerp>

@@ -1,178 +1,19 @@
-# Translation of OpenERP Server.
+# Translation of Odoo Server.
 # This file contains the translation of the following modules:
 #	* midban_product
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0\n"
+"Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-24 10:30+0000\n"
-"PO-Revision-Date: 2013-12-24 10:30+0000\n"
+"POT-Creation-Date: 2014-10-23 13:47+0000\n"
+"PO-Revision-Date: 2014-10-23 13:47+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-
-#. module: midban_product
-#: field:product.product,web:0
-msgid "Web"
-msgstr "Web"
-
-#. module: midban_product
-#: field:product.product,pa_length:0
-msgid "PA Length"
-msgstr "PA Longitud"
-
-#. module: midban_product
-#: model:ir.actions.act_window,name:midban_product.action_unregister_product_reason
-msgid "product unregister reasons"
-msgstr "Motivos baja de producto"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Unegistered"
-msgstr "Baja"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Product unregistered"
-msgstr "Productos dados de baja"
-
-#. module: midban_product
-#: sql_constraint:product.product:0
-msgid "The reference must be unique!"
-msgstr "La referencia debe ser única!"
-
-#. module: midban_product
-#: field:product.product,supplier_ca_ma:0
-msgid "CA/MA Supplier"
-msgstr "CA/MA Proveedor"
-
-#. module: midban_product
-#: field:product.product,supplier_pa_width:0
-msgid "PA Width Supplier"
-msgstr "PA Ancho proveedor"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Validate pending"
-msgstr "Pendiente de validación"
-
-#. module: midban_product
-#: field:product.product,dessert:0
-msgid "Dessert"
-msgstr "Postre"
-
-#. module: midban_product
-#: view:deny.product.reason:0
-msgid "Deny reasons"
-msgstr "Motivos denegación de producto"
-
-#. module: midban_product
-#: field:product.history,reason:0
-msgid "Reason"
-msgstr "Motivo"
-
-#. module: midban_product
-#: field:product.product,pa_width:0
-msgid "PA Width"
-msgstr "PA Ancho"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "History"
-msgstr "Historial"
-
-#. module: midban_product
-#: code:addons/midban_product/wizard/process_deny_product.py:44
-#, python-format
-msgid "Product Denied"
-msgstr "Producto denegado"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Register"
-msgstr "Dar de alta"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_unregister_product_reason
-msgid "unregister.product.reason"
-msgstr "unregister.product.reason"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_deny_product_reason
-msgid "deny.product.reason"
-msgstr "deny.product.reason"
-
-#. module: midban_product
-#: field:product.product,supplier_pa_height:0
-msgid "PA Height Supplier"
-msgstr "PA Altura proveedor"
-
-#. module: midban_product
-#: field:product.product,supplier_ca_width:0
-msgid "CA Width Supplier"
-msgstr "CA Ancho proveedor"
-
-#. module: midban_product
-#: field:product.allergen,name:0
-msgid "Allergen name"
-msgstr "Nombre alérgeno"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Supplier Units"
-msgstr "Unidades de proveedor"
-
-#. module: midban_product
-#: field:product.product,ma_length:0
-msgid "MA Length"
-msgstr "MA Longitud"
-
-#. module: midban_product
-#: field:process.unregister.product,reason_id:0
-#: field:product.product,unregister_reason_id:0
-msgid "Unregister Reason"
-msgstr "Motivos baja"
-
-#. module: midban_product
-#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_purchases
-#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_sales
-#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_stock
-msgid "Unregister product reasons"
-msgstr "Motivos baja de producto"
-
-#. module: midban_product
-#: field:product.product,ca_height:0
-msgid "CA Height"
-msgstr "CA Altura"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_purchase_order_line
-msgid "Purchase Order Line"
-msgstr "Línea pedido de compra"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Logistic validation pending"
-msgstr "Pendiente de validación logística"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Mandatory Units"
-msgstr "Unidades obligatorias"
-
-#. module: midban_product
-#: selection:product.product,temperature_type:0
-msgid "Chilled"
-msgstr "Refrigerado"
-
-#. module: midban_product
-#: field:product.product,mark:0
-msgid "Mark"
-msgstr "Marca"
 
 #. module: midban_product
 #: model:ir.actions.act_window,help:midban_product.action_deny_product_reason
@@ -192,288 +33,28 @@ msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "            "
 
 #. module: midban_product
-#: model:ir.model,name:midban_product.model_process_unregister_product
-msgid "Unregister product and update the associated reasons"
-msgstr "Dar de baja el producto y actualizar los motivos relacionados"
+#: model:ir.actions.act_window,help:midban_product.action_temp_type
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new temperature type.\n"
+"              </p><p>\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para crear un nuevo tipo de temperatura.\n"
+"              </p><p>\n"
+"              </p>\n"
+"            "
 
 #. module: midban_product
-#: field:product.product,supplier_ma_height:0
-msgid "MA Height Supplier"
-msgstr "MA Altura proveedor"
-
-#. module: midban_product
-#: field:product.product,sale_type:0
-msgid "Sale type"
-msgstr "Tipo de venta"
-
-#. module: midban_product
-#: field:product.product,temp_type:0
-msgid "Temp type"
-msgstr "Tipo de temperatura"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Product registering process"
-msgstr "Productos en proceso de alta"
-
-#. module: midban_product
-#: view:unregister.product.reason:0
-msgid "Unregister reasons"
-msgstr "Motivos de baja"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Registered"
-msgstr "Alta"
-
-#. module: midban_product
-#: field:product.product,deny_reason_id:0
-msgid "Deny Reason"
-msgstr "Motivo denegación"
-
-#. module: midban_product
-#: field:product.product,bulk:0
-msgid "Bulk"
-msgstr "Granel"
-
-#. module: midban_product
-#: field:product.product,un_height:0
-msgid "UN Height"
-msgstr "UN Altura"
-
-#. module: midban_product
-#: field:product.product,consignment:0
-msgid "Consignment"
-msgstr "En consigna"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"
-msgstr "Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"
-
-#. module: midban_product
-#: field:product.product,glazed:0
-msgid "Glazed"
-msgstr "Glaseado"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Consumable"
-msgstr "Consumible"
-
-#. module: midban_product
-#: field:product.product,life:0
-msgid "Useful life"
-msgstr "Vida útil"
-
-#. module: midban_product
-#: model:ir.actions.act_window,name:midban_product.action_process_deny_product
-#: view:process.deny.product:0
-msgid "Process deny product"
-msgstr "Procesar denegación de producto"
-
-#. module: midban_product
-#: selection:product.product,sale_type:0
-msgid "Dry"
-msgstr "Seco"
-
-#. module: midban_product
-#: code:addons/midban_product/wizard/process_unregister_product.py:42
-#, python-format
-msgid "Unregistered"
-msgstr "Baja"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Return to validate pending"
-msgstr "Volver a pendiente de validación"
-
-#. module: midban_product
-#: selection:product.product,temperature_type:0
-msgid "Deep Frozen"
-msgstr "Ultra congelado"
-
-#. module: midban_product
-#: view:process.unregister.product:0
-#: view:product.product:0
-msgid "Unregister"
-msgstr "Dar de baja"
-
-#. module: midban_product
-#: field:product.product,first_course:0
-msgid "First Course"
-msgstr "Primer Plato"
-
-#. module: midban_product
-#: view:product.product:0
-#: field:product.product,history_ids:0
-msgid "Product History"
-msgstr "Historial de producto"
-
-#. module: midban_product
-#: field:deny.product.reason,name:0
-#: field:unregister.product.reason,name:0
-msgid "Unregister reason"
-msgstr "Motivo de baja"
-
-#. module: midban_product
-#: selection:product.product,product_type:0
-msgid "Mixed"
-msgstr "Mixto"
-
-#. module: midban_product
-#: selection:product.product,product_type:0
-msgid "Hospitality"
-msgstr "Hostelería"
-
-#. module: midban_product
-#: field:product.history,comment:0
-msgid "Comment"
-msgstr "Comentario"
-
-#. module: midban_product
-#: field:product.product,un_ca:0
-msgid "UN/CA"
-msgstr "UN/CA"
-
-#. module: midban_product
-#: field:product.product,supplier_ca_height:0
-msgid "CA Height Supplier"
-msgstr "CA Altura Proveedor"
-
-#. module: midban_product
-#: model:ir.ui.menu,name:midban_product.menu_product_allergen_purchase
-#: model:ir.ui.menu,name:midban_product.menu_product_allergen_sale
-#: model:ir.ui.menu,name:midban_product.menu_product_allergen_stock
-#: field:product.product,product_allergen_ids:0
-msgid "Products allergens"
-msgstr "Alérgenos de producto"
-
-#. module: midban_product
-#: field:product.product,supplier_un_ca:0
-msgid "UN/CA Supplier"
-msgstr "UN/CA Proveedor"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Back"
-msgstr "Atrás"
-
-#. module: midban_product
-#: field:product.product,ca_length:0
-msgid "CA Length"
-msgstr "CA Longitud"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:313
-#, python-format
-msgid "Product denied in register process again"
-msgstr "Product denegado en proceso de alta de nuevo"
-
-#. module: midban_product
-#: view:process.deny.product:0
-#: view:process.unregister.product:0
-msgid "or"
-msgstr "or"
-
-#. module: midban_product
-#: field:product.product,temperature:0
-msgid "Temperature"
-msgstr "Temperatura"
-
-#. module: midban_product
-#: model:ir.actions.act_window,name:midban_product.action_product_allergen
-msgid "action_product_allergen"
-msgstr "action_product_allergen"
-
-#. module: midban_product
-#: field:product.product,kg_un:0
-msgid "KG/UN"
-msgstr "KG/UN"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:247
-#, python-format
-msgid "Pending logistic and commercial validate"
-msgstr "Pendiente de validación logística y comercial"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Denied"
-msgstr "Denegado"
-
-#. module: midban_product
-#: field:product.product,temperature_type:0
-msgid "Temperature type"
-msgstr "Tipo producto"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_product_allergen
-msgid "product.allergen"
-msgstr "product.allergen"
-
-#. module: midban_product
-#: field:product.product,state2:0
-msgid "Status"
-msgstr "Estado"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:255
-#, python-format
-msgid "Logistic validate done"
-msgstr "Validación logística realizada"
-
-#. module: midban_product
-#: field:product.product,supplier_ma_width:0
-msgid "MA Width Supplier"
-msgstr "MA Ancho Proveedor"
-
-#. module: midban_product
-#: field:product.product,ma_width:0
-msgid "MA Width"
-msgstr "MA Ancho"
-
-#. module: midban_product
-#: field:product.product,accompaniment:0
-msgid "Accompaniment"
-msgstr "Acompañamiento"
-
-#. module: midban_product
-#: field:product.history,user_id:0
-msgid "User"
-msgstr "Usuario"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Comercial validation pending"
-msgstr "Pendiente de Validación comercial"
-
-#. module: midban_product
-#: field:product.history,date:0
-msgid "Date"
-msgstr "Fecha"
-
-#. module: midban_product
-#: field:product.product,var_weight:0
-msgid "Variable weight"
-msgstr "Peso variable"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:282
-#, python-format
-msgid "Product registered"
-msgstr "Producto Dado de alta"
-
-#. module: midban_product
-#: view:process.deny.product:0
-#: view:product.product:0
-msgid "Deny"
-msgstr "Denegar"
-
-#. module: midban_product
-#: field:product.product,scientific_name:0
-msgid "Scientific name"
-msgstr "Nombre científico"
+#: model:ir.actions.act_window,help:midban_product.action_product_allergen
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new type of allergen.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Pulsa aquí para crear un nuevo tipo de alérgeno.\n"
+"              </p>\n"
+"            "
 
 #. module: midban_product
 #: model:ir.actions.act_window,help:midban_product.action_unregister_product_reason
@@ -493,203 +74,9 @@ msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "            "
 
 #. module: midban_product
-#: field:product.product,ma_pa:0
-msgid "MA/PA"
-msgstr "MA/PA"
-
-#. module: midban_product
-#: field:product.product,minimum_stock:0
-msgid "Minimum Stock"
-msgstr "Stock mínimo"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:273
-#, python-format
-msgid "Comercial and validate done. Pending to register"
-msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
-
-#. module: midban_product
-#: field:product.product,supplier_pa_length:0
-msgid "PA Length Supplier"
-msgstr "PA Longitud Proveedor"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Commercial Validated"
-msgstr "Comercial validado"
-
-#. module: midban_product
-#: field:product.product,last_purchase_price:0
-msgid "Last purchase change"
-msgstr "Último precio de compra"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:264
-#, python-format
-msgid "Comercial validate done"
-msgstr "Validación comercial realizada"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:302
-#, python-format
-msgid "Product registered again"
-msgstr "Dar de alta de nuevo"
-
-#. module: midban_product
-#: model:ir.actions.act_window,name:midban_product.action_process_unregister_product
-#: view:process.unregister.product:0
-msgid "Process unregister product"
-msgstr "Procesar baja de producto"
-
-#. module: midban_product
-#: model:ir.actions.act_window,help:midban_product.action_product_allergen
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to create a new type of allergen.\n"
-"              </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Pulsa aquí para crear un nuevo tipo de alérgeno.\n"
-"              </p>\n"
-"            "
-
-#. module: midban_product
-#: selection:product.product,temperature_type:0
-msgid "Ambient"
-msgstr "Ambiente"
-
-#. module: midban_product
-#: view:process.deny.product:0
-#: view:process.unregister.product:0
-msgid "Cancel"
-msgstr "Cancelar"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:292
-#, python-format
-msgid "Product denyed"
-msgstr "Producto denegado"
-
-#. module: midban_product
-#: selection:product.product,state2:0
-msgid "Validated"
-msgstr "Validado"
-
-#. module: midban_product
-#: field:product.product,supplier_ca_length:0
-msgid "CA Length Supplier"
-msgstr "CA longitud Proveedor"
-
-#. module: midban_product
-#: field:product.product,un_length:0
-msgid "UN Length"
-msgstr "UN Longitud"
-
-#. module: midban_product
-#: field:product.product,ref:0
-msgid "Referencia"
-msgstr "Referencia"
-
-#. module: midban_product
-#: field:product.product,breakfast_snack:0
-msgid "Breakfast/Snack"
-msgstr "Desayuno/Merienda"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Product Information"
-msgstr "Información de producto"
-
-#. module: midban_product
-#: field:product.product,ca_width:0
-msgid "CA Width"
-msgstr "CA Ancho"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Logistic Validated"
-msgstr "Logística validada"
-
-#. module: midban_product
-#: field:product.product,supplier_ma_pa:0
-msgid "MA/PA Supplier"
-msgstr "MA/PA Proveedor"
-
-#. module: midban_product
-#: view:unregister.product.reason:0
-msgid "Product allergen"
-msgstr "Alérgeno de producto"
-
-#. module: midban_product
-#: field:product.product,product_type:0
-msgid "Product Class"
-msgstr "Clase de producto"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_product_product
-#: field:product.history,product_id:0
-msgid "Product"
-msgstr "Producto"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Product denied"
-msgstr "Productos denegados"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Nutritional Information"
-msgstr "Información nutricional"
-
-#. module: midban_product
-#: selection:product.product,product_type:0
-msgid "Food"
-msgstr "Comida"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_product_history
-msgid "Product history"
-msgstr "Historial de producto"
-
-#. module: midban_product
-#: field:product.product,supplier_ma_length:0
-msgid "MA Length Supplier"
-msgstr "MA Longitud Proveedor"
-
-#. module: midban_product
-#: view:product.product:0
-msgid "Exclusives"
-msgstr "Exclusivos"
-
-#. module: midban_product
-#: field:process.deny.product,reason_id:0
-msgid "Deny product Reason"
-msgstr "Motivo denegación"
-
-#. module: midban_product
-#: model:ir.actions.act_window,name:midban_product.action_deny_product_reason
-msgid "Product deny reasons"
-msgstr "Motivos denegación alta producto"
-
-#. module: midban_product
-#: selection:product.product,sale_type:0
-#: selection:product.product,temperature_type:0
-msgid "Frozen"
-msgstr "Congelado"
-
-#. module: midban_product
-#: field:product.product,product_substitute_ids:0
-msgid "Substitute product"
-msgstr "Productos Substitutos"
-
-#. module: midban_product
-#: model:ir.model,name:midban_product.model_product_template
-msgid "Product Template"
-msgstr "Plantilla de producto"
-
-#. module: midban_product
-#: field:product.product,second_course:0
-msgid "Second Course"
-msgstr "Segundo plato"
+#: field:product.template,accompaniment:0
+msgid "Accompaniment"
+msgstr "Acompañamiento"
 
 #. module: midban_product
 #: field:product.history,activity:0
@@ -697,24 +84,170 @@ msgid "Activity"
 msgstr "Actividad"
 
 #. module: midban_product
-#: selection:product.product,sale_type:0
-msgid "Fresh"
-msgstr "Fresco"
+#: field:product.allergen,name:0
+msgid "Allergen name"
+msgstr "Nombre alérgeno"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Back"
+msgstr "Atrás"
+
+#. module: midban_product
+#: field:product.template,breakfast_snack:0
+msgid "Breakfast/Snack"
+msgstr "Desalluno/merienda"
+
+#. module: midban_product
+#: field:product.template,bulk:0
+msgid "Bulk"
+msgstr "Granel"
+
+#. module: midban_product
+#: field:product.template,ca_height:0
+msgid "CA Height"
+msgstr "CA Altura"
+
+#. module: midban_product
+#: field:product.template,supplier_ca_height:0
+msgid "CA Height Supplier"
+msgstr "CA Altura proveedor"
+
+#. module: midban_product
+#: field:product.template,ca_length:0
+msgid "CA Length"
+msgstr "CA Largo"
+
+#. module: midban_product
+#: field:product.template,supplier_ca_length:0
+msgid "CA Length Supplier"
+msgstr "CA Largo proveedor"
+
+#. module: midban_product
+#: field:product.template,ca_width:0
+msgid "CA Width"
+msgstr "CA Ancho"
+
+#. module: midban_product
+#: field:product.template,supplier_ca_width:0
+msgid "CA Width Supplier"
+msgstr "CA Ancho proveedor"
+
+#. module: midban_product
+#: field:product.template,ca_ma:0
+msgid "CA/MA"
+msgstr "CA/MA"
+
+#. module: midban_product
+#: field:product.template,supplier_ca_ma:0
+msgid "CA/MA Supplier"
+msgstr "CA/MA Proveedor"
+
+#. module: midban_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: midban_product
+#: selection:temp.type,type:0
+msgid "Chilled"
+msgstr "Refrigerado"
+
+#. module: midban_product
+#: field:product.template,ean14:0
+msgid "Code EAN14"
+msgstr "Code EAN14"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:369
+#, python-format
+msgid "Comercial and validate done. Pending to register"
+msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:360
+#, python-format
+msgid "Comercial validate done"
+msgstr "Validación comercial realizada"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Comercial validation pending"
+msgstr "Comercial validation pending"
+
+#. module: midban_product
+#: field:product.history,comment:0
+msgid "Comment"
+msgstr "Comentario"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Commercial Validated"
+msgstr "Commercial Validado"
+
+#. module: midban_product
+#: field:product.template,consignment:0
+msgid "Consignment"
+msgstr "Consigna"
+
+#. module: midban_product
+#: view:product.product:midban_product.midban_product_search_form_view
+msgid "Consumable"
+msgstr "Consumible"
+
+#. module: midban_product
+#: field:deny.product.reason,create_uid:0
+#: field:process.deny.product,create_uid:0
+#: field:process.unregister.product,create_uid:0
+#: field:product.allergen,create_uid:0
+#: field:product.history,create_uid:0
+#: field:temp.type,create_uid:0
+#: field:unregister.product.reason,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: midban_product
+#: field:deny.product.reason,create_date:0
+#: field:process.deny.product,create_date:0
+#: field:process.unregister.product,create_date:0
+#: field:product.allergen,create_date:0
+#: field:product.history,create_date:0
+#: field:temp.type,create_date:0
+#: field:unregister.product.reason,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: midban_product
+#: field:product.history,date:0
+msgid "Date"
+msgstr "Fecha"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Denied"
+msgstr "Denegado"
+
+#. module: midban_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Deny"
+msgstr "Denegar"
+
+#. module: midban_product
+#: field:product.template,deny_reason_id:0
+msgid "Deny Reason"
+msgstr "Motivo denegación"
+
+#. module: midban_product
+#: field:process.deny.product,reason_id:0
+msgid "Deny product Reason"
+msgstr "Motivo denegación"
 
 #. module: midban_product
 #: model:ir.model,name:midban_product.model_process_deny_product
 msgid "Deny product and update the associated reasons"
 msgstr "Denegar alta de producto y registrar los motivos"
-
-#. module: midban_product
-#: field:product.product,exclusive_ids:0
-msgid "Exclusive"
-msgstr "Exclusivo"
-
-#. module: midban_product
-#: field:product.product,pa_height:0
-msgid "PA Height"
-msgstr "PA Altura"
 
 #. module: midban_product
 #: model:ir.ui.menu,name:midban_product.menu_deny_product_reason_purchases
@@ -724,17 +257,578 @@ msgid "Deny product reasons"
 msgstr "Motivos denegación de alta"
 
 #. module: midban_product
-#: field:product.product,ma_height:0
+#: view:deny.product.reason:midban_product.midban_deny_product_reason_view_form
+#: view:deny.product.reason:midban_product.midban_deny_product_reason_view_tree
+msgid "Deny reasons"
+msgstr "Motivos denegación de producto"
+
+#. module: midban_product
+#: field:product.template,dessert:0
+msgid "Dessert"
+msgstr "Postre"
+
+#. module: midban_product
+#: selection:product.template,sale_type:0
+#: selection:temp.type,type:0
+msgid "Dry"
+msgstr "Seco"
+
+#. module: midban_product
+#: constraint:product.template:0
+msgid "Error!\n"
+"Some unit dimension is         equals to zero. Please check it"
+msgstr "Error!\n"
+"Alguna unidad de medida es igual a cero. Por favor compruebalo"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"
+msgstr "Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"
+
+#. module: midban_product
+#: field:product.template,first_course:0
+msgid "First Course"
+msgstr "Primer Plato"
+
+#. module: midban_product
+#: selection:product.template,product_type:0
+msgid "Food"
+msgstr "Comida"
+
+#. module: midban_product
+#: selection:product.template,sale_type:0
+msgid "Fresh"
+msgstr "Fresco"
+
+#. module: midban_product
+#: selection:product.template,sale_type:0
+#: selection:temp.type,type:0
+msgid "Frozen"
+msgstr "Congelado"
+
+#. module: midban_product
+#: field:product.template,glazed:0
+msgid "Glazed"
+msgstr "Glaseado"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "History"
+msgstr "Historial"
+
+#. module: midban_product
+#: selection:product.template,product_type:0
+msgid "Hospitality"
+msgstr "Hostelería"
+
+#. module: midban_product
+#: field:deny.product.reason,id:0
+#: field:process.deny.product,id:0
+#: field:process.unregister.product,id:0
+#: field:product.allergen,id:0
+#: field:product.history,id:0
+#: field:temp.type,id:0
+#: field:unregister.product.reason,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: midban_product
+#: field:product.template,kg_un:0
+msgid "KG/UN"
+msgstr "KG/UN"
+
+#. module: midban_product
+#: field:product.template,supplier_kg_un:0
+msgid "KG/UN Supplier"
+msgstr "KG/UN Proveedor"
+
+#. module: midban_product
+#: field:deny.product.reason,write_uid:0
+#: field:process.deny.product,write_uid:0
+#: field:process.unregister.product,write_uid:0
+#: field:product.allergen,write_uid:0
+#: field:product.history,write_uid:0
+#: field:temp.type,write_uid:0
+#: field:unregister.product.reason,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: midban_product
+#: field:deny.product.reason,write_date:0
+#: field:process.deny.product,write_date:0
+#: field:process.unregister.product,write_date:0
+#: field:product.allergen,write_date:0
+#: field:product.history,write_date:0
+#: field:temp.type,write_date:0
+#: field:unregister.product.reason,write_date:0
+msgid "Last Updated on"
+msgstr "ültima actualización en"
+
+#. module: midban_product
+#: field:product.template,last_purchase_price:0
+msgid "Last purchase change"
+msgstr "ültimo precio compra"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Logistic Validated"
+msgstr "Logística validada"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:351
+#, python-format
+msgid "Logistic validate done"
+msgstr "Validación logística realizada"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Logistic validation pending"
+msgstr "Validaciín logística pendiente"
+
+#. module: midban_product
+#: field:product.template,ma_height:0
 msgid "MA Height"
 msgstr "MA Altura"
 
 #. module: midban_product
-#: field:product.product,un_width:0
+#: field:product.template,supplier_ma_height:0
+msgid "MA Height Supplier"
+msgstr "MA Altura Proveedor"
+
+#. module: midban_product
+#: field:product.template,ma_length:0
+msgid "MA Length"
+msgstr "MA Longitud"
+
+#. module: midban_product
+#: field:product.template,supplier_ma_length:0
+msgid "MA Length Supplier"
+msgstr "MA Longitud Proveedor"
+
+#. module: midban_product
+#: field:product.template,ma_width:0
+msgid "MA Width"
+msgstr "MA Ancho"
+
+#. module: midban_product
+#: field:product.template,supplier_ma_width:0
+msgid "MA Width Supplier"
+msgstr "MA Ancho proveedor"
+
+#. module: midban_product
+#: field:product.template,ma_pa:0
+msgid "MA/PA"
+msgstr "MA/PA"
+
+#. module: midban_product
+#: field:product.template,supplier_ma_pa:0
+msgid "MA/PA Supplier"
+msgstr "MA/PA proveedor"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Mandatory Units"
+msgstr "Unidades obligatorias"
+
+#. module: midban_product
+#: field:product.template,mantle_wood_height:0
+msgid "Mantle Wood Height"
+msgstr "Altura madera mantos"
+
+#. module: midban_product
+#: field:product.template,mark:0
+msgid "Mark"
+msgstr "Marca"
+
+#. module: midban_product
+#: selection:product.template,product_type:0
+msgid "Mixed"
+msgstr "Mixto"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Nutritional Information"
+msgstr "Información nutricional"
+
+#. module: midban_product
+#: field:product.template,pa_height:0
+msgid "PA Height"
+msgstr "PA Altura"
+
+#. module: midban_product
+#: field:product.template,supplier_pa_height:0
+msgid "PA Height Supplier"
+msgstr "PA Altura proveedor"
+
+#. module: midban_product
+#: field:product.template,pa_length:0
+msgid "PA Length"
+msgstr "PA Altura"
+
+#. module: midban_product
+#: field:product.template,supplier_pa_length:0
+msgid "PA Length Supplier"
+msgstr "PA Largo proveedir"
+
+#. module: midban_product
+#: field:product.template,pa_width:0
+msgid "PA Width"
+msgstr "PA Ancho"
+
+#. module: midban_product
+#: field:product.template,supplier_pa_width:0
+msgid "PA Width Supplier"
+msgstr "PA Ancho proveedor"
+
+#. module: midban_product
+#: field:product.template,palet_wood_height:0
+msgid "Palet Wood Height"
+msgstr "Altura madera palet"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:343
+#, python-format
+msgid "Pending logistic and commercial validate"
+msgstr "Pendiente de validación logística y comercial"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_process_deny_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+msgid "Process deny product"
+msgstr "Procesar denegación de producto"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_process_unregister_product
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
+msgid "Process unregister product"
+msgstr "Procesar baja de producto"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_product
+#: field:product.history,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: midban_product
+#: field:product.template,product_type:0
+msgid "Product Class"
+msgstr "Clase producto"
+
+#. module: midban_product
+#: code:addons/midban_product/wizard/process_deny_product.py:44
+#, python-format
+msgid "Product Denied"
+msgstr "Producto denegado"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+#: field:product.template,history_ids:0
+msgid "Product History"
+msgstr "Historial del producto"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Product Information"
+msgstr "Información del producto"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_template
+msgid "Product Template"
+msgstr "Plantilla del producto"
+
+#. module: midban_product
+#: view:unregister.product.reason:midban_product.midban_product_allergen_view_form
+#: view:unregister.product.reason:midban_product.midban_product_allergen_view_tree
+msgid "Product allergen"
+msgstr "Alérgeno de producto"
+
+#. module: midban_product
+#: view:product.product:midban_product.midban_product_search_form_view
+msgid "Product denied"
+msgstr "Productos denegados"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:413
+#, python-format
+msgid "Product denied in register process again"
+msgstr "Product denegado en proceso de alta de nuevo"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_deny_product_reason
+msgid "Product deny reasons"
+msgstr "Motivos denegación alta producto"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:392
+#, python-format
+msgid "Product denyed"
+msgstr "Producto denegado"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_history
+msgid "Product history"
+msgstr "Historial de producto"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:379
+#, python-format
+msgid "Product registered"
+msgstr "Producto Dado de alta"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:402
+#, python-format
+msgid "Product registered again"
+msgstr "Dar de alta de nuevo"
+
+#. module: midban_product
+#: view:product.product:midban_product.midban_product_search_form_view
+msgid "Product registering process"
+msgstr "Productos en proceso de alta"
+
+#. module: midban_product
+#: view:product.product:midban_product.midban_product_search_form_view
+msgid "Product unregistered"
+msgstr "Productos dados de baja"
+
+#. module: midban_product
+#: model:ir.ui.menu,name:midban_product.menu_product_allergen_purchase
+#: model:ir.ui.menu,name:midban_product.menu_product_allergen_sale
+#: model:ir.ui.menu,name:midban_product.menu_product_allergen_stock
+#: field:product.template,product_allergen_ids:0
+msgid "Products allergens"
+msgstr "Alérgenos de producto"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: midban_product
+#: field:product.history,reason:0
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: midban_product
+#: field:product.template,ref:0
+msgid "Referencia"
+msgstr "Referencia"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Register"
+msgstr "Dar de alta"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Registered"
+msgstr "Dado de alta"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Return to validate pending"
+msgstr "Volver a pendiente de validar"
+
+#. module: midban_product
+#: field:product.template,sale_type:0
+msgid "Sale type"
+msgstr "Tipo venta"
+
+#. module: midban_product
+#: field:product.template,scientific_name:0
+msgid "Scientific name"
+msgstr "Nombre científico"
+
+#. module: midban_product
+#: field:product.template,second_course:0
+msgid "Second Course"
+msgstr "Segundo plato"
+
+#. module: midban_product
+#: field:product.template,state2:0
+msgid "Status"
+msgstr "Estado"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Supplier Units"
+msgstr "Unidades de proveedor"
+
+#. module: midban_product
+#: view:temp.type:midban_product.midban_product_temp_type_view_form
+#: view:temp.type:midban_product.midban_product_temp_type_view_tree
+msgid "Temp Type"
+msgstr "Tipo temperatura"
+
+#. module: midban_product
+#: field:temp.type,temp_id:0
+msgid "Temp id"
+msgstr "Temp id"
+
+#. module: midban_product
+#: field:temp.type,name:0
+msgid "Temp name"
+msgstr "Nombre temperatura"
+
+#. module: midban_product
+#: field:product.template,temp_type:0
+msgid "Temp type"
+msgstr "Tipo temperatura"
+
+#. module: midban_product
+#: field:product.template,temperature:0
+msgid "Temperature"
+msgstr "Temperatura"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_temp_type
+#: model:ir.ui.menu,name:midban_product.menu_temp_type_purchases
+#: model:ir.ui.menu,name:midban_product.menu_temp_type_sales
+#: model:ir.ui.menu,name:midban_product.menu_temp_type_stock
+msgid "Temperature type"
+msgstr "Temperature type"
+
+#. module: midban_product
+#: field:temp.type,type:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: midban_product
+#: field:product.template,un_height:0
+msgid "UN Height"
+msgstr "UN Altura"
+
+#. module: midban_product
+#: field:product.template,supplier_un_height:0
+msgid "UN Height Supplier"
+msgstr "UN Altura proveedor"
+
+#. module: midban_product
+#: field:product.template,un_length:0
+msgid "UN Length"
+msgstr "UN largo"
+
+#. module: midban_product
+#: field:product.template,supplier_un_length:0
+msgid "UN Length Supplier"
+msgstr "UN largo proveedor"
+
+#. module: midban_product
+#: field:product.template,un_width:0
 msgid "UN Width"
 msgstr "UN Ancho"
 
 #. module: midban_product
-#: field:product.product,ca_ma:0
-msgid "CA/MA"
-msgstr "CA/MA"
+#: field:product.template,supplier_un_width:0
+msgid "UN Width Supplier"
+msgstr "UN Anchpo proveedor"
+
+#. module: midban_product
+#: field:product.template,un_ca:0
+msgid "UN/CA"
+msgstr "UN/CA"
+
+#. module: midban_product
+#: field:product.template,supplier_un_ca:0
+msgid "UN/CA Supplier"
+msgstr "UN/CA proveedor"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Unegistered"
+msgstr "Dado de baja"
+
+#. module: midban_product
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Unregister"
+msgstr "Dar de baja"
+
+#. module: midban_product
+#: field:process.unregister.product,reason_id:0
+#: field:product.template,unregister_reason_id:0
+msgid "Unregister Reason"
+msgstr "Motivos baja"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_process_unregister_product
+msgid "Unregister product and update the associated reasons"
+msgstr "Dar de baja el producto y actualizar los motivos relacionados"
+
+#. module: midban_product
+#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_purchases
+#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_sales
+#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_stock
+msgid "Unregister product reasons"
+msgstr "Motivos baja de producto"
+
+#. module: midban_product
+#: field:deny.product.reason,name:0
+#: field:unregister.product.reason,name:0
+msgid "Unregister reason"
+msgstr "Motivo de baja"
+
+#. module: midban_product
+#: view:unregister.product.reason:midban_product.midban_unregister_product_reason_view_form
+#: view:unregister.product.reason:midban_product.midban_unregister_product_reason_view_tree
+msgid "Unregister reasons"
+msgstr "Motivos de baja"
+
+#. module: midban_product
+#: code:addons/midban_product/wizard/process_unregister_product.py:42
+#, python-format
+msgid "Unregistered"
+msgstr "Baja"
+
+#. module: midban_product
+#: field:product.template,life:0
+msgid "Useful life"
+msgstr "vida útil"
+
+#. module: midban_product
+#: field:product.history,user_id:0
+msgid "User"
+msgstr "Usuario"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Validate pending"
+msgstr "Validación pendiente"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Validated"
+msgstr "Validado"
+
+#. module: midban_product
+#: field:product.template,var_weight:0
+msgid "Variable weight"
+msgstr "Peso variable"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:309
+#, python-format
+msgid "Warning!"
+msgstr "Advertencia!"
+
+#. module: midban_product
+#: field:product.template,web:0
+msgid "Web"
+msgstr "Web"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:310
+#, python-format
+msgid "You cannot change the value                                     of consignment field."
+msgstr "YNo puedes cambiar el valor del campo consigna."
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_product_allergen
+msgid "action_product_allergen"
+msgstr "action_product_allergen"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_unregister_product_reason
+msgid "product unregister reasons"
+msgstr "Motivos baja de producto"
 
