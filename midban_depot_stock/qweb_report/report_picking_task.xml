@@ -89,7 +89,10 @@
                                     <td class="text-right">
                                         <!-- <span t-field="pack_operation.product_qty"/>
                                         <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/> -->
-                                        <span t-field="pack_operation.package_id.packed_qty"/>
+                                        <t t-if="pack_operation.package_id ">
+                                            <span t-field="pack_operation.package_id.packed_qty"/>
+                                        </t>
+                                        
                                         <t t-if="not pack_operation.package_id ">
                                             <span t-field="pack_operation.product_qty"/>
                                         </t>

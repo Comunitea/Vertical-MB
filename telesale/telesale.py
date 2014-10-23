@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
+from openerp.tools import float_compare
 import openerp.addons.decimal_precision as dp
 
 
@@ -80,6 +81,9 @@ class sale_order_line(osv.osv):
             context = {}
         sup = super(sale_order_line, self)
         t_product = self.pool.get('product.product')
+        product_uom_obj = self.pool.get('product.uom')
+        warning_msgs = ''
+
         res = sup.product_id_change(cr, uid, ids, pricelist, product,
                                     qty=qty, uom=uom, qty_uos=qty_uos, uos=uos,
                                     name=name, partner_id=partner_id,
@@ -100,6 +104,29 @@ class sale_order_line(osv.osv):
                 if last_id:
                     line = self.browse(cr, uid, last_id[0], context)
                     res['value']['last_price_fresh'] = line.price_unit
+            # Compare stock agains virtual_stock_conservative
+            uom_record = False
+            if uom:
+                uom_record = product_uom_obj.browse(cr, uid, uom, context=context)
+                if prod_obj.uom_id.category_id.id != uom_record.category_id.id:
+                    uom_record = False
+            if not uom_record:
+                uom_record = prod_obj.uom_id
+            compare_qty = float_compare(prod_obj.virtual_stock_conservative, qty, precision_rounding=uom_record.rounding)
+            if compare_qty == -1:
+                warn_msg = _('You plan to sell %.2f %s but you only have %.2f %s available in conservative !\nThe real stock is %.2f %s. (without reservations)') % \
+                    (qty, uom_record.name,
+                     max(0,prod_obj.virtual_stock_conservative), uom_record.name,
+                     max(0,prod_obj.qty_available), uom_record.name)
+                warning_msgs += _("Not enough stock ! : ") + warn_msg + "\n\n"
+        # import ipdb; ipdb.set_trace()
+        #update of warning messages
+        if warning_msgs:
+            warning = {
+                       'title': _('Configuration Error!'),
+                       'message' : warning_msgs
+                    }
+            res.update({'warning': warning})   
         return res
 
 
