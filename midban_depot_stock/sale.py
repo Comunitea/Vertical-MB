@@ -19,15 +19,16 @@
 #
 ##############################################################################
 from openerp.osv import osv, fields
-# import time
+from openerp.tools import float_compare
+from openerp.tools.translate import _
 
 
 class sale_order(osv.Model):
     _inherit = 'sale.order'
 
     _columns = {
-        'route_id': fields.many2one('route', 'Transport Route', domain=[('state', '=',
-                                                               'active')],
+        'route_id': fields.many2one('route', 'Transport Route',
+                                    domain=[('state', '=', 'active')],
                                     readonly=True, states={'draft':
                                                            [('readonly',
                                                              False)],
@@ -58,4 +59,60 @@ class sale_order(osv.Model):
             _prepare_order_line_procurement(cr, uid, order, line,
                                             group_id=group_id, context=context)
         res['route_id'] = order.route_id.id
+        return res
+
+
+class sale_order_line(osv.Model):
+    _inherit = 'sale.order.line'
+
+    def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
+                                  qty=0, uom=False, qty_uos=0, uos=False,
+                                  name='', partner_id=False, lang=False,
+                                  update_tax=True, date_order=False,
+                                  packaging=False, fiscal_position=False,
+                                  flag=False, warehouse_id=False,
+                                  context=None):
+        context = context or {}
+        product_uom_obj = self.pool.get('product.uom')
+        product_obj = self.pool.get('product.product')
+        warning = {}
+        supe = super(sale_order_line, self)
+        res = supe.product_id_change_with_wh(cr, uid, ids, pricelist, product,
+                                             qty=qty, uom=False,
+                                             qty_uos=qty_uos, uos=uos,
+                                             name=name, partner_id=partner_id,
+                                             lang=lang, update_tax=update_tax,
+                                             date_order=date_order,
+                                             packaging=packaging,
+                                             fiscal_position=fiscal_position,
+                                             flag=flag, context=context)
+        import ipdb; ipdb.set_trace()
+        # Compare stock agains virtual_stock_conservative
+        prod_obj = product_obj.browse(cr, uid, product, context=context)
+        warning_msgs = ''
+        uom_record = False
+        if uom:
+            uom_record = product_uom_obj.browse(cr, uid, uom, context=context)
+            if prod_obj.uom_id.category_id.id != uom_record.category_id.id:
+                uom_record = False
+        if not uom_record:
+            uom_record = prod_obj.uom_id
+        compare_qty = float_compare(prod_obj.virtual_stock_conservative, qty,
+                                    precision_rounding=uom_record.rounding)
+        if compare_qty == -1:
+            warn_msg = _('You plan to sell %.2f %s but you only have %.2f %s \
+                          available in conservative !\nThe real stock is \
+                          %.2f %s. (without reservations)') % \
+                (qty, uom_record.name,
+                 max(0, prod_obj.virtual_stock_conservative), uom_record.name,
+                 max(0, prod_obj.qty_available), uom_record.name)
+            warning_msgs += _("Not enough stock ! : ") + warn_msg + "\n\n"
+
+        #update of warning messages
+        if warning_msgs:
+            warning = {
+                'title': _('Configuration Error!'),
+                'message': warning_msgs
+            }
+            res.update({'warning': warning})
         return res

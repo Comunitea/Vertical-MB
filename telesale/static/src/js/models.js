@@ -60,8 +60,6 @@ function openerp_ts_models(instance, module){
                 'nbr_pending_operations': 0,
                 'visible_products': {},
                 'call_id': false,
-
-
             });
 
             this.get('orders').bind('remove', function(){ self.on_removed_order(); });

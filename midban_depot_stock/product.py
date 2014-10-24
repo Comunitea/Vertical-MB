@@ -29,6 +29,33 @@ class product_template(osv.Model):
     """
     _inherit = "product.template"
 
+    def _stock_conservative(self, cr, uid, ids, field_names=None,
+                            arg=False, context=None):
+        """ Finds the outgoing quantity of product.
+        @return: Dictionary of values
+        """
+        if not field_names:
+            field_names = []
+        if context is None:
+            context = {}
+        res = {}
+        prod = self.pool.get('product.template')
+        for id in ids:
+            res[id] = {}.fromkeys(field_names, 0.0)
+        if 'virtual_stock_conservative' in field_names:
+            # Virtual stock conservative = real qty + outgoing qty
+            for id in ids:
+                realqty = prod.browse(cr,
+                                      uid,
+                                      id,
+                                      context=context).qty_available
+                outqty = prod.browse(cr,
+                                     uid,
+                                     id,
+                                     context=context).outgoing_qty
+                res[id] = realqty - outqty
+        return res
+
     _columns = {
         'picking_location_id': fields.many2one('stock.location',
                                                'Location Picking',
@@ -38,6 +65,11 @@ class product_template(osv.Model):
                                digits_compute=
                                dp.get_precision('Product Volume')),
         'price_kg': fields.float('Price kg'),
+        'virtual_stock_conservative': fields.function(_stock_conservative,
+                                                      type='float',
+                                                      string='Virtual \
+                                                              Stock \
+                                                              Conservative'),
 
     }
     _sql_constraints = [

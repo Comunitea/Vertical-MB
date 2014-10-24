@@ -38,7 +38,7 @@
         "sale",
         "procurement",
         "product",
-        "midban_product"
+        "midban_product",
     ],
     "data": [
         'res_users_view.xml',

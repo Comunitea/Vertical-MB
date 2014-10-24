@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 14:06+0000\n"
-"PO-Revision-Date: 2014-10-23 14:06+0000\n"
+"POT-Creation-Date: 2014-10-24 08:46+0000\n"
+"PO-Revision-Date: 2014-10-24 08:46+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -218,6 +218,12 @@ msgid "Commitment Date"
 msgstr "Fecha compromiso"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:114
+#, python-format
+msgid "Configuration Error!"
+msgstr "Configuration Error!"
+
+#. module: midban_depot_stock
 #: field:assign.task.wzd,create_uid:0
 #: field:reposition.wizard,create_uid:0
 #: field:route,create_uid:0
@@ -314,8 +320,8 @@ msgstr "Error"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/stock.py:215
-#: code:addons/midban_depot_stock/stock.py:326
-#: code:addons/midban_depot_stock/stock.py:332
+#: code:addons/midban_depot_stock/stock.py:321
+#: code:addons/midban_depot_stock/stock.py:327
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:78
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:86
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:103
@@ -591,7 +597,7 @@ msgid "No picking location matching with                                     spe
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:332
+#: code:addons/midban_depot_stock/stock.py:327
 #, python-format
 msgid "No product founded                                                    inside package"
 msgstr "Sin producto dentro del paquete"
@@ -614,6 +620,12 @@ msgstr "No hay tareas para imprimir."
 #, python-format
 msgid "No ubication type founded                                                 You must define the picking                                                 type in the warehouse."
 msgstr "No se ha encontrado el tipo ubicación. Debe definir el tipo de albarán en el almacén."
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:109
+#, python-format
+msgid "Not enough stock ! : "
+msgstr "Not enough stock ! : "
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
@@ -789,7 +801,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:910
+#: code:addons/midban_depot_stock/stock.py:907
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -936,6 +948,12 @@ msgstr "Buscar vehículos"
 #: view:route.order.wizard:midban_depot_stock.route_order_wizard_view
 msgid "Select Route"
 msgstr "Seleccionar ruta"
+
+#. module: midban_depot_stock
+#: field:stock.location,sequence:0
+#: field:wave.report,sequence:0
+msgid "Sequence"
+msgstr "Sequence"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_task
@@ -1226,6 +1244,14 @@ msgstr "Tiene una tarea en curso."
 #, python-format
 msgid "You have the machine                                                 currently assigned."
 msgstr "La máquina selecionada                                                 ya está asignada."
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:103
+#, python-format
+msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
+"The real stock is                           %.2f %s. (without reservations)"
+msgstr "Tu planeas vender %.2f %s peso solo tienes %.2f %s                           disponible en conservativo !\n"
+"The stock real                           %.2f %s. (sin reservas)"
 
 #. module: midban_depot_stock
 #: view:stock.transfer_details:midban_depot_stock.view_stock_enter_transfer_details_add_buttons
