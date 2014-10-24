@@ -19,13 +19,9 @@
 #
 ##############################################################################
 from openerp import models, fields, api
-# from openerp import api
-# from openerp.osv import fields, osv
-# import openerp.addons.decimal_precision as dp
 
 
 class sale_order_line(models.Model):
-# class sale_order_line(osv.Model):
     """
     We must only do sale orders in units or boxes. Same products are only
     in units or only boxes, or maybe we can sale it in boxes and units.
@@ -34,13 +30,8 @@ class sale_order_line(models.Model):
     """
     _inherit = "sale.order.line"
 
-    # do_onchange = fields.Integer('Do onchange', readonly=True, default=0)
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
                                 readonly=True)
-    # product_uom_qty = fields.Float('Quantity',
-    #                                digits_compute=
-    #                                dp.get_precision('Product UoS'),
-    #                                required=True)
     choose_unit = fields.Selection([('unit', 'Unit'),
                                     ('box', 'Box')], 'Selected Unit',
                                    default='unit')
@@ -62,16 +53,12 @@ class sale_order_line(models.Model):
                           fiscal_position=False, flag=False,
                           choose_unit='unit', context=None):
         """
-        do_onchange controlls the calls to this function
+        If we have seted minumum unit of sale, we will call product_id_change
+        of price_system_variable module with a 'sale_in_boxes' context in order
+        to apply the box_discount field of product to the pricelist price.
         """
-        # res = {'value': {'do_onchange': 0, 'choose_unit': 'unit'}}
         if context is None:
             context = {}
-        # if do_onchange < 0:
-        #     if do_onchange in [-1, -2]:
-        #         res['value']['do_onchange'] = do_onchange == -1 and -3 or -4
-        #     elif do_onchange in [-3, -4]:
-        #         res['value']['do_onchange'] = do_onchange == -3 and 2 or 0
         else:
             prod = self.pool.get("product.product").browse(cr, uid, product)
             min_unit = prod.min_unit
@@ -89,6 +76,6 @@ class sale_order_line(models.Model):
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
                                         flag=flag, context=context)
-            res['value']['choose_unit'] = min_unit == 'box' and 'box' or 'unit'
-            # res['value']['do_onchange'] = do_onchange in [2, 4] and 3 or 1
+            # res['value']['choose_unit'] = min_unit == 'box' and 'box' or \
+            #     min_unit
         return res

@@ -66,11 +66,11 @@ class product_template(models.Model):
         self.uos_coeff = self.un_ca and 1 / self.un_ca or 0.0
 
 
-class product_template(models.Model):
+# class product_template(models.Model):
 
-    _inherit = "product.product"
+#     _inherit = "product.product"
 
-    @api.onchange('un_ca')
-    def onchange_un_ca(self):
-        """ Change uos_coeff acordely to product.un_ca"""
-        self.uos_coeff = self.un_ca and 1 / self.un_ca or 0.0
+#     @api.onchange('un_ca')
+#     def onchange_un_ca(self):
+#         """ Change uos_coeff acordely to product.un_ca"""
+#         self.uos_coeff = self.un_ca and 1 / self.un_ca or 0.0
