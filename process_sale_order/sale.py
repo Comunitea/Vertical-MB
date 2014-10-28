@@ -41,9 +41,11 @@ class sale_order_line(models.Model):
         """
         We change the uos of product
         """
-        self.product_uom_qty = self.product_id.uos_coeff != 0 and \
-            self.product_uos_qty / self.product_id.uos_coeff or \
-            self.product_uom_qty
+        if self.min_unit == 'box' or \
+                (self.min_unit == 'both' and self.choose_unit == 'box'):
+            self.product_uom_qty = self.product_id.uos_coeff != 0 and \
+                self.product_uos_qty / self.product_id.uos_coeff or \
+                self.product_uom_qty
         return
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
@@ -60,6 +62,11 @@ class sale_order_line(models.Model):
         if context is None:
             context = {}
         else:
+            t_data = self.pool.get('ir.model.data')
+            xml_id_name = 'midban_depot_stock.product_uom_box'
+            box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
+            unit_id = t_data.xmlid_to_res_id(cr, uid,
+                                             'product.product_uom_unit')
             prod = self.pool.get("product.product").browse(cr, uid, product)
             min_unit = prod.min_unit
             if min_unit == 'box' or \
@@ -76,6 +83,89 @@ class sale_order_line(models.Model):
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
                                         flag=flag, context=context)
-            # res['value']['choose_unit'] = min_unit == 'box' and 'box' or \
-            #     min_unit
+            if min_unit == 'unit' or \
+                    (min_unit == 'both' and choose_unit == 'unit'):
+                res['value']['product_uos_qty'] = qty
+            if min_unit == 'both':
+                if choose_unit == 'unit':
+                    res['value']['product_uom'] = unit_id
+                    res['value']['product_uos'] = unit_id
+                else:
+                    res['value']['product_uom'] = unit_id
+                    res['value']['product_uos'] = box_id
+        return res
+
+    @api.one
+    def write(self, vals):
+        """
+        Overwrite to recalculate the product_uom_qty and product_uos_qty
+        because of sometimes thei are readonly in the view and the onchange
+        value is not in the vals dict
+        """
+        t_data = self.env['ir.model.data']
+        if vals.get('product_id', False):
+            prod = self.env['product.product'].browse(vals['product_id'])
+        else:
+            prod = self.product_id
+        xml_id_name = 'midban_depot_stock.product_uom_box'
+        box_id = t_data.xmlid_to_res_id(xml_id_name)
+        unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
+        min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
+            prod.min_unit
+        choose = vals.get('choose_unit', False) and vals['choose_unit'] \
+            or self.choose_unit
+        if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
+            qty = vals.get('product_uom_qty', 0.0) and \
+                vals['product_uom_qty'] or self.product_uom_qty
+            vals['product_uos_qty'] = vals.get('product_uom_qty', 0.0)
+            vals['product_uos'] = unit_id
+            vals['product_uom'] = unit_id
+            vals['choose_unit'] = 'unit'
+        elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
+            uos_coeff = prod.uos_coeff
+            uos_qty = vals.get('product_uos_qty', 0.0) and \
+                vals['product_uos_qty'] or self.product_uos_qty
+            qty = uos_coeff and uos_qty / uos_coeff or 0.0
+            vals['product_uom_qty'] = qty
+            vals['product_uos'] = box_id
+            vals['product_uom'] = unit_id
+            vals['choose_unit'] = 'box'
+        res = super(sale_order_line, self).write(vals)
+        return res
+
+    @api.model
+    def create(self, vals):
+        """
+        Overwrite to recalculate the product_uom_qty and product_uos_qty
+        because of sometimes thei are readonly in the view and the onchange
+        value is not in the vals dict
+        """
+        t_data = self.env['ir.model.data']
+        # import ipdb; ipdb.set_trace()
+        if vals.get('product_id', False):
+            prod = self.env['product.product'].browse(vals['product_id'])
+            xml_id_name = 'midban_depot_stock.product_uom_box'
+            box_id = t_data.xmlid_to_res_id(xml_id_name)
+            unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
+            min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
+                prod.min_unit
+            choose = vals.get('choose_unit', False) and vals['choose_unit'] \
+                or prod.choose_unit
+            if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
+                qty = vals.get('product_uom_qty', 0.0)
+                vals['product_uos_qty'] = vals.get('product_uom_qty', 0.0)
+                vals['product_uos'] = unit_id
+                vals['product_uom'] = unit_id
+                vals['choose_unit'] = 'unit'
+            elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
+                uos_coeff = prod.uos_coeff
+                uos_qty = vals.get('product_uos_qty', 0.0)
+                qty = uos_coeff and uos_qty / uos_coeff or 0.0
+                vals['product_uom_qty'] = qty
+                vals['product_uos'] = box_id
+                vals['product_uom'] = unit_id
+                vals['choose_unit'] = 'box'
+        # import ipdb; ipdb.set_trace()
+        res = super(sale_order_line, self).create(vals)
+
         return res

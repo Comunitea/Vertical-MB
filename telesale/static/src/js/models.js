@@ -141,7 +141,7 @@ function openerp_ts_models(instance, module){
                 }).then(function(companies){
                     self.set('company',companies[0]);
 
-                    return self.fetch('product.uom', ['name', 'like_type'], [['like_type', '!=', '']]);
+                    return self.fetch('product.uom', ['name', 'like_type'], [['like_type', 'in', ['units','boxes']]]);
                     // return self.fetch('product.uom', ['name', 'like_type'], null);
                 }).then(function(units){
                     // self.set('units',units);
@@ -153,7 +153,7 @@ function openerp_ts_models(instance, module){
                     
                      return self.fetch(
                         'product.product', 
-                        ['name', ,'product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids'],
+                        ['name','product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids'],
                         [['sale_ok','=',true]]
                         // {pricelist: self.get('shop').pricelist_id[0]} // context for price
                     );
