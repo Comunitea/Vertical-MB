@@ -744,6 +744,7 @@ class stock_location(osv.Model):
                         operation_product_id.id
         return res
 
+    _order = 'sequence'
     _columns = {
         'width': fields.
         float('Width', digits_compute=dp.get_precision('Product Price')),
