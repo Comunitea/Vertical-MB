@@ -153,7 +153,7 @@ function openerp_ts_models(instance, module){
                     
                      return self.fetch(
                         'product.product', 
-                        ['name','product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids'],
+                        ['name','product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
                         [['sale_ok','=',true]]
                         // {pricelist: self.get('shop').pricelist_id[0]} // context for price
                     );

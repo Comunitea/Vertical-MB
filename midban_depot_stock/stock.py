@@ -280,7 +280,7 @@ class stock_pack_operation(osv.osv):
                 if loc_type:
                     loc_ids = loc_obj.search(cr, uid,
                                              [('storage_type', '=', loc_type),
-                                              ('temp_type_id', '=', temp_type)
+                                              ('temp_type_id', '=', temp_type),
                                               ('location_id', 'child_of',
                                                [storage_id])],
                                              context=context)

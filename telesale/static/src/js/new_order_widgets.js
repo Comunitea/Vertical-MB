@@ -226,7 +226,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     self.model.set('product', product_obj.name || "");  
                     self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
                     self.model.set('unit', product_obj.uom_id[1] || "" );
-                    self.model.set('qty', 1 );
+                    self.model.set('qty', 1);
                     self.model.set('discount', 0);
                     self.model.set('weight', my_round(product_obj.weight || 0,2));
                     // self.perform_onchange('unit');
