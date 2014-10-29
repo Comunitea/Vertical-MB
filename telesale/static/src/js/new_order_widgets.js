@@ -209,6 +209,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             }
         },
+        get_default_unit_name: function(product_obj){
+            var res = "";
+            var unit;
+            switch (product_obj.min_unit){
+                case "unit":
+                    unit = this.ts_model.db.get_like_type_unit("units")
+                    res = unit.name
+                    break;
+                case "box":
+                    unit = this.ts_model.db.get_like_type_unit("boxes")
+                    res = unit.name
+                    break;
+                case "both":
+                    unit = this.ts_model.db.get_like_type_unit("units")
+                    res = unit.name
+                    break;
+            }
+            console.log(res)
+            return res
+        },
         call_product_id_change: function(product_id){
             var self = this;
             var customer_id = this.ts_model.db.partner_name_id[this.order.get('partner')];
@@ -225,11 +245,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     self.model.set('code', product_obj.default_code || "");  
                     self.model.set('product', product_obj.name || "");  
                     self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
-                    self.model.set('unit', product_obj.uom_id[1] || "" );
+                    self.model.set('unit', self.get_default_unit_name(product_obj) || "" );
                     self.model.set('qty', 1);
                     self.model.set('discount', 0);
                     self.model.set('weight', my_round(product_obj.weight || 0,2));
-                    // self.perform_onchange('unit');
                     self.model.set('boxes', uom_obj ? self.ts_model.convert_units_to_boxes(uom_obj, product_obj, 1) : 0);
                     if (!result.value.price_unit || result.value.price_unit == 'warn') {
                         result.value.price_unit = 0;
@@ -240,7 +259,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
                     if (1 > product_obj.virtual_stock_conservative){
                         alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
-                        self.model.set('qty', product_obj.virtual_stock_conservative);
+                        var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
+                        self.model.set('qty', new_qty);
                         self.refresh();
                     } 
                     self.refresh();
@@ -317,7 +337,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var product_obj = this.ts_model.db.get_product_by_id(product_id);
                     if (value > product_obj.virtual_stock_conservative){
                         alert(_t("You want sale " + value + " " + uom_name + " but only " +  product_obj.virtual_stock_conservative + " available."))
-                        this.model.set('qty', product_obj.virtual_stock_conservative);
+                        var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
+                        this.model.set('qty', new_qty);
                         this.refresh();
                         break;
                     } 
@@ -390,6 +411,22 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     var uom_obj = this.ts_model.db.get_unit_by_id(uom_id);
                     var product_obj = this.ts_model.db.get_product_by_id(product_id);
+                    if (uom_obj.like_type == 'units'){
+                        if (product_obj.min_unit == 'box'){
+                            var unit = this.ts_model.db.get_like_type_unit('boxes');
+                            alert(_t("This product only can be sale in boxes"));
+                            this.model.set('unit', unit.name);
+                            this.refresh();
+                        }
+                    }
+                    if (uom_obj.like_type == 'boxes'){
+                        if (product_obj.min_unit == 'unit'){
+                            alert(_t("This product only can be sale in units"));
+                            var unit = this.ts_model.db.get_like_type_unit('units');
+                            this.model.set('unit', unit.name);
+                            this.refresh();
+                        }
+                    }
                     var qty = this.$('.col-qty').val() || 1;
                     var boxes = this.ts_model.convert_units_to_boxes(uom_obj, product_obj, qty);
                     this.model.set('boxes', boxes);

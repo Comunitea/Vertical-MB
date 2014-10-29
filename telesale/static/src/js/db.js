@@ -25,6 +25,7 @@ function openerp_ts_db(instance, module){
 
             this.unit_by_id = {};
             this.unit_name_id = {};
+            this.all_units = {};
         },
         
         /* loads a record store from the database. returns default if nothing is found */
@@ -76,6 +77,18 @@ function openerp_ts_db(instance, module){
                 }
             }
         },
+        get_like_type_unit: function(like_type){
+            var units = this.all_units
+            var res = undefined
+            for(var i = 0, len = units.length; i < len; i++){
+                var unit = units[i];
+                if (unit.like_type == like_type){
+                    res = unit
+                    break;
+                }
+            }
+            return res
+        },
         add_units: function(units){
             if(!units instanceof Array){
                 units = [units];
@@ -86,6 +99,7 @@ function openerp_ts_db(instance, module){
                 this.unit_by_id[unit.id] = unit;
                 this.unit_name_id[unit.name] = unit.id;
             }
+            this.all_units = units
         },
         add_partners: function(partners){
             if(!partners instanceof Array){

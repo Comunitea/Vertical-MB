@@ -124,17 +124,36 @@ class sale(osv.osv):
             order_ids.append(order_id)
 
             order_lines = order['lines']
+            t_data = self.pool.get('ir.model.data')
+            xml_id_name = 'midban_depot_stock.product_uom_box'
+            box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
+            unit_id = t_data.xmlid_to_res_id(cr, uid,
+                                             'product.product_uom_unit')
             for line in order_lines:
                 product_obj = t_product.browse(cr, uid, line['product_id'])
+                product_uom_id = unit_id
+                product_uos_id = unit_id
+                product_uom_qty = line['qty']
+                product_uos_qty = line['qty']
+                choose_unit = 'unit'
+                if line['product_uom'] == box_id:
+                    product_uos_id == box_id
+                    product_uos_qty = line['qty']
+                    product_uom_qty = line['qty'] * product_obj.un_ca
+                    choose_unit = 'box'
                 vals = {
                     'order_id': order_id,
                     'name': product_obj.name,
                     'product_id': product_obj.id,
                     'price_unit': line['price_unit'],
-                    'product_uom': line['product_uom'],
-                    'product_uom_qty': line['qty'],
+                    'product_uom': product_uom_id,
+                    'product_uos': product_uos_id,
+                    'product_uom_qty': product_uom_qty,
+                    'product_uos_qty': product_uos_qty,
                     'tax_id': [(6, 0, line['tax_ids'])],
                     'pvp_ref': line['pvp_ref'],
+                    'min_unit': product_obj.min_unit,
+                    'choose_unit': choose_unit,
                 }
                 if order['erp_id'] and order['erp_state'] == 'draft':
                     domain = [('order_id', '=', order_id)]

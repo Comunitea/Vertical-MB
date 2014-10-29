@@ -307,16 +307,6 @@ function openerp_ts_models(instance, module){
             order_model.set('erp_id', order_obj.id);
             order_model.set('erp_state', order_obj.state);
             var state = order_obj.state
-            console.log(state)
-/*            if (order_obj.state == "draft")
-                state = "borrador";
-            else if(order_obj.state == "progress") 
-                state = "En progreso";
-            else if(order_obj.state == "cancel") 
-                state = "Cancelado";
-            else if(order_obj.state == "done")
-                state = "Realizado";*/
-            console.log(state)
             order_model.set('state', state);
             order_model.set('date_invoice', order_obj.date_invoice);
             order_model.set('num_order',order_obj.name);
@@ -337,8 +327,6 @@ function openerp_ts_models(instance, module){
                                  pvp_ref: line.pvp_ref,
                                  boxes: this.convert_units_to_boxes(this.db.get_unit_by_id(line.product_uom[0]),prod_obj,line.product_uom_qty)
                                 }
-                // console.log("line vaaaaaaaals");
-                // console.log(line_vals);
                 var line = new module.Orderline(line_vals);
                 order_model.get('orderLines').add(line);
             }
@@ -514,12 +502,16 @@ function openerp_ts_models(instance, module){
             return product_obj;
         },
         export_as_JSON: function() {
+            var product_id = this.ts_model.db.product_name_id[this.get('product')];
+            var unit_id = this.ts_model.db.unit_name_id[this.get('unit')];
+            /*var product_obj = this.ts_model.db.product_by_id[product_id];
+            var uom_obj = this.ts_model.db.unit_by_id[unit_id];*/
 
             return {
                 qty: this.get('qty'),
                 price_unit: this.get('pvp'),
-                product_id:  this.ts_model.db.product_name_id[this.get('product')],
-                product_uom: this.ts_model.db.unit_name_id[this.get('unit')],
+                product_id:  product_id,
+                product_uom: unit_id,
                 tax_ids: this.get('taxes_ids'),
                 pvp_ref: this.get('pvp_ref'),
             };

@@ -137,7 +137,7 @@ class sale_order_line(models.Model):
     def create(self, vals):
         """
         Overwrite to recalculate the product_uom_qty and product_uos_qty
-        because of sometimes thei are readonly in the view and the onchange
+        because of sometimes they are readonly in the view and the onchange
         value is not in the vals dict
         """
         t_data = self.env['ir.model.data']
@@ -165,6 +165,7 @@ class sale_order_line(models.Model):
                 vals['product_uos'] = box_id
                 vals['product_uom'] = unit_id
                 vals['choose_unit'] = 'box'
+        vals['type'] = 'pff'  # Set any value to avoid the onchange in super
         res = super(sale_order_line, self).create(vals)
 
         return res
