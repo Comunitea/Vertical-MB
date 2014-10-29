@@ -111,7 +111,7 @@ msgstr "CA Altura"
 #. module: midban_product
 #: field:product.template,supplier_ca_height:0
 msgid "CA Height Supplier"
-msgstr "CA Altura proveedor"
+msgstr "CA Altura Proveedor"
 
 #. module: midban_product
 #: field:product.template,ca_length:0
@@ -121,7 +121,7 @@ msgstr "CA Largo"
 #. module: midban_product
 #: field:product.template,supplier_ca_length:0
 msgid "CA Length Supplier"
-msgstr "CA Largo proveedor"
+msgstr "CA Largo Proveedor"
 
 #. module: midban_product
 #: field:product.template,ca_width:0
@@ -131,7 +131,7 @@ msgstr "CA Ancho"
 #. module: midban_product
 #: field:product.template,supplier_ca_width:0
 msgid "CA Width Supplier"
-msgstr "CA Ancho proveedor"
+msgstr "CA Ancho Proveedor"
 
 #. module: midban_product
 #: field:product.template,ca_ma:0
@@ -398,12 +398,12 @@ msgstr "MA Altura Proveedor"
 #. module: midban_product
 #: field:product.template,ma_length:0
 msgid "MA Length"
-msgstr "MA Longitud"
+msgstr "MA Largo"
 
 #. module: midban_product
 #: field:product.template,supplier_ma_length:0
 msgid "MA Length Supplier"
-msgstr "MA Longitud Proveedor"
+msgstr "MA Largo Proveedor"
 
 #. module: midban_product
 #: field:product.template,ma_width:0
@@ -413,7 +413,7 @@ msgstr "MA Ancho"
 #. module: midban_product
 #: field:product.template,supplier_ma_width:0
 msgid "MA Width Supplier"
-msgstr "MA Ancho proveedor"
+msgstr "MA Ancho Proveedor"
 
 #. module: midban_product
 #: field:product.template,ma_pa:0
@@ -423,7 +423,7 @@ msgstr "MA/PA"
 #. module: midban_product
 #: field:product.template,supplier_ma_pa:0
 msgid "MA/PA Supplier"
-msgstr "MA/PA proveedor"
+msgstr "MA/PA Proveedor"
 
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form
@@ -458,17 +458,17 @@ msgstr "PA Altura"
 #. module: midban_product
 #: field:product.template,supplier_pa_height:0
 msgid "PA Height Supplier"
-msgstr "PA Altura proveedor"
+msgstr "PA Altura Proveedor"
 
 #. module: midban_product
 #: field:product.template,pa_length:0
 msgid "PA Length"
-msgstr "PA Altura"
+msgstr "PA Largo"
 
 #. module: midban_product
 #: field:product.template,supplier_pa_length:0
 msgid "PA Length Supplier"
-msgstr "PA Largo proveedir"
+msgstr "PA Largo Proveedor"
 
 #. module: midban_product
 #: field:product.template,pa_width:0
@@ -478,7 +478,7 @@ msgstr "PA Ancho"
 #. module: midban_product
 #: field:product.template,supplier_pa_width:0
 msgid "PA Width Supplier"
-msgstr "PA Ancho proveedor"
+msgstr "PA Ancho Proveedor"
 
 #. module: midban_product
 #: field:product.template,palet_wood_height:0
@@ -652,7 +652,7 @@ msgstr "Estado"
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form
 msgid "Supplier Units"
-msgstr "Unidades de proveedor"
+msgstr "Unidades de Proveedor"
 
 #. module: midban_product
 #: view:temp.type:midban_product.midban_product_temp_type_view_form
@@ -701,17 +701,17 @@ msgstr "UN Altura"
 #. module: midban_product
 #: field:product.template,supplier_un_height:0
 msgid "UN Height Supplier"
-msgstr "UN Altura proveedor"
+msgstr "UN Altura Proveedor"
 
 #. module: midban_product
 #: field:product.template,un_length:0
 msgid "UN Length"
-msgstr "UN largo"
+msgstr "UN Largo"
 
 #. module: midban_product
 #: field:product.template,supplier_un_length:0
 msgid "UN Length Supplier"
-msgstr "UN largo proveedor"
+msgstr "UN Largo Proveedor"
 
 #. module: midban_product
 #: field:product.template,un_width:0
@@ -721,7 +721,7 @@ msgstr "UN Ancho"
 #. module: midban_product
 #: field:product.template,supplier_un_width:0
 msgid "UN Width Supplier"
-msgstr "UN Anchpo proveedor"
+msgstr "UN Anchpo Proveedor"
 
 #. module: midban_product
 #: field:product.template,un_ca:0
@@ -731,7 +731,7 @@ msgstr "UN/CA"
 #. module: midban_product
 #: field:product.template,supplier_un_ca:0
 msgid "UN/CA Supplier"
-msgstr "UN/CA proveedor"
+msgstr "UN/CA Proveedor"
 
 #. module: midban_product
 #: selection:product.template,state2:0

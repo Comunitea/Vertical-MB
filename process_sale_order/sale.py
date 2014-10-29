@@ -141,7 +141,6 @@ class sale_order_line(models.Model):
         value is not in the vals dict
         """
         t_data = self.env['ir.model.data']
-        # import ipdb; ipdb.set_trace()
         if vals.get('product_id', False):
             prod = self.env['product.product'].browse(vals['product_id'])
             xml_id_name = 'midban_depot_stock.product_uom_box'
@@ -149,8 +148,9 @@ class sale_order_line(models.Model):
             unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
             min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
                 prod.min_unit
+            choose2 = min_unit in ['unit', 'both'] and 'unit' or 'box'
             choose = vals.get('choose_unit', False) and vals['choose_unit'] \
-                or prod.choose_unit
+                or choose2
             if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
                 qty = vals.get('product_uom_qty', 0.0)
                 vals['product_uos_qty'] = vals.get('product_uom_qty', 0.0)
@@ -165,7 +165,6 @@ class sale_order_line(models.Model):
                 vals['product_uos'] = box_id
                 vals['product_uom'] = unit_id
                 vals['choose_unit'] = 'box'
-        # import ipdb; ipdb.set_trace()
         res = super(sale_order_line, self).create(vals)
 
         return res

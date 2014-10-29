@@ -865,28 +865,6 @@ class stock_move(osv.osv):
                     vals.update(vals2)
         res = super(stock_move, self).create(cr, uid, vals, context=context)
         return res
-    # def onchange_real_weight(self, cr, uid, ids, product_id, real_weight):
-    #     """ On change of product quantity finds UoM and UoS quantities
-    #     @param product_id: Product id
-    #     @param product_uos_qty: Changed UoS Quantity of product
-    #     @param product_uom: Unit of measure of product
-    #     @param product_uos: Unit of sale of product
-    #     @return: Dictionary of values
-    #     """
-    #     t_uom = self.pool.get('product.uom')
-    #     result = {
-    #         'product_uos_qty': 0.00,
-    #         'product_uos': False
-    #     }
-    #     if not product_id:
-    #         return result
-
-    #     if real_weight:
-    #         uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
-    #         if uom_ids:
-    #             result['product_uos_qty'] = real_weight
-    #             result['product_uos'] = uom_ids[0]
-    #     return {'value': result}
 
     def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
                                context=None):
