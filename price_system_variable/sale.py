@@ -166,7 +166,7 @@ class sale_order_line(osv.osv):
                                           }
 
                     res['value']['price_unit'] = price
-            else:  # In default odoo pricelist
+            elif context.get('sale_in_boxes', False):  # Default pricelists
                 price = res['value']['price_unit']
                 new = (price * (1 - prod_obj.box_discount / 100.0))
                 price = prod_obj.un_ca * new

@@ -21,6 +21,7 @@
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import time
+import random
 
 
 class assign_task_wzd(osv.TransientModel):
@@ -273,6 +274,29 @@ class assign_task_wzd(osv.TransientModel):
 ##############################################################################
 ################################ PICKING #####################################
 ##############################################################################
+    def _get_random_route(self, cr, uid, ids, context=None):
+        """
+        Return a random route of any picking move
+        """
+        if context is None:
+            context = {}
+        res = False
+        move_obj = self.pool.get('stock.move')
+        obj = self.browse(cr, uid, ids[0], context=context)
+        domain = [
+            ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
+            ('product_id.temp_type', '=', obj.temp_id.id),
+            ('state', '=', 'confirmed'),
+            ('picking_id.operator_id', '=', False),
+            ('picking_id.route_id', '!=', False)
+        ]
+        move_ids = move_obj.search(cr, uid, domain, context=context)
+        if not move_ids:
+            raise osv.except_osv(_('Error!'), _('Can generate a random route'))
+        move_objs = move_obj.browse(cr, uid, move_ids, context=context)
+        routes_set = {m.picking_id.route_id.id for m in move_objs}
+        res = random.choice(tuple(routes_set))
+        return res
 
     def _get_moves_from_route(self, cr, uid, ids, context=None):
         """
@@ -288,7 +312,7 @@ class assign_task_wzd(osv.TransientModel):
         obj = self.browse(cr, uid, ids[0], context=context)
         selected_route = obj.route_id and obj.route_id.id or False
         if not selected_route:
-            raise osv.except_osv(_('Error!'), _('TODO Get random route'))
+            selected_route = self._get_random_route(cr, uid, ids, context)
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.temp_type', '=', obj.temp_id.id),

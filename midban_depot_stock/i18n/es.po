@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-24 08:46+0000\n"
-"PO-Revision-Date: 2014-10-24 08:46+0000\n"
+"POT-Creation-Date: 2014-10-31 10:09+0000\n"
+"PO-Revision-Date: 2014-10-31 10:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -95,7 +95,7 @@ msgid "Active"
 msgstr "Activa"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:438
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:462
 #, python-format
 msgid "Anything pending of                                                  picking"
 msgstr "Nada pendiente de picking"
@@ -175,6 +175,12 @@ msgstr "Caja(s)"
 #: view:website:midban_depot_stock.report_picking_list
 msgid "Boxes"
 msgstr "Cajas"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:295
+#, python-format
+msgid "Can generate a random route"
+msgstr "No se puede generar ruta aleatoria"
 
 #. module: midban_depot_stock
 #: view:reposition.wizard:midban_depot_stock.reposition_wizard_view
@@ -313,29 +319,29 @@ msgid "Ean13"
 msgstr "Ean13"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:381
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:405
 #, python-format
 msgid "Error"
 msgstr "Error"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:215
-#: code:addons/midban_depot_stock/stock.py:321
-#: code:addons/midban_depot_stock/stock.py:327
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:78
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:86
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:103
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:120
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:131
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:177
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:190
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:236
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:248
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:291
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:320
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:338
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:431
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:438
+#: code:addons/midban_depot_stock/stock.py:216
+#: code:addons/midban_depot_stock/stock.py:317
+#: code:addons/midban_depot_stock/stock.py:323
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:79
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:87
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:104
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:121
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:132
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:178
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:191
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:237
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:249
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:295
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:344
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:362
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:455
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:462
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:287
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:304
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:311
@@ -350,7 +356,7 @@ msgid "Exist midban operation"
 msgstr "Existe operación de midban"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:45
+#: code:addons/midban_depot_stock/product.py:77
 #: sql_constraint:product.template:0
 #, python-format
 msgid "Field Location picking is already setted"
@@ -369,7 +375,7 @@ msgstr "Ocupación entre X-Y"
 #. module: midban_depot_stock
 #: field:reposition.wizard,capacity:0
 msgid "Filled Percentage"
-msgstr "Porcentaje mínimo"
+msgstr "Porcentaje llenado"
 
 #. module: midban_depot_stock
 #: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
@@ -437,8 +443,8 @@ msgid "ID"
 msgstr "ID"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:103
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:120
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:104
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:121
 #, python-format
 msgid "Imposible to cancel the task                                                You haven't a task assigned."
 msgstr "Imposible cancelar la tarea. No tiene una tarea asignada."
@@ -513,7 +519,7 @@ msgid "Machine"
 msgstr "Máquina"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:320
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:344
 #, python-format
 msgid "Machine not defined either                                                 operator sheet or picking                                                  wizard"
 msgstr "Machine not defined either                                                 operator sheet or picking                                                  wizard"
@@ -567,25 +573,25 @@ msgid "Name:"
 msgstr "Nombre:"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:215
+#: code:addons/midban_depot_stock/stock.py:216
 #, python-format
 msgid "No empty locations."
 msgstr "Sin ubicaciones libres"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:190
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:191
 #, python-format
 msgid "No internal pickings to                                                 schedule"
 msgstr "Sin albaranes internos que planificar"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:248
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:249
 #, python-format
 msgid "No internal reposition                                                  pickings to schedule"
 msgstr "Sin reposiciones internas para planificar"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:381
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:405
 #, python-format
 msgid "No max volume defined in                                                 warehouse"
 msgstr "No hay volumen máximo definido en el almacén"
@@ -597,26 +603,26 @@ msgid "No picking location matching with                                     spe
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:327
+#: code:addons/midban_depot_stock/stock.py:323
 #, python-format
 msgid "No product founded                                                    inside package"
 msgstr "Sin producto dentro del paquete"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:236
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:237
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:311
 #, python-format
 msgid "No reposition type founded                                                 You must define the picking                                                 type in the warehouse."
 msgstr "No se ha encontrado el tipo reposición. Debe definirlo en el almacén."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:131
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:132
 #, python-format
 msgid "No tasks to print."
 msgstr "No hay tareas para imprimir."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:177
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:178
 #, python-format
 msgid "No ubication type founded                                                 You must define the picking                                                 type in the warehouse."
 msgstr "No se ha encontrado el tipo ubicación. Debe definir el tipo de albarán en el almacén."
@@ -706,7 +712,7 @@ msgstr "Lote paquete"
 #: field:stock.pack.operation,packed_qty:0
 #: field:stock.quant.package,packed_qty:0
 msgid "Packed qty"
-msgstr "Cantidad paquete"
+msgstr "Qty paquete"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_stock_pack_operation
@@ -753,7 +759,7 @@ msgstr "Albarán"
 #. module: midban_depot_stock
 #: field:stock.warehouse,picking_loc_id:0
 msgid "Picking Location"
-msgstr "Ubicación de picking"
+msgstr "Ubicación picking"
 
 #. module: midban_depot_stock
 #: field:res.users,picking_mac_id:0
@@ -789,7 +795,7 @@ msgstr "Abastecimiento"
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
 msgid "Procurement Group"
-msgstr "Grupo de abastecimiento"
+msgstr "Grupo abastecimiento"
 
 #. module: midban_depot_stock
 #: field:stock.location,current_product_id:0
@@ -801,7 +807,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:907
+#: code:addons/midban_depot_stock/stock.py:882
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -924,6 +930,11 @@ msgid "Sales Order"
 msgstr "Pedido de venta"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea pedido de venta"
+
+#. module: midban_depot_stock
 #: view:route.assign.wizard:midban_depot_stock.rote_assign_wizard_view
 #: view:website:midban_depot_stock.report_picking_task
 msgid "Scheduled Date"
@@ -963,7 +974,7 @@ msgstr "Origen"
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
 msgid "Standard"
-msgstr "Estandard"
+msgstr "Standard"
 
 #. module: midban_depot_stock
 #: field:route,state:0
@@ -989,7 +1000,7 @@ msgid "Storage Type"
 msgstr "Tipo almacenaje"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:338
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:362
 #, python-format
 msgid "Storage location not defined                                                 in warehouse"
 msgstr "Ubicación de almacenaje no definida en el almacén"
@@ -998,12 +1009,6 @@ msgstr "Ubicación de almacenaje no definida en el almacén"
 #: view:website:midban_depot_stock.report_picking_task
 msgid "Supplier Address:"
 msgstr "Dirección del proveedor:"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:291
-#, python-format
-msgid "TODO Get random route"
-msgstr "Generar rut aleatoria, para hacer"
 
 #. module: midban_depot_stock
 #: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
@@ -1040,7 +1045,7 @@ msgid "Temperature Type"
 msgstr "Tipo temperatura"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:431
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:455
 #, python-format
 msgid "Temperature is required to                                                  do a picking task"
 msgstr "La temperatura es obligatoria para hacer tareas de picking"
@@ -1060,7 +1065,7 @@ msgstr "Hoy"
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Transfer"
-msgstr "Transferir"
+msgstr "Traspasar"
 
 #. module: midban_depot_stock
 #: selection:stock.machine,type:0
@@ -1196,14 +1201,14 @@ msgstr "Tareas almacén"
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_stock_task
 msgid "Warehouse task to organice products and locations"
-msgstr "Tareas de almacen para organizar productos y ubicaciones"
+msgstr "Warehouse task to organice products and locations"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.stock_vehicle_menu
 #: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_form
 #: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_tree
 msgid "Warehouse vehicles"
-msgstr "Vehículos transporte"
+msgstr "Vehículos almacén"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
@@ -1234,13 +1239,13 @@ msgid "You cannot assign a route to a finished order"
 msgstr "No puede asignar una ruta a un documento finalizado"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:78
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:79
 #, python-format
 msgid "You have a task on course."
 msgstr "Tiene una tarea en curso."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:86
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:87
 #, python-format
 msgid "You have the machine                                                 currently assigned."
 msgstr "La máquina selecionada                                                 ya está asignada."
@@ -1266,10 +1271,10 @@ msgstr "picking_id"
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_search
 msgid "type"
-msgstr "tipo"
+msgstr "type"
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,name:midban_depot_stock.action_stock_vehicle
 msgid "vehicles"
-msgstr "Vehículos"
+msgstr "vehicles"
 
