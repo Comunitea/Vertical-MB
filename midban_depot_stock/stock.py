@@ -211,21 +211,18 @@ class stock_pack_operation(osv.osv):
                                       free_loc_ids, context=None):
         if context is None:
             context = {}
+        loc_t = self.pool.get('stock.location')
         if not free_loc_ids:
             raise osv.except_osv(_('Error!'), _('No empty locations.'))
 
-        names = []
-        loc_names = []
-        loc_t = self.pool.get('stock.location')
-        for loc in loc_t.browse(cr, uid, free_loc_ids, context):
-            names.append(loc.name)
-        names.append(prod_obj.picking_location_id.name)
-        loc_names = sorted(names)
-        i = loc_names.index(prod_obj.picking_location_id.name)
-        # TODO MEJORAR INTELIGENCIA, COMPARADOR UBICACIONES
-        if i == len(free_loc_ids):
-            i = i - 1
-        return free_loc_ids[i]
+        locs = [x for x in loc_t.browse(cr, uid, free_loc_ids, context)]
+        locs.append(prod_obj.picking_location_id)
+        sorted_locs = sorted(locs, key=lambda l: l.name)
+        index = sorted_locs.index(prod_obj.picking_location_id)
+        index += 1  # To return the right element
+        new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
+        import ipdb; ipdb.set_trace()
+        return sorted_locs[new_index].id
 
     def _older_refernce_in_storage(self, cr, uid, product, wh_obj,
                                    context=None):

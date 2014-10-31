@@ -150,8 +150,8 @@ class sale_order_line(osv.osv):
                                               {'uom': uom or uom_or,
                                                'date': date_order})[pricelist]
                     if context.get('sale_in_boxes', False):
-                            new = (price * (1 - prod_obj.box_discount / 100.0))
-                            price = prod_obj.un_ca * new
+                        new = (price * (1 - prod_obj.box_discount / 100.0))
+                        price = prod_obj.un_ca * new
                     if price == -2.0:
                         price = 0.0
                         spa = u"No existe Cambio PVP de producto adecuado \
@@ -166,6 +166,11 @@ class sale_order_line(osv.osv):
                                           }
 
                     res['value']['price_unit'] = price
+            else:  # In default odoo pricelist
+                price = res['value']['price_unit']
+                new = (price * (1 - prod_obj.box_discount / 100.0))
+                price = prod_obj.un_ca * new
+                res['value']['price_unit'] = price
         return res
 
     def onchange_price_unit(self, cr, uid, ids, product_id, price_unit,

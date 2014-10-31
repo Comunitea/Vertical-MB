@@ -86,7 +86,7 @@ class sale_order_line(osv.Model):
                                              packaging=packaging,
                                              fiscal_position=fiscal_position,
                                              flag=flag, context=context)
-        import ipdb; ipdb.set_trace()
+
         # Compare stock agains virtual_stock_conservative
         prod_obj = product_obj.browse(cr, uid, product, context=context)
         warning_msgs = ''

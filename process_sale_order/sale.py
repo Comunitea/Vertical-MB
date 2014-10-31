@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api
+import openerp.addons.decimal_precision as dp
 
 
 class sale_order_line(models.Model):
@@ -30,11 +31,31 @@ class sale_order_line(models.Model):
     """
     _inherit = "sale.order.line"
 
+    @api.model
+    def _amount_line(self):
+        # import ipdb; ipdb.set_trace()
+        # tax_obj = self.pool.get('account.tax')  # call with old apy
+        # cur_obj = self.env['res.currency']
+        for rec in self:
+            if rec.choose_unit == 'box':  # product_uos_qty instead uom
+                price = rec.price_unit * (1 - (rec.discount or 0.0) / 100.0)
+                taxes = rec.tax_id.compute_all(price,
+                                               rec.product_uos_qty,
+                                               rec.product_id,
+                                               rec.order_id.partner_id)
+                cur = rec.order_id.pricelist_id.currency_id
+                rec.price_subtotal = cur.round(taxes['total'])
+
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
                                 readonly=True)
     choose_unit = fields.Selection([('unit', 'Unit'),
                                     ('box', 'Box')], 'Selected Unit',
                                    default='unit')
+    price_subtotal = fields.Float('Unit Price', compute=_amount_line,
+                                  required=True, readonly=True,
+                                  digits_compute=
+                                  dp.get_precision('Product Price'),
+                                  states={'draft': [('readonly', False)]})
 
     @api.onchange('product_uos_qty')
     def product_uos_qty_onchange(self):
@@ -62,6 +83,7 @@ class sale_order_line(models.Model):
         if context is None:
             context = {}
         else:
+            context2 = {}
             t_data = self.pool.get('ir.model.data')
             xml_id_name = 'midban_depot_stock.product_uom_box'
             box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
@@ -71,8 +93,10 @@ class sale_order_line(models.Model):
             min_unit = prod.min_unit
             if min_unit == 'box' or \
                     (min_unit == 'both' and choose_unit == 'box'):
-
-                context = {'sale_in_boxes': True}
+                for key in context:  # frozen context, we need a no frozen copy
+                    context2[key] = context[key]
+                context2.update({'sale_in_boxes': True})
+            my_context = context2 and context2 or context
             sup = super(sale_order_line, self)
             res = sup.product_id_change(cr, uid, ids, pricelist, product,
                                         qty=qty, uom=uom, qty_uos=qty_uos,
@@ -82,7 +106,7 @@ class sale_order_line(models.Model):
                                         date_order=date_order,
                                         packaging=packaging,
                                         fiscal_position=fiscal_position,
-                                        flag=flag, context=context)
+                                        flag=flag, context=my_context)
             if min_unit == 'unit' or \
                     (min_unit == 'both' and choose_unit == 'unit'):
                 res['value']['product_uos_qty'] = qty
