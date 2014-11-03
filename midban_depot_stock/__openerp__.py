@@ -39,6 +39,7 @@
         "procurement",
         "product",
         "midban_product",
+        "midban_issue",
     ],
     "data": [
         'res_users_view.xml',
@@ -52,6 +53,7 @@
         'security/ir.model.access.csv',
         'stock_vehicle_view.xml',
         'route_view.xml',
+        'tag_view.xml',
         'partner_view.xml',
         'purchase_view.xml',
         'sale_view.xml',
@@ -59,9 +61,11 @@
         "wizard/route_assign_wizard_view.xml",
         "wizard/route_orders_wizard_view.xml",
         "wizard/stock_transfer_details.xml",
+        "wizard/create_tag_wizard_view.xml",
         "data/product_data.xml",
         "qweb_report/report_picking_task.xml",
         "qweb_report/report_picking_list.xml",
+        "qweb_report/report_stock_tag.xml",
         "report/wave_report_view.xml"
     ],
     "demo": [],

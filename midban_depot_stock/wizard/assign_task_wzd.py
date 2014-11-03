@@ -37,10 +37,13 @@ class assign_task_wzd(osv.TransientModel):
         'temp_id': fields.many2one('temp.type', 'Temperature'),
         'route_id': fields.many2one('route', 'Transport Route',
                                     domain=[('state', '=', 'active')]),
+        # 'state': fields.selection([('normal', 'Normal'), ('tag', 'Tags')],
+        #                           'State', readonly=True)
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
         self.pool.get('stock.warehouse').search(cr, uid, [])[0],
+        # 'state': 'normal'
     }
 
     def _print_report(self, cr, uid, ids, picking_id=False, wave_id=False,
@@ -65,7 +68,30 @@ class assign_task_wzd(osv.TransientModel):
         else:
             return
 
-    def _check_on_course(self, cr, uid, ids, context=None):
+    def _get_machine_from_user(self, cr, uid, ids, task_type, context=None):
+        """
+        Returns the property user machin for the task type, or raises and Error
+        if the no machine for the task type in the user sheet.
+        """
+        res = False
+        if context is None:
+            context = {}
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        operator = wzd_obj.operator_id
+        if task_type == 'ubication' and operator.location_mac_id:
+            res = operator.location_mac_id.id
+        elif task_type == 'reposition' and operator.reposition_mac_id:
+            res = operator.reposition_mac_id.id
+        elif task_type == 'picking' and operator.picking_mac_id:
+            res = operator.picking_mac_id.id
+
+        if not res:
+            raise osv.except_osv(_('Error!'), _("Machine not defined either\
+                                                 operator sheet or picking \
+                                                 wizard"))
+        return res
+
+    def _check_on_course(self, cr, uid, ids, machine_id, context=None):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_task = self.pool.get("stock.task")
 
@@ -79,7 +105,7 @@ class assign_task_wzd(osv.TransientModel):
             raise osv.except_osv(_('Error!'), _('You have a task on course.'))
 
         domain = [
-            ('picking_id.machine_id', '=', wzd_obj.machine_id.id),
+            ('machine_id', '=', machine_id),
             ('state', '=', 'assigned')
         ]
         on_course_machine = t_task.search(cr, uid, domain, context=context)
@@ -171,7 +197,11 @@ class assign_task_wzd(osv.TransientModel):
         t_task = self.pool.get("stock.task")
 
         # Check if operator has a task on course
-        self._check_on_course(cr, uid, ids, context=context)
+        machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
+        if not machine_id:
+            machine_id = self._get_machine_from_user(cr, uid, ids, 'ubication',
+                                                     context=context)
+        self._check_on_course(cr, uid, ids, machine_id, context=context)
 
         # Get oldest internal pick in assigned state
         if not wzd_obj.warehouse_id.ubication_type_id:
@@ -190,10 +220,6 @@ class assign_task_wzd(osv.TransientModel):
         if not pick_id:
             raise osv.except_osv(_('Error!'), _('No internal pickings to\
                                                  schedule'))
-        machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
-        if not machine_id:
-            machine_id = self._get_machine_from_user(cr, uid, ids, 'ubication',
-                                                     context=context)
         pick = t_pick.browse(cr, uid, pick_id[0], context)
         pick.write({'operator_id': wzd_obj.operator_id.id,
                     'machine_id': machine_id,
@@ -210,6 +236,7 @@ class assign_task_wzd(osv.TransientModel):
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
             'picking_id': pick.id,
             'state': 'assigned',
+            'machine_id': machine_id
         }
         t_task.create(cr, uid, vals, context=context)
 
@@ -230,7 +257,12 @@ class assign_task_wzd(osv.TransientModel):
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
         # Check if operator has a task on course
-        self._check_on_course(cr, uid, ids, context=context)
+        machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
+        if not machine_id:
+            machine_id = self._get_machine_from_user(cr, uid, ids,
+                                                     'reposition',
+                                                     context=context)
+        self._check_on_course(cr, uid, ids, machine_id, context=context)
 
         # Get oldest internal pick in assigned state
         if not wzd_obj.warehouse_id.reposition_type_id:
@@ -250,11 +282,6 @@ class assign_task_wzd(osv.TransientModel):
                                                  pickings to schedule'))
 
         pick = t_pick.browse(cr, uid, pick_id[0], context)
-        machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
-        if not machine_id:
-            machine_id = self._get_machine_from_user(cr, uid, ids,
-                                                     'reposition',
-                                                     context=context)
         pick.write({'operator_id': wzd_obj.operator_id.id,
                     'machine_id': machine_id,
                     'warehouse_id': wzd_obj.warehouse_id.id,
@@ -266,8 +293,16 @@ class assign_task_wzd(osv.TransientModel):
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
             'picking_id': pick.id,
             'state': 'assigned',
+            'machine_id': machine_id
         }
         t_task.create(cr, uid, vals, context=context)
+        # wzd_obj.write({'state': 'tag'})
+        # server_obj = self.pool.get('ir.actions.server')
+        # context2 = {
+        #     'active_id': pick.id,
+        #     'active_model': 'stock.picking'
+        # }
+        # return server_obj.run(cr, uid, [538], context=context2)
         return self._print_report(cr, uid, ids, picking_id=pick.id,
                                   context=context)
 
@@ -323,29 +358,6 @@ class assign_task_wzd(osv.TransientModel):
         res = move_obj.search(cr, uid, domain, context=context)
         return (res, selected_route)
 
-    def _get_machine_from_user(self, cr, uid, ids, task_type, context=None):
-        """
-        Returns the property user machin for the task type, or raises and Error
-        if the no machine for the task type in the user sheet.
-        """
-        res = False
-        if context is None:
-            context = {}
-        wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        operator = wzd_obj.operator_id
-        if task_type == 'ubication' and operator.location_mac_id:
-            res = operator.location_mac_id.id
-        elif task_type == 'reposition' and operator.reposition_mac_id:
-            res = operator.reposition_mac_id.id
-        elif task_type == 'picking' and operator.picking_mac_id:
-            res = operator.picking_mac_id.id
-
-        if not res:
-            raise osv.except_osv(_('Error!'), _("Machine not defined either\
-                                                 operator sheet or picking \
-                                                 wizard"))
-        return res
-
     def _get_pickings(self, cr, uid, ids, move_ids, context=None):
         """
         For all moves from a same product, get the new pickings, or the
@@ -356,22 +368,11 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         pick_obj = self.pool.get('stock.picking')
         move_obj = self.pool.get('stock.move')
-        # loc_obj = self.pool.get('stock.location')
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         if not wzd_obj.warehouse_id.storage_loc_id:
             raise osv.except_osv(_('Error!'), _("Storage location not defined \
                                                 in warehouse"))
-        # storage_loc_id = wzd_obj.warehouse_id.storage_loc_id.id
-        # picking_loc_id = wzd_obj.warehouse_id.picking_loc_id.id
-        # storage_reserved_quants = []
         for move in move_obj.browse(cr, uid, move_ids, context=context):
-            # Check quants reserved from storage location
-            # for quant in move.reseved_quant_ids:
-            #     child_ids = loc_obj.search(cr, uid, [('id', 'child_of',
-            #                                           [storage_loc_id])],
-            #                                context=context)
-            #     if quant.location_id.id in child_ids:
-            #         storage_reserved_quants.append(quant)
             move.action_assign()
             if move.state != 'assigned':
                 continue
@@ -449,7 +450,11 @@ class assign_task_wzd(osv.TransientModel):
 
         obj = self.browse(cr, uid, ids[0], context=context)
         # Check if operator has a task on course
-        self._check_on_course(cr, uid, ids, context=context)
+        machine_id = obj.machine_id and obj.machine_id.id or False
+        if not machine_id:
+            machine_id = self._get_machine_from_user(cr, uid, ids, 'picking',
+                                                     context=context)
+        self._check_on_course(cr, uid, ids, machine_id, context=context)
 
         if not obj.temp_id:
             raise osv.except_osv(_('Error!'), _('Temperature is required to \
@@ -476,15 +481,11 @@ class assign_task_wzd(osv.TransientModel):
                                                       context=context)
 
         if pickings_to_wave:
-            machine_id = obj.machine_id and obj.machine_id.id or False
-            if not machine_id:
-                machine_id = self._get_machine_from_user(cr, uid, ids,
-                                                         'picking',
-                                                         context=context)
             pick_obj.write(cr, uid, pickings_to_wave,
                            {'operator_id': obj.operator_id.id,
                             'machine_id': machine_id,
                             'warehouse_id': obj.warehouse_id.id,
+                            'temp_id': obj.temp_id.id,
                             'task_type': 'picking'},
                            context=context)
             pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
@@ -503,6 +504,7 @@ class assign_task_wzd(osv.TransientModel):
                 'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
                 'wave_id': wave_id,
                 'state': 'assigned',
+                'machine_id': machine_id,
             }
             task_obj.create(cr, uid, vals, context=context)
             return self._print_report(cr, uid, ids, wave_id=wave_id,

@@ -63,7 +63,7 @@ class reposition_wizard(osv.TransientModel):
         @param quant_ids: list of original quants
         @param lot_ids: fefo ordered list of lots
         @param quant_ids_no_lot: quants_without lot
-        we need to search all packages related with lots and order them by
+        We need to search all packages related with lots and order them by
         volume. Then we need to do the same with related pack of param
         quant_ids_no_lot
         @param return: List containing a list of packages ordered by volume

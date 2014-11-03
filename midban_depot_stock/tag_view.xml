@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+         <!-- Tree view Tag -->
+        <record id="tag_view_tree" model="ir.ui.view">
+            <field name="name">tag.view.tree</field>
+            <field name="model">tag</field>
+            <field name="arch" type="xml">
+                <tree string="Stock Tags">
+                    <field name="type"/>
+                    <field name="product_id"/>
+                    <field name="default_code"/>
+                    <field name="ean13"/>
+                    <field name="purchase_id"/>
+                    <field name="date_order"/>
+                    <field name="num_units"/>
+                    <field name="num_boxes"/>
+                    <field name="weight"/>
+                    <field name="lot_id"/>
+                    <field name="removal_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view Tag -->
+        <record id="tag_view_form" model="ir.ui.view">
+            <field name="name">tag.view.form</field>
+            <field name="model">tag</field>
+            <field name="arch" type="xml">
+                <form string="Stock tags">
+                    <sheet>
+                        <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="default_code"/>
+                            <field name="ean13"/>
+                            <field name="weight"/>
+                            <field name="type"/>
+                        </group>
+                        <group>
+                            <field name="lot_id"/>
+                            <field name="removal_date"/>
+                            <field name="purchase_id"/>
+                            <field name="date_order"/>
+                            <field name="num_units"/>
+                            <field name="num_boxes"/>
+                        </group>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action view tag -->
+        <record id="action_tag" model="ir.actions.act_window">
+            <field name="name">Stock Tags</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tag</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new tag.
+              </p>
+            </field>
+        </record>
+
+        <!-- Search view tag -->
+        <record id="tag_view_search" model="ir.ui.view">
+            <field name="name">tag.view.search</field>
+            <field name="model">tag</field>
+            <field name="arch" type="xml">
+                <search string="Search Tasks">
+                    <field name="product_id"/>
+                    <field name="default_code"/>
+                    <field name="ean13"/>
+                    <field name="purchase_id"/>
+                    <field name="lot_id"/>
+                    <field name="removal_date"/>
+                    <group expand="1" string="Group By...">
+                        <filter string="Product" domain="[]" context="{'group_by': 'product_id'}"/>
+                        <filter string="Purchase" domain="[]" context="{'group_by': 'purchase_id'}"/>
+                        <filter string="Lot" domain="[]" context="{'group_by': 'lot_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <menuitem id="stock_tag_menu" action="action_tag" name="Stock Tags" parent="menu_stock_task_mgmt" sequence="100"/>
+    </data>
+</openerp>

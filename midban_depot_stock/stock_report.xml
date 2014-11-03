@@ -19,6 +19,15 @@
             file="midban_depot_stock.report_picking_list" 
         />
 
+        <report 
+            string="Stock Tags" 
+            id="action_report_stock_tag" 
+            model="tag" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_stock_tag" 
+            file="midban_depot_stock.report_stock_tag" 
+        />
+
 
     </data>
 </openerp>

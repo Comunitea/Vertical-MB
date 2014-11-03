@@ -31,3 +31,4 @@ import sale
 import stock
 import purchase
 import report
+import tag

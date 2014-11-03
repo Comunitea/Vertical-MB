@@ -19,9 +19,10 @@
                                 <field name="user_id"/>
                                 <field name="type"/>
                                 <field name="picking_id"/>
-                                <field name="wave_id"/>
+                                <field name="wave_id" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
                             </group>
                             <group>
+                                 <field name="machine_id"/>
                                 <field name="date_start"/>
                                 <field name="date_end"/>
                                 <field name="duration" widget="float_time"/>
@@ -39,6 +40,7 @@
             <field name="arch" type="xml">
                 <tree string="Warehouse Tasks">
                     <field name="user_id"/>
+                    <field name="machine_id"/>
                     <field name="type"/>
                     <field name="date_start"/>
                     <field name="date_end"/>
@@ -57,6 +59,7 @@
                 <search string="Search Tasks">
                     <field name="user_id" string="User"/>
                     <field name="type" string="type"/>
+                    <field name="machine_id" string="Machine"/>
                     <field name="date_start" string="Date Start"/>
                     <field name="date_end" string="Date End"/>
                     <field name="date_end" string="picking_id"/>
@@ -67,6 +70,7 @@
                     <group expand="1" string="Group By...">
                         <filter string="User" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Machine" domain="[]" context="{'group_by': 'machine_id'}"/>
                     </group>
                 </search>
             </field>

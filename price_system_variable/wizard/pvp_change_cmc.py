@@ -19,8 +19,6 @@
 #
 ##############################################################################
 from openerp.osv import fields, osv
-
-
 import openerp.addons.decimal_precision as dp
 
 
@@ -49,8 +47,8 @@ class pvp_change_cmc(osv.osv_memory):
         if context.get('active_id', False):
             change = t_change.browse(cr, uid, context['active_id'],
                                      context=context)
-            res.update({'new_cmc': change.cmc or 0.0,
-                        'new_sec_margin': change.sec_margin or 0.0})
+            res.update({'cmc': change.cmc or 0.0,
+                        'sec_margin': change.sec_margin or 0.0})
 
         return res
 

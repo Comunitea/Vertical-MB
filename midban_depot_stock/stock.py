@@ -40,8 +40,10 @@ class stock_picking(osv.osv):
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
         'route_id': fields.many2one('route', 'Transport Route', readonly=True),
+        'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
+
     }
 
     @api.cr_uid_ids_context

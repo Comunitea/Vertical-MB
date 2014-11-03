@@ -48,6 +48,7 @@ class stock_task(osv.Model):
                                   'State', readonly=True, required=True),
         'picking_id': fields.many2one('stock.picking', 'Picking',
                                       readonly=True),
+        'machine_id': fields.many2one('stock.task', 'Machine', readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
     }
     _defaults = {
