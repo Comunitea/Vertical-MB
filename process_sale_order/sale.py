@@ -33,18 +33,21 @@ class sale_order_line(models.Model):
 
     @api.model
     def _amount_line(self):
-        # import ipdb; ipdb.set_trace()
-        # tax_obj = self.pool.get('account.tax')  # call with old apy
-        # cur_obj = self.env['res.currency']
+        """
+        When we sale in boxes we want to do product_uos_qty * price unit
+        instead the default product_uom_qty * price_unit
+        """
         for rec in self:
             if rec.choose_unit == 'box':  # product_uos_qty instead uom
-                price = rec.price_unit * (1 - (rec.discount or 0.0) / 100.0)
-                taxes = rec.tax_id.compute_all(price,
-                                               rec.product_uos_qty,
-                                               rec.product_id,
-                                               rec.order_id.partner_id)
-                cur = rec.order_id.pricelist_id.currency_id
-                rec.price_subtotal = cur.round(taxes['total'])
+                unit_of_measure_qty = rec.product_uos_qty
+            else:  # choose_unit == unit
+                unit_of_measure_qty = rec.product_uom_qty
+            price = rec.price_unit * (1 - (rec.discount or 0.0) / 100.0)
+            taxes = rec.tax_id.compute_all(price, unit_of_measure_qty,
+                                           rec.product_id,
+                                           rec.order_id.partner_id)
+            cur = rec.order_id.pricelist_id.currency_id
+            rec.price_subtotal = cur.round(taxes['total'])
 
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
                                 readonly=True)

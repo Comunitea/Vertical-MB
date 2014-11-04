@@ -19,8 +19,8 @@
 #
 ##############################################################################
 import stock
-import stock_task
 import stock_machine
+import stock_task
 import res_users
 import wizard
 import product

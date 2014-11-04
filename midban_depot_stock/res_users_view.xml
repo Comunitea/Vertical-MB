@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <field name="active" position="after">
                     <field name="operator"/>
-                    <field name="frozen_operator" attrs="{'invisible': [('operator','=',False)]}"/>
-                    <field name="location_mac_id" attrs="{'invisible': [('operator','=',False)]}"/>
+<!--                     <field name="frozen_operator" attrs="{'invisible': [('operator','=',False)]}"/>
+ -->                    <field name="location_mac_id" attrs="{'invisible': [('operator','=',False)]}"/>
                     <field name="reposition_mac_id" attrs="{'invisible': [('operator','=',False)]}"/>
                     <field name="picking_mac_id" attrs="{'invisible': [('operator','=',False)]}"/>
                 </field>

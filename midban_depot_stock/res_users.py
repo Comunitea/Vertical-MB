@@ -25,7 +25,7 @@ class stock_picking_in(osv.osv):
     _inherit = 'res.users'
     _columns = {
         'operator': fields.boolean('Operator'),
-        'frozen_operator': fields.boolean('Frozen Operator'),
+        # 'frozen_operator': fields.boolean('Frozen Operator'),
         'location_mac_id': fields.many2one('stock.machine', 'Location Machine',
                                            domain=
                                            [('type', '=', 'retractil')]),
