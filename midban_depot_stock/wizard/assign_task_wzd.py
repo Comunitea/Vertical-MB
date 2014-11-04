@@ -295,7 +295,6 @@ class assign_task_wzd(osv.TransientModel):
             'state': 'assigned',
             'machine_id': machine_id
         }
-        # import ipdb; ipdb.set_trace()
         t_task.create(cr, uid, vals, context=context)
         # wzd_obj.write({'state': 'tag'})
         # server_obj = self.pool.get('ir.actions.server')
@@ -307,14 +306,23 @@ class assign_task_wzd(osv.TransientModel):
 
         # return self._print_report(cr, uid, ids, picking_id=pick.id,
         #                           context=context)
+        context2 = dict(context)
+        context2.update({
+            'active_model': 'stock.picking',
+            'active_id': pick.id,
+            'active_ids': [pick.id],
+            'show_print_report': True,
+        })
         action = {
             'name': 'Print Tags',
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'create.tag.wizard',
-            'res_id': ids[0],
+            # 'res_id': ids[0],
             'target': 'new',
+            'context': context2
+
         }
         return action
 

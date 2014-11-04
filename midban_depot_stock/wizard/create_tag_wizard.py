@@ -20,6 +20,7 @@
 #############################################################################
 from openerp.osv import fields, osv
 from openerp import api
+from openerp.tools.translate import _
 
 
 class create_tag_wizard(osv.TransientModel):
@@ -28,7 +29,6 @@ class create_tag_wizard(osv.TransientModel):
     def default_get(self, cr, uid, fields, context=None):
         res = super(create_tag_wizard, self).default_get(cr, uid, fields,
                                                          context=context)
-        # import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         t_item = self.pool.get('tag.item')
@@ -64,19 +64,23 @@ class create_tag_wizard(osv.TransientModel):
                     elif prod and picking_obj.picking_type_code == 'internal':
                         num_units = op.package_id.packed_qty - op.product_qty
                         vals['lot_id'] = op.package_id and \
-                            op.package_id.packed_lot_id or False
+                            (op.package_id.packed_lot_id and
+                             op.package_id.packed_lot_id.id or False) or False
                     if vals:
                         num_boxes = prod.supplier_un_ca and \
                             num_units / prod.supplier_un_ca or 0
                         vals['num_units'] = num_units
                         vals['num_boxes'] = num_boxes
                         item_ids.append(t_item.create(cr, uid, vals, context))
-        # import ipdb; ipdb.set_trace()
         res.update({'tag_ids': item_ids})
+        if context.get('show_print_report', False):
+            res.update({'show_print_report': True})
         return res
 
     _columns = {
         'tag_ids': fields.one2many('tag.item', 'wizard_id', 'Tags'),
+        'show_print_report': fields.boolean('Show', readonly=True),
+        'printed': fields.boolean('Printed', readonly=True),
     }
 
     def print_tags(self, cr, uid, ids, context=None):
@@ -103,9 +107,29 @@ class create_tag_wizard(osv.TransientModel):
         ctx = dict(context)
         ctx['active_ids'] = tag_ids
         ctx['active_model'] = 'tag'
+        wzd_obj.write({'printed': True})
         return self.pool.get("report").\
             get_action(cr, uid, [],
                        'midban_depot_stock.report_stock_tag', context=ctx)
+
+    def print_report(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        ctx = dict(context)
+        wzd_obj = self.browse(cr, uid, ids[0], context)
+        if wzd_obj.tag_ids and not wzd_obj.printed:
+            raise osv.except_osv(_('Error!'), _("You must print labels first"))
+
+        if context.get('active_model', False) == 'stock.picking':
+            picking_id = context.get('active_id', False)
+            if picking_id:
+                ctx['active_ids'] = [picking_id]
+                ctx['active_model'] = 'stock.picking'
+            return self.pool.get("report").\
+                get_action(cr, uid, [],
+                           'midban_depot_stock.report_picking_task',
+                           context=ctx)
+        return
 
 
 class tag_item(osv.TransientModel):

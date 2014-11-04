@@ -9,6 +9,8 @@
                 <form string="Print Tags">
                     <sheet>
                         <group string="Tags">
+                            <field name="show_print_report" nolabel="1" invisible="1"/>
+                            <field name="printed" nolabel="1" invisible="1"/>
                             <field name="tag_ids" nolabel="1" colspan="4">
                                 <tree string="Tags" editable="top">
                                     <field name="type"/>
@@ -29,6 +31,7 @@
                     
                     <footer>
                         <button name="print_tags" string="Print Tags" type="object" class="oe_highlight"/>
+                        <button name="print_report"  attrs="{'invisible': [('show_print_report', '=', False)]}" string="Print Reposition" type="object"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
 
