@@ -23,7 +23,7 @@ from openerp import tools
 from openerp.osv import fields, osv
 
 
-class sale_report(osv.osv):
+class wave_report(osv.osv):
     _name = "wave.report"
     _description = "Group picks of waves"
     _auto = False
@@ -67,47 +67,6 @@ class sale_report(osv.osv):
         'sequence': fields.integer('Sequence', readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
     }
-
-    # def _select(self):
-    #     select_str = """
-    #         SELECT min(SM.id) as id,
-    #                SM.product_id as product_id,
-    #                L.id as location_id,
-    #                sum(SM.product_uom_qty) as product_qty,
-    #                P.wave_id as wave_id
-    #     """
-    #     return select_str
-
-    # def _from(self):
-    #     from_str = """
-    #         stock_move SM
-    #             INNER JOIN product_template PR on PR.id = SM.product_id
-    #             INNER JOIN stock_location L on L.id = PR.picking_location_id
-    #             INNER JOIN stock_picking P on P.id = SM.picking_id
-    #     """
-    #     return from_str
-
-    # def _group_by(self):
-    #     group_by_str = """
-    #         GROUP BY SM.product_id,
-    #                  L.id,
-    #                  P.wave_id
-    #     """
-    #     return group_by_str
-
-    # def init(self, cr):
-    #     # self._table = sale_report
-    #     tools.drop_view_if_exists(cr, self._table)
-    #     cr.execute("""CREATE or REPLACE VIEW %s as (
-    #         %s
-    #         FROM ( %s )
-    #         %s
-    #         UNION
-    #         %s
-    #         FROM %s
-    #         %s
-    #         )""" % (self._table, self._select(), self._from(),
-    #                 self._group_by()))
 
     def _select1(self):
         select_str = """
