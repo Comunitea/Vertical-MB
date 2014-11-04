@@ -28,6 +28,15 @@
             file="midban_depot_stock.report_stock_tag" 
         />
 
+        <report 
+            string="Delivery List" 
+            id="action_report_delivery_list" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_delivery_list" 
+            file="midban_depot_stock.report_delivery_list" 
+        />
+
 
     </data>
 </openerp>

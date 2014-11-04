@@ -43,6 +43,8 @@ class stock_picking(osv.osv):
         'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
+        'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
+                                          'Delivery List', readonly=True),
 
     }
 

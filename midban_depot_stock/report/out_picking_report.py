@@ -23,29 +23,12 @@ from openerp import tools
 from openerp.osv import fields, osv
 
 
-class sale_report(osv.osv):
-    _name = "wave.report"
-    _description = "Group picks of waves"
+class out_picking_report(osv.osv):
+    _name = "out.picking.report"
+    _description = "Group products and lots in outgoing pickings"
     _auto = False
     _rec_name = 'product_id'
-    _order = 'sequence'
-
-    def _get_units_and_boxes(self, cr, uid, ids, field_names, args,
-                             context=None):
-        if context is None:
-            context = {}
-        res = {}
-        for item in self.browse(cr, uid, ids, context=context):
-            res[item.id] = {}
-            qty = item.product_qty
-            un_ca = item.product_id.un_ca
-            num_boxes = 0
-            while qty >= un_ca:
-                qty -= un_ca
-                num_boxes += 1
-            res[item.id]['units'] = qty
-            res[item.id]['boxes'] = num_boxes
-        return res
+    # _order = 'sequence'
 
     _columns = {
         'product_id': fields.many2one('product.product', 'Product',
@@ -55,17 +38,10 @@ class sale_report(osv.osv):
                                     readonly=True),
         'ean13': fields.related('product_id', 'ean13', type='char',
                                 string='EAN 13', size=128, readonly=True),
-        'location_id': fields.many2one('stock.location', 'Location',
-                                       readonly=True),
-        'product_qty': fields.float('Quantity', readonly=True),
-        'units': fields.function(_get_units_and_boxes, type='integer',
-                                 multi='mult', string='Units', readonly=True),
-        'boxes': fields.function(_get_units_and_boxes, type='integer',
-                                 multi='mult', string='Boxes', readonly=True),
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
-        'sequence': fields.integer('Sequence', readonly=True),
-        'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
+        'product_qty': fields.float('Quantity', readonly=True),
+        'picking_id': fields.many2one('stock.picking', 'Wave', readonly=True),
     }
 
     def _select1(self):
@@ -73,10 +49,8 @@ class sale_report(osv.osv):
             SELECT min(OP.id) as id,
                    Q.product_id as product_id,
                    Q.lot_id as lot_id,
-                   OP.location_id ,
                    sum(Q.qty) as product_qty,
-                   W.id as wave_id,
-                   L.sequence as sequence
+                   p.id as picking_id
         """
         return select_str
 
@@ -86,8 +60,6 @@ class sale_report(osv.osv):
                 INNER JOIN stock_quant_package PA on PA.id = Q.package_id
                 INNER JOIN stock_pack_operation OP on OP.package_id = PA.id
                 INNER JOIN stock_picking P on P.id = OP.picking_id
-                INNER JOIN stock_picking_wave W on W.id = P.wave_id
-                INNER JOIN stock_location L on L.id = OP.location_id
             WHERE OP.product_id is null
         """
         return from_str
@@ -97,9 +69,7 @@ class sale_report(osv.osv):
             GROUP BY
                 Q.product_id,
                 Q.lot_id,
-                OP.location_id,
-                W.id,
-                L.sequence
+                P.id
         """
         return group_by_str
 
@@ -108,10 +78,8 @@ class sale_report(osv.osv):
             SELECT min(OP.id) as id,
                    OP.product_id as product_id,
                    OP.lot_id as lot_id,
-                   OP.location_id ,
                    sum(OP.product_qty) as product_qty,
-                   W.id as wave_id,
-                   L.sequence as sequence
+                   p.id as picking_id
         """
         return select_str
 
@@ -119,8 +87,6 @@ class sale_report(osv.osv):
         from_str = """
             stock_pack_operation OP
                 INNER JOIN stock_picking P on P.id = OP.picking_id
-                INNER JOIN stock_picking_wave W on W.id = P.wave_id
-                INNER JOIN stock_location L on L.id = OP.location_id
             WHERE OP.product_id is not null
         """
         return from_str
@@ -130,9 +96,7 @@ class sale_report(osv.osv):
             GROUP BY
                 OP.product_id,
                 OP.lot_id,
-                OP.location_id,
-                W.id,
-                L.sequence
+                P.id
         """
         return group_by_str
 
@@ -141,10 +105,8 @@ class sale_report(osv.osv):
             SELECT min(SQ.id) as id,
                    SQ.product_id as product_id,
                    SQ.lot_id as lot_id,
-                   SQ.location_id as location_id,
                    sum(SQ.product_qty) as product_qty,
-                   SQ.wave_id as wave_id,
-                   SQ.sequence as sequence
+                   SQ.picking_id as picking_id
         """
         return select_str
 
@@ -153,14 +115,11 @@ class sale_report(osv.osv):
             GROUP BY
                 SQ.product_id,
                 SQ.lot_id,
-                SQ.location_id,
-                SQ.wave_id,
-                SQ.sequence
+                SQ.picking_id
         """
         return group_by_str
 
     def init(self, cr):
-        # self._table = sale_report
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
             %s
@@ -174,9 +133,9 @@ class sale_report(osv.osv):
                 %s
                 FROM %s
                 %s ) SQ
-            % s
-            )""" % (self._table, self._select0(), self._select1(),
-                    self._from1(), self._group_by1(),
-                    self._select2(), self._from2(), self._group_by2(),
-                    self._group_by0()
-                    ))
+            %s
+                )""" % (self._table, self._select0(), self._select1(),
+                        self._from1(), self._group_by1(),
+                        self._select2(), self._from2(), self._group_by2(),
+                        self._group_by0(),
+                        ))

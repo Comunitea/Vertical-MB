@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-03 17:35+0000\n"
-"PO-Revision-Date: 2014-11-03 17:35+0000\n"
+"POT-Creation-Date: 2014-11-04 13:10+0000\n"
+"PO-Revision-Date: 2014-11-04 13:10+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "Caja"
 
 #. module: midban_depot_stock
 #: selection:tag,type:0
-msgid "Box"
+msgid "Box Tag"
 msgstr "Caja"
 
 #. module: midban_depot_stock
@@ -247,7 +247,7 @@ msgstr "El código no puede repetirse."
 #: code:addons/midban_depot_stock/sale.py:114
 #, python-format
 msgid "Configuration Error!"
-msgstr "Configuration Error!"
+msgstr "Error de configuración!"
 
 #. module: midban_depot_stock
 #: field:assign.task.wzd,create_uid:0
@@ -280,6 +280,16 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
+msgid "Customer Address:"
+msgstr "Dirección de cliente:"
+
+#. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_stock_tag
 msgid "DATE ORDER:"
 msgstr "FECHA PEDIDO:"
@@ -307,6 +317,17 @@ msgstr "Fecha pedido"
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Delete operations"
 msgstr "Borrar operaciones"
+
+#. module: midban_depot_stock
+#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
+msgid "Delivery"
+msgstr "Envío"
+
+#. module: midban_depot_stock
+#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_delivery_list
+#: field:stock.picking,out_report_ids:0
+msgid "Delivery List"
+msgstr "Informe de envío"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
@@ -340,6 +361,7 @@ msgid "Duration in Minutes"
 msgstr "Duración en minutos"
 
 #. module: midban_depot_stock
+#: field:out.picking.report,ean13:0
 #: field:wave.report,ean13:0
 msgid "EAN 13"
 msgstr "EAN 13"
@@ -361,6 +383,7 @@ msgid "EXPIRY DATE:"
 msgstr "FECHA CADUCIDAD:"
 
 #. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
 #: view:website:midban_depot_stock.report_picking_list
 msgid "Ean13"
 msgstr "Ean13"
@@ -372,9 +395,9 @@ msgid "Error"
 msgstr "Error"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:218
-#: code:addons/midban_depot_stock/stock.py:319
-#: code:addons/midban_depot_stock/stock.py:325
+#: code:addons/midban_depot_stock/stock.py:220
+#: code:addons/midban_depot_stock/stock.py:321
+#: code:addons/midban_depot_stock/stock.py:327
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:89
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:105
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:113
@@ -445,7 +468,7 @@ msgstr "Finalizada"
 #. module: midban_depot_stock
 #: field:res.users,frozen_operator:0
 msgid "Frozen Operator"
-msgstr "Operador congelado"
+msgstr "Operador de congelado"
 
 #. module: midban_depot_stock
 #: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
@@ -479,6 +502,11 @@ msgid "Group picks of waves"
 msgstr "Agrupar albaranes de oleada"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_out_picking_report
+msgid "Group products and lots in outgoing pickings"
+msgstr "Agrupar productos y lotes en alvaranes de salida"
+
+#. module: midban_depot_stock
 #: field:stock.location,height:0
 msgid "Height"
 msgstr "Alto"
@@ -486,6 +514,7 @@ msgstr "Alto"
 #. module: midban_depot_stock
 #: field:assign.task.wzd,id:0
 #: field:create.tag.wizard,id:0
+#: field:out.picking.report,id:0
 #: field:reposition.wizard,id:0
 #: field:route,id:0
 #: field:route.assign.wizard,id:0
@@ -565,7 +594,7 @@ msgstr "Ubicación"
 #. module: midban_depot_stock
 #: field:res.users,location_mac_id:0
 msgid "Location Machine"
-msgstr "Location Machine"
+msgstr "Máquina de ubicación"
 
 #. module: midban_depot_stock
 #: field:product.template,picking_location_id:0
@@ -573,10 +602,12 @@ msgid "Location Picking"
 msgstr "Ubicación picking"
 
 #. module: midban_depot_stock
+#: field:out.picking.report,lot_id:0
 #: view:tag:midban_depot_stock.tag_view_search
 #: field:tag,lot_id:0
 #: field:tag.item,lot_id:0
 #: field:wave.report,lot_id:0
+#: view:website:midban_depot_stock.report_delivery_list
 #: view:website:midban_depot_stock.report_picking_list
 #: view:website:midban_depot_stock.report_picking_task
 msgid "Lot"
@@ -595,7 +626,7 @@ msgstr "Máquina"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:89
 #, python-format
 msgid "Machine not defined either                                                 operator sheet or picking                                                  wizard"
-msgstr "Máquina no definida ni en el asistente ni en la ficha del operador"
+msgstr "Máquina no definida ni en el asistente                                                 ni en la ficha de producto"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_task
@@ -651,7 +682,7 @@ msgid "Name:"
 msgstr "Nombre:"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:218
+#: code:addons/midban_depot_stock/stock.py:220
 #, python-format
 msgid "No empty locations."
 msgstr "Sin ubicaciones libres"
@@ -681,7 +712,7 @@ msgid "No picking location matching with                                     spe
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:325
+#: code:addons/midban_depot_stock/stock.py:327
 #, python-format
 msgid "No product founded                                                    inside package"
 msgstr "Sin producto dentro del paquete"
@@ -761,6 +792,11 @@ msgid "Operator:"
 msgstr "Operador:"
 
 #. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
+msgid "Order (Origin)"
+msgstr "Pedido (Origen)"
+
+#. module: midban_depot_stock
 #: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
 msgid "Order Month"
 msgstr "Mes del pedido"
@@ -811,7 +847,7 @@ msgstr "Palet"
 
 #. module: midban_depot_stock
 #: selection:tag,type:0
-msgid "Palet"
+msgid "Palet Tag"
 msgstr "Palet"
 
 #. module: midban_depot_stock
@@ -839,9 +875,11 @@ msgstr "Albarán"
 #. module: midban_depot_stock
 #: model:ir.actions.report.xml,name:midban_depot_stock.action_report_picking_list
 #: model:ir.model,name:midban_depot_stock.model_stock_picking
+#: view:out.picking.report:midban_depot_stock.view_out_picking_report_tree
 #: view:stock.picking.wave:midban_depot_stock.view_picking_wave_form_add_wave_report_ids
 #: field:stock.picking.wave,wave_report_ids:0
 #: view:wave.report:midban_depot_stock.view_wave_report_tree
+#: view:website:midban_depot_stock.report_delivery_list
 #: view:website:midban_depot_stock.report_picking_list
 msgid "Picking List"
 msgstr "Albarán"
@@ -896,6 +934,7 @@ msgid "Procurement Group"
 msgstr "Grupo de abastecimiento"
 
 #. module: midban_depot_stock
+#: field:out.picking.report,product_id:0
 #: field:stock.location,current_product_id:0
 #: field:stock.pack.operation,operation_product_id:0
 #: field:stock.quant.package,product_id:0
@@ -908,7 +947,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:884
+#: code:addons/midban_depot_stock/stock.py:886
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -922,6 +961,11 @@ msgstr "Plantilla de producto"
 #: model:ir.model,name:midban_depot_stock.model_product_uom
 msgid "Product Unit of Measure"
 msgstr "Unidad de medida del producto"
+
+#. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
+msgid "Product"
+msgstr "Producto"
 
 #. module: midban_depot_stock
 #: view:tag:midban_depot_stock.tag_view_search
@@ -945,6 +989,12 @@ msgid "Put Away Strategy"
 msgstr "Estrategia de deshecho"
 
 #. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
+msgid "Qty"
+msgstr "Cantidad"
+
+#. module: midban_depot_stock
+#: field:out.picking.report,product_qty:0
 #: field:wave.report,product_qty:0
 #: view:website:midban_depot_stock.report_picking_task
 msgid "Quantity"
@@ -966,9 +1016,11 @@ msgid "Real weight"
 msgstr "Peso real"
 
 #. module: midban_depot_stock
+#: field:out.picking.report,reference:0
 #: field:tag,default_code:0
 #: field:tag.item,default_code:0
 #: field:wave.report,reference:0
+#: view:website:midban_depot_stock.report_delivery_list
 #: view:website:midban_depot_stock.report_picking_list
 msgid "Reference"
 msgstr "Referencia"
@@ -1056,6 +1108,7 @@ msgstr "Línea pedido de venta"
 
 #. module: midban_depot_stock
 #: view:route.assign.wizard:midban_depot_stock.rote_assign_wizard_view
+#: view:website:midban_depot_stock.report_delivery_list
 msgid "Scheduled Date"
 msgstr "Fecha planificada"
 
@@ -1244,7 +1297,7 @@ msgstr "Tipo"
 #. module: midban_depot_stock
 #: field:stock.machine,type:0
 msgid "Type Machine"
-msgstr "Type Machine"
+msgstr "Tipo Máquina"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_stock_tag
@@ -1280,6 +1333,11 @@ msgstr "Usuario"
 #: model:ir.model,name:midban_depot_stock.model_res_users
 msgid "Users"
 msgstr "Usuarios"
+
+#. module: midban_depot_stock
+#: view:website:midban_depot_stock.report_delivery_list
+msgid "VAT:"
+msgstr "NIF:"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
@@ -1368,6 +1426,7 @@ msgid "Warning!"
 msgstr "¡Aviso!"
 
 #. module: midban_depot_stock
+#: field:out.picking.report,picking_id:0
 #: field:stock.task,wave_id:0
 #: field:wave.report,wave_id:0
 msgid "Wave"

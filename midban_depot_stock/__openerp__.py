@@ -65,8 +65,10 @@
         "data/product_data.xml",
         "qweb_report/report_picking_task.xml",
         "qweb_report/report_picking_list.xml",
+        "qweb_report/report_delivery_list.xml",
         "qweb_report/report_stock_tag.xml",
-        "report/wave_report_view.xml"
+        "report/wave_report_view.xml",
+        "report/out_picking_report_view.xml",
     ],
     "demo": [],
     "test": [],

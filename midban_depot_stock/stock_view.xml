@@ -24,25 +24,30 @@
                 <!-- Show page operations -->
                 <page string="Operations" position="replace">
                     <page string="Operations">
-                            <field name="midban_operations"/>
-                            <field name="pack_operation_ids">
-                                <tree editable="top">
-                                    <field name="product_id"/>
-                                    <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
-                                    <field name="product_uom_id" groups="product.group_uom"/>
-                                    <field name="lot_id" domain="[('product_id','=?', product_id)]" context="{'product_id': product_id}" groups="stock.group_production_lot"/>
-                                    <field name="package_id" groups="stock.group_tracking_lot"/>
-                                    <field name="packed_lot_id" groups="stock.group_tracking_lot"/>
-                                    <field name="packed_qty" groups="stock.group_tracking_lot"/>
-                                    <field name="num_mantles" groups="stock.group_tracking_lot"/>
+                        <field name="midban_operations"/>
+                        <field name="pack_operation_ids">
+                            <tree editable="top">
+                                <field name="product_id"/>
+                                <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
+                                <field name="product_uom_id" groups="product.group_uom"/>
+                                <field name="lot_id" domain="[('product_id','=?', product_id)]" context="{'product_id': product_id}" groups="stock.group_production_lot"/>
+                                <field name="package_id" groups="stock.group_tracking_lot"/>
+                                <field name="packed_lot_id" groups="stock.group_tracking_lot"/>
+                                <field name="packed_qty" groups="stock.group_tracking_lot"/>
+                                <field name="num_mantles" groups="stock.group_tracking_lot"/>
 <!--                                 <field name="pack_type" groups="stock.group_tracking_lot"/>-->                       
-                                    <field name="location_id"/>
-                                    <field name="location_dest_id"/>
-                                    <field name="result_package_id" groups="stock.group_tracking_lot"/>
-                                </tree>
-                            </field>
-                        </page>
+                                <field name="location_id"/>
+                                <field name="location_dest_id"/>
+                                <field name="result_package_id" groups="stock.group_tracking_lot"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Delivery" attrs="{'invisible': [('picking_type_code', '!=', 'outgoing')]}">
+                        <field name="out_report_ids"/>
+                    </page>
                 </page>
+
 
                 <!-- Add fields from assign_task_wzd.py -->
                 <field name="partner_id" position="after">
