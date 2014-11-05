@@ -223,7 +223,6 @@ class stock_pack_operation(osv.osv):
         locs.append(prod_obj.picking_location_id)
         sorted_locs = sorted(locs, key=lambda l: l.name)
         index = sorted_locs.index(prod_obj.picking_location_id)
-        index += 1  # To return the right element
         new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
         return sorted_locs[new_index].id
 
@@ -300,7 +299,6 @@ class stock_pack_operation(osv.osv):
                         _search_closest_pick_location(cr, uid, product,
                                                       free_locs,
                                                       context=context)
-
         return location_id
 
     def change_location_dest_id(self, cr, uid, ids, wh_obj,
