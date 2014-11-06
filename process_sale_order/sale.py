@@ -22,6 +22,28 @@ from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
 
 
+class sale_order(models.Model):
+    _inherit = "sale.order"
+
+    @api.model
+    def _amount_line_tax(self, line):
+        """
+        Overwrite in order to calculate the taxes well.
+        If we sale in boxes we want price_unit * product_uos_qty instead of
+        product_uom_qty
+        """
+        val = 0.0
+        custom_qty = line.choose_unit == 'box' and line.product_uos_qty or \
+            line.product_uom_qty
+        price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+        partner_id = line.order_id.partner_id
+        dics = line.tax_id.compute_all(price, custom_qty, line.product_id,
+                                       partner_id)['taxes']
+        for c in dics:
+            val += c.get('amount', 0.0)
+        return val
+
+
 class sale_order_line(models.Model):
     """
     We must only do sale orders in units or boxes. Same products are only
@@ -50,10 +72,10 @@ class sale_order_line(models.Model):
             rec.price_subtotal = cur.round(taxes['total'])
 
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
-                                readonly=True)
+                                readonly=True,)
     choose_unit = fields.Selection([('unit', 'Unit'),
                                     ('box', 'Box')], 'Selected Unit',
-                                   default='unit')
+                                   default='unit', required=True)
     price_subtotal = fields.Float('Unit Price', compute=_amount_line,
                                   required=True, readonly=True,
                                   digits_compute=

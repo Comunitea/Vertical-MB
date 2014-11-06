@@ -203,8 +203,8 @@ msgstr "Cajas"
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:351
 #, python-format
-msgid "Can generate a random route"
-msgstr "No se puede generar ruta aleatoria"
+msgid "Anathing pending of picking"
+msgstr "Nada pendiente de picking."
 
 #. module: midban_depot_stock
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view

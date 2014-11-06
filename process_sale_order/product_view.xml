@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="product.product_template_form_view" />
             <field name="arch" type="xml">
                 <field name="uos_id" position="replace">
-                    <field name="uos_id" invisible="1"/>
+                    <field name="uos_id" readonly="True"/>
                     <field name="min_unit"/>
                 </field>
                 <field name="list_price" position="after">

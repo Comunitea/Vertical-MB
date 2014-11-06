@@ -347,7 +347,7 @@ class assign_task_wzd(osv.TransientModel):
         ]
         move_ids = move_obj.search(cr, uid, domain, context=context)
         if not move_ids:
-            raise osv.except_osv(_('Error!'), _('Can generate a random route'))
+            raise osv.except_osv(_('Error!'), _('Anathing pending of picking'))
         move_objs = move_obj.browse(cr, uid, move_ids, context=context)
         routes_set = {m.picking_id.route_id.id for m in move_objs}
         res = random.choice(tuple(routes_set))
