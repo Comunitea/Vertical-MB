@@ -1,13 +1,13 @@
-# Translation of OpenERP Server.
+# Translation of Odoo Server.
 # This file contains the translation of the following modules:
 #	* purchase_preorder
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0\n"
+"Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-20 10:35+0000\n"
-"PO-Revision-Date: 2013-12-20 10:35+0000\n"
+"POT-Creation-Date: 2014-11-07 13:15+0000\n"
+"PO-Revision-Date: 2014-11-07 13:15+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,111 +16,19 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "November"
-msgstr "Noviembre"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "(update product price)"
+msgstr "(actualizar precio producto)"
 
 #. module: purchase_preorder
-#: field:products.supplier,nov_consu_last:0
-msgid "Nov Consu Last"
-msgstr "Nov Consu Last"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "(update)"
+msgstr "(actualizar)"
 
 #. module: purchase_preorder
-#: model:ir.model,name:purchase_preorder.model_purchase_order_line
-msgid "Purchase Order Line"
-msgstr "Línea pedido de compra"
-
-#. module: purchase_preorder
-#: field:products.supplier,real_stock:0
-msgid "Real Stock"
-msgstr "Stock Real"
-
-#. module: purchase_preorder
-#: field:products.supplier,oct_consu_cur:0
-msgid "Oct Consu Cur"
-msgstr "Oct Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Amounts"
-msgstr "Precios"
-
-#. module: purchase_preorder
-#: field:products.supplier,date_delivery:0
-msgid "Date Delivery"
-msgstr "Fecha Entrega"
-
-#. module: purchase_preorder
-#: field:products.supplier,sep_consu_last:0
-msgid "Sep Consu Last"
-msgstr "Sep Consu Last"
-
-#. module: purchase_preorder
-#: field:products.supplier,jun_consu_last:0
-msgid "Jun Consu Last"
-msgstr "Jun Consu Last"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Units Ordered"
-msgstr "Uni. Pedidas"
-
-#. module: purchase_preorder
-#: field:products.supplier,list_price:0
-msgid "List Price"
-msgstr "Tarifa"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Current"
-msgstr "Actual"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-#: field:purchase.preorder,supplier_id:0
-msgid "Supplier"
-msgstr "Proveedor"
-
-#. module: purchase_preorder
-#: field:products.supplier,feb_consu_last:0
-msgid "Feb Consu Last"
-msgstr "Feb Consu Last"
-
-#. module: purchase_preorder
-#: view:purchase.order:0
-msgid "Purchase Order Lines"
-msgstr "Líneas pedido de compra"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "May"
-msgstr "Mayo"
-
-#. module: purchase_preorder
-#: field:products.supplier,dec_consu_last:0
-msgid "Dec Consu Last"
-msgstr "Dec Consu Last"
-
-#. module: purchase_preorder
-#: field:purchase.preorder,debit:0
-msgid "Debit"
-msgstr "Total a Pagar"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Consumptions"
-msgstr "Consumos"
-
-#. module: purchase_preorder
-#: field:products.supplier,jul_consu_cur:0
-msgid "Jul Consu Cur"
-msgstr "Jul Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-#: field:purchase.preorder,product_supplier_ids:0
-msgid "Products Supplier"
-msgstr "Productos del Proveedor"
+#: field:products.supplier,subtotal:0
+msgid "Amount"
+msgstr "Subtotal"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,total:0
@@ -128,71 +36,44 @@ msgid "Amount total"
 msgstr "Importe Total"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Purchase Preorder"
-msgstr "PrePedido de Compra"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Amounts"
+msgstr "Precios"
 
 #. module: purchase_preorder
-#: field:products.supplier,palets:0
-#: field:purchase.order.line,palets:0
-#: field:purchase.preorder,palets:0
-msgid "Palets"
-msgstr "Palets"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Amounts awaiting"
+msgstr "Cant. Pendientes"
 
 #. module: purchase_preorder
-#: field:products.supplier,product_id:0
-msgid "Product"
-msgstr "Producto"
-
-#. module: purchase_preorder
-#: field:products.supplier,feb_consu_cur:0
-msgid "Feb Consu Cur"
-msgstr "Feb Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "August"
-msgstr "Agosto"
-
-#. module: purchase_preorder
-#: field:products.supplier,jan_consu_cur:0
-msgid "Jan Consu Cur"
-msgstr "Jan Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Quantities"
-msgstr "Cantidades"
-
-#. module: purchase_preorder
-#: field:products.supplier,price_last_purchase:0
-msgid "Price"
-msgstr "Precio"
-
-#. module: purchase_preorder
-#: field:products.supplier,mar_consu_cur:0
-msgid "Mar Consu Cur"
-msgstr "Mar Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "June"
-msgstr "Junio"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Create PreOrder"
-msgstr "Crear PrePedido"
+#: field:products.supplier,apr_consu_cur:0
+msgid "Apr Consu Cur"
+msgstr "Abril Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,apr_consu_last:0
 msgid "Apr Consu Last"
-msgstr "Apr Consu Last"
+msgstr "Abril Consu Última"
 
 #. module: purchase_preorder
-#: field:products.supplier,may_consu_cur:0
-msgid "May Consu Cur"
-msgstr "May Consu Cur"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "April"
+msgstr "Abril"
+
+#. module: purchase_preorder
+#: field:products.supplier,aug_consu_cur:0
+msgid "Aug Consu Cur"
+msgstr "Agosto Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,aug_consu_last:0
+msgid "Aug Consu Last"
+msgstr "Agosto Consu Última"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "August"
+msgstr "Agosto"
 
 #. module: purchase_preorder
 #: field:products.supplier,boxes:0
@@ -202,89 +83,205 @@ msgid "Boxes"
 msgstr "Cajas"
 
 #. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_state:0
+msgid "Comercial validation pending"
+msgstr "Validación comercial pendiente"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Consumptions"
+msgstr "Consumos"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
+msgid "Create PreOrder"
+msgstr "Crear PrePedido"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Create Purchase Order"
+msgstr "Crear Pedido de Compra"
+
+#. module: purchase_preorder
+#: model:ir.actions.act_window,name:purchase_preorder.action_preorder_suppliers
+#: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder_suppliers
+msgid "Create Purchase PreOrder"
+msgstr "Crear PrePedido de Compra"
+
+#. module: purchase_preorder
+#: field:products.supplier,create_uid:0
+#: field:purchase.preorder,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: purchase_preorder
+#: field:products.supplier,create_date:0
+#: field:purchase.preorder,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Current"
+msgstr "Actual"
+
+#. module: purchase_preorder
 #: field:products.supplier,date_last_purchase:0
 msgid "Date"
 msgstr "Fecha"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "July"
-msgstr "Julio"
+#: field:products.supplier,date_delivery:0
+msgid "Date Delivery"
+msgstr "Fecha Entrega"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "State Supplier"
-msgstr "Estado Proveedor"
-
-#. module: purchase_preorder
-#: field:products.supplier,min_fixed:0
-msgid "Min. Fixed"
-msgstr "Mín. Fijado"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "February"
-msgstr "Febrero"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "October"
-msgstr "Octubre"
-
-#. module: purchase_preorder
-#: field:products.supplier,aug_consu_last:0
-msgid "Aug Consu Last"
-msgstr "Aug Consu Last"
-
-#. module: purchase_preorder
-#: field:products.supplier,jan_consu_last:0
-msgid "Jan Consu Last"
-msgstr "Jan Consu Last"
-
-#. module: purchase_preorder
-#: model:ir.actions.act_window,name:purchase_preorder.action_preorder_supplier
-msgid "Supplier Selection"
-msgstr "Proveedor"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "January"
-msgstr "Enero"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Months"
-msgstr "Meses"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "September"
-msgstr "Septiembre"
-
-#. module: purchase_preorder
-#: field:products.supplier,nov_consu_cur:0
-msgid "Nov Consu Cur"
-msgstr "Nov Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "April"
-msgstr "Abril"
-
-#. module: purchase_preorder
-#: field:products.supplier,subtotal:0
-msgid "Amount"
-msgstr "Subtotal"
+#: field:purchase.preorder,debit:0
+msgid "Debit"
+msgstr "Total a Pagar"
 
 #. module: purchase_preorder
 #: field:products.supplier,dec_consu_cur:0
 msgid "Dec Consu Cur"
-msgstr "Dec Consu Cur"
+msgstr "Diciembre Consu Actual"
 
 #. module: purchase_preorder
-#: field:products.supplier,qty_last_purchase:0
-msgid "Qty."
-msgstr "Cant."
+#: field:products.supplier,dec_consu_last:0
+msgid "Dec Consu Last"
+msgstr "Diciembre Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "December"
+msgstr "Diciembre"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_state:0
+msgid "Denied"
+msgstr "Denegado"
+
+#. module: purchase_preorder
+#: field:products.supplier,feb_consu_cur:0
+msgid "Feb Consu Cur"
+msgstr "Febrero Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,feb_consu_last:0
+msgid "Feb Consu Last"
+msgstr "Febrero Consu ültimo"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "February"
+msgstr "Febrero"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_type:0
+msgid "Food"
+msgstr "Comida"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "General Information"
+msgstr "Información General"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_type:0
+msgid "Hospitality"
+msgstr "Hostelería"
+
+#. module: purchase_preorder
+#: field:products.supplier,id:0
+#: field:purchase.preorder,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: purchase_preorder
+#: field:products.supplier,incoming_qty:0
+msgid "Incoming Qty."
+msgstr "Cant. Pendiente"
+
+#. module: purchase_preorder
+#: field:products.supplier,integer:0
+msgid "Integer"
+msgstr "Entero"
+
+#. module: purchase_preorder
+#: field:products.supplier,jan_consu_cur:0
+msgid "Jan Consu Cur"
+msgstr "Enero Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,jan_consu_last:0
+msgid "Jan Consu Last"
+msgstr "Enero Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "January"
+msgstr "Enero"
+
+#. module: purchase_preorder
+#: field:products.supplier,jul_consu_cur:0
+msgid "Jul Consu Cur"
+msgstr "Julio Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,jul_consu_last:0
+msgid "Jul Consu Last"
+msgstr "Julio Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "July"
+msgstr "Julio"
+
+#. module: purchase_preorder
+#: field:products.supplier,jun_consu_cur:0
+msgid "Jun Consu Cur"
+msgstr "Junio Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,jun_consu_last:0
+msgid "Jun Consu Last"
+msgstr "Junio Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "June"
+msgstr "Junio"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Last Purchase"
+msgstr "Última Compra"
+
+#. module: purchase_preorder
+#: field:products.supplier,write_uid:0
+#: field:purchase.preorder,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: purchase_preorder
+#: field:products.supplier,write_date:0
+#: field:purchase.preorder,write_date:0
+msgid "Last Updated on"
+msgstr "ültima actualización en"
+
+#. module: purchase_preorder
+#: field:products.supplier,list_price:0
+msgid "List Price"
+msgstr "Tarifa"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_state:0
+msgid "Logistic validation pending"
+msgstr "Validación logística pendiente"
 
 #. module: purchase_preorder
 #: field:products.supplier,mantles:0
@@ -294,49 +291,136 @@ msgid "Mantles"
 msgstr "Mantos"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
+#: field:products.supplier,mar_consu_cur:0
+msgid "Mar Consu Cur"
+msgstr "Marzo Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,mar_consu_last:0
+msgid "Mar Consu Last"
+msgstr "Marzo Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 msgid "March"
 msgstr "Marzo"
 
 #. module: purchase_preorder
-#: field:products.supplier,jun_consu_cur:0
-msgid "Jun Consu Cur"
-msgstr "Jun Consu Cur"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "May"
+msgstr "Mayo"
 
 #. module: purchase_preorder
-#: field:products.supplier,jul_consu_last:0
-msgid "Jul Consu Last"
-msgstr "Jul Consu Last"
+#: field:products.supplier,may_consu_cur:0
+msgid "May Consu Cur"
+msgstr "Mayo Consu Actual"
 
 #. module: purchase_preorder
-#: field:products.supplier,virtual_stock:0
-msgid "Virtual Stock"
-msgstr "Stock Virtual"
+#: field:products.supplier,may_consu_last:0
+msgid "May Consu Last"
+msgstr "Mayo Consu Último"
+
+#. module: purchase_preorder
+#: field:products.supplier,min_mantles:0
+msgid "Min mantles"
+msgstr "Mínimo mantos"
+
+#. module: purchase_preorder
+#: field:products.supplier,min_palets:0
+msgid "Min palets"
+msgstr "Mínimo palets"
+
+#. module: purchase_preorder
+#: field:products.supplier,min_qty:0
+msgid "Min quantity"
+msgstr "Cantidad mínima"
+
+#. module: purchase_preorder
+#: field:products.supplier,min_fixed:0
+msgid "Min. Fixed"
+msgstr "Mín. Fijado"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_type:0
+msgid "Mixed"
+msgstr "mixto"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Months"
+msgstr "Meses"
+
+#. module: purchase_preorder
+#: field:purchase.preorder,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: purchase_preorder
+#: field:products.supplier,net_cost:0
+msgid "Net cost"
+msgstr "Coste neto"
+
+#. module: purchase_preorder
+#: field:products.supplier,net_net_cost:0
+msgid "Net net cost"
+msgstr "Coste neto neto"
+
+#. module: purchase_preorder
+#: field:products.supplier,nov_consu_cur:0
+msgid "Nov Consu Cur"
+msgstr "Noviembre Consu Actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,nov_consu_last:0
+msgid "Nov Consu Last"
+msgstr "Noviembre Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "November"
+msgstr "Noviembre"
+
+#. module: purchase_preorder
+#: field:products.supplier,oct_consu_cur:0
+msgid "Oct Consu Cur"
+msgstr "Octubre Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,oct_consu_last:0
 msgid "Oct Consu Last"
-msgstr "Oct Consu Last"
+msgstr "Octubre Consu Último"
 
 #. module: purchase_preorder
-#: model:ir.model,name:purchase_preorder.model_purchase_preorder
-msgid "purchase.preorder"
-msgstr "purchase.preorder"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "October"
+msgstr "Octubre"
 
 #. module: purchase_preorder
-#: field:products.supplier,aug_consu_cur:0
-msgid "Aug Consu Cur"
-msgstr "Aug Consu Cur"
+#: field:products.supplier,onchange:0
+msgid "Onchange"
+msgstr "Onchange"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Stocks"
-msgstr "Stocks"
+#: field:products.supplier,palets:0
+#: field:purchase.order.line,palets:0
+#: field:purchase.preorder,palets:0
+msgid "Palets"
+msgstr "Palets"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Last Purchase"
-msgstr "Última Compra"
+#: field:purchase.order,preorder_id:0
+msgid "PreOrder"
+msgstr "PrePedido"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Previous"
+msgstr "Previo"
+
+#. module: purchase_preorder
+#: field:products.supplier,price_last_purchase:0
+msgid "Price"
+msgstr "Precio"
 
 #. module: purchase_preorder
 #: field:products.supplier,price_purchase:0
@@ -344,76 +428,152 @@ msgid "Price purchase"
 msgstr "Precio Compra"
 
 #. module: purchase_preorder
+#: field:products.supplier,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: purchase_preorder
+#: model:ir.model,name:purchase_preorder.model_products_supplier
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+#: field:purchase.preorder,product_supplier_ids:0
+msgid "Products Supplier"
+msgstr "Productos del Proveedor"
+
+#. module: purchase_preorder
+#: model:ir.model,name:purchase_preorder.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: purchase_preorder
+#: model:ir.model,name:purchase_preorder.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: purchase_preorder
+#: view:purchase.order:purchase_preorder.purchase_order_form_add_line_form
+msgid "Purchase Order Lines"
+msgstr "Líneas pedido de compra"
+
+#. module: purchase_preorder
+#: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder
+#: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder_tree
+#: field:products.supplier,preorder_id:0
+#: view:purchase.preorder:purchase_preorder.view_purchase_preorder_tree
+msgid "Purchase PreOrder"
+msgstr "PrePedido de Compra"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
+msgid "Purchase Preorder"
+msgstr "PrePedido de Compra"
+
+#. module: purchase_preorder
+#: field:purchase.preorder,property_product_pricelist_purchase:0
+msgid "Purchase pricelist"
+msgstr "Tarifas de compra"
+
+#. module: purchase_preorder
+#: field:products.supplier,qty_last_purchase:0
+msgid "Qty."
+msgstr "Cant."
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Quantities"
+msgstr "Cantidades"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Quantities and amounts"
+msgstr "Cantidades e Importes"
+
+#. module: purchase_preorder
+#: field:products.supplier,real_stock:0
+msgid "Real Stock"
+msgstr "Stock Real"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_state:0
+msgid "Registered"
+msgstr "Dado de alta"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.view_purchase_preorder_filter
+msgid "Search Purchase PreOrder"
+msgstr "Buscar pre-pedido de venta"
+
+#. module: purchase_preorder
+#: field:products.supplier,sep_consu_cur:0
+msgid "Sep Consu Cur"
+msgstr "Septiembre Consu actual"
+
+#. module: purchase_preorder
+#: field:products.supplier,sep_consu_last:0
+msgid "Sep Consu Last"
+msgstr "Septiembre Consu Último"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "September"
+msgstr "Septiembre"
+
+#. module: purchase_preorder
 #: field:products.supplier,sequence:0
 msgid "Sequence"
 msgstr "Secuencia"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Create Purchase Order"
-msgstr "Crear Pedido de Compra"
+#: field:products.supplier,product_state:0
+msgid "State"
+msgstr "Estado"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "December"
-msgstr "Diciembre"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "State Supplier"
+msgstr "Estado Proveedor"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Amounts awaiting"
-msgstr "Cant. Pendientes"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Stocks"
+msgstr "Stocks"
 
 #. module: purchase_preorder
-#: model:ir.model,name:purchase_preorder.model_products_supplier
-msgid "products.supplier"
-msgstr "products.supplier"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
+#: field:purchase.preorder,supplier_id:0
+msgid "Supplier"
+msgstr "Proveedor"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Quantities and amounts"
-msgstr "Cantidades e Importes"
+#: model:ir.actions.act_window,name:purchase_preorder.action_preorder
+msgid "Supplier Selection"
+msgstr "Selección proveedor"
 
 #. module: purchase_preorder
-#: field:products.supplier,mar_consu_last:0
-msgid "Mar Consu Last"
-msgstr "Mar Consu Last"
+#: field:purchase.preorder,supp_service_days_ids:0
+msgid "Supplier service days"
+msgstr "Dias servicio proveedor"
 
 #. module: purchase_preorder
-#: field:products.supplier,may_consu_last:0
-msgid "May Consu Last"
-msgstr "May Consu Last"
+#: field:purchase.preorder,supp_transport_ids:0
+msgid "Supplier transport"
+msgstr "Trasporte proveedor"
 
 #. module: purchase_preorder
-#: field:products.supplier,apr_consu_cur:0
-msgid "Apr Consu Cur"
-msgstr "Apr Consu Cur"
+#: field:products.supplier,product_type:0
+msgid "Type"
+msgstr "Tipo"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "General Information"
-msgstr "Información General"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Type:"
+msgstr "Tipo:"
 
 #. module: purchase_preorder
-#: field:products.supplier,incoming_qty:0
-msgid "Incoming Qty."
-msgstr "Cant. Pendiente"
-
-#. module: purchase_preorder
-#: field:products.supplier,sep_consu_cur:0
-msgid "Sep Consu Cur"
-msgstr "Sep Consu Cur"
-
-#. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Cancel"
-msgstr "Cancelar"
-
-#. module: purchase_preorder
-#: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder
-#: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder_supplier
-#: field:products.supplier,preorder_id:0
-msgid "Purchase PreOrder"
-msgstr "PrePedido de Compra"
+#: selection:products.supplier,product_state:0
+msgid "Unegistered"
+msgstr "Dado de baja"
 
 #. module: purchase_preorder
 #: field:products.supplier,unitskg:0
@@ -421,7 +581,22 @@ msgid "Unit or Kg"
 msgstr "Unidad o Kg"
 
 #. module: purchase_preorder
-#: view:purchase.preorder:0
-msgid "Previous"
-msgstr "Previo"
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Units Ordered"
+msgstr "Uni. Pedidas"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_state:0
+msgid "Validate pending"
+msgstr "Validación pendiente"
+
+#. module: purchase_preorder
+#: selection:products.supplier,product_state:0
+msgid "Validated"
+msgstr "Validado"
+
+#. module: purchase_preorder
+#: field:products.supplier,virtual_stock:0
+msgid "Virtual Stock"
+msgstr "Stock Virtual"
 
