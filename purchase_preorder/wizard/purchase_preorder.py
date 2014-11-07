@@ -106,24 +106,24 @@ class purchase_preorder(osv.Model):
                                 'debit',
                                 type='float',
                                 string="Debit"),
-        'supp_service_days_ids':
-            fields.related('supplier_id',
-                           'supp_service_days_ids',
-                           type='many2many',
-                           relation='supplier.service.days',
-                           string="Supplier service days"),
-        'supp_transport_ids':
-            fields.related('supplier_id',
-                           'supp_transport_ids',
-                           type='one2many',
-                           relation='supplier.transport',
-                           string="Supplier transport"),
+        'supp_service_days_ids': fields.related('supplier_id',
+                                                'supp_service_days_ids',
+                                                type='many2many',
+                                                relation=
+                                                'supplier.service.days',
+                                                string=
+                                                "Supplier service days"),
+        'supp_transport_ids': fields.related('supplier_id',
+                                             'supp_transport_ids',
+                                             type='one2many',
+                                             relation='supplier.transport',
+                                             string="Supplier transport"),
         'property_product_pricelist_purchase':
-            fields.related('supplier_id',
-                           'property_product_pricelist_purchase',
-                           type='many2one',
-                           relation='product.pricelist',
-                           string="Purchase pricelist"),
+        fields.related('supplier_id',
+                       'property_product_pricelist_purchase',
+                       type='many2one',
+                       relation='product.pricelist',
+                       string="Purchase pricelist"),
 
         # 'rappel_ids': fields.related('supplier_id',
         #                              'rappel_ids',
@@ -168,7 +168,8 @@ class purchase_preorder(osv.Model):
         stop = year + "-" + month + "-" + day + " " + stop.split(" ")[1]
         cr.execute("SELECT sum(s.product_qty) FROM stock_move s \
                     INNER JOIN stock_picking p ON p.id=s.picking_id \
-                    INNER JOIN stock_picking_type pt ON pt.id=p.picking_type_id \
+                    INNER JOIN stock_picking_type pt ON \
+                    pt.id=p.picking_type_id \
                     WHERE s.state='done' AND pt.code='outgoing' \
                     AND s.product_id=" + str(product_id) + " \
                     AND s.date>='" + start + "' \
@@ -256,7 +257,6 @@ class purchase_preorder(osv.Model):
         vals = {}
         purchase_fac = self.pool.get('purchase.order.line')
         move_fac = self.pool.get('stock.move')
-        prodsupp = self.pool.get('product.supplierinfo')
         prod_fac = self.pool.get('product.product')
         if product:
             # Product Data
@@ -307,15 +307,14 @@ class purchase_preorder(osv.Model):
                 #                             product.id,
                 #                             1,
                 #                             context)
-                # import ipdb; ipdb.set_trace()
                 t_pricelist = self.pool.get('product.pricelist')
                 pricelist_id = supplier.property_product_pricelist_purchase.id
                 prices = t_pricelist.price_get(cr, uid, [pricelist_id],
                                                product.id, 1, supplier,
                                                context=context)
                 if prices:
-                    vals['list_price'] = prices[supplier.id]
-                    vals['price_purchase'] = prices[supplier.id]
+                    vals['list_price'] = prices[pricelist_id]
+                    vals['price_purchase'] = prices[pricelist_id]
         return vals
 
     def _prepare_preorder(self, cr, uid, ids, supplier=False, context=None):
@@ -373,10 +372,11 @@ class purchase_preorder(osv.Model):
                                                          uid,
                                                          vals,
                                                          context=context)
+                            tmp_id = sup.product_tmpl_id
                             consums = self._get_consumptions(cr,
                                                              uid,
                                                              ids,
-                                                             sup.product_tmpl_id,
+                                                             tmp_id,
                                                              context)
                             prodsupp.write(cr,
                                            uid,
@@ -472,7 +472,8 @@ class purchase_preorder(osv.Model):
                                           [('company_id', '=', company)])
             if warehouses:
                 warehouse_id = warehouse.browse(cr, uid, warehouses[0])
-            location = warehouse_id and warehouse_id.wh_input_stock_loc_id.id or False
+            location = warehouse_id and warehouse_id.wh_input_stock_loc_id.id \
+                or False
             vals = {'partner_id': pre.supplier_id.id,
                     'pricelist_id': pricelist,
                     'location_id': location,
@@ -728,5 +729,5 @@ class products_supplier(osv.Model):
         elif integer == 3:
             return {'value': {'integer': 0}}
         else:
-            return {'value': {'integer': integer+1}}
+            return {'value': {'integer': integer + 1}}
         return {}
