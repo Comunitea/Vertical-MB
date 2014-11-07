@@ -218,7 +218,6 @@ class stock_pack_operation(osv.osv):
         loc_t = self.pool.get('stock.location')
         if not free_loc_ids:
             raise osv.except_osv(_('Error!'), _('No empty locations.'))
-
         locs = [x for x in loc_t.browse(cr, uid, free_loc_ids, context)]
         locs.append(prod_obj.picking_location_id)
         sorted_locs = sorted(locs, key=lambda l: l.name)

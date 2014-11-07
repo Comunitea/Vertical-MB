@@ -54,7 +54,6 @@ class create_tag_wizard(osv.TransientModel):
                         'ean13': prod.ean13,
                         'purchase_id': purchase_id,
                         'type': 'palet',
-                        'weight': 0.0,
                         'lot_id': op.lot_id and op.lot_id.id or False,
                         'removal_date': op.lot_id and
                                 op.lot_id.removal_date or False
@@ -71,6 +70,7 @@ class create_tag_wizard(osv.TransientModel):
                             num_units / prod.supplier_un_ca or 0
                         vals['num_units'] = num_units
                         vals['num_boxes'] = num_boxes
+                        vals['weight'] = num_units * prod.supplier_kg_un
                         item_ids.append(t_item.create(cr, uid, vals, context))
         res.update({'tag_ids': item_ids})
         if context.get('show_print_report', False):
@@ -162,8 +162,24 @@ class tag_item(osv.TransientModel):
         """ Get default code and ean13"""
         self.default_code = self.product_id.default_code
         self.ean13 = self.product_id.ean13
+        self.weight = self.product_id.supplier_kg_un
+        self.units = 1
 
     @api.onchange('lot_id')
     def onchange_lot_id(self):
         """ Get default code and ean13"""
         self.removal_date = self.lot_id.removal_date
+
+    @api.onchange('num_units')
+    def onchange_units(self):
+        """ Get boxes and new weight"""
+        if self.product_id and self.product_id.supplier_un_ca:
+            self.num_boxes = self.num_units / self.product_id.supplier_un_ca
+            self.weight = self.product_id.supplier_kg_un * self.num_units
+
+    @api.onchange('num_boxes')
+    def onchange_boxes(self):
+        """ Get units and new weight"""
+        if self.product_id and self.product_id.supplier_un_ca:
+            self.num_units = self.num_boxes * self.product_id.supplier_un_ca
+            self.weight = self.product_id.supplier_kg_un * self.num_units
