@@ -225,48 +225,66 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     unit = this.ts_model.db.get_like_type_unit("units")
                     res = unit.name
                     break;
+                default:
+                    unit = this.ts_model.db.get_like_type_unit("units")
+                    res = unit.name
             }
-            console.log(res)
             return res
+        },
+        update_stock_product: function(product_id){
+            var self=this;
+            var domain = [['id', '=', product_id]]
+            var loaded = self.ts_model.fetch('product.product',
+                                            ['name','product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
+                                            domain
+                                            )
+                .then(function(products){
+                    self.ts_model.db.add_products(products);
+                })
+            return loaded
         },
         call_product_id_change: function(product_id){
             var self = this;
-            var customer_id = this.ts_model.db.partner_name_id[this.order.get('partner')];
-            var kwargs = {context: new instance.web.CompoundContext({}),
-                         partner_id: customer_id,
-                        }
-            var pricelist_id = (this.ts_model.db.get_partner_by_id(customer_id)).property_product_pricelist;
-            var model = new instance.web.Model("sale.order.line");
-            model.call("product_id_change",[[],pricelist_id,product_id],kwargs)
-                .then(function(result){
-                    var product_obj = self.ts_model.db.get_product_by_id(product_id);
-                    var uom_obj = self.ts_model.db.get_unit_by_id(product_obj.uom_id[0])
-                    self.model.set('fresh_price', my_round(result.value.last_price_fresh || 0,2));
-                    self.model.set('code', product_obj.default_code || "");  
-                    self.model.set('product', product_obj.name || "");  
-                    self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
-                    self.model.set('unit', self.get_default_unit_name(product_obj) || "" );
-                    self.model.set('qty', 1);
-                    self.model.set('discount', 0);
-                    self.model.set('weight', my_round(product_obj.weight || 0,2));
-                    self.model.set('boxes', uom_obj ? self.ts_model.convert_units_to_boxes(uom_obj, product_obj, 1) : 0);
-                    if (!result.value.price_unit || result.value.price_unit == 'warn') {
-                        result.value.price_unit = 0;
-                    }
-                    self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? result.value.price_unit : 0,2 ));
-                    self.model.set('pvp', my_round(result.value.price_unit || 0,2));
-                    self.model.set('total', my_round(result.value.price_unit || 0,2));
-                    self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
-                    if (1 > product_obj.virtual_stock_conservative){
-                        alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
-                        var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
-                        self.model.set('qty', new_qty);
-                        self.refresh();
-                    } 
-                    self.refresh();
-                    self.$('.col-unit').focus()
-                    
-                });
+            
+            $.when( self.update_stock_product(product_id) )
+                        .done(function(){
+                            var customer_id = self.ts_model.db.partner_name_id[self.order.get('partner')];
+                            var kwargs = {context: new instance.web.CompoundContext({}),partner_id: customer_id}
+                            var pricelist_id = (self.ts_model.db.get_partner_by_id(customer_id)).property_product_pricelist;
+                            var model = new instance.web.Model("sale.order.line");
+                            model.call("product_id_change",[[],pricelist_id,product_id],kwargs)
+                            .then(function(result){
+                                var product_obj = self.ts_model.db.get_product_by_id(product_id);
+                                var uom_obj = self.ts_model.db.get_unit_by_id(product_obj.uom_id[0])
+                                self.model.set('fresh_price', my_round(result.value.last_price_fresh || 0,2));
+                                self.model.set('code', product_obj.default_code || "");  
+                                self.model.set('product', product_obj.name || "");  
+                                self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
+                                self.model.set('unit', self.get_default_unit_name(product_obj) || "" );
+                                self.model.set('qty', 1);
+                                self.model.set('discount', 0);
+                                self.model.set('weight', my_round(product_obj.weight || 0,2));
+                                self.model.set('boxes', uom_obj ? self.ts_model.convert_units_to_boxes(uom_obj, product_obj, 1) : 0);
+                                if (!result.value.price_unit || result.value.price_unit == 'warn') {
+                                    result.value.price_unit = 0;
+                                }
+                                self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? result.value.price_unit : 0,2 ));
+                                self.model.set('pvp', my_round(result.value.price_unit || 0,2));
+                                self.model.set('total', my_round(result.value.price_unit || 0,2));
+                                self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
+                                if (1 > product_obj.virtual_stock_conservative){
+                                    alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
+                                    var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
+                                    self.model.set('qty', new_qty);
+                                    self.refresh();
+                                } 
+                                self.refresh();
+                                self.$('.col-unit').focus()
+                            });
+                        })
+                        .fail(function(){
+                            alert(_t("NOT WORKING"));
+                        })
         },
         call_onchange_price_unit: function(product_id){
             var self=this;

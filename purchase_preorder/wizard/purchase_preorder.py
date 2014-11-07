@@ -301,12 +301,18 @@ class purchase_preorder(osv.Model):
                     vals['date_delivery'] = date
                 # Data supplier pricelist
                 prices = {}
-                prices = prodsupp.price_get(cr,
-                                            uid,
-                                            supplier.id,
-                                            product.id,
-                                            1,
-                                            context)
+                # prices = prodsupp.price_get(cr,
+                #                             uid,
+                #                             supplier.id,
+                #                             product.id,
+                #                             1,
+                #                             context)
+                # import ipdb; ipdb.set_trace()
+                t_pricelist = self.pool.get('product.pricelist')
+                pricelist_id = supplier.property_product_pricelist_purchase.id
+                prices = t_pricelist.price_get(cr, uid, [pricelist_id],
+                                               product.id, 1, supplier,
+                                               context=context)
                 if prices:
                     vals['list_price'] = prices[supplier.id]
                     vals['price_purchase'] = prices[supplier.id]
