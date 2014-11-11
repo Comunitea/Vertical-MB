@@ -31,18 +31,29 @@ class product_template(models.Model):
     """
     _inherit = "product.template"
 
+    @api.model
+    def _get_default_uos(self):
+        un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+        return un_uom and un_uom.id or False
+
     min_unit = fields.Selection([('box', 'Only Boxes'),
                                 ('unit', 'Only Unit'),
                                 ('both', 'Both, units and boxes')],
                                 string='Minimum Sale Unit',
                                 required=True,
-                                default='both')
+                                default='unit')
     box_discount = fields.Float('Box Unit Discount')
     # Overwrite in order to add 4 decimals
     uos_coeff = fields.Float('Unit of Measure -> UOS Coeff',
                              digits=(16, 4),
                              help='Coefficient to convert default Unit of \
                              Measure to Unit of Sale\n'' uos = uom * coeff')
+    uos_id = fields.Many2one('product.uom', 'Unit of Sale',
+                             default=_get_default_uos,
+                             help='Specify a unit of measure here if invoicing\
+                             is made in another unit of measure than\
+                             inventory. Keep empty to use the default unit of \
+                             measure.')
 
     @api.onchange('min_unit')
     def onchange_min_unit(self):
@@ -60,7 +71,7 @@ class product_template(models.Model):
         else:  # Units
             if not len(un_uom):
                 res['warning'] = {'title': _('Warning'),
-                                  'message': _('Box unit does not exist.\
+                                  'message': _('Units unit does not exist.\
                 You must configured one unit like units')}
             else:
                 self.uos_id = un_uom.id
