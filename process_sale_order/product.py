@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api, _
+from openerp.tools.float_utils import float_round
 
 
 class product_template(models.Model):
@@ -37,6 +38,10 @@ class product_template(models.Model):
                                 required=True,
                                 default='both')
     box_discount = fields.Float('Box Unit Discount')
+    uos_coeff = fields.Float('Unit of Measure -> UOS Coeff',
+                             digits=(16, 4),
+                             help='Coefficient to convert default Unit of \
+                             Measure to Unit of Sale\n'' uos = uom * coeff')
 
     @api.onchange('min_unit')
     def onchange_min_unit(self):
@@ -63,12 +68,14 @@ class product_template(models.Model):
     @api.onchange('un_ca')
     def onchange_un_ca(self):
         """ Change uos_coeff acordely to product.un_ca"""
-        self.uos_coeff = self.un_ca and 1 / self.un_ca or 0.0
+        self.uos_coeff = self.un_ca and float_round(1 / self.un_ca, 4) or 0.0
 
     @api.onchange('uos_coeff')
     def onchange_uos_coeff(self):
+
         """ Change un_ca acordely to product.uos_coeff"""
-        self.un_ca = self.uos_coeff and 1 / self.uos_coeff or 0.0
+        self.un_ca = self.uos_coeff and float_round(1 / self.uos_coeff, 2) \
+            or 0.0
 
 
 class product_product(models.Model):
