@@ -104,14 +104,15 @@ class assign_task_wzd(osv.TransientModel):
         if on_course_tasks and not context.get('no_raise', False):
             raise osv.except_osv(_('Error!'), _('You have a task on course.'))
 
-        domain = [
-            ('machine_id', '=', machine_id),
-            ('state', '=', 'assigned')
-        ]
-        on_course_machine = t_task.search(cr, uid, domain, context=context)
-        if on_course_machine and not context.get('no_raise', False):
-            raise osv.except_osv(_('Error!'), _('You have the machine\
-                                                 currently assigned.'))
+        if machine_id:
+            domain = [
+                ('machine_id', '=', machine_id),
+                ('state', '=', 'assigned')
+            ]
+            on_course_machine = t_task.search(cr, uid, domain, context=context)
+            if on_course_machine and not context.get('no_raise', False):
+                raise osv.except_osv(_('Error!'), _('You have the machine\
+                                                    currently assigned.'))
         return on_course_tasks
 
     def cancel_task(self, cr, uid, ids, context=None):
@@ -153,7 +154,8 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         ctx = dict(context)
         ctx['no_raise'] = True
-        on_course_task = self._check_on_course(cr, uid, ids, context=ctx)
+        on_course_task = self._check_on_course(cr, uid, ids, False,
+                                               context=ctx)
         if not on_course_task:
             raise osv.except_osv(_('Error!'), _('No tasks to print.'))
         task = self.pool.get("stock.task").browse(cr, uid, on_course_task[0],

@@ -209,7 +209,7 @@
                 </div>
                 <div class="form-col">
                     <label for="date_invoice">Date invoice:</label>
-                    <input  class="mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.order_model.get('date_invoice')"/>
+                    <input  class="mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDateStr()"/>
                     <br/>
                     <br/>
                     <label for="limit_credit">Limit Credit:</label>
@@ -218,7 +218,7 @@
                 </div>
                 <div class="form-col">
                     <label for="date_order">Date Order:</label>
-                    <input type="text" id='date_order' name="date_order" t-att-value="widget.ts_model.localFormatDate(widget.order_model.get('date_order'))" readonly="readonly" tabIndex="-1"/>
+                    <input type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()"/>
                     <br/>
                     <br/>
                     <label for="customer_debt">Customer Debt:</label>

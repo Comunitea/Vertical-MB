@@ -38,7 +38,6 @@
                 "product",
                 "product_expiry",
                 "sale",
-                "telesale",
                 "price_system_variable"],
     "data": [
         'product_view.xml',
