@@ -38,7 +38,7 @@ class product_template(models.Model):
                                 required=True,
                                 default='both')
     box_discount = fields.Float('Box Unit Discount')
-    # 4 decimals
+    # Overwrite to add 4 decimals
     uos_coeff = fields.Float('Unit of Measure -> UOS Coeff',
                              digits=(16, 4),
                              help='Coefficient to convert default Unit of \
