@@ -939,7 +939,6 @@ class stock_quant(osv.osv):
 
         if removal_strategy == 'depot_fefo':
             order = 'removal_date, in_date, id'
-
             res = self._quants_get_order(cr, uid, location, product, qty,
                                          domain, order, context=context)
             check_storage_qty = 0.0
