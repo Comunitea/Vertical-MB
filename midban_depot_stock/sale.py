@@ -27,7 +27,7 @@ class sale_order(osv.Model):
     _inherit = 'sale.order'
 
     _columns = {
-        'route_id': fields.many2one('route', 'Transport Route',
+        'trans_route_id': fields.many2one('route', 'Transport Route',
                                     domain=[('state', '=', 'active')],
                                     readonly=True, states={'draft':
                                                            [('readonly',
@@ -48,9 +48,9 @@ class sale_order(osv.Model):
                                                           context=context)
         partner_t = self.pool.get('res.partner')
         part = partner_t.browse(cr, uid, part, context=context)
-        if not res['value'].get('route_id', []):
-            if part.route_id:
-                res['value']['route_id'] = part.route_id.id
+        if not res['value'].get('trans_route_id', []):
+            if part.trans_route_id:
+                res['value']['trans_route_id'] = part.trans_route_id.id
         return res
 
     def _prepare_order_line_procurement(self, cr, uid, order, line,
@@ -58,7 +58,7 @@ class sale_order(osv.Model):
         res = super(sale_order, self).\
             _prepare_order_line_procurement(cr, uid, order, line,
                                             group_id=group_id, context=context)
-        res['route_id'] = order.route_id.id
+        res['trans_route_id'] = order.trans_route_id.id
         return res
 
 

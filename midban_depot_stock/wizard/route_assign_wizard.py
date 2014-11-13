@@ -52,9 +52,9 @@ class route_assign_wizard(osv.TransientModel):
         ]
         model_ids = pick_t.search(cr, uid, domain, context=context)
         for pick in pick_t.browse(cr, uid, model_ids, context):
-            if pick.partner_id.route_id:
-                pick.write({'route_id': pick.partner_id.route_id.id})
+            if pick.partner_id.trans_route_id:
+                pick.write({'trans_route_id': pick.partner_id.trans_route_id.id})
                 for move in pick.move_lines:
-                    move.procurement_id.write({'route_id':
-                                               pick.partner_id.route_id.id})
+                    move.procurement_id.write({'trans_route_id':
+                                               pick.partner_id.trans_route_id.id})
         return

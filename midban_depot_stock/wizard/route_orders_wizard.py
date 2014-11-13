@@ -24,9 +24,9 @@ from openerp.tools.translate import _
 
 class route_order_wizard(osv.TransientModel):
     _name = "route.order.wizard"
-    _rec_name = "route_id"
+    _rec_name = "trans_route_id"
     _columns = {
-        'route_id': fields.many2one('route', 'Transport Route',
+        'trans_route_id': fields.many2one('route', 'Transport Route',
                                     required=True,
                                     domain=[('state', '=', 'active')]),
     }
@@ -59,16 +59,16 @@ class route_order_wizard(osv.TransientModel):
                                                  context['active_ids'])],
                                                context=context)
                 procurement_obj.write(cr, uid, p_ids,
-                                      {'route_id': obj.route_id.id},
+                                      {'trans_route_id': obj.trans_route_id.id},
                                       context=context)
             elif context['active_model'] == "stock.picking":
                 move_ids = move_obj.search(cr, uid, [('picking_id', 'in',
                                                       context['active_ids'])],
                                            context=context)
                 pick_obj.write(cr, uid, context['active_ids'],
-                               {'route_id': obj.route_id.id},
+                               {'trans_route_id': obj.trans_route_id.id},
                                context=context)
                 for move in move_obj.browse(cr, uid, move_ids,
                                             context=context):
-                    move.procurement_id.write({'route_id': obj.route_id.id})
+                    move.procurement_id.write({'trans_route_id': obj.trans_route_id.id})
         return

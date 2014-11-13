@@ -24,7 +24,7 @@ from openerp.osv import osv, fields
 
 class route(osv.Model):
     _name = 'route'
-    _description = 'Route Model'
+    _description = 'Transport Route Model'
     _rec_name = 'code'
     _columns = {
         'code': fields.char('Code', size=32, required=True),

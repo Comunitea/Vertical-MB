@@ -35,7 +35,7 @@ class assign_task_wzd(osv.TransientModel):
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
         'temp_id': fields.many2one('temp.type', 'Temperature'),
-        'route_id': fields.many2one('route', 'Transport Route',
+        'trans_route_id': fields.many2one('route', 'Transport Route',
                                     domain=[('state', '=', 'active')]),
         # 'state': fields.selection([('normal', 'Normal'), ('tag', 'Tags')],
         #                           'State', readonly=True)
@@ -345,21 +345,21 @@ class assign_task_wzd(osv.TransientModel):
             ('product_id.temp_type', '=', obj.temp_id.id),
             ('state', '=', 'confirmed'),
             ('picking_id.operator_id', '=', False),
-            ('picking_id.route_id', '!=', False)
+            ('picking_id.trans_route_id', '!=', False)
         ]
         move_ids = move_obj.search(cr, uid, domain, context=context)
         if not move_ids:
             raise osv.except_osv(_('Error!'), _('Anathing pending of picking'))
         move_objs = move_obj.browse(cr, uid, move_ids, context=context)
-        routes_set = {m.picking_id.route_id.id for m in move_objs}
+        routes_set = {m.picking_id.trans_route_id.id for m in move_objs}
         res = random.choice(tuple(routes_set))
         return res
 
     def _get_moves_from_route(self, cr, uid, ids, context=None):
         """
-        Search all the assigned moves which picking has route_id and
+        Search all the assigned moves which picking has trans_route_id and
         temperature equals to wizard temp_id.
-        If not route_id in wizard we get a random pending route
+        If not trans_route_id in wizard we get a random pending route
         """
         if context is None:
             context = {}
@@ -367,7 +367,7 @@ class assign_task_wzd(osv.TransientModel):
 
         res = []
         obj = self.browse(cr, uid, ids[0], context=context)
-        selected_route = obj.route_id and obj.route_id.id or False
+        selected_route = obj.trans_route_id and obj.trans_route_id.id or False
         if not selected_route:
             selected_route = self._get_random_route(cr, uid, ids, context)
         domain = [
@@ -375,7 +375,7 @@ class assign_task_wzd(osv.TransientModel):
             ('product_id.temp_type', '=', obj.temp_id.id),
             ('state', '=', 'confirmed'),
             ('picking_id.operator_id', '=', False),
-            ('picking_id.route_id', '=', selected_route)
+            ('picking_id.trans_route_id', '=', selected_route)
         ]
         res = move_obj.search(cr, uid, domain, context=context)
         return (res, selected_route)
@@ -514,7 +514,7 @@ class assign_task_wzd(osv.TransientModel):
                                         context=context)
             vals = {'user_id': obj.operator_id.id,
                     'temp_id': obj.temp_id.id,
-                    'route_id': selected_route,
+                    'trans_route_id': selected_route,
                     'warehouse_id': obj.warehouse_id.id,
                     'picking_ids': [(6, 0, pickings_to_wave)]}
             wave_id = wave_obj.create(cr, uid, vals, context=context)
