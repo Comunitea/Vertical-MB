@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <field name='project_id' position="after">
-                    <field name="route_id"/>
+                    <field name="trans_route_id"/>
                 </field>
              </field>
          </record>
@@ -19,7 +19,7 @@
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
                 <field name='state' position="after">
-                    <field name="route_id"/>             
+                    <field name="trans_route_id"/>             
                 </field>
              </field>
          </record>
@@ -30,7 +30,7 @@
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
                 <field name='state' position="after">
-                    <field name="route_id"/>
+                    <field name="trans_route_id"/>
                 </field>
              </field>
          </record>
@@ -45,7 +45,7 @@
                     <separator/>
                 </field>
                 <filter string="Order Month" position="after">
-                    <filter string="Transport Route" context="{'group_by':'route_id'}"/>
+                    <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
                 </filter>
             </field>
         </record>

@@ -16,9 +16,9 @@
                                       <strong>Name:</strong>
                                       <p t-field="o.name"/>
                                   </div>
-                                  <div t-if="o.route_id" class="col-xs-2">
+                                  <div t-if="o.trans_route_id" class="col-xs-2">
                                       <strong>Route:</strong>
-                                      <p t-field="o.route_id"/>
+                                      <p t-field="o.trans_route_id"/>
                                   </div>
                                   <div t-if="o.temp_id" class="col-xs-2">
                                       <strong>Temperature:</strong>

@@ -28,7 +28,7 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem action="action_route_assign_wizard" id="route_assign_wizard__menu"  name="Assign Route WIzard" parent="menu_stock_vehicle_route_mgmt" groups="midban_depot_stock.routes_manager"/>
+        <menuitem action="action_route_assign_wizard" id="route_assign_wizard_menu"  name="Assign Route WIzard" parent="menu_stock_vehicle_route_mgmt" groups="midban_depot_stock.transport_routes_manager" sequence="100"/>
 
     </data>
 </openerp>

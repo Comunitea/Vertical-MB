@@ -19,8 +19,8 @@
                              <div t-if="o.temp_id">
                                 <h4><strong>Temperature:  </strong><span t-field="o.temp_id"/></h4>
                              </div>
-                             <div t-if="o.route_id">
-                                <h4><strong>Route:  </strong><span t-field="o.route_id"/></h4>
+                             <div t-if="o.trans_route_id">
+                                <h4><strong>Route:  </strong><span t-field="o.trans_route_id"/></h4>
                              </div>
                              
                             
