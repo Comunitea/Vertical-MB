@@ -45,6 +45,7 @@
         'partner_view.xml',
         'procurement_view.xml',
         'wizard/process_cross_dock_wzd_view.xml',
+        'data/depot_cross_dock_data.xml',
     ],
     "demo": [],
     "test": [],

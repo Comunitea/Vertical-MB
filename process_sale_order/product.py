@@ -60,7 +60,8 @@ class product_template(models.Model):
         box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
         un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
         res = {}
-        if self.min_unit == 'box' or self.min_unit == 'both':
+        # if self.min_unit == 'box' or self.min_unit == 'both':
+        if self.min_unit == 'box':
             if not len(box_uom):
                 res['warning'] = {'title': _('Warning'),
                                   'message': _('Box unit does not exist.\

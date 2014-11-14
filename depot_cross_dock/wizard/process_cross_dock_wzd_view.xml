@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!-- Process Cross Dock Wizard View -->
         <record id="process_cross_dock_wzd_view" model="ir.ui.view">
             <field name="name">process.cross.dock.wzd.view</field>
             <field name="model">process.cross.dock.wzd</field>
@@ -8,7 +9,9 @@
             <field name="arch" type="xml">
                 <form string="Create Cross Dock Purchases">
                     <sheet>
-                        <field name="mode"/>
+                        <group string="Types of Products">
+                            <field name="mode"/>
+                        </group>
                     </sheet>
                     <footer>
                         <button name="create_delayed_purchases" string="Create Purchases" type="object" class="oe_highlight"/>

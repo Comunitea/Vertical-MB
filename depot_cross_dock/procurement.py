@@ -26,6 +26,11 @@ class procurement_rule(osv.osv):
     _inherit = 'procurement.rule'
 
     def _get_action(self, cr, uid, context=None):
+        """
+        Add Delayed buy to procuremnt action.
+        This type of procuremnts are resolved by buying products when the
+        user launch the process cross dock wizard.
+        """
         res = super(procurement_rule, self)._get_action(cr, uid,
                                                         context=context)
         return [('delayed_buy', _('Delayed Buy'))] + res
@@ -38,6 +43,11 @@ class procurement_order(osv.osv):
     }
 
     def _run(self, cr, uid, procurement, context=None):
+        """
+        Overwrite to mark the procurement as buy later in order to find them
+        later in the process cross dock wizard and make the purchase order
+        when all the transport routes are well assigned.
+        """
         if procurement.rule_id and procurement.rule_id.action == 'delayed_buy':
             # Mark procurement as to buy later.
             procurement.write({'buy_later': True}, context=context)

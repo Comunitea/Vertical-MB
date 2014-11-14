@@ -23,6 +23,9 @@ from openerp.tools.translate import _
 
 
 class process_cross_dock_wzd(osv.TransientModel):
+    """
+    Wizard to create purchases orders of cross dock products.
+    """
     _name = "process.cross.dock.wzd"
     _columns = {
         'mode': fields.selection([('midban', 'Midban products'),
@@ -32,21 +35,79 @@ class process_cross_dock_wzd(osv.TransientModel):
                                  required=True)
 
     }
+    _default = {
+        'mode': 'both',
+    }
 
-    def create_delayed_purchases(self, cr, uid, ids, context=None):
+    def _get_cross_dock_purchases(self, cr, uid, proc_ids, context=None):
+        """
+        Create a purchases for Cross dock products.
+        We will create a purchase order for each supplier and assign a drop
+        code.
+        """
         if context is None:
             context = {}
+        purchase_ids = []
+        t_proc = self.pool.get('procurement.order')
+        for proc_id in proc_ids:
+            t_proc.make_po(cr, uid, proc_id, context=context)
+        for proc in t_proc.browse(cr, uid, proc_ids, context=context):
+            if proc.purchase_id:
+                purchase_ids.append(proc.purchase_id)
+        return list(set(purchase_ids))
+
+    def _get_midban_purchases(self, cr, uid, proc_ids, context=None):
+        """
+        Create a purchases for Cross dock products.
+        We will create a purchase order for each transport route and assign a
+        drop code.
+        """
+        if context is None:
+            context = {}
+        purchase_ids = []
         # t_proc = self.pool.get('procurement.order')
-        procurement_ids = []
-        # domain = []
-        # wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        # for proc in t_proc.browse(cr, uid, proc_ids, context=context):
 
-        # if wzd.obj.mode in ['midban', 'both']:
-        #     domain =
-        # if wzd.obj.mode in ['cross_dock', 'both']:
+        return purchase_ids
 
-        # if domain:
-        #     procurement_ids = t_proc.search(cr, uid, domain, context=context)
-        if not procurement_ids:
-            raise osv.except_osv(_('Error!'), _('No purchases to create.'))
-        return
+    def create_delayed_purchases(self, cr, uid, ids, context=None):
+        """
+        Create purchase orders for products that came from midban regulator
+        warehouse or from cross-dock suppliers. The procurements related are
+        marked as 'buy later'.
+        If we are processing midban products we will group purchase orders by
+        transport routhe, else we group them by partner.
+        """
+        if context is None:
+            context = {}
+        # import ipdb; ipdb.set_trace()
+        t_proc = self.pool.get('procurement.order')
+        proc_ids = []
+        purchase_ids = []
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        # Process Midban Products. The principal supplier is a regulator
+        if wzd_obj.mode in ['midban', 'both']:
+            # domain += [('product_id.seller_id.regulator', '=', True)]
+            domain = [('state', '=', 'running'), ('buy_later', '=', True),
+                      ('product_id.seller_id.regulator', '=', True)]
+            proc_ids = t_proc.search(cr, uid, domain, context=context)
+            purchase_ids += self._get_midban_purchases(cr, uid, proc_ids,
+                                                       context=context)
+
+        # Process Cross Dock. The principal supplier is not a regulator
+        if wzd_obj.mode in ['cross_dock', 'both']:
+            domain = [('state', '=', 'running'), ('buy_later', '=', True),
+                      ('product_id.seller_id.regulator', '=', False)]
+            proc_ids = t_proc.search(cr, uid, domain, context=context)
+            purchase_ids += self._get_cross_dock_purchases(cr, uid, proc_ids,
+                                                           context=context)
+        if not purchase_ids:
+            raise osv.except_osv(_('Error!'), _('No purchases created.'))
+
+        data_obj = self.pool.get('ir.model.data')
+        res = data_obj.get_object_reference(cr, uid, 'purchase',
+                                            'purchase_rfq')
+        action = self.pool.get(res[0]).read(cr, uid, res[1],
+                                            context=context)
+        # action['domain'] = str([('res_id', 'in', purchase_ids)])
+        return action
