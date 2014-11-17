@@ -44,17 +44,22 @@ class process_cross_dock_wzd(osv.TransientModel):
         Create a purchases for Cross dock products.
         We will create a purchase order for each supplier and assign a drop
         code.
+        make_po seems only work well with one procurement each time.
         """
         if context is None:
             context = {}
         purchase_ids = []
         t_proc = self.pool.get('procurement.order')
+        t_po = self.pool.get('purchase.order')
         for proc_id in proc_ids:
             t_proc.make_po(cr, uid, proc_id, context=context)
         for proc in t_proc.browse(cr, uid, proc_ids, context=context):
             if proc.purchase_id:
-                purchase_ids.append(proc.purchase_id)
-        return list(set(purchase_ids))
+                proc.write({'buy_later': False}, context=context)
+                purchase_ids.append(proc.purchase_id.id)
+        purchase_ids = list(set(purchase_ids))
+        t_po.signal_workflow(cr, uid, purchase_ids, 'purchase_confirm')
+        return purchase_ids
 
     def _get_midban_purchases(self, cr, uid, proc_ids, context=None):
         """
@@ -65,10 +70,33 @@ class process_cross_dock_wzd(osv.TransientModel):
         if context is None:
             context = {}
         purchase_ids = []
-        # t_proc = self.pool.get('procurement.order')
-        # for proc in t_proc.browse(cr, uid, proc_ids, context=context):
-
-        return purchase_ids
+        t_proc = self.pool.get('procurement.order')
+        t_po = self.pool.get('purchase.order')
+        procs_by_route = {}
+        for proc in t_proc.browse(cr, uid, proc_ids, context=context):
+            if proc.trans_route_id.id in procs_by_route.keys():
+                procs_by_route[proc.trans_route_id.id].append(proc.id)
+            else:
+                procs_by_route[proc.trans_route_id.id] = [proc.id]
+        if procs_by_route:
+            for key in procs_by_route.keys():
+                new_ids = procs_by_route[key]
+                to_confirm_ids = []
+                # Create Purchases
+                for proc_id in new_ids:
+                    # proc = t_proc.browse(cr, uid, proc_id, context=context)
+                    t_proc.make_po(cr, uid, proc_id, context=context)
+                # Get the related purchases
+                for proc in t_proc.browse(cr, uid, new_ids, context=context):
+                    if proc.purchase_id:
+                        proc.write({'buy_later': False}, context=context)
+                        purchase_ids.append(proc.purchase_id.id)
+                        to_confirm_ids.append(proc.purchase_id.id)
+                 # Confirm the related purchases to the route
+                to_confirm_ids = list(set(purchase_ids))
+                t_po.signal_workflow(cr, uid, to_confirm_ids, 'purchase_confirm')
+        purchase_ids = list(set(purchase_ids))
+        return list(set(purchase_ids))
 
     def create_delayed_purchases(self, cr, uid, ids, context=None):
         """
@@ -89,7 +117,8 @@ class process_cross_dock_wzd(osv.TransientModel):
         if wzd_obj.mode in ['midban', 'both']:
             # domain += [('product_id.seller_id.regulator', '=', True)]
             domain = [('state', '=', 'running'), ('buy_later', '=', True),
-                      ('product_id.seller_id.regulator', '=', True)]
+                      ('product_id.seller_id.regulator', '=', True),
+                      ('trans_route_id', '!=', False)]
             proc_ids = t_proc.search(cr, uid, domain, context=context)
             purchase_ids += self._get_midban_purchases(cr, uid, proc_ids,
                                                        context=context)
@@ -97,7 +126,8 @@ class process_cross_dock_wzd(osv.TransientModel):
         # Process Cross Dock. The principal supplier is not a regulator
         if wzd_obj.mode in ['cross_dock', 'both']:
             domain = [('state', '=', 'running'), ('buy_later', '=', True),
-                      ('product_id.seller_id.regulator', '=', False)]
+                      ('product_id.seller_id.regulator', '=', False),
+                      ('trans_route_id', '!=', False)]
             proc_ids = t_proc.search(cr, uid, domain, context=context)
             purchase_ids += self._get_cross_dock_purchases(cr, uid, proc_ids,
                                                            context=context)
@@ -106,8 +136,8 @@ class process_cross_dock_wzd(osv.TransientModel):
 
         data_obj = self.pool.get('ir.model.data')
         res = data_obj.get_object_reference(cr, uid, 'purchase',
-                                            'purchase_rfq')
+                                            'purchase_form_action')
         action = self.pool.get(res[0]).read(cr, uid, res[1],
                                             context=context)
-        # action['domain'] = str([('res_id', 'in', purchase_ids)])
+        action['domain'] = str([('id', 'in', purchase_ids)])
         return action
