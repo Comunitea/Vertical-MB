@@ -35,7 +35,9 @@ class temp_type(osv.Model):
         'name': fields.char('Temp name', size=256, required="True",
                             readonly="True"),
         'type': fields.selection([('chilled', 'Chilled'), ('frozen', 'Frozen'),
-                                 ('dry', 'Dry')], "Type"),
+                                 ('dry', 'Dry')], "Type", help="Depending on "
+                                 "this temperature, the product will be stored"
+                                 "in a different warehouse location."),
     }
 
 

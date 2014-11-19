@@ -32,7 +32,10 @@ class process_cross_dock_wzd(osv.TransientModel):
                                   ('cross_dock', 'Cross Docks products'),
                                   ('both', 'Midban and cross dock products')],
                                  string="Create purchases for",
-                                 required=True)
+                                 required=True,
+                                 help="Choose if you want to create purchase"
+                                 "orders for MIDBAN, for cross-dock providers"
+                                 "or for both of them")
 
     }
     _default = {
