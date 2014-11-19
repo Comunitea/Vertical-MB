@@ -20,7 +20,7 @@
             <field name="arch" type="xml">
                 <form string="Routes">
                     <header>
-                        <button name="set_active" type="object" string="Active" icon="gtk-ok" states="draft" class="oe_highlight" groups="midban_depot_stock.transport_transport_routes_manager"/>
+                        <button name="set_active" type="object" string="Active" icon="gtk-ok" states="draft" class="oe_highlight" groups="midban_depot_stock.transport_routes_manager"/>
                         <field name="state" widget="statusbar" nolabel="1"/>
                     </header>
                     <sheet>

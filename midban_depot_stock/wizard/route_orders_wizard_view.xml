@@ -28,7 +28,7 @@
             view_mode="form"
             view_type="form"
             target="new"
-            groups="midban_depot_stock.transport_transport_routes_manager"/>
+            groups="midban_depot_stock.transport_routes_manager"/>
 
         <act_window id="action_route_picking_wizard"
             name="Assign Route"
@@ -38,7 +38,7 @@
             view_mode="form"
             view_type="form"
             target="new"
-            groups="midban_depot_stock.transport_transport_routes_manager"/>
+            groups="midban_depot_stock.transport_routes_manager"/>
 
     </data>
 </openerp>
