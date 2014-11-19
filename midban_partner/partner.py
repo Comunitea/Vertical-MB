@@ -93,7 +93,17 @@ class res_partner(osv.Model):
                                    ('validated', 'Validated'),
                                    ('registered', 'Registered'),
                                    ('unregistered', 'unregistered')],
-                                   'Status', readonly=True, required=True),
+                                   'Status', readonly=True, required=True,
+                                   help="* Validate pending: no validation"
+                                   "passed\n"
+                                   "* Logistic validation pending: product"
+                                   "logistic information has not been"
+                                   "reviewed by a manager yet\n"
+                                   "* Comercial validation pending: product"
+                                   "commercial information (pricing, etc)"
+                                   "hasn't been validated by sales manager\n"
+                                   "* Validated: both Comercial and logistic"
+                                   "validations have been aproved\n"),
         # Active only can be changed through register/unregister buttons
         'active': fields.boolean('Active', readonly=True),
         'history_ids': fields.one2many('partner.history', 'partner_id',
