@@ -61,6 +61,7 @@
         "wizard/route_orders_wizard_view.xml",
         "wizard/stock_transfer_details.xml",
         "wizard/create_tag_wizard_view.xml",
+        "wizard/reset_drop_code_wzd_view.xml",
         'stock_view.xml',
         "data/product_data.xml",
         "qweb_report/report_picking_task.xml",

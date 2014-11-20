@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Load week days for m2m supplier service days in suplliers views -->
-        <record id="monday" model="supplier.service.days">
+        <record id="day-monday" model="week.days">
             <field name="name">Lunes</field>
         </record>
-        <record id="Tuesday" model="supplier.service.days">
+        <record id="day-Tuesday" model="week.days">
             <field name="name">Martes</field>
         </record>
-        <record id="wednesday" model="supplier.service.days">
+        <record id="day-wednesday" model="week.days">
             <field name="name">Miércoles</field>
         </record>
-        <record id="thursday" model="supplier.service.days">
+        <record id="day-thursday" model="week.days">
             <field name="name">Jueves</field>
         </record>
-        <record id="friday" model="supplier.service.days">
+        <record id="day-friday" model="week.days">
             <field name="name">Viernes</field>
         </record>
-        <record id="saturday" model="supplier.service.days">
+        <record id="day-saturday" model="week.days">
             <field name="name">Sábado</field>
         </record>
-        <record id="sunday" model="supplier.service.days">
+        <record id="day-sunday" model="week.days">
             <field name="name">Domingo</field>
         </record>
     </data>

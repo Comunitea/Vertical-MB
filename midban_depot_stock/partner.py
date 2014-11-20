@@ -25,5 +25,12 @@ class res_partner(osv.Model):
     _inherit = 'res.partner'
     _columns = {
         'trans_route_id': fields.many2one('route', 'Transport Route',
-        	                        domain=[('state', '=', 'active')])
+        	                        domain=[('state', '=', 'active')]),
+        # 'monday': fields.boolean('Monday'),
+        # 'tuesday': fields.boolean('Tuesday'),
+        # 'wednesday': fields.boolean('Wednesday'),
+        # 'thursday': fields.boolean('Thursday'),
+        # 'friday': fields.boolean('Friday'),
+        # 'saturday': fields.boolean('Saturday'),
+        # 'sunday': fields.boolean('Sunday'),
     }

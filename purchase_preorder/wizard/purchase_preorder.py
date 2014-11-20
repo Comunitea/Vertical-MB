@@ -110,7 +110,7 @@ class purchase_preorder(osv.Model):
                                                 'supp_service_days_ids',
                                                 type='many2many',
                                                 relation=
-                                                'supplier.service.days',
+                                                'week.days',
                                                 string=
                                                 "Supplier service days"),
         'supp_transport_ids': fields.related('supplier_id',

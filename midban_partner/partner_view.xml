@@ -21,15 +21,64 @@
                 <notebook position="inside">
                     <!-- Suppliers tab. Adds transports and supplier info -->
                     <page string="Suplliers Info" attrs="{'invisible': [('supplier','=',False)]}">
-                        <group string="Information">
-                            <field name="supp_service_days_ids"  widget="many2many_tags"/>
+                        <group>
+                            <field name="reception_method"/>
+                            <group string="Service Days">
+                                <field name="supp_service_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                            <group string="Accept Orders Days">
+                                <field name="supp_accept_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                            <group string="Delivery Orders Time Slot">
+                                <field name="supp_times_delivery" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="time_start"/>
+                                        <field name="time_end"/>
+                                    </tree>
+                                </field>
+                            </group>
                         </group>
+
                         <separator string="Transports"/>
                             <field name="supp_transport_ids">
                             <tree string="Supplier transports">
+                                <field name="name"/>
+                                <field name="npalets"/>
+                                <field name="usable_height"/>
+                            </tree>
+                            <form string="Supplier transports">
+                                <group>
                                     <field name="name"/>
                                     <field name="npalets"/>
                                     <field name="usable_height"/>
+                                </group>
+                            </form>
+                            </field>
+                    </page>
+
+                    <page string="Customers Info" attrs="{'invisible': [('customer','=',False)]}">
+                        <group>
+                            <field name="invoice_method"/>
+                            <field name="group_pickings"/>
+                            <group string="Delivery Days">
+                                <field name="delivery_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                            <group string="Delivery Orders Time Slot">
+                                <field name="times_delivery" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="time_start"/>
+                                        <field name="time_end"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+
+                        <separator string="Transports"/>
+                            <field name="supp_transport_ids">
+                            <tree string="Supplier transports">
+                                <field name="name"/>
+                                <field name="npalets"/>
+                                <field name="usable_height"/>
                             </tree>
                             <form string="Supplier transports">
                                 <group>

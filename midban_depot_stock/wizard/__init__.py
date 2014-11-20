@@ -24,3 +24,4 @@ import route_assign_wizard
 import route_orders_wizard
 import stock_transfer_details
 import create_tag_wizard
+import reset_drop_code_wzd

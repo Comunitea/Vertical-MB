@@ -27,8 +27,7 @@ class route_order_wizard(osv.TransientModel):
     _rec_name = "trans_route_id"
     _columns = {
         'trans_route_id': fields.many2one('route', 'Transport Route',
-                                    required=True,
-                                    domain=[('state', '=', 'active')]),
+                                          domain=[('state', '=', 'active')]),
     }
 
     def view_init(self, cr, uid, fields_list, context=None):
@@ -44,6 +43,11 @@ class route_order_wizard(osv.TransientModel):
         return False
 
     def assign_route(self, cr, uid, ids, context=None):
+        """
+        Change route in one or several orders or picking, change a route in
+        orders must change route in related picking and vice verse.
+        We cange the route in the related procurements too.
+        """
         order_obj = self.pool.get(context['active_model'])
         if context is None:
             context = {}
@@ -51,24 +55,55 @@ class route_order_wizard(osv.TransientModel):
         procurement_obj = self.pool.get('procurement.order')
         move_obj = self.pool.get('stock.move')
         pick_obj = self.pool.get('stock.picking')
+        order_obj = self.pool.get('sale.order')
         obj = self.browse(cr, uid, ids[0], context=context)
-        for order in order_obj.browse(cr, uid, active_ids, context):
-            if context['active_model'] == "sale.order":
-                p_ids = procurement_obj.search(cr, uid,
-                                               [('sale_line_id.order_id', 'in',
-                                                 context['active_ids'])],
-                                               context=context)
-                procurement_obj.write(cr, uid, p_ids,
-                                      {'trans_route_id': obj.trans_route_id.id},
-                                      context=context)
-            elif context['active_model'] == "stock.picking":
-                move_ids = move_obj.search(cr, uid, [('picking_id', 'in',
-                                                      context['active_ids'])],
+        new_route = obj.trans_route_id and obj.trans_route_id.id or False
+        # FOR SALE ORDERS
+        if context['active_model'] == "sale.order":
+            # Update orders
+            order_obj.write(cr, uid, active_ids,
+                            {'trans_route_id': new_route},
+                            context=context)
+            p_ids = procurement_obj.search(cr, uid,
+                                           [('sale_line_id.order_id', 'in',
+                                             active_ids)],
                                            context=context)
-                pick_obj.write(cr, uid, context['active_ids'],
-                               {'trans_route_id': obj.trans_route_id.id},
+            # Update procurement route
+            procurement_obj.write(cr, uid, p_ids,
+                                  {'trans_route_id':
+                                   new_route},
+                                  context=context)
+            # Update related pickings
+            pick_ids = []
+            for so in order_obj.browse(cr, uid, active_ids, context):
+                pick_ids += [picking.id for picking in so.picking_ids]
+            if pick_ids:
+                pick_obj.write(cr, uid, pick_ids,
+                               {'trans_route_id': new_route},
                                context=context)
-                for move in move_obj.browse(cr, uid, move_ids,
-                                            context=context):
-                    move.procurement_id.write({'trans_route_id': obj.trans_route_id.id})
+        # FOR PICKINGS
+        elif context['active_model'] == "stock.picking":
+            move_ids = move_obj.search(cr, uid, [('picking_id', 'in',
+                                                  active_ids)],
+                                       context=context)
+            # Update pickings
+            pick_obj.write(cr, uid, active_ids,
+                           {'trans_route_id': new_route},
+                           context=context)
+             # Update procurement route
+            for move in move_obj.browse(cr, uid, move_ids,
+                                        context=context):
+                move.procurement_id.write({'trans_route_id':
+                                           new_route},
+                                          context=context)
+            # Update related orders
+            so_ids = set()
+            for pick in pick_obj.browse(cr, uid, active_ids, context):
+                if pick.sale_id:
+                    so_ids.add(pick.sale_id.id)
+            so_ids = list(so_ids)
+            if so_ids:
+                order_obj.write(cr, uid, so_ids,
+                                {'trans_route_id': obj.trans_route_id.id},
+                                context=context)
         return

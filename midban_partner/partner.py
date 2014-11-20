@@ -38,9 +38,9 @@ class supplier_transport(osv.Model):
     }
 
 
-class supplier_service_days(osv.Model):
+class week_days(osv.Model):
     """ Week days preloaded model to select the supplier service days"""
-    _name = "supplier.service.days"
+    _name = "week.days"
     _columns = {
         'name': fields.char('Name', size=128, required=True),
     }
@@ -52,6 +52,17 @@ class unregister_partner_reason(osv.Model):
     _name = 'unregister.partner.reason'
     _columns = {
         'name': fields.char('Unregister reason', size=256, required=True),
+    }
+
+
+class time_slot(osv.Model):
+    """ Time slot in suppliers and customers to delivery orders"""
+    _name = "time.slot"
+    _rec_name = "partner_id"
+    _columns = {
+        'partner_id': fields.many2one('res.partner', 'Supplier/Customer'),
+        'time_start': fields.float('Start Time', required=True),
+        'time_end': fields.float('End Time', required=True),
     }
 
 
@@ -114,23 +125,51 @@ class res_partner(osv.Model):
         'unregister_reason_id': fields.many2one('unregister.partner.reason',
                                                 'Unregister Reason',
                                                 readonly=True),
-        'supp_transport_ids': fields.one2many('supplier.transport',
-                                              'supplier_id',
-                                              'Supplier Transports'),
-        'supp_service_days_ids': fields.many2many('supplier.service.days',
-                                                  'supplier_service_days_rel',
-                                                  'partner_id',
-                                                  'service_days_id',
-                                                  'Supplier service days'),
         'restricted_catalog_ids': fields.many2many('product.product',
                                                    'restricted_catalog_rel',
                                                    'partner_id',
                                                    'product_id',
                                                    'Restricted catalog'),
+        'supp_transport_ids': fields.one2many('supplier.transport',
+                                              'supplier_id',
+                                              'Supplier Transports'),
+        'supp_accept_days_ids': fields.many2many('week.days',
+                                                 'accept_week_days_rel',
+                                                 'partner_id',
+                                                 'accept_days_id',
+                                                 'Supplier service days'),
+        'supp_service_days_ids': fields.many2many('week.days',
+                                                  'service_week_days_rel',
+                                                  'partner_id',
+                                                  'service_days_id',
+                                                  'Accept orders days'),
+        'reception_method': fields.selection([('mail', 'Mail'),
+                                              ('edi', 'EDI'),
+                                              ('tlf', 'Tlf'),
+                                              ('fax', 'Fax')],
+                                             string="Reception Method"),
+        'supp_times_delivery': fields.one2many('time.slot', 'partner_id',
+                                               'Delivery Time Slots'),
+        'delivery_days_ids': fields.many2many('week.days',
+                                              'del_week_days_rel',
+                                              'partner_id',
+                                              'del_days_id',
+                                              'Delivery orders days'),
+        'group_pickings': fields.boolean('Group pickings by temperature',
+                                         help="if checked, when prinnting, \
+                                         pickings will be grouped by \
+                                         temperature "),
+        'invoice_method': fields.selection([('a', 'unknow1'),
+                                            ('b', 'unknow2'),
+                                            ('c', 'unknow3')],
+                                           string="Invoice Method"),
+        'times_delivery': fields.one2many('time.slot', 'partner_id',
+                                          'Delivery Time Slots'),
     }
     _defaults = {
         'active': False,  # it's fixed true when you register a product
         'state2': 'val_pending',
+        'reception_method': 'mail',
     }
 
     def create(self, cr, uid, vals, context=None):

@@ -39,7 +39,7 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        'trans_route_id': fields.many2one('route', 'Transport Route', readonly=True),
+        'trans_route_id': fields.many2one('route', 'Transport Route'),
         'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
@@ -75,6 +75,46 @@ class stock_picking(osv.osv):
         for op in self.pack_operation_ids:
             op.unlink()
         self.write({'midban_operations': False})
+
+    def write(self, cr, uid, ids, vals, context=None):
+        """
+        Overwrite to get the route drop code, and update field next_dc of route
+        model.
+        """
+        if context is None:
+            context = {}
+        # import ipdb; ipdb.set_trace()
+        t_route = self.pool.get('route')
+        for pick in self.browse(cr, uid, ids, context=context):
+            if vals.get('trans_route_id', False):
+                route_id = vals['trans_route_id']
+                route_obj = t_route.browse(cr, uid, route_id, context=context)
+                if route_id != pick.trans_route_id.id:
+                    vals.update({'drop_code': route_obj.next_dc})
+                    route_obj.write({'next_dc': route_obj.next_dc + 1})
+            elif 'trans_route_id' in vals:
+                vals.update({'drop_code': 0})
+        res = super(stock_picking, self).write(cr, uid, ids, vals, context)
+        return res
+
+    def create(self, cr, uid, vals, context=None):
+        """
+        Overwrite to get the route drop code, and update field next_dc of route
+        model.
+        """
+        if context is None:
+            context = {}
+        # import ipdb; ipdb.set_trace()
+        t_route = self.pool.get('route')
+        if vals.get('trans_route_id', False):
+            route_id = vals['trans_route_id']
+            route_obj = t_route.browse(cr, uid, route_id, context=context)
+            vals.update({'drop_code': route_obj.next_dc})
+            route_obj.write({'next_dc': route_obj.next_dc + 1})
+        else:
+            vals.update({'drop_code': 0})
+        res = super(stock_picking, self).create(cr, uid, vals, context)
+        return res
 
 
 class stock_package(osv.osv):
@@ -794,7 +834,7 @@ class procurement_order(osv.osv):
 
     _columns = {
         'trans_route_id': fields.many2one('route', 'Transport Route',
-                                    domain=[('state', '=', 'active')]),
+                                          domain=[('state', '=', 'active')]),
     }
 
 
@@ -802,9 +842,11 @@ class stock_move(osv.osv):
     _inherit = "stock.move"
 
     _columns = {
-        'trans_route_id': fields.related('procurement_id', 'trans_route_id', readonly=True,
-                                   string='Transport Route', relation="route",
-                                   type="many2one"),
+        'trans_route_id': fields.related('procurement_id', 'trans_route_id',
+                                         readonly=True,
+                                         string='Transport Route',
+                                         relation="route",
+                                         type="many2one"),
         'real_weight': fields.float('Real weight'),
     }
 
@@ -832,8 +874,8 @@ class stock_move(osv.osv):
                     procurement = proc_obj.browse(cr, uid, procurement,
                                                   context=context)
                     if procurement.trans_route_id:
-                        pick_obj.write(cr, uid, vals['picking_id'],
-                                       {'trans_route_id': procurement.trans_route_id.id},
+                        vls = {'trans_route_id': procurement.trans_route_id.id}
+                        pick_obj.write(cr, uid, vals['picking_id'], vls,
                                        context=context)
         if vals.get('real_weight', False):
             t_uom = self.pool.get('product.uom')
@@ -918,7 +960,7 @@ class stock_picking_wave(osv.osv):
                                            'Picking List', readonly=True),
         'temp_id': fields.many2one('temp.type', 'Temperature'),
         'trans_route_id': fields.many2one('route', 'Transport Route',
-                                    domain=[('state', '=', 'active')]),
+                                          domain=[('state', '=', 'active')]),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
     }
 

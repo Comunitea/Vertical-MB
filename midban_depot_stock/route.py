@@ -32,12 +32,28 @@ class route(osv.Model):
         'vehicle_id': fields.many2one('stock.vehicle', 'Vehicle',
                                       required=True),
         'state': fields.selection([('draft', 'Draft'), ('active', 'Active')],
-                                  string="State", readonly=True)
+                                  string="State", readonly=True),
+        'next_dc': fields.integer('Next Drop Code', readonly=True,
+                                  required=True),
+        # 'monday': fields.boolean('Monday'),
+        # 'tuesday': fields.boolean('Tuesday'),
+        # 'wednesday': fields.boolean('Wednesday'),
+        # 'thursday': fields.boolean('Thursday'),
+        # 'friday': fields.boolean('Friday'),
+        # 'saturday': fields.boolean('Saturday'),
+        # 'sunday': fields.boolean('Sunday'),
     }
 
     _defaults = {
-        'state': 'draft'
+        'state': 'draft',
+        'next_dc': 1,
     }
 
     def set_active(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'active'}, context=context)
+
+    def set_draft(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'draft'}, context=context)
+
+    def reset_drop_code(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'next_dc': '1'}, context=context)

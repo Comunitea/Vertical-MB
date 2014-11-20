@@ -11,6 +11,7 @@
                     <field name="name"/>
                     <field name="vehicle_id"/>
                     <field name="state"/>
+                    <field name="next_dc"/>
                 </tree>
             </field>
         </record>
@@ -21,6 +22,7 @@
                 <form string="Routes">
                     <header>
                         <button name="set_active" type="object" string="Active" icon="gtk-ok" states="draft" class="oe_highlight" groups="midban_depot_stock.transport_routes_manager"/>
+                        <button name="set_draft" type="object" string="Return Draft" icon="gtk-ok" states="active" groups="midban_depot_stock.transport_routes_manager"/>
                         <field name="state" widget="statusbar" nolabel="1"/>
                     </header>
                     <sheet>
@@ -28,7 +30,18 @@
                             <field name="code"/>
                             <field name="name"/>
                             <field name="vehicle_id"/>
+                            <field name="next_dc"/>
+                            <button name="reset_drop_code" type="object" string="Reset" class="oe_link oe_inline" states="active" groups="midban_depot_stock.transport_routes_manager"/>
                         </group>
+  <!--                       <group string="Route Days">
+                            <field name="monday"/>
+                            <field name="tuesday"/>
+                            <field name="wednesday"/>
+                            <field name="thursday"/>
+                            <field name="friday"/>
+                            <field name="saturday"/>
+                            <field name="sunday"/>
+                        </group> -->
                     </sheet>
                 </form>
             </field>

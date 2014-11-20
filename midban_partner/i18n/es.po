@@ -69,9 +69,9 @@ msgid "Unregister partner and update the associated reasons"
 msgstr "Dar de baja y crear el motivo asociado"
 
 #. module: midban_partner
-#: model:ir.model,name:midban_partner.model_supplier_service_days
-msgid "supplier.service.days"
-msgstr "supplier.service.days"
+#: model:ir.model,name:midban_partner.model_week_days
+msgid "week.days"
+msgstr "week.days"
 
 #. module: midban_partner
 #: field:supplier.transport,usable_height:0
@@ -180,7 +180,7 @@ msgid "Supplier Contract template"
 msgstr "Plantilla contrato del proveedor "
 
 #. module: midban_partner
-#: field:supplier.service.days,name:0
+#: field:week.days,name:0
 #: field:supplier.transport,name:0
 msgid "Name"
 msgstr "Nombre"
