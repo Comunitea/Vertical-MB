@@ -18,12 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import fields, osv
+# from openerp.osv import fields, osv
 
 
-class purchase_order(osv.Model):
-    _inherit = "purchase.order"
+# class purchase_order(osv.Model):
+#     _inherit = "purchase.order"
 
-    _columns = {
-        'drop_code': fields.integer('Drop Code', readonly=True),
-    }
+#     _columns = {
+#         'drop_code': fields.integer('Drop Code', readonly=True),
+#     }
