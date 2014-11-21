@@ -868,7 +868,8 @@ class stock_move(osv.osv):
                 if vals.get('procurement_id', False):
                     procurement = vals['procurement_id']
                 else:
-                    procurement = move.procurement_id.id
+                    procurement = move.procurement_id and \
+                        move.procurement_id.id or False
 
                 if procurement:
                     procurement = proc_obj.browse(cr, uid, procurement,
