@@ -33,15 +33,9 @@
                             <field name="next_dc"/>
                             <button name="reset_drop_code" type="object" string="Reset" class="oe_link oe_inline" states="active" groups="midban_depot_stock.transport_routes_manager"/>
                         </group>
-  <!--                       <group string="Route Days">
-                            <field name="monday"/>
-                            <field name="tuesday"/>
-                            <field name="wednesday"/>
-                            <field name="thursday"/>
-                            <field name="friday"/>
-                            <field name="saturday"/>
-                            <field name="sunday"/>
-                        </group> -->
+                        <group string="Route Days">
+                            <field name="route_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                        </group>
                     </sheet>
                 </form>
             </field>

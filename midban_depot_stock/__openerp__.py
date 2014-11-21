@@ -38,6 +38,7 @@
         "sale",
         "procurement",
         "product",
+        "midban_partner",
         "midban_product",
         "midban_issue",
     ],

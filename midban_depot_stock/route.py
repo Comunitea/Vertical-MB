@@ -35,13 +35,11 @@ class route(osv.Model):
                                   string="State", readonly=True),
         'next_dc': fields.integer('Next Drop Code', readonly=True,
                                   required=True),
-        # 'monday': fields.boolean('Monday'),
-        # 'tuesday': fields.boolean('Tuesday'),
-        # 'wednesday': fields.boolean('Wednesday'),
-        # 'thursday': fields.boolean('Thursday'),
-        # 'friday': fields.boolean('Friday'),
-        # 'saturday': fields.boolean('Saturday'),
-        # 'sunday': fields.boolean('Sunday'),
+        'route_days_ids': fields.many2many('week.days',
+                                           'routedays_week_days_rel',
+                                           'route_id',
+                                           'route_days_id',
+                                           'Route Days'),
     }
 
     _defaults = {

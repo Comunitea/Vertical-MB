@@ -43,6 +43,7 @@ class week_days(osv.Model):
     _name = "week.days"
     _columns = {
         'name': fields.char('Name', size=128, required=True),
+        'sequence': fields.integer('Nº day', required=True),
     }
 
 
