@@ -73,9 +73,9 @@ class route_order_wizard(osv.TransientModel):
                          {'trans_route_id': new_route},
                          context=context)
             # Update related pickings
-            pick_ids = []
+            # pick_ids = []
             for so in order_obj.browse(cr, uid, active_ids, context):
-                pick_ids += [picking.id for picking in so.picking_ids]
+                # pick_ids += [picking.id for picking in so.picking_ids]
                 if so.group_id:
                     group_id = so.group_id.id
                     proc_ids = t_proc.search(cr, uid,
@@ -92,19 +92,19 @@ class route_order_wizard(osv.TransientModel):
                             t_pick.write(cr, uid,
                                          {'trans_route_id': new_route},
                                          context=context)
-            if pick_ids:
-                t_pick.write(cr, uid, pick_ids,
-                             {'trans_route_id': new_route},
-                             context=context)
+            # if pick_ids:
+            #     t_pick.write(cr, uid, pick_ids,
+            #                  {'trans_route_id': new_route},
+            #                  context=context)
         # FOR PICKINGS
         elif context['active_model'] == "stock.picking":
             move_ids = move_obj.search(cr, uid, [('picking_id', 'in',
                                                   active_ids)],
                                        context=context)
             # Update pickings
-            t_pick.write(cr, uid, active_ids,
-                         {'trans_route_id': new_route},
-                         context=context)
+            # t_pick.write(cr, uid, active_ids,
+            #              {'trans_route_id': new_route},
+            #              context=context)
              # Update procurement route
             for move in move_obj.browse(cr, uid, move_ids,
                                         context=context):
@@ -112,6 +112,7 @@ class route_order_wizard(osv.TransientModel):
                                            new_route},
                                           context=context)
             # Update related orders
+            # import ipdb; ipdb.set_trace()
             so_ids = set()
             for pick in t_pick.browse(cr, uid, active_ids, context):
                 if pick.sale_id:
