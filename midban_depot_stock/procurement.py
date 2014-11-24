@@ -18,18 +18,14 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import stock
-import procurement
-import stock_machine
-import stock_task
-import res_users
-import wizard
-import product
-import stock_vehicle
-import route
-import partner
-import sale
-import stock
-import purchase
-import report
-import tag
+from openerp.osv import osv, fields
+
+
+class procurement_order(osv.osv):
+    _inherit = "procurement.order"
+
+    _columns = {
+        'trans_route_id': fields.many2one('route', 'Transport Route',
+                                          domain=[('state', '=', 'active')]),
+        'drop_code': fields.integer('Drop code', readonly=True),
+    }

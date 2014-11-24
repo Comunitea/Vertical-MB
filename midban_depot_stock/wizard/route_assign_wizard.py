@@ -37,7 +37,8 @@ class route_assign_wizard(osv.TransientModel):
     }
 
     def assign_route(self, cr, uid, ids, context=None):
-        pick_t = self.pool.get('stock.picking')
+        t_pick = self.pool.get('stock.picking')
+        t_proc = self.pool.get('procurement.order')
         if context is None:
             context = {}
 
@@ -50,11 +51,34 @@ class route_assign_wizard(osv.TransientModel):
             ('picking_type_id.code', 'in', ['outgoing', 'internal']),
             ('partner_id', '!=', False)
         ]
-        model_ids = pick_t.search(cr, uid, domain, context=context)
-        for pick in pick_t.browse(cr, uid, model_ids, context):
+        model_ids = t_pick.search(cr, uid, domain, context=context)
+        for pick in t_pick.browse(cr, uid, model_ids, context):
             if pick.partner_id.trans_route_id:
-                pick.write({'trans_route_id': pick.partner_id.trans_route_id.id})
+                pick.write({'trans_route_id':
+                            pick.partner_id.trans_route_id.id})
+                if pick.sale_id:
+                    pick.sale_id.write({'trans_route_id':
+                                       pick.partner_id.trans_route_id.id})
                 for move in pick.move_lines:
-                    move.procurement_id.write({'trans_route_id':
-                                               pick.partner_id.trans_route_id.id})
+                    move.procurement_id.write({
+                        'trans_route_id':
+                        pick.partner_id.trans_route_id.id})
+                if pick.group_id:
+                    group_id = pick.group_id.id
+                    proc_ids = t_proc.search(cr, uid,
+                                             [('group_id', '=', group_id)],
+                                             context=context)
+                    if proc_ids:
+                        t_proc.write(cr, uid, proc_ids,
+                                     {'trans_route_id':
+                                      pick.partner_id.trans_route_id.id},
+                                     context=context)
+                        pick_ids = t_pick.search(cr, uid,
+                                                 [('group_id', '=', group_id)],
+                                                 context=context)
+                        if pick_ids:
+                            t_pick.write(cr, uid,
+                                         {'trans_route_id':
+                                          pick.partner_id.trans_route_id.id},
+                                         context=context)
         return

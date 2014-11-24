@@ -28,13 +28,13 @@ class sale_order(osv.Model):
 
     _columns = {
         'trans_route_id': fields.many2one('route', 'Transport Route',
-                                    domain=[('state', '=', 'active')],
-                                    readonly=True, states={'draft':
-                                                           [('readonly',
-                                                             False)],
-                                                           'sent':
-                                                           [('readonly',
-                                                             False)]}),
+                                          domain=[('state', '=', 'active')],
+                                          readonly=True, states={'draft':
+                                                                 [('readonly',
+                                                                   False)],
+                                                                 'sent':
+                                                                 [('readonly',
+                                                                   False)]}),
     }
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
@@ -58,7 +58,10 @@ class sale_order(osv.Model):
         res = super(sale_order, self).\
             _prepare_order_line_procurement(cr, uid, order, line,
                                             group_id=group_id, context=context)
-        res['trans_route_id'] = order.trans_route_id.id
+        res['trans_route_id'] = order.trans_route_id and \
+            order.trans_route_id.id or False
+        res['drop_code'] = order.trans_route_id and \
+            order.trans_route_id.next_dc or 0
         return res
 
 

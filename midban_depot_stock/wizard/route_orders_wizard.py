@@ -52,9 +52,9 @@ class route_order_wizard(osv.TransientModel):
         if context is None:
             context = {}
         active_ids = context.get('active_ids', [])
-        procurement_obj = self.pool.get('procurement.order')
+        t_proc = self.pool.get('procurement.order')
         move_obj = self.pool.get('stock.move')
-        pick_obj = self.pool.get('stock.picking')
+        t_pick = self.pool.get('stock.picking')
         order_obj = self.pool.get('sale.order')
         obj = self.browse(cr, uid, ids[0], context=context)
         new_route = obj.trans_route_id and obj.trans_route_id.id or False
@@ -64,32 +64,47 @@ class route_order_wizard(osv.TransientModel):
             order_obj.write(cr, uid, active_ids,
                             {'trans_route_id': new_route},
                             context=context)
-            p_ids = procurement_obj.search(cr, uid,
-                                           [('sale_line_id.order_id', 'in',
-                                             active_ids)],
-                                           context=context)
-            # Update procurement route
-            procurement_obj.write(cr, uid, p_ids,
-                                  {'trans_route_id':
-                                   new_route},
+            p_ids = t_proc.search(cr, uid,
+                                  [('sale_line_id.order_id', 'in',
+                                    active_ids)],
                                   context=context)
+            # Update procurement route
+            t_proc.write(cr, uid, p_ids,
+                         {'trans_route_id': new_route},
+                         context=context)
             # Update related pickings
             pick_ids = []
             for so in order_obj.browse(cr, uid, active_ids, context):
                 pick_ids += [picking.id for picking in so.picking_ids]
+                if so.group_id:
+                    group_id = so.group_id.id
+                    proc_ids = t_proc.search(cr, uid,
+                                             [('group_id', '=', group_id)],
+                                             context=context)
+                    if proc_ids:
+                        t_proc.write(cr, uid,
+                                     {'trans_route_id': new_route},
+                                     context=context)
+                        pick_ids = t_pick.search(cr, uid,
+                                                 [('group_id', '=', group_id)],
+                                                 context=context)
+                        if pick_ids:
+                            t_pick.write(cr, uid,
+                                         {'trans_route_id': new_route},
+                                         context=context)
             if pick_ids:
-                pick_obj.write(cr, uid, pick_ids,
-                               {'trans_route_id': new_route},
-                               context=context)
+                t_pick.write(cr, uid, pick_ids,
+                             {'trans_route_id': new_route},
+                             context=context)
         # FOR PICKINGS
         elif context['active_model'] == "stock.picking":
             move_ids = move_obj.search(cr, uid, [('picking_id', 'in',
                                                   active_ids)],
                                        context=context)
             # Update pickings
-            pick_obj.write(cr, uid, active_ids,
-                           {'trans_route_id': new_route},
-                           context=context)
+            t_pick.write(cr, uid, active_ids,
+                         {'trans_route_id': new_route},
+                         context=context)
              # Update procurement route
             for move in move_obj.browse(cr, uid, move_ids,
                                         context=context):
@@ -98,9 +113,25 @@ class route_order_wizard(osv.TransientModel):
                                           context=context)
             # Update related orders
             so_ids = set()
-            for pick in pick_obj.browse(cr, uid, active_ids, context):
+            for pick in t_pick.browse(cr, uid, active_ids, context):
                 if pick.sale_id:
                     so_ids.add(pick.sale_id.id)
+                if pick.group_id:
+                    group_id = pick.group_id.id
+                    proc_ids = t_proc.search(cr, uid,
+                                             [('group_id', '=', group_id)],
+                                             context=context)
+                    if proc_ids:
+                        t_proc.write(cr, uid, proc_ids,
+                                     {'trans_route_id': new_route},
+                                     context=context)
+                        pick_ids = t_pick.search(cr, uid,
+                                                 [('group_id', '=', group_id)],
+                                                 context=context)
+                        if pick_ids:
+                            t_pick.write(cr, uid, pick_ids,
+                                         {'trans_route_id': new_route},
+                                         context=context)
             so_ids = list(so_ids)
             if so_ids:
                 order_obj.write(cr, uid, so_ids,

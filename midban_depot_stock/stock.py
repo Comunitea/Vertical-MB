@@ -39,7 +39,8 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        'trans_route_id': fields.many2one('route', 'Transport Route'),
+        'trans_route_id': fields.many2one('route', 'Transport Route',
+                                          readonly=True),
         'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
         'drop_code': fields.integer('Drop Code', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
@@ -85,15 +86,31 @@ class stock_picking(osv.osv):
             context = {}
         # import ipdb; ipdb.set_trace()
         t_route = self.pool.get('route')
+        t_proc = self.pool.get('procurement.order')
         for pick in self.browse(cr, uid, ids, context=context):
-            if vals.get('trans_route_id', False):
+            assigned_dc = 0
+            route_id = vals.get('trans_route_id', False)
+            if route_id:
                 route_id = vals['trans_route_id']
                 route_obj = t_route.browse(cr, uid, route_id, context=context)
                 if route_id != pick.trans_route_id.id:
                     vals.update({'drop_code': route_obj.next_dc})
+                    assigned_dc = route_obj.next_dc
                     route_obj.write({'next_dc': route_obj.next_dc + 1})
             elif 'trans_route_id' in vals:
                 vals.update({'drop_code': 0})
+
+            # for move in pick.move_lines:
+            #     if move.procurement_id:
+            #         move.procurement_id.write({'drop_code': assigned_dc})
+            if pick.group_id:
+                proc_ids = t_proc.search(cr, uid,
+                                         [('group_id', '=', pick.group_id.id)],
+                                         context=context)
+                if proc_ids and route_id != pick.trans_route_id.id:
+                    t_proc.write(cr, uid, proc_ids, {'drop_code': assigned_dc},
+                                 context=context)
+
         res = super(stock_picking, self).write(cr, uid, ids, vals, context)
         return res
 
@@ -106,14 +123,28 @@ class stock_picking(osv.osv):
             context = {}
         # import ipdb; ipdb.set_trace()
         t_route = self.pool.get('route')
-        if vals.get('trans_route_id', False):
-            route_id = vals['trans_route_id']
+        t_proc = self.pool.get('procurement.order')
+        assigned_dc = 0
+        route_id = vals.get('trans_route_id', False)
+        if route_id:
             route_obj = t_route.browse(cr, uid, route_id, context=context)
             vals.update({'drop_code': route_obj.next_dc})
+            assigned_dc = route_obj.next_dc
             route_obj.write({'next_dc': route_obj.next_dc + 1})
         else:
             vals.update({'drop_code': 0})
         res = super(stock_picking, self).create(cr, uid, vals, context)
+        pick = self.browse(cr, uid, res, context=context)
+        # for move in pick.move_lines:
+        #     if move.procurement_id:
+        #         move.procurement_id.write({'drop_code': assigned_dc})
+        if pick.group_id:
+            proc_ids = t_proc.search(cr, uid,
+                                     [('group_id', '=', pick.group_id.id)],
+                                     context=context)
+            if proc_ids:
+                t_proc.write(cr, uid, proc_ids, {'drop_code': assigned_dc},
+                             context=context)
         return res
 
 
@@ -829,15 +860,6 @@ class stock_location(osv.Model):
     }
 
 
-class procurement_order(osv.osv):
-    _inherit = "procurement.order"
-
-    _columns = {
-        'trans_route_id': fields.many2one('route', 'Transport Route',
-                                          domain=[('state', '=', 'active')]),
-    }
-
-
 class stock_move(osv.osv):
     _inherit = "stock.move"
 
@@ -847,13 +869,17 @@ class stock_move(osv.osv):
                                          string='Transport Route',
                                          relation="route",
                                          type="many2one"),
+        'drop_code': fields.related('procurement_id', 'drop_code',
+                                    type='integer', readonly=True),
         'real_weight': fields.float('Real weight'),
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
         res = super(stock_move, self).\
             _prepare_procurement_from_move(cr, uid, move, context=context)
-        res['trans_route_id'] = move.trans_route_id.id
+        route_id = move.trans_route_id and move.trans_route_id.id or False
+        res['trans_route_id'] = route_id
+        res['drop_code'] = move.drop_code
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
