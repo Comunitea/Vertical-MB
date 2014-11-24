@@ -96,7 +96,7 @@ class stock_picking(osv.osv):
                 if route_id != pick.trans_route_id.id:
                     vals.update({'drop_code': route_obj.next_dc})
                     assigned_dc = route_obj.next_dc
-                    route_obj.write({'next_dc': route_obj.next_dc + 1})
+                    route_obj.write({'next_dc': assigned_dc})
             elif 'trans_route_id' in vals:
                 vals.update({'drop_code': 0})
 
@@ -130,7 +130,7 @@ class stock_picking(osv.osv):
             route_obj = t_route.browse(cr, uid, route_id, context=context)
             vals.update({'drop_code': route_obj.next_dc})
             assigned_dc = route_obj.next_dc
-            route_obj.write({'next_dc': route_obj.next_dc + 1})
+            route_obj.write({'next_dc': assigned_dc})
         else:
             vals.update({'drop_code': 0})
         res = super(stock_picking, self).create(cr, uid, vals, context)

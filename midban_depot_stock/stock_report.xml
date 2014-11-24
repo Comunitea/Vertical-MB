@@ -37,6 +37,15 @@
             file="midban_depot_stock.report_delivery_list" 
         />
 
+        <report 
+            string="Supplier Report" 
+            id="action_report_supplier_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_supplier_order" 
+            file="midban_depot_stock.report_supplier_order" 
+        />
+
 
     </data>
 </openerp>
