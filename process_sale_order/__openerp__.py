@@ -38,6 +38,7 @@
                 "product",
                 "product_expiry",
                 "sale",
+                "sale_stock",
                 "midban_depot_stock"],
     "data": [
         'product_view.xml',

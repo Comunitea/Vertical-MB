@@ -75,7 +75,6 @@ class sale_order_line(osv.Model):
                                   packaging=False, fiscal_position=False,
                                   flag=False, warehouse_id=False,
                                   context=None):
-        import ipdb; ipdb.set_trace()
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
         product_obj = self.pool.get('product.product')
@@ -89,7 +88,9 @@ class sale_order_line(osv.Model):
                                              date_order=date_order,
                                              packaging=packaging,
                                              fiscal_position=fiscal_position,
-                                             flag=flag, context=context)
+                                             flag=flag,
+                                             warehouse_id=warehouse_id,
+                                             context=context)
 
         # Compare stock agains virtual_stock_conservative
         prod_obj = product_obj.browse(cr, uid, product, context=context)

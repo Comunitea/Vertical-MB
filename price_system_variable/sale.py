@@ -73,7 +73,6 @@ class sale_order_line(osv.osv):
         that model. Also search for specific_customer_prices. If someone was
         found return as price_unit the especific price
         """
-        import ipdb; ipdb.set_trace()
         sup = super(sale_order_line, self)
         res = sup.product_id_change(cr, uid, ids, pricelist, product,
                                     qty=qty, uom=uom, qty_uos=qty_uos, uos=uos,

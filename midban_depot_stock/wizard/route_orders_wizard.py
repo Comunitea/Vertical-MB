@@ -67,7 +67,6 @@ class route_order_wizard(osv.TransientModel):
         elif context['active_model'] == "stock.picking":
             model = t_pick
         if model:
-            # import ipdb; ipdb.set_trace()
             for model_obj in model.browse(cr, uid, active_ids, context):
                 so_ids = set()
                 group_id = False

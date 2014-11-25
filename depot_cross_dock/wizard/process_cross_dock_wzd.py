@@ -112,7 +112,6 @@ class process_cross_dock_wzd(osv.TransientModel):
         """
         if context is None:
             context = {}
-        # import ipdb; ipdb.set_trace()
         t_proc = self.pool.get('procurement.order')
         proc_ids = []
         purchase_ids = []

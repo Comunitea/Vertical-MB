@@ -28,34 +28,6 @@ import math
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
 
-    # def _search_trans_route(self, cr, uid, obj, name, args, context=None):
-    #     if context is None:
-    #         context = {}
-    #     sel_pick_ids = []
-    #     import ipdb; ipdb.set_trace()
-    #     route_id = args and args[0][2] or False
-    #     pick_ids = obj.search(cr, uid, [], context=context)
-    #     for pick in obj.browse(cr, uid, pick_ids, context=context):
-    #         if pick.trans_route_id:
-    #             if pick.trans_route_id.id == route_id or \
-    #                     (not pick.trans_route_id and not route_id):
-    #                 sel_pick_ids.append(pick.id)
-    #     res = [('id', 'in', sel_pick_ids)]
-    #     import ipdb; ipdb.set_trace()
-    #     return res
-
-    # def _get_trans_route_id(self, cr, uid, ids, name, args, context=None):
-    #     """ Function search to use filled % like a filter. """
-    #     if context is None:
-    #         context = {}
-    #     res = {}
-    #     for pick in self.browse(cr, uid, ids, context=context):
-    #         if pick.move_lines and pick.move_lines[0].procurement_id and \
-    #                 pick.move_lines[0].procurement_id.trans_route_id:
-    #             res[pick.id] = \
-    #                 pick.move_lines[0].procurement_id.trans_route_id.id
-    #     return res
-
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        readonly=True,
@@ -71,25 +43,13 @@ class stock_picking(osv.osv):
         'trans_route_id': fields.many2one('route', 'Transport Route',
                                           readonly=True),
         'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
-        # 'drop_code': fields.integer('Drop Code', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
         'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
                                           'Delivery List', readonly=True),
-        # 'trans_route_id': fields.related('move_lines', 'procurement_id',
-        #                                  'trans_route_id',
-        #                                  readonly=True,
-        #                                  string='Transport Route',
-        #                                  relation="route",
-        #                                  type="many2one"),
         'drop_code': fields.related('move_lines', 'procurement_id',
                                     'drop_code', type="integer",
                                     string="Drop Code",
                                     readonly=True),
-        # 'trans_route_id': fields.function(_get_trans_route_id, type="many2one",
-        #                                   relation="route",
-        #                                   string="Transport Route",
-        #                                   fnct_search=_search_trans_route),
-
     }
 
     @api.cr_uid_ids_context

@@ -27,7 +27,6 @@
     "website": "www.pexego.es",
     "description": """
     This module allows to manage variable prices and product pricelist.
-    ==================================
     Defines the following pricelist based type rules:
     'Variable Price'
     'Change supplier costs'

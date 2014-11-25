@@ -229,7 +229,6 @@ class sale_order_line(osv.osv):
             context = {}
         sup = super(sale_order_line, self)
         t_product = self.pool.get('product.product')
-        import ipdb; ipdb.set_trace()
         res = sup.product_id_change(cr, uid, ids, pricelist, product,
                                     qty=qty, uom=uom, qty_uos=qty_uos, uos=uos,
                                     name=name, partner_id=partner_id,

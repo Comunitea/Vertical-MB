@@ -72,18 +72,22 @@ class sale_order_line(models.Model):
                 self.product_uom_qty
         return
 
-    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
-                          uom=False, qty_uos=0, uos=False, name='',
-                          partner_id=False, lang=False, update_tax=True,
-                          date_order=False, packaging=False,
-                          fiscal_position=False, flag=False,
-                          choose_unit='unit', context=None):
+    def product_id_change_with_wh2(self, cr, uid, ids, pricelist, product,
+                                  qty=0,
+                                  uom=False, qty_uos=0, uos=False, name='',
+                                  partner_id=False, lang=False,
+                                  update_tax=True,
+                                  date_order=False,
+                                  packaging=False,
+                                  fiscal_position=False, flag=False,
+                                  warehouse_id=False,
+                                  choose_unit='unit', context=None):
         """
+        We overwrite with this name because of midban_depot_stock dependency.
         If we have seted minumum unit of sale, we will call product_id_change
         of price_system_variable module with a 'sale_in_boxes' context in order
         to apply the box_discount field of product to the pricelist price.
         """
-        import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         else:
@@ -101,16 +105,21 @@ class sale_order_line(models.Model):
                     context2[key] = context[key]
                 context2.update({'sale_in_boxes': True})
             my_context = context2 and context2 or context
-            sup = super(sale_order_line, self)
-            res = sup.product_id_change(cr, uid, ids, pricelist, product,
-                                        qty=qty, uom=uom, qty_uos=qty_uos,
-                                        uos=uos, name=name,
-                                        partner_id=partner_id,
-                                        lang=lang, update_tax=update_tax,
-                                        date_order=date_order,
-                                        packaging=packaging,
-                                        fiscal_position=fiscal_position,
-                                        flag=flag, context=my_context)
+            # sup = super(sale_order_line, self)
+            res = self.product_id_change_with_wh(cr, uid, ids, pricelist,
+                                                product, qty=qty, uom=uom,
+                                                qty_uos=qty_uos, uos=uos,
+                                                name=name,
+                                                partner_id=partner_id,
+                                                lang=lang,
+                                                update_tax=update_tax,
+                                                date_order=date_order,
+                                                packaging=packaging,
+                                                fiscal_position=
+                                                fiscal_position,
+                                                flag=flag,
+                                                warehouse_id=warehouse_id,
+                                                context=my_context)
             if min_unit == 'unit' or \
                     (min_unit == 'both' and choose_unit == 'unit'):
                 res['value']['product_uos_qty'] = qty
