@@ -75,6 +75,7 @@ class sale_order_line(osv.Model):
                                   packaging=False, fiscal_position=False,
                                   flag=False, warehouse_id=False,
                                   context=None):
+        import ipdb; ipdb.set_trace()
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
         product_obj = self.pool.get('product.product')

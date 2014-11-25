@@ -32,15 +32,16 @@
     "depends": [
         "base",
         "stock",
+        "sale",
         "sale_stock",
         "procurement_jit",
         "stock_picking_wave",
-        "sale",
         "procurement",
         "product",
         "midban_partner",
         "midban_product",
         "midban_issue",
+        "price_system_variable",
     ],
     "data": [
         'res_users_view.xml',

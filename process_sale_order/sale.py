@@ -83,6 +83,7 @@ class sale_order_line(models.Model):
         of price_system_variable module with a 'sale_in_boxes' context in order
         to apply the box_discount field of product to the pricelist price.
         """
+        import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         else:

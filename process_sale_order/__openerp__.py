@@ -38,9 +38,7 @@
                 "product",
                 "product_expiry",
                 "sale",
-                "price_system_variable",
-                "midban_depot_stock",
-                "telesale"],
+                "midban_depot_stock"],
     "data": [
         'product_view.xml',
         'sale_view.xml',
