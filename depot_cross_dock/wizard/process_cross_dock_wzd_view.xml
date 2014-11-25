@@ -8,11 +8,9 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Create Cross Dock Purchases">
-                    <sheet>
-                        <group string="Types of Products">
-                            <field name="mode"/>
-                        </group>
-                    </sheet>
+                    <group string="Types of Products">
+                        <field name="mode"/>
+                    </group>
                     <footer>
                         <button name="create_delayed_purchases" string="Create Purchases" type="object" class="oe_highlight"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
@@ -20,7 +18,23 @@
                  </form>
             </field>
         </record>
-
+        <record id="reset_drop_code_wzd_view" model="ir.ui.view">
+            <field name="name">reset.drop.code.wzd.view</field>
+            <field name="model">reset.drop.code.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Reset Route Drop Codes">
+                    <p>
+                        Reset the counter of drop codes in all active transport routes
+                    </p>
+                    <footer>
+                        <button name="reset_all_drop_codes" string="Reset Drop Codes" type="object"  class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                 </form>
+            </field>
+        </record>
         <record id="action_process_cross_dock_wzd" model="ir.actions.act_window">
             <field name="name">Print Tags</field>
             <field name="type">ir.actions.act_window</field>

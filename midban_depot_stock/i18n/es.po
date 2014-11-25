@@ -701,7 +701,7 @@ msgstr "Precio neto"
 #. module: midban_depot_stock
 #: field:route,next_dc:0
 msgid "Next Drop Code"
-msgstr "Next Drop Code"
+msgstr "Siguiente Drop Code"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/stock.py:263

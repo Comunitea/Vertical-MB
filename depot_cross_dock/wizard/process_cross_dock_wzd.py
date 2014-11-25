@@ -38,7 +38,7 @@ class process_cross_dock_wzd(osv.TransientModel):
                                  or for both of them")
 
     }
-    _default = {
+    _defaults = {
         'mode': 'both',
     }
 
