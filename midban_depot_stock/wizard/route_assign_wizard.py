@@ -59,10 +59,6 @@ class route_assign_wizard(osv.TransientModel):
                 if pick.sale_id:
                     pick.sale_id.write({'trans_route_id':
                                        pick.partner_id.trans_route_id.id})
-                for move in pick.move_lines:
-                    move.procurement_id.write({
-                        'trans_route_id':
-                        pick.partner_id.trans_route_id.id})
                 if pick.group_id:
                     group_id = pick.group_id.id
                     proc_ids = t_proc.search(cr, uid,
