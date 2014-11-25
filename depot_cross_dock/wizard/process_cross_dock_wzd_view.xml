@@ -8,7 +8,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Create Cross Dock Purchases">
-                    <group string="Types of Products">
+                    <group>
                         <field name="mode"/>
                     </group>
                     <footer>
@@ -36,7 +36,7 @@
             </field>
         </record>
         <record id="action_process_cross_dock_wzd" model="ir.actions.act_window">
-            <field name="name">Print Tags</field>
+            <field name="name">Create Cross Dock Purchases</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">process.cross.dock.wzd</field>
             <field name="view_type">form</field>

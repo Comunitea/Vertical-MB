@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-25 11:58+0000\n"
-"PO-Revision-Date: 2014-11-25 11:58+0000\n"
+"POT-Creation-Date: 2014-11-25 12:54+0000\n"
+"PO-Revision-Date: 2014-11-25 12:54+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,7 @@ msgstr "Comprar después"
 
 #. module: depot_cross_dock
 #: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -32,6 +33,7 @@ msgid "Choose if you want to create purchase                                  or
 msgstr "Elige si quieres crear compras para productos de midban o para productos de proveedores cross dock o para ambos"
 
 #. module: depot_cross_dock
+#: model:ir.actions.act_window,name:depot_cross_dock.action_process_cross_dock_wzd
 #: model:ir.ui.menu,name:depot_cross_dock.action_process_cross_wzd_menu
 #: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
 msgid "Create Cross Dock Purchases"
@@ -55,7 +57,7 @@ msgstr "creado por"
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_date:0
 msgid "Created on"
-msgstr "creado el"
+msgstr "Creado el"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
@@ -111,11 +113,6 @@ msgid "Partner"
 msgstr "Empresa"
 
 #. module: depot_cross_dock
-#: model:ir.actions.act_window,name:depot_cross_dock.action_process_cross_dock_wzd
-msgid "Print Tags"
-msgstr "Imprimir etiquetas"
-
-#. module: depot_cross_dock
 #: model:ir.model,name:depot_cross_dock.model_procurement_order
 msgid "Procurement"
 msgstr "Abastecimiento"
@@ -131,9 +128,19 @@ msgid "Regularor"
 msgstr "Regularor"
 
 #. module: depot_cross_dock
-#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
-msgid "Types of Products"
-msgstr "Tipos de productos"
+#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
+msgid "Reset Drop Codes"
+msgstr "Reiniciar Drop Codes"
+
+#. module: depot_cross_dock
+#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
+msgid "Reset Route Drop Codes"
+msgstr "Reiniciar Drop Codes Ruta"
+
+#. module: depot_cross_dock
+#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
+msgid "Reset the counter of drop codes in all active transport routes"
+msgstr "Reinicia el contador de drop codes para todas las rutas de transporte activas"
 
 #. module: depot_cross_dock
 #: help:res.partner,regulator:0
