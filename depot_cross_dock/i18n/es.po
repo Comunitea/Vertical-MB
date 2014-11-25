@@ -1,0 +1,142 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* depot_cross_dock
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-25 11:58+0000\n"
+"PO-Revision-Date: 2014-11-25 11:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: depot_cross_dock
+#: view:procurement.order:depot_cross_dock.view_procurement_filter_add_buy_later
+#: field:procurement.order,buy_later:0
+msgid "Buy later"
+msgstr "Comprar después"
+
+#. module: depot_cross_dock
+#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: depot_cross_dock
+#: help:process.cross.dock.wzd,mode:0
+msgid "Choose if you want to create purchase                                  orders for MIDBAN, for cross-dock supplier                                  or for both of them"
+msgstr "Elige si quieres crear compras para productos de midban o para productos de proveedores cross dock o para ambos"
+
+#. module: depot_cross_dock
+#: model:ir.ui.menu,name:depot_cross_dock.action_process_cross_wzd_menu
+#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+msgid "Create Cross Dock Purchases"
+msgstr "Crear Compras Cross Dock"
+
+#. module: depot_cross_dock
+#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+msgid "Create Purchases"
+msgstr "Crear Compras"
+
+#. module: depot_cross_dock
+#: field:process.cross.dock.wzd,mode:0
+msgid "Create purchases for"
+msgstr "Crear compras para"
+
+#. module: depot_cross_dock
+#: field:process.cross.dock.wzd,create_uid:0
+msgid "Created by"
+msgstr "creado por"
+
+#. module: depot_cross_dock
+#: field:process.cross.dock.wzd,create_date:0
+msgid "Created on"
+msgstr "creado el"
+
+#. module: depot_cross_dock
+#: selection:process.cross.dock.wzd,mode:0
+msgid "Cross Docks products"
+msgstr "Productos Cross Dock"
+
+#. module: depot_cross_dock
+#: code:addons/depot_cross_dock/procurement.py:36
+#, python-format
+msgid "Delayed Buy"
+msgstr "Compra Retrasada"
+
+#. module: depot_cross_dock
+#: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:139
+#, python-format
+msgid "Error!"
+msgstr "Error!"
+
+#. module: depot_cross_dock
+#: field:process.cross.dock.wzd,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: depot_cross_dock
+#: field:process.cross.dock.wzd,write_uid:0
+msgid "Last Updated by"
+msgstr "Última Actualización por"
+
+#. module: depot_cross_dock
+#: field:process.cross.dock.wzd,write_date:0
+msgid "Last Updated on"
+msgstr "Última Actualización en"
+
+#. module: depot_cross_dock
+#: selection:process.cross.dock.wzd,mode:0
+msgid "Midban and cross dock products"
+msgstr "Productros de Misban y Cross Dock"
+
+#. module: depot_cross_dock
+#: selection:process.cross.dock.wzd,mode:0
+msgid "Midban products"
+msgstr "Productos midban"
+
+#. module: depot_cross_dock
+#: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:139
+#, python-format
+msgid "No purchases created."
+msgstr "No se crearon compras"
+
+#. module: depot_cross_dock
+#: model:ir.model,name:depot_cross_dock.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: depot_cross_dock
+#: model:ir.actions.act_window,name:depot_cross_dock.action_process_cross_dock_wzd
+msgid "Print Tags"
+msgstr "Imprimir etiquetas"
+
+#. module: depot_cross_dock
+#: model:ir.model,name:depot_cross_dock.model_procurement_order
+msgid "Procurement"
+msgstr "Abastecimiento"
+
+#. module: depot_cross_dock
+#: model:ir.model,name:depot_cross_dock.model_procurement_rule
+msgid "Procurement Rule"
+msgstr "Regla de abastecimiento"
+
+#. module: depot_cross_dock
+#: field:res.partner,regulator:0
+msgid "Regularor"
+msgstr "Regularor"
+
+#. module: depot_cross_dock
+#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+msgid "Types of Products"
+msgstr "Tipos de productos"
+
+#. module: depot_cross_dock
+#: help:res.partner,regulator:0
+msgid "When this supplier is assigned to                                    a product, when we make a cross dock                                     purchase order, we will group by transport                                    route"
+msgstr "Cuando este proveedor es asignado a un producto, al hacer compras en cross dock, estas se agruparán por ruta de transporte"
+

@@ -33,9 +33,9 @@ class process_cross_dock_wzd(osv.TransientModel):
                                   ('both', 'Midban and cross dock products')],
                                  string="Create purchases for",
                                  required=True,
-                                 help="Choose if you want to create purchase"
-                                 "orders for MIDBAN, for cross-dock providers"
-                                 "or for both of them")
+                                 help="Choose if you want to create purchase \
+                                 orders for MIDBAN, for cross-dock supplier \
+                                 or for both of them")
 
     }
     _default = {
@@ -97,7 +97,8 @@ class process_cross_dock_wzd(osv.TransientModel):
                         to_confirm_ids.append(proc.purchase_id.id)
                  # Confirm the related purchases to the route
                 to_confirm_ids = list(set(purchase_ids))
-                t_po.signal_workflow(cr, uid, to_confirm_ids, 'purchase_confirm')
+                t_po.signal_workflow(cr, uid, to_confirm_ids,
+                                     'purchase_confirm')
         purchase_ids = list(set(purchase_ids))
         return list(set(purchase_ids))
 

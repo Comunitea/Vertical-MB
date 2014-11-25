@@ -60,7 +60,7 @@ class res_partner(osv.Model):
                                  transport Route!'),
                 }
             else:
-                diff_days = list(partner_days & route_days)
+                diff_days = list(partner_days - common_days)
                 diff_days = sorted(diff_days, key=lambda d: d.sequence)
                 diff_days_str = ""
                 for d in diff_days:

@@ -83,6 +83,7 @@ class stock_picking(osv.osv):
         #                                  type="many2one"),
         'drop_code': fields.related('move_lines', 'procurement_id',
                                     'drop_code', type="integer",
+                                    string="Drop Code",
                                     readonly=True),
         # 'trans_route_id': fields.function(_get_trans_route_id, type="many2one",
         #                                   relation="route",
@@ -842,6 +843,7 @@ class stock_move(osv.osv):
                                          relation="route",
                                          type="many2one"),
         'drop_code': fields.related('procurement_id', 'drop_code',
+                                    string="Drop Code",
                                     type='integer', readonly=True),
         'real_weight': fields.float('Real weight'),
     }
