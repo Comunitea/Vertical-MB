@@ -41,7 +41,10 @@ class product_template(models.Model):
                                 ('both', 'Both, units and boxes')],
                                 string='Minimum Sale Unit',
                                 required=True,
-                                default='unit')
+                                default='unit',
+                                help="Selecting both Units and boxes \
+                                will add functionality to Telesale and \
+                                Mobile App Sales (Android)")
     box_discount = fields.Float('Box Unit Discount')
     # Overwrite in order to add 4 decimals
     uos_coeff = fields.Float('Unit of Measure -> UOS Coeff',

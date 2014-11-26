@@ -18,7 +18,7 @@ msgstr ""
 #. module: process_sale_order
 #: selection:product.template,min_unit:0
 msgid "Both, units and boxes"
-msgstr "Abas, unidades y cajas"
+msgstr "Ambas, unidades y cajas"
 
 #. module: process_sale_order
 #: selection:sale.order.line,choose_unit:0
