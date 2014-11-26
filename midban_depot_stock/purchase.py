@@ -70,3 +70,26 @@ class purchase_order(osv.Model):
             for line in po.order_line:
                 line.write({'date_planned': po.date_planned})
         return res
+
+
+class purchase_order_line(osv.Model):
+    _inherit = "purchase.order.line"
+
+    def _get_date_planned(self, cr, uid, supplier_info, date_order_str,
+                          context=None):
+        """
+        Overwrited.
+        Returns the next working day date respect today
+        """
+        today = datetime.now()
+        week_day = today.weekday()
+        delta = 1
+        if week_day == 5:
+            delta = 3
+        elif week_day == 5:
+            delta = 2
+        new_date = today + timedelta(days=delta or 0.0)
+        date_part = datetime.strftime(new_date, "%Y-%m-%d")
+        res = datetime.strptime(date_part + " " + "22:59:59",
+                                "%Y-%m-%d %H:%M:%S")
+        return res
