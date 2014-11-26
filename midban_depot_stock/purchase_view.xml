@@ -2,16 +2,16 @@
 <openerp>
     <data>
         <!-- Form View Purchase order: Adding drop code -->
-<!--         <record id="purchase_order_form_add_drop_code" model="ir.ui.view">
+        <record id="purchase_order_form_add_drop_code" model="ir.ui.view">
             <field name="name">purchase.order.form.add.drop.code</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-                <field name="picking_type_id" position="after">
-                    <field name="drop_code"/>
+                <field name="date_order" position="after">
+                    <field name="date_planned"/>
                 </field>
             </field>
-        </record> -->
+        </record>
 
         <record id="view_purchase_order_filter_add_today" model="ir.ui.view">
             <field name="name">view_purchase_order_filter_add_today</field>

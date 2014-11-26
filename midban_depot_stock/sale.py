@@ -21,10 +21,28 @@
 from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
+from datetime import datetime, timedelta
 
 
 class sale_order(osv.Model):
     _inherit = 'sale.order'
+
+    def _get_next_working_date(self, cr, uid, context=None):
+        """
+        Returns the next working day date respect today
+        """
+        today = datetime.now()
+        week_day = today.weekday()
+        delta = 1
+        if week_day == 5:
+            delta = 3
+        elif week_day == 5:
+            delta = 2
+        new_date = today + timedelta(days=delta or 0.0)
+        date_part = datetime.strftime(new_date, "%Y-%m-%d")
+        res = datetime.strptime(date_part + " " + "22:59:59",
+                                "%Y-%m-%d %H:%M:%S")
+        return res
 
     _columns = {
         'trans_route_id': fields.many2one('route', 'Transport Route',
@@ -35,7 +53,24 @@ class sale_order(osv.Model):
                                                                  'sent':
                                                                  [('readonly',
                                                                    False)]}),
+        'date_planned': fields.datetime('Scheduled Date', required=True,
+                                        select=True,
+                                        help="Date propaged to shecduled \
+                                              date of related picking"),
     }
+    _defaults = {
+        'date_planned': _get_next_working_date,
+    }
+
+    def _get_date_planned(self, cr, uid, order, line, start_date,
+                          context=None):
+        """
+        Overwrited in order to pass to the min_date field of related picking
+        the date setted in the new date_planned field. From procurement pass to
+        move throught date_expected field.
+        """
+        date_planned = order.date_planned
+        return date_planned
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
         """

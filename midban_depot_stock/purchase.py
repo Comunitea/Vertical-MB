@@ -18,12 +18,55 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# from openerp.osv import fields, osv
+from openerp.osv import osv, fields
+from datetime import datetime, timedelta
 
 
-# class purchase_order(osv.Model):
-#     _inherit = "purchase.order"
+class purchase_order(osv.Model):
+    _inherit = "purchase.order"
 
-#     _columns = {
-#         'drop_code': fields.integer('Drop Code', readonly=True),
-#     }
+    def _get_next_working_date(self, cr, uid, context=None):
+        """
+        Returns the next working day date respect today
+        """
+        today = datetime.now()
+        week_day = today.weekday()
+        delta = 1
+        if week_day == 5:
+            delta = 3
+        elif week_day == 5:
+            delta = 2
+        new_date = today + timedelta(days=delta or 0.0)
+        date_part = datetime.strftime(new_date, "%Y-%m-%d")
+        res = datetime.strptime(date_part + " " + "22:59:59",
+                                "%Y-%m-%d %H:%M:%S")
+        return res
+
+    _columns = {
+        'date_planned': fields.datetime('Scheduled Date', required=True,
+                                        select=True,
+                                        help="Date propaged to shecduled \
+                                              date of related picking"),
+    }
+    _defaults = {
+        'date_planned': _get_next_working_date,
+    }
+
+    def create(self, cr, uid, vals, context=None):
+        if context is None:
+            context = {}
+        po_id = super(purchase_order, self).create(cr, uid, vals, context)
+        if po_id:
+            po_obj = self.browse(cr, uid, po_id, context)
+            for line in po_obj.order_line:
+                line.write({'date_planned': po_obj.date_planned})
+        return po_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = {}
+        res = super(purchase_order, self).write(cr, uid, ids, vals, context)
+        for po in self.browse(cr, uid, ids, context):
+            for line in po.order_line:
+                line.write({'date_planned': po.date_planned})
+        return res
