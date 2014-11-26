@@ -1535,8 +1535,8 @@ msgstr "Gestión tareas almacén"
 
 #. module: midban_depot_stock
 #: model:ir.actions.report.xml,name:midban_depot_stock.action_report_task_picking
-msgid "Warehouse Task Report"
-msgstr "Tareas de almacén"
+msgid "Picking Report"
+msgstr "Informe de Picking"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.stock_task_menu

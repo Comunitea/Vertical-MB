@@ -16,17 +16,21 @@
                                       <strong>Name:</strong>
                                       <p t-field="o.name"/>
                                   </div>
+                                  <div t-if="o.user_id" class="col-xs-2">
+                                      <strong>Operator:</strong>
+                                      <p t-field="o.user_id"/>
+                                  </div>
                                   <div t-if="o.trans_route_id" class="col-xs-2">
                                       <strong>Route:</strong>
                                       <p t-field="o.trans_route_id"/>
                                   </div>
+                                  <div t-if="o.machine_id" class="col-xs-2">
+                                      <strong>Machine:</strong>
+                                      <p t-field="o.machine_id"/>
+                                  </div>
                                   <div t-if="o.temp_id" class="col-xs-2">
                                       <strong>Temperature:</strong>
                                       <p t-field="o.temp_id"/>
-                                  </div>
-                                  <div t-if="o.user_id" class="col-xs-2">
-                                      <strong>Operator:</strong>
-                                      <p t-field="o.user_id"/>
                                   </div>
                                   <div t-if="o.warehouse_id" class="col-xs-2">
                                       <strong>Warehouse:</strong>
