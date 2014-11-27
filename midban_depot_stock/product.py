@@ -90,8 +90,7 @@ class product_uom(osv.Model):
                                        ('kg', 'Kg'),
                                        ('boxes', 'Boxes'),
                                        ('mantles', 'Mantles'),
-                                       ('palets', 'Palets')], 'Equals to',
-                                      readonly=True),
+                                       ('palets', 'Palets')], 'Equals to'),
     }
     _defaults = {
         'like_type': '',

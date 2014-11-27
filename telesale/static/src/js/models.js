@@ -96,7 +96,6 @@ function openerp_ts_models(instance, module){
                 var model = new instance.web.Model('res.partner');
                 model.call("get_visibele_products_names",[partner_id],{context:new instance.web.CompoundContext()})
                     .then(function (result){
-                        // debugger;
                         for (key in result){
                             self.get('visible_products')[key] = result[key]
 
@@ -185,7 +184,6 @@ function openerp_ts_models(instance, module){
                     return self.fetch('account.fiscal.position', ['name', 'tax_ids']);
                 }).then(function(fposition) {
                     self.db.add_fiscal_position(fposition);
-                    // debugger;
                 })
 
             return loaded;
@@ -309,6 +307,8 @@ function openerp_ts_models(instance, module){
             var state = order_obj.state
             order_model.set('state', state);
             order_model.set('date_invoice', order_obj.date_invoice);
+            order_model.set('date_planned', order_obj.date_planned);
+            order_model.set('date_planned', order_obj.date_order);
             order_model.set('num_order',order_obj.name);
             for (key in order_lines){
                 var line = order_lines[key];
@@ -404,6 +404,22 @@ function openerp_ts_models(instance, module){
         },
         getCurrentDateStr: function() {
             var date = new Date();
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            if (month < 10) month = "0" + month;
+            if (day < 10) day = "0" + day;
+
+            var today = year + "-" + month + "-" + day;
+            return today;  
+        },
+        getCurrentDatePlannedStr: function() {
+            var date = new Date();
+            day = date.getDay()
+            add_days = 1
+            if (day === 5) add_days = 3
+            if (day === 6) add_days = 2
+            date.setDate(date.getDate() + add_days)
             var day = date.getDate();
             var month = date.getMonth() + 1;
             var year = date.getFullYear();
@@ -534,7 +550,6 @@ function openerp_ts_models(instance, module){
             var totalNoTax = base;
             var taxtotal = 0;
             // var product_list = this.pos.get('product_list');
-            // debugger;
             var product =  this.get_product();
 
             if (product){ 
@@ -614,7 +629,8 @@ function openerp_ts_models(instance, module){
                 partner: '',
                 contact_name: '',
                 date_order: this.getStrDate(),
-                date_invoice: '',
+                date_invoice: this.getStrDatePlanned(),
+                date_planned: this.getStrDatePlanned(),
                 limit_credit: (0),
                 customer_debt: (0),
                 //order #bottompart values
@@ -650,6 +666,17 @@ function openerp_ts_models(instance, module){
 
         },
         getStrDate: function() {
+            var date = new Date();
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            if (month < 10) month = "0" + month;
+            if (day < 10) day = "0" + day;
+
+            var today = year + "-" + month + "-" + day;
+            return today;  
+        },
+         getStrDatePlanned: function() {
             var date = new Date();
             var day = date.getDate();
             var month = date.getMonth() + 1;
@@ -759,6 +786,8 @@ function openerp_ts_models(instance, module){
                 erp_id: this.get('erp_id'),
                 erp_state: this.get('erp_state'),
                 date_invoice: this.get('date_invoice'),
+                date_order: this.get('date_order'),
+                date_planned: this.get('date_planned'),
                 note: this.get('coment'),
             };
         },
@@ -821,15 +850,6 @@ function openerp_ts_models(instance, module){
                     this.get('orderLines').add(line);
                 }
             }
-
-            // var new_order_lines = this.get('orderLines').models
-            // for (key in new_order_lines){
-            //     var new_line = new_order_lines[key];
-            //     $.when(new_line.update_pvp())
-            //     .done(function(){
-            //         debugger;
-            //     });
-            // }
         },
         get_last_order_lines: function(client_id){
             var self=this;
@@ -876,7 +896,6 @@ function openerp_ts_models(instance, module){
                              pvp_ref: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
                              //TODO boxes
                             }
-                        // debugger;
                         var line = new module.Orderline(line_vals);
                         self.get('orderLines').add(line);
                     });

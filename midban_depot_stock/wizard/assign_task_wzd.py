@@ -22,11 +22,29 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import time
 import random
+from datetime import datetime, timedelta
 
 
 class assign_task_wzd(osv.TransientModel):
     _name = "assign.task.wzd"
     _rec_name = "operator_id"
+
+    def _get_next_working_date(self, cr, uid, context=None):
+        """
+        Returns the next working day date respect today
+        """
+        today = datetime.now()
+        week_day = today.weekday()  # Monday 0 Sunday 6
+        delta = 1
+        if week_day == 4:
+            delta = 3
+        elif week_day == 5:
+            delta = 2
+        new_date = today + timedelta(days=delta or 0.0)
+        date_part = datetime.strftime(new_date, "%Y-%m-%d")
+        res = datetime.strptime(date_part, "%Y-%m-%d")
+        return res
+
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        required=True,
@@ -36,14 +54,17 @@ class assign_task_wzd(osv.TransientModel):
                                         required=True),
         'temp_id': fields.many2one('temp.type', 'Temperature'),
         'trans_route_id': fields.many2one('route', 'Transport Route',
-                                    domain=[('state', '=', 'active')]),
-        # 'state': fields.selection([('normal', 'Normal'), ('tag', 'Tags')],
-        #                           'State', readonly=True)
+                                          domain=[('state', '=', 'active')]),
+        'date_planned': fields.date('Scheduled Date', required=True,
+                                    select=True,
+                                    help="Date propaged to shecduled \
+                                          date of related picking"),
+
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
         self.pool.get('stock.warehouse').search(cr, uid, [])[0],
-        # 'state': 'normal'
+        'date_planned': _get_next_working_date,
     }
 
     def _print_report(self, cr, uid, ids, picking_id=False, wave_id=False,
@@ -370,12 +391,18 @@ class assign_task_wzd(osv.TransientModel):
         selected_route = obj.trans_route_id and obj.trans_route_id.id or False
         if not selected_route:
             selected_route = self._get_random_route(cr, uid, ids, context)
+
+        date_planned = obj.date_planned
+        start_date = date_planned + " 00:00:00"
+        end_date = date_planned + " 23:59:59"
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.temp_type', '=', obj.temp_id.id),
             ('state', '=', 'confirmed'),
             ('picking_id.operator_id', '=', False),
-            ('picking_id.trans_route_id', '=', selected_route)
+            ('picking_id.trans_route_id', '=', selected_route),
+            ('picking_id.min_date', '>=', start_date),
+            ('picking_id.min_date', '<=', end_date),
         ]
         res = move_obj.search(cr, uid, domain, context=context)
         return (res, selected_route)

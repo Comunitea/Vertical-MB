@@ -1,40 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-<!--         <record id="assign_task_wzd_view" model="ir.ui.view">
-            <field name="name">assign.task.wzd.view</field>
-            <field name="model">assign.task.wzd</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Task Schedule" version="7.0">
-                    <field name="state" invisible="1"/>
-                    <group attrs="{'invisible': [('state','=','tag')]}">
-                        <group colspan="4" col="2">
-                            <group>
-                                <field name="operator_id"/>
-                                <field name="warehouse_id"/>
-                            </group>
-                            <group>
-                                <field name="machine_id"/>
-                                <field name="temp_id"/>
-                                <field name="trans_route_id"/>
-                            </group>
-                        </group>
-                    </group>
-                    <group attrs="{'invisible': [('state','=','normal')]}">
-                        <field name="state"/>
-                    </group>
-                    <footer attrs="{'invisible': [('state','=','tag')]}">
-                        <button name="get_location_task" string="Get Location Task" type="object"/>
-                        <button name="get_reposition_task" string="Get Reposition Task" type="object"/>
-                        <button name="get_picking_task" string="Get Picking Task" type="object"/>
-                        <button name="finish_task" string="Finish Task" type="object"/>
-                        <button name="cancel_task" string="Cancel Task" type="object"/>
-                        <button name="reprint_task" string="Reprint Task" type="object"/>
-                    </footer>
-                 </form>
-            </field>
-        </record> -->
+
         <record id="assign_task_wzd_view" model="ir.ui.view">
             <field name="name">assign.task.wzd.view</field>
             <field name="model">assign.task.wzd</field>
@@ -43,13 +10,14 @@
                 <form string="Task Schedule" version="7.0">
                     <group colspan="4" col="2">
                         <group>
-                            <field name="operator_id"/>
                             <field name="warehouse_id"/>
+                            <field name="operator_id"/>
+                            <field name="machine_id"/>
                         </group>
                         <group>
-                            <field name="machine_id"/>
                             <field name="temp_id"/>
                             <field name="trans_route_id"/>
+                            <field name="date_planned"/>
                         </group>
                     </group>
                     <footer>

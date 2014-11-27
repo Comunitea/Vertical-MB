@@ -68,6 +68,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
             this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
+            this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
+            this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
             this.$('#coment').blur(_.bind(this.set_value, this, 'coment'))
 
             //autocomplete products and units from array of names
@@ -83,12 +85,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var value = this.$('#'+key).val();
             this.order_model.set(key, value);
             this.perform_onchange(key, value);
-           //  if (key == 'partner')
-           //     this.$('#partner_code').focus(); 
-           // if (key == 'partner_code')
-           //     this.$('#date_invoice').focus(); 
-           // if (key == 'date_invoice')
-           //     this.$('#partner').focus(); 
         },
         perform_onchange: function(key, value) {
             if (!value) {return;}
@@ -133,6 +129,12 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.$('#partner_code').focus();
                     break;
 
+                case "date_invoice":
+                    this.$('#date_planed').focus();
+                    break;
+                case "date_planed":
+                    this.$('#date_order').focus();
+                    break;
                 case "date_invoice":
                     this.$('#partner').focus();
                     break;
@@ -488,14 +490,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         show_client: function(){
             var client_id = this.check_customer_get_id()
             if (client_id){
-                // this.do_action({
-                //     type: 'ir.actions.act_window',
-                //     res_model: "res.partner",
-                //     res_id: client_id,
-                //     views: [[false, 'form']],
-                //     target: 'new',
-                //     context: {},
-                // });
                 context = new instance.web.CompoundContext()
                 var pop = new instance.web.form.FormOpenPopup(this);
                 pop.show_element('res.partner',client_id,context,
@@ -508,15 +502,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         show_product: function(product_id){
             if (product_id){
-                // this.do_action({
-                //     type: 'ir.actions.act_window',
-                //     res_model: "product.product",
-                //     view_mode: 'form',
-                //     view_type: 'form',
-                //     res_id: product_id,
-                //     views: [[false, 'form']],
-                //     target: 'new',
-                // });
                 context = new instance.web.CompoundContext()
                 var pop = new instance.web.form.FormOpenPopup(this);
                 pop.show_element('product.product',product_id,context,
@@ -659,7 +644,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         order_line_selected: function(){
             // console.log("Click linea.")
-            // debugger;
         },
         order_line_refreshed: function(){
             // console.log("refreshed.")
@@ -851,7 +835,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         renderElement: function () {
             var self = this;
-            // debugger;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
         },

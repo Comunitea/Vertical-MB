@@ -45,19 +45,7 @@
                 <li class="screen-selector-button">
                     <!-- Summary Orders -->
                     <button id="button2" class="select-screen"><t t-esc="widget.button2"/></button>
-                </li>
-               
-            <!--     <li class="screen-selector-button">
-                    <button id="button4" class="select-screen"><t t-esc="widget.button4"/></button>
-                </li> -->
-               <!--  <li class="screen-selector-button">
-                    <button id="button5" class="select-screen"><t t-esc="widget.button5"/></button>
-                </li> -->
-                <!-- <li class="screen-selector-button">
-                    <button id="button6" class="select-screen"><t t-esc="widget.button6"/></button>
-                </li> -->
-                
-               
+                </li>          
             </ol>
         </div>
     </t>
@@ -196,7 +184,10 @@
                     <br/>
                     <label for="num_order">Nº order:</label>
                     <input type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/>
-                    
+                    <br/>
+                    <br/>
+                    <label for="coment">Notes:</label>
+                    <input type="text" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
                 </div>
                 <div class="form-col">
                      <label for="code">Customer code:</label>
@@ -205,11 +196,18 @@
                     <br/>
                     <label for="contact_name">Contact Name:</label>
                     <input type="text" id='contact_name' name="contact_name" t-att-value="widget.order_model.get('contact_name')" readonly="readonly" tabIndex="-1"/>
-                    
                 </div>
                 <div class="form-col">
-                    <label for="date_invoice">Date invoice:</label>
-                    <input  class="mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDateStr()"/>
+                    <label for="date_order">Date Order:</label>
+                    <input class="mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()"/>
+                    <br/>
+                    <br/>
+                    <label for="comercial">Comercial:</label>
+                    <input type="text" id='comercial' name="comercial" t-att-value="widget.order_model.get('comercial')" readonly="readonly" tabIndex="-1"/>
+                </div>
+                <div class="form-col">
+                    <label for="date_planned">Date Planned:</label>
+                    <input class="mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.ts_model.getCurrentDatePlannedStr()"/>
                     <br/>
                     <br/>
                     <label for="limit_credit">Limit Credit:</label>
@@ -217,24 +215,16 @@
                         t-att-value="widget.order_model.get('limit_credit').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                 </div>
                 <div class="form-col">
-                    <label for="date_order">Date Order:</label>
-                    <input type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()"/>
+                    <label for="date_invoice">Date invoice:</label>
+                    <input  class="mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDatePlannedStr()"/>
                     <br/>
                     <br/>
                     <label for="customer_debt">Customer Debt:</label>
                     <input type="numeric" id='customer_debt' name="customer_debt"
                         t-att-value="widget.order_model.get('customer_debt').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                 </div>
-                <div class="form-col">
-                    <label for="comercial">Comercial:</label>
-                    <input type="text" id='comercial' name="comercial" t-att-value="widget.order_model.get('comercial')" readonly="readonly" tabIndex="-1"/>
-                    <br/>
-                    <br/>
-                    <label for="coment">Notes:</label>
-                    <input type="text" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
-                </div>
             </div>
-        </div>widget.ts_model.localFormatDate(widget.order.date_order)
+        </div>
     </t>
 
     <t t-name="Totals-Order-Widget">

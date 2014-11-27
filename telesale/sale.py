@@ -98,6 +98,10 @@ class sale(osv.osv):
                 'telesale': True,
                 'order_policy': 'picking',
                 'date_invoice': order['date_invoice'] or False,
+                'date_order': order['date_order'] or False,
+                'date_planned':
+                order['date_planned']and order['date_planned'] + " 22:59:59"
+                or False,
                 'note': order['note'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
             }

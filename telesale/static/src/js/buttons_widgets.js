@@ -94,7 +94,6 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
         select_button_block: function(block_name){
             var self = this;
             this.ts_widget.button_block_selector.set_current_block(block_name);
-            // debugger;
             // if (this.$('.selected-screen'))
             //      this.$('.selected-screen').removeClass('selected-screen');
             // this.$el.addClass('selected-screen');

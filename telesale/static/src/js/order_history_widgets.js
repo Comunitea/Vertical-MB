@@ -30,7 +30,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
             }
             this.open_order =  this.ts_model.get('selectedOrder')
             var loaded = self.ts_model.fetch('sale.order',
-                                            ['name','partner_id','date_order','state','amount_total','date_invoice'], 
+                                            ['name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'], 
                                             [
                                                 ['id', '=', order_id],
                                                 ['telesale', '=', true]

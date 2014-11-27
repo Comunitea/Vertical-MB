@@ -288,7 +288,6 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         show: function(){
             var self = this;
             this._super();
-            // debugger;
             if (!this.sust_widget){
                 this.sust_widget = new module.ProductSustWidget(this, {});
                 this.sust_widget.replace($('#placeholder-sust-widget'));

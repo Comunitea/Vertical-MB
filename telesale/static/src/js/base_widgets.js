@@ -341,7 +341,6 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
                 self.$('.selected-order button')[0].focus();
-                // debugger;
             });
 
         },
