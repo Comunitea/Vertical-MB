@@ -880,6 +880,19 @@ class stock_move(osv.osv):
         res.update({'stock_move_id': move.id})
         return res
 
+    def action_done(self, cr, uid, ids, context=None):
+        """
+        Not propagate de date_expected in the move, because of when we complete
+        a picking, the move action_done method recalculee it, and is propagated
+        to the output picking
+        """
+        if context is None:
+            context = {}
+        ctx = context.copy()
+        ctx['do_not_propagate'] = True
+        res = super(stock_move, self).action_done(cr, uid, ids, context=ctx)
+        return res
+
 
 class stock_inventory(osv.osv):
 

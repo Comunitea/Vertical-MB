@@ -50,8 +50,9 @@ class account_invoice(osv.osv):
                     pick_ids.add(line.stock_move_id.picking_id.id)
                     if line.stock_move_id.picking_id.sale_id:
                         sale_ids.add(line.stock_move_id.picking_id.sale_id.id)
-                elif line.stock_move_id and line.stock_move_id.purchase_id:
-                    purchase_ids.add(line.stock_move_id.purchase_id.id)
+                    if line.stock_move_id.picking_id.purchase_id:
+                        po_id = line.stock_move_id.picking_id.purchase_id.id
+                        purchase_ids.add(po_id)
             res[invoice.id]['pick_ids'] = list(pick_ids)
             res[invoice.id]['sale_ids'] = list(sale_ids)
             res[invoice.id]['purchase_ids'] = list(purchase_ids)
@@ -142,18 +143,18 @@ class account_invoice(osv.osv):
         id = result and result[1] or False
         result = act_obj.read(cr, uid, [id], context=context)[0]
         #compute the number of invoices to display
-        pick_ids = []
+        po_ids = []
         for invoice in self.browse(cr, uid, ids, context=context):
-            pick_ids += [sale.id for sale in invoice.pick_ids]
+            po_ids += [purchase.id for purchase in invoice.purchase_ids]
         #choose the view_mode accordingly
-        if len(pick_ids) > 1:
+        if len(po_ids) > 1:
             result['domain'] = \
-                "[('id','in',[" + ','.join(map(str, pick_ids)) + "])]"
-        elif pick_ids:
+                "[('id','in',[" + ','.join(map(str, po_ids)) + "])]"
+        elif po_ids:
             res = mod_obj.get_object_reference(cr, uid, 'purchase',
                                                'purchase_order_form')
             result['views'] = [(res and res[1] or False, 'form')]
-            result['res_id'] = pick_ids and pick_ids[0] or False
+            result['res_id'] = po_ids and po_ids[0] or False
         else:
             return False
         return result

@@ -33,18 +33,13 @@ class stock_picking(osv.Model):
         This is made cause we need to know the purchase related in the
         default_get method of issue object.
         """
-        purchase_obj = self.pool.get("purchase.order")
+        # purchase_obj = self.pool.get("purchaseorder")
         res = {}
         for picking in self.browse(cr, uid, ids, context=context):
             res[picking.id] = False
-            if picking.group_id:
-                purchase_ids = purchase_obj.search(cr, uid,
-                                                   [('name',
-                                                     '=',
-                                                    picking.group_id.name)],
-                                                   context=context)
-                if purchase_ids:
-                    res[picking.id] = purchase_ids[0]
+            if picking.move_lines and picking.move_lines[0].purchase_line_id:
+                res[picking.id] = picking.move_lines[0].purchase_line_id.\
+                    order_id.id
         return res
 
     def _issue_count(self, cr, uid, ids, field_name, arg, context=None):
