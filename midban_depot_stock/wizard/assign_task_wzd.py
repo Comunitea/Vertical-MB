@@ -543,6 +543,7 @@ class assign_task_wzd(osv.TransientModel):
                     'temp_id': obj.temp_id.id,
                     'trans_route_id': selected_route,
                     'warehouse_id': obj.warehouse_id.id,
+                    'machine_id': obj.machine_id.id,
                     'picking_ids': [(6, 0, pickings_to_wave)]}
             wave_id = wave_obj.create(cr, uid, vals, context=context)
             # wave_obj.confirm_picking(cr, uid, [wave_id], context=context)

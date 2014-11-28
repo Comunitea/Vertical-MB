@@ -868,11 +868,16 @@ class stock_move(osv.osv):
 
     def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
                                context=None):
+        """
+        Add to invoice the price_kg of product and a link to the move in order
+        to know the sale_orders and pickings from invoice.
+        """
         res = super(stock_move, self)._get_invoice_line_vals(cr, uid, move,
                                                              partner, inv_type,
                                                              context=context)
         if move.real_weight:
             res['price_unit'] = move.product_id.price_kg
+        res.update({'stock_move_id': move.id})
         return res
 
 
@@ -923,6 +928,8 @@ class stock_picking_wave(osv.osv):
         'trans_route_id': fields.many2one('route', 'Transport Route',
                                           domain=[('state', '=', 'active')]),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
+        'machine_id': fields.many2one('stock.machine', 'Machine',
+                                      readonly=True),
     }
 
 

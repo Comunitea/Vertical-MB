@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data> 
+        <!-- Report of waves -->
         <template id="report_picking_list">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">

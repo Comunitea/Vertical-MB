@@ -94,7 +94,7 @@ msgstr "Última Actualización en"
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Midban and cross dock products"
-msgstr "Productros de Misban y Cross Dock"
+msgstr "Productos de Midban y Cross Dock"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0

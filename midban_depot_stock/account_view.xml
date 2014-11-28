@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="invoice_supplier_form_add_sales_pickings_link" model="ir.ui.view">
+            <field name="name">invoice.supplier.form.add.sales.pickings.link</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="midban_issue.invoice_supplier_form_add_issues_link"/>
+            <field name="arch" type="xml">
+                    <div name="buttons" position="inside">
+                        <button string="Purchases" class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="action_view_purchases"/>
+                        <button string="Pickings" class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="action_view_pickings"/>
+                    </div>
+                    <notebook position="inside">
+                        <page string="More Info">
+                            <group string="Related Purchases">
+                                <field name="purchase_ids" nolabel="1"/>
+                            </group>
+                            <group string="Related Pickings">
+                                <field name="pick_ids" nolabel="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+            </field>
+        </record>
+
+        <record id="invoice_form_add_sales_pickings_link" model="ir.ui.view">
+            <field name="name">invoice.form.add.sales.pickings.link</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="midban_issue.invoice_form_add_issues_link"/>
+            <field name="arch" type="xml">
+
+                    <div name="buttons" position="inside">
+                        <button string="Sales" class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="action_view_sales"/>
+                        <button string="Pickings" class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="action_view_pickings"/>
+                    </div>
+                    <notebook position="inside">
+                        <page string="More Info">
+                            <group string="Related Sales">
+                                <field name="sale_ids" nolabel="1"/>
+                            </group>
+                            <group string="Related Pickings">
+                                <field name="pick_ids" nolabel="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+            </field>
+        </record>
+
+    </data>
+</openerp>

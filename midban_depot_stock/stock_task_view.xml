@@ -92,8 +92,10 @@
             </field>
         </record>
 
+        <!-- Overwrite sequence -->
+        <menuitem id="stock.menu_stock_inventory_control" name="Inventory Control" parent="stock.menu_stock_root" sequence="3"/>
         <!-- Global menu of warehouse task management -->
-        <menuitem id="menu_stock_task_mgmt" name="Warehouse Task Management" parent="stock.menu_stock_root" sequence="4"/>
+        <menuitem id="menu_stock_task_mgmt" name="Warehouse Task Management" parent="stock.menu_stock_root" sequence="2"/>
         <!-- Task menu under  Stock/Warehouse Task Management-->
         <menuitem id="stock_task_menu" action="action_stock_task" name="Warehouse Tasks" parent="menu_stock_task_mgmt" sequence="1"/>
 
