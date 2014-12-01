@@ -44,6 +44,7 @@ class stock_picking(osv.osv):
                                           readonly=True),
         'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
+        'cross_dock': fields.boolean("From Cross Dock order"),
         'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
                                           'Delivery List', readonly=True),
         'drop_code': fields.related('move_lines', 'procurement_id',
@@ -51,19 +52,6 @@ class stock_picking(osv.osv):
                                     string="Drop Code",
                                     readonly=True),
     }
-
-    # def write(self, cr, uid, ids, vals, context=None):
-    #     res = super(stock_picking, self).write(cr, uid, ids, vals,
-    #                                            context=context)
-    #     import ipdb; ipdb.set_trace()
-    #     if vals.get('state', False):
-    #         if vals['state'] == 'assigned':
-    #             for pick in self.browse(cr, uid, ids, context):
-    #                 if pick.picking_type_code == 'outgoing':
-    #                     for op in pick.pack_operation_ids:
-    #                         op.unlink()
-    #                     pick.do_prepare_partial()
-    #     return res
 
     @api.cr_uid_ids_context
     def approve_pack_operations(self, cr, uid, ids, context=None):
