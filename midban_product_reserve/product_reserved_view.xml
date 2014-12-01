@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="view_product_reserved_form" model="ir.ui.view">
+            <field name="name">view_product_reserved_form</field>
+            <field name="model">product.reserved</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="create_date"/>
+                            <field name="expiry_date"/>
+                            <field name="partner_id"/>
+                            <field name="price_unit"/>
+                            <field name="product_uom_id"/>
+                            <field name="reserved_qty"/>
+                            <field name="served_qty"/>
+                            <field name="pending_qty"/>
+                            <field name="state"/>
+                            <field name="comment"/>
+                            <field name="location_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+         <!-- Action for stock.task -->
+        <record id="action_product_reserved" model="ir.actions.act_window">
+            <field name="name">Product Reserved</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.reserved</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to create a reserve for a Product.
+                </p><p>
+                </p>
+            </field>
+        </record>
+
+       
+        <menuitem id="menu_stock_task_mgmt" name="Reserved Products" action="action_product_reserved" parent="base.menu_product" sequence="2"/>
+        <!-- Task menu under  Stock/Warehouse Task Management-->
+    </data>
+</openerp>
