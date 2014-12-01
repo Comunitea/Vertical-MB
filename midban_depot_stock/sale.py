@@ -90,13 +90,40 @@ class sale_order(osv.Model):
 
     def _prepare_order_line_procurement(self, cr, uid, order, line,
                                         group_id=False, context=None):
+        """
+        Overwrited
+        Write the route to the procurements froma sale order lines,
+        the drop codes will be assigned later.
+        """
         res = super(sale_order, self).\
             _prepare_order_line_procurement(cr, uid, order, line,
                                             group_id=group_id, context=context)
         res['trans_route_id'] = order.trans_route_id and \
             order.trans_route_id.id or False
-        res['drop_code'] = order.trans_route_id and \
-            order.trans_route_id.next_dc or 0
+        return res
+
+    def action_ship_create(self, cr, uid, ids, context=None):
+        """
+        Overwrited to assign a drop code for each order, an update the next_dc
+        field in transport route model.
+        """
+        if context is None:
+            context = {}
+        procurement_obj = self.pool.get('procurement.order')
+        res = super(sale_order, self).action_ship_create(cr, uid, ids,
+                                                         context=context)
+        for order in self.browse(cr, uid, ids, context=context):
+            if order.procurement_group_id:
+                proc_ids = \
+                    [x.id for x in order.procurement_group_id.procurement_ids]
+                if proc_ids:
+                    dc = order.trans_route_id and \
+                        order.trans_route_id.next_dc or 0
+                    vals = {'drop_code': dc}
+                    procurement_obj.write(cr, uid, proc_ids, vals, context)
+            if order.trans_route_id:
+                next_dc = order.trans_route_id.next_dc
+                order.trans_route_id.write({'next_dc': next_dc + 1})
         return res
 
 

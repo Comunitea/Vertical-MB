@@ -54,20 +54,23 @@ class route_assign_wizard(osv.TransientModel):
         model_ids = t_pick.search(cr, uid, domain, context=context)
         for pick in t_pick.browse(cr, uid, model_ids, context):
             if pick.partner_id.trans_route_id:
-                pick.write({'trans_route_id':
-                            pick.partner_id.trans_route_id.id})
-                if pick.sale_id:
-                    pick.sale_id.write({'trans_route_id':
-                                       pick.partner_id.trans_route_id.id})
+                # pick.write({'trans_route_id':
+                #             pick.partner_id.trans_route_id.id})
+
+                # if pick.sale_id:
+                #     pick.sale_id.write({'trans_route_id':
+                #                        pick.partner_id.trans_route_id.id})
                 if pick.group_id:
                     group_id = pick.group_id.id
                     proc_ids = t_proc.search(cr, uid,
                                              [('group_id', '=', group_id)],
                                              context=context)
+                    next_dc = pick.partner_id.trans_route_id.next_dc
                     if proc_ids:
                         t_proc.write(cr, uid, proc_ids,
                                      {'trans_route_id':
-                                      pick.partner_id.trans_route_id.id},
+                                      pick.partner_id.trans_route_id.id,
+                                      'next_dc': next_dc},
                                      context=context)
                         pick_ids = t_pick.search(cr, uid,
                                                  [('group_id', '=', group_id)],
@@ -77,4 +80,5 @@ class route_assign_wizard(osv.TransientModel):
                                          {'trans_route_id':
                                           pick.partner_id.trans_route_id.id},
                                          context=context)
+                pick.partner_id.trans_route_id.write({'next_dc': next_dc + 1})
         return
