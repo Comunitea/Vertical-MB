@@ -35,6 +35,8 @@
                 ],
     "data": [
         'product_reserved_view.xml',
+        'data/product_reserved_data.xml',
+        'security/ir.model.access.csv',
     ],
     "demo": [],
     "test": [],

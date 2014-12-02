@@ -18,28 +18,58 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class product_reserved(models.Model):
     _name = 'product.reserved'
 
-    name = fields.Char('Name')
-    created_date = fields.Date(string='Creation Date')
-    expiry_date = fields.Date(string='Expiry Date')
-    partner_id = fields.Many2one('res.partner')
+    name = fields.Char('Name', required=True, default='/')
+    product_id = fields.Many2one('product.product', 'Product', required=True)
+    partner_id = fields.Many2one('res.partner', 'Partner', required=True)
+    creation_date = fields.Date(string='Creation Date', required=True)
+    date_expiry = fields.Date(string='Expiry Date')
     price_unit = fields.Float('Price unit')
     product_uom_id = fields.Many2one('product.uom', 'Unit',
                                      domain=[('like_type', 'in',
-                                            ['units', 'boxes', 'kg'])]),
+                                            ['units', 'boxes', 'kg'])],
+                                     required=True)
     invoice_type = fields.Selection([('promised', 'Promised'),
                                      ('invoiced', 'Invoiced')],
-                                    'Invoice Type')
+                                    string='Invoice Type', required=True,
+                                    default='invoiced')
     reserved_qty = fields.Float('Reserved Qty')
     served_qty = fields.Float('Served Qty')
-    pending_qty = fields.Float('Pending Qry')
+    pending_qty = fields.Float('Pending Qry', readonly=True)
     state = fields.Selection([('draft', 'Draft'), ('approved', 'Approved'),
-                              ('calcelled', 'Cancelled'), ('Done', 'Done')],
+                              ('cancelled', 'Cancelled'), ('Done', 'Done')],
                              'State', default='draft')
     comment = fields.Text('Comment')
     location_id = fields.Many2one('stock.location', 'Location')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', '/') == '/':
+            vals['name'] = self.env['ir.sequence'].get('pr.reserved') or '/'
+        res = super(product_reserved, self).create(vals)
+        return res
+
+    @api.one
+    def approve_reserve(self):
+        self.state = 'approved'
+        return
+
+    @api.one
+    def cancel_reserve(self):
+        self.state = 'cancelled'
+        return
+
+    @api.one
+    def back_draft(self):
+        self.state = 'draft'
+        return
+
+    @api.one
+    def finsh_reserve(self):
+        self.state = 'done'
+        return

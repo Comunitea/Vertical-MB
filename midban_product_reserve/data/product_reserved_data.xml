@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- Sequences for types of expedients -->
+        <record id="seq_type_product_reserved" model="ir.sequence.type">
+            <field name="name">Product Reserved</field>
+            <field name="code">pr.reserved</field>
+        </record>
+        <record id="seq_poduct_reserved" model="ir.sequence">
+            <field name="name">Product Rerserved</field>
+            <field name="code">pr.reserved</field>
+            <field name="prefix">PRE</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</openerp>

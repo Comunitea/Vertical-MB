@@ -2,28 +2,85 @@
 
 <openerp>
     <data>
+        <record id="view_product_reserved_tree" model="ir.ui.view">
+            <field name="name">view_product_reserved_tree</field>
+            <field name="model">product.reserved</field>
+            <field name="arch" type="xml">
+                <tree string="Product Reserve">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="product_id"/>
+                    <field name="creation_date"/>
+                    <field name="date_expiry"/>
+                    <field name="invoice_type"/>
+                    <field name="price_unit"/>
+                    <field name="product_uom_id"/>
+                    <field name="reserved_qty"/>
+                    <field name="served_qty"/>
+                    <field name="pending_qty"/>
+                    <field name="location_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
         <record id="view_product_reserved_form" model="ir.ui.view">
             <field name="name">view_product_reserved_form</field>
             <field name="model">product.reserved</field>
             <field name="arch" type="xml">
-                <form>
+                <form string="Product Reserve">
+                    <header>
+                        <field name="state" widget="statusbar" readonly="1"/>
+                        <button name="approve_reserve" string="Approve" type="object"  class="oe_highlight" states="draft"/>
+                        <button name="cancel_reserve" string="Cancel" type="object" states="draft,approved"/>
+                        <button name="back_draft" string="Back To draft" type="object"  class="oe_highlight" states="approved,cancelled,done"/>
+                        <button name="finish_reserve" string="Finish" type="object"  class="oe_highlight" states="approved"/>
+                        
+                    </header>
                     <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="create_date"/>
-                            <field name="expiry_date"/>
-                            <field name="partner_id"/>
-                            <field name="price_unit"/>
-                            <field name="product_uom_id"/>
-                            <field name="reserved_qty"/>
-                            <field name="served_qty"/>
-                            <field name="pending_qty"/>
-                            <field name="state"/>
-                            <field name="comment"/>
-                            <field name="location_id"/>
+                        <h1>
+                            <label string="Name "/>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                        <group colspan="4" col="2">
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="product_id"/>
+                                <field name="creation_date"/>
+                                <field name="date_expiry"/>
+                                <field name="comment"/>
+                                <field name="invoice_type"/>
+                            </group>
+
+                            <group>
+                                <field name="price_unit"/>
+                                <field name="product_uom_id"/>
+                                <field name="reserved_qty"/>
+                                <field name="served_qty"/>
+                                <field name="pending_qty"/>
+                                <field name="location_id"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="view_product_reserved_search" model="ir.ui.view">
+            <field name="name">view_product_reserved_search</field>
+            <field name="model">product.reserved</field>
+            <field name="arch" type="xml">
+                <search string="Product Reserve">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="partner_id"/>
+                    <field name="creation_date"/>
+                    <group expand="1" string="Group By...">
+                        <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Location" domain="[]" context="{'group_by': 'location_id'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
