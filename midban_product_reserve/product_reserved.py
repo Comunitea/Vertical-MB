@@ -19,15 +19,27 @@
 #
 ##############################################################################
 from openerp import models, fields, api
+import time
 
 
 class product_reserved(models.Model):
     _name = 'product.reserved'
 
-    name = fields.Char('Name', required=True, default='/')
+    name = fields.Char('Name', required=True, default='/', readonly=True)
     product_id = fields.Many2one('product.product', 'Product', required=True)
+    min_unit = fields.Selection([('box', 'Only Boxes'),
+                                ('unit', 'Only Unit'),
+                                ('both', 'Both, units and boxes')],
+                                string='Minimum Sale Unit',
+                                required=True,
+                                readonly=True,
+                                related='product_id.min_unit',
+                                help="Selecting both Units and boxes \
+                                will add functionality to Telesale and \
+                                Mobile App Sales (Android)")
     partner_id = fields.Many2one('res.partner', 'Partner', required=True)
-    creation_date = fields.Date(string='Creation Date', required=True)
+    creation_date = fields.Date(string='Creation Date', required=True,
+                                default=time.strftime('%Y-%m-%d'))
     date_expiry = fields.Date(string='Expiry Date')
     price_unit = fields.Float('Price unit')
     product_uom_id = fields.Many2one('product.uom', 'Unit',

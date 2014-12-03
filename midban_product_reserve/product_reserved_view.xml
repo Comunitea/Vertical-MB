@@ -54,6 +54,7 @@
 
                             <group>
                                 <field name="price_unit"/>
+                                <field name="min_unit"/>
                                 <field name="product_uom_id"/>
                                 <field name="reserved_qty"/>
                                 <field name="served_qty"/>

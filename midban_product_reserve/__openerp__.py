@@ -32,6 +32,7 @@
                 "product",
                 "midban_product",
                 "midban_depot_stock",
+                "process_sale_order",
                 ],
     "data": [
         'product_reserved_view.xml',
