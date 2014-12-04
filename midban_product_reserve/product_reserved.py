@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp import models, fields, api
 import time
+from openerp.tools.translate import _
 
 
 class product_reserved(models.Model):
@@ -59,11 +60,15 @@ class product_reserved(models.Model):
     comment = fields.Text('Comment')
     location_id = fields.Many2one('stock.location', 'Location')
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', '/') == '/':
-            vals['name'] = self.env['ir.sequence'].get('pr.reserved') or '/'
-        res = super(product_reserved, self).create(vals)
+    # @api.model
+    # def create(self, vals):
+    #     box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
+    #     un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+    #     if vals.get('name', '/') == '/':
+    #         vals['name'] = self.env['ir.sequence'].get('pr.reserved') or '/'
+    #     if vals.get('min_unit', False):
+    #         vals['min_unit'] == self.env['ir.sequence'].get('pr.reserved') or '/'
+    #     res = super(product_reserved, self).create(vals)
         return res
 
     @api.one
@@ -85,3 +90,26 @@ class product_reserved(models.Model):
     def finsh_reserve(self):
         self.state = 'done'
         return
+
+    @api.onchange('min_unit')
+    def onchange_min_unit(self):
+        box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
+        un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
+        res = {}
+        # if self.min_unit == 'box' or self.min_unit == 'both':
+        if self.min_unit == 'box':
+            if not len(box_uom):
+                res['warning'] = {'title': _('Warning'),
+                                  'message': _('Box unit does not exist.\
+                You must configured one unit like boxes')}
+            else:
+                self.product_uom_id = box_uom.id
+
+        else:  # Units
+            if not len(un_uom):
+                res['warning'] = {'title': _('Warning'),
+                                  'message': _('Units unit does not exist.\
+                You must configured one unit like units')}
+            else:
+                self.product_uom_id = un_uom.id
+        return res

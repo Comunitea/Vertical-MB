@@ -43,7 +43,7 @@ class product_template(osv.Model):
         for id in ids:
             res[id] = {}.fromkeys(field_names, 0.0)
         if 'virtual_stock_conservative' in field_names:
-            # Virtual stock conservative = real qty + outgoing qty
+            # Virtual stock conservative = real qty - outgoing qty
             for id in ids:
                 realqty = prod.browse(cr,
                                       uid,
