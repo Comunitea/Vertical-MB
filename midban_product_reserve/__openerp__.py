@@ -26,18 +26,15 @@
     "website": "www.pexego.es",
     "description": """
     * Reserve products
+    * Depends of OCA repository
     """,
     "images": [],
     "depends": ["base",
-                "product",
-                "midban_product",
-                "midban_depot_stock",
-                "process_sale_order",
+                "sale",
+                "stock_reserve_sale"
                 ],
     "data": [
-        'product_reserved_view.xml',
-        'data/product_reserved_data.xml',
-        'security/ir.model.access.csv',
+        'sale_view.xml'
     ],
     "demo": [],
     "test": [],

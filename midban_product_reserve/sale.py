@@ -18,5 +18,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# import product_reserved
-import sale
+from openerp import models, fields
+
+
+class sale_order(models.Model):
+    _inherit = 'sale.order'
+
+    reserved_sale = fields.Boolean('Reserved Sale', readonly=True)
