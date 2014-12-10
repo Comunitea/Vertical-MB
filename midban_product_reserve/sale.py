@@ -18,10 +18,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
     reserved_sale = fields.Boolean('Reserved Sale', readonly=True)
+
+    # @api.multi
+    # def action_ship_create(self):
+    #     for order in self:
+    #         if not order.reserved_sale:
+    #             res = order.action_ship_create()
+    #     return True
