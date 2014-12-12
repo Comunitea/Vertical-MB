@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!-- Load qualitative comments for sale order lines -->
+        <record id="rod" model="qualitative.note">
+            <field name="name">A rodajas</field>
+            <field name="code">ROD</field>
+        </record>
+
+        <record id="fil" model="qualitative.note">
+            <field name="name">Fileteado</field>
+            <field name="code">FIL</field>
+        </record>
+
+        <record id="se" model="qualitative.note">
+            <field name="name">Sin Escatas</field>
+            <field name="code">SE</field>
+        </record>
+
+        <record id="sUP" model="qualitative.note">
+            <field name="name">Supremas</field>
+            <field name="code">SUP</field>
+        </record>
+
+        <record id="MAR" model="qualitative.note">
+            <field name="name">Mariposa</field>
+            <field name="code">MAR</field>
+        </record>
+
+        <record id="rod_mer" model="qualitative.note">
+            <field name="name">A rodajas con Mermas</field>
+            <field name="code">ROD+MER</field>
+        </record>
+
+        <record id="fil_mer" model="qualitative.note">
+            <field name="name">Fileteado con Mermas</field>
+            <field name="code">FIL+MER</field>
+        </record>
+
+        <record id="se_mer" model="qualitative.note">
+            <field name="name">Sin Escatas con Mermas</field>
+            <field name="code">SE+MER</field>
+        </record>
+
+        <record id="sup_mer" model="qualitative.note">
+            <field name="name">A rodajas con Mermas</field>
+            <field name="code">SUP+MER</field>
+        </record>
+
+        <record id="mar_mer" model="qualitative.note">
+            <field name="name">A rodajas con Mermas</field>
+            <field name="code">MAR+MER</field>
+        </record>
+        
+    </data>
+</openerp>
