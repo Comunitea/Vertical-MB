@@ -32,10 +32,12 @@
     "depends": [
         "base",
         "sale",
+        "purchase",
     ],
     "data": [
         'data/ultra_fresh_data.xml',
         'sale_view.xml',
+        'purchase_view.xml',
     ],
     "demo": [],
     "test": [],

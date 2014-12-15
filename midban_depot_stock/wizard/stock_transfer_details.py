@@ -156,7 +156,7 @@ class stock_transfer_details(models.TransientModel):
     @api.one
     def do_detailed_transfer(self):
         res = super(stock_transfer_details, self).do_detailed_transfer()
-        if self.cross_dock and self.move_lines and \
+        if self.picking_id.cross_dock and self.move_lines and \
                 self.move_lines[0].move_dest_id:
             related_pick = self.move_lines[0].move_dest_id.picking_id
             related_pick.do_prepare_partial()
