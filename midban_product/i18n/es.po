@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 13:47+0000\n"
-"PO-Revision-Date: 2014-10-23 13:47+0000\n"
+"POT-Creation-Date: 2014-12-15 17:52+0000\n"
+"PO-Revision-Date: 2014-12-15 17:52+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -160,13 +160,13 @@ msgid "Code EAN14"
 msgstr "Code EAN14"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:369
+#: code:addons/midban_product/product.py:368
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:360
+#: code:addons/midban_product/product.py:359
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -261,6 +261,11 @@ msgstr "Motivos denegación de alta"
 #: view:deny.product.reason:midban_product.midban_deny_product_reason_view_tree
 msgid "Deny reasons"
 msgstr "Motivos denegación de producto"
+
+#. module: midban_product
+#: help:temp.type,type:0
+msgid "Depending on this temperature, the product will be storedin a different warehouse location."
+msgstr "Depending on this temperature, the product will be storedin a different warehouse location."
 
 #. module: midban_product
 #: field:product.template,dessert:0
@@ -375,7 +380,7 @@ msgid "Logistic Validated"
 msgstr "Logística validada"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:351
+#: code:addons/midban_product/product.py:350
 #, python-format
 msgid "Logistic validate done"
 msgstr "Validación logística realizada"
@@ -486,7 +491,7 @@ msgid "Palet Wood Height"
 msgstr "Altura madera palet"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:343
+#: code:addons/midban_product/product.py:342
 #, python-format
 msgid "Pending logistic and commercial validate"
 msgstr "Pendiente de validación logística y comercial"
@@ -534,7 +539,7 @@ msgstr "Información del producto"
 #. module: midban_product
 #: model:ir.model,name:midban_product.model_product_template
 msgid "Product Template"
-msgstr "Plantilla del producto"
+msgstr "Plantilla de producto"
 
 #. module: midban_product
 #: view:unregister.product.reason:midban_product.midban_product_allergen_view_form
@@ -548,7 +553,7 @@ msgid "Product denied"
 msgstr "Productos denegados"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:413
+#: code:addons/midban_product/product.py:412
 #, python-format
 msgid "Product denied in register process again"
 msgstr "Product denegado en proceso de alta de nuevo"
@@ -559,7 +564,7 @@ msgid "Product deny reasons"
 msgstr "Motivos denegación alta producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:392
+#: code:addons/midban_product/product.py:391
 #, python-format
 msgid "Product denyed"
 msgstr "Producto denegado"
@@ -570,13 +575,13 @@ msgid "Product history"
 msgstr "Historial de producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:379
+#: code:addons/midban_product/product.py:378
 #, python-format
 msgid "Product registered"
 msgstr "Producto Dado de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:402
+#: code:addons/midban_product/product.py:401
 #, python-format
 msgid "Product registered again"
 msgstr "Dar de alta de nuevo"
@@ -734,6 +739,11 @@ msgid "UN/CA Supplier"
 msgstr "UN/CA Proveedor"
 
 #. module: midban_product
+#: selection:product.template,sale_type:0
+msgid "Ultrafresh"
+msgstr "Ultrafresco"
+
+#. module: midban_product
 #: selection:product.template,state2:0
 msgid "Unegistered"
 msgstr "Dado de baja"
@@ -806,7 +816,7 @@ msgid "Variable weight"
 msgstr "Peso variable"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:309
+#: code:addons/midban_product/product.py:308
 #, python-format
 msgid "Warning!"
 msgstr "Advertencia!"
@@ -817,7 +827,7 @@ msgid "Web"
 msgstr "Web"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:310
+#: code:addons/midban_product/product.py:309
 #, python-format
 msgid "You cannot change the value                                     of consignment field."
 msgstr "YNo puedes cambiar el valor del campo consigna."

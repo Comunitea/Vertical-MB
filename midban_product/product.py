@@ -104,6 +104,7 @@ class product_template(osv.Model):
         'temp_type': fields.many2one('temp.type',
                                      'Temp type'),
         'sale_type': fields.selection([('fresh', 'Fresh'),
+                                       ('ultrafresh', 'Ultrafresh'),
                                        ('frozen', 'Frozen'), ('dry', 'Dry')],
                                       "Sale type"),
         'var_weight': fields.boolean('Variable weight'),
