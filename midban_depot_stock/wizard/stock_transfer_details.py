@@ -155,7 +155,6 @@ class stock_transfer_details(models.TransientModel):
 
     @api.one
     def do_detailed_transfer(self):
-        import ipdb; ipdb.set_trace()
         res = super(stock_transfer_details, self).do_detailed_transfer()
         if self.cross_dock and self.move_lines and \
                 self.move_lines[0].move_dest_id:
