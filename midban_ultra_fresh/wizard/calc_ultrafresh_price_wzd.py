@@ -41,7 +41,6 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     @api.onchange('date')
     def onchange_date(self):
         line_ids = []
-        import ipdb; ipdb.set_trace()
         date_start = self.date + " 00:00:00"
         date_end = self.date + " 23:59:59"
         domain = [
@@ -67,16 +66,19 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
                     (line.price_unit * line.purchased_kg),
 
         for key in group:
-            # prod_obj = self.env['product.product'].browse(key)
+            prod_obj = self.env['product.product'].browse(key)
+            margin = prod_obj.margin
+            cost = prod_obj.standard_price
+            final_pvp = cost / (1 - (margin / 100))
             vals = {
                 'product_id': key,
                 'num_purchases': group[key]['num_purchases'],
                 'purchased_kg': group[key]['purchased_kg'],
                 'avg_price_kg':
                 group[key]['sum_prices'] / group[key]['num_purchases'],
-                'margin': 40,
-                'final_pvp': 50,
-                'calc_margin': 60,
+                'margin': margin,
+                'final_pvp': final_pvp,
+                'calc_margin': margin,
             }
             line_ids.append(self.env['calc.price.line'].create(vals).id)
         self.line_ids = line_ids

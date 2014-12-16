@@ -18,6 +18,11 @@
                     <field name="ultrafresh_purchase" class="oe_inline"/>
                     </h3>
                 </field>
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_qty']" position="after">
+                    <field name="ultrafresh_po" invisible="1"/>
+                    <field name="purchased_kg" attrs="{'invisible': [('ultrafresh_po','=',0)]}"/>  
+                </xpath>
             </field>
         </record>
 

@@ -207,6 +207,7 @@ class product_template(osv.Model):
                                                dp.get_precision('Account'),
                                                method=True,
                                                readonly=True),
+        'margin': fields.float("Margin", digits=(4, 2)),
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',

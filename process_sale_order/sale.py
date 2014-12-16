@@ -36,6 +36,7 @@ class sale_order_line(models.Model):
         """
         When we sale in boxes we want to do product_uos_qty * price unit
         instead the default product_uom_qty * price_unit
+        Need call super???
         """
         for rec in self:
             if rec.choose_unit == 'box':  # product_uos_qty instead uom

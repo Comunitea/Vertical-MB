@@ -143,6 +143,7 @@
                     <field name="ean14"/>
                 </field>
                 <field name="standard_price" position="after">
+                    <field name="margin"/>
                     <field name="last_purchase_price"/>
                     <field name="life"/>
                 </field>
