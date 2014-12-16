@@ -18,6 +18,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import sale
-import purchase
-import wizard
+from openerp import models, fields
+
+
+class purchase_order(models.Model):
+    _inherit = 'purchase.order'
+
+    ultrafresh_purchase = fields.Boolean('Ultrafresh purchase', readonly=True)
+
+
+class purchase_order_line(models.Model):
+    _inherit = 'purchase.order.line'
+
+    purchased_kg = fields.Float('Purchased Kg')

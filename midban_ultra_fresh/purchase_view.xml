@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- Overwrite to add ultrafresh check and display correctly the name of picking type id-->
+        <record id="ultrafres_purchase_order_form" model="ir.ui.view">
+            <field name="name">ultrafres.purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="picking_type_id" position="replace">
+                    <field name="picking_type_id" on_change="onchange_picking_type_id(picking_type_id, context)" domain="[('code','=','incoming')]" context="{'special_shortened_wh_name': False}" groups="stock.group_locations"/>
+                </field>
+
+                <field name="name" position="after">
+                    <h3>
+                    <label string="UltraFresh Purchase"/>
+                    <field name="ultrafresh_purchase" class="oe_inline"/>
+                    </h3>
+                </field>
+            </field>
+        </record>
+
+        <!-- Overwrite search view to add a ultrafresh check -->
+        <record id="view_purchase_order_filter_add_ultrafresh" model="ir.ui.view">
+            <field name="name">purchase.order.list.select.add.ultrafresh</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">
+                <filter name="exception" position="after">
+                    <filter name="ultrafresh_purchase_filter" string="Ultrafresh purchase" domain="[('ultrafresh_purchase','=', 1)]"/>
+                </filter>
+            </field>
+        </record>
+
+        <!-- Overwrite to show only normal purchases in quatation -->
+        <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+            <field name="name">Requests for Quotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',('draft','sent','bid','cancel', 'confirmed'))]</field>
+            <field name="view_mode">tree,form,graph,calendar</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">
+                {
+                    'search_default_ultrafresh_purchase_filter': 0,
+                }
+            </field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a request for quotation.
+              </p><p>
+                The quotation contains the history of the discussion/negociation
+                you had with your supplier. Once confirmed, a request for
+                quotation is converted into a purchase order.
+              </p><p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+              </p>
+            </field>
+        </record>
+
+        <!-- Overwrite to show only normal purchases not in quatation -->
+        <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,form,graph,calendar</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="context">
+                {
+                    'search_default_ultrafresh_purchase_filter': 0,
+                }
+            </field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quotation that will be converted into a purchase order. 
+              </p><p>
+                Use this menu to search within your purchase orders by
+                references, supplier, products, etc. For each purchase order,
+                you can track the related discussion with the supplier, control
+                the products received and control the supplier invoices.
+              </p>
+            </field>
+        </record>
+
+        <!-- Show only ultrafresh purchases -->
+        <record id="action_ultrafresh_purchase" model="ir.actions.act_window">
+            <field name="name">UltraFresh Purchase</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_type">form</field>
+<!--             <field name="view_id" ref="purchase.purchase_order_tree"/> -->
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">
+                {
+                    'search_default_ultrafresh_purchase_filter': 1,
+                    'default_ultrafresh_purchase': 1,
+                }
+            </field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new purchase of ultra fresh product
+              </p><p>
+                This products will be putted in the outgoing location.
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu for ultrafresh purchases -->
+        <menuitem action="action_ultrafresh_purchase" id="menu_ultrafresh_purchase" parent="purchase.menu_procurement_management" sequence="7"/>
+    </data>
+</openerp>
