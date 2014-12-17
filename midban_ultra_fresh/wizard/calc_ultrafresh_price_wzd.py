@@ -66,7 +66,7 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
             avg_price = group[key]['sum_prices'] / group[key]['purchased_kg']
             margin = prod_obj.margin
             cost = avg_price
-            final_pvp = (cost / (1 - (self.calc_margin / 100.0)))
+            final_pvp = (cost / (1 - (margin / 100.0)))
             vals = {
                 'product_id': key,
                 'num_purchases': group[key]['num_purchases'],
