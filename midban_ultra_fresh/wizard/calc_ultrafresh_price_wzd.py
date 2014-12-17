@@ -30,6 +30,7 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     _name = "calc.ultrafresh.price.wzd"
 
     date = fields.Date('Date', default=fields.Date.today())
+    date_sales = fields.Date('Date for sales to change', default=fields.Date.today())
     line_ids = fields.One2many('calc.price.line', 'wizard_id', 'Change lines')
 
     @api.onchange('date')
@@ -62,15 +63,15 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
 
         for key in group:
             prod_obj = self.env['product.product'].browse(key)
+            avg_price = group[key]['sum_prices'] / group[key]['purchased_kg']
             margin = prod_obj.margin
-            cost = prod_obj.standard_price
-            final_pvp = cost / (1 - (margin / 100))
+            cost = avg_price
+            final_pvp = (cost / (1 - (self.calc_margin / 100.0)))
             vals = {
                 'product_id': key,
                 'num_purchases': group[key]['num_purchases'],
                 'purchased_kg': group[key]['purchased_kg'],
-                'avg_price_kg':
-                group[key]['sum_prices'] / group[key]['num_purchases'],
+                'avg_price_kg': avg_price,
                 'margin': margin,
                 'final_pvp': final_pvp,
                 'calc_margin': margin,
@@ -79,8 +80,20 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
         self.line_ids = line_ids
         return
 
+    @api.one
     def apply_changes(self):
-        import ipdb; ipdb.set_trace()
+        product_prices = {}
+        # for line in self.line_ids:
+        #     product_prices[line.product_id.id] = line.avg_price_kg
+        # import ipdb; ipdb.set_trace()
+
+        # domain = [
+        #     ('order_id.date_order', '>=', date_start),
+        #     ('order_id.date_order', '<=', date_end),
+        #     ('order_id.state', '=', 'approved'),
+        #     ('order_id.ultrafresh_purchase', '=', True)
+        # ]
+        # line_objs = self.env['purchase.order.line'].search(domain)
         return
 
 
@@ -89,22 +102,24 @@ class calc_price_line(models.TransientModel):
     _name = "calc.price.line"
 
     wizard_id = fields.Many2one('calc.ultrafresh.price.wzd', 'Wizard',
-                                ondelete="cascade")
+                                ondelete="cascade", required=True)
     product_id = fields.Many2one('product.product', 'Product',
-                                 readonly=True)
+                                 readonly=True, required=True)
     num_purchases = fields.Integer('Nº Purchases', readonly=True)
     purchased_kg = fields.Float('Purchased kg', readonly=True)
     avg_price_kg = fields.Float('Average Price kg ', readonly=True)
     margin = fields.Float('Margin ', readonly=True)
-    final_pvp = fields.Float('Final pvp ')
+    final_pvp = fields.Float('Final pvp ', required=True)
     calc_margin = fields.Float('Calc Margin')
 
     @api.onchange('final_pvp')
     def onchange_final_pvp(self):
-        cost = self.product_id.standard_price
+        cost = self.avg_price_kg
         self.calc_margin = (1 - (cost / self.final_pvp)) * 100.0
 
-    @api.onchange('calc_margin')
-    def onchange_calc_margin(self):
-        cost = self.product_id.standard_price
-        self.final_pvp = (cost / (1 - (self.calc_margin / 100.0)))
+    # @api.onchange('calc_margin')
+    # def onchange_calc_margin(self):
+    # """Por que esto no funciona y el de arriba si WTF!!!!!!!!!!!"""
+    #     import ipdb; ipdb.set_trace()
+    #     cost = self.avg_price_kg
+    #     self.final_pvp = (cost / (1 - (self.calc_margin / 100.0)))
