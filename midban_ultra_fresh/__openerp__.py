@@ -34,6 +34,7 @@
         "sale",
         "purchase",
         "midban_product",  # Beacause of field sale_type (for ultrafresh)
+        "midban_depot_stock",  # Beacause of field real_weight
     ],
     "data": [
         'data/ultra_fresh_data.xml',

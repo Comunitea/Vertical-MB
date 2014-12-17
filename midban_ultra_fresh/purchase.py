@@ -27,6 +27,17 @@ class purchase_order(models.Model):
 
     ultrafresh_purchase = fields.Boolean('Ultrafresh purchase', readonly=True)
 
+    @api.model
+    def _prepare_order_line_move(self, order, order_line, picking_id,
+    	                         group_id):
+        res = super(purchase_order, self)._prepare_order_line_move(order,
+        	                                                       order_line,
+        	                                                       picking_id,
+    	                                                           group_id)
+        for dic in res:
+        	dic['real_weight'] = order_line.purchased_kg
+
+        return res
 
 class purchase_order_line(models.Model):
     _inherit = 'purchase.order.line'
