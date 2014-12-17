@@ -32,12 +32,6 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     date = fields.Date('Date', default=fields.Date.today())
     line_ids = fields.One2many('calc.price.line', 'wizard_id', 'Change lines')
 
-    # @api.model
-    # def default_get(self, fields):
-    #     res = super(calc_ultrafresh_price_wzd, self).default_get(fields)
-    #     import ipdb; ipdb.set_trace()
-    #     return res
-
     @api.onchange('date')
     def onchange_date(self):
         line_ids = []
@@ -60,10 +54,11 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
                     'sum_prices': line.price_unit * line.purchased_kg,
                 }
             else:
-                group[p_id]['num_purchases'] += 1
-                group[p_id]['purchased_kg'] += line.purchased_kg,
-                group[p_id]['sum_prices'] += \
-                    (line.price_unit * line.purchased_kg),
+                group[p_id]['num_purchases'] = group[p_id]['num_purchases'] + 1
+                group[p_id]['purchased_kg'] = group[p_id]['purchased_kg'] + \
+                    line.purchased_kg
+                group[p_id]['sum_prices'] = group[p_id]['sum_prices'] + \
+                    (line.price_unit * line.purchased_kg)
 
         for key in group:
             prod_obj = self.env['product.product'].browse(key)
@@ -103,3 +98,13 @@ class calc_price_line(models.TransientModel):
     margin = fields.Float('Margin ', readonly=True)
     final_pvp = fields.Float('Final pvp ')
     calc_margin = fields.Float('Calc Margin')
+
+    @api.onchange('final_pvp')
+    def onchange_final_pvp(self):
+        cost = self.product_id.standard_price
+        self.calc_margin = (1 - (cost / self.final_pvp)) * 100.0
+
+    @api.onchange('calc_margin')
+    def onchange_calc_margin(self):
+        cost = self.product_id.standard_price
+        self.final_pvp = (cost / (1 - (self.calc_margin / 100.0)))
