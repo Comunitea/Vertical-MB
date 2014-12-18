@@ -71,7 +71,6 @@
             <field name="context">
                 {
                     'search_default_my_sale_orders_filter': 0,
-                    <!-- 'reserved_sale': 0, -->
                 }
             </field>
             <field name="domain">[('state','in',('draft','sent','cancel'))]</field>
@@ -102,7 +101,6 @@
             <field name="context">
                 {
                     'search_default_my_sale_orders_filter': 0,
-<!--                     'reserved_sale': 1, -->
                 }
             </field>
             <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
