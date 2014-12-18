@@ -33,6 +33,7 @@
         "base",
         "sale",
         "purchase",
+        "stock",
         "midban_product",  # Beacause of field sale_type (for ultrafresh)
         "midban_depot_stock",  # Beacause of field real_weight
         "process_sale_order",  # Beacause of _amount_line and choose_unit

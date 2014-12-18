@@ -20,4 +20,5 @@
 ##############################################################################
 import sale
 import purchase
+import stock
 import wizard

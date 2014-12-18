@@ -85,8 +85,7 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     def apply_changes(self):
         product_prices = {}
         for line in self.line_ids:
-            product_prices[line.product_id.id] = line.avg_price_kg
-        import ipdb; ipdb.set_trace()
+            product_prices[line.product_id.id] = line.final_pvp
         product_ids = product_prices.keys()
         domain = [
             ('picking_id.min_date', '>=', self.date_sales),
@@ -98,11 +97,11 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
         for move in move_objs:
             if move.procurement_id and move.procurement_id.sale_line_id:
                 product = move.product_id
-                new_price = product_ids[product.id]
-                product.write({'lst_price': new_price})
+                new_price = product_prices[product.id]
+                product.write({'lst_price': new_price, 'price_kg': new_price})
                 sale_line = move.procurement_id.sale_line_id
                 sale_line.write({'price_unit': new_price,
-                                 'choose_unit': 'box'})
+                                 'min_unit': 'box'})
                 move.write({'price_kg': new_price})
         return
 
@@ -112,7 +111,7 @@ class calc_price_line(models.TransientModel):
     _name = "calc.price.line"
 
     wizard_id = fields.Many2one('calc.ultrafresh.price.wzd', 'Wizard',
-                                ondelete="cascade", required=True)
+                                ondelete="cascade")
     product_id = fields.Many2one('product.product', 'Product',
                                  readonly=True, required=True)
     num_purchases = fields.Integer('Nº Purchases', readonly=True)
