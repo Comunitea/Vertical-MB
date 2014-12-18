@@ -38,6 +38,12 @@ class purchase_order(models.Model):
             dic['real_weight'] = order_line.purchased_kg
         return res
 
+    @api.model
+    def _get_picking_in(self):
+        res = super(purchase_order, self)._get_picking_in()
+        import ipdb; ipdb.set_trace()
+        return res
+
 
 class purchase_order_line(models.Model):
     _inherit = 'purchase.order.line'

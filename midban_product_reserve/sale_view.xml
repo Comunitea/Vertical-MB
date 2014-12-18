@@ -18,7 +18,8 @@
                 }
             </field>
            <!--  <field name="domain">[('state','in',('draft','sent','cancel'))]</field> -->
-            <field name="search_view_id" ref="view_sales_order_filter_add_reserved_filter"/>
+            <!-- <field name="search_view_id" ref="view_sales_order_filter_add_reserved_filter"/> -->
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to create a Reserve by making a quotation

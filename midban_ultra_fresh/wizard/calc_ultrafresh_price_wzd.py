@@ -30,7 +30,8 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     _name = "calc.ultrafresh.price.wzd"
 
     date = fields.Date('Date', default=fields.Date.today())
-    date_sales = fields.Date('Date for sales to change', default=fields.Date.today())
+    date_sales = fields.Date('Date for sales to change',
+                             default=fields.Date.today())
     line_ids = fields.One2many('calc.price.line', 'wizard_id', 'Change lines')
 
     @api.onchange('date')
@@ -83,17 +84,26 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     @api.one
     def apply_changes(self):
         product_prices = {}
-        # for line in self.line_ids:
-        #     product_prices[line.product_id.id] = line.avg_price_kg
-        # import ipdb; ipdb.set_trace()
-
-        # domain = [
-        #     ('order_id.date_order', '>=', date_start),
-        #     ('order_id.date_order', '<=', date_end),
-        #     ('order_id.state', '=', 'approved'),
-        #     ('order_id.ultrafresh_purchase', '=', True)
-        # ]
-        # line_objs = self.env['purchase.order.line'].search(domain)
+        for line in self.line_ids:
+            product_prices[line.product_id.id] = line.avg_price_kg
+        import ipdb; ipdb.set_trace()
+        product_ids = product_prices.keys()
+        domain = [
+            ('picking_id.min_date', '>=', self.date_sales),
+            ('picking_id.min_date', '<=', self.date_sales),
+            ('state', 'not in', ['cancel', 'done']),
+            ('product_id', 'in', product_ids)
+        ]
+        move_objs = self.env['stock.move'].search(domain)
+        for move in move_objs:
+            if move.procurement_id and move.procurement_id.sale_line_id:
+                product = move.product_id
+                new_price = product_ids[product.id]
+                product.write({'lst_price': new_price})
+                sale_line = move.procurement_id.sale_line_id
+                sale_line.write({'price_unit': new_price,
+                                 'choose_unit': 'box'})
+                move.write({'price_kg': new_price})
         return
 
 

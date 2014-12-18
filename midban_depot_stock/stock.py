@@ -807,6 +807,7 @@ class stock_move(osv.osv):
                                     string="Drop Code",
                                     type='integer', readonly=True),
         'real_weight': fields.float('Real weight'),
+        'price_kg': fields.float('Price Kg'),
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
@@ -815,6 +816,25 @@ class stock_move(osv.osv):
         route_id = move.trans_route_id and move.trans_route_id.id or False
         res['trans_route_id'] = route_id
         res['drop_code'] = move.drop_code
+        return res
+
+    def onchange_product_id(self, cr, uid, ids, prod_id=False, loc_id=False,
+                            loc_dest_id=False, partner_id=False):
+        """
+        Get the price_kg of the product
+        """
+        res = super(stock_move, self).onchange_product_id(cr, uid, ids,
+                                                          prod_id=prod_id,
+                                                          loc_id=loc_id,
+                                                          loc_dest_id=
+                                                          loc_dest_id,
+                                                          partner_id=
+                                                          partner_id)
+        if not prod_id:
+            return {}
+        product = self.pool.get('product.product').browse(cr, uid,
+                                                          [prod_id])[0]
+        res['value']['price_kg'] = product.price_kg
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -877,7 +897,7 @@ class stock_move(osv.osv):
                                                              partner, inv_type,
                                                              context=context)
         if move.real_weight:
-            res['price_unit'] = move.product_id.price_kg
+            res['price_unit'] = move.price_kg
         res.update({'stock_move_id': move.id})
         return res
 

@@ -19,7 +19,7 @@
 #
 ##############################################################################
 {
-    "name": "Product Reserced",
+    "name": "Product Reserved",
     "version": "1.0",
     "author": "Pexego",
     "category": "custom",

@@ -187,6 +187,7 @@
                     <field name="trans_route_id"/>
                     <!-- <field name="real_weight" on_change="onchange_real_weight(product_id, real_weight)"/> -->
                     <field name="real_weight"/>
+                    <field name="price_kg"/>
                 </field>
             </field>
         </record>
