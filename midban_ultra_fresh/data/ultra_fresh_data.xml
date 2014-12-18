@@ -53,9 +53,8 @@
             <field name="code">MAR+MER</field>
         </record>
         
-        <!-- Ultrafresh Products going from suppliers to output location -->
         <record id="picking_type_ultrafresh" model="stock.picking.type">
-            <field name="name">Ultrafresh purchases</field>
+            <field name="name">UltraFresh purchases</field>
             <field name="sequence_id" ref="stock.seq_type_picking_in"/>
             <field name="code">incoming</field>
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>

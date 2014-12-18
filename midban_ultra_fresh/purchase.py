@@ -25,6 +25,17 @@ import openerp.addons.decimal_precision as dp
 class purchase_order(models.Model):
     _inherit = 'purchase.order'
 
+    @api.model
+    def default_get(self, fields):
+        """
+        Get a different picking.type.operation to manage ultrafresh purchases
+        """
+        res = super(purchase_order, self).default_get(fields)
+        if res.get('ultrafresh_purchase', False):
+            xml_name_id = 'midban_ultra_fresh.picking_type_ultrafresh'
+            res['picking_type_id'] = self.env.ref(xml_name_id).id
+        return res
+
     ultrafresh_purchase = fields.Boolean('Ultrafresh purchase', readonly=True)
 
     @api.model
@@ -36,12 +47,6 @@ class purchase_order(models.Model):
                                                                    group_id)
         for dic in res:
             dic['real_weight'] = order_line.purchased_kg
-        return res
-
-    @api.model
-    def _get_picking_in(self):
-        res = super(purchase_order, self)._get_picking_in()
-        import ipdb; ipdb.set_trace()
         return res
 
 
