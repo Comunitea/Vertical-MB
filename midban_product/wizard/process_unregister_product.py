@@ -37,10 +37,13 @@ class process_unregister_product(osv.TransientModel):
         if context is None:
             context = {}
         product_id = context and context.get('active_id', False)
-        product_obj = self.pool.get("product.product").browse(cr, uid,
-                                                              product_id)
+        product_obj = self.pool.get("product.template").browse(cr, uid,
+                                                               product_id)
         message = _("Unregistered")
-        product_obj._update_history(context, product_obj, message)
+        self.pool.get("product.template")._update_history(cr, uid,
+                                                          product_obj.id,
+                                                          context, product_obj,
+                                                          message)
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         product_obj.write({'state2': 'unregistered', 'active': False,
                            'purchase_ok': False,

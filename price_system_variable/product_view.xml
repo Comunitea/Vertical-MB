@@ -4,8 +4,8 @@
         <!-- Inherit product form view to add cmc button update cmc, button show pvp changes and field product class -->
         <record id="product_normal_add_cmc_form_view" model="ir.ui.view">
             <field name="name">product.normal.add.c.c.view.form</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">                                    
                 <field name="uom_po_id" position="after">
                     <field name="cmc" class="oe_inline"/>

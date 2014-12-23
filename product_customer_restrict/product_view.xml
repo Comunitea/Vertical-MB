@@ -5,8 +5,8 @@
         <!-- General inherit of product view -->
         <record id="midban_depot_product_form_view" model="ir.ui.view">
             <field name="name">midban.depot.product.form.view</field>
-            <field name="model">product.product</field>
-            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <!-- Exclusive customers -->
                 <field name="description_sale"  position="after">

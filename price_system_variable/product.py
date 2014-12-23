@@ -38,12 +38,6 @@ class product_template(osv.Model):
                                           a base price on purchase orders.",
                                           groups="base.group_user",
                                           string="Cost Price"),
-    }
-
-
-class product_product(osv.Model):
-    _inherit = "product.product"
-    _columns = {
         'cmc': fields.float('CMC',
                             digits_compute=dp.get_precision('Product Cost'),
                             readonly=True,),
@@ -148,7 +142,7 @@ class product_product(osv.Model):
                 self._create_change_pvp(cr, uid, ids, new_cmc,
                                         vals['standard_price'],
                                         context=context)
-        return super(product_product, self).write(cr, uid, ids, vals, context)
+        return super(product_template, self).write(cr, uid, ids, vals, context)
 
     def _get_pvp_changes(self, cr, uid, ids, context=None):
         """

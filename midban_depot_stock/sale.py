@@ -166,7 +166,11 @@ class sale_order_line(osv.Model):
             uom_record = prod_obj.uom_id
         compare_qty = float_compare(prod_obj.virtual_stock_conservative, qty,
                                     precision_rounding=uom_record.rounding)
-        if compare_qty == -1:
+        # import ipdb; ipdb.set_trace()
+        fresh_product = prod_obj.sale_type in ['fresh', 'ultrafresh']
+        if fresh_product:
+            del res['warning']  # Delete warning from super
+        if compare_qty == -1 and not fresh_product:
             warn_msg = _('You plan to sell %.2f %s but you only have %.2f %s \
                           available in conservative !\nThe real stock is \
                           %.2f %s. (without reservations)') % \

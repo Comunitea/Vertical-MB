@@ -132,7 +132,7 @@ class product_template(osv.Model):
                                                  'allergen_id',
                                                  'Products allergens'),
 
-        'history_ids': fields.one2many('product.history', 'product_id',
+        'history_ids': fields.one2many('product.history', 'product_tmp_id',
                                        'Product History', ondelete="cascade"),
         'state2': fields.selection([
             ('val_pending', 'Validate pending'),
@@ -221,19 +221,21 @@ class product_template(osv.Model):
 
     def _check_units_values(self, cr, uid, ids, context=None):
         p = self.browse(cr, uid, ids[0], context=context)
-        if not (p.supplier_kg_un and p.supplier_un_width and
-                p.supplier_un_height and p.supplier_un_length and
-                p.supplier_ca_ma and p.supplier_ma_width and
-                p.supplier_ma_height and p.supplier_ma_length and
-                p.supplier_ma_pa and p.supplier_pa_width and
-                p.supplier_pa_height and p.supplier_pa_length and
-                p.supplier_un_ca and p.supplier_ca_width and
-                p.supplier_ca_height and p.supplier_ca_length and
-                p.palet_wood_height and
-                p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
-                p.un_width and p.ca_width and p.ma_width and p.pa_width and
-                p.un_height and p.ca_height and p.ma_height and p.pa_height and
-                p.un_length and p.ca_length and p.ma_length and p.pa_length):
+        if p.sale_type not in ['fresh', 'ultrafresh'] and \
+            not (p.supplier_kg_un and p.supplier_un_width and
+                 p.supplier_un_height and p.supplier_un_length and
+                 p.supplier_ca_ma and p.supplier_ma_width and
+                 p.supplier_ma_height and p.supplier_ma_length and
+                 p.supplier_ma_pa and p.supplier_pa_width and
+                 p.supplier_pa_height and p.supplier_pa_length and
+                 p.supplier_un_ca and p.supplier_ca_width and
+                 p.supplier_ca_height and p.supplier_ca_length and
+                 p.palet_wood_height and
+                 p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
+                 p.un_width and p.ca_width and p.ma_width and p.pa_width and
+                 p.un_height and p.ca_height and p.ma_height and p.pa_height
+                 and p.un_length and p.ca_length and p.ma_length
+                 and p.pa_length):
             return False
         return True
 
@@ -273,18 +275,6 @@ class product_template(osv.Model):
                                            'pa_length',
                                            ])]
 
-
-class product(osv.Model):
-    """ Adds custom fields for midban in product view, a history of price
-        and a history thats records product changes.
-        Product have a unique sequence but can bee overwriten.
-        It adds supplier units for purchases and mandatory units for sales"""
-
-    _inherit = 'product.product'
-    _defaults = {
-        'active': False,  # Product desuctived until register state is reached
-    }
-
     def copy(self, cr, uid, id, default=None, context=None):
         """ Overwrites copy methos in order to no duplicate the history,
         the price history, and the sequence"""
@@ -295,8 +285,8 @@ class product(osv.Model):
             'deny_reason_id': False,
             'default_code': '/'
         })
-        return super(product, self).copy(cr, uid, id, default=default,
-                                         context=context)
+        return super(product_template, self).copy(cr, uid, id, default=default,
+                                                  context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
@@ -309,8 +299,8 @@ class product(osv.Model):
             raise osv.except_osv(_('Warning!'),
                                  _('You cannot change the value \
                                     of consignment field.'))
-        return super(product, self).write(cr, uid, ids,
-                                          vals, context=context)
+        return super(product_template, self).write(cr, uid, ids,
+                                                   vals, context=context)
 
     def create(self, cr, user, vals, context=None):
         """ Generates a sequence in the internal reference name.
@@ -320,14 +310,14 @@ class product(osv.Model):
             sequence_obj = self.pool.get('ir.sequence')
             vals['default_code'] = sequence_obj.get(cr, user,
                                                     'product.serial.number')
-        new_id = super(product, self).create(cr, user, vals, context)
+        new_id = super(product_template, self).create(cr, user, vals, context)
         return new_id
 
     def _update_history(self, cr, uid, ids, context, product_obj, activity):
         """ Update product history model for the argument partner_obj whith
             the activity defined in activity argument."""
         vals = {
-            'product_id': product_obj.id,
+            'product_tmp_id': product_obj.id,
             'user_id': uid,
             'date': time.strftime("%Y-%m-%d %H:%M:%S"),
             'activity': activity
@@ -338,7 +328,7 @@ class product(osv.Model):
     def act_validate_pending(self, cr, uid, ids, context=None):
         """ Fix state in validate pending, product no active, update history.
             It's a flow method."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             product.write({'state2': 'val_pending', 'active': False})
             message = _("Pending logistic and commercial validate")
             self._update_history(cr, uid, ids, context, product, message)
@@ -347,7 +337,7 @@ class product(osv.Model):
     def act_comercial_pending(self, cr, uid, ids, context=None):
         """ Fix state in commercial pending, product no active,
             update history. It's a flow method."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Logistic validate done")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'commercial_pending', 'active': False})
@@ -356,7 +346,7 @@ class product(osv.Model):
     def act_logic_pending(self, cr, uid, ids, context=None):
         """ Fix state in logic pending, product no active,
             update history. It's a flow method."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Comercial validate done")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'logic_pending', 'active': False})
@@ -365,7 +355,7 @@ class product(osv.Model):
     def act_validated(self, cr, uid, ids, context=None):
         """ Fix state in validated, product no active,
             update history. It's a flow method."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Comercial and validate done. Pending to register")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'validated', 'active': False})
@@ -375,12 +365,12 @@ class product(osv.Model):
         """ Fix state in registered, product active,
             update history. It's a flow method."""
         t_template = self.pool.get("product.template")
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Product registered")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'registered', 'active': True,
                            'sale_ok': True, 'purchase_ok': True})
-            template = t_template.browse(cr, uid, product.product_tmpl_id.id,
+            template = t_template.browse(cr, uid, product.id,
                                          context)
             template.write({'active': True})
         return True
@@ -388,7 +378,7 @@ class product(osv.Model):
     def act_denied(self, cr, uid, ids, context=None):
         """ Button deny method. that set register state again afeter a product
             was unregistered."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Product denyed")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'denied', 'active': False,
@@ -398,7 +388,7 @@ class product(osv.Model):
     def register_again(self, cr, uid, ids, context=None):
         """ Fix state in registered when a product was unregistered,
             product active, update history. It's a button method."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Product registered again")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'registered', 'active': True,
@@ -409,12 +399,12 @@ class product(osv.Model):
         """ When a product is denied this method lets you restart the product
             workflow so the product will be desactived and state its fixed to
             validate pending."""
-        for product in self.pool.get("product.product").browse(cr, uid, ids):
+        for product in self.browse(cr, uid, ids):
             message = _("Product denied in register process again")
             self._update_history(cr, uid, ids, context, product, message)
             wf_service = netsvc.LocalService("workflow")
-            wf_service.trg_delete(uid, 'product.product', product.id, cr)
-            wf_service.trg_create(uid, 'product.product', product.id, cr)
+            wf_service.trg_delete(uid, 'product.template', product.id, cr)
+            wf_service.trg_create(uid, 'product.template', product.id, cr)
         return True
 
 
@@ -423,11 +413,11 @@ class product_history(osv.Model):
     model."""
     _name = 'product.history'
     _description = "Product history"
-    _rec_name = "product_id"
+    _rec_name = "product_tmp_id"
     _order = "date desc"
     _columns = {
-        'product_id': fields.many2one('product.product', 'Product',
-                                      readonly=True, required=True, ),
+        'product_tmp_id': fields.many2one('product.template', 'Product',
+                                          readonly=True, required=True, ),
         'user_id': fields.many2one("res.users", 'User', readonly=True,
                                    required=True),
         'date': fields.datetime('Date', readonly=True, required=True),

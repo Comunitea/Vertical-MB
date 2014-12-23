@@ -22,9 +22,9 @@ from openerp.osv import osv, fields
 
 
 class product_product(osv.osv):
-    _inherit = 'product.product'
+    _inherit = 'product.template'
     _columns = {
-        'products_substitute_ids': fields.many2many('product.product',
+        'products_substitute_ids': fields.many2many('product.template',
                                                     'product_subtitutes_rel',
                                                     'product_id',
                                                     'substitute_id',
@@ -32,7 +32,7 @@ class product_product(osv.osv):
         # It doubles the many2many field by reversing the order of the keys
         # to making a domain in the wizard to substitute product. In the 7.0
         # version can't deploy python code in xml files.
-        'products_parent_ids': fields.many2many('product.product',
+        'products_parent_ids': fields.many2many('product.template',
                                                 'product_subtitutes_rel',
                                                 'substitute_id',
                                                 'product_id',

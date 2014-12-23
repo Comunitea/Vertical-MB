@@ -21,9 +21,9 @@
 from openerp.osv import osv, fields
 
 
-class product_product(osv.Model):
+class product_template(osv.Model):
     """ """
-    _inherit = 'product.product'
+    _inherit = 'product.template'
     _columns = {
         'exclusive_ids': fields.many2many('res.partner',
                                           'exclusive_customer_rel',
@@ -55,12 +55,12 @@ class product_product(osv.Model):
             else:  # Evaluate rules and exclusives
                 list_ids = part_pool.search_products_to_sell(cr, uid, part_id)
                 args.append(['id', 'in', list_ids])
-        return super(product_product, self).search(cr, uid, args,
-                                                   offset=offset,
-                                                   limit=limit,
-                                                   order=order,
-                                                   context=context,
-                                                   count=count)
+        return super(product_template, self).search(cr, uid, args,
+                                                    offset=offset,
+                                                    limit=limit,
+                                                    order=order,
+                                                    context=context,
+                                                    count=count)
 
     def _get_partner_buyer(self, cr, uid, ids, context=None):
         """ Return ids of partners that can buy the product"""

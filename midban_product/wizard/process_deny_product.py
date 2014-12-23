@@ -39,15 +39,18 @@ class process_deny_product(osv.TransientModel):
         if context is None:
             context = {}
         product_id = context and context.get('active_id', False)
-        product_obj = self.pool.get("product.product").browse(cr, uid,
-                                                              product_id)
+        product_obj = self.pool.get("product.template").browse(cr, uid,
+                                                               product_id)
         message = _("Product Denied")
-        product_obj._update_history(context, product_obj, message)
+        self.pool.get("product.template")._update_history(cr, uid,
+                                                          product_obj.id,
+                                                          context, product_obj,
+                                                          message)
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         product_obj.write({'state2': 'denied', 'active': False,
                            'purchase_ok': False,
                            'deny_reason_id': wzd_obj.reason_id.id})
         wf_service = netsvc.LocalService("workflow")
-        wf_service.trg_validate(uid, 'product.product', product_id,
+        wf_service.trg_validate(uid, 'product.template', product_id,
                                 'deny', cr)
         return {'type': 'ir.actions.act_window_close'}

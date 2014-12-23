@@ -89,6 +89,7 @@ class sale_order_line(models.Model):
         of price_system_variable module with a 'sale_in_boxes' context in order
         to apply the box_discount field of product to the pricelist price.
         """
+        # import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         else:
@@ -124,6 +125,9 @@ class sale_order_line(models.Model):
             if min_unit == 'unit' or \
                     (min_unit == 'both' and choose_unit == 'unit'):
                 res['value']['product_uos_qty'] = qty
+                # como uom acaba siendo False en el onchange se calculaa partir
+                # del uos y no nos combiene, lo volvemos a setear
+                res['value']['product_uom_qty'] = qty  
             if min_unit == 'both':
                 if choose_unit == 'unit':
                     res['value']['product_uom'] = unit_id
