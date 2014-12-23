@@ -167,7 +167,7 @@ class sale_order_line(osv.Model):
         compare_qty = float_compare(prod_obj.virtual_stock_conservative, qty,
                                     precision_rounding=uom_record.rounding)
         # import ipdb; ipdb.set_trace()
-        fresh_product = prod_obj.sale_type in ['fresh', 'ultrafresh']
+        fresh_product = prod_obj.product_class in ['fresh', 'ultrafresh']
         if fresh_product:
             del res['warning']  # Delete warning from super
         if compare_qty == -1 and not fresh_product:

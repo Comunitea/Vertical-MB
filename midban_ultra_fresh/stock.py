@@ -38,7 +38,7 @@ class stock_move(models.Model):
             real_weight = vals['real_weight']
             if real_weight and self.procurement_id and \
                     self.procurement_id.sale_line_id:
-                if self.product_id.sale_type == 'ultrafresh':
+                if self.product_id.product_class == 'ultrafresh':
                     uom_obj = t_uom.search([('like_type', '=', 'kg')])
                     if uom_obj:
                         vals = {

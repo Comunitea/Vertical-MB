@@ -37,7 +37,7 @@ class ultrafresh_report_parser(models.AbstractModel):
         for order in self.env[report.model].browse(self._ids):
             docs.append(order)
             for line in order.order_line:
-                if line.product_id.sale_type == 'ultrafresh':
+                if line.product_id.product_class == 'ultrafresh':
                     if line.product_id not in products:
                         products[line.product_id] = [line]
                     else:

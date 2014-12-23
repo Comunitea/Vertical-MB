@@ -44,13 +44,6 @@ class product_template(osv.Model):
         'sec_margin': fields.float('Security Margin', readonly=True,
                                    digits_compute=
                                    dp.get_precision('Product Price')),
-        # In order to put into domains and make comprobations.
-        'product_class': fields.selection([('fresh', 'Fresh'),
-                                           ('dry', 'Dry'),
-                                           ('frozen', 'Frozen'),
-                                           ('chilled', 'Chilled'),
-                                           ('no_class', 'No Class')], 'Class',
-                                          required=True)
     }
     _defaults = {
         'product_class': 'no_class'

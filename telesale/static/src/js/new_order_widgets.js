@@ -274,7 +274,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('pvp', my_round(result.value.price_unit || 0,2));
                                 self.model.set('total', my_round(result.value.price_unit || 0,2));
                                 self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
-                                if (1 > product_obj.virtual_stock_conservative){
+                                if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class != "fresh") && (product_obj.product_class != "ultrafresh") ){
                                     alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
                                     var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
                                     self.model.set('qty', new_qty);
@@ -355,7 +355,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         break;
                     }
                     var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    if (value > product_obj.virtual_stock_conservative){
+                    if ( (value > product_obj.virtual_stock_conservative) && (product_obj.product_class != "fresh") && (product_obj.product_class != "ultrafresh") ){
                         alert(_t("You want sale " + value + " " + uom_name + " but only " +  product_obj.virtual_stock_conservative + " available."))
                         var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
                         this.model.set('qty', new_qty);

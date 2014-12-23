@@ -34,7 +34,7 @@
     Depending of this field it will search for pricelist in differents models.
     """,
     "images": [],
-    "depends": ["base", "product", "purchase", "sale"],
+    "depends": ["base", "product", "purchase", "sale", "midban_product"],
     "data": ['security/ir.model.access.csv',
              'sale_view.xml',
              'wizard/update_cmc_view.xml',

@@ -15,9 +15,6 @@
                     <newline/>
                     <field name="sec_margin"/>
                 </field>
-                <field name="type" position="after">
-                    <field name="product_class"/> 
-                </field>
                 <div name="buttons" position="inside">
                     <button class="oe_inline oe_stat_button" type="object"  name="show_pvp_changes" string="Show pvp changes" icon="fa-star"/>
                 </div>

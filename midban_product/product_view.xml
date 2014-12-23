@@ -34,7 +34,7 @@
 
                 <xpath expr="//page[@string='Information']/group/group[2]" position="after">
                     <group>
-                        <field name="sale_type"/>
+                        <field name="product_class" string="Sale Type"/>
                         <field name="product_type"/>
                         <field name="temp_type"/>
                         <field name="temperature"/>

@@ -103,10 +103,6 @@ class product_template(osv.Model):
         'ean14': fields.char('Code EAN14', size=14),
         'temp_type': fields.many2one('temp.type',
                                      'Temp type'),
-        'sale_type': fields.selection([('fresh', 'Fresh'),
-                                       ('ultrafresh', 'Ultrafresh'),
-                                       ('frozen', 'Frozen'), ('dry', 'Dry')],
-                                      "Sale type"),
         'var_weight': fields.boolean('Variable weight'),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
@@ -208,6 +204,15 @@ class product_template(osv.Model):
                                                method=True,
                                                readonly=True),
         'margin': fields.float("Margin", digits=(4, 2)),
+        # In order to put into domains and make comprobations or identify for
+        # telesale and ultrafresh_module.
+        'product_class': fields.selection([('fresh', 'Fresh'),
+                                           ('dry', 'Dry'),
+                                           ('frozen', 'Frozen'),
+                                           ('chilled', 'Chilled'),
+                                           ('ultrafresh', 'Ultradresh'),
+                                           ('no_class', 'No Class')], 'Class',
+                                          required=True)
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',
@@ -221,7 +226,7 @@ class product_template(osv.Model):
 
     def _check_units_values(self, cr, uid, ids, context=None):
         p = self.browse(cr, uid, ids[0], context=context)
-        if p.sale_type not in ['fresh', 'ultrafresh'] and \
+        if p.product_class not in ['fresh', 'ultrafresh'] and \
             not (p.supplier_kg_un and p.supplier_un_width and
                  p.supplier_un_height and p.supplier_un_length and
                  p.supplier_ca_ma and p.supplier_ma_width and
