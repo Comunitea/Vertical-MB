@@ -10,10 +10,13 @@
                 <form string="Create Cross Dock Purchases">
                     <p>
                     If we select create purchases for Midban products it will generate a purchase for each route in each picking to process.
-                    </p>
-                    <p>
                     If we select create purchases for Cross docks products it will generate a purchase for each supplier in each picking to process.
                     </p>
+                    <p>
+                    Important!: Transpor route must be assigned
+                    </p>
+                    
+                    
                     <group>
                         <field name="mode"/>
                     </group>

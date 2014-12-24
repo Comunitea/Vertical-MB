@@ -32,8 +32,8 @@
                             <group string="Delivery Orders Time Slot">
                                 <field name="supp_times_delivery" nolabel="1">
                                     <tree editable="top">
-                                        <field name="time_start"/>
-                                        <field name="time_end"/>
+                                        <field name="time_start" widget="float_time"/>
+                                        <field name="time_end" widget="float_time"/>
                                     </tree>
                                 </field>
                             </group>
@@ -68,6 +68,15 @@
                                     <tree editable="top">
                                         <field name="time_start"/>
                                         <field name="time_end"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Call Days Time Slot" colspan="4">
+                                <field name="call_days_slot"  colspan="4" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="day" widget="selection"/>
+                                        <field name="time_start" widget="float_time"/>
+                                        <field name="time_end" widget="float_time"/>
                                     </tree>
                                 </field>
                             </group>

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-25 12:13+0000\n"
-"PO-Revision-Date: 2014-11-25 12:13+0000\n"
+"POT-Creation-Date: 2014-12-24 11:18+0000\n"
+"PO-Revision-Date: 2014-12-24 11:18+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -83,18 +83,28 @@ msgid "Back"
 msgstr "Atrás"
 
 #. module: midban_partner
+#: view:res.partner:midban_partner.midban_view_partner_form
+msgid "Call Days Time Slot"
+msgstr "Franja Horaria Días de llamada"
+
+#. module: midban_partner
+#: field:res.partner,call_days_slot:0
+msgid "Call Days Time Slot "
+msgstr "Franja Horaria Días de llamada"
+
+#. module: midban_partner
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
 msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:235
+#: code:addons/midban_partner/partner.py:249
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial realizada. Pendiente de dar de alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:226
+#: code:addons/midban_partner/partner.py:240
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -115,6 +125,7 @@ msgid "Commercial Validated"
 msgstr "Validación comercial realizada"
 
 #. module: midban_partner
+#: field:call.days.time.slot,create_uid:0
 #: field:partner.history,create_uid:0
 #: field:process.unregister.partner,create_uid:0
 #: field:supplier.transport,create_uid:0
@@ -125,6 +136,7 @@ msgid "Created by"
 msgstr "Creado por"
 
 #. module: midban_partner
+#: field:call.days.time.slot,create_date:0
 #: field:partner.history,create_date:0
 #: field:process.unregister.partner,create_date:0
 #: field:supplier.transport,create_date:0
@@ -143,6 +155,11 @@ msgstr "Información de cliente"
 #: field:partner.history,date:0
 msgid "Date"
 msgstr "Fecha"
+
+#. module: midban_partner
+#: field:call.days.time.slot,day:0
+msgid "Day"
+msgstr "Día"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
@@ -171,6 +188,7 @@ msgid "EDI"
 msgstr "EDI"
 
 #. module: midban_partner
+#: field:call.days.time.slot,time_end:0
 #: field:time.slot,time_end:0
 msgid "End Time"
 msgstr "Hora fin"
@@ -191,6 +209,7 @@ msgid "History"
 msgstr "Historial"
 
 #. module: midban_partner
+#: field:call.days.time.slot,id:0
 #: field:partner.history,id:0
 #: field:process.unregister.partner,id:0
 #: field:supplier.transport,id:0
@@ -211,6 +230,7 @@ msgid "Invoice Method"
 msgstr "Preferencias facturación"
 
 #. module: midban_partner
+#: field:call.days.time.slot,write_uid:0
 #: field:partner.history,write_uid:0
 #: field:process.unregister.partner,write_uid:0
 #: field:supplier.transport,write_uid:0
@@ -221,6 +241,7 @@ msgid "Last Updated by"
 msgstr "Última actualización por"
 
 #. module: midban_partner
+#: field:call.days.time.slot,write_date:0
 #: field:partner.history,write_date:0
 #: field:process.unregister.partner,write_date:0
 #: field:supplier.transport,write_date:0
@@ -236,7 +257,7 @@ msgid "Logistic Validated"
 msgstr "Logistica Validada"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:217
+#: code:addons/midban_partner/partner.py:231
 #, python-format
 msgid "Logistic validate done"
 msgstr "Validación logistica realizada"
@@ -289,7 +310,7 @@ msgid "Partner unregister reasons"
 msgstr "Motivos de baja"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:209
+#: code:addons/midban_partner/partner.py:223
 #, python-format
 msgid "Pending logistic and commercial validate"
 msgstr "Pendiente de validación logistica y comercial"
@@ -317,14 +338,14 @@ msgid "Register"
 msgstr "Dar de alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:244
+#: code:addons/midban_partner/partner.py:258
 #: selection:res.partner,state2:0
 #, python-format
 msgid "Registered"
 msgstr "Alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:253
+#: code:addons/midban_partner/partner.py:267
 #, python-format
 msgid "Registered again"
 msgstr "Volver a dar de alta"
@@ -341,6 +362,7 @@ msgid "Service Days"
 msgstr "Días de servicio"
 
 #. module: midban_partner
+#: field:call.days.time.slot,time_start:0
 #: field:time.slot,time_start:0
 msgid "Start Time"
 msgstr "Hora inicio"
@@ -356,6 +378,7 @@ msgid "Suplliers Info"
 msgstr "Información Proveedor"
 
 #. module: midban_partner
+#: field:call.days.time.slot,partner_id:0
 #: field:supplier.transport,supplier_id:0
 msgid "Supplier"
 msgstr "Proveedor"
@@ -469,17 +492,17 @@ msgstr "Empresa"
 #. module: midban_partner
 #: selection:res.partner,invoice_method:0
 msgid "unknow1"
-msgstr "unknow1"
+msgstr "desconocido1"
 
 #. module: midban_partner
 #: selection:res.partner,invoice_method:0
 msgid "unknow2"
-msgstr "unknow2"
+msgstr "desconocido2"
 
 #. module: midban_partner
 #: selection:res.partner,invoice_method:0
 msgid "unknow3"
-msgstr "unknow3"
+msgstr "desconocido3"
 
 #. module: midban_partner
 #: selection:res.partner,state2:0

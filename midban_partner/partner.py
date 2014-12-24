@@ -67,6 +67,18 @@ class time_slot(osv.Model):
     }
 
 
+class call_days_time_slot(osv.Model):
+    """ Time slot in suppliers and customers to delivery orders"""
+    _name = "call.days.time.slot"
+    _rec_name = "partner_id"
+    _columns = {
+        'partner_id': fields.many2one('res.partner', 'Supplier'),
+        'day': fields.many2one('week.days', 'Day', required=True),
+        'time_start': fields.float('Start Time', required=True),
+        'time_end': fields.float('End Time', required=True),
+    }
+
+
 class res_partner(osv.Model):
     _inherit = 'res.partner'
     """ Overwrite display_name column defined in account_report_company and
@@ -166,6 +178,8 @@ class res_partner(osv.Model):
                                            string="Invoice Method"),
         'times_delivery': fields.one2many('time.slot', 'partner_id',
                                           'Delivery Time Slots'),
+        'call_days_slot': fields.one2many('call.days.time.slot', 'partner_id',
+                                          'Call Days Time Slot '),
     }
     _defaults = {
         'active': False,  # it's fixed true when you register a product
