@@ -52,7 +52,7 @@ msgstr "Crear compras para"
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_uid:0
 msgid "Created by"
-msgstr "creado por"
+msgstr "Creado por"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_date:0
@@ -124,8 +124,8 @@ msgstr "Regla de abastecimiento"
 
 #. module: depot_cross_dock
 #: field:res.partner,regulator:0
-msgid "Regularor"
-msgstr "Regularor"
+msgid "Regulator"
+msgstr "Regulador"
 
 #. module: depot_cross_dock
 #: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view

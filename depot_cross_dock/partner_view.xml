@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <field name='company_id'  position="after">
-                    <field name="regulator"/>
+                    <field name="regulator" attrs="{'invisible': [('customer','=',True)]}"/>
                 </field>
             </field>
         </record>

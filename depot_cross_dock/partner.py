@@ -24,8 +24,7 @@ from openerp.osv import osv, fields
 class res_partner(osv.Model):
     _inherit = 'res.partner'
     _columns = {
-        'regulator': fields.boolean('Regularor',
-                                    domain=[('supplier', '=', True)],
+        'regulator': fields.boolean('Regulator',
                                     help="When this supplier is assigned to\
                                     a product, when we make a cross dock \
                                     purchase order, we will group by transport\
