@@ -85,7 +85,7 @@ class wzd_update_cmc(osv.osv_memory):
         """
         if context is None:
             context = {}
-        t_product = self.pool.get("product.product")
+        t_product = self.pool.get("product.template")
         res = {'value': {}}
         if context.get('active_id', False) and do_onchange:
             prod = t_product.browse(cr, uid, context['active_id'], context)
@@ -105,7 +105,7 @@ class wzd_update_cmc(osv.osv_memory):
         """
         if context is None:
             context = {}
-        t_product = self.pool.get("product.product")
+        t_product = self.pool.get("product.template")
         wzd_obj = self.browse(cr, uid, ids[0], context)
         if context.get('active_id', False):
             vals = {'cmc': wzd_obj.new_cmc,

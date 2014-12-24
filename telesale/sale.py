@@ -45,10 +45,12 @@ class sale(osv.osv):
             sum_cmc = 0
             sum_margin = 0
             for line in order.order_line:
+                qty = line.choose_unit == 'box' and line.product_uos_qty or \
+                    line.product_uom_qty
                 prod_cmc = line.product_id.cmc
-                sum_cmc += line.product_id.cmc * line.product_uom_qty
+                sum_cmc += line.product_id.cmc * qty
                 pvp = line.price_unit
-                sum_margin += (pvp - prod_cmc) * line.product_uom_qty
+                sum_margin += (pvp - prod_cmc) * qty
 
             total_margin = cur_obj.round(cr, uid, cur, sum_margin)
             res[order.id]['total_margin'] = total_margin

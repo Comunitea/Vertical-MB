@@ -74,15 +74,15 @@ class sale_order_line(models.Model):
         return
 
     def product_id_change_with_wh2(self, cr, uid, ids, pricelist, product,
-                                  qty=0,
-                                  uom=False, qty_uos=0, uos=False, name='',
-                                  partner_id=False, lang=False,
-                                  update_tax=True,
-                                  date_order=False,
-                                  packaging=False,
-                                  fiscal_position=False, flag=False,
-                                  warehouse_id=False,
-                                  choose_unit='unit', context=None):
+                                   qty=0,
+                                   uom=False, qty_uos=0, uos=False, name='',
+                                   partner_id=False, lang=False,
+                                   update_tax=True,
+                                   date_order=False,
+                                   packaging=False,
+                                   fiscal_position=False, flag=False,
+                                   warehouse_id=False,
+                                   choose_unit='unit', context=None):
         """
         We overwrite with this name because of midban_depot_stock dependency.
         If we have seted minumum unit of sale, we will call product_id_change
@@ -109,25 +109,25 @@ class sale_order_line(models.Model):
             my_context = context2 and context2 or context
             # sup = super(sale_order_line, self)
             res = self.product_id_change_with_wh(cr, uid, ids, pricelist,
-                                                product, qty=qty, uom=uom,
-                                                qty_uos=qty_uos, uos=uos,
-                                                name=name,
-                                                partner_id=partner_id,
-                                                lang=lang,
-                                                update_tax=update_tax,
-                                                date_order=date_order,
-                                                packaging=packaging,
-                                                fiscal_position=
-                                                fiscal_position,
-                                                flag=flag,
-                                                warehouse_id=warehouse_id,
-                                                context=my_context)
+                                                 product, qty=qty, uom=uom,
+                                                 qty_uos=qty_uos, uos=uos,
+                                                 name=name,
+                                                 partner_id=partner_id,
+                                                 lang=lang,
+                                                 update_tax=update_tax,
+                                                 date_order=date_order,
+                                                 packaging=packaging,
+                                                 fiscal_position=
+                                                 fiscal_position,
+                                                 flag=flag,
+                                                 warehouse_id=warehouse_id,
+                                                 context=my_context)
             if min_unit == 'unit' or \
                     (min_unit == 'both' and choose_unit == 'unit'):
                 res['value']['product_uos_qty'] = qty
                 # como uom acaba siendo False en el onchange se calculaa partir
                 # del uos y no nos combiene, lo volvemos a setear
-                res['value']['product_uom_qty'] = qty  
+                res['value']['product_uom_qty'] = qty
             if min_unit == 'both':
                 if choose_unit == 'unit':
                     res['value']['product_uom'] = unit_id
@@ -211,3 +211,27 @@ class sale_order_line(models.Model):
         res = super(sale_order_line, self).create(vals)
 
         return res
+
+
+class sale_order(models.Model):
+    """
+    """
+    _inherit = "sale.order"
+
+    def _amount_line_tax(self, cr, uid, line, context=None):
+        """
+        Overwrite to get a correct amount_tax value when we sale in boxes with
+        the box discount value applied.
+        """
+        t_tax = self.pool.get('account.tax')
+        val = super(sale_order, self)._amount_line_tax(cr, uid, line,
+                                                       context=context)
+        if line.choose_unit == 'box':
+            val = 0.0
+            desc = (1 - (line.discount or 0.0) / 100.0)
+            for c in t_tax.compute_all(cr, uid, line.tax_id,
+                                       line.price_unit * desc,
+                                       line.product_uos_qty, line.product_id,
+                                       line.order_id.partner_id)['taxes']:
+                val += c.get('amount', 0.0)
+        return val
