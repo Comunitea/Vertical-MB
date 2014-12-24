@@ -43,6 +43,7 @@
         'security/ir.model.access.csv',
         'wizard/calc_ultrafresh_price_wzd_view.xml',
         'sale_view.xml',
+        'stock_view.xml',
         'purchase_view.xml',
         'ultrafresh_report.xml',
         'qweb_report/ultrafresh_purchase_report.xml',

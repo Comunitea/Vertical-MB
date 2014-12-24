@@ -18,12 +18,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, api
+from openerp import models, api, fields
 
 
 class stock_move(models.Model):
 
     _inherit = 'stock.move'
+
+    q_note = fields.Many2one('qualitative.note', 'Qualitative Comment',
+                             related="procurement_id.sale_line_id.q_note")
+    det_note = fields.Char('Details', size=256,
+                           related="procurement_id.sale_line_id.detail_note")
 
     @api.one
     def write(self, vals):

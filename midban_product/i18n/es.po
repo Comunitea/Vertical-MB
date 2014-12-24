@@ -367,12 +367,12 @@ msgstr "Última actualización por"
 #: field:temp.type,write_date:0
 #: field:unregister.product.reason,write_date:0
 msgid "Last Updated on"
-msgstr "ültima actualización en"
+msgstr "Última actualización en"
 
 #. module: midban_product
 #: field:product.template,last_purchase_price:0
 msgid "Last purchase change"
-msgstr "ültimo precio compra"
+msgstr "Último precio compra"
 
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form

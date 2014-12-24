@@ -65,3 +65,4 @@ class sale_order_line(models.Model):
     _inherit = 'sale.order.line'
 
     q_note = fields.Many2one('qualitative.note', 'Qualitative Comment')
+    detail_note = fields.Char('Details', size=256)

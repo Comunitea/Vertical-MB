@@ -11,6 +11,7 @@
                 <!-- Add qualitative note to line  -->
                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='th_weight']" position="after">
                     <field name="q_note"/>
+                    <field name="detail_note"/>
                 </xpath>
             </field>
         </record>
