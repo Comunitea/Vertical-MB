@@ -29,14 +29,54 @@ class sale_from_reserve_wzd(models.TransientModel):
     qty = fields.Float('Quantity', required=True)
 
     @api.multi
+    def _prepare_order_vals(self, reserve):
+        res = {
+            'partner_id': reserve.partner_id2.id,
+            'pricelist_id': reserve.partner_id2.property_product_pricelist.id,
+            'partner_invoice_id': reserve.partner_id2.id,
+            'partner_shipping_id': reserve.partner_id2.id,
+            'reserved_sale': True,
+            'order_policy': 'picking',
+            'name': '/',
+        }
+        return res
+
+    @api.multi
+    def _prepare_order_line_vals(self, reserve, so):
+        xml_id = self.env.ref('midban_product_reserve.route_reserved_sales').id
+        taxes_ids = reserve.product_id.taxes_id
+        fpos = reserve.partner_id2.property_account_position
+        tax_id = fpos and fpos.map_tax(taxes_ids) or [x.id for x in taxes_ids]
+        res = {
+            'order_id': so.id,
+            'name': reserve.product_id.name,
+            'product_id': reserve.product_id.id,
+            'product_uom': reserve.product_uom.id,
+            'product_uom_qty': self.qty,
+            'price_unit': reserve.price_unit,
+            'route_id': xml_id,
+            # 'product_uos_qty': product_uos_qty,
+            # 'product_uos': reserve.product_uos_id.id,
+            'tax_id': [(6, 0, tax_id)],
+            # 'min_unit': reserve.product_id.min_unit,
+            # 'choose_unit': choose_unit,
+        }
+        return res
+
+    @api.multi
     def create_sale(self):
-        import ipdb; ipdb.set_trace()
+        t_order = self.env['sale.order']
+        t_line = self.env['sale.order.line']
         active_model = self.env.context.get('active_model')
         active_ids = self.env.context.get('active_ids')
         if not (active_model and active_ids) and \
                 active_model != 'stock_reservation':
-            return 
+            return
         reserve = self.env[active_model].browse(active_ids[0])
         new_served_qty = reserve.served_qty + self.qty
         reserve.write({'served_qty': new_served_qty})
+        vals = self._prepare_order_vals(reserve)
+        so = t_order.create(vals)
+        vals = self._prepare_order_line_vals(reserve, so)
+        t_line.create(vals)
         return

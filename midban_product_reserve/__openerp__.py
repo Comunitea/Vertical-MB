@@ -38,6 +38,7 @@
         'sale_view.xml',
         'wizard/sale_from_reserve_wzd_view.xml',
         'stock_reserve_view.xml',
+        'data/product_reserve_data.xml',
         
     ],
     "demo": [],

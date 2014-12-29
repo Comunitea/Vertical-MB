@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <header position="inside">
                     <button name="confirm_reserve" states="assigned" string="Confirm Reserve" type="object" class="oe_highlight"/>
-                    <button name="%(action_sale_from_reserve)d" string="Create Sale" attrs="{'invisible': ['|',('state','&lt;&gt;','done'),('invoice_state','&lt;&gt;','2binvoiced')]}" type="action" class="oe_highlight"/>
+                    <button name="%(action_sale_from_reserve)d" string="Create Sale" attrs="{'invisible': [('state','&lt;&gt;','done')]}" type="action" class="oe_highlight"/>
                 </header>
                 <field name="product_id" position="before">
                     <field name="partner_id2"/>
@@ -16,6 +16,7 @@
                     <field name="picking_id" readonly="1"/>
                     <field name="served_qty"/>
                     <field name="pending_qty"/>
+                    <field name="price_unit"/>
                 </field>
             </field>
         </record>

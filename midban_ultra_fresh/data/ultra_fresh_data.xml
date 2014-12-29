@@ -55,7 +55,8 @@
         
         <record id="picking_type_ultrafresh" model="stock.picking.type">
             <field name="name">UltraFresh purchases</field>
-            <field name="sequence_id" ref="stock.seq_type_picking_in"/>
+            
+            <field name="sequence_id" ref="stock.seq_picking_internal"/>
             <field name="code">incoming</field>
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>

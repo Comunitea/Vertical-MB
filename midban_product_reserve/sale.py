@@ -26,10 +26,9 @@ class sale_order(models.Model):
 
     reserved_sale = fields.Boolean('Reserved Sale', readonly=True)
 
-    @api.model
-    def _prepare_order_line_procurement(self, order, line, group_id=False):
-		import ipdb; ipdb.set_trace()
-		res = super(sale_order, self).\
-			_prepare_order_line_procurement(order, line, group_id=group_id)
-		res.update({'route_id': line.route_id or False})
-		return res
+    # @api.model
+    # def _prepare_order_line_procurement(self, order, line, group_id=False):
+    #     res = super(sale_order, self).\
+    #         _prepare_order_line_procurement(order, line, group_id=group_id)
+    #     res.update({'route_id': line.route_id or False})
+    #     return res

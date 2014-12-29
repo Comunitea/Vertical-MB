@@ -24,12 +24,13 @@ from openerp import models, fields, api
 class StockReservation(models.Model):
     _inherit = 'stock.reservation'
 
-    @api.model
+    @api.one
     def _get_pending_qty(self):
         self.pending_qty = self.product_uom_qty - self.served_qty
 
     partner_id2 = fields.Many2one('res.partner', 'Customer', required=True,
                                   domain=[('customer', '=', True)])
+    price_unit = fields.Float('Served qty', readonly=True)
     served_qty = fields.Float('Served qty', readonly=True)
     pending_qty = fields.Float('Pending Qty', compute=_get_pending_qty,
                                 readonly=True)
