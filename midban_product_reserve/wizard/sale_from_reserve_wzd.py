@@ -18,7 +18,25 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# import product_reserved
-import sale
-import stock_reserve
-import wizard
+from openerp import models, fields, api
+
+
+class sale_from_reserve_wzd(models.TransientModel):
+
+    _name = "sale.from.reserve.wzd"
+    _description = "Create sales from reserve"
+
+    qty = fields.Float('Quantity', required=True)
+
+    @api.multi
+    def create_sale(self):
+        import ipdb; ipdb.set_trace()
+        active_model = self.env.context.get('active_model')
+        active_ids = self.env.context.get('active_ids')
+        if not (active_model and active_ids) and \
+                active_model != 'stock_reservation':
+            return 
+        reserve = self.env[active_model].browse(active_ids[0])
+        new_served_qty = reserve.served_qty + self.qty
+        reserve.write({'served_qty': new_served_qty})
+        return

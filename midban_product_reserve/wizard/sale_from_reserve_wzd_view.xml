@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_stock_invoice_onshipping" model="ir.ui.view">
+            <field name="name">sale.from.reserve.wzd.view.form</field>
+            <field name="model">sale.from.reserve.wzd</field>
+            <field name="arch" type="xml">
+              <form string="Create invoice">
+                  <group>
+                      <field name="qty"/>
+                  </group>
+                  <footer>
+                      <button name="create_sale" string="Create Sale" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+             </form>
+            </field>
+        </record>
+
+        <act_window name="Create Sale"
+            res_model="sale.from.reserve.wzd"
+            src_model="stock.reservation"
+            key2="client_action_multi"
+            multi="True"
+            view_mode="form"
+            view_type="form"
+            target="new"
+            id="action_sale_from_reserve"/>
+    </data>
+</openerp>

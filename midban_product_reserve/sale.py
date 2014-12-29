@@ -26,9 +26,10 @@ class sale_order(models.Model):
 
     reserved_sale = fields.Boolean('Reserved Sale', readonly=True)
 
-    # @api.multi
-    # def action_ship_create(self):
-    #     for order in self:
-    #         if not order.reserved_sale:
-    #             res = order.action_ship_create()
-    #     return True
+    @api.model
+    def _prepare_order_line_procurement(self, order, line, group_id=False):
+		import ipdb; ipdb.set_trace()
+		res = super(sale_order, self).\
+			_prepare_order_line_procurement(order, line, group_id=group_id)
+		res.update({'route_id': line.route_id or False})
+		return res
