@@ -36,6 +36,11 @@ class StockReservation(models.Model):
                                readonly=True)
     invoice_method = fields.Selection([('2binvoiced', 'To be invoiced'),
                                        ('none', 'Agreement')])
+    min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
+                                readonly=True)
+    choose_unit = fields.Selection([('unit', 'Unit'),
+                                    ('box', 'Box')], 'Selected Unit',
+                                   default='unit')
 
     @api.multi
     def confirm_reserve(self):
@@ -46,3 +51,39 @@ class StockReservation(models.Model):
         """
         self.move_id.picking_id.action_done()
         return True
+
+    @api.onchange('product_uos_qty')
+    def product_uos_qty_onchange(self):
+        """
+        We change the uos of product
+        """
+        if self.min_unit == 'box' or \
+                (self.min_unit == 'both' and self.choose_unit == 'box'):
+            self.product_uom_qty = self.product_uos_qty * self.product_id.un_ca
+        return
+
+    @api.onchange('product_uom_qty')
+    def product_uom_qty_onchange(self):
+        """
+        We change the uos of product
+        """
+        if self.min_unit == 'unit' or \
+                (self.min_unit == 'both' and self.choose_unit == 'unit'):
+            # self.product_uos_qty = self.product_id.un_ca != 0 and \
+            #     self.product_uom_qty / self.un_ca or \
+            #     self.product_uom_qty
+            self.product_uos_qty = self.product_uom_qty
+        return
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        unit = self.env.ref('product.product_uom_unit')
+        box = self.env.ref('midban_depot_stock.product_uom_box')
+        if self.min_unit in ['unit', 'both']:
+            self.choose_unit = 'unit'
+            self.product_uom = unit.id
+            self.product_uos = unit.id
+        elif self.min_unit == 'box':
+            self.choose_unit = 'box'
+            self.product_uom = unit.id
+            self.product_uos = box

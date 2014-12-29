@@ -22,9 +22,9 @@
             <field name="search_view_id" ref="sale.view_sales_order_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click to create a Reserve by making a quotation
+                Click to create a quatation marked as reserved sale
               </p><p>
-                It will be create a stock reseve. No outgoing picking created.
+                It is a normal sale order. but the sales created from reserved are marked like reserved sales
               </p>
             </field>
         </record>
@@ -71,6 +71,7 @@
             <field name="context">
                 {
                     'search_default_my_sale_orders_filter': 0,
+                    'search_default_reserved_sale_filter': 0,
                 }
             </field>
             <field name="domain">[('state','in',('draft','sent','cancel'))]</field>

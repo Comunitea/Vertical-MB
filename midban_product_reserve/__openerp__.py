@@ -34,6 +34,7 @@
                 "sale_stock",
                 "stock_account",
                 "stock_reserve",
+                "process_sale_order",
                 ],
     "data": [
         'sale_view.xml',

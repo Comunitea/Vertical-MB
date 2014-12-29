@@ -55,6 +55,8 @@ class sale_from_reserve_wzd(models.TransientModel):
             'product_id': reserve.product_id.id,
             'product_uom': reserve.product_uom.id,
             'product_uom_qty': self.qty,
+            # 'product_uos': reserve.product_uos.id,
+            # 'product_uos_qty': self.qty,
             'price_unit': reserve.price_unit,
             'route_id': xml_id,
             # 'product_uos_qty': product_uos_qty,
@@ -81,15 +83,11 @@ class sale_from_reserve_wzd(models.TransientModel):
         so = t_order.create(vals)
         vals = self._prepare_order_line_vals(reserve, so)
         t_line.create(vals)
+        # Confirm the sale order
         so.action_button_confirm()
-        # data_obj = self.env['ir.model.data']
-        # import ipdb; ipdb.set_trace()
-        # res = data_obj.get_object_reference('sale', 'action_orders')
-        # action = self.pool.get(res[0]).read(self._cr, self._uid, res[1],
-        #                                context=self.env.context)
+        # Open sale order in form view
         action_obj = self.env.ref('sale.action_orders')
         action = action_obj.read()[0]
-        # action['domain'] = str([('id', 'in', [so.id])])
         name_form = 'sale.view_order_form'
         view_id = self.env['ir.model.data'].xmlid_to_res_id(name_form)
         action.update(views=[(view_id, 'form')], res_id=so.id)
