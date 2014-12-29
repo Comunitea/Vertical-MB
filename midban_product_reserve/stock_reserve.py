@@ -30,10 +30,13 @@ class StockReservation(models.Model):
 
     partner_id2 = fields.Many2one('res.partner', 'Customer', required=True,
                                   domain=[('customer', '=', True)])
-    price_unit = fields.Float('Served qty', readonly=True)
+    price_unit = fields.Float('Price Unit')
     served_qty = fields.Float('Served qty', readonly=True)
     pending_qty = fields.Float('Pending Qty', compute=_get_pending_qty,
-                                readonly=True)
+                               readonly=True)
+    invoice_method = fields.Selection([('2binvoiced', 'To be invoiced'),
+                                       ('none', 'Agreement')])
+
     @api.multi
     def confirm_reserve(self):
         """ Confirm a reservation

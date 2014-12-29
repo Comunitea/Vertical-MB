@@ -30,16 +30,17 @@
     """,
     "images": [],
     "depends": ["base",
+                "sale",
                 "sale_stock",
                 "stock_account",
                 "stock_reserve",
                 ],
     "data": [
         'sale_view.xml',
+        'sale_workflow.xml',
         'wizard/sale_from_reserve_wzd_view.xml',
         'stock_reserve_view.xml',
         'data/product_reserve_data.xml',
-        
     ],
     "demo": [],
     "test": [],

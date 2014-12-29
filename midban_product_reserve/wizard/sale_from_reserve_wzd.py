@@ -30,13 +30,15 @@ class sale_from_reserve_wzd(models.TransientModel):
 
     @api.multi
     def _prepare_order_vals(self, reserve):
+        order_policy = reserve.invoice_state == 'none' and 'picking' or \
+            'invoiced_reserved'
         res = {
             'partner_id': reserve.partner_id2.id,
             'pricelist_id': reserve.partner_id2.property_product_pricelist.id,
             'partner_invoice_id': reserve.partner_id2.id,
             'partner_shipping_id': reserve.partner_id2.id,
             'reserved_sale': True,
-            'order_policy': 'picking',
+            'order_policy': order_policy,
             'name': '/',
         }
         return res
@@ -79,4 +81,16 @@ class sale_from_reserve_wzd(models.TransientModel):
         so = t_order.create(vals)
         vals = self._prepare_order_line_vals(reserve, so)
         t_line.create(vals)
-        return
+        so.action_button_confirm()
+        # data_obj = self.env['ir.model.data']
+        # import ipdb; ipdb.set_trace()
+        # res = data_obj.get_object_reference('sale', 'action_orders')
+        # action = self.pool.get(res[0]).read(self._cr, self._uid, res[1],
+        #                                context=self.env.context)
+        action_obj = self.env.ref('sale.action_orders')
+        action = action_obj.read()[0]
+        # action['domain'] = str([('id', 'in', [so.id])])
+        name_form = 'sale.view_order_form'
+        view_id = self.env['ir.model.data'].xmlid_to_res_id(name_form)
+        action.update(views=[(view_id, 'form')], res_id=so.id)
+        return action

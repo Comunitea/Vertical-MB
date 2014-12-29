@@ -18,14 +18,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api
+from openerp import models, fields
 
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
     reserved_sale = fields.Boolean('Reserved Sale', readonly=True)
-
+    order_policy = fields.Selection([('manual', 'On Demand'),
+                                    ('picking', 'On Delivery Order'),
+                                    ('prepaid', 'Before Delivery'),
+                                    ('invoiced_reserve', 'Reserve Invoiced')],
+                                    'Create Invoice',
+                                    required=True, readonly=True,
+                                    states={'draft': [('readonly', False)],
+                                            'sent': [('readonly', False)]})
     # @api.model
     # def _prepare_order_line_procurement(self, order, line, group_id=False):
     #     res = super(sale_order, self).\
