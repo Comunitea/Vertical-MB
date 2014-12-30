@@ -36,7 +36,7 @@
                 <group name="main_grp" position="replace">
                     <group name="main_grp" string="Details">
                         <field name="product_id" />
-                       <!--  <div>
+                       <!-- <div>
                             <field name="product_uom_qty" class="oe_inline"/>
                             <field name="product_uom"
                                 groups="product.group_uom" class="oe_inline"/>
