@@ -126,23 +126,28 @@ class StockReservation(models.Model):
             prod = self.env['product.product'].browse(vals['product_id'])
         else:
             prod = self.product_id
-        unit = self.env.ref('product.product_uom_unit')
-        box = self.env.ref('midban_depot_stock.product_uom_box')
-        min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
-            prod.min_unit
-        choose2 = min_unit in ['unit', 'both'] and 'unit' or 'box'
-        choose = vals.get('choose_unit', False) and vals['choose_unit'] \
-            or choose2
-        if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
-            vals['product_uos_qty'] = vals.get('product_uom_qty', 0.0)
-            vals['product_uos'] = unit.id
-            vals['product_uom'] = unit.id
-            vals['choose_unit'] = 'unit'
-        elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
-            uos_qty = vals.get('product_uos_qty', 0.0)
-            vals['product_uom_qty'] = uos_qty * prod.un_ca
-            vals['product_uos'] = box.id
-            vals['product_uom'] = unit.id
-            vals['choose_unit'] = 'box'
+
+        if self.state != 'done':
+            unit = self.env.ref('product.product_uom_unit')
+            box = self.env.ref('midban_depot_stock.product_uom_box')
+            min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
+                prod.min_unit
+            choose2 = min_unit in ['unit', 'both'] and 'unit' or 'box'
+            choose = vals.get('choose_unit', False) and vals['choose_unit'] \
+                or choose2
+            if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
+                uom_qty = vals.get('product_uom_qty', 0.0) or \
+                    self.product_uom_qty
+                vals['product_uos_qty'] = uom_qty
+                vals['product_uos'] = unit.id
+                vals['product_uom'] = unit.id
+                vals['choose_unit'] = 'unit'
+            elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
+                uos_qty = vals.get('product_uos_qty', 0.0) or \
+                    self.product_uos_qty
+                vals['product_uom_qty'] = uos_qty * prod.un_ca
+                vals['product_uos'] = box.id
+                vals['product_uom'] = unit.id
+                vals['choose_unit'] = 'box'
         res = super(StockReservation, self).write(vals)
         return res

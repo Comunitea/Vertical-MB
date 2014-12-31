@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-24 11:18+0000\n"
-"PO-Revision-Date: 2014-12-24 11:18+0000\n"
+"POT-Creation-Date: 2014-12-31 12:47+0000\n"
+"PO-Revision-Date: 2014-12-31 12:47+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,10 +22,10 @@ msgid "* Validate pending: no validationpassed\n"
 "* Comercial validation pending: productcommercial information (pricing, etc)hasn't been validated by sales manager\n"
 "* Validated: both Comercial and logisticvalidations have been aproved\n"
 ""
-msgstr "* Validate pending: no validationpassed\n"
-"* Logistic validation pending: productlogistic information has not beenreviewed by a manager yet\n"
-"* Comercial validation pending: productcommercial information (pricing, etc)hasn't been validated by sales manager\n"
-"* Validated: both Comercial and logisticvalidations have been aproved\n"
+msgstr "* Validación Pendiente: No ha pasado la validación\n"
+"* Pendiente Validación Lógistica: La información logística del producto no ha sido revisada todavía\n"
+"* Pendiente Validación Lógistica: La información comercial del producto no ha sido revisada todavía\n"
+"* Validated: Ammbas validaciones comercial y lógistica están aprovadas\n"
 ""
 
 #. module: midban_partner
@@ -329,7 +329,7 @@ msgstr "Motivo"
 #. module: midban_partner
 #: field:res.partner,reception_method:0
 msgid "Reception Method"
-msgstr "Reception Method"
+msgstr "Método Recepción"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_res_partner_opt_out_form

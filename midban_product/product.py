@@ -210,7 +210,7 @@ class product_template(osv.Model):
                                            ('dry', 'Dry'),
                                            ('frozen', 'Frozen'),
                                            ('chilled', 'Chilled'),
-                                           ('ultrafresh', 'Ultradresh'),
+                                           ('ultrafresh', 'Ultrafresh'),
                                            ('no_class', 'No Class')], 'Class',
                                           required=True)
     }

@@ -15,7 +15,7 @@
                             states="assigned,confirmed"/>
                 </button>
                 <header position="inside">
-                    <button name="confirm_reserve" states="assigned" string="Confirm Reserve" type="object" class="oe_highlight"/>
+                    <button name="confirm_reserve" states="assigned,confirmed" string="Confirm Reserve" type="object" class="oe_highlight"/>
                     <button name="%(action_sale_from_reserve)d" string="Create Sale" attrs="{'invisible': [('state','&lt;&gt;','done')]}" type="action" class="oe_highlight"/>
                 </header>
 
@@ -24,7 +24,7 @@
                     <group name="information" string="Information">
                         <field name="partner_id2"/>
                         <field name="price_unit"/>
-                        <field name="invoice_state"/>
+                        <field name="invoice_state" string="Invoice control"/>
                         <field name="picking_id" readonly="1" string="Picking"/>
                         <field name="served_qty"/>
                         <field name="pending_qty"/>
@@ -32,25 +32,28 @@
                         <field name="choose_unit" attrs="{'readonly': [('min_unit','&lt;&gt;','both')]}"/>
                     </group>               
                 </group>
-                
+                <group name="location" position="replace">
+                    <group name="location" string="Locations">
+                        <field name="location_id" string="Source Location"/>
+                        <field name="location_dest_id" string="Destination Location"/>
+                    </group>
+                </group>
+
                 <group name="main_grp" position="replace">
                     <group name="main_grp" string="Details">
-                        <field name="product_id" />
-                       <!-- <div>
-                            <field name="product_uom_qty" class="oe_inline"/>
-                            <field name="product_uom"
-                                groups="product.group_uom" class="oe_inline"/>
-                        </div> -->
-                        <field name="product_uom_qty"  attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/>
-                        <field name="product_uom" readonly="True"/>
-                        <field name="product_uos_qty" attrs="{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/>
-                        <field name="product_uos" readonly="True"/>
-                        <field name="name"/>
-                        <field name="date_validity" />
+                        <field name="product_id" string="Product"/>
+                       <label for ="product_uom_qty" string="Quantity"/>
+                       <div>
+                            <field name="product_uom_qty" class="oe_inline" attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/>
+                            <field name="product_uom" readonly="True" class="oe_inline"/>
+                        </div>
+                        <label for="product_uos_qty" string="Quantity UOS"/>
+                        <div>
+                            <field name="product_uos_qty" class="oe_inline" attrs="{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/>
+                            <field name="product_uos" readonly="True" class="oe_inline"/>
+                        </div>
+                        <field name="date_validity"/>
                         <field name="create_date" groups="base.group_no_one"/>
-                        <field name="company_id"
-                            groups="base.group_multi_company"
-                            widget="selection"/>
                     </group>
                 </group>
             </field>

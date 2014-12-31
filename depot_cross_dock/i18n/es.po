@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-25 12:54+0000\n"
-"PO-Revision-Date: 2014-11-25 12:54+0000\n"
+"POT-Creation-Date: 2014-12-31 12:04+0000\n"
+"PO-Revision-Date: 2014-12-31 12:04+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -52,12 +52,12 @@ msgstr "Crear compras para"
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_uid:0
 msgid "Created by"
-msgstr "Creado por"
+msgstr "creado por"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_date:0
 msgid "Created on"
-msgstr "Creado el"
+msgstr "creado el"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
@@ -71,7 +71,7 @@ msgid "Delayed Buy"
 msgstr "Compra Retrasada"
 
 #. module: depot_cross_dock
-#: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:139
+#: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:138
 #, python-format
 msgid "Error!"
 msgstr "Error!"
@@ -80,6 +80,18 @@ msgstr "Error!"
 #: field:process.cross.dock.wzd,id:0
 msgid "ID"
 msgstr "ID"
+
+#. module: depot_cross_dock
+#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+msgid "If we select create purchases for Midban products it will generate a purchase for each route in each picking to process.\n"
+"                    If we select create purchases for Cross docks products it will generate a purchase for each supplier in each picking to process."
+msgstr "Si seleccionamos crear compras para productos de midban el asistente genrará una compra para cada ruta en cada albarán a procesar.\n"
+"                    Si seleccionamos crear compras para productos crooss dock el asistente genrará una compra para cada proveedor en cada albarán a procesar."
+
+#. module: depot_cross_dock
+#: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
+msgid "Important!: Transpor route must be assigned"
+msgstr "¡Importante!: La ruta de transporte debe ser asignada"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,write_uid:0
@@ -94,15 +106,15 @@ msgstr "Última Actualización en"
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Midban and cross dock products"
-msgstr "Productos de Midban y Cross Dock"
+msgstr "Productros de Misban y Cross Dock"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Midban products"
-msgstr "Productos midban"
+msgstr "Productos Midban"
 
 #. module: depot_cross_dock
-#: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:139
+#: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:138
 #, python-format
 msgid "No purchases created."
 msgstr "No se crearon compras"

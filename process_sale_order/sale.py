@@ -159,7 +159,7 @@ class sale_order_line(models.Model):
         if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
             qty = vals.get('product_uom_qty', 0.0) and \
                 vals['product_uom_qty'] or self.product_uom_qty
-            vals['product_uos_qty'] = vals.get('product_uom_qty', 0.0)
+            vals['product_uos_qty'] = qty
             vals['product_uos'] = unit_id
             vals['product_uom'] = unit_id
             vals['choose_unit'] = 'unit'

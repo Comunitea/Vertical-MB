@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-25 12:24+0000\n"
-"PO-Revision-Date: 2014-11-25 12:24+0000\n"
+"POT-Creation-Date: 2014-12-31 13:14+0000\n"
+"PO-Revision-Date: 2014-12-31 13:14+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,10 +31,25 @@ msgid "Box Unit Discount"
 msgstr "Descuento unidad caja"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/product.py:67
+#: code:addons/process_sale_order/product.py:70
 #, python-format
 msgid "Box unit does not exist.                You must configured one unit like boxes"
 msgstr "La unidad caja no existe.                Debes configurar una unidad actuando como cajas"
+
+#. module: process_sale_order
+#: model:ir.model,name:process_sale_order.model_account_invoice
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: process_sale_order
+#: model:ir.model,name:process_sale_order.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Línea de factura"
+
+#. module: process_sale_order
+#: model:ir.model,name:process_sale_order.model_account_move_line
+msgid "Journal Items"
+msgstr "Apuntes contables"
 
 #. module: process_sale_order
 #: field:product.template,min_unit:0
@@ -52,6 +67,11 @@ msgid "Only Unit"
 msgstr "Solo unidades"
 
 #. module: process_sale_order
+#: model:ir.model,name:process_sale_order.model_stock_picking
+msgid "Picking List"
+msgstr "Albarán"
+
+#. module: process_sale_order
 #: model:ir.model,name:process_sale_order.model_product_product
 msgid "Product"
 msgstr "Producto"
@@ -60,6 +80,12 @@ msgstr "Producto"
 #: model:ir.model,name:process_sale_order.model_product_template
 msgid "Product Template"
 msgstr "Plantilla de producto"
+
+#. module: process_sale_order
+#: field:account.invoice,pick_ids:0
+#: field:account.invoice,sale_ids:0
+msgid "Related Sales"
+msgstr "Ventas Relacionadas"
 
 #. module: process_sale_order
 #: model:ir.model,name:process_sale_order.model_sale_order
@@ -77,19 +103,30 @@ msgid "Selected Unit"
 msgstr "Unidad selecionada"
 
 #. module: process_sale_order
+#: help:product.template,min_unit:0
+msgid "Selecting both Units and boxes                                 will add functionality to Telesale and                                 Mobile App Sales (Android)"
+msgstr "Seleccionando Ambas unidades y cajas añadirá la funcionalidad a televentas y a la aplicación móvil"
+
+#. module: process_sale_order
+#: field:account.invoice.line,stock_move_id:0
+#: model:ir.model,name:process_sale_order.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: process_sale_order
 #: selection:sale.order.line,choose_unit:0
 msgid "Unit"
 msgstr "Unidad"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/product.py:75
+#: code:addons/process_sale_order/product.py:78
 #, python-format
 msgid "Units unit does not exist.                You must configured one unit like units"
 msgstr "La unidad unidades no existe.                Debes configurar una unidad actuando como unidades"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/product.py:66
-#: code:addons/process_sale_order/product.py:74
+#: code:addons/process_sale_order/product.py:69
+#: code:addons/process_sale_order/product.py:77
 #, python-format
 msgid "Warning"
 msgstr "Advertencia"

@@ -6,8 +6,16 @@
             <field name="model">sale.from.reserve.wzd</field>
             <field name="arch" type="xml">
               <form string="Create invoice">
+                  <p>
+                  This wizard creates a sale order for the reserve and the sepecified quantity.
+                  The sale orders will be marked as reserved sales
+                  </p>
                   <group>
-                      <field name="qty"/>
+                      <label for="qty" string="Quantity"/>
+                       <div>
+                            <field name="qty" class="oe_inline"/>
+                            <field name="product_uom" readonly="True" class="oe_inline"/>
+                        </div>
                   </group>
                   <footer>
                       <button name="create_sale" string="Create Sale" type="object" class="oe_highlight"/>

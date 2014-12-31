@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-30 17:36+0000\n"
-"PO-Revision-Date: 2014-12-30 17:36+0000\n"
+"POT-Creation-Date: 2014-12-31 12:53+0000\n"
+"PO-Revision-Date: 2014-12-31 12:53+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,9 +25,9 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                    Click para crear un nuevo comentario cualitativo \n"
+"                    Click para crear un nuevo comentario cualitativo\n"
 "                </p><p>\n"
-"                    Se usa para pasar información a entre ventas y compras de ultrafresco\n"
+"                    Lo usamos para pasar información entre ventas y compras\n"
 "                </p>\n"
 "\n"
 "            "
@@ -41,7 +41,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para crear una nueva compra de ultrafrescos\n"
+"                Click para crear una nueva compra de productos ultrafrescos\n"
 "              </p><p>\n"
 "                Estos productos serán puestos en la ubicación de salida.\n"
 "              </p>\n"
@@ -70,13 +70,13 @@ msgstr "Cancelar"
 #. module: midban_ultra_fresh
 #: model:ir.ui.menu,name:midban_ultra_fresh.change_ultrafresh_pvp_menu
 msgid "Change Ultrafresh PVP"
-msgstr "Cambiar PVP Ultrafrescos"
+msgstr "Cambiar ultrafresocos PVP"
 
 #. module: midban_ultra_fresh
 #: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
 #: model:ir.actions.act_window,name:midban_ultra_fresh.action_ultrafresh_change_prices
 msgid "Change Ultrafresh Prices"
-msgstr "Cambiar Precios de Ultrafrescos"
+msgstr "Cambiar Precios Ultrafrescos"
 
 #. module: midban_ultra_fresh
 #: field:calc.ultrafresh.price.wzd,line_ids:0
@@ -140,7 +140,7 @@ msgstr "ID"
 #: field:calc.ultrafresh.price.wzd,write_uid:0
 #: field:qualitative.note,write_uid:0
 msgid "Last Updated by"
-msgstr "Ultima actualización por"
+msgstr "Última actualización por"
 
 #. module: midban_ultra_fresh
 #: field:calc.price.line,write_date:0
@@ -167,7 +167,7 @@ msgstr "Nombre"
 #. module: midban_ultra_fresh
 #: field:calc.price.line,num_purchases:0
 msgid "Nº Purchases"
-msgstr "Nº Compras"
+msgstr "Nº C0ompras"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
@@ -202,23 +202,23 @@ msgstr "Kg Comprados"
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
 msgid "Qty Buy"
-msgstr "Cant Comprada"
+msgstr "Cantidad Comprada"
 
 #. module: midban_ultra_fresh
 #: field:sale.order.line,q_note:0
 msgid "Qualitative Comment"
-msgstr "Comentario qualitativo"
+msgstr "Comentario cualitativo"
 
 #. module: midban_ultra_fresh
 #: model:ir.ui.menu,name:midban_ultra_fresh.menu_qualitative_comment
 msgid "Qualitative Comments"
-msgstr "Comentario Qualitativo"
+msgstr "Comentarios cualitativos"
 
 #. module: midban_ultra_fresh
 #: view:qualitative.note:midban_ultra_fresh.qualitative_note_view_form
 #: view:qualitative.note:midban_ultra_fresh.qualitative_note_view_tree
 msgid "Qualitative Note"
-msgstr "Nota qualitativa"
+msgstr "Nota cualitativa"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
@@ -238,40 +238,40 @@ msgstr "Movimiento de existencias"
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
 msgid "ULTRAFRESH PURCHASE REPORT"
-msgstr "Informe de compra de ultrafrescos"
+msgstr "INFORME DE COMPRAS DE ULTRAFRESCO"
 
 #. module: midban_ultra_fresh
 #: model:ir.actions.act_window,name:midban_ultra_fresh.action_ultrafresh_purchase
 #: model:ir.ui.menu,name:midban_ultra_fresh.menu_ultrafresh_purchase
 #: view:purchase.order:midban_ultra_fresh.ultrafres_purchase_order_form
 msgid "UltraFresh Purchase"
-msgstr "Compra de Ultrafresco"
+msgstr "Compra Ultrafreso"
 
 #. module: midban_ultra_fresh
 #: model:stock.picking.type,name:midban_ultra_fresh.picking_type_ultrafresh
 msgid "UltraFresh purchases"
-msgstr "Compras de ultrafrescos"
+msgstr "Compras de ultrafresco"
 
 #. module: midban_ultra_fresh
 #: model:ir.actions.report.xml,name:midban_ultra_fresh.action_ultrafresh_report
 msgid "Ultrafresh Report"
-msgstr "Informe de Ultrafresco"
+msgstr "Informe de ultrafresco"
 
 #. module: midban_ultra_fresh
 #: view:purchase.order:midban_ultra_fresh.view_purchase_order_filter_add_ultrafresh
 #: field:purchase.order,ultrafresh_purchase:0
 msgid "Ultrafresh purchase"
-msgstr "Compra de ultrafresco"
+msgstr "Compra de Ultrafresco"
 
 #. module: midban_ultra_fresh
 #: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
 msgid "Ultrafresh purchases"
-msgstr "Compras de ultrafresco"
+msgstr "Compras de Ultrafrescos"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
 msgid "Unit"
-msgstr "Unidad"
+msgstr "Unidades"
 
 #. module: midban_ultra_fresh
 #: field:calc.price.line,wizard_id:0
@@ -286,10 +286,10 @@ msgstr "action.qualitative.note"
 #. module: midban_ultra_fresh
 #: field:qualitative.note,code:0
 msgid "code"
-msgstr "código"
+msgstr "Código"
 
 #. module: midban_ultra_fresh
 #: field:qualitative.note,name:0
 msgid "name"
-msgstr "nombre"
+msgstr "Nombre"
 

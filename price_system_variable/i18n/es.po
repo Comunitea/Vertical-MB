@@ -1,13 +1,13 @@
-# Translation of OpenERP Server.
+# Translation of Odoo Server.
 # This file contains the translation of the following modules:
 #	* price_system_variable
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0\n"
+"Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-11 13:41+0000\n"
-"PO-Revision-Date: 2014-03-11 13:41+0000\n"
+"POT-Creation-Date: 2014-12-31 13:05+0000\n"
+"PO-Revision-Date: 2014-12-31 13:05+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,459 +16,9 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: price_system_variable
-#: field:change.variable.pricelist,purchase_id:0
-msgid "Orig Purchase"
-msgstr "Origen compra"
-
-#. module: price_system_variable
-#: field:variable.pricelist,range_ids:0
-msgid "Ranges table"
-msgstr "Tabla rangos"
-
-#. module: price_system_variable
-#: view:variable.pricelist:0
-msgid "Variable Pticelist"
-msgstr "Tarifa variable"
-
-#. module: price_system_variable
-#: field:supplier.change.line,new_cost:0
-msgid "New cost"
-msgstr "Coste nuevo"
-
-#. module: price_system_variable
-#: view:change.supplier.cost:0
-#: field:change.supplier.cost,partner_id:0
-msgid "Supplier"
-msgstr "Proveedor"
-
-#. module: price_system_variable
-#: field:pricelist.pvp.line,pvp:0
-msgid "Price (PVP)"
-msgstr "Precio (PVP)"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:48
-#, python-format
-msgid "PVP product Change"
-msgstr "Cambio PVP de producto"
-
-#. module: price_system_variable
-#: field:change.supplier.cost,line_ids:0
-msgid "Change supplier prices"
-msgstr "Cambio costes proveedor"
-
-#. module: price_system_variable
-#: field:specific.pvp.line,2net_margin:0
-msgid "Net Net Margin"
-msgstr "Margen neto neto"
-
-#. module: price_system_variable
-#: model:ir.ui.menu,name:price_system_variable.menu_change_supplier_cost
-#: model:ir.ui.menu,name:price_system_variable.menu_change_supplier_cost_purchase
-msgid "Change Supplier Costs"
-msgstr "Cambio costes proveedor"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-#: view:product.product:0
-msgid "Update"
-msgstr "Actualizar"
-
-#. module: price_system_variable
-#: view:specific.customer.pvp:0
-msgid "Specific Filter"
-msgstr "Filtro precios específicos"
-
-#. module: price_system_variable
-#: field:pricelist.range,margin_ids:0
-msgid "Margins table"
-msgstr "Tabla de márgenes"
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,name:price_system_variable.action_change_supplier_cost
-msgid "Change Supplier Cost"
-msgstr "Change costes proveedor"
-
-#. module: price_system_variable
-#: view:specific.customer.pvp:0
-msgid "Approved"
-msgstr "Aprobar"
-
-#. module: price_system_variable
-#: field:sale.order.line,change_id:0
-msgid "Change"
-msgstr "Cambio"
-
-#. module: price_system_variable
-#: view:change.variable.pricelist:0
-msgid "Purchase"
-msgstr "Compra"
-
-#. module: price_system_variable
-#: model:ir.ui.menu,name:price_system_variable.menu_change_variable_pricelist
-#: model:ir.ui.menu,name:price_system_variable.menu_change_variable_pricelist_purchase
-#: field:variable.change.line,change_id:0
-msgid "Change Variable pricelist"
-msgstr "Cambio tarifa variable"
-
-#. module: price_system_variable
-#: selection:product.product,product_class:0
-msgid "No Class"
-msgstr "Sin clase"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-msgid " Change Product PVP"
-msgstr "Cambio PVP de producto"
-
-#. module: price_system_variable
-#: view:change.variable.pricelist:0
-msgid " Change Variable Pticelist"
-msgstr "Cambio tarifa variable"
-
-#. module: price_system_variable
-#: field:purchase.order.line,update_pricelist:0
-msgid "Update pricelist"
-msgstr "Actualizar precios"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_purchase_order
-msgid "Purchase Order"
-msgstr "Pedido de compra"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/sale.py:58
-#: code:addons/price_system_variable/sale.py:83
-#, python-format
-msgid "Error!"
-msgstr "¡Error!"
-
-#. module: price_system_variable
-#: field:variable.change.line,current_pvp:0
-msgid "Current PVP"
-msgstr "PVP actual"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_supplier_change_line
-msgid "supplier.change.line"
-msgstr "supplier.change.line"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:1037
-#, python-format
-msgid "Margin must be less than 100                                            please change it"
-msgstr "El margen debe ser menor que 100 %                                            porfavor cambielo."
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:137
-#: code:addons/price_system_variable/pricelist.py:1000
-#: code:addons/price_system_variable/pricelist.py:1036
-#: code:addons/price_system_variable/purchase.py:314
-#: code:addons/price_system_variable/sale.py:172
-#: code:addons/price_system_variable/sale.py:200
-#, python-format
-msgid "Warning!"
-msgstr "¡Advertencia!"
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,help:price_system_variable.action_change_supplier_cost
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add a change supplier cost.\n"
-"                </p><p>\n"
-"                This model is not created automatically.\n"
-"                </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir un nuevo cambio de costes de proveedor.\n"
-"                </p><p>\n"
-"                Este modelo no se genera automaticamente.\n"
-"                </p>\n"
-"            "
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_sale_order_line
-msgid "Sales Order Line"
-msgstr "Línea pedido de venta"
-
-#. module: price_system_variable
-#: view:change.variable.pricelist:0
-msgid " Change Variable Pricelist"
-msgstr "Cambio de tarifas variable"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_purchase_order_line
-msgid "Purchase Order Line"
-msgstr "Línea pedido de compra"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_variable_pricelist
-msgid "variable.pricelist"
-msgstr "variable.pricelist"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_pricelist_pvp_line
-msgid "pricelist.pvp.line"
-msgstr "pricelist.pvp.line"
-
-#. module: price_system_variable
-#: view:change.supplier.cost:0
-msgid " Change Supplier Costs"
-msgstr "Cambio costes proveedor"
-
-#. module: price_system_variable
-#: field:change.product.pvp,cmc:0
-#: field:product.product,cmc:0
-#: field:pvp.change.cmc,cmc:0
-#: field:specific.pvp.line,cmc:0
-#: field:wzd.update.cmc,new_cmc:0
-msgid "CMC"
-msgstr "CMC"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/purchase.py:213
-#, python-format
-msgid "You must first cancel all Variable change pricelist                         related"
-msgstr "Debes cancelar primero todos los cambios de tarifa variable                         relacionados"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_change_product_pvp
-msgid "change.product.pvp"
-msgstr "change.product.pvp"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-#: view:change.supplier.cost:0
-#: view:change.variable.pricelist:0
-#: view:specific.customer.pvp:0
-msgid "State"
-msgstr "Estado"
-
-#. module: price_system_variable
-#: field:supplier.change.line,percentage:0
-msgid "Percentage"
-msgstr "Porcentage"
-
-#. module: price_system_variable
-#: field:change.product.pvp,cmp:0
-msgid "CMP"
-msgstr "CMP"
-
-#. module: price_system_variable
-#: field:variable.pricelist,categ_id:0
-msgid "Product Category"
-msgstr "Categoría"
-
-#. module: price_system_variable
-#: field:change.variable.pricelist,change_line_ids:0
-#: model:ir.ui.menu,name:price_system_variable.menu_variable_pricelist
-#: model:ir.ui.menu,name:price_system_variable.menu_variable_pricelist_purchase
-msgid "Variable pricelist"
-msgstr "Tarifa variable"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:47
-#, python-format
-msgid "Supplier Price Change"
-msgstr "Cambio precios de proveedor"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_product_pricelist
-#: field:pricelist.margin,pricelist_id:0
-#: field:pricelist.pvp.line,pricelist_id:0
-#: field:variable.change.line,pricelist_id:0
-msgid "Pricelist"
-msgstr "Tarifa"
-
-#. module: price_system_variable
-#: field:product.product,product_class:0
-msgid "Class"
-msgstr "Clase"
-
-#. module: price_system_variable
-#: selection:product.product,product_class:0
-msgid "Dry"
-msgstr "Seco"
-
-#. module: price_system_variable
-#: field:supplier.change.line,new_net_cost:0
-msgid "New Net cost"
-msgstr "Nuevo coste neto"
-
-#. module: price_system_variable
-#: field:pricelist.pvp.line,min_price:0
-msgid "Minimum Price"
-msgstr "Precio mínimo"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-#: view:change.supplier.cost:0
-#: view:change.variable.pricelist:0
-msgid "Update Prices"
-msgstr "Actualizar Precios"
-
-#. module: price_system_variable
-#: field:supplier.change.line,cost:0
-#: field:variable.change.line,current_cost:0
-msgid "Current cost"
-msgstr "Coste actual"
-
-#. module: price_system_variable
-#: field:pricelist.margin,range_id:0
-msgid "Range"
-msgstr "Rango"
-
-#. module: price_system_variable
-#: field:variable.change.line,real_margin:0
-msgid "Real Margin"
-msgstr "Margen real"
-
-#. module: price_system_variable
-#: field:specific.pvp.line,specific_pvp:0
-msgid "Specific PVP"
-msgstr "PVP específico"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_pricelist_margin
-msgid "pricelist.margin"
-msgstr "pricelist.margin"
-
-#. module: price_system_variable
-#: field:pricelist.margin,margin:0
-#: field:pricelist.pvp.line,margin:0
-#: field:specific.pvp.line,margin:0
-msgid "Margin"
-msgstr "Margen"
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,help:price_system_variable.action_specific_customer_pvp
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add specific customer pvp.\n"
-"                </p><p>\n"
-"                This model has prioryty over pricelists.\n"
-"                </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add specific customer pvp.\n"
-"                </p><p>\n"
-"                This model has prioryty over pricelists.\n"
-"                </p>\n"
-"            "
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,name:price_system_variable.action_change_product_pvp
-#: model:ir.ui.menu,name:price_system_variable.menu_change_product_pvp
-#: model:ir.ui.menu,name:price_system_variable.menu_change_product_pvp_purchase
-msgid "Change Product PVP"
-msgstr "Cambio PVP de producto"
-
-#. module: price_system_variable
-#: view:change.supplier.cost:0
-msgid "Change supplier costs"
-msgstr "Cambio costes proveedor"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_account_invoice_line
-msgid "Invoice Line"
-msgstr "Línea de factura"
-
-#. module: price_system_variable
-#: field:change.product.pvp,pricelist_ids:0
-msgid "Pricelists & PVP"
-msgstr "Tarifas & PVP"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_pricelist_range
-msgid "pricelist.range"
-msgstr "pricelist.range"
-
-#. module: price_system_variable
-#: field:pricelist.pvp.line,date_start:0
-#: field:specific.pvp.line,date_start:0
-msgid "Start Date"
-msgstr "Fecha inicio"
-
-#. module: price_system_variable
-#: field:supplier.change.line,change_id:0
-msgid "Change supplier cost"
-msgstr "Cambio costes proveedor"
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,help:price_system_variable.action_variable_pricelist
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add a variable pricelist.\n"
-"                </p><p>\n"
-"                You can define and view the margins table here.\n"
-"                </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir una tarifa variable.\n"
-"                </p><p>\n"
-"                Puedes definir y ver la tabla de márgenes.\n"
-"                </p>\n"
-"            "
-
-#. module: price_system_variable
-#: view:pvp.change.cmc:0
-#: view:wzd.update.cmc:0
-msgid "or"
-msgstr "or"
-
-#. module: price_system_variable
-#: view:variable.pricelist:0
-msgid "Category"
-msgstr "Categoría"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_change_variable_pricelist
-msgid "change.variable.pricelist"
-msgstr "change.variable.pricelist"
-
-#. module: price_system_variable
-#: field:change.product.pvp,real_stock:0
-msgid "Real Stock"
-msgstr "Stock real"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/purchase.py:212
-#, python-format
-msgid "Unable to cancel this purchase order."
-msgstr "No se puede cancelar esta orden de compra."
-
-#. module: price_system_variable
-#: field:specific.pvp.line,note:0
-msgid "Note"
-msgstr "Nota"
-
-#. module: price_system_variable
-#: selection:change.product.pvp,state:0
-#: selection:change.supplier.cost,state:0
-#: selection:change.variable.pricelist,state:0
-#: selection:specific.customer.pvp,state:0
-msgid "Draft"
-msgstr "Borrador"
-
-#. module: price_system_variable
-#: field:change.product.pvp,state:0
-#: field:change.supplier.cost,state:0
-#: field:change.variable.pricelist,state:0
-#: field:specific.customer.pvp,state:0
-msgid "Status"
-msgstr "Estado"
-
-#. module: price_system_variable
-#: field:specific.pvp.line,pvp:0
-msgid "PVP"
-msgstr "PVP"
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,name:price_system_variable.action_change_variable_pricelist
-msgid "Change Variable Pricelist"
-msgstr "Cambio de tarifa variable"
-
-#. module: price_system_variable
-#: view:purchase.order:0
-msgid "Pricelist Change"
-msgstr "Cambio tarifas"
+#: model:ir.ui.menu,name:price_system_variable.menu_table_pricelist_prices
+msgid " Table pricelist prices"
+msgstr " Tabla de precios de tarifas"
 
 #. module: price_system_variable
 #: model:ir.actions.act_window,help:price_system_variable.action_change_product_pvp
@@ -486,143 +36,19 @@ msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "            "
 
 #. module: price_system_variable
-#: field:variable.change.line,previous_cost:0
-msgid "Previous cost"
-msgstr "Coste anerior"
-
-#. module: price_system_variable
-#: field:change.product.pvp,sec_margin:0
-#: field:pricelist.range,security_margin:0
-#: field:product.product,sec_margin:0
-#: field:pvp.change.cmc,sec_margin:0
-#: field:wzd.update.cmc,new_sec_margin:0
-msgid "Security Margin"
-msgstr "Margen seguridad"
-
-#. module: price_system_variable
-#: selection:change.product.pvp,state:0
-#: selection:change.supplier.cost,state:0
-#: selection:change.variable.pricelist,state:0
-#: selection:specific.customer.pvp,state:0
-msgid "Updated"
-msgstr "Actualizado"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-#: view:change.supplier.cost:0
-#: field:change.supplier.cost,date:0
-#: view:change.variable.pricelist:0
-#: field:change.variable.pricelist,date:0
-#: field:supplier.change.line,date:0
-msgid "Date"
-msgstr "Fecha"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_specific_pvp_line
-msgid "specific.pvp.line"
-msgstr "specific.pvp.line"
-
-#. module: price_system_variable
-#: view:specific.customer.pvp:0
-msgid "Products PVP"
-msgstr "PVP Productos"
-
-#. module: price_system_variable
-#: view:change.variable.pricelist:0
-#: model:ir.actions.act_window,name:price_system_variable.action_variable_pricelist
-#: field:pricelist.range,var_pricelist_id:0
-msgid "Variable Pricelist"
-msgstr "Tarifa variable"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/purchase.py:117
-#: code:addons/price_system_variable/purchase.py:123
-#: code:addons/price_system_variable/purchase.py:179
-#, python-format
-msgid "Error"
-msgstr "Error"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_variable_change_line
-msgid "variable.change.line"
-msgstr "variable.change.line"
-
-#. module: price_system_variable
-#: field:pricelist.range,from_cost:0
-msgid "From Cost"
-msgstr "Desde coste"
-
-#. module: price_system_variable
-#: model:ir.actions.act_window,name:price_system_variable.action_specific_customer_pvp
-#: model:ir.ui.menu,name:price_system_variable.menu_specific_customer_pvp
-#: model:ir.ui.menu,name:price_system_variable.menu_specific_customer_pvp_purchase
-#: view:specific.customer.pvp:0
-msgid "Specific Customer PVP"
-msgstr "PVP específicos de cliente"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_pvp_change_cmc
-msgid "pvp.change.cmc"
-msgstr "pvp.change.cmc"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:46
-#, python-format
-msgid "Variable Price"
-msgstr "Precio variable"
-
-#. module: price_system_variable
-#: view:variable.pricelist:0
-msgid "Update taxes"
-msgstr "Actualizar tarifas"
-
-#. module: price_system_variable
-#: field:specific.customer.pvp,product_ids:0
-msgid "Products & PVP"
-msgstr "Productos & PVP"
-
-#. module: price_system_variable
-#: field:specific.pvp.line,specific_id:0
-msgid "Specific model"
-msgstr "Modelo especifico"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-#: view:change.supplier.cost:0
-#: view:change.variable.pricelist:0
-#: view:pvp.change.cmc:0
-#: view:specific.customer.pvp:0
-#: view:wzd.update.cmc:0
-msgid "Cancel"
-msgstr "Cancelar"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_product_pricelist_item
-msgid "Pricelist item"
-msgstr "Elemento de la tarifa"
-
-#. module: price_system_variable
-#: field:sale.order.line,to_update:0
-msgid "To be updated"
-msgstr "Para actualizar"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:137
-#, python-format
-msgid "At least one pricelist has                                                    no active version !\n"
-"                                                    Please create or activate                                                    one."
-msgstr "Almenos una tarifa tiene                                                    una version no activa !\n"
-"                                                    Porfavor crea o activa                                                    una."
-
-#. module: price_system_variable
-#: field:supplier.change.line,net_cost:0
-msgid "Net cost"
-msgstr "Coste neto"
-
-#. module: price_system_variable
-#: field:change.product.pvp,date_cmc:0
-msgid "Updated Date"
-msgstr "Fecha de actualización"
+#: model:ir.actions.act_window,help:price_system_variable.action_change_supplier_cost
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to add a change supplier cost.\n"
+"                </p><p>\n"
+"                This model is not created automatically.\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para añadir un nuevo cambio de costes de proveedor.\n"
+"                </p><p>\n"
+"                Este modelo no se genera automaticamente.\n"
+"                </p>\n"
+"            "
 
 #. module: price_system_variable
 #: model:ir.actions.act_window,help:price_system_variable.action_change_variable_pricelist
@@ -641,51 +67,145 @@ msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "            "
 
 #. module: price_system_variable
-#: model:ir.actions.act_window,name:price_system_variable.action_update_cmc
-#: model:ir.actions.act_window,name:price_system_variable.action_update_cmc_from_change
-#: view:pvp.change.cmc:0
-#: view:wzd.update.cmc:0
-msgid "Update CMC"
-msgstr "Actualizar CMC"
+#: model:ir.actions.act_window,help:price_system_variable.action_variable_pricelist
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to add a variable pricelist.\n"
+"                </p><p>\n"
+"                You can define and view the margins table here.\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para añadir una tarifa variable.\n"
+"                </p><p>\n"
+"                Puedes definir y ver la tabla de márgenes.\n"
+"                </p>\n"
+"            "
 
 #. module: price_system_variable
-#: constraint:pricelist.margin:0
-msgid "Margin must be less than 100% and can not be negative."
-msgstr "El margen debe ser menor que 100% y no puede ser negativo."
+#: model:ir.actions.act_window,help:price_system_variable.action_specific_customer_pvp
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to add specific customer pvp.\n"
+"                </p><p>\n"
+"                This model has priority over pricelists.\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para añadir un pvp específico de cliente.\n"
+"                </p><p>\n"
+"                Este modelo tiene prioridad sobre las tarifas.\n"
+"                </p>\n"
+"            "
 
 #. module: price_system_variable
-#: field:change.variable.pricelist,note:0
-msgid "Observations"
-msgstr "Observaciones"
+#: model:ir.actions.act_window,help:price_system_variable.action_table_pricelist_prices
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Table of prices for app movile\n"
+"                </p><p>\n"
+"                Read only Model\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Tabla de precios para la app móvil\n"
+"                </p><p>\n"
+"                Modelo de solo lectura\n"
+"                </p>\n"
+"            "
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/purchase.py:315
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_form
+msgid "Approved"
+msgstr "Aprobar"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:200
 #, python-format
-msgid "There is no supplier                                                        pricelist rule for                                                        this product."
-msgstr "No hay regla                                                        de tarifa de proveedor  para                                                      este producto."
+msgid "At least one pricelist has                                                  no active version !\n"
+"Please                                                  create or activate one."
+msgstr "Al menos una tarifa no tiene una versión activa !\n"
+"Porfavor crea o activa una."
 
 #. module: price_system_variable
-#: field:pricelist.pvp.line,min_margin:0
-msgid "Minimum Margin"
-msgstr "Margen mínimo"
+#: field:change.product.pvp,cmc:0
+#: field:product.template,cmc:0
+#: field:pvp.change.cmc,cmc:0
+#: field:specific.pvp.line,cmc:0
+#: field:wzd.update.cmc,new_cmc:0
+msgid "CMC"
+msgstr "CMC"
 
 #. module: price_system_variable
-#: view:change.product.pvp:0
-#: field:change.product.pvp,product_id:0
-#: view:change.variable.pricelist:0
-#: field:change.variable.pricelist,product_id:0
-#: model:ir.model,name:price_system_variable.model_product_product
-#: field:specific.pvp.line,product_id:0
-#: field:supplier.change.line,product_id:0
-#: view:variable.pricelist:0
-#: field:variable.pricelist,product_id:0
-msgid "Product"
-msgstr "Producto"
+#: field:change.product.pvp,cmp:0
+msgid "CMP"
+msgstr "CMP"
 
 #. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_change_supplier_cost
-msgid "change.supplier.cost"
-msgstr "change.supplier.cost"
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_form
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_form
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_form
+#: view:pvp.change.cmc:price_system_variable.view_pvp_change_cmc_form
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_form
+#: view:wzd.update.cmc:price_system_variable.view_update_cmc_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: price_system_variable
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_search
+msgid "Category"
+msgstr "Categoría"
+
+#. module: price_system_variable
+#: field:sale.order.line,change_id:0
+msgid "Change"
+msgstr "Cambio"
+
+#. module: price_system_variable
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_search
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_search
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
+#: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_search
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_search
+msgid "Change Filter"
+msgstr "Filtro tarifa variable"
+
+#. module: price_system_variable
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_form
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_tree
+#: model:ir.actions.act_window,name:price_system_variable.action_change_product_pvp
+#: model:ir.ui.menu,name:price_system_variable.menu_change_product_pvp
+#: model:ir.ui.menu,name:price_system_variable.menu_change_product_pvp_purchase
+msgid "Change Product PVP"
+msgstr "Cambio PVP de producto"
+
+#. module: price_system_variable
+#: model:ir.actions.act_window,name:price_system_variable.action_change_supplier_cost
+msgid "Change Supplier Cost"
+msgstr "Cambio costes proveedor"
+
+#. module: price_system_variable
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_form
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_tree
+#: model:ir.ui.menu,name:price_system_variable.menu_change_supplier_cost
+#: model:ir.ui.menu,name:price_system_variable.menu_change_supplier_cost_purchase
+msgid "Change Supplier Costs"
+msgstr "Cambio costes proveedor"
+
+#. module: price_system_variable
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_tree
+#: model:ir.actions.act_window,name:price_system_variable.action_change_variable_pricelist
+msgid "Change Variable Pricelist"
+msgstr "Cambio de tarifa variable"
+
+#. module: price_system_variable
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_form
+msgid "Change Variable Pticelist"
+msgstr "Cambio de tarifa variable"
+
+#. module: price_system_variable
+#: model:ir.ui.menu,name:price_system_variable.menu_change_variable_pricelist
+#: model:ir.ui.menu,name:price_system_variable.menu_change_variable_pricelist_purchase
+#: field:variable.change.line,change_id:0
+msgid "Change Variable pricelist"
+msgstr "Cambio tarifa variable"
 
 #. module: price_system_variable
 #: field:pricelist.pvp.line,change_id:0
@@ -693,109 +213,92 @@ msgid "Change product pvp"
 msgstr "Cambio PVP de producto"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/purchase.py:122
-#, python-format
-msgid "No columns found in margin table for current price range"
-msgstr "No se encontraron columnas en la tabla de márgenes para el rango de precios actual"
+#: field:supplier.change.line,change_id:0
+msgid "Change supplier cost"
+msgstr "Cambio costes proveedor"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:1001
-#, python-format
-msgid "There is no change                                             product pvp for                                             this product."
-msgstr "No hay cambio                                             pvp de producto para                                             este producto."
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_form
+msgid "Change supplier costs"
+msgstr "Cambio costes proveedor"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:45
-#, python-format
-msgid "Supplier Prices on the product form"
-msgstr "Precios de proveedor en el formulario de producto"
+#: field:change.supplier.cost,line_ids:0
+msgid "Change supplier prices"
+msgstr "Cambio costes proveedor"
 
 #. module: price_system_variable
-#: view:specific.customer.pvp:0
+#: selection:product.template,product_class:0
+msgid "Chilled"
+msgstr "Refrigerado"
+
+#. module: price_system_variable
+#: field:product.template,product_class:0
+msgid "Class"
+msgstr "Clase"
+
+#. module: price_system_variable
+#: field:change.product.pvp,create_uid:0
+#: field:change.supplier.cost,create_uid:0
+#: field:change.variable.pricelist,create_uid:0
+#: field:pricelist.margin,create_uid:0
+#: field:pricelist.pvp.line,create_uid:0
+#: field:pricelist.range,create_uid:0
+#: field:pvp.change.cmc,create_uid:0
+#: field:specific.customer.pvp,create_uid:0
+#: field:specific.pvp.line,create_uid:0
+#: field:supplier.change.line,create_uid:0
+#: field:table.pricelist.prices,create_uid:0
+#: field:variable.change.line,create_uid:0
+#: field:variable.pricelist,create_uid:0
+#: field:wzd.update.cmc,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: price_system_variable
+#: field:change.product.pvp,create_date:0
+#: field:change.supplier.cost,create_date:0
+#: field:change.variable.pricelist,create_date:0
+#: field:pricelist.margin,create_date:0
+#: field:pricelist.pvp.line,create_date:0
+#: field:pricelist.range,create_date:0
+#: field:pvp.change.cmc,create_date:0
+#: field:specific.customer.pvp,create_date:0
+#: field:specific.pvp.line,create_date:0
+#: field:supplier.change.line,create_date:0
+#: field:table.pricelist.prices,create_date:0
+#: field:variable.change.line,create_date:0
+#: field:variable.pricelist,create_date:0
+#: field:wzd.update.cmc,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: price_system_variable
+#: field:variable.change.line,current_pvp:0
+msgid "Current PVP"
+msgstr "PVP actual"
+
+#. module: price_system_variable
+#: field:supplier.change.line,cost:0
+#: field:variable.change.line,current_cost:0
+msgid "Current cost"
+msgstr "Coste actual"
+
+#. module: price_system_variable
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_search
 #: field:specific.customer.pvp,partner_id:0
 msgid "Customer"
 msgstr "Cliente"
 
 #. module: price_system_variable
-#: field:pricelist.pvp.line,date_end:0
-#: field:specific.pvp.line,date_end:0
-msgid "End Date"
-msgstr "Fecha fin"
-
-#. module: price_system_variable
-#: selection:product.product,product_class:0
-msgid "Chilled"
-msgstr "Refrigerado"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_specific_customer_pvp
-msgid "specific.customer.pvp"
-msgstr "specific.customer.pvp"
-
-#. module: price_system_variable
-#: view:change.supplier.cost:0
-#: field:change.supplier.cost,name:0
-#: view:change.variable.pricelist:0
-#: field:change.variable.pricelist,name:0
-#: view:variable.pricelist:0
-#: field:variable.pricelist,name:0
-msgid "Name"
-msgstr "Nombre"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-msgid "Pricelists PVP"
-msgstr "Tarifa & PVP"
-
-#. module: price_system_variable
-#: selection:product.product,product_class:0
-msgid "Frozen"
-msgstr "Congelado"
-
-#. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:44
-#, python-format
-msgid "Other Pricelist"
-msgstr "Otra tarifa"
-
-#. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_product_template
-msgid "Product Template"
-msgstr "Plantilla de producto"
-
-#. module: price_system_variable
-#: view:change.product.pvp:0
-#: view:change.supplier.cost:0
-#: view:change.variable.pricelist:0
-#: view:variable.pricelist:0
-msgid "Change Filter"
-msgstr "Filtro tarifa variable"
-
-#. module: price_system_variable
-#: selection:product.product,product_class:0
-msgid "Fresh"
-msgstr "Fresco"
-
-#. module: price_system_variable
-#: field:supplier.change.line,sup_code:0
-msgid "Supplier code"
-msgstr "Código proveedor"
-
-#. module: price_system_variable
-#: field:change.product.pvp,virt_stock:0
-msgid "Virtual Stock"
-msgstr "Stock virtual"
-
-#. module: price_system_variable
-#: view:product.product:0
-msgid "Show pvp changes"
-msgstr "Cambios PVP"
-
-#. module: price_system_variable
-#: view:variable.pricelist:0
-#: field:variable.pricelist,sequence:0
-msgid "Sequence"
-msgstr "Secuencia"
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_search
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_search
+#: field:change.supplier.cost,date:0
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
+#: field:change.variable.pricelist,date:0
+#: field:supplier.change.line,date:0
+msgid "Date"
+msgstr "Fecha"
 
 #. module: price_system_variable
 #: field:pvp.change.cmc,do_onchange:0
@@ -805,9 +308,228 @@ msgid "Do onchange"
 msgstr "Hacer onchange"
 
 #. module: price_system_variable
-#: field:pricelist.range,to_cost:0
-msgid "To Cost"
-msgstr "Hasta coste"
+#: selection:change.product.pvp,state:0
+#: selection:change.supplier.cost,state:0
+#: selection:change.variable.pricelist,state:0
+#: selection:specific.customer.pvp,state:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: price_system_variable
+#: selection:product.template,product_class:0
+msgid "Dry"
+msgstr "Seco"
+
+#. module: price_system_variable
+#: field:pricelist.pvp.line,date_end:0
+#: field:specific.pvp.line,date_end:0
+msgid "End Date"
+msgstr "Fecha fin"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/purchase.py:126
+#: code:addons/price_system_variable/purchase.py:132
+#: code:addons/price_system_variable/purchase.py:187
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/sale.py:58
+#, python-format
+msgid "Error!"
+msgstr "¡Error!"
+
+#. module: price_system_variable
+#: selection:product.template,product_class:0
+msgid "Fresh"
+msgstr "Fresco"
+
+#. module: price_system_variable
+#: field:pricelist.range,from_cost:0
+msgid "From Cost"
+msgstr "Desde coste"
+
+#. module: price_system_variable
+#: selection:product.template,product_class:0
+msgid "Frozen"
+msgstr "Congelado"
+
+#. module: price_system_variable
+#: field:change.product.pvp,id:0
+#: field:change.supplier.cost,id:0
+#: field:change.variable.pricelist,id:0
+#: field:pricelist.margin,id:0
+#: field:pricelist.pvp.line,id:0
+#: field:pricelist.range,id:0
+#: field:pvp.change.cmc,id:0
+#: field:specific.customer.pvp,id:0
+#: field:specific.pvp.line,id:0
+#: field:supplier.change.line,id:0
+#: field:table.pricelist.prices,id:0
+#: field:variable.change.line,id:0
+#: field:variable.pricelist,id:0
+#: field:wzd.update.cmc,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Línea de factura"
+
+#. module: price_system_variable
+#: field:change.product.pvp,write_uid:0
+#: field:change.supplier.cost,write_uid:0
+#: field:change.variable.pricelist,write_uid:0
+#: field:pricelist.margin,write_uid:0
+#: field:pricelist.pvp.line,write_uid:0
+#: field:pricelist.range,write_uid:0
+#: field:pvp.change.cmc,write_uid:0
+#: field:specific.customer.pvp,write_uid:0
+#: field:specific.pvp.line,write_uid:0
+#: field:supplier.change.line,write_uid:0
+#: field:table.pricelist.prices,write_uid:0
+#: field:variable.change.line,write_uid:0
+#: field:variable.pricelist,write_uid:0
+#: field:wzd.update.cmc,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: price_system_variable
+#: field:change.product.pvp,write_date:0
+#: field:change.supplier.cost,write_date:0
+#: field:change.variable.pricelist,write_date:0
+#: field:pricelist.margin,write_date:0
+#: field:pricelist.pvp.line,write_date:0
+#: field:pricelist.range,write_date:0
+#: field:pvp.change.cmc,write_date:0
+#: field:specific.customer.pvp,write_date:0
+#: field:specific.pvp.line,write_date:0
+#: field:supplier.change.line,write_date:0
+#: field:table.pricelist.prices,write_date:0
+#: field:variable.change.line,write_date:0
+#: field:variable.pricelist,write_date:0
+#: field:wzd.update.cmc,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. module: price_system_variable
+#: field:pricelist.margin,margin:0
+#: field:pricelist.pvp.line,margin:0
+#: field:specific.pvp.line,margin:0
+msgid "Margin"
+msgstr "Margen"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:1307
+#, python-format
+msgid "Margin must be less than 100                                            please change it"
+msgstr "El margen debe ser menor que 100 %                                            porfavor cambielo."
+
+#. module: price_system_variable
+#: constraint:pricelist.margin:0
+msgid "Margin must be less than 100% and can not be negative."
+msgstr "El margen debe ser menor que 100% y no puede ser negativo."
+
+#. module: price_system_variable
+#: field:pricelist.range,margin_ids:0
+msgid "Margins table"
+msgstr "Tabla de márgenes"
+
+#. module: price_system_variable
+#: field:pricelist.pvp.line,min_margin:0
+msgid "Minimum Margin"
+msgstr "Margen mínimo"
+
+#. module: price_system_variable
+#: field:pricelist.pvp.line,min_price:0
+msgid "Minimum Price"
+msgstr "Precio mínimo"
+
+#. module: price_system_variable
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_search
+#: field:change.supplier.cost,name:0
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
+#: field:change.variable.pricelist,name:0
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_search
+#: field:variable.pricelist,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: price_system_variable
+#: field:specific.pvp.line,2net_margin:0
+msgid "Net Net Margin"
+msgstr "Margen neto neto"
+
+#. module: price_system_variable
+#: field:supplier.change.line,net_cost:0
+msgid "Net cost"
+msgstr "Coste neto"
+
+#. module: price_system_variable
+#: field:supplier.change.line,new_net_cost:0
+msgid "New Net cost"
+msgstr "Nuevo coste neto"
+
+#. module: price_system_variable
+#: field:supplier.change.line,new_cost:0
+msgid "New cost"
+msgstr "Coste nuevo"
+
+#. module: price_system_variable
+#: selection:product.template,product_class:0
+msgid "No Class"
+msgstr "Sin clase"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/purchase.py:131
+#, python-format
+msgid "No columns found in margin table for current price range"
+msgstr "No se encontraron columnas en la tabla de márgenes para el rango de precios actual"
+
+#. module: price_system_variable
+#: field:specific.pvp.line,note:0
+msgid "Note"
+msgstr "Nota"
+
+#. module: price_system_variable
+#: field:change.variable.pricelist,note:0
+msgid "Observations"
+msgstr "Observaciones"
+
+#. module: price_system_variable
+#: field:change.variable.pricelist,purchase_id:0
+msgid "Orig Purchase"
+msgstr "Origen compra"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:48
+#, python-format
+msgid "Other Pricelist"
+msgstr "Otra tarifa"
+
+#. module: price_system_variable
+#: field:specific.pvp.line,pvp:0
+msgid "PVP"
+msgstr "PVP"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:52
+#, python-format
+msgid "PVP product Change"
+msgstr "Cambio PVP de producto"
+
+#. module: price_system_variable
+#: field:supplier.change.line,percentage:0
+msgid "Percentage"
+msgstr "Porcentage"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:1248
+#, python-format
+msgid "Please select a partner for apply specific prices"
+msgstr "Please select a partner for apply specific prices"
 
 #. module: price_system_variable
 #: field:variable.change.line,previous_pvp:0
@@ -815,12 +537,373 @@ msgid "Previous PVP"
 msgstr "PVP anterior"
 
 #. module: price_system_variable
+#: field:variable.change.line,previous_cost:0
+msgid "Previous cost"
+msgstr "Coste anerior"
+
+#. module: price_system_variable
+#: field:table.pricelist.prices,price:0
+msgid "Price"
+msgstr "Precio"
+
+#. module: price_system_variable
+#: field:pricelist.pvp.line,pvp:0
+msgid "Price (PVP)"
+msgstr "Precio (PVP)"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_product_pricelist
+#: field:pricelist.margin,pricelist_id:0
+#: field:pricelist.pvp.line,pricelist_id:0
+#: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_search
+#: field:table.pricelist.prices,pricelist_id:0
+#: field:variable.change.line,pricelist_id:0
+msgid "Pricelist"
+msgstr "Tarifa"
+
+#. module: price_system_variable
+#: view:purchase.order:price_system_variable.purchase_order_2_stock_picking_add_link
+msgid "Pricelist Change"
+msgstr "Cambio tarifas"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_product_pricelist_item
+msgid "Pricelist item"
+msgstr "Elemento de la tarifa"
+
+#. module: price_system_variable
+#: field:change.product.pvp,pricelist_ids:0
+msgid "Pricelists & PVP"
+msgstr "Tarifas & PVP"
+
+#. module: price_system_variable
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_form
+msgid "Pricelists PVP"
+msgstr "Tarifa & PVP"
+
+#. module: price_system_variable
 #: field:change.variable.pricelist,label:0
 msgid "Print label?"
 msgstr "Imprimir etiqueta?"
 
 #. module: price_system_variable
-#: model:ir.model,name:price_system_variable.model_wzd_update_cmc
-msgid "wzd.update.cmc"
-msgstr "wzd.update.cmc"
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_search
+#: field:change.product.pvp,product_id:0
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
+#: field:change.variable.pricelist,product_id:0
+#: model:ir.model,name:price_system_variable.model_product_product
+#: field:specific.pvp.line,product_id:0
+#: field:supplier.change.line,product_id:0
+#: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_search
+#: field:table.pricelist.prices,product_id:0
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_search
+#: field:variable.pricelist,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: price_system_variable
+#: field:variable.pricelist,categ_id:0
+msgid "Product Category"
+msgstr "Categoría"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: price_system_variable
+#: field:specific.customer.pvp,product_ids:0
+msgid "Products & PVP"
+msgstr "Productos & PVP"
+
+#. module: price_system_variable
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_form
+msgid "Products PVP"
+msgstr "PVP Productos"
+
+#. module: price_system_variable
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
+msgid "Purchase"
+msgstr "Compra"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: price_system_variable
+#: field:pricelist.margin,range_id:0
+msgid "Range"
+msgstr "Rango"
+
+#. module: price_system_variable
+#: field:variable.pricelist,range_ids:0
+msgid "Ranges table"
+msgstr "Tabla rangos"
+
+#. module: price_system_variable
+#: field:variable.change.line,real_margin:0
+msgid "Real Margin"
+msgstr "Margen real"
+
+#. module: price_system_variable
+#: field:change.product.pvp,real_stock:0
+msgid "Real Stock"
+msgstr "Stock real"
+
+#. module: price_system_variable
+#: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_form
+msgid "Recalculate Table"
+msgstr "Recalculate Table"
+
+#. module: price_system_variable
+#: model:ir.model,name:price_system_variable.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea pedido de venta"
+
+#. module: price_system_variable
+#: field:change.product.pvp,sec_margin:0
+#: field:pricelist.range,security_margin:0
+#: field:product.template,sec_margin:0
+#: field:pvp.change.cmc,sec_margin:0
+#: field:wzd.update.cmc,new_sec_margin:0
+msgid "Security Margin"
+msgstr "Margen seguridad"
+
+#. module: price_system_variable
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_search
+#: field:variable.pricelist,sequence:0
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: price_system_variable
+#: view:product.template:price_system_variable.product_normal_add_cmc_form_view
+msgid "Show pvp changes"
+msgstr "Mostrar cambio PVP"
+
+#. module: price_system_variable
+#: model:ir.actions.act_window,name:price_system_variable.action_specific_customer_pvp
+#: model:ir.ui.menu,name:price_system_variable.menu_specific_customer_pvp
+#: model:ir.ui.menu,name:price_system_variable.menu_specific_customer_pvp_purchase
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_form
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_tree
+msgid "Specific Customer PVP"
+msgstr "PVP específicos de cliente"
+
+#. module: price_system_variable
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_search
+msgid "Specific Filter"
+msgstr "Filtro precios específicos"
+
+#. module: price_system_variable
+#: field:specific.pvp.line,specific_pvp:0
+msgid "Specific PVP"
+msgstr "PVP específico"
+
+#. module: price_system_variable
+#: field:specific.pvp.line,specific_id:0
+msgid "Specific model"
+msgstr "Modelo especifico"
+
+#. module: price_system_variable
+#: field:pricelist.pvp.line,date_start:0
+#: field:specific.pvp.line,date_start:0
+msgid "Start Date"
+msgstr "Fecha inicio"
+
+#. module: price_system_variable
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_search
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_search
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
+#: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_search
+msgid "State"
+msgstr "Estado"
+
+#. module: price_system_variable
+#: field:change.product.pvp,state:0
+#: field:change.supplier.cost,state:0
+#: field:change.variable.pricelist,state:0
+#: field:specific.customer.pvp,state:0
+msgid "Status"
+msgstr "Estado"
+
+#. module: price_system_variable
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_search
+#: field:change.supplier.cost,partner_id:0
+msgid "Supplier"
+msgstr "Proveedor"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:51
+#, python-format
+msgid "Supplier Price Change"
+msgstr "Cambio precios de proveedor"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:49
+#, python-format
+msgid "Supplier Prices on the product form"
+msgstr "Precios de proveedor en el formulario de producto"
+
+#. module: price_system_variable
+#: field:supplier.change.line,sup_code:0
+msgid "Supplier code"
+msgstr "Código proveedor"
+
+#. module: price_system_variable
+#: model:ir.actions.act_window,name:price_system_variable.action_table_pricelist_prices
+msgid "Table Pricelist prices"
+msgstr "Tabla de precios de tarifa"
+
+#. module: price_system_variable
+#: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_form
+msgid "Table of prices"
+msgstr "TAbla de precios"
+
+#. module: price_system_variable
+#: model:ir.ui.menu,name:price_system_variable.menu_table_pricelist_prices_purchase
+msgid "Table pricelist prices"
+msgstr "Tabla de precios de tarifa"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:1265
+#, python-format
+msgid "There is no change                                                 product pvp for                                                 this product."
+msgstr "No hay modelo cambio pvp producto para este producto."
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/purchase.py:350
+#, python-format
+msgid "There is no supplier                                                        pricelist rule for                                                        this product."
+msgstr "No hay regla                                                        de tarifa de proveedor  para                                                      este producto."
+
+#. module: price_system_variable
+#: field:pricelist.range,to_cost:0
+msgid "To Cost"
+msgstr "Hasta coste"
+
+#. module: price_system_variable
+#: field:sale.order.line,to_update:0
+msgid "To be updated"
+msgstr "Para actualizar"
+
+#. module: price_system_variable
+#: selection:product.template,product_class:0
+msgid "Ultrafresh"
+msgstr "Ultrafresh"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/purchase.py:224
+#, python-format
+msgid "Unable to cancel this purchase order."
+msgstr "No se puede cancelar esta orden de compra."
+
+#. module: price_system_variable
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_form
+#: view:product.template:price_system_variable.product_normal_add_cmc_form_view
+msgid "Update"
+msgstr "Actualizar"
+
+#. module: price_system_variable
+#: model:ir.actions.act_window,name:price_system_variable.action_update_cmc
+#: model:ir.actions.act_window,name:price_system_variable.action_update_cmc_from_change
+#: view:pvp.change.cmc:price_system_variable.view_pvp_change_cmc_form
+#: view:wzd.update.cmc:price_system_variable.view_update_cmc_form
+msgid "Update CMC"
+msgstr "Actualizar CMC"
+
+#. module: price_system_variable
+#: view:change.product.pvp:price_system_variable.change_product_pvp_view_form
+#: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_form
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_form
+msgid "Update Prices"
+msgstr "Actualizar Precios"
+
+#. module: price_system_variable
+#: field:purchase.order.line,update_pricelist:0
+msgid "Update pricelist"
+msgstr "Actualizar precios"
+
+#. module: price_system_variable
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_form
+msgid "Update taxes"
+msgstr "Actualizar tarifas"
+
+#. module: price_system_variable
+#: selection:change.product.pvp,state:0
+#: selection:change.supplier.cost,state:0
+#: selection:change.variable.pricelist,state:0
+#: selection:specific.customer.pvp,state:0
+msgid "Updated"
+msgstr "Actualizado"
+
+#. module: price_system_variable
+#: field:change.product.pvp,date_cmc:0
+msgid "Updated Date"
+msgstr "Fecha de actualización"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:50
+#, python-format
+msgid "Variable Price"
+msgstr "Precio variable"
+
+#. module: price_system_variable
+#: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_form
+#: model:ir.actions.act_window,name:price_system_variable.action_variable_pricelist
+#: field:pricelist.range,var_pricelist_id:0
+msgid "Variable Pricelist"
+msgstr "Tarifa variable"
+
+#. module: price_system_variable
+#: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_tree
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_form
+#: view:variable.pricelist:price_system_variable.variable_pricelist_view_tree
+msgid "Variable Pticelist"
+msgstr "Tarifa variable"
+
+#. module: price_system_variable
+#: field:change.variable.pricelist,change_line_ids:0
+#: model:ir.ui.menu,name:price_system_variable.menu_variable_pricelist
+#: model:ir.ui.menu,name:price_system_variable.menu_variable_pricelist_purchase
+msgid "Variable pricelist"
+msgstr "Tarifa variable"
+
+#. module: price_system_variable
+#: field:change.product.pvp,virt_stock:0
+msgid "Virtual Stock"
+msgstr "Stock virtual"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/pricelist.py:200
+#: code:addons/price_system_variable/pricelist.py:1249
+#: code:addons/price_system_variable/pricelist.py:1264
+#: code:addons/price_system_variable/pricelist.py:1306
+#: code:addons/price_system_variable/purchase.py:349
+#: code:addons/price_system_variable/sale.py:164
+#: code:addons/price_system_variable/sale.py:200
+#, python-format
+msgid "Warning!"
+msgstr "¡Advertencia!"
+
+#. module: price_system_variable
+#: constraint:pricelist.pvp.line:0
+msgid "You cannot have 2 change product pvp lines whith overlaped dates!          for the same product"
+msgstr "No puedes tener 2 lineas de cambio de pvp de precion con fechas solapadas para el mismo producto"
+
+#. module: price_system_variable
+#: constraint:specific.pvp.line:0
+msgid "You cannot have 2 specific product pvp whith overlaped dates!"
+msgstr "No puedes tener 2 lineas de cambio de pvp de precion con fechas solapadas!"
+
+#. module: price_system_variable
+#: code:addons/price_system_variable/purchase.py:225
+#, python-format
+msgid "You must first cancel all Variable change pricelist                         related"
+msgstr "Debes cancelar primero todos los cambios de tarifa variable                         relacionados"
 

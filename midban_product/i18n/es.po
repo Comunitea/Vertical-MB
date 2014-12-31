@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-15 17:52+0000\n"
-"PO-Revision-Date: 2014-12-15 17:52+0000\n"
+"POT-Creation-Date: 2014-12-31 12:00+0000\n"
+"PO-Revision-Date: 2014-12-31 12:00+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -160,13 +160,13 @@ msgid "Code EAN14"
 msgstr "Code EAN14"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:368
+#: code:addons/midban_product/product.py:364
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:359
+#: code:addons/midban_product/product.py:355
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -174,7 +174,7 @@ msgstr "Validación comercial realizada"
 #. module: midban_product
 #: selection:product.template,state2:0
 msgid "Comercial validation pending"
-msgstr "Comercial validation pending"
+msgstr "Validación comercial pendiente"
 
 #. module: midban_product
 #: field:product.history,comment:0
@@ -192,7 +192,7 @@ msgid "Consignment"
 msgstr "Consigna"
 
 #. module: midban_product
-#: view:product.product:midban_product.midban_product_search_form_view
+#: view:product.template:midban_product.midban_product_search_form_view
 msgid "Consumable"
 msgstr "Consumible"
 
@@ -273,7 +273,6 @@ msgid "Dessert"
 msgstr "Postre"
 
 #. module: midban_product
-#: selection:product.template,sale_type:0
 #: selection:temp.type,type:0
 msgid "Dry"
 msgstr "Seco"
@@ -301,12 +300,6 @@ msgid "Food"
 msgstr "Comida"
 
 #. module: midban_product
-#: selection:product.template,sale_type:0
-msgid "Fresh"
-msgstr "Fresco"
-
-#. module: midban_product
-#: selection:product.template,sale_type:0
 #: selection:temp.type,type:0
 msgid "Frozen"
 msgstr "Congelado"
@@ -380,7 +373,7 @@ msgid "Logistic Validated"
 msgstr "Logística validada"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:350
+#: code:addons/midban_product/product.py:346
 #, python-format
 msgid "Logistic validate done"
 msgstr "Validación logística realizada"
@@ -441,6 +434,11 @@ msgid "Mantle Wood Height"
 msgstr "Altura madera mantos"
 
 #. module: midban_product
+#: field:product.template,margin:0
+msgid "Margin"
+msgstr "Margen"
+
+#. module: midban_product
 #: field:product.template,mark:0
 msgid "Mark"
 msgstr "Marca"
@@ -491,7 +489,7 @@ msgid "Palet Wood Height"
 msgstr "Altura madera palet"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:342
+#: code:addons/midban_product/product.py:338
 #, python-format
 msgid "Pending logistic and commercial validate"
 msgstr "Pendiente de validación logística y comercial"
@@ -510,7 +508,7 @@ msgstr "Procesar baja de producto"
 
 #. module: midban_product
 #: model:ir.model,name:midban_product.model_product_product
-#: field:product.history,product_id:0
+#: field:product.history,product_tmp_id:0
 msgid "Product"
 msgstr "Producto"
 
@@ -548,12 +546,12 @@ msgid "Product allergen"
 msgstr "Alérgeno de producto"
 
 #. module: midban_product
-#: view:product.product:midban_product.midban_product_search_form_view
+#: view:product.template:midban_product.midban_product_search_form_view
 msgid "Product denied"
-msgstr "Productos denegados"
+msgstr "Producto denegado"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:412
+#: code:addons/midban_product/product.py:408
 #, python-format
 msgid "Product denied in register process again"
 msgstr "Product denegado en proceso de alta de nuevo"
@@ -564,7 +562,7 @@ msgid "Product deny reasons"
 msgstr "Motivos denegación alta producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:391
+#: code:addons/midban_product/product.py:387
 #, python-format
 msgid "Product denyed"
 msgstr "Producto denegado"
@@ -575,26 +573,26 @@ msgid "Product history"
 msgstr "Historial de producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:378
+#: code:addons/midban_product/product.py:374
 #, python-format
 msgid "Product registered"
 msgstr "Producto Dado de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:401
+#: code:addons/midban_product/product.py:397
 #, python-format
 msgid "Product registered again"
 msgstr "Dar de alta de nuevo"
 
 #. module: midban_product
-#: view:product.product:midban_product.midban_product_search_form_view
+#: view:product.template:midban_product.midban_product_search_form_view
 msgid "Product registering process"
-msgstr "Productos en proceso de alta"
+msgstr "En proceso de alta"
 
 #. module: midban_product
-#: view:product.product:midban_product.midban_product_search_form_view
+#: view:product.template:midban_product.midban_product_search_form_view
 msgid "Product unregistered"
-msgstr "Productos dados de baja"
+msgstr "Dado de baja"
 
 #. module: midban_product
 #: model:ir.ui.menu,name:midban_product.menu_product_allergen_purchase
@@ -635,9 +633,9 @@ msgid "Return to validate pending"
 msgstr "Volver a pendiente de validar"
 
 #. module: midban_product
-#: field:product.template,sale_type:0
-msgid "Sale type"
-msgstr "Tipo venta"
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Sale Type"
+msgstr "Tipo de Venta"
 
 #. module: midban_product
 #: field:product.template,scientific_name:0
@@ -726,7 +724,7 @@ msgstr "UN Ancho"
 #. module: midban_product
 #: field:product.template,supplier_un_width:0
 msgid "UN Width Supplier"
-msgstr "UN Anchpo Proveedor"
+msgstr "UN Ancho Proveedor"
 
 #. module: midban_product
 #: field:product.template,un_ca:0
@@ -737,11 +735,6 @@ msgstr "UN/CA"
 #: field:product.template,supplier_un_ca:0
 msgid "UN/CA Supplier"
 msgstr "UN/CA Proveedor"
-
-#. module: midban_product
-#: selection:product.template,sale_type:0
-msgid "Ultrafresh"
-msgstr "Ultrafresco"
 
 #. module: midban_product
 #: selection:product.template,state2:0
@@ -793,7 +786,7 @@ msgstr "Baja"
 #. module: midban_product
 #: field:product.template,life:0
 msgid "Useful life"
-msgstr "vida útil"
+msgstr "Vida útil"
 
 #. module: midban_product
 #: field:product.history,user_id:0
@@ -816,7 +809,7 @@ msgid "Variable weight"
 msgstr "Peso variable"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:308
+#: code:addons/midban_product/product.py:304
 #, python-format
 msgid "Warning!"
 msgstr "Advertencia!"
@@ -827,10 +820,10 @@ msgid "Web"
 msgstr "Web"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:309
+#: code:addons/midban_product/product.py:305
 #, python-format
 msgid "You cannot change the value                                     of consignment field."
-msgstr "YNo puedes cambiar el valor del campo consigna."
+msgstr "No puedes cambiar el valor del campo consigna."
 
 #. module: midban_product
 #: model:ir.actions.act_window,name:midban_product.action_product_allergen
