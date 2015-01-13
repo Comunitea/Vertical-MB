@@ -18,6 +18,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import edi
-import wizard
-import purchase
+import export_edi_wzd
+# import import_edi_wzd

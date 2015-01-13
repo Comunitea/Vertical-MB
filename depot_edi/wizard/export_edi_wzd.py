@@ -18,6 +18,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import edi
-import wizard
-import purchase
+from openerp import models
+
+
+class export_edi_wzd(models.TransientModel):
+    _name = "edi.export.wizard"
+
+    def export_purchase_order(self):
+        print "EXPORTING PURCHASE ORDER"
+
+    def export_files(self):
+        active_model = self.env.context.get('active_model')
+        # active_ids = self.env.context.get('active_ids')
+        if active_model == u'purchase.order':
+            return self.export_purchase_order()
+        return

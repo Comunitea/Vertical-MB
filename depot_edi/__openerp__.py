@@ -31,6 +31,7 @@
     "images": [],
     "depends": ["base",
                 "product",
+                "purchase",
                 "sale",
                 "stock",
                 "account",
@@ -38,6 +39,7 @@
     "data": [
         'edi_view.xml',
         'data/edi_data.xml',
+        'purchase_view.xml',
     ],
     "demo": [],
     "test": [],
