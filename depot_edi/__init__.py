@@ -21,3 +21,4 @@
 import edi
 import wizard
 import purchase
+import partner

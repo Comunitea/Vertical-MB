@@ -22,7 +22,7 @@ from openerp import models, fields, api
 
 class purchase_order(models.Model):
     """
-    Model for EDI document
+    Add gln field for EDI
     """
     _inherit = 'purchase.order'
 

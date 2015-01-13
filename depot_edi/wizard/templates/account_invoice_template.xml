@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CABECERA>
+    <NUMFAC>${o.number.replace(' ', '').replace('/', '')}</NUMFAC>
+    <NODO>380</NODO>
+    <PERCFAC>${(o.perfac_start + o.perfac_end).replace('-', '').replace(' ', '')}</PERCFAC>
+    %if o.payment_type and o.payment_type.edi_code:
+    <FPAG>${o.payment_type.edi_code}</FPAG>
+    %endif
+    %if o.comment:
+    <OBSFAC TEMA="AAI">${o.comment}</OBSFAC>
+    %endif
+    %if len(o.sale_order_ids) == 1:
+    <PEDIDO>${o.sale_order_ids[0].code_order_depot}</PEDIDO>
+    %if o.picking_ids:
+    <ALBARAN>${o.picking_ids[0].name}</ALBARAN>
+    %endif
+    %endif
+    <VENDEDOR>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln}</CODINTERLOCUTOR>
+        <NIF>${o.company_id.partner_id.vat}</NIF>
+        <NOMBRE>${o.company_id.partner_id.name}</NOMBRE>
+        <REG_MERCANTIL>${o.company_id.partner_id.es_registro_mercantil}</REG_MERCANTIL>
+        <DIRECCION>${o.company_id.partner_id.street or "" + " " + o.company_id.partner_id.street2 or ""}</DIRECCION>
+        <POBLACION>${o.company_id.partner_id.city}</POBLACION>
+        <CP>${o.company_id.partner_id.zip}</CP>
+    </VENDEDOR>
+    <EMISOR>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln}</CODINTERLOCUTOR>
+    </EMISOR>
+    <PAGADOR>
+        <CODINTERLOCUTOR>${o.partner_id.gln}</CODINTERLOCUTOR>
+    </PAGADOR>
+    <COBRADOR>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln}</CODINTERLOCUTOR>
+    </COBRADOR>
+    <COMPRADOR>
+        <CODINTERLOCUTOR>${o.partner_id.gln}</CODINTERLOCUTOR>
+    </COMPRADOR>
+    <RECEPTOR>
+        <CODINTERLOCUTOR>${o.partner_id.gln}</CODINTERLOCUTOR>
+    </RECEPTOR>
+    <CLIENTE>
+        <CODINTERLOCUTOR>${o.partner_id.gln}</CODINTERLOCUTOR>
+        %if o.partner_id.vat:
+        <NIF>${o.partner_id.vat}</NIF>
+        %endif
+        <NOMBRE>${o.partner_id.name}</NOMBRE>
+        %if o.partner_id.street or o.partner_id.street2:
+        <DIRECCION>${o.partner_id.street or "" + " " + o.partner_id.street2 or ""}</DIRECCION>
+        %endif
+        %if o.partner_id.city:
+        <POBLACION>${o.partner_id.city}</POBLACION>
+        %endif
+        %if o.partner_id.zip:
+        <CP>${o.partner_id.zip}</CP>
+        %endif
+    </CLIENTE>
+    <DIVISA>${o.currency_id.name}</DIVISA>
+    <VENCFAC>
+        <VENCIMIENTO>${o.date_due.replace("-", u"")}</VENCIMIENTO>
+        <IMPORTE>${o.amount_total}</IMPORTE>
+    </VENCFAC>
+    %for discount in o.discount_ids:
+    <DTOFAC>
+        <CALDTO>${discount.mode}</CALDTO>
+        <SECUEN>${discount.sequence}</SECUEN>
+        <TIPO>${discount.type_id.code}</TIPO>
+        %if discount.percentage > 0:
+        <PORCEN>${discount.percentage}</PORCEN>
+        %endif
+        %if discount.amount > 0:
+        <IMPDES>${discount.amount}</IMPDES>
+        %endif
+    </DTOFAC>
+    %endfor
+    <SUMBRUTO>${total}</SUMBRUTO>
+    <SUMNETOS>${o.amount_untaxed}</SUMNETOS>
+    %if globals_[0] > 0.0:
+    <DESCUEN>${globals_[0]}</DESCUEN>
+    %endif
+    %if globals_[1] > 0.0:
+    <CARGOS>${globals_[1]}</CARGOS>
+    %endif
+    <BASIMPFA>${o.amount_untaxed}</BASIMPFA>
+    <TOTIMP>${o.amount_tax}</TOTIMP>
+    <TOTAL>${o.amount_total}</TOTAL>
+    %for tax in o.tax_line:
+    <IMPFAC>
+        <BASE>${tax.base}</BASE>
+        <TIPO>${tax.tax_id.code}</TIPO>
+        <TASA>${tax.tax_id.amount * 100}</TASA>
+        <IMPORTE>${tax.amount}</IMPORTE>
+    </IMPFAC>
+    %endfor
+    <SEDEPROV>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln}</CODINTERLOCUTOR>
+        <NOMBRE>${o.company_id.partner_id.name}</NOMBRE>
+        <REG_MERCANTIL>${o.company_id.partner_id.es_registro_mercantil}</REG_MERCANTIL>
+        <DIRECCION>${o.company_id.partner_id.street or "" + " " + o.company_id.partner_id.street2 or ""}</DIRECCION>
+        <POBLACION>${o.company_id.partner_id.city}</POBLACION>
+        <CP>${o.company_id.partner_id.zip}</CP>
+        <NIF>${o.company_id.partner_id.vat}</NIF>
+    </SEDEPROV>
+    <SEDESOC>
+        <CODINTERLOCUTOR>${o.partner_id.gln}</CODINTERLOCUTOR>
+        <NOMBRE>${o.partner_id.name}</NOMBRE>
+        <REG_MERCANTIL>${o.partner_id.es_registro_mercantil}</REG_MERCANTIL>
+        <DIRECCION>${o.partner_id.street or "" + " " + o.company_id.partner_id.street2 or ""}</DIRECCION>
+        <POBLACION>${o.partner_id.city}</POBLACION>
+        <CP>${o.partner_id.zip}</CP>
+        <NIF>${o.partner_id.vat}</NIF>
+    </SEDESOC>
+    <% numlin = 1 %>
+    %for line in o.invoice_line:
+    <LINEA NUMLIN="${numlin}">
+        <% numlin += 1 %>
+        <REFERENCIA>${line.product_id.ean13}</REFERENCIA>
+        <REFEAN>${line.product_id.ean13}</REFEAN>
+        %if line.product_id.default_code:
+        <REFPRO>${line.product_id.default_code}</REFPRO>
+        %endif
+        %if line.product_id.type == u'service':
+        <DESC TIPART="S">${line.name}</DESC>
+        %else:
+        <DESC TIPART="M">${line.name}</DESC>
+        %endif
+        <CFAC UMEDIDA="${line.uos_id.code}">${line.quantity}</CFAC>
+        <NETO>${line.price_subtotal_discounted}</NETO>
+        <PRECIOB>${line.price_unit}</PRECIOB>
+        <PRECION>${net_line[line.id]}</PRECION>
+        %for tax in line.invoice_line_tax_id:
+        <IMPLFAC>
+            <TIPO>${tax.code}</TIPO>
+            %if tax.amount >0:
+            <TASA>${tax.amount * 100}</TASA>
+            <IMPORTE>${line.price_subtotal_discounted * tax.amount}</IMPORTE>
+            %endif
+        </IMPLFAC>
+        %endfor
+        %for discount in line.discount_ids:
+        <DTOLFAC>
+            <CALDTO>${discount.mode}</CALDTO>
+            <SECUEN>${discount.sequence}</SECUEN>
+            <TIPO>${discount.type_id.code}</TIPO>
+            %if discount.percentage > 0:
+            <PORCEN>${discount.percentage}</PORCEN>
+            %endif
+            %if discount.amount > 0:
+            <IMPDES>${discount.amount}</IMPDES>
+            %endif
+        </DTOLFAC>
+        %endfor
+        %if line.move_id and line.move_id.sale_line_id:
+        <PEDIDO>${line.move_id.sale_line_id.order_id.code_order_depot}</PEDIDO>
+        <ALBARAN>${line.move_id.picking_id.name}</ALBARAN>
+        %endif
+    </LINEA>
+    %endfor
+</CABECERA>

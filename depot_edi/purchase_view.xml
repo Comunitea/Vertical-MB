@@ -10,9 +10,6 @@
             <button name="wkf_send_rfq" position="after">
                 <button name="export_edi" string="Generate EDI" type="object"/>
             </button>
-            <!-- <button name="wkf_send_rfq" position="replace">
-                <button name="wkf_send_rfq" states="approved" string="Send by Email" type="object" context="{'send_rfq':True}"/>
-            </button> -->
             <notebook position="inside">
                 <page string="EDI">
                     <group>
