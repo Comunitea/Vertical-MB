@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <!-- Documento EDI-->
+        <record id="edi_doc_view_form" model="ir.ui.view">
+            <field name="name">edi.doc.view.form</field>
+            <field name="model">edi.doc</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="EDI document">
+                <sheet>
+                <notebook>
+                    <page string="Document">
+                        <group col="4" colspan="4">
+                            <group col="2" colspan="2">
+                                <group col="2" colspan="2">
+                                    <separator colspan="2" string="Identification"/>
+                                    <field name="name" readonly="1" select="1"/>
+                                    <field name="file_name" readonly="1" select="1"/>
+                                    <field name="date" readonly="1" select="1"/>
+
+                                </group>
+                                <group col="2" colspan="2">
+                                    <separator colspan="2" string="State"/>
+                                    <field name="state" readonly="1" select="1"/>
+                                    <field name="date_process" readonly="1" select="1"/>
+                                </group>
+                            </group>
+                            <group col="2" colspan="2">
+                                <group col="2" colspan="2">
+                                    <separator colspan="2" string="Document"/>
+                                    <field name="doc_type" readonly="1" select="1"/>
+                                </group>
+                                <group col="2" colspan="2">
+                                    <separator colspan="2" string="Shipping"/>
+                                    <field name="response_document_id" readonly="1" select="1"/>
+                                    <field name="send_response" readonly="1" select="1"/>
+                                    <field name="send_date" readonly="1" select="1"/>
+                                </group>
+                            </group>
+                            <newline/>
+                        </group>
+                    </page>
+                    <page string="File">
+                        <label string="XML file" colspan="4"/>
+                        <field name='message' colspan="4" readonly="1" select="2" nolabel="1"/>
+                    </page>
+                    <page string="Errors">
+                        <field name="errors" colspan="4" readonly="1" select="2" nolabel="1"/>
+                    </page>
+                </notebook>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="edi_doc_tree">
+            <field name="name">edi.doc.tree</field>
+            <field name="model">edi.doc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="EDI documents">
+                    <field name="date"/>
+                    <field name="state"/>
+                    <field name="name"/>
+                    <field name="doc_type"/>
+                    <field name="date_process" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="act_edi_doc">
+            <field name="name">EDI documents</field>
+            <field name="res_model">edi.doc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+     <!-- **************************** MENUS ***************************** -->
+    <menuitem id="menu_edi" name="EDI" parent="base.menu_administration"/>
+    <!--menuitem id="menu_edi_configuration" parent="menu_edi" name="EDI configuration" action="act_edi_configuration" sequence="1"/-->
+    <menuitem id="menu_edi_doc" parent="menu_edi" name="Documents" action="act_edi_doc" sequence="1"/>
+
+    </data>
+</openerp>
