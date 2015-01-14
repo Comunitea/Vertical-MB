@@ -52,10 +52,10 @@ class export_edi_wzd(models.TransientModel):
             values = {
                 'name': name,
                 'file_name': file_name.split('/')[-1],
-                'status': 'export',
+                'state': 'export',
                 'date': time.strftime('%Y-%m-%d %H:%M:%S'),
                 'date_process': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'type': doc_type,
+                'doc_type': doc_type,
                 'message': f.read(),
             }
             f.close()
