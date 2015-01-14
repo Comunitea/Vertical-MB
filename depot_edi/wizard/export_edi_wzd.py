@@ -41,9 +41,6 @@ class export_edi_wzd(models.TransientModel):
             if active_model == u'purchase.order':
                 name = obj.name.replace(' ', '').replace('.', '')
                 doc_type = 'purchase_order'
-            # elif active_model == u'account.invoice':
-            #     name = obj.number.replace(' ', '').replace('/', '')
-            #     doc_type = 'invoice'
             else:
                 raise except_orm(_('Error'), _('The model is not a \
                                                 purchase order'))

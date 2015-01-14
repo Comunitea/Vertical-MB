@@ -47,3 +47,16 @@ class edi_doc(models.Model):
     send_date = fields.Datetime('Last Send Date', select=1)
     message = fields.Text('Messagge')
     errors = fields.Text('Errors')
+
+
+class edi(models.Model):
+    """
+    Class for edi importations, the function run_scheduler is called by the
+    import wizard.
+    """
+    _name = 'edi'
+    _description = 'Provides general functions to impor edi files'
+
+    def run_scheduler(self, automatic=False, use_new_cursor=False):
+        print "VAMOS A IMPORTAR"
+        return

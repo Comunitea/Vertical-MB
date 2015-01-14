@@ -23,7 +23,7 @@
 
         <!-- Parametres for backups  folder -->
         <record id="edi_path_backups" model="ir.config_parameter">
-            <field name="key">edi.path.templates</field>
+            <field name="key">edi.path.buckups</field>
             <field name="value">/opt/depot_edi/backups</field>
         </record>
 

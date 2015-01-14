@@ -18,5 +18,14 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import export_edi_wzd
-import import_edi_wzd
+from openerp import models, api
+
+
+class import_edi_wzd(models.TransientModel):
+
+    _name = "edi.import"
+
+    @api.multi
+    def get_files(self):
+        self.env['edi'].run_scheduler(automatic=False, use_new_cursor=False)
+        return
