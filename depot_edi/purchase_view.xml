@@ -29,6 +29,10 @@
                     </group>
                 </page>
              </notebook>
+            <field name="picking_type_id" position="after">
+                <field name="warehouse_id"/>
+            </field>
+
         </field>
     </record>
 

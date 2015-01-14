@@ -38,6 +38,9 @@ class purchase_order(models.Model):
                                  related='document_id.state')
     message = fields.Text('Messagge', readonly=True,
                           related='document_id.message')
+    warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse',
+                                   readonly=True,
+                                   related='picking_type_id.warehouse_id')
 
     @api.multi
     def export_edi(self):

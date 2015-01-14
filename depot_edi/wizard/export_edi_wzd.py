@@ -25,24 +25,29 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 import os
 import time
+import math
 
 
 class export_edi_wzd(models.TransientModel):
     _name = "edi.export.wizard"
 
     def create_doc(self, obj, file_name):
+        """
+        Create the edi.doc model linked to the purchased order obj.
+        """
         active_model = self._context.get('active_model')
         if obj:
             name = doc_type = False
             if active_model == u'purchase.order':
                 name = obj.name.replace(' ', '').replace('.', '')
                 doc_type = 'purchase_order'
-            elif active_model == u'account.invoice':
-                name = obj.number.replace(' ', '').replace('/', '')
-                doc_type = 'invoice'
+            # elif active_model == u'account.invoice':
+            #     name = obj.number.replace(' ', '').replace('/', '')
+            #     doc_type = 'invoice'
             else:
                 raise except_orm(_('Error'), _('The model is not a \
-                                                   purchase order or invoice'))
+                                                purchase order'))
+            # Search for existing docs to delete it. It will be regenerated
             doc_objs = self.env['edi.doc'].search([('name', '=', name)])
             for doc in doc_objs:
                 doc.unlink()
@@ -65,21 +70,37 @@ class export_edi_wzd(models.TransientModel):
         Raise exceptions if purchase order obj or related objets have fields
         not correctly setted.
         """
+        # Check supplier GLN
         if not obj.partner_id.gln:
-                raise except_orm(_('Field error'),
-                                 _('The supplier has not gln'))
-
+            raise except_orm(_('Field error'),
+                             _('The supplier has not gln'))
+        # Check depot GLN
+        if not obj.company_id.partner_id.gln and not \
+                obj.company_id.partner_id.vat:
+            raise except_orm(_('Field error'),
+                             _('The depot has not gln or NIF'))
+        # Check minimum planned date
         if not obj.minimum_planned_date:
             raise except_orm(_('Field error '),
                              _('Planned date field not \
-                                    configured!'))
+                                configured!'))
+
+        # Check Supplier address
         if not obj.partner_id.name or not \
                 obj.partner_id.street or not obj.partner_id.city \
                 or not obj.partner_id.zip:
             raise except_orm(_('Field error '),
                              _('The street configured for the \
-                                partner is not complete!'))
+                                supplier is not complete!'))
+        # Check Depot address
+        if not obj.company_id.partner_id.name or not \
+                obj.company_id.partner_id.street or not \
+                obj.company_id.partner_id.city or not obj.partner_id.zip:
+            raise except_orm(_('Field error '),
+                             _('The street configured for the \
+                                depot is not complete!'))
 
+        # Check Lines
         for line in obj.order_line:
             if not line.product_id.ean13 and not line.product_id.ean14:
                 raise except_orm(_('Field error'),
@@ -90,23 +111,51 @@ class export_edi_wzd(models.TransientModel):
                 raise except_orm(_('Field error '),
                                  _('field default_code of product \
                                        not configured'))
-            # if not line.product_uom.code:
-            #         raise except_orm(_('Field error '),
-            #                          _('field  code of UdM not \
-            #                                 configured'))
+            if not line.product_uom.code:
+                    raise except_orm(_('Field error '),
+                                     _('field  code of UdM not \
+                                            configured'))
         return
 
+    def _get_start_end_hours(self, obj):
+        """
+        Get and format the start hour and the end hour og warehouse related
+        to the purchase
+        """
+        warehouse_start_hour = obj.warehouse_id.start_reception_hour
+        warehouse_start_hour = \
+            str(int(math.ceil((warehouse_start_hour -
+                int(warehouse_start_hour)) * 60)))
+        warehouse_start_hour = len(warehouse_start_hour) < 2 and \
+            u'0' + warehouse_start_hour or warehouse_start_hour
+        warehouse_start_hour = \
+            str(int(obj.warehouse_id.start_reception_hour)) + \
+            warehouse_start_hour
+        warehouse_stop_hour = obj.warehouse_id.end_reception_hour
+        warehouse_stop_hour = \
+            str(int(math.ceil((warehouse_stop_hour -
+                               int(warehouse_stop_hour)) * 60)))
+        warehouse_stop_hour = \
+            len(warehouse_stop_hour) < 2 and \
+            u'0' + warehouse_stop_hour or warehouse_stop_hour
+        warehouse_stop_hour = \
+            str(int(obj.warehouse_id.end_reception_hour)) + \
+            warehouse_stop_hour
+        return warehouse_start_hour, warehouse_stop_hour
+
     def export_purchase_order(self):
-        print "EXPORTING PURCHASE ORDER"
+        """
+        Fills the template purchase_order_template to get ORDERS file
+        """
         active_model = self._context.get('active_model')
         active_ids = self.env.context.get('active_ids')
 
         domain = [('key', '=', 'edi.path.exportation')]
         param_obj = self.env['ir.config_parameter'].search(domain)
-        path = param_obj.value
+        path = param_obj.value  # Path for /out folder for edi files
         domain = [('key', '=', 'edi.path.templates')]
         param_obj = self.env['ir.config_parameter'].search(domain)
-        templates_path = param_obj.value
+        templates_path = param_obj.value  # Path for templates folder
         tmp_name = ''
         for obj in self.env[active_model].browse(active_ids):
             self._check_purchase_obj(obj)
@@ -118,14 +167,24 @@ class export_edi_wzd(models.TransientModel):
             mylookup = TemplateLookup(input_encoding='utf-8',
                                       output_encoding='utf-8',
                                       encoding_errors='replace')
-            tmp = Template(filename=templates_path + tmp_name,
+            tmp = Template(filename=templates_path + os.sep + tmp_name,
                            lookup=mylookup, default_filters=['decode.utf8'])
-            doc = tmp.render_unicode(o=obj).encode('utf-8', 'replace')
+
+            # Convert warehouse hour to pass it to the template
+            start, stop = self._get_start_end_hours(obj)
+            start = start != u'000' and start or u''
+            stop = stop != u'000' and stop or u''
+            # This fill the template
+            doc = tmp.render_unicode(o=obj, start=start,
+                                     stop=stop).encode('utf-8', 'replace')
+            # Creating the fisical file in the correct path
             f = file(file_name, 'w')
             f.write(doc)
             f.close()
+            # Creates the model EDI doc
             self.create_doc(obj, file_name)
 
+            # Post a notification message
             vals = {
                 'body': _(u"The file has been created successfully correctly"),
                 'model': 'purchase.order',
@@ -136,6 +195,10 @@ class export_edi_wzd(models.TransientModel):
             self.env['mail.message'].create(vals)
 
     def export_files(self):
+        """
+        General function tu expor files from diferent modules like purchase
+        order
+        """
         active_model = self.env.context.get('active_model')
         if active_model == u'purchase.order':
             return self.export_purchase_order()

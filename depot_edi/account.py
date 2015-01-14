@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier Colmenero Fernández$ <javier@pexego.es>
+#    Copyright (C) 2014 Pexego Sistemas Informáticos All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,35 +17,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    "name": "Depot EDI",
-    "version": "1.0",
-    "author": "Pexego",
-    "category": "custom",
-    "website": "www.pexego.es",
-    "description": """
-    * This module implements EDI
+from openerp import models, fields
 
-    """,
-    "images": [],
-    "depends": ["base",
-                "product",
-                "purchase",
-                "sale",
-                "stock",
-                "account",
-                ],
-    "data": [
-        'edi_view.xml',
-        'data/edi_data.xml',
-        'purchase_view.xml',
-        'partner_view.xml',
-        'stock_view.xml',
-        'product_view.xml',
-        'account_view.xml',
-    ],
-    "demo": [],
-    "test": [],
-    "installable": True,
-    "application": True,
-}
+
+class stock_warehouse(models.Model):
+    """
+    Add generic fields
+    """
+    _inherit = 'account.tax'
+
+    code = fields.Char('Code', help="Code of tax for EDI files")
