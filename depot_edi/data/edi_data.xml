@@ -21,6 +21,12 @@
             <field name="value">/opt/BUILDOUTS/midban-depot/project-addons/depot_edi/wizard/templates</field>
         </record>
 
+        <!-- Parametres for backups  folder -->
+        <record id="edi_path_backups" model="ir.config_parameter">
+            <field name="key">edi.path.templates</field>
+            <field name="value">/opt/depot_edi/backups</field>
+        </record>
+
     </data>
 </openerp>
 

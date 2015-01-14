@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="purchase.purchase_order_form" />
         <field name="arch" type="xml">
             <button name="wkf_send_rfq" position="after">
-                <button name="export_edi" string="Generate EDI" type="object"/>
+                <button name="export_edi" string="Generate EDI" type="object"  attrs="{'invisible': [('state','=','draft')]}"/>
             </button>
             <notebook position="inside">
                 <page string="EDI">
