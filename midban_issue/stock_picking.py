@@ -56,7 +56,8 @@ class stock_picking(osv.Model):
     _columns = {
         'purchase_id': fields.function(_get_purchase_id, type="many2one",
                                        relation="purchase.order",
-                                       string="Purchase Order"),
+                                       string="Purchase Order",
+                                       store=True),
         'issue_count': fields.function(_issue_count, string='# Issues',
                                        type='integer'),
     }

@@ -23,6 +23,9 @@ from wizard.edi_logging import logger
 import os
 import codecs
 import time
+from lxml import etree
+from datetime import datetime
+import shutil
 
 
 log = logger("import_edi")
@@ -65,8 +68,141 @@ class edi(models.Model):
     _name = 'edi'
     _description = 'Provides general functions to impor edi files'
 
+    def make_backup(self, path, file_name):
+        """
+
+        """
+        src_file = path
+        dst_file = ''
+        param_pool = self.env["ir.config_parameter"]
+        param_obj = param_pool.search([('key', '=', 'edi.path.buckups')])
+        year = time.strftime('%Y')
+        month = time.strftime('%B')
+        dst_file = os.path.join(str(param_obj.value + '/' + str(year) + '/' +
+                                    month),
+                                file_name)
+        dir_month = str(param_obj.value + str(year) + '/' + month)
+        dir_year = str(param_obj.value + str(year))
+        if not os.path.exists(param_obj.value):
+            os.mkdir(param_obj.value)
+            os.mkdir(dir_year)
+            os.mkdir(dir_month)
+        elif not os.path.exists(dir_year):
+            os.mkdir(dir_year)
+            os.mkdir(dir_month)
+        elif os.path.exists(dir_year) and not os.path.exists(dir_month):
+            os.mkdir(dir_month)
+        shutil.copy(src_file, dst_file)
+        return log.info(_(u'The copy of the file to the backup was \
+                         successful. Archivo %s' % file_name))
+
+    def _parse_original_picking(self, file_path, root):
+        """
+        Read and process the DESADV file, returning the picking_obj
+        The method maybe create some issues if some conditions are done.
+        It return a picking obj or False
+        """
+        # Search for purchase order and the related picking
+        purch_num = root.find('NUMPED').text
+        purch_obj = self.env['purchase.order'].search([('name', '=',
+                                                        purch_num)])
+        if not purch_obj:
+            log.error(_("Not found purchase order with number ") + purch_num)
+            return False
+        picking = self.env['stock.picking'].search([('purchase_id', '=',
+                                                    purch_obj.id)])
+        if not picking:
+            log.error(_("Not found stock picking  for purchase: ") + purch_num)
+            return False
+        args = {
+            'cantemb': root.find('./EMB/CANTEMB').text,
+            'num_dispatch_advice': root.find('NUMDES').text,
+            'date_dispatch_advice': root.find('FECDES').text,
+        }
+        if root.find('NUMALB') is not None:
+            args['supplier_pick_number'] = root.find('NUMALB').text
+        if root.find('FECPED') is not None:
+            args['order_date'] = root.find('FECPED').text
+        picking.write(args)
+
+        # Process lines
+        issue_lines = []
+        for line in root.iter('LIN'):
+            args_line = {}
+            if self._check_picking_fields(file_path, line, 'line'):
+                domain = [('ean13', '=', line.find('REFERENCIA').text)]
+                products = self.env['product.template'].search(domain)
+                # import ipdb; ipdb.set_trace()
+                if not products:
+                    refcli = line.find('REFCLI')
+                    if refcli is not None:
+                        refcli = refcli.text
+                        domain = [('default_code', '=', refcli)]
+                        products = self.env['product.template'].search(domain)
+                        if not products:
+                            log.error(_("Not found product with EAN: ") +
+                                      line.find('REFERENCIA').text)
+                            return False
+            else:
+                return False
+        return picking
+
+    def _check_fields(self, file_path, root, fields):
+        """
+        Check if a list of fields are int the DESADV file.
+        """
+        all_fields = True
+        fields_not_found = []
+        for field in fields:
+            if root.find(field) is None:
+                all_fields = False
+                fields_not_found.append(field)
+        if fields_not_found:
+            fields_string = ""
+            for field in fields_not_found:
+                fields_string += field + ", "
+            log.error(_(u'not found fields: ') + fields_string +
+                      _(u'. in file: ') + file_path)
+        return all_fields
+
+    def _check_picking_fields(self, file_path, root, type_fields='file'):
+        """
+        Check fields of DESADV edi document, return True if correct False
+        in other case.
+        If type_fields == 'file' check the head tags (by default)
+        else check the line tags.
+        """
+        fields_file = ['NUMDES', 'TIPO', 'FUNCION', 'FECDES', 'FECENVIO',
+                       'NUMPED', './COMPRADOR/CODINTERLOCUTOR',
+                       './RECEPTOR/CODINTERLOCUTOR', './EMB/CPS',
+                       './EMB/CANTEMB']
+
+        fields_line = ['REFERENCIA', 'CENVFAC', 'INSTMARCA', 'FECFABET',
+                       'FECCADET', 'LOTE']
+        fields = type_fields == 'file' and fields_file or fields_line
+        return self._check_fields(file_path, root, fields)
+
     def parse_picking(self, file_path, doc):
+        """
+        This function parse the DESADV document in the call to
+        _parse_original_picking function
+        """
         print "PARSE DOC"
+        xml = etree.parse(file_path)
+        root = xml.getroot()
+        function = root.find('FUNCION').text
+        correct = True
+        if not self._check_picking_fields(file_path, root):
+            correct = False
+        if function == '9' and correct:
+            correct = self._parse_original_picking(file_path, root)
+        if not correct:
+            doc.write({'state': 'error'})
+        else:
+            doc.write({'state': 'imported', 'date_process': datetime.now()})
+            correct.write({'document_id': doc.id})
+            self.make_backup(file_path, doc.file_name)
+            os.remove(file_path)
         return
 
     def process_files(self, path):
@@ -82,7 +218,7 @@ class edi(models.Model):
                             doc.file_name)
                 continue
             log.set_errors("")
-            file_path = path + doc.file_name
+            file_path = path + os.sep + doc.file_name
             if doc.doc_type == 'stock_picking':
                 self.parse_picking(file_path, doc)
             # elif doc.type == 'invoice':

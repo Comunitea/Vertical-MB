@@ -14,6 +14,41 @@
                 </field>
             </field>
         </record>
+
+        <!-- Add EDI fields and in the EDI tab -->
+        <record id="view_picking_form_add_edi" model="ir.ui.view">
+            <field name="name">stock.picking.form.add.edi</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                    <field name="cantemb"/>
+                    <field name="num_dispatch_advice"/>
+                    <field name="date_dispatch_advice"/>
+                    <field name="supplier_pick_number"/>
+                    <field name="order_date"/>
+                </field>
+                <page string="Additional Info" position="after">
+                    <page string="EDI">
+                        <group>
+                            <group>
+                                <field name="name_doc"/>
+                                <field name="file_name_doc"/>
+                                <field name="date_doc"/>
+                            </group>
+                            <group>
+                                <field name="state_doc"/>
+                                <field name="date_process_doc"/>
+                            </group>
+                            <newline/>
+                            <label string="XML file" colspan="4"/>
+                            <field name="message" colspan="4" readonly="1" select="2" nolabel="1"/>
+
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
 </data>
 </openerp>
 

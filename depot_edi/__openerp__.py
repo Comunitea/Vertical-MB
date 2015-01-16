@@ -35,6 +35,8 @@
                 "sale",
                 "stock",
                 "account",
+                "midban_issue",
+                "midban_depot_stock"
                 ],
     "data": [
         'edi_view.xml',
