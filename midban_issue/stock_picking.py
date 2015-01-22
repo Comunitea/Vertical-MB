@@ -53,11 +53,22 @@ class stock_picking(osv.Model):
             for picking_id in ids
         }
 
+    def _search_purchase_id(self, cr, uid, obj, name, args, context=None):
+        if context is None:
+            context = {}
+        t_purchase = self.pool.get('purchase.order')
+        pick_ids = []
+        for po in t_purchase.browse(cr, uid, args[0][2], context=context):
+            pick_ids += [picking.id for picking in po.picking_ids
+                         if picking.picking_type_code == 'incoming']
+        res = [('id', 'in', pick_ids)]
+        return res
+
     _columns = {
         'purchase_id': fields.function(_get_purchase_id, type="many2one",
                                        relation="purchase.order",
                                        string="Purchase Order",
-                                       store=True),
+                                       fnct_search=_search_purchase_id),
         'issue_count': fields.function(_issue_count, string='# Issues',
                                        type='integer'),
     }

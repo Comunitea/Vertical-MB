@@ -26,8 +26,10 @@ import time
 from lxml import etree
 from datetime import datetime
 import shutil
+from openerp.exceptions import except_orm
+from openerp.addons.midban_issue.issue_generator import issue_generator
 
-
+issue_gen = issue_generator()
 log = logger("import_edi")
 
 
@@ -96,57 +98,6 @@ class edi(models.Model):
         return log.info(_(u'The copy of the file to the backup was \
                          successful. Archivo %s' % file_name))
 
-    def _parse_original_picking(self, file_path, root):
-        """
-        Read and process the DESADV file, returning the picking_obj
-        The method maybe create some issues if some conditions are done.
-        It return a picking obj or False
-        """
-        # Search for purchase order and the related picking
-        purch_num = root.find('NUMPED').text
-        purch_obj = self.env['purchase.order'].search([('name', '=',
-                                                        purch_num)])
-        if not purch_obj:
-            log.error(_("Not found purchase order with number ") + purch_num)
-            return False
-        picking = self.env['stock.picking'].search([('purchase_id', '=',
-                                                    purch_obj.id)])
-        if not picking:
-            log.error(_("Not found stock picking  for purchase: ") + purch_num)
-            return False
-        args = {
-            'cantemb': root.find('./EMB/CANTEMB').text,
-            'num_dispatch_advice': root.find('NUMDES').text,
-            'date_dispatch_advice': root.find('FECDES').text,
-        }
-        if root.find('NUMALB') is not None:
-            args['supplier_pick_number'] = root.find('NUMALB').text
-        if root.find('FECPED') is not None:
-            args['order_date'] = root.find('FECPED').text
-        picking.write(args)
-
-        # Process lines
-        issue_lines = []
-        for line in root.iter('LIN'):
-            args_line = {}
-            if self._check_picking_fields(file_path, line, 'line'):
-                domain = [('ean13', '=', line.find('REFERENCIA').text)]
-                products = self.env['product.template'].search(domain)
-                # import ipdb; ipdb.set_trace()
-                if not products:
-                    refcli = line.find('REFCLI')
-                    if refcli is not None:
-                        refcli = refcli.text
-                        domain = [('default_code', '=', refcli)]
-                        products = self.env['product.template'].search(domain)
-                        if not products:
-                            log.error(_("Not found product with EAN: ") +
-                                      line.find('REFERENCIA').text)
-                            return False
-            else:
-                return False
-        return picking
-
     def _check_fields(self, file_path, root, fields):
         """
         Check if a list of fields are int the DESADV file.
@@ -177,10 +128,187 @@ class edi(models.Model):
                        './RECEPTOR/CODINTERLOCUTOR', './EMB/CPS',
                        './EMB/CANTEMB']
 
-        fields_line = ['REFERENCIA', 'CENVFAC', 'INSTMARCA', 'FECFABET',
-                       'FECCADET', 'LOTE']
+        fields_line = ['REFERENCIA', 'CENVFAC', 'FECFABET', 'FECCADET', 'LOTE']
         fields = type_fields == 'file' and fields_file or fields_line
         return self._check_fields(file_path, root, fields)
+
+    def _create_operation_from_line(self, move, qty_serv, lot_id):
+        """
+        move is the matched move from the edi line with the erp
+        This function creates a operation linked to the picking move
+        """
+        t_pack = self.env['stock.pack.operation']
+        # Search or create lot
+        vals = {
+            'location_id': move.location_id.id,
+            'product_id': move.product_id.id,
+            'product_uom_id': move.product_uom.id,
+            'location_dest_id': move.location_dest_id.id,
+            'picking_id': move.picking_id.id,
+            'lot_id': lot_id,
+            'product_qty': qty_serv,
+        }
+        return t_pack.create(vals)
+
+    def _create_issue(self, reason_str, move=None, new_qty=0.0, picking=None):
+        # Pedido de compra no servible / Imposible servir en plazo pactado
+        type = self.env['issue.type'].search([('code', '=', 'type2')])
+        type_id = type and type[0].id or False
+        object = 'stock.picking'
+        res_id = False
+        product_lines = []
+        origin = False
+        flow = 'purchase.order'
+        edi_message = 'desadv2'
+        if reason_str == 'reason6' and move:
+            product_lines = [{
+                'product_id': move.product_id.id,
+                'product_qty': new_qty,
+                'uom_id': move.product_uom.id,
+            }]
+            res_id = move.picking_id.id
+            origin = move.purchase_line_id.order_id.name
+        elif reason_str == 'reason7' and picking:
+            res_id = picking.id
+            origin = picking.purchase_id.name
+            for op in picking.pack_operation_ids:
+                vals = {
+                    'product_id': op.product_id.id,
+                    'product_qty': op.product_qty,
+                    'uom_id': op.product_uom_id and op.product_uom_id.id or
+                    False,
+                    'lot_id': op.lot_id and op.lot_id.id or False
+                }
+                product_lines.append(vals)
+        # Create the issue with the type and reason and product lines correct
+        issue_gen.create_issue(self._cr, self._uid, self._ids,
+                               object, [res_id], reason_str, type_id=type_id,
+                               edi_message=edi_message,
+                               origin=origin,
+                               product_ids=product_lines)
+        return
+
+    def _parse_original_picking(self, file_path, root):
+        """
+        Read and process the DESADV file, returning the picking_obj
+        The method maybe create some issues if some conditions are done.
+        It return a picking obj or False
+        """
+        # Search for purchase order and the related picking
+        purch_num = root.find('NUMPED').text
+        purch_obj = self.env['purchase.order'].search([('name', '=',
+                                                        purch_num)])
+        if not purch_obj:
+            log.error(_("Not found purchase order with number ") + purch_num)
+            return False
+        picking = self.env['stock.picking'].search([('purchase_id', '=',
+                                                    purch_obj.id)])
+        if not picking:
+            log.error(_("Not found stock picking  for purchase: ") + purch_num)
+            return False
+        args = {
+            'cantemb': root.find('./EMB/CANTEMB').text,
+            'num_dispatch_advice': root.find('NUMDES').text,
+            'date_dispatch_advice': root.find('FECDES').text,
+            'supplier_pick_number': root.find('NUMDES').text,
+        }
+        if root.find('NUMALB') is not None:
+            args['supplier_pick_number'] = root.find('NUMALB').text
+        if root.find('FECPED') is not None:
+            args['order_date'] = root.find('FECPED').text
+        picking.write(args)
+        # Create dict of moves by product, to match the move with the edi line
+        moves_by_prod = {}
+        for move in picking.move_lines:
+            if move.product_id in moves_by_prod:
+                raise except_orm(_('Error', _('Can not process moves with the\
+                                               same product')))
+            move_qty = move.product_uom_qty
+            # the last float is the total qty served, processed in the lines
+            moves_by_prod[move.product_id] = [move_qty, move, 0.0]
+        # Process lines
+        for line in root.iter('LIN'):
+            if not self._check_picking_fields(file_path, line, 'line'):
+                return False
+            domain = [('ean13', '=', line.find('REFERENCIA').text)]
+            product = self.env['product.product'].search(domain)
+            # Check for product
+            if not product:
+                refcli = line.find('REFCLI')
+                if refcli is not None:
+                    refcli = refcli.text
+                    domain = [('default_code', '=', refcli)]
+                    product = self.env['product.product'].search(domain)
+                    if not product:
+                        log.error(_("Not found product with EAN: ") +
+                                  line.find('REFERENCIA').text)
+                        return False
+            # Is product in the move lines?
+            if product not in moves_by_prod:
+                log.error(_("Not found product in the picking moves: ") +
+                          product.name)
+                return False
+            # Check qtyis
+            qty_serv = line.find('CENVFAC')
+            try:
+                qty_serv = int(qty_serv.text)
+            except ValueError:
+                log.error(_("The value of CENVFAC field is not an \
+                            integer"))
+                return False
+
+            move = moves_by_prod[product][1]
+            moves_by_prod[product][0] -= qty_serv
+
+            # Search the lot and create it
+            lot_num = line.find('LOTE').text
+            fecfabet = line.find('FECFABET').text
+            creation_date = datetime.strptime(fecfabet, '%Y%m%d')
+            feccadet = line.find('FECCADET').text
+            life_date = datetime.strptime(feccadet, '%Y%m%d')
+            domain = [('name', '=', lot_num), ('product_id', '=', product.id)]
+            lots_objs = self.env['stock.production.lot'].search(domain)
+            if not lots_objs:
+                vals = {
+                    'name': lot_num,
+                    'product_id': product.id,
+                    'date': creation_date,
+                    'life_date': life_date,
+                }
+                lot = self.env['stock.production.lot'].create(vals)
+            else:
+                lot = lots_objs[0]
+            self._create_operation_from_line(move, qty_serv, lot.id)
+
+        # Update the move qty if needed and launch issues
+        for list_move in moves_by_prod.values():
+            new_qty = list_move[0]
+            orig_qty = list_move[1].product_uom_qty
+            if new_qty > 0:
+                self._create_issue('reason6', move=move, new_qty=new_qty)
+                move.write({'product_uom_qty': orig_qty - new_qty})
+            if list_move[0] < 0:
+                # Create issue
+                move.write({'product_qty': orig_qty + new_qty})
+
+        # Check the min_date of picking to match with the edi date FECENT
+        if root.find('FECENT') is not None:
+            date_delivery_str = root.find('FECENT').text
+            pick_date = datetime.strptime(picking.min_date,
+                                          '%Y-%m-%d %H:%M:%S')
+            if len(date_delivery_str) == 8:
+                file_date = datetime.strptime(date_delivery_str, '%Y%m%d')
+                pick_deliv_time = pick_date.strftime('%H%M%S')
+                date_delivery_str = date_delivery_str + pick_deliv_time
+            else:
+                file_date = datetime.strptime(date_delivery_str,
+                                              '%Y%m%d%H%M%S')
+
+            if file_date.day != pick_date.day or file_date.month != \
+                    pick_date.month or file_date.year != pick_date.year:
+                self._create_issue('reason7', picking=picking)
+
+        return picking
 
     def parse_picking(self, file_path, doc):
         """
@@ -201,7 +329,7 @@ class edi(models.Model):
         else:
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             correct.write({'document_id': doc.id})
-            self.make_backup(file_path, doc.file_name)
+            # self.make_backup(file_path, doc.file_name)
             os.remove(file_path)
         return
 
@@ -235,7 +363,6 @@ class edi(models.Model):
         domain = [('key', '=', 'edi.path.importation')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         path = param_obj.value  # Path for /out folder for edi files
-
         log.info(_(u'Importing files'))
         files_downloaded = 0
         for file_name in os.listdir(path):
