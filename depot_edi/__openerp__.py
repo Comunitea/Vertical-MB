@@ -46,6 +46,7 @@
         'stock_view.xml',
         'product_view.xml',
         'account_view.xml',
+        'invoice_workflow.xml',
         'wizard/import_edi_view.xml',
     ],
     "demo": [],

@@ -100,7 +100,9 @@ class edi(models.Model):
 
     def _check_fields(self, file_path, root, fields):
         """
-        Check if a list of fields are int the DESADV file.
+        Check if a list of fields are int the DESADV or INVOIC file.
+        Return False if someone of mandatory edi files is not in the EDI file
+        @param fields: List of mandatory fields for the corresponding rdi file
         """
         all_fields = True
         fields_not_found = []
@@ -115,6 +117,10 @@ class edi(models.Model):
             log.error(_(u'not found fields: ') + fields_string +
                       _(u'. in file: ') + file_path)
         return all_fields
+
+# ****************************************************************************
+# **************************** PICKINGS **************************************
+# ****************************************************************************
 
     def _check_picking_fields(self, file_path, root, type_fields='file'):
         """
@@ -158,7 +164,7 @@ class edi(models.Model):
         res_id = False
         product_lines = []
         origin = False
-        flow = 'purchase.order'
+        flow = 'purchase.order,'
         edi_message = 'desadv2'
         if reason_str == 'reason6' and move:
             product_lines = [{
@@ -168,9 +174,11 @@ class edi(models.Model):
             }]
             res_id = move.picking_id.id
             origin = move.purchase_line_id.order_id.name
+            flow += str(move.purchase_line_id.order_id.id)
         elif reason_str == 'reason7' and picking:
             res_id = picking.id
             origin = picking.purchase_id.name
+            flow += str(picking.purchase_id.id)
             for op in picking.pack_operation_ids:
                 vals = {
                     'product_id': op.product_id.id,
@@ -185,10 +193,11 @@ class edi(models.Model):
                                object, [res_id], reason_str, type_id=type_id,
                                edi_message=edi_message,
                                origin=origin,
+                               flow=flow,
                                product_ids=product_lines)
         return
 
-    def _parse_original_picking(self, file_path, root):
+    def _parse_picking_from_desadv(self, file_path, root):
         """
         Read and process the DESADV file, returning the picking_obj
         The method maybe create some issues if some conditions are done.
@@ -323,7 +332,7 @@ class edi(models.Model):
         if not self._check_picking_fields(file_path, root):
             correct = False
         if function == '9' and correct:
-            correct = self._parse_original_picking(file_path, root)
+            correct = self._parse_picking_from_desadv(file_path, root)
         if not correct:
             doc.write({'state': 'error'})
         else:
@@ -332,6 +341,149 @@ class edi(models.Model):
             # self.make_backup(file_path, doc.file_name)
             os.remove(file_path)
         return
+
+
+# ****************************************************************************
+# **************************** INVOICES **************************************
+# ****************************************************************************
+    def _check_invoice_fields(self, file_path, root, type_fields='head'):
+        """
+        Get a list of mandatory invoice edi files to check.
+        """
+        # node = self._context.get('node', False)
+        fields_file = ['NUMFAC', 'NODO', 'FECHA', 'PEDIDO', 'ALBARAN',
+                       './SEDESOC/CODINTERLOCUTOR',
+                       './SEDESOC/NOMBRE', './SEDESOC/REG_MERCANTIL',
+                       './SEDESOC/DIRECCION', './SEDESOC/POBLACION',
+                       './SEDESOC/CP', './SEDESOC/NIF',
+                       './SEDEPROV/CODINTERLOCUTOR',
+                       './SEDEPROV/NOMBRE',
+                       './SEDEPROV/REG_MERCANTIL', './SEDEPROV/DIRECCION',
+                       './SEDEPROV/POBLACION', './SEDEPROV/CP',
+                       './SEDEPROV/NIF',
+                       './VENDEDOR/CODINTERLOCUTOR',
+                       './COMPRADOR/CODINTERLOCUTOR',
+                       './RECEPTOR/CODINTERLOCUTOR',
+                       './CLIENTE/CODINTERLOCUTOR',
+                       'DIVISA', './VENCFAC/VENCIMIENTO', 'SUMNETOS',
+                       'BASIMPFA', 'TOTIMP', 'TOTAL', './IMPFAC/BASE',
+                       './IMPFAC/TIPO',
+                       './IMPFAC/TASA', './IMPFAC/IMPORTE'
+                       ]
+        fields_line = ['REFERENCIA', 'REFEAN', 'DESC', 'CFAC', 'NETO',
+                       'PRECIOB', 'PRECION']
+
+        # Check for atributtes
+        if type_fields == 'line':
+            fields = fields_line
+            if 'NUMLIN' not in root.attrib.keys() or \
+                root.find('DESC') is not None and \
+                    'TIPART' not in root.find('DESC').attrib.keys():
+                log.error(_(u'not found attribs: NUMLINEA or TIPART. in file:')
+                          + file_path)
+                return False
+        else:
+            fields = fields_file
+        return self._check_fields(file_path, root, fields)
+
+    def _create_invoice_from_picking(self, picking):
+        """
+        This function creates a invoice from a picking obj
+        """
+        invoice = False
+        stock_inv_wzd = self.env['stock.invoice.onshipping']
+        wzd_obj = stock_inv_wzd.with_context(active_ids=[picking.id]).\
+            create({'invoice_date': time.strftime('%Y-%m-%d')})
+        invoice_ids = wzd_obj.create_invoice()
+        if invoice_ids:
+            invoice = self.env['account.invoice'].browse(invoice_ids[0])
+        return invoice
+
+    def _get_related_invoice(self, root):
+        """
+        This function search the invoice related with PEDIDO edi tag,
+        if not invoice founded we create one.
+        """
+        invoice = False
+        t_po = self.env['purchase.order']
+        t_pick = self.env['stock.picking']
+        purch_num = root.find('PEDIDO').text
+        purch_obj = t_po.search([('name', '=', purch_num)])
+        if not purch_obj:
+            log.error(_("Not found purchase order with number ") + purch_num)
+            return False
+        picking = t_pick.search([('purchase_id', '=', purch_obj.id)])
+        if not picking:
+            log.error(_("Not found stock picking  for purchase: ") + purch_num)
+            return False
+
+        inv_objs = []
+        inv_objs += [inv for inv in purch_obj.invoice_ids]
+        invoice = inv_objs and inv_objs[0] or False
+        if not invoice:
+            invoice = self._create_invoice_from_picking(picking)
+        if not invoice:
+            log.error(_("Can not create a invoice for purchase: ") + purch_num)
+            return False
+        
+        return invoice
+
+    def _parse_invoic_file(self, root, invoice):
+        """
+        Read an compare de invoic EDI file with the invoice obj founded
+        previusly.
+        If values in edi file are not in the invoice update the invoice.
+        If diferencces between file and EDI log error and return False.
+        Return the invoice if success
+        """
+        # import ipdb; ipdb.set_trace()
+        # TODO procesar cabecera, comprobar gln importantes, ¿cuales?
+        # invoice.signal_workflow('invoice_receives')
+        return invoice
+
+    def _parse_invoice_from_invoic(self, file_path, root):
+        """
+        This function return false if some error founded, return the invoice
+        obj if success.
+        """
+        print "Parse full invoice"
+        invoice = False
+        xml = etree.parse(file_path)
+        root = xml.getroot()
+        nodo = root.find('NODO') is None and False or root.find('NODO').text
+        if nodo == '380' and self.with_context(node=nodo).\
+                _check_invoice_fields(file_path, root):
+            invoice = self._get_related_invoice(root)
+            invoice = self._parse_invoic_file(root, invoice)
+        elif nodo == '381':  # Refund invoice
+            # TODO FACTURA RECTIFICATIVA, nuffacsus LA RECTIFICADA?
+            print "381"
+        else:
+            log.error(_(u'Not found corect NODO value \
+                          in the INVOIC file ') + file_path)
+        return invoice
+
+    def parse_invoice(self, file_path, doc):
+        """
+        This function parse the INVOIC document in the call to
+        _parse_original_picking function
+        """
+        print "PARSE INVOICE"
+        xml = etree.parse(file_path)
+        root = xml.getroot()
+        invoice = self._parse_invoice_from_invoic(file_path, root)
+        if not invoice:
+            doc.write({'state': 'error'})
+        else:
+            doc.write({'state': 'imported', 'date_process': datetime.now()})
+            invoice.write({'document_id': doc.id})
+            # self.make_backup(file_path, doc.file_name)
+            # os.remove(file_path)
+        return
+
+# ****************************************************************************
+# **************************** GENERAL EDI ***********************************
+# ****************************************************************************
 
     def process_files(self, path):
         """
@@ -349,8 +501,8 @@ class edi(models.Model):
             file_path = path + os.sep + doc.file_name
             if doc.doc_type == 'stock_picking':
                 self.parse_picking(file_path, doc)
-            # elif doc.type == 'invoice':
-            #     self.parse_invoicefile_path, doc)
+            elif doc.doc_type == 'invoice':
+                self.parse_invoice(file_path, doc)
             doc.write({'errors': log.get_errors()})
         return
 
