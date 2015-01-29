@@ -66,6 +66,127 @@
             </page>
         </field>
     </record>
+
+    <!-- <record id="payment_edi_form" model="ir.ui.view">
+        <field name="name">payment.edi.form</field>
+        <field name="model">payment.type</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account_payment_extension.view_payment_type_form" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="edi_code"/>
+            </field>
+        </field>
+    </record> -->
+
+    <!-- Discounts views -->
+
+    <record id="discount_form" model="ir.ui.view">
+        <field name="name">account.discount.form</field>
+        <field name="model">account.discount</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Discount">
+                <group>
+                    <field name="mode"/>
+                    <field name="sequence"/>
+                    <field name="type_id"/>
+                </group>
+                <group>
+                    <field name="percentage"/>
+                    <field name="amount" />
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_discoun_tree" model="ir.ui.view">
+        <field name="name">account.discount.tree</field>
+        <field name="model">account.discount</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Discounts">
+                <field name="mode"/>
+                <field name="sequence"/>
+                <field name="type_id"/>
+                <field name="percentage"/>
+                <field name="amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="account_discoun_type_form" model="ir.ui.view">
+        <field name="name">account.discount.type.form</field>
+        <field name="model">account.discount.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Discount type">
+                <field name="name" />
+                <field name="code" />
+            </form>
+        </field>
+    </record>
+
+    <record id="account_discoun_type_tree" model="ir.ui.view">
+        <field name="name">account.discount.type.tree</field>
+        <field name="model">account.discount.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Discount types">
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="invoice_line_add_discount_form" model="ir.ui.view">
+        <field name="name">invoice.line.add.discount.form</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account.view_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <field name="discount" position="after">
+                <field name="discount_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="account_invoice__supplier_discounts_form" model="ir.ui.view">
+        <field name="name">account.invoice.supplier.discounts.form</field>
+        <field name="model">account.invoice</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form" />
+        <field name="arch" type="xml">
+             <page string="Payments" position="after">
+                 <page string="Discounts/Charges">
+                    <!-- <field name="discount_ids" widget="one2many_list"/> -->
+                </page>
+                <page string="EDI">
+                    <group>
+                        <group>
+                            <field name="name_doc"/>
+                            <field name="file_name_doc"/>
+                            <field name="date_doc"/>
+                        </group>
+                        <group>
+                            <field name="status_doc"/>
+                            <field name="date_process_doc"/>
+                        </group>
+                        <newline/>
+                        <label string="XML file" colspan="4"/>
+                        <field name="message" colspan="4" readonly="1" select="2" nolabel="1"/>
+
+                    </group>
+                </page>
+            </page>
+
+            <xpath expr="//field[@name='invoice_line']/tree/field[@name='discount']" position="replace">
+                <field name="discount_ids" widget="many2many_tags" domain="[('invoice_line_id','=',id)]"/>
+            </xpath>
+            <field name="amount_untaxed" position="before">
+                <field name="amount_discount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+            </field>
+        </field>
+    </record>
 </data>
 </openerp>
 

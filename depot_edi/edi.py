@@ -416,6 +416,8 @@ class edi(models.Model):
         if not picking:
             log.error(_("Not found stock picking  for purchase: ") + purch_num)
             return False
+        if root.find('ALBARAN').text != picking.name:
+            log.error(_("Diferent picking number: ") + purch_num)
 
         inv_objs = []
         inv_objs += [inv for inv in purch_obj.invoice_ids]
@@ -425,8 +427,18 @@ class edi(models.Model):
         if not invoice:
             log.error(_("Can not create a invoice for purchase: ") + purch_num)
             return False
-        
         return invoice
+
+    def _search_product(self, line):
+        """
+        Search a product by the ean13 field.
+        """
+        ref = line.find('REFERENCIA')
+        product_obj = False
+        if ref is not None:
+            domain = [('ean13', '=', ref.text)]
+            product_obj = self.env['product.product'].search([('ean13')])
+        return prod_obj
 
     def _parse_invoic_file(self, root, invoice):
         """
@@ -436,8 +448,127 @@ class edi(models.Model):
         If diferencces between file and EDI log error and return False.
         Return the invoice if success
         """
-        # import ipdb; ipdb.set_trace()
-        # TODO procesar cabecera, comprobar gln importantes, ¿cuales?
+        new_fields = {}
+        gln_comp = root.find('./COMPRADOR/CODINTERLOCUTOR').text
+        # Utilizar vendedor??
+        gln_prov = root.find('./SEDEPROV/CODINTERLOCUTOR').text
+        if gln_comp != invoice.company_id.partner_id.gln:
+            log.error(_(u'Diferent buyer gln and partner of company gln'))
+        if gln_prov != invoice.partner_id.gln:
+            log.error(_(u'Different Supplier gln'))
+
+        # Check NUMFAC with invoice_supplier_number
+        if root.find('NUMFAC') is not None:
+            numfac = root.find('NUMFAC').text
+            if invoice.supplier_invoice_number:
+                if invoice.supplier_invoice_number != numfac:
+                    log.error(_(u'Diferent invoice supplier number'))
+            else:
+                new_fields['supplier_invoice_number'] = numfac
+
+        # Check date SOBRESCRIBIRLA
+        if root.find('FECHA') is not None:
+            inv_date = root.find('FECHA').text
+            st_dat = datetime.strptime(inv_date, "%Y%m%d").strftime("%Y-%m-%d")
+            if invoice.date_invoice:
+                if invoice.date_invoice != st_dat:
+                    log.error(_(u'Diferent Invoice dates'))
+            else:
+                new_fields['date_invoice'] = st_dat
+
+        # # Check payment type
+        # no se si se corresponde con el pament term o que
+        # if root.find('FPAG') is not None:
+        #     fpag = root.find('FPAG').text
+        #     ob_pay = self.env['payment.type'].search
+        # ([('edi_code', '=', fpag)])
+
+        #     ##
+        #     if invoice.payment_type:
+        #         if invoice.date_invoice != st_dat:
+        #             log.error(_(u'Diferent Invoice dates'))
+        #     else:
+        #         new_fields['date_invoice'] = st_dat
+        # Write new fields in the invoice
+
+        # Check for commets
+        if root.find('OBSFAC') is not None:
+            obsfac = root.find('OBSFAC').text
+            if invoice.comment:
+                if obsfac != invoice.comment:
+                    log.error(_(u'Diferent Comments in the invoice'))
+            else:
+                new_fields['comment'] = obsfac
+
+        # Check forcurrency
+        if root.find('DIVISA') is not None:
+            divisa = root.find('DIVISA').text
+            cur_obj = self.env['res.currency'].search([('name', '=', divisa)])
+            if not cur_obj:
+                log.error('Currency %s not founded in the system' % (divisa))
+            if invoice.currency_id:
+                if cur_obj.id != invoice.currency_id.id:
+                    log.error('Different currencys')
+            else:
+                new_fields['currency_id'] = cur_obj.id
+
+        # Check due date, Always overwrite it
+        if root.find('./VENCFAC/VENCIMIENTO') is not None:
+            ven_date = root.find('./VENCFAC/VENCIMIENTO').text
+            vn_dat = datetime.strptime(ven_date, "%Y%m%d").strftime("%Y-%m-%d")
+            # if invoice.date_due:
+            #     if invoice.date_invoice != vn_dat:
+            #         log.error(_(u'Diferent Due dates'))
+            # else:
+            #     new_fields['date_due'] = vn_dat
+            new_fields['date_due'] = vn_dat
+
+        # Check for total
+        if root.find('BASEIMPFA') is not None:
+            if invoice.amount_untaxed != root.find('BASEIMPFA').text:
+                log.error(_(u'Diferent amount untaxed'))
+        if root.find('TOTIMP') is not None:
+            if invoice.amount_tax != root.find('TOTIMP').text:
+                log.error(_(u'Diferent amount tax'))
+        if root.find('TOTAL') is not None:
+            if invoice.amount_total != root.find('TOTAL').text:
+                log.error(_(u'Diferent amount Total'))
+
+        # Check Taxes
+        for impfac in root.iter('IMPFAC'):
+            tax_imp = impfac.find('IMPORTE').text
+            base_imp = impfac.find('BASE').text
+            found_base = False
+            found_imp = False
+            for tax_line in invoice.tax_line:
+                if tax_line.base == base_imp:
+                    found_base = True
+                    break
+                if tax_line.amount == tax_imp:
+                    found_imp = True
+                    break
+            if not found_base:
+                log.error(_('Differnt tax base %s not matching with invoice')
+                          % base_imp)
+            if not found_imp:
+                log.error(_('Differnt tax import %s not matching with invoice')
+                          % tax_imp)
+
+        import ipdb; ipdb.set_trace()
+        # Process lines
+        for line in root.iter('LINEA'):
+            product_obj = self._search_product(line)
+            if not product_obj:
+                ref = line.find('REFERENCIA').text
+                log.error(_('Not found reference % for product') % ref)
+                continue
+            domain = [('invoice_id', '=', invoice.id),
+                      ('product_id', '=', product_obj.id)]
+            line_obj = self.env['account.invoice.line'].search(domain)
+            
+        if new_fields:
+            invoice.write(new_fields)
+
         # invoice.signal_workflow('invoice_receives')
         return invoice
 

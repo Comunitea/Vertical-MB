@@ -20,7 +20,7 @@
 from openerp import models, fields
 
 
-class StockWarehouse(models.Model):
+class account_tax(models.Model):
     """
     Add generic fields
     """
@@ -29,7 +29,7 @@ class StockWarehouse(models.Model):
     code = fields.Char('Code', help="Code of tax for EDI files")
 
 
-class AccountInvoice(models.Model):
+class account_invoice(models.Model):
     _inherit = 'account.invoice'
 
     document_id = fields.Many2one('edi.doc', 'EDI Document')
@@ -71,3 +71,36 @@ class AccountInvoice(models.Model):
                                   reconciled.\n"
                                   " * The 'Cancelled' status is used when user \
                                   cancel invoice.")
+    discount_ids = fields.One2many('account.discount', 'invoice_id',
+                                   'Discounts')
+
+
+# class payment_type(models.Model):
+#     """
+#     Add generic fields
+#     """
+#     _inherit = 'payment.type'
+
+#     edi_code = fields.Char('Edi Code', help="Code of payment type for EDI\
+#                                              files")
+
+class account_discount_type(models.Model):
+    _name = "account.discount.type"
+    _description = "Types of discounts/charges"
+
+    code = fields.Char('Code', size=10, required=True)
+    name = fields.Char('Name', size=64, required=True)
+
+
+class account_discount(models.Model):
+    _name = "account.discount"
+    _description = "Discounts/Charges for invoices"
+
+    mode = fields.Selection([('A', 'Discount'), ('C', 'Charge')], 'Mode',
+                            required=True)
+    sequence = fields.Integer('Sequence')
+    type_id = fields.Many2one('account.discount.type', 'Type')
+    percentage = fields.Float('Percentage')
+    amount = fields.Float('amount')
+    invoice_id = fields.Many2one('account.invoice', 'Invoice')
+    invoice_line_id = fields.Many2one('account.invoice.line', 'Line')

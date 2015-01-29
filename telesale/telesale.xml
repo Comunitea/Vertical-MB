@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <menuitem id="main_telesale_menu" name="Telesales" />
+        <menuitem id="main_telesale_menu" name="Telesales"/>
 
         <menuitem id="telesale_menu" name="Telesale"
             parent="main_telesale_menu" />
