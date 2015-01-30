@@ -150,7 +150,7 @@
         </field>
     </record>
 
-    <record id="account_invoice__supplier_discounts_form" model="ir.ui.view">
+    <record id="account_invoice_supplier_discounts_form" model="ir.ui.view">
         <field name="name">account.invoice.supplier.discounts.form</field>
         <field name="model">account.invoice</field>
         <field name="type">form</field>
@@ -158,7 +158,7 @@
         <field name="arch" type="xml">
              <page string="Payments" position="after">
                  <page string="Discounts/Charges">
-                    <!-- <field name="discount_ids" widget="one2many_list"/> -->
+                    <field name="discount_ids" widget="one2many_list"/>
                 </page>
                 <page string="EDI">
                     <group>
@@ -168,7 +168,7 @@
                             <field name="date_doc"/>
                         </group>
                         <group>
-                            <field name="status_doc"/>
+                            <field name="state_doc"/>
                             <field name="date_process_doc"/>
                         </group>
                         <newline/>
@@ -182,9 +182,9 @@
             <xpath expr="//field[@name='invoice_line']/tree/field[@name='discount']" position="replace">
                 <field name="discount_ids" widget="many2many_tags" domain="[('invoice_line_id','=',id)]"/>
             </xpath>
-            <field name="amount_untaxed" position="before">
+            <!-- <field name="amount_untaxed" position="before">
                 <field name="amount_discount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-            </field>
+            </field> -->
         </field>
     </record>
 </data>
