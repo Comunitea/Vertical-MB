@@ -13,7 +13,7 @@
         </field>
     </record>
 
-    <record id="account_invoice_edi_form" model="ir.ui.view">
+    <!-- <record id="account_invoice_edi_form" model="ir.ui.view">
         <field name="name">account.invoice.edi.form</field>
         <field name="model">account.invoice</field>
         <field name="type">form</field>
@@ -38,7 +38,7 @@
                 </page>
             </page>
         </field>
-    </record>
+    </record> -->
 
     <record id="account_invoice_supplier_edi_form" model="ir.ui.view">
         <field name="name">account.invoice.supplier.edi.form</field>
@@ -106,6 +106,7 @@
         <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Discounts">
+                <field name="name"/>
                 <field name="mode"/>
                 <field name="sequence"/>
                 <field name="type_id"/>

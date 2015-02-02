@@ -30,6 +30,10 @@
             <field name="name">Recepción incorrecta</field>
             <field name="code">type7</field>
         </record>
+        <record id="type8" model="issue.type">
+            <field name="name">Incidencia en la factura</field>
+            <field name="code">type8</field>
+        </record>
 
         <!-- Reasons for type1 -->
         <record id="reason1" model="issue.reason">
@@ -336,5 +340,52 @@
             <field name="type_id" ref="type7"/>
             <field name="code">76</field>
         </record>
+        <!-- Reasons for type8 -->
+        <record id="reason81" model="issue.reason">
+            <field name="name">Linea incorrecta</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason81</field>
+        </record>
+        <record id="reason82" model="issue.reason">
+            <field name="name">Cantidad de producto incorrecta</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason82</field>
+        </record>
+        <record id="reason83" model="issue.reason">
+            <field name="name">Impuestos de linea incorrectos</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason83</field>
+        </record>
+        <record id="reason84" model="issue.reason">
+            <field name="name">Descuentos de linea incorrectos</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason84</field>
+        </record>
+        <record id="reason85" model="issue.reason">
+            <field name="name">Impuestos de factura incorrectos</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason85</field>
+        </record>
+        <record id="reason86" model="issue.reason">
+            <field name="name">Cargos o descuentos de factura incorrectos</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason86</field>
+        </record>
+        <record id="reason87" model="issue.reason">
+            <field name="name">Desajuste general importe linea</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason87</field>
+        </record>
+        <record id="reason88" model="issue.reason">
+            <field name="name">Desajuste general importe factura</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason88</field>
+        </record>
+        <record id="reason89" model="issue.reason">
+            <field name="name">Desajuste en el precio unitario</field>
+            <field name="type_id" ref="type8"/>
+            <field name="code">reason89</field>
+        </record>
+
     </data>
 </openerp>

@@ -437,8 +437,102 @@ class edi(models.Model):
         product_obj = False
         if ref is not None:
             domain = [('ean13', '=', ref.text)]
-            product_obj = self.env['product.product'].search([('ean13')])
-        return prod_obj
+            product_obj = self.env['product.product'].search(domain)
+        return product_obj
+
+    def generate_discount_statments(self, discount):
+        disc_type_obj = self.env['account.discount.type']
+        discount_search = []
+        create = {}
+        mode = discount.find('CALDTO')
+        sequence = discount.find('SECUEN')
+        type = discount.find('TIPO')
+        percentage = discount.find('PORCEN')
+        amount = discount.find('IMPDES')
+        if type is not None and type.text == 'ABH':
+            # si se trata de un rappel
+            return (False, False)
+        if mode is not None:
+            discount_search.append(('mode', '=', mode.text))
+            create['mode'] = mode.text
+        if sequence is not None:
+            discount_search.append(('sequence', '=', sequence.text))
+            create['sequence'] = sequence.text
+        if type is not None:
+            disc_objs = disc_type_obj.search([('code', '=', type.text)])
+            discount_search.append(('type_id', '=',
+                                    disc_objs and disc_objs[0].id or False))
+            create['type_id'] = disc_objs and disc_objs[0] or False
+        if percentage is not None:
+            discount_search.append(('percentage', '=', percentage.text))
+            create['percentage'] = percentage.text
+        if amount is not None:
+            discount_search.append(('amount', '=', amount.text))
+            create['amount'] = amount.text
+        return (discount_search, create)
+
+    def _search_taxes(self, product, line):
+        tax_obj = self.env['account.tax']
+        for tax in line.iter('IMPLFAC'):
+            product_taxes = [x.id for x in product.supplier_taxes_id]
+            domain = [
+                ('code', '=', tax.find('TIPO').text),
+                ('amount', '=', float(tax.find('TASA').text) / 100),
+                ('id', 'in', product_taxes)
+            ]
+            tax_objs = tax_obj.search(domain)
+            if not tax_objs:
+                log.error(_(u'Impossible find tax with code ')
+                          + tax.find('TIPO').text
+                          + _(u' for product ') + product.name)
+                return False
+        return tax_objs
+
+    def _create_invoice_issue(self, reason_str, inv_line=None,
+                              invoice=None, new_qty=0.0, bad_product_id=None):
+        # Error en recepción de factura
+        type = self.env['issue.type'].search([('code', '=', 'type8')])
+        type_id = type and type[0].id or False
+        object = 'account.invoice'
+        res_id = False
+        product_lines = []
+        origin = False
+        flow = 'purchase.order,'
+        edi_message = 'invoic'
+        with_lin = ['reason82', 'reason83', 'reason84', 'reason87']
+        no_lin = ['reason85', 'reason86', 'reason88']
+
+        if reason_str == 'reason81' and bad_product_id:
+            product_lines.append({
+                'product_id': bad_product_id,
+                'product_qty': new_qty,
+                'uom_id': False,
+                'reason_id': 'reason81'})
+        if reason_str in with_lin and inv_line:
+            res_id = inv_line.invoice_id.id
+            origin = inv_line.purchase_line_id.order_id.name
+            flow += str(inv_line.purchase_line_id.order_id.id)
+            product_id = inv_line.product_id.id
+            new_qty = new_qty and new_qty or inv_line.quantity
+            if reason_str == 'reason81' and bad_product_id:
+                product_id = bad_product_id
+            product_lines = [{
+                'product_id': product_id,
+                'product_qty': new_qty,
+                'uom_id': inv_line.uos_id.id,
+            }]
+        if reason_str in no_lin and invoice:
+            res_id = invoice.id
+            origin = invoice.invoice_line[0].purchase_line_id.order_id.name
+            flow += str(invoice.invoice_line[0].purchase_line_id.order_id.id)
+        # Create the issue with the type and reason and product lines correct
+        issue_gen.create_issue(self._cr, self._uid, self._ids,
+                               object, [res_id], reason_str, type_id=type_id,
+                               edi_message=edi_message,
+                               origin=origin,
+                               flow=flow,
+                               product_ids=product_lines)
+        return
 
     def _parse_invoic_file(self, root, invoice):
         """
@@ -470,11 +564,12 @@ class edi(models.Model):
         if root.find('FECHA') is not None:
             inv_date = root.find('FECHA').text
             st_dat = datetime.strptime(inv_date, "%Y%m%d").strftime("%Y-%m-%d")
-            if invoice.date_invoice:
-                if invoice.date_invoice != st_dat:
-                    log.error(_(u'Diferent Invoice dates'))
-            else:
-                new_fields['date_invoice'] = st_dat
+            # if invoice.date_invoice:
+            #     if invoice.date_invoice != st_dat:
+            #         log.error(_(u'Diferent Invoice dates'))
+            # else:
+            #     new_fields['date_invoice'] = st_dat
+            new_fields['date_invoice'] = st_dat
 
         # # Check payment type
         # no se si se corresponde con el pament term o que
@@ -500,7 +595,7 @@ class edi(models.Model):
             else:
                 new_fields['comment'] = obsfac
 
-        # Check forcurrency
+        # Check for currency
         if root.find('DIVISA') is not None:
             divisa = root.find('DIVISA').text
             cur_obj = self.env['res.currency'].search([('name', '=', divisa)])
@@ -512,29 +607,36 @@ class edi(models.Model):
             else:
                 new_fields['currency_id'] = cur_obj.id
 
-        # Check due date, Always overwrite it
+        # Check due date
         if root.find('./VENCFAC/VENCIMIENTO') is not None:
             ven_date = root.find('./VENCFAC/VENCIMIENTO').text
             vn_dat = datetime.strptime(ven_date, "%Y%m%d").strftime("%Y-%m-%d")
-            # if invoice.date_due:
-            #     if invoice.date_invoice != vn_dat:
-            #         log.error(_(u'Diferent Due dates'))
-            # else:
-            #     new_fields['date_due'] = vn_dat
+            if invoice.date_due:
+                if invoice.date_invoice != vn_dat:
+                    log.error(_(u'Diferent Due dates'))
+            else:
+                new_fields['date_due'] = vn_dat
             new_fields['date_due'] = vn_dat
 
         # Check for total
+        totals_ok = True
         if root.find('BASEIMPFA') is not None:
             if invoice.amount_untaxed != root.find('BASEIMPFA').text:
                 log.error(_(u'Diferent amount untaxed'))
+                totals_ok = False
         if root.find('TOTIMP') is not None:
             if invoice.amount_tax != root.find('TOTIMP').text:
                 log.error(_(u'Diferent amount tax'))
+                totals_ok = False
         if root.find('TOTAL') is not None:
             if invoice.amount_total != root.find('TOTAL').text:
                 log.error(_(u'Diferent amount Total'))
-
+                totals_ok = False
+        if not totals_ok:
+            self._create_invoice_issue('reason88', invoice=invoice)
         # Check Taxes
+
+        tax_ok = True
         for impfac in root.iter('IMPFAC'):
             tax_imp = impfac.find('IMPORTE').text
             base_imp = impfac.find('BASE').text
@@ -550,25 +652,108 @@ class edi(models.Model):
             if not found_base:
                 log.error(_('Differnt tax base %s not matching with invoice')
                           % base_imp)
+                tax_ok = False
             if not found_imp:
                 log.error(_('Differnt tax import %s not matching with invoice')
                           % tax_imp)
-
-        import ipdb; ipdb.set_trace()
+                tax_ok = False
+        if not tax_ok:
+            self._create_invoice_issue('reason85', invoice=invoice)
         # Process lines
+        line_dicts = []  # for create issues
+        lines_founded = []
+        lines_invoice = invoice.invoice_line
         for line in root.iter('LINEA'):
             product_obj = self._search_product(line)
+            # Buscamos producto, si no hay Devolvemos False
             if not product_obj:
                 ref = line.find('REFERENCIA').text
                 log.error(_('Not found reference % for product') % ref)
-                continue
+                return False
+            product = product_obj[0]
+            qty_tag = line.find('CFAC')
+            # Buscamos linea
             domain = [('invoice_id', '=', invoice.id),
-                      ('product_id', '=', product_obj.id)]
+                      ('product_id', '=', product.id)]
             line_obj = self.env['account.invoice.line'].search(domain)
-            
-        if new_fields:
-            invoice.write(new_fields)
+            # Si hay mas de una que coincidan las cantidades
+            if len(line_obj) > 1:
+                domain = [('invoice_id', '=', invoice.id),
+                          ('product_id', '=', product.id)
+                          ('quantity', '=', qty_tag.text)]
+                line_obj = self.env['account.invoice.line'].search(domain)
 
+            diff_dict = {'name': line.find('DESC').text}
+            # Busqueda de impuestos, si no hay devolvemos False
+            tax_objs = self._search_taxes(product, line)
+            if not tax_objs:
+                log.error(_('Not invoice line taxes matching with EDI file,'))
+                return False
+            # si existe la linea se busca si hay diferencias
+            if line_obj:
+                inv_line = line_obj[0]
+                lines_founded.append(inv_line)
+                # Check quantity
+                if inv_line.quantity != float(qty_tag.text):
+                    self._create_invoice_issue('reason82', inv_line=inv_line,
+                                               new_qty=float(qty_tag.text))
+                # Check price unit
+                if inv_line.price_unit != float(line.find('PRECIOB').text):
+                    self._create_invoice_issue('reason89', inv_line=inv_line)
+                # line_tax_ids = [(4, x.id) for x in
+                #                 inv_line.invoice_line_tax_id]
+                # Check line taxes
+                if inv_line.invoice_line_tax_id != tax_objs:
+                    self._create_invoice_issue('reason83', inv_line=inv_line)
+
+                # Check UOM
+                if 'UMEDIDA' in qty_tag.attrib.keys():
+                    domain = [('code', '=', qty_tag.attrib['UMEDIDA'])]
+                    uom_obj = self.env['product.uom'].search(domain)
+                    diff_dict['uos_id'] = uom_obj and uom_obj[0].id or False
+                else:
+                    diff_dict['uos_id'] = product.uom_id.id
+                # Check Total
+                if inv_line.price_subtotal != float(line.find('NETO').text):
+                    self._create_invoice_issue('reason87', inv_line=inv_line)
+                # Check discounts, launch issue if discount founded
+                discount_issue = False
+                # discounts_founded = []
+                # diff_dict['discount_ids'] = []
+                # disc_obj = self.env['account.discount']
+                for discount in line.iter('DTOLFAC'):
+                    discount_issue = True
+                #     discount_search, create = self\
+                #         .generate_discount_statments(discount)
+                #     discount_search.append(('invoice_line_id', '=',
+                #                             inv_line.id))
+                #     discount_objs = disc_obj.search(discount_search)
+                #     if not discount_objs:
+                #         diff = True
+                #         diff_dict['discount_ids'].append((0, 0, create))
+                #     else:
+                #         new_discount = \
+                #             discount_objs[0].copy({'invoice_line_id': False})
+                #         diff_dict['discount_ids'].append((4, new_discount.id))
+                #         discounts_founded.append(discount_objs[0])
+                # all_discounts = inv_line.discount_ids
+                # discount_deleted = set(all_discounts) - set(discounts_founded)
+                # if discount_deleted:
+                #     diff = True
+                if discount_issue:
+                    self._create_invoice_issue('reason84', inv_line=inv_line)
+            # SI no se encontro la linea
+            else:
+                self._create_invoice_issue('reason81', new_qty=qty_tag.text,
+                                           bad_product_id=product.id)
+
+            invoice.write(new_fields)
+            line_dicts.append(diff_dict)
+
+        line_objs = set(lines_invoice) - set(lines_founded)
+        if line_objs:
+            for line in line_objs:
+                self._create_invoice_issue('reason81', inv_line=line)
         # invoice.signal_workflow('invoice_receives')
         return invoice
 

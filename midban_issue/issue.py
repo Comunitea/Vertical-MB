@@ -87,7 +87,7 @@ class issue(osv.Model):
         'res_model': fields.selection(MODELS, 'Res Model'),
         'res_id': fields.integer('Res ID', readonly=True),
         'edi_message': fields.selection([('desadv2', 'DESADV-2'),
-                                         ('recadv', 'RECADV')], 'Edi message'),
+                                         ('invoic', 'INVOIC')], 'Edi message'),
         'type_id': fields.many2one('issue.type', 'Type'),
         'reason_id': fields.many2one('issue.reason', 'Reason'),
         'affected_fields': fields.char('Affected fields', size=256),

@@ -18,11 +18,8 @@
                             <field name="state2" widget="statusbar"/>
                      </header>
                 </xpath>
-                <field name="active" position="replace">
-                    <label for="active"/>
+                <field name="sale_ok" position="before">
                     <div>
-  
-                        <field name="active" class="oe_inline" readonly="1"/>
                         <button name="%(action_process_unregister_product)d" string="Unregister"
                                 type="action"
                                 class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>

@@ -32,8 +32,125 @@ class account_tax(models.Model):
     code = fields.Char('Code', help="Code of tax for EDI files")
 
 
+class account_invoice_tax(models.Model):
+    _inherit = "account.invoice.tax"
+
+    tax_id = fields.Many2one('account.tax', 'Tax')
+
+    @api.model
+    def compute(self, invoice):
+        """
+        Overwrited only to get the pric unit equals to
+        price_subtotal_discounted
+        """
+        tax_grouped = {}
+        currency = invoice.currency_id.with_context(date=invoice.date_invoice
+                                                    or fields.Date.
+                                                    context_today(invoice))
+        company_currency = invoice.company_id.currency_id
+        for line in invoice.invoice_line:
+            price_unit = 0
+            if line.quantity:  # Cojemos el precio unitario sin descuentos
+                price_unit = line.price_subtotal_discounted / line.quantity
+            taxes = line.invoice_line_tax_id.compute_all(
+                (price_unit * (1 - (line.discount or 0.0) / 100.0)),
+                line.quantity, line.product_id, invoice.partner_id)['taxes']
+            for tax in taxes:
+
+                val = {}
+                val = {
+                    'invoice_id': invoice.id,
+                    'name': tax['name'],
+                    'amount': tax['amount'],
+                    'manual': False,
+                    'sequence': tax['sequence'],
+                    'base': currency.round(tax['price_unit'] *
+                                           line['quantity']),
+                    'tax_id': tax['id']  # id del impuesto, nuevo campo añadido
+                }
+                if invoice.type in ('out_invoice', 'in_invoice'):
+                    val['base_code_id'] = tax['base_code_id']
+                    val['tax_code_id'] = tax['tax_code_id']
+                    val['base_amount'] = \
+                        currency.compute(val['base'] * tax['base_sign'],
+                                         company_currency, round=False)
+                    val['tax_amount'] = \
+                        currency.compute(val['amount'] * tax['tax_sign'],
+                                         company_currency, round=False)
+                    val['account_id'] = \
+                        tax['account_collected_id'] or line.account_id.id
+                    val['account_analytic_id'] = \
+                        tax['account_analytic_collected_id']
+                else:
+                    val['base_code_id'] = tax['ref_base_code_id']
+                    val['tax_code_id'] = tax['ref_tax_code_id']
+                    val['base_amount'] = \
+                        currency.compute(val['base'] * tax['ref_base_sign'],
+                                         company_currency, round=False)
+                    val['tax_amount'] = \
+                        currency.compute(val['amount'] * tax['ref_tax_sign'],
+                                         company_currency, round=False)
+                    val['account_id'] = \
+                        tax['account_paid_id'] or line.account_id.id
+                    val['account_analytic_id'] = \
+                        tax['account_analytic_paid_id']
+
+                # If the taxes generate moves on the same financial account as
+                # the invoice line
+                # and no default analytic account is defined at the tax level,
+                # propagate the
+                # analytic account from the invoice line to the tax line. This
+                # is necessary
+                # in situations were (part of) the taxes cannot be reclaimed,
+                # to ensure the tax move is allocated to the proper analytic
+                # account.
+                if not val.get('account_analytic_id') and \
+                        line.account_analytic_id and \
+                        val['account_id'] == line.account_id.id:
+                    val['account_analytic_id'] = line.account_analytic_id.id
+
+                key = (val['tax_code_id'], val['base_code_id'],
+                       val['account_id'])
+                if key not in tax_grouped:
+                    tax_grouped[key] = val
+                else:
+                    tax_grouped[key]['base'] += val['base']
+                    tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['base_amount'] += val['base_amount']
+                    tax_grouped[key]['tax_amount'] += val['tax_amount']
+
+        for t in tax_grouped.values():
+            t['base'] = currency.round(t['base'])
+            t['amount'] = currency.round(t['amount'])
+            t['base_amount'] = currency.round(t['base_amount'])
+            t['tax_amount'] = currency.round(t['tax_amount'])
+
+        return tax_grouped
+
+
 class account_invoice(models.Model):
     _inherit = 'account.invoice'
+
+    @api.one
+    @api.depends('invoice_line.price_subtotal', 'tax_line.amount',
+                 'amount_discount')
+    def _compute_amount(self):
+        """
+        Overwrited to get the total with the discounts applied
+        """
+        # Comportamiento original
+        # self.amount_untaxed = \
+        #     sum(line.price_subtotal for line in self.invoice_line)
+        # self.amount_tax = sum(line.amount for line in self.tax_line)
+        # self.amount_total = self.amount_untaxed + self.amount_tax
+
+        self.amount_untaxed = \
+            sum(line.price_subtotal_discounted for line in self.invoice_line)
+        self.amount_tax = sum(line.amount for line in self.tax_line)
+        self.amount_total = self.amount_untaxed + self.amount_tax
+        self.amount_discount = \
+            sum((line.price_unit * line.quantity) -
+                line.price_subtotal_discounted for line in self.invoice_line)
 
     document_id = fields.Many2one('edi.doc', 'EDI Document')
     name_doc = fields.Char('Ref', readonly=True, related='document_id.name')
@@ -76,6 +193,23 @@ class account_invoice(models.Model):
                                   cancel invoice.")
     discount_ids = fields.One2many('account.discount', 'invoice_id',
                                    'Discounts')
+    # Overwrited totals fields and added amount_discount
+    amount_untaxed = fields.Float(string='Subtotal',
+                                  digits=dp.get_precision('Account'),
+                                  store=True, readonly=True,
+                                  compute='_compute_amount',
+                                  track_visibility='always')
+    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'),
+                              store=True, readonly=True,
+                              compute='_compute_amount')
+    amount_total = fields.Float(string='Total',
+                                digits=dp.get_precision('Account'),
+                                store=True, readonly=True,
+                                compute='_compute_amount')
+    amount_discount = fields.Float(string='Discount/Chargel',
+                                   digits=dp.get_precision('Account'),
+                                   store=True, readonly=True,
+                                   compute='_compute_amount')
 
 
 class account_invoice_line(models.Model):
@@ -89,7 +223,7 @@ class account_invoice_line(models.Model):
         price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         if self.quantity != 0:
             if self.discount_ids:
-                price = self.env['account.discount'].calculate_price(price)
+                price = self.discount_ids.calculate_price(price)
             tax_line = self.invoice_line_tax_id
             taxes = tax_line.compute_all(price, self.quantity,
                                          product=self.product_id,
@@ -103,7 +237,7 @@ class account_invoice_line(models.Model):
     @api.one
     def _price_discounted(self):
         ctx = self._context.copy()
-        price = 0.0
+        price = self.price_subtotal
         if self.invoice_id.discount_ids:
             ctx['globals'] = [x.id for x in self.invoice_id.discount_ids]
             all_discounts = self.discount_ids + self.invoice_id.discount_ids
@@ -122,7 +256,7 @@ class account_invoice_line(models.Model):
                     total += self.price_unit * self.quantity
                 price = all_discounts.with_context(ctx)\
                     .calculate_price(total, self, total)
-        self.price_subtotal_undiscounted = price
+        self.price_subtotal_discounted = price
 
     # incluye unicamente descuentos de linea(es el que se muestra en
     # la vista
@@ -139,10 +273,11 @@ class account_invoice_line(models.Model):
                                       store=False, readonly=True,
                                       compute='_compute_price')
     # precio que incluye los descuentos de linea y de factura
-    price_subtotal_undiscounted = fields.Float(string='Price',
-                                               digits=dp.get_precision('Account'),
-                                               store=False, readonly=True,
-                                               compute='_price_discounted')
+    price_subtotal_discounted = fields.Float(string='Price',
+                                             digits=dp.get_precision
+                                             ('Account'),
+                                             store=False, readonly=True,
+                                             compute='_price_discounted')
     # precio que incluye los descuentos de linea y de factura
     global_discount = fields.Float('Global discount')
     global_charge = fields.Float('Global charge')
@@ -169,22 +304,22 @@ class account_discount(models.Model):
     _name = "account.discount"
     _description = "Discounts/Charges for invoices"
 
-    # @api.multi
-    # def name_get(self):
-    #     import ipdb; ipdb.set_trace()
-    #     res = [""]
-    #     for discount in self:
-    #         if discount.type_id:
-    #             name = [discount.type_id.name]
-    #         else:
-    #             name = [discount.mode == 'A' and _('Discount') or _('Charge')]
-    #         if discount.percentage:
-    #             name.append(str(discount.percentage))
-    #         elif discount.amount:
-    #             name.append(str(discount.amount))
-    #         res.append((discount.id, ", ".join(name)))
+    @api.multi
+    def name_get(self):
+        res = []
+        for discount in self:
+            if discount.type_id:
+                name = [discount.type_id.name]
+            else:
+                name = [discount.mode == 'A' and _('Discount') or _('Charge')]
+            if discount.percentage:
+                name.append(str(discount.percentage))
+            elif discount.amount:
+                name.append(str(discount.amount))
+            res.append((discount.id, ", ".join(name)))
+        return res
 
-    # name = fields.Char('Name')
+    name = fields.Char('Name')
 
     @api.model
     def create(self, values):
@@ -221,7 +356,6 @@ class account_discount(models.Model):
                         invoice_total_undiscounted=None):
         discount_obj = self.env['account.discount']
         global_discount_ids = self._context.get('globals', [])
-        import ipdb; ipdb.set_trace()
         seq_list = [x.sequence for x in self]
         sequence_end = seq_list and max(seq_list) or 0
         price_aux = price_apply
