@@ -33,7 +33,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                                             ['name','partner_id','date_order','state','amount_total','date_invoice'],  //faltan los impuestos etc
                                             [
                                                 ['id', '=', order_id],
-                                                ['telesale', '=', true]
+                                                ['chanel', '=', 'telesale']
                                             ])
                 .then(function(orders){
                     var order = orders[0];
@@ -116,7 +116,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
         },
         load_partner_orders: function(date_start,date_end){
             var self=this;
-            var domain =   [['create_uid', '=', this.ts_model.get('user').id],['telesale', '=', true]]
+            var domain =   [['create_uid', '=', this.ts_model.get('user').id],['chanel', '=', 'telesale']]
             if (date_start != ""){
                 domain.push(['date_order', '>=', date_start])
             }

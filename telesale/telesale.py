@@ -84,7 +84,7 @@ class product_product(osv.Model):
         domain = [('product_id', '=', product_id),
                   ('order_id.partner_id', '=', partner_id),
                   ('state', 'in', ['confirmed', 'done']),
-                  ('order_id.telesale', '=', True)]
+                  ('order_id.chanel', '=', 'telesale')]
         line_ids = t_sol.search(cr, uid, domain, context=context, limit=1,
                                 order="id desc")
         if line_ids:  # Last sale info

@@ -25,7 +25,7 @@ import openerp.addons.decimal_precision as dp
 
 
 class sale(osv.osv):
-    """ Overwrited to add a boolean 'telesale' to recognise telesale orders.
+    """ Overwrited to add a chanel field and margin
     """
     _inherit = 'sale.order'
 
@@ -61,7 +61,10 @@ class sale(osv.osv):
         return res
 
     _columns = {
-        'telesale': fields.boolean('Telesale order', readonly=True),
+        'chanel': fields.selection([('erp', 'ERP'), ('telesale', 'telesale'),
+                                    ('tablet', 'Tablet'),
+                                    ('other', 'Other'),
+                                    ('ecomerce', 'E-comerce')], 'Chanel'),
         'date_invoice': fields.date('Date Invoice', readonly=True),
         'total_margin': fields.function(_get_total_margin, type="float",
                                         string="Total Margin",
@@ -97,7 +100,7 @@ class sale(osv.osv):
                 'pricelist_id': partner_obj.property_product_pricelist.id,
                 'partner_invoice_id': partner_obj.id,
                 'partner_shipping_id': partner_obj.id,
-                'telesale': True,
+                'chanel': 'telesale',
                 'order_policy': 'picking',
                 'date_invoice': order['date_invoice'] or False,
                 'date_order': order['date_order'] or False,

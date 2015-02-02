@@ -33,7 +33,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
                                             ['name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'], 
                                             [
                                                 ['id', '=', order_id],
-                                                ['telesale', '=', true]
+                                                ['chanel', '=', 'telesale']
                                             ])
                 .then(function(orders){
                     var order = orders[0];
@@ -120,7 +120,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
         },
         load_partner_orders: function(partner_id,date_start,date_end){
             var self=this;
-            var domain =   [['partner_id', '=', partner_id],['telesale', '=', true]]
+            var domain =   [['partner_id', '=', partner_id],['chanel', '=', 'telesale']]
             if (date_start != ""){
                 domain.push(['date_order', '>=', date_start])
             }

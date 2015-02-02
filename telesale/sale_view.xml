@@ -7,11 +7,8 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <field name="name" position="after">
-                    <h3>
-                    <label string="Is telesale order"/>
-                    <field name="telesale" class="oe_inline"/>
-                    </h3>
+                <field name="partner_id" position="before">
+                    <field name="chanel"/>
                 </field>
                 <field name="date_order" position="after">
                     <field name="date_invoice"/>
@@ -31,7 +28,7 @@
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <field name="telesale"/>
+                    <field name="chanel" class="oe_inline"/>
                 </field>
             </field>
         </record>
@@ -42,7 +39,7 @@
             <field name="inherit_id" ref="sale.view_order_tree"/>
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <field name="telesale"/>
+                    <field name="chanel" class="oe_inline"/>
                 </field>
             </field>
         </record>
