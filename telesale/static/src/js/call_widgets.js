@@ -44,7 +44,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             order_model.set('contact_name', contact_obj.name);
             this.ts_widget.new_order_screen.data_order_widget.renderElement()
             // this.ts_widget.screen_selector.set_current_screen('new_order');
-            $('#button6').click();
+            $('button#button1').click();
         },
         do_call: function(){
                 var self=this;
@@ -85,7 +85,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             // console.log("CALL ID: ", call_id);
             //obtenr fin y guardarlo psrs obtener duracción
             var model = new instance.web.Model("crm.phonecall");
-            model.call("case_close",[[call_id]],{context:new instance.web.CompoundContext({'default_state': 'open'})}).then(function(result){
+             model.call("write",[[call_id], {'state': "done"}],{context:new instance.web.CompoundContext()}).then(function(result){
                 self.ts_model.set('call_id', false);
                 // self.call.state = 'done';
                 self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr());

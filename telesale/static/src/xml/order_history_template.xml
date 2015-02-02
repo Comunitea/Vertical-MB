@@ -43,6 +43,7 @@
                     <thead>
                         <th class="head-name">Name</th>
                         <th class="head-date">Date</th>
+                        <th class="head-date">Date Planned</th>
                         <th class="head-total">Total</th>
                         <th class="head-state">State</th>
                         <th class="head-add">Add Lines</th>
@@ -62,7 +63,10 @@
                 <span class="history-cell"><t t-esc="widget.order.name"/></span>
             </td>
             <td class="cell-date">
-                <span class="history-cell"><t t-esc="widget.ts_model.localFormatDate(widget.order.date_order)"/></span>
+                <span class="history-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.order.date_order)"/></span>
+            </td>
+            <td class="cell-date">
+                <span class="history-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.order.date_planned)"/></span>
             </td>
             <td class="cell-total">
                 <span class="history-cell"><t t-esc="widget.order.amount_total.toFixed(2)"/></span>

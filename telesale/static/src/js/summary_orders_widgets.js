@@ -62,7 +62,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                 .done(function(){
                     // console.log('done');
                     // self.ts_widget.screen_selector.set_current_screen('new_order');
-                    $('#button6').click();
+                    $('button#button1').click();
                 }).fail(function(){
                     // console.log('fail');
                 });    
@@ -77,8 +77,8 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             $.when(self.load_order_from_server(self.order.id, 'add_lines'))
                 .done(function(){
                     // console.log('done');
-                    // self.ts_widget.screen_selector.set_current_screen('new_order');
-                    $('#button6').click();
+                    /*self.ts_widget.screen_selector.set_current_screen('new_order');*/
+                    $('button#button1').click();
                 }).fail(function(){
                     // console.log('fail');
                 });
@@ -124,7 +124,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                 domain.push(['date_order', '<=', date_end])
             }                       
             var loaded = self.ts_model.fetch('sale.order',
-                                            ['name','date_order','state','amount_total',],  //faltan los impuestos etc
+                                            ['name', 'partner_id','date_order','date_planned','state','amount_total',],  //faltan los impuestos etc
                                             domain)
                 .then(function(orders){
                 self.partner_orders = orders;

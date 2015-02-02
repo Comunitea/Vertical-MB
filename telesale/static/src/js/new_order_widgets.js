@@ -938,7 +938,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 current_order.addProductLine(product_id);
                 // this.ts_widget.screen_selector.set_current_screen('new_order');
                 // current_order.selectLine(current_order.get('orderLines').last());
-                $('#button6').click();
+                $('button#button1').click();
             }
         },
         renderElement: function() {

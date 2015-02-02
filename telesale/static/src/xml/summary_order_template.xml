@@ -36,7 +36,9 @@
                 <table class="summary-order-table">
                     <thead>
                         <th class="summary-head-name">Name</th>
+                        <th class="summary-head-name">Customer</th>
                         <th class="summary-head-date">Date</th>
+                        <th class="summary-head-date">Date Planned</th>
                         <th class="summary-head-total">Total</th>
                         <th class="summary-head-state">State</th>
                         <th class="summary-head-add">Add Lines</th>
@@ -56,8 +58,14 @@
             <td class="summary-cell-name">
                 <span class="summary-cell"><t t-esc="widget.order.name"/></span>
             </td>
+            <td class="summary-cell-partner">
+                <span class="summary-cell"><t t-esc="widget.order.partner_id[1]"/></span>
+            </td>
             <td class="summary-cell-date">
-                <span class="summary-cell"><t t-esc="widget.ts_model.localFormatDate(widget.order.date_order)"/></span>
+                <span class="summary-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.order.date_order)"/></span>
+            </td>
+            <td class="summary-cell-date">
+                <span class="summary-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.order.date_planned)"/></span>
             </td>
             <td class="summary-cell-total">
                 <span class="summary-cell"><t t-esc="widget.order.amount_total.toFixed(2)"/></span>

@@ -38,7 +38,7 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
                 var current_order= this.ts_model.get('selectedOrder')
                 current_order.addProductLine(product_id);
                 // this.ts_widget.screen_selector.set_current_screen('new_order');
-                $('#button6').click();
+                $('button#button1').click();
                 // current_order.selectLine(current_order.get('orderLines').last());
             }
         },
@@ -77,7 +77,7 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
                 var model = new instance.web.Model('res.partner');
                 model.call("search_products_to_sell",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
                 .then(function(result){
-                    // // console.log('result', result)
+                    console.log('result', result)
                     for (key in result){
                         var product_obj = self.ts_model.db.get_product_by_id(result[key])
                         if (product_obj){
