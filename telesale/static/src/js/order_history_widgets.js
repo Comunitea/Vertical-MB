@@ -61,8 +61,8 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
             $.when(self.load_order_from_server(self.order.id))
                 .done(function(){
                     // console.log('done');
-                    self.ts_widget.screen_selector.set_current_screen('new_order');
-                    $('#button6').click();
+                    // self.ts_widget.screen_selector.set_current_screen('new_order');
+                    $('button#button1').click();
                 }).fail(function(){
                     // console.log('fail');
                 });    
@@ -77,8 +77,8 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
             $.when(self.load_order_from_server(self.order.id, 'add_lines'))
                 .done(function(){
                     // console.log('done');
-                    self.ts_widget.screen_selector.set_current_screen('new_order');
-                    $('#button6').click();
+                    // self.ts_widget.screen_selector.set_current_screen('new_order');
+                    $('button#button1').click();
                 }).fail(function(){
                     // console.log('fail');
                 });

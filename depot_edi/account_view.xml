@@ -13,60 +13,6 @@
         </field>
     </record>
 
-    <!-- <record id="account_invoice_edi_form" model="ir.ui.view">
-        <field name="name">account.invoice.edi.form</field>
-        <field name="model">account.invoice</field>
-        <field name="type">form</field>
-        <field name="inherit_id" ref="account.invoice_form"/>
-        <field name="arch" type="xml">
-            <page string="Payments" position="after">
-                <page string="EDI">
-                    <group>
-                        <group>
-                            <field name="name_doc"/>
-                            <field name="file_name_doc"/>
-                            <field name="date_doc"/>
-                        </group>
-                        <group>
-                            <field name="state_doc"/>
-                            <field name="date_process_doc"/>
-                        </group>
-                        <newline/>
-                        <label string="XML file" colspan="4"/>
-                        <field name="message" colspan="4" readonly="1" select="2" nolabel="1"/>
-                    </group>
-                </page>
-            </page>
-        </field>
-    </record> -->
-
-    <record id="account_invoice_supplier_edi_form" model="ir.ui.view">
-        <field name="name">account.invoice.supplier.edi.form</field>
-        <field name="model">account.invoice</field>
-        <field name="type">form</field>
-        <field name="inherit_id" ref="account.invoice_supplier_form"/>
-        <field name="arch" type="xml">
-            <page string="Payments" position="after">
-                <page string="EDI">
-                    <group>
-                        <group>
-                            <field name="name_doc"/>
-                            <field name="file_name_doc"/>
-                            <field name="date_doc"/>
-                        </group>
-                        <group>
-                            <field name="state_doc"/>
-                            <field name="date_process_doc"/>
-                        </group>
-                        <newline/>
-                        <label string="XML file" colspan="4"/>
-                        <field name="message" colspan="4" readonly="1" select="2" nolabel="1"/>
-                    </group>
-                </page>
-            </page>
-        </field>
-    </record>
-
     <!-- <record id="payment_edi_form" model="ir.ui.view">
         <field name="name">payment.edi.form</field>
         <field name="model">payment.type</field>

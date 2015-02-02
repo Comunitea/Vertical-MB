@@ -203,7 +203,10 @@ class product_template(osv.Model):
                                                dp.get_precision('Account'),
                                                method=True,
                                                readonly=True),
-        'margin': fields.float("Margin", digits=(4, 2)),
+        'margin': fields.float("Margin", digits=(4, 2),
+                               help="Margin over sale order that will be used\
+                                     like base to calculate the sale \
+                                     pricelist of ultrafresh products"),
         # In order to put into domains and make comprobations or identify for
         # telesale and ultrafresh_module.
         'product_class': fields.selection([('fresh', 'Fresh'),

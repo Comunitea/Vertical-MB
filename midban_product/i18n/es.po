@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 12:00+0000\n"
-"PO-Revision-Date: 2014-12-31 12:00+0000\n"
+"POT-Creation-Date: 2015-02-02 16:39+0000\n"
+"PO-Revision-Date: 2015-02-02 16:39+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -160,13 +160,13 @@ msgid "Code EAN14"
 msgstr "Code EAN14"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:364
+#: code:addons/midban_product/product.py:367
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:355
+#: code:addons/midban_product/product.py:358
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -373,7 +373,7 @@ msgid "Logistic Validated"
 msgstr "Logística validada"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:346
+#: code:addons/midban_product/product.py:349
 #, python-format
 msgid "Logistic validate done"
 msgstr "Validación logística realizada"
@@ -439,6 +439,11 @@ msgid "Margin"
 msgstr "Margen"
 
 #. module: midban_product
+#: help:product.template,margin:0
+msgid "Margin over sale order that will be used                                     like base to calculate the sale                                      pricelist of ultrafresh products"
+msgstr "Margen sobre venta que se utilizará como base al calcular las tarifas de venta de los productos marcados con la opción tipo de venta= Ultrafresco"
+
+#. module: midban_product
 #: field:product.template,mark:0
 msgid "Mark"
 msgstr "Marca"
@@ -489,7 +494,7 @@ msgid "Palet Wood Height"
 msgstr "Altura madera palet"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:338
+#: code:addons/midban_product/product.py:341
 #, python-format
 msgid "Pending logistic and commercial validate"
 msgstr "Pendiente de validación logística y comercial"
@@ -551,7 +556,7 @@ msgid "Product denied"
 msgstr "Producto denegado"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:408
+#: code:addons/midban_product/product.py:411
 #, python-format
 msgid "Product denied in register process again"
 msgstr "Product denegado en proceso de alta de nuevo"
@@ -562,7 +567,7 @@ msgid "Product deny reasons"
 msgstr "Motivos denegación alta producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:387
+#: code:addons/midban_product/product.py:390
 #, python-format
 msgid "Product denyed"
 msgstr "Producto denegado"
@@ -573,13 +578,13 @@ msgid "Product history"
 msgstr "Historial de producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:374
+#: code:addons/midban_product/product.py:377
 #, python-format
 msgid "Product registered"
 msgstr "Producto Dado de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:397
+#: code:addons/midban_product/product.py:400
 #, python-format
 msgid "Product registered again"
 msgstr "Dar de alta de nuevo"
@@ -809,7 +814,7 @@ msgid "Variable weight"
 msgstr "Peso variable"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:304
+#: code:addons/midban_product/product.py:307
 #, python-format
 msgid "Warning!"
 msgstr "Advertencia!"
@@ -820,7 +825,7 @@ msgid "Web"
 msgstr "Web"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:305
+#: code:addons/midban_product/product.py:308
 #, python-format
 msgid "You cannot change the value                                     of consignment field."
 msgstr "No puedes cambiar el valor del campo consigna."
@@ -829,6 +834,12 @@ msgstr "No puedes cambiar el valor del campo consigna."
 #: model:ir.actions.act_window,name:midban_product.action_product_allergen
 msgid "action_product_allergen"
 msgstr "action_product_allergen"
+
+#. module: midban_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
+msgid "or"
+msgstr "or"
 
 #. module: midban_product
 #: model:ir.actions.act_window,name:midban_product.action_unregister_product_reason
