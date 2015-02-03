@@ -120,7 +120,7 @@ msgstr "Regla de producto repetida.\n"
 #. module: product_customer_restrict
 #: field:res.partner,parent_right:0
 msgid "Right Parent"
-msgstr "Padre derecho"
+msgstr "Padre Derecho"
 
 #. module: product_customer_restrict
 #: field:res.partner,rule_type:0
