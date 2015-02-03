@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="view_purchase_preorder_filter" model="ir.ui.view">
+            <field name="name">purchase.preorder.filter</field>
+            <field name="model">purchase.preorder</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase PreOrder">
+                    <field name="name"/>
+                    <field name="supplier_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="view_purchase_preorder_tree" model="ir.ui.view">
+            <field name="name">purchase.preorder.tree</field>
+            <field name="model">purchase.preorder</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase PreOrder">
+                    <field name="name"/>
+                    <field name="supplier_id"/>
+                    <field name="boxes"/>
+                    <field name="mantles" />
+                    <field name="palets"/>
+                    <field name="total"/>
+                </tree>
+            </field>
+        </record>
+        <record id="purchase_preorder_form" model="ir.ui.view">
+            <field name="name">purchase.preorder.form</field>
+            <field name="model">purchase.preorder</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Preorder" version="7.0">
+                   <header>
+                        <button name="generate_purchase_order" type="object" string="Create Purchase Order" icon="gtk-go-forward" class="oe_highlight"/>
+                    </header>
+                   <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="supplier_id" readonly="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                       <group string="General Information">
+                            <div class="oe_inline">
+                                <label for="total"/>
+                                <button name="button_dummy"
+                                        string="(update)" type="object" class="oe_edit_only oe_link"/>
+                            </div>
+                            <field name="total" readonly="1" nolabel="1" widget='monetary'/>
+                        </group>
+                        <group string="Quantities">
+                            <field name="palets" readonly="1"/>
+                            <field name="mantles" readonly="1"/>
+                            <field name="boxes" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook colspan="6">
+                    <page string="Products Supplier">
+                        <field name="product_supplier_ids">
+                            <tree string="Products Supplier">
+                                <field name="sequence"/>
+                                <field name="incoming_qty"/>
+                                <field name="date_delivery"/>
+                                <field name="product_id"/>
+                                <field name="unitskg" string="Units Ordered"/>
+                                <field name="min_fixed"/>
+                                <field name="real_stock"/>
+                                <field name="virtual_stock"/>
+                            </tree>
+                            <form string="Products Supplier">
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="product_id" readonly="1"/>
+                                </h1>
+                                <newline/>
+                                <h2>
+                                    <label for="product_type" string="Type:"/>
+                                    <field name="product_type" readonly="1" class="oe_inline"/>
+                                </h2>
+                            </div>
+                            <newline/>
+                            <group>
+                                <group colspan="4">
+                                    <notebook >
+                                        <page string="Consumptions">
+                                            <group colspan="4" col="3">
+                                             <label string="Months"/>
+                                             <label string="Previous"/>
+                                             <label string="Current"/>
+                                             <newline/>
+                                             <label string="January"/>
+                                             <field name="jan_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="jan_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="February"/>
+                                             <field name="feb_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="feb_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="March"/>
+                                             <field name="mar_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="mar_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="April"/>
+                                             <field name="apr_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="apr_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="May"/>
+                                             <field name="may_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="may_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="June"/>
+                                             <field name="jun_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="jun_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="July"/>
+                                             <field name="jul_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="jul_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="August"/>
+                                             <field name="aug_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="aug_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="September"/>
+                                             <field name="sep_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="sep_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="October"/>
+                                             <field name="oct_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="oct_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="November"/>
+                                             <field name="nov_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="nov_consu_cur" nolabel="1" readonly="1"/>
+                                             <newline/>
+                                             <label string="December"/>
+                                             <field name="dec_consu_last" nolabel="1" readonly="1"/>
+                                             <field name="dec_consu_cur" nolabel="1" readonly="1"/>
+                                         </group>
+                                          </page>
+                                       </notebook>
+
+                                   <group>
+                                       <separator string="Stocks"/>
+                                       <newline/>
+                                       <field name="min_fixed" readonly="1"/>
+                                       <field name="real_stock" readonly="1"/>
+                                       <field name="virtual_stock" readonly="1"/>
+                                       <field name="product_state" readonly="1"/>
+                                       <newline/>
+                                       <separator string="Last Purchase"/>
+                                       <newline/>
+                                       <field name="date_last_purchase" readonly="1"/>
+                                        <field name="qty_last_purchase" readonly="1"/>
+                                        <field name="price_last_purchase" readonly="1"/>
+                                       <newline/>
+                                       <separator string="Amounts awaiting"/>
+                                       <newline/>
+                                       <field name="incoming_qty" readonly="1"/>
+                                       <field name="date_delivery" readonly="1"/>
+                                       <newline/>
+                                       <separator string="Amounts"/>
+                                       <newline/>
+                                        <field name="list_price" readonly="1"/>
+                                        <field name="net_cost" readonly="1"/>
+                                        <field name="net_net_cost" readonly="1"/>
+                                       <newline/>
+                                       <separator string="Supplier"/>
+                                       <newline/>
+                                       <field name="min_qty"/>
+                                       <field name="min_mantles"/>
+                                       <field name="min_palets"/>
+                                   </group>
+                                   </group>
+                                   <group string="Quantities and amounts" colspan="4">
+                                       <group>
+                                       <div class="oe_inline">
+                                            <label for="price_purchase"/>
+                                            <button name="update_price"
+                                                    string="(update product price)" type="object" class="oe_edit_only oe_link"/>
+                                        </div>
+                                        <field name="price_purchase" nolabel="1"/>
+                                       <field name="subtotal" readonly="1"/>
+
+                                       </group>
+                                       <group>
+                                       <field name="integer" invisible="1"/>
+                                       <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets', integer)"/>
+                                       <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles', integer)"/>
+                                       <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes', integer)"/>
+                                       <field name="unitskg" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg',integer)"/>
+                                       </group>
+                                   </group>
+                               </group>
+                            </form>
+                        </field>
+                    </page>
+                    <page string="State Supplier">
+                        <group>
+                            <group colspan="4">
+                                <group>
+                                    <field name="debit" readonly="1"/>
+                                    <field name="supp_service_days_ids" readonly="1" widget="many2many_tags"/>
+                                </group>
+                                <group>
+                                    <field name="property_product_pricelist_purchase" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="supp_transport_ids" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                    <!-- <page string="Supplier Rappels">
+                        <field name="rappel_ids">
+                            <tree string="Rappels">
+                                <field name="name"/>
+                                <field name="import_discount"/>
+                                <field name="date_start"/>
+                                <field name="date_stop"/>
+                                <field name="partner_type"/>
+                                <field name="calc_amount"/>
+                            </tree>
+                        </field>
+                    </page> -->
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="purchase_preorder_supplier_form" model="ir.ui.view">
+            <field name="name">purchase.preorder.supplier.form</field>
+            <field name="model">purchase.preorder</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Preorder" version="7.0">
+                     <group string="Supplier" colspan="4">
+                        <field name="supplier_id" colspan="4" domain="[('supplier','=',True)]"/>
+                    </group>
+                    <newline/>
+                    <footer>
+                        <button name="create_preorder" type="object" string="Create PreOrder" icon="gtk-apply"/>
+                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_preorder_suppliers" model="ir.actions.act_window">
+            <field name="name">Create Purchase PreOrder</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.preorder</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="purchase_preorder_supplier_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_preorder" model="ir.actions.act_window">
+            <field name="name">Supplier Selection</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.preorder</field>
+            <field name="view_type">form</field>
+            <field name='views'>[('view_purchase_preorder_tree', 'tree'), ('purchase_preorder_form', 'form')]</field>
+        </record>
+
+
+        <menuitem id="menu_purchase_preorder" name="Purchase PreOrder"
+            parent="base.menu_purchase_root" sequence="2" />
+        <menuitem
+            icon="STOCK_EXECUTE"
+            name="Create Purchase PreOrder"
+            action="action_preorder_suppliers"
+            id="menu_purchase_preorder_suppliers"
+            parent="menu_purchase_preorder"
+            sequence="20"/>
+        <menuitem
+            icon="STOCK_EXECUTE"
+            name="Purchase PreOrder"
+            action="action_preorder"
+            id="menu_purchase_preorder_tree"
+            parent="menu_purchase_preorder"
+            sequence="80"/>
+    </data>
+</openerp>

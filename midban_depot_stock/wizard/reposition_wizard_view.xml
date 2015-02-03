@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="reposition_wizard_view" model="ir.ui.view">
+            <field name="name">reposition.wizard.view</field>
+            <field name="model">reposition.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Reposition wizard" version="7.0">
+                    <group>
+                        <field name="capacity"/>
+                        <field name="warehouse_id"/>
+                    </group>
+                    <footer>
+                        <button name="get_reposition_list" string="Get Reposition" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_reposition_wizard" model="ir.actions.act_window">
+            <field name="name">Reposition Wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">reposition.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_reposition_wizard" id="reposition_wizard_menu"  name="Reposition wizard" parent="menu_stock_task_mgmt"/>
+
+    </data>
+</openerp>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_history,access_partner_history,model_partner_history,base.group_user,1,1,1,1
+access_unregister_partner_reason,access_unregister_partner_reason,model_unregister_partner_reason,base.group_user,1,1,1,1
+access_supplier_transport,access_supplier_transport,model_supplier_transport,base.group_user,1,1,1,1
+access_week_days,access_week_days,model_week_days,base.group_user,1,1,1,1
+access_time_slot,access_time_slot,model_time_slot,base.group_user,1,1,1,1
+

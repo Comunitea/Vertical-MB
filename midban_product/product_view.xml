@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+         <record id="midban_view_product_extra_form" model="ir.ui.view">
+            <field name="name">midban.view.product.extra.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form[@string='Product']/sheet" position="before">
+                        <header>
+                            <button name="logic_validated" string="Logistic Validated" attrs="{'invisible': [('state2','in',['commercial_pending','validated','registered','unregistered','denied'])]}" class="oe_highlight"/>
+                            <button name="commercial_validated" string="Commercial Validated" attrs= "{'invisible': [('state2','in',['logic_pending','validated','registered','unregistered','denied'])]}" class="oe_highlight"/>
+                            <button name="back_pending" string="Back" attrs="{'invisible': [('state2','in',['val_pending','registered','unregistered','denied'])]}" />
+                            <button name="%(action_process_deny_product)d" string="Deny" attrs= "{'invisible': [('state2','in',['registered','unregistered','denied'])]}" type="action" class="oe_link"/>
+                            <button name="active" string="Register" attrs="{'invisible': [('state2','!=','validated')]}" class="oe_highlight"/>
+                            <newline/>
+                            <field name="state2" widget="statusbar"/>
+                     </header>
+                </xpath>
+                <field name="sale_ok" position="before">
+                    <div>
+                        <button name="%(action_process_unregister_product)d" string="Unregister"
+                                type="action"
+                                class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>
+                        <button name="register_again" string="Register"
+                                type="object"
+                                class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
+                    </div>
+                </field>
+
+                <xpath expr="//page[@string='Information']/group/group[2]" position="after">
+                    <group>
+                        <field name="product_class" string="Sale Type"/>
+                        <field name="ean14"/>
+                        <field name="product_type"/>
+                        <field name="temp_type"/>
+                        <field name="temperature"/>
+                    </group>
+                    <group string="Product Information">
+                        <field name="var_weight"/>
+                        <field name="consignment" />
+                        <field name="bulk"/>
+                        <field name="mark"/>
+                        <field name="scientific_name"/>
+                        <field name="web"/>
+                        <div>
+                            <label for="glazed"/>
+                            <field name="glazed"/>
+                            <field name="glazed_percent" class="oe_inline" attrs="{'invisible': [('glazed','=',False)]}"/>
+                            <label for="glazed_percent" class="oe_inline"  attrs="{'invisible': [('glazed','=',False)]}"/>
+                        </div>
+                        <br/>
+                        <field name="product_allergen_ids" widget="many2many_tags"/>
+                    </group>                    <group string="Nutritional Information">
+                        <field name="first_course"/>
+                        <field name="second_course"/>
+                        <field name="dessert"/>
+                        <field name="breakfast_snack"/>
+                        <field name="accompaniment"/>
+                    </group>
+                </xpath>
+
+                <field name="description_purchase" position="after">
+                    <group colspan="4" col="8" string="Supplier Units">
+                        <field name="supplier_kg_un"/>
+                        <field name="supplier_un_width"/>
+                        <field name="supplier_un_height"/>
+                        <field name="supplier_un_length"/>
+                        <field name="supplier_un_ca"/>
+                        <field name="supplier_ca_width"/>
+                        <field name="supplier_ca_height"/>
+                        <field name="supplier_ca_length"/>
+                        <field name="supplier_ca_ma"/>
+                        <field name="supplier_ma_width"/>
+                        <field name="supplier_ma_height"/>
+                        <field name="supplier_ma_length"/>
+                        <field name="supplier_ma_pa"/>
+                        <field name="supplier_pa_width"/>
+                        <field name="supplier_pa_height"/>
+                        <field name="supplier_pa_length"/>
+                    </group>
+                </field>
+
+                <field name="description_sale"  position="after">
+
+                    <group colspan="4" col="8" string="Mandatory Units">
+                        <field name="kg_un"/>
+                        <field name="un_width"/>
+                        <field name="un_height"/>
+                        <field name="un_length"/>
+                        <field name="un_ca"/>
+                        <field name="ca_width"/>
+                        <field name="ca_height"/>
+                        <field name="ca_length"/>
+                        <field name="ca_ma"/>
+                        <field name="ma_width"/>
+                        <field name="ma_height"/>
+                        <field name="ma_length"/>
+                        <field name="ma_pa"/>
+                        <field name="pa_width"/>
+                        <field name="pa_height"/>
+                        <field name="pa_length"/>
+                    </group>
+
+                </field>
+
+                 <notebook position="inside">
+                    <page string="History">
+                        <field name="history_ids">
+                            <tree string="Product History">
+                                <field name="user_id"/>
+                                <field name="date"/>
+                                <field name="activity"/>
+                                <field name="reason"/>
+                            </tree>
+                            <form string="Product History">
+                                <field name="user_id"/>
+                                <field name="date"/>
+                                <field name="activity"/>
+                                <field name="reason"/>
+                                <field name="comment" colspan="4"/>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+
+                <label for="name" position="before">
+                    <group>
+                        <field name="unregister_reason_id" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
+                        <field name="deny_reason_id" attrs="{'invisible': [('state2','!=','denied')]}"/>
+                        <button name="flow_restart" string="Return to validate pending"
+                                type="object"
+                                class="oe_link" attrs="{'invisible': [('state2','!=','denied')]}"
+                                confirm="Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"/>
+                    </group>
+                </label>
+                <!-- <div name="options" position="before">
+                    <label for="categ_id"/>
+                    <h2><field name="categ_id"/></h2>
+                </div> -->
+
+                <!-- <field name="default_code" position="before">
+                    <field name="ean14"/>
+                </field> -->
+                <field name="standard_price" position="after">
+                    <field name="margin"/>
+                    <field name="last_purchase_price"/>
+                    <field name="life"/>
+                </field>
+            </field>
+        </record>
+        
+        <!-- Search view for products. Adds filters to see unregistered products, deny products, and in registering
+        process products -->
+        <record id="midban_product_search_form_view" model="ir.ui.view">
+            <field name="name">midban.product.search.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                   <filter string="Consumable" position="after">
+                         <separator/>
+                         <filter string="Product registering process" name="product_registering" domain="[('state2','in',['val_pending','commercial_pending','logic_pending','validated']),('active','=',False)]"/>
+                         <filter string="Product unregistered" name="unregistered_product" domain="[('state2','=','unregistered'),('active','=',False)]"/>
+                         <filter string="Product denied" name="denied_product" domain="[('state2','=','denied'),('active','=',False)]"/>
+                   </filter>
+            </field>
+        </record>
+
+         <!-- Tree view for unregister product reasons model -->
+        <record id="midban_unregister_product_reason_view_tree" model="ir.ui.view">
+            <field name="name">midban.unregister.product.reason.view.tree</field>
+            <field name="model">unregister.product.reason</field>
+            <field name="arch" type="xml">
+                <tree string="Unregister reasons">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for unregister product reasons model -->
+        <record id="midban_unregister_product_reason_view_form" model="ir.ui.view">
+            <field name="name">midban.unregister.product.reason.view.form</field>
+            <field name="model">unregister.product.reason</field>
+            <field name="arch" type="xml">
+                <form string="Unregister reasons" version="7.0">
+                    <sheet>
+                        <group>
+                    <field name="name"/>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action view unregister product reasons model -->
+        <record id="action_unregister_product_reason" model="ir.actions.act_window">
+            <field name="name">product unregister reasons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">unregister.product.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new unregister reason.
+              </p><p>
+                Manage the unregister reasons. Reasons defined here can be selected on the
+                unregister wizard,
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu for product unregister reasons under Sales/Configuration/Products) -->
+        <menuitem action="action_unregister_product_reason" id="menu_unregister_product_reason_sales" name="Unregister product reasons" sequence="4" parent="product.prod_config_main"/>
+        <!-- Menu for product unregister reasons under Purchases/Configuration/Products) -->
+        <menuitem action="action_unregister_product_reason" id="menu_unregister_product_reason_purchases" name="Unregister product reasons" sequence="4" parent="purchase.menu_product_in_config_purchase"/>
+        <!-- Menu for product unregister reasons under Stock/Configuration/Products) -->
+        <menuitem action="action_unregister_product_reason" id="menu_unregister_product_reason_stock" name="Unregister product reasons" sequence="4" parent="stock.menu_product_in_config_stock"/>
+
+        <!-- Tree view for product allergen model -->
+        <record id="midban_product_allergen_view_tree" model="ir.ui.view">
+            <field name="name">midban.product_allergen.view.tree</field>
+            <field name="model">unregister.product.reason</field>
+            <field name="arch" type="xml">
+                <tree string="Product allergen">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for product allergen model -->
+        <record id="midban_product_allergen_view_form" model="ir.ui.view">
+            <field name="name">midban.product_allergen.view.form</field>
+            <field name="model">unregister.product.reason</field>
+            <field name="arch" type="xml">
+                <form string="Product allergen" version="7.0">
+                    <sheet>
+                        <group>
+                    <field name="name"/>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action view for product allergen model -->
+        <record id="action_product_allergen" model="ir.actions.act_window">
+            <field name="name">action_product_allergen</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.allergen</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new type of allergen.
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu for product allergens under Purchases/Configuration/Products) -->
+        <menuitem name="Products allergens" id="menu_product_allergen_purchase" action="action_product_allergen"
+           parent="purchase.menu_product_in_config_purchase" sequence="20"/>
+        <!-- Menu for product allergens under Sales/Configuration/Products) -->
+        <menuitem name="Products allergens" id="menu_product_allergen_sale" action="action_product_allergen"
+            parent="product.prod_config_main" sequence="30"/>
+        <!-- Menu for product allergens under Stock/Configuration/Products) -->
+        <menuitem name="Products allergens" id="menu_product_allergen_stock" action="action_product_allergen"
+            parent="stock.menu_product_in_config_stock" sequence="30"/>
+
+        <!-- Tree view for product deny reason model -->
+        <record id="midban_deny_product_reason_view_tree" model="ir.ui.view">
+            <field name="name">midban.deny.product.reason.view.tree</field>
+            <field name="model">deny.product.reason</field>
+            <field name="arch" type="xml">
+                <tree string="Deny reasons">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for product deny reason model -->
+        <record id="midban_deny_product_reason_view_form" model="ir.ui.view">
+            <field name="name">midban.deny.product.reason.view.form</field>
+            <field name="model">deny.product.reason</field>
+            <field name="arch" type="xml">
+                <form string="Deny reasons" version="7.0">
+                    <sheet>
+                        <group>
+                    <field name="name"/>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for product deny reason model -->
+        <record id="action_deny_product_reason" model="ir.actions.act_window">
+            <field name="name">Product deny reasons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">deny.product.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new deny reason.
+              </p><p>
+                Manage the deny reasons. Reasons defined here can be selected on the
+                deny wizard,
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu for product deny reasons under Sales/Configuration/Products) -->
+        <menuitem action="action_deny_product_reason" id="menu_deny_product_reason_sales" name="Deny product reasons" sequence="4" parent="product.prod_config_main"/>
+        <!-- Menu for product deny reasons under Purchases/Configuration/Products) -->
+        <menuitem action="action_deny_product_reason" id="menu_deny_product_reason_purchases" name="Deny product reasons" sequence="4" parent="purchase.menu_product_in_config_purchase"/>
+         <!-- Menu for product deny reasons under Stock/Configuration/Products) -->
+        <menuitem action="action_deny_product_reason" id="menu_deny_product_reason_stock" name="Deny product reasons" sequence="4" parent="stock.menu_product_in_config_stock"/>
+
+
+        <!-- Tree view for product deny reason model -->
+        <record id="midban_product_temp_type_view_tree" model="ir.ui.view">
+            <field name="name">midban_product_temp_type_view_tree</field>
+            <field name="model">temp.type</field>
+            <field name="arch" type="xml">
+                <tree string="Temp Type">
+                    <field name="name"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for product temp type model -->
+        <record id="midban_product_temp_type_view_form" model="ir.ui.view">
+            <field name="name">midban_product_temp_type_view_form</field>
+            <field name="model">temp.type</field>
+            <field name="arch" type="xml">
+                <form string="Temp Type" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="type"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for product tempo type model -->
+        <record id="action_temp_type" model="ir.actions.act_window">
+            <field name="name">Temperature type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">temp.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new temperature type.
+              </p><p>
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu for product temp type under Sales/Configuration/Products) -->
+        <menuitem action="action_temp_type" id="menu_temp_type_sales" name="Temperature type" sequence="6" parent="product.prod_config_main"/>
+        <!-- Menu for product temp type under Purchases/Configuration/Products) -->
+        <menuitem action="action_temp_type" id="menu_temp_type_purchases" name="Temperature type" sequence="6" parent="purchase.menu_product_in_config_purchase"/>
+         <!-- Menu for product temp type under Stock/Configuration/Products) -->
+        <menuitem action="action_temp_type" id="menu_temp_type_stock" name="Temperature type" sequence="6" parent="stock.menu_product_in_config_stock"/>
+
+        <!-- <record model="res.groups" id="group_no_variants">
+            <field name="category_id" ref="base.module_category_usability"/>
+            <field name="name">View Product Variants</field>
+        </record> -->
+
+        <!-- <menuitem id="product.menu_products" action="product.product_normal_action_sell" parent="base.menu_product" groups="midban_product.group_no_variants" sequence="10"/> -->
+
+
+    </data>
+</openerp>

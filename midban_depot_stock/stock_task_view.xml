@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Form view stock.task -->
+        <record id="stock_task_view_form" model="ir.ui.view">
+            <field name="name">stock.task.view.form</field>
+            <field name="model">stock.task</field>
+            <field name="arch" type="xml">
+                <form string="Warehouse Tasks">
+                    <header>
+                        <button name="finish_task"  string="Finish Task" states="assigned" type="object" class="oe_highlight"/>
+                        <button name="cancel_task"  string="Cancel Task" states="assigned,done" type="object"/>
+                        <button name="assign_task"  string="Open Task" states="canceled" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="canceled,assigned,done"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="type"/>
+                                <field name="picking_id"/>
+                                <field name="wave_id" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
+                            </group>
+                            <group>
+                                 <field name="machine_id"/>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="duration" widget="float_time"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view stock.task -->
+        <record id="stock_task_view_tree" model="ir.ui.view">
+            <field name="name">stock.task.view.tree</field>
+            <field name="model">stock.task</field>
+            <field name="arch" type="xml">
+                <tree string="Warehouse Tasks">
+                    <field name="user_id"/>
+                    <field name="machine_id"/>
+                    <field name="type"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="state"/>
+                    <field name="picking_id"/>
+                    <field name="wave_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search view stock.task -->
+        <record id="stock_task_view_search" model="ir.ui.view">
+            <field name="name">stock.task.view.search</field>
+            <field name="model">stock.task</field>
+            <field name="arch" type="xml">
+                <search string="Search Tasks">
+                    <field name="user_id" string="User"/>
+                    <field name="type" string="type"/>
+                    <field name="machine_id" string="Machine"/>
+                    <field name="date_start" string="Date Start"/>
+                    <field name="date_end" string="Date End"/>
+                    <field name="date_end" string="picking_id"/>
+                    <field name="state" string="State"/>
+                    <filter string="Assigned" domain="[('state', '=', 'assigned')]"/>
+                    <filter string="Finished" domain="[('state', '=', 'done')]"/>
+                    <filter string="Finished" domain="[('state', '=', 'canceled')]"/>
+                    <group expand="1" string="Group By...">
+                        <filter string="User" domain="[]" context="{'group_by': 'user_id'}"/>
+                        <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Machine" domain="[]" context="{'group_by': 'machine_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+         <!-- Action for stock.task -->
+        <record id="action_stock_task" model="ir.actions.act_window">
+            <field name="name">Tasks</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a Task.
+                </p><p>
+                It should be created by a wizard and not manually.
+                </p>
+            </field>
+        </record>
+
+        <!-- Overwrite sequence -->
+        <menuitem id="stock.menu_stock_inventory_control" name="Inventory Control" parent="stock.menu_stock_root" sequence="3"/>
+        <!-- Global menu of warehouse task management -->
+        <menuitem id="menu_stock_task_mgmt" name="Warehouse Task Management" parent="stock.menu_stock_root" sequence="2"/>
+        <!-- Task menu under  Stock/Warehouse Task Management-->
+        <menuitem id="stock_task_menu" action="action_stock_task" name="Warehouse Tasks" parent="menu_stock_task_mgmt" sequence="1"/>
+
+
+    </data>
+</openerp>

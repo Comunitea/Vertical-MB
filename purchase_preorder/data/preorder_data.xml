@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for purchase.preorder -->
+        <record id="seq_purchase_preorder_type" model="ir.sequence.type">
+            <field name="name">Purchase PreOrder</field>
+            <field name="code">purchase.preorder</field>
+        </record>
+
+        <record id="seq_purchase_preorder" model="ir.sequence">
+            <field name="name">Purchase PreOrder</field>
+            <field name="code">purchase.preorder</field>
+            <field name="prefix">PRE-PO/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>
+

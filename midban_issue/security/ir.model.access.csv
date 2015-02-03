@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_issue_type,access_issue_type,model_issue_type,base.group_user,1,1,1,1
+access_issue_reason,access_issue_reason,model_issue_reason,base.group_user,1,1,1,1
+access_issue,access_issue,model_issue,base.group_user,1,1,1,1
+access_product_infol,access_product_info,model_product_info,base.group_user,1,1,1,1
+access_issue_report,access_issue_report,model_issue_report,base.group_user,1,1,1,1

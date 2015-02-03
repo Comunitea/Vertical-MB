@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!-- Load qualitative comments for sale order lines -->
+        <record id="rod" model="qualitative.note">
+            <field name="name">A rodajas</field>
+            <field name="code">ROD</field>
+        </record>
+
+        <record id="fil" model="qualitative.note">
+            <field name="name">Fileteado</field>
+            <field name="code">FIL</field>
+        </record>
+
+        <record id="se" model="qualitative.note">
+            <field name="name">Sin Escatas</field>
+            <field name="code">SE</field>
+        </record>
+
+        <record id="sUP" model="qualitative.note">
+            <field name="name">Supremas</field>
+            <field name="code">SUP</field>
+        </record>
+
+        <record id="MAR" model="qualitative.note">
+            <field name="name">Mariposa</field>
+            <field name="code">MAR</field>
+        </record>
+
+        <record id="rod_mer" model="qualitative.note">
+            <field name="name">A rodajas con Mermas</field>
+            <field name="code">ROD+MER</field>
+        </record>
+
+        <record id="fil_mer" model="qualitative.note">
+            <field name="name">Fileteado con Mermas</field>
+            <field name="code">FIL+MER</field>
+        </record>
+
+        <record id="se_mer" model="qualitative.note">
+            <field name="name">Sin Escatas con Mermas</field>
+            <field name="code">SE+MER</field>
+        </record>
+
+        <record id="sup_mer" model="qualitative.note">
+            <field name="name">A rodajas con Mermas</field>
+            <field name="code">SUP+MER</field>
+        </record>
+
+        <record id="mar_mer" model="qualitative.note">
+            <field name="name">A rodajas con Mermas</field>
+            <field name="code">MAR+MER</field>
+        </record>
+        
+        <record id="picking_type_ultrafresh" model="stock.picking.type">
+            <field name="name">UltraFresh purchases</field>
+            
+            <field name="sequence_id" ref="stock.seq_picking_internal"/>
+            <field name="code">incoming</field>
+            <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
+            <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
+        </record>
+
+        <!-- Route Ultrafresh Depot -->
+        <record id="route_ultrafhresh_depot" model='stock.location.route'>
+            <field name="name">Ultra Fresh</field>
+            <field name="sequence">20</field>
+            <field name="product_selectable" eval="True"/>
+            <field name="product_categ_selectable" eval="True"/>
+        </record>
+
+        <!-- Rule for ultrafresh froducts, goinf from suppliers to output warehouse -->
+        <record id="procurement_rule_ultrafhresh_depot" model="procurement.rule">
+            <field name="name">UF: Suppliers → Output</field>
+            <field name="action">move</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="route_id" ref="route_ultrafhresh_depot"/>
+            <field name="location_id" ref="stock.stock_location_customers"/>
+            <field name="location_src_id" ref="stock.stock_location_customers"/>
+            <field name="procure_method">make_to_stock</field>
+            <field name="picking_type_id" ref="stock.picking_type_out"/>
+        </record>
+    </data>
+</openerp>

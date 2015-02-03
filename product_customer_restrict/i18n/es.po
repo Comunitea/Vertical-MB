@@ -1,0 +1,159 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* product_customer_restrict
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-31 13:17+0000\n"
+"PO-Revision-Date: 2014-12-31 13:17+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_customer_restrict
+#: field:partner.rules,category_id:0
+msgid "Category"
+msgstr "Categoría"
+
+#. module: product_customer_restrict
+#: constraint:partner.rules:0
+msgid "Category repeated.\n"
+"Category is alredady defined in this                     other rule, maybe in some parent customer rule"
+msgstr "Category repetida.\n"
+"La categoría ya está definida en otra regla, quizás en alguna regla de cliente padre"
+
+#. module: product_customer_restrict
+#: field:partner.rules,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: product_customer_restrict
+#: field:partner.rules,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: product_customer_restrict
+#: field:partner.rules,partner_id:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: product_customer_restrict
+#: view:product.template:product_customer_restrict.midban_depot_product_form_view
+msgid "Customer list"
+msgstr "Listado Cliente"
+
+#. module: product_customer_restrict
+#: view:res.partner:product_customer_restrict.view_partner_rules_form
+msgid "Customer rules"
+msgstr "Reglas de Cliente"
+
+#. module: product_customer_restrict
+#: field:partner.rules,end_date:0
+msgid "End Date"
+msgstr "Fecha Fin"
+
+#. module: product_customer_restrict
+#: selection:res.partner,rule_type:0
+msgid "Exclusive"
+msgstr "Exclusivo"
+
+#. module: product_customer_restrict
+#: view:product.template:product_customer_restrict.midban_depot_product_form_view
+#: field:product.template,exclusive_ids:0
+msgid "Exclusive customers"
+msgstr "Cliestes Exclusivos"
+
+#. module: product_customer_restrict
+#: view:res.partner:product_customer_restrict.view_partner_rules_form
+#: field:res.partner,exclusive_ids:0
+msgid "Exclusive products"
+msgstr "Productos Exclusivos"
+
+#. module: product_customer_restrict
+#: field:partner.rules,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: product_customer_restrict
+#: field:partner.rules,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: product_customer_restrict
+#: field:partner.rules,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. module: product_customer_restrict
+#: field:res.partner,parent_left:0
+msgid "Left Parent"
+msgstr "Padre izquierdo"
+
+#. module: product_customer_restrict
+#: model:ir.model,name:product_customer_restrict.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: product_customer_restrict
+#: model:ir.model,name:product_customer_restrict.model_product_product
+#: field:partner.rules,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_customer_restrict
+#: model:ir.model,name:product_customer_restrict.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: product_customer_restrict
+#: constraint:partner.rules:0
+msgid "Product rule repeated.\n"
+"Product is alredady defined in                     other rule, maybe in some parent customer rule"
+msgstr "Regla de producto repetida.\n"
+"El producto ya está definido en                     otra regla, tal vez en alguna regla de las empresas padre"
+
+#. module: product_customer_restrict
+#: field:res.partner,parent_right:0
+msgid "Right Parent"
+msgstr "Padre derecho"
+
+#. module: product_customer_restrict
+#: field:res.partner,rule_type:0
+msgid "Rule type"
+msgstr "Tipo Regla"
+
+#. module: product_customer_restrict
+#: field:res.partner,rule_ids:0
+msgid "Rules"
+msgstr "Reglas"
+
+#. module: product_customer_restrict
+#: constraint:partner.rules:0
+msgid "Rules can not be empty. Please define a product or                       category."
+msgstr "Las reglas no pueden estar vacías. Por favor defina un producto o                       categoría."
+
+#. module: product_customer_restrict
+#: model:ir.model,name:product_customer_restrict.model_partner_rules
+msgid "Rules model associated to customer"
+msgstr "Modelo de reglas asociadas al cliente"
+
+#. module: product_customer_restrict
+#: selection:res.partner,rule_type:0
+msgid "Specific catalog"
+msgstr "Catálogo Específico"
+
+#. module: product_customer_restrict
+#: field:partner.rules,start_date:0
+msgid "Start Date"
+msgstr "Fecha Inicio"
+
+#. module: product_customer_restrict
+#: constraint:res.partner:0
+msgid "There are rules of different type defined in parent                     partners or child partners of this group"
+msgstr "Existen reglas de diferente tipo definidas en empresas                     padre o hijas de este grupo"
+

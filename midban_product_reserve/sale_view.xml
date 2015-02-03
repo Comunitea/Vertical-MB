@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+
+        <record id="action_sale_reserved" model="ir.actions.act_window">
+            <field name="name">Reserved Sales</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">
+                {
+                    'search_default_my_sale_orders_filter': 0,
+                    'search_default_reserved_sale_filter': 1,
+                    'default_reserved_sale': 1,
+                }
+            </field>
+           <!--  <field name="domain">[('state','in',('draft','sent','cancel'))]</field> -->
+            <!-- <field name="search_view_id" ref="view_sales_order_filter_add_reserved_filter"/> -->
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quatation marked as reserved sale
+              </p><p>
+                It is a normal sale order. but the sales created from reserved are marked like reserved sales
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_sale_reserved"
+                action="action_sale_reserved" parent="base.menu_sales"
+                sequence="7"/>
+
+        <record id="sale_view_order_form_add_reserved_check" model="ir.ui.view">
+            <field name="name">sale.view.order.form.add.reserved.check</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <h3>
+                    <label string="Is a reserve?"/>
+                    <field name="reserved_sale" class="oe_inline"/>
+                    </h3>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_sales_order_filter_add_reserved_filter" model="ir.ui.view">
+            <field name="name">sale.order.list.select.add_reserved_filter</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <search string="Search Sales Order">
+                    <field name="product_id" position="after">
+                        <filter string="Reserves" domain="[('reserved_sale','=',1)]" name="reserved_sale_filter"/>    
+                    </field>
+               </search>
+            </field>
+        </record>
+
+        <!-- Removing default filter of my  and avoid show reserved sales-->
+        <record id="sale.action_quotations" model="ir.actions.act_window">
+            <field name="name">Quotations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">
+                {
+                    'search_default_my_sale_orders_filter': 0,
+                    'search_default_reserved_sale_filter': 0,
+                }
+            </field>
+            <field name="domain">[('state','in',('draft','sent','cancel'))]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quotation, the first step of a new sale.
+              </p><p>
+                Odoo will help you handle efficiently the complete sale flow:
+                from the quotation to the sales order, the
+                delivery, the invoicing and the payment collection.
+              </p><p>
+                The social feature helps you organize discussions on each sales
+                order, and allow your customers to keep track of the evolution
+                of the sales order.
+              </p>
+            </field>
+        </record>
+
+        <!-- Removing default filter of my and avoid show reserved sales -->
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="name">Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="context">
+                {
+                    'search_default_my_sale_orders_filter': 0,
+                }
+            </field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a quotation that can be converted into a sales
+                    order.
+                </p><p>
+                    Odoo will help you efficiently handle the complete sales flow:
+                    quotation, sales order, delivery, invoicing and payment.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_variable_pricelist,access_variable_pricelist,model_variable_pricelist,base.group_user,1,1,1,1
+access_pricelist_range,access_pricelist_range,model_pricelist_range,base.group_user,1,1,1,1
+access_pricelist_margin,access_pricelist_margin,model_pricelist_margin,base.group_user,1,1,1,1
+access_change_variable_pricelist,access_change_variable_pricelist,model_change_variable_pricelist,base.group_user,1,1,1,1
+access_variable_change_line,access_variable_change_line,model_variable_change_line,base.group_user,1,1,1,1
+access_change_supplier_cost,access_change_supplier_cost,model_change_supplier_cost,base.group_user,1,1,1,1
+access_supplier_change_line,access_supplier_change_line,model_supplier_change_line,base.group_user,1,1,1,1
+access_change_product_pvp,access_change_product_pvp,model_change_product_pvp,base.group_user,1,1,1,1
+access_pricelist_pvp_line,access_pricelist_pvp_line,model_pricelist_pvp_line,base.group_user,1,1,1,1
+
+access_specific_customer_pvp,access_specific_customer_pvp,model_specific_customer_pvp,base.group_user,1,1,1,1
+access_specific_pvp_line,access_specific_pvp_line,model_specific_pvp_line,base.group_user,1,1,1,1
+access_table_pricelist_prices,access_table_pricelist_prices,model_table_pricelist_prices,base.group_user,1,1,1,1
+
