@@ -859,17 +859,17 @@ class stock_move(osv.osv):
                         vls = {'trans_route_id': procurement.trans_route_id.id}
                         pick_obj.write(cr, uid, vals['picking_id'], vls,
                                        context=context)
-        # if vals.get('real_weight', False):
-        #     t_uom = self.pool.get('product.uom')
-        #     real_weight = vals['real_weight']
-        #     if real_weight:
-        #         uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
-        #         if uom_ids:
-        #             vals = {
-        #                 'product_uos': uom_ids[0],
-        #                 'product_uos_qty': real_weight
-        #             }
-        #             self.write(cr, uid, ids, vals, context=context)
+        if vals.get('real_weight', False):
+            t_uom = self.pool.get('product.uom')
+            real_weight = vals['real_weight']
+            if real_weight:
+                uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
+                if uom_ids:
+                    vals = {
+                        'product_uos': uom_ids[0],
+                        'product_uos_qty': real_weight
+                    }
+                    self.write(cr, uid, ids, vals, context=context)
         return res
 
     def create(self, cr, uid, vals, context=None):

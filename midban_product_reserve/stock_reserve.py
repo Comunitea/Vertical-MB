@@ -112,6 +112,7 @@ class StockReservation(models.Model):
                 vals['product_uos'] = box.id
                 vals['product_uom'] = unit.id
                 vals['choose_unit'] = 'box'
+        vals['name'] = '/'
         res = super(StockReservation, self).create(vals)
         return res
 
