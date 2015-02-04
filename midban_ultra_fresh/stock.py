@@ -19,6 +19,8 @@
 #
 ##############################################################################
 from openerp import models, api, fields
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
 
 
 class stock_move(models.Model):
@@ -50,6 +52,10 @@ class stock_move(models.Model):
                             'product_uos': uom_obj[0].id,
                             'product_uos_qty': real_weight
                         })
+                    else:
+                        raise except_orm(_('Error'),
+                                         _('Not founded kg uom, set the like \
+                                            type field'))
                     self.procurement_id.sale_line_id.write(vals)
         res = super(stock_move, self).write(vals)
         return res

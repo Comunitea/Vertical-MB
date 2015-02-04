@@ -110,12 +110,12 @@ msgstr "Creado en"
 #. module: midban_ultra_fresh
 #: field:calc.ultrafresh.price.wzd,date:0
 msgid "Date"
-msgstr "Fecha"
+msgstr "Fecha Busqueda compras"
 
 #. module: midban_ultra_fresh
 #: field:calc.ultrafresh.price.wzd,date_sales:0
 msgid "Date for sales to change"
-msgstr "Fecha para ventas a cambiar"
+msgstr "Fecha ventas afectadas"
 
 #. module: midban_ultra_fresh
 #: field:sale.order.line,detail_note:0

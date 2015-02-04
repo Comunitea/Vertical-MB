@@ -166,7 +166,6 @@ class sale_order_line(osv.Model):
             uom_record = prod_obj.uom_id
         compare_qty = float_compare(prod_obj.virtual_stock_conservative, qty,
                                     precision_rounding=uom_record.rounding)
-        # import ipdb; ipdb.set_trace()
         fresh_product = prod_obj.product_class in ['fresh', 'ultrafresh']
         if fresh_product:
             del res['warning']  # Delete warning from super
@@ -179,7 +178,7 @@ class sale_order_line(osv.Model):
                  max(0, prod_obj.qty_available), uom_record.name)
             warning_msgs += _("Not enough stock ! : ") + warn_msg + "\n\n"
 
-        #update of warning messages
+        # update of warning messages
         if warning_msgs:
             warning = {
                 'title': _('Configuration Error!'),

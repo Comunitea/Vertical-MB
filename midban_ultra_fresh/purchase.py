@@ -58,7 +58,6 @@ class purchase_order_line(models.Model):
         """
         Need call super???
         """
-        # import ipdb; ipdb.set_trace()
         # res = super(purchase_order_line, self)._amount_line(prop, arg)
         for line in self:
             qty = line.ultrafresh_po and line.purchased_kg or line.product_qty

@@ -30,9 +30,14 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     """
     _name = "calc.ultrafresh.price.wzd"
 
-    date = fields.Date('Date', default=fields.Date.today())
+    date = fields.Date('Date', default=fields.Date.today(),
+                       help="Date to search for approved purchase\
+                             order lines, and get the above lines.")
     date_sales = fields.Date('Date for sales to change',
-                             default=fields.Date.today())
+                             default=fields.Date.today(),
+                             help="Date to search for not cancel or done\
+                                   sale order lines tthat will be writen\
+                                   with the kg price")
     line_ids = fields.One2many('calc.price.line', 'wizard_id', 'Change lines')
 
     @api.onchange('date')
@@ -134,6 +139,5 @@ class calc_price_line(models.TransientModel):
     # @api.onchange('calc_margin')
     # def onchange_calc_margin(self):
     # """Por que esto no funciona y el de arriba si WTF!!!!!!!!!!!"""
-    #     import ipdb; ipdb.set_trace()
     #     cost = self.avg_price_kg
     #     self.final_pvp = (cost / (1 - (self.calc_margin / 100.0)))

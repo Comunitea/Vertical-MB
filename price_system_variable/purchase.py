@@ -272,6 +272,8 @@ class purchase_order_line(osv.Model):
         if context is None:
             context = {}
         sup = super(purchase_order_line, self)
+        # In order to avoid not calc ther pricelist if it is 0.0
+        my_price_unit = price_unit and price_unit or False
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
                                       context=context,
@@ -280,7 +282,7 @@ class purchase_order_line(osv.Model):
                                       fiscal_position_id,
                                       date_planned=date_planned,
                                       name=name,
-                                      price_unit=price_unit,
+                                      price_unit=my_price_unit,
                                       state=state)
         # All this COPY-PASTED in order to found the pricelist rule type
         # (field base) apply to current purchase

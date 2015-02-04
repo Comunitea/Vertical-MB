@@ -33,7 +33,6 @@ class ultrafresh_report_parser(models.AbstractModel):
         report = report_obj._get_report_from_name(report_name)
         docs = []
         products = {}
-        # import ipdb; ipdb.set_trace()
         for order in self.env[report.model].browse(self._ids):
             docs.append(order)
             for line in order.order_line:
@@ -48,7 +47,6 @@ class ultrafresh_report_parser(models.AbstractModel):
             'docs': docs,
             'products': products,
         }
-        # import ipdb; ipdb.set_trace()
         return report_obj.render(report_name, docargs)
 
 

@@ -18,8 +18,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, osv
+from openerp import models, fields, api
 from openerp.tools.translate import _
+from openerp.exceptions import except_orm
 
 
 class sale_from_reserve_wzd(models.TransientModel):
@@ -47,7 +48,7 @@ class sale_from_reserve_wzd(models.TransientModel):
     @api.multi
     def _prepare_order_vals(self, reserve):
         order_policy = reserve.invoice_state == 'none' and 'picking' or \
-            'invoiced_reserved'
+            'invoiced_reserve'
         res = {
             'partner_id': reserve.partner_id2.id,
             'pricelist_id': reserve.partner_id2.property_product_pricelist.id,
@@ -69,9 +70,10 @@ class sale_from_reserve_wzd(models.TransientModel):
         if reserve.choose_unit == 'box':
             uom_qty = reserve.product_id.un_ca * uos_qty
         if uom_qty > reserve.pending_qty:
-                raise osv.except_osv(_('Error!'),
-                                     _('Only %s %s pending in the reserve') %
-                                    (reserve.pending_qty, reserve.product_uom))
+                raise except_orm(_('Error!'),
+                                 _('Only %s %s pending in the reserve') %
+                                  (reserve.pending_qty,
+                                   reserve.product_uom.name))
         res = {
             'order_id': so.id,
             'name': reserve.product_id.name,
@@ -101,11 +103,11 @@ class sale_from_reserve_wzd(models.TransientModel):
         if reserve.choose_unit == 'box':
             wzd_qty = reserve.product_id.un_ca * self.qty
         new_served_qty = reserve.served_qty + wzd_qty
-        reserve.write({'served_qty': new_served_qty})
         vals = self._prepare_order_vals(reserve)
         so = t_order.create(vals)
         vals = self._prepare_order_line_vals(reserve, so)
         t_line.create(vals)
+        reserve.write({'served_qty': new_served_qty})
         # Confirm the sale order
         so.action_button_confirm()
         # Open sale order in form view
