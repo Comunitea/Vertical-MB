@@ -560,16 +560,15 @@ class edi(models.Model):
             else:
                 new_fields['supplier_invoice_number'] = numfac
 
-        # Check date SOBRESCRIBIRLA
+        # Check date descomentar y crear incidencia
         if root.find('FECHA') is not None:
             inv_date = root.find('FECHA').text
             st_dat = datetime.strptime(inv_date, "%Y%m%d").strftime("%Y-%m-%d")
-            # if invoice.date_invoice:
-            #     if invoice.date_invoice != st_dat:
-            #         log.error(_(u'Diferent Invoice dates'))
-            # else:
-            #     new_fields['date_invoice'] = st_dat
-            new_fields['date_invoice'] = st_dat
+            if invoice.date_invoice:
+                if invoice.date_invoice != st_dat:
+                    log.error(_(u'Diferent Invoice dates'))
+            else:
+                new_fields['date_invoice'] = st_dat
 
         # # Check payment type
         # no se si se corresponde con el pament term o que
@@ -586,7 +585,7 @@ class edi(models.Model):
         #         new_fields['date_invoice'] = st_dat
         # Write new fields in the invoice
 
-        # Check for commets
+        # Check for commets,CONCATENAR
         if root.find('OBSFAC') is not None:
             obsfac = root.find('OBSFAC').text
             if invoice.comment:
@@ -607,7 +606,7 @@ class edi(models.Model):
             else:
                 new_fields['currency_id'] = cur_obj.id
 
-        # Check due date
+        # Check due date, GENERA INCIDENCIA,
         if root.find('./VENCFAC/VENCIMIENTO') is not None:
             ven_date = root.find('./VENCFAC/VENCIMIENTO').text
             vn_dat = datetime.strptime(ven_date, "%Y%m%d").strftime("%Y-%m-%d")
