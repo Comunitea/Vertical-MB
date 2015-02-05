@@ -432,7 +432,7 @@ class assign_task_wzd(osv.TransientModel):
                                          {'move_lines': [],
                                           'group_id': move.picking_id.
                                           group_id.id})
-                move.write({'picking_id': new_pick}, context=context)
+                move.write({'picking_id': new_pick})
                 res.add(new_pick)
         return list(res)
 
@@ -469,7 +469,6 @@ class assign_task_wzd(osv.TransientModel):
                 product.supplier_ca_height * product.supplier_ca_length
             num_boxes = total_qty / boxes_div
             all_moves_vol = num_boxes * vol_box
-
             if all_moves_vol >= max_volume:
                 if not res:  # Wave is empty so we force put in it
                     picking_ids = self._get_pickings(cr, uid, ids, move_ids,
@@ -481,7 +480,8 @@ class assign_task_wzd(osv.TransientModel):
             else:  # We can pick all the products
                 picking_ids = self._get_pickings(cr, uid, ids, move_ids,
                                                  context=context)
-                res.extend(picking_ids)
+                if picking_ids:
+                    res.extend(picking_ids)
         res = list(set(res))
         return res
 
