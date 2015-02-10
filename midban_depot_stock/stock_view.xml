@@ -122,16 +122,26 @@
             <field name="model">stock.location</field>
             <field name="inherit_id" ref="stock.view_location_form"/>
             <field name="arch" type="xml">
-                <field name="posx" position="before">
-                    <field name="storage_type"/>
-                    <field name="temp_type_id"/>
-                    <field name="width"/>
-                    <field name="length"/>
-                    <field name="height"/>
-                    <field name="volume"/>
-                    <field name="available_volume"/>
-                    <field name="filled_percent"/>
+                <field name="location_id" position="attributes">
+                         <attribute name="on_change">on_change_parent_location(location_id)</attribute>
                 </field>
+                <group string="Localization" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </group>
+                <group string="Additional Information" position="after">
+                    <group string="Properties" name="properties">
+                        <field name="camera"/>
+                        <field name="zone"/>
+                        <field name="storage_type"/>
+                        <field name="temp_type_id"/>
+                        <field name="width"/>
+                        <field name="length"/>
+                        <field name="height"/>
+                        <field name="volume"/>
+                        <field name="available_volume"/>
+                        <field name="filled_percent"/>
+                    </group>
+                </group>
                 <field name="active" position="after">
                     <field name="sequence"/>
                 </field>
@@ -150,7 +160,8 @@
                     <field name="filled_percent"/>
                     <field name="temp_type_id"/>
                     <field name="sequence"/>
-
+                    <field name="camera"/>
+                    <field name="zone"/>
                 </field>
 
             </field>
@@ -173,7 +184,14 @@
                     <field name="available_volume" string="Available less"  context="'operation':'less'}"/>
                 </field>
                 <filter name="supplier" position="after">
-                    <filter string="Temp type" context="{'group_by':'temp_type_id'}"/>   
+                    <filter string="Picking Camera" domain="[('camera', '=', True)]"/>
+                    <filter string="Picking Zone" domain="[('zone', '=', 'picking')]"/>
+                    <filter string="Storage Zone" domain="[('zone', '=', 'storage')]"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Temp type" context="{'group_by':'temp_type_id'}"/>
+                        <filter string="Camara" context="{'group_by':'camera'}"/>
+                        <filter string="Zone" context="{'group_by':'zone'}"/>
+                    </group>
                 </filter>
             </field>
         </record>

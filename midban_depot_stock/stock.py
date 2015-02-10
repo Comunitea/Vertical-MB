@@ -560,7 +560,7 @@ class stock_location(osv.Model):
             cond1 = loc.location_id and loc.location_id.id == picking_loc_id
             cond2 = quant_ids or operation_ids
             if cond1 and cond2:
-                 # Add wood volume, only one wood
+                # Add wood volume, only one wood
                 prod_id = t_prod.search(cr, uid,
                                         [('picking_location_id', '=', loc.id)],
                                         context=context, limit=1)
@@ -629,7 +629,7 @@ class stock_location(osv.Model):
             cond1 = loc.location_id and loc.location_id.id == picking_loc_id
             cond2 = quant_ids or operation_ids
             if cond1 and cond2:
-                 # Add wood volume. Only one wood
+                # Add wood volume. Only one wood
                 prod_id = t_prod.search(cr, uid,
                                         [('picking_location_id', '=', loc.id)],
                                         context=context, limit=1)
@@ -785,13 +785,41 @@ class stock_location(osv.Model):
                                               type="many2one",
                                               relation="product.product"),
         'temp_type_id': fields.many2one('temp.type', 'Temperature Type'),
-        'sequence': fields.integer('Sequence', required=True)
+        'sequence': fields.integer('Sequence', required=True),
+        'camera': fields.boolean('Picking Camera',
+                                 help="If True we can do picking of "
+                                 "this location and childrens"),
+        'zone': fields.selection([('storage', 'Storage Zone'),
+                                  ('picking', 'Picking Zone')],
+                                 'Location Zone'),
     }
 
     _defaults = {
         'storage_type': 'standard',
         'sequence': 0
     }
+
+    def get_picking_location(self, cr, uid, loc_id, context=None):
+        """
+        Get the first parent location marked as camera.
+        """
+        res = False
+        loc = self.browse(cr, uid, loc_id, context=context)
+        while not res or not loc.location_id:
+            if loc.location_id and loc.location_id.camera:
+                res = loc.location_id.id
+        return res
+
+    def on_change_parent_location(self, cr, uid, ids, loc_id, context=None):
+        """
+        If field zoned is setted in parent location get it in the child
+        location to.
+        """
+        if loc_id:
+            loc = self.browse(cr, uid, loc_id, context=context)
+            if loc and loc.zone:
+                return {'value': {'zone': loc.zone}}
+        return {}
 
 
 class stock_move(osv.osv):
