@@ -53,8 +53,23 @@ class stock_picking(osv.osv):
                                     readonly=True),
     }
 
+    def _change_operation_dest_loc(self, cr, uid, ids, context=None):
+        """
+        For each operation in the pickings, get the location from the package
+        """
+        for pick in self.browse(cr, uid, ids, context=context):
+            for op in pick.pack_operation_ids:
+                if op.package_id and op.package_id.new_loc_id:
+                    op.write({'location_dest_id': op.package_id.new_loc_id.id})
+        return True
+
     @api.cr_uid_ids_context
     def approve_pack_operations(self, cr, uid, ids, context=None):
+        """
+        Aprove the pack operations, put the pick in done.
+        Also calculate the operations for the next picking.
+        In this moment we calculate the final location of each operation
+        """
         if context is None:
             context = {}
         for pick in self.browse(cr, uid, ids, context=context):
@@ -71,6 +86,9 @@ class stock_picking(osv.osv):
                 related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
                 self.do_prepare_partial(cr, uid, [related_pick_id],
                                         context=context)
+                # Get the correct ubication, changing each operation
+                self._change_operation_dest_loc(cr, uid, related_pick_id,
+                                                context=context)
                 self.write(cr, uid, [related_pick_id],
                            {'midban_operations': True}, context=context)
         return True

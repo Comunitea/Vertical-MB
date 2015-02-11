@@ -49,9 +49,9 @@ class stock_transfer_details(models.TransientModel):
             'picking_id': item.transfer_id.picking_id.id,
             'lot_id': item.lot_id.id
         }
-        ma_pa = item.product_id.supplier_ma_pa
-        ca_ma = item.product_id.supplier_ca_ma
-        un_ca = item.product_id.supplier_un_ca
+        ma_pa = item.product_id.ma_pa
+        ca_ma = item.product_id.ca_ma
+        un_ca = item.product_id.un_ca
 
         if pack_type not in ['palet', 'mantle', 'box']:  # Only Units
             op_vals.update({
@@ -87,7 +87,12 @@ class stock_transfer_details(models.TransientModel):
                 res.append(dict(op_vals))
         return res
 
-    def _get_unit_conversions(self, item):
+    def _get_unit_conversions_suppliers(self, item):
+        """
+        Get the expected partition in palets, mantles and units ussing the
+        measures of product sheet in suppliers page. (supplier measures).
+        It say to us how the products are recived from the supplier
+        """
         res = [0, 0, 0, 0]
         prod_obj = item.product_id
         item_qty = item.quantity
@@ -122,10 +127,51 @@ class stock_transfer_details(models.TransientModel):
         res = [int_pal, int_man, int_box, int_units]
         return res
 
+    def _get_unit_conversions(self, item):
+        """
+        Get the expected partition in palets, mantles and units ussing the
+        measures of product sheet in sale page. (Not supplier measures).
+        It say to us how the products will be stored in packs.
+        """
+        res = [0, 0, 0, 0]
+        prod_obj = item.product_id
+        item_qty = item.quantity
+
+        un_ca = prod_obj.un_ca
+        ca_ma = prod_obj.ca_ma
+        ma_pa = prod_obj.ma_pa
+
+        box_units = un_ca
+        mantle_units = un_ca * ca_ma
+        palet_units = un_ca * ca_ma * ma_pa
+
+        remaining_qty = item_qty
+        int_pal = 0
+        int_man = 0
+        int_box = 0
+        int_units = 0
+
+        while remaining_qty > 0:
+            if remaining_qty >= palet_units:
+                remaining_qty -= palet_units
+                int_pal += 1
+            elif remaining_qty >= mantle_units:
+                remaining_qty -= mantle_units
+                int_man += 1
+            elif remaining_qty >= box_units:
+                remaining_qty -= box_units
+                int_box += 1
+            else:
+                int_units = remaining_qty
+                remaining_qty = 0
+        res = [int_pal, int_man, int_box, int_units]
+        return res
+
     def _propose_pack_operations(self, item):
         res = []
         int_pal, int_man, int_box, units = self._get_unit_conversions(item)
-
+        prod_obj = item.product_id
+        import ipdb; ipdb.set_trace()
         if int_pal:
             pa_dics = self._get_pack_type_operation(item, 'palet', int_pal)
             res.extend(pa_dics)
