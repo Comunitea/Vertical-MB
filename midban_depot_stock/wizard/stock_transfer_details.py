@@ -26,11 +26,11 @@ class stock_transfer_details(models.TransientModel):
     _inherit = 'stock.transfer_details'
 
     midban_operations = fields.Boolean(string='Custom midban operations',
-                                       related=
-                                       'picking_id.midban_operations',
+                                       related='picking_id.midban_operations',
                                        readonly=True)
-    picking_type_code = fields.Char('Picking code', related=
-                                    'picking_id.picking_type_code')
+
+    picking_type_code = fields.Char('Picking code',
+                                    related='picking_id.picking_type_code')
 
     def _get_pack_type_operation(self, item, pack_type, num):
         """
@@ -49,9 +49,9 @@ class stock_transfer_details(models.TransientModel):
             'picking_id': item.transfer_id.picking_id.id,
             'lot_id': item.lot_id.id
         }
-        ma_pa = item.product_id.ma_pa
-        ca_ma = item.product_id.ca_ma
-        un_ca = item.product_id.un_ca
+        ma_pa = item.product_id.supplier_ma_pa
+        ca_ma = item.product_id.supplier_ca_ma
+        un_ca = item.product_id.supplier_un_ca
 
         if pack_type not in ['palet', 'mantle', 'box']:  # Only Units
             op_vals.update({
@@ -87,7 +87,7 @@ class stock_transfer_details(models.TransientModel):
                 res.append(dict(op_vals))
         return res
 
-    def _get_unit_conversions_suppliers(self, item):
+    def _get_unit_conversions(self, item):
         """
         Get the expected partition in palets, mantles and units ussing the
         measures of product sheet in suppliers page. (supplier measures).
@@ -127,51 +127,10 @@ class stock_transfer_details(models.TransientModel):
         res = [int_pal, int_man, int_box, int_units]
         return res
 
-    def _get_unit_conversions(self, item):
-        """
-        Get the expected partition in palets, mantles and units ussing the
-        measures of product sheet in sale page. (Not supplier measures).
-        It say to us how the products will be stored in packs.
-        """
-        res = [0, 0, 0, 0]
-        prod_obj = item.product_id
-        item_qty = item.quantity
-
-        un_ca = prod_obj.un_ca
-        ca_ma = prod_obj.ca_ma
-        ma_pa = prod_obj.ma_pa
-
-        box_units = un_ca
-        mantle_units = un_ca * ca_ma
-        palet_units = un_ca * ca_ma * ma_pa
-
-        remaining_qty = item_qty
-        int_pal = 0
-        int_man = 0
-        int_box = 0
-        int_units = 0
-
-        while remaining_qty > 0:
-            if remaining_qty >= palet_units:
-                remaining_qty -= palet_units
-                int_pal += 1
-            elif remaining_qty >= mantle_units:
-                remaining_qty -= mantle_units
-                int_man += 1
-            elif remaining_qty >= box_units:
-                remaining_qty -= box_units
-                int_box += 1
-            else:
-                int_units = remaining_qty
-                remaining_qty = 0
-        res = [int_pal, int_man, int_box, int_units]
-        return res
-
-    def _propose_pack_operations(self, item):
+    def _propose_pack_operations_old(self, item):
         res = []
         int_pal, int_man, int_box, units = self._get_unit_conversions(item)
-        prod_obj = item.product_id
-        import ipdb; ipdb.set_trace()
+
         if int_pal:
             pa_dics = self._get_pack_type_operation(item, 'palet', int_pal)
             res.extend(pa_dics)
@@ -184,6 +143,51 @@ class stock_transfer_details(models.TransientModel):
         if units:
             un_dic = self._get_pack_type_operation(item, 'units', units)
             res.extend(un_dic)
+        return res
+# #############################################################################
+# #############################################################################
+
+    def _get_available_location(self):
+        """
+        Search for a loc with enought volume available and returne_it.
+        """
+        loc = False
+        return loc
+
+    def _propose_pack_operations(self, item):
+        """
+        Return list of dics with values to create pack operations.
+        """
+        res = []
+        prod_obj = item.product_id
+        item_qty = item.quantity
+
+        un_ca = prod_obj.un_ca
+        ca_ma = prod_obj.ca_ma
+        ma_pa = prod_obj.ma_pa
+
+        box_units = un_ca
+        mantle_units = un_ca * ca_ma
+        palet_units = un_ca * ca_ma * ma_pa
+
+        remaining_qty = item_qty
+        while remaining_qty > 0:
+            if remaining_qty >= palet_units:
+                # Obtener ubicación donde quepa y mas cercana a picking
+                loc_id = self._get_available_location()
+                if loc_id:
+                    # Crear operación y escribir next_loc_id
+                    self.create_pack_operation()
+                    remaining_qty -= palet_units
+                else:
+                    print "Do partition"
+            elif remaining_qty >= mantle_units:
+                remaining_qty -= mantle_units
+            elif remaining_qty >= box_units:
+                remaining_qty -= box_units
+            else:
+                # Crear unidades sueltas a picking directamente??
+                remaining_qty = 0
         return res
 
     @api.one

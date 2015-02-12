@@ -81,16 +81,16 @@ class stock_picking(osv.osv):
         self.do_transfer(cr, uid, ids, context=context)
 
         # Prepare operations for the next chained picking if it exist
-        for pick in self.browse(cr, uid, ids, context=context):
-            if pick.move_lines and pick.move_lines[0].move_dest_id:
-                related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
-                self.do_prepare_partial(cr, uid, [related_pick_id],
-                                        context=context)
-                # Get the correct ubication, changing each operation
-                self._change_operation_dest_loc(cr, uid, related_pick_id,
-                                                context=context)
-                self.write(cr, uid, [related_pick_id],
-                           {'midban_operations': True}, context=context)
+        # for pick in self.browse(cr, uid, ids, context=context):
+        #     if pick.move_lines and pick.move_lines[0].move_dest_id:
+        #         related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
+        #         self.do_prepare_partial(cr, uid, [related_pick_id],
+        #                                 context=context)
+        #         # Get the correct ubication, changing each operation
+        #         self._change_operation_dest_loc(cr, uid, related_pick_id,
+        #                                         context=context)
+        #         self.write(cr, uid, [related_pick_id],
+        #                    {'midban_operations': True}, context=context)
         return True
 
     @api.one
@@ -175,7 +175,7 @@ class stock_package(osv.osv):
                 loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
                                             context=context)
                 parent_loc_id = loc_dest_obj.location_id.id
-                if pack.pack_type:  # Get volume of box,palet or var_palet
+                if pack.pack_type:  # Get volume of box,palet
                     if pack.pack_type == 'box':
                         volume = prod.supplier_ca_width * \
                             prod.supplier_ca_height * prod.supplier_ca_length
@@ -487,6 +487,11 @@ class stock_pack_operation(osv.osv):
                                        type='integer',
                                        string='Nº Mantles',
                                        readonly=True),
+        'chained_loc_id': fields.many2one('stock.location',
+                                          'Next Chained Location',
+                                          help="Location where the products "
+                                          "will be pushed to a specific "
+                                          "location"),
     }
 
 
