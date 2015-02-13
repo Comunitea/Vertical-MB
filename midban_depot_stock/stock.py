@@ -217,8 +217,8 @@ class stock_package(osv.osv):
         'packed_qty': fields.function(_get_packed_qty, type="float",
                                       string="Packed qty",
                                       readonly=True,
-                                      digits_compute=
-                                      dp.get_precision('Product Price'),),
+                                      digits_compute=dp.get_precision
+                                      ('Product Price'),),
         'num_mantles': fields.function(_get_pack_mantles,
                                        type="integer",
                                        string="Nº mantles",
@@ -226,8 +226,8 @@ class stock_package(osv.osv):
         'volume': fields.function(_get_pack_volume, readonly=True,
                                   type="float",
                                   string="Volume",
-                                  digits_compute=
-                                  dp.get_precision('Product Volume')),
+                                  digits_compute=dp.get_precision
+                                  ('Product Volume')),
     }
 
 
@@ -506,11 +506,9 @@ class stock_warehouse(osv.osv):
                                              'Ubication Task Type'),
         'reposition_type_id': fields.many2one('stock.picking.type',
                                               'Reposition Task Type'),
-        # 'min_boxes_move': fields.integer('Min. boxes to move in picking'),
-        # 'max_boxes_move': fields.integer('Max. boxes to move in picking'),
         'max_volume': fields.float('Max. volume to move in picking',
-                                   digits_compute=
-                                   dp.get_precision('Product Volume')),
+                                   digits_compute=dp.get_precision
+                                   ('Product Volume')),
     }
 
 
@@ -792,8 +790,8 @@ class stock_location(osv.Model):
                                             fnct_search=_search_filter_aval),
         'filled_percent': fields.function(_get_filled_percentage, type="float",
                                           string="Filled %",
-                                          digits_compute=
-                                          dp.get_precision('Product Price'),
+                                          digits_compute=dp.get_precision
+                                          ('Product Price'),
                                           fnct_search=_search_filled_percent),
         'filter_percent': fields.function(_get_filter_percentage,
                                           type="char",
@@ -822,16 +820,41 @@ class stock_location(osv.Model):
         'sequence': 0
     }
 
-    def get_picking_location(self, cr, uid, loc_id, context=None):
+    def get_camera(self, cr, uid, loc_id, context=None):
         """
         Get the first parent location marked as camera.
         """
         res = False
         loc = self.browse(cr, uid, loc_id, context=context)
-        while not res or not loc.location_id:
-            if loc.location_id and loc.location_id.camera:
+        while not res and loc.location_id:
+            if loc.location_id.camera:
                 res = loc.location_id.id
+            else:
+                loc = loc.location_id
         return res
+
+    def get_locations_by_zone(self, cr, uid, ids, zone, add_domain=False,
+                              context=None):
+        """
+        Get the camera from the loc_id, get the children locations of
+        specified zone ('storage', 'picking')
+        """
+        locations = []
+        loc_id = ids[0]
+        if context is None:
+            context = {}
+        if zone not in ['picking', 'storage']:
+            raise osv.except_osv(_('Error!'), _('Zone not exist.'))
+
+        loc_camera_id = self.get_camera(cr, uid, loc_id, context=context)
+        if loc_camera_id:
+            domain = [('location_id', 'child_of', [loc_camera_id]),
+                      ('usage', '=', 'internal'),
+                      ('zone', '=', zone)]
+            if add_domain:
+                domain.extend(add_domain)
+            locations = self.search(cr, uid, domain, context=context)
+        return locations
 
     def on_change_parent_location(self, cr, uid, ids, loc_id, context=None):
         """
@@ -874,13 +897,10 @@ class stock_move(osv.osv):
         """
         Get the price_kg of the product
         """
-        res = super(stock_move, self).onchange_product_id(cr, uid, ids,
-                                                          prod_id=prod_id,
-                                                          loc_id=loc_id,
-                                                          loc_dest_id=
-                                                          loc_dest_id,
-                                                          partner_id=
-                                                          partner_id)
+        res = super(stock_move, self)\
+            .onchange_product_id(cr, uid, ids, prod_id=prod_id, loc_id=loc_id,
+                                 loc_dest_id=loc_dest_id,
+                                 partner_id=partner_id)
         if not prod_id:
             return {}
         product = self.pool.get('product.product').browse(cr, uid,

@@ -62,8 +62,8 @@ class product_template(osv.Model):
                                                domain=[('usage', '=',
                                                         'internal')]),
         'volume': fields.float('Volume', help="The volume in m3.",
-                               digits_compute=
-                               dp.get_precision('Product Volume')),
+                               digits_compute=dp.get_precision
+                               ('Product Volume')),
         'price_kg': fields.float('Price kg'),
         'virtual_stock_conservative': fields.function(_stock_conservative,
                                                       type='float',
@@ -76,6 +76,28 @@ class product_template(osv.Model):
         ('location_id_uniq', 'unique(picking_location_id)',
          _("Field Location picking is already setted"))
     ]
+
+    def get_locations_by_zone(self, cr, uid, product_id, zone, context=None):
+        """
+        Get al the locatios child of storage location for the product camera.
+        The product must have a picking_location, in other case raise an error.
+        """
+        if context is None:
+            context = {}
+        t_loc = self.pool.get('stock.location')
+        storage_loc_ids = []
+        if product_id:
+            product = self.browse(cr, uid, product_id, context)
+            if not product.picking_location_id:
+                raise osv.except_osv(_('Error!'), _('Not picking location.'))
+            if zone not in ['picking', 'storage']:
+                raise osv.except_osv(_('Error!'), _('Zone not exist.'))
+            pick_loc_id = product.picking_location_id.id
+            storage_loc_ids = t_loc.get_locations_by_zone(cr, uid,
+                                                          pick_loc_id,
+                                                          zone,
+                                                          context=context)
+        return storage_loc_ids
 
 
 class product_uom(osv.Model):

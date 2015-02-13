@@ -18,8 +18,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 from openerp import models, api, fields
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
 
 
 class stock_transfer_details(models.TransientModel):
@@ -147,12 +148,52 @@ class stock_transfer_details(models.TransientModel):
 # #############################################################################
 # #############################################################################
 
-    def _get_available_location(self):
+    def _search_closest_pick_location(self, prod_obj, free_loc_ids):
+        loc_t = self.env['stock.location']
+        if not free_loc_ids:
+            raise except_orm(_('Error!'), _('No empty locations.'))
+        locs = loc_t.browse(free_loc_ids)
+        locs.append(prod_obj.picking_location_id)
+        sorted_locs = sorted(locs, key=lambda l: l.name)
+        index = sorted_locs.index(prod_obj.picking_location_id)
+        new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
+        return sorted_locs[new_index].id
+
+    def _is_picking_loc_available(self, prod_obj, pick_loc):
+        return False
+
+    def _get_available_location(self, prod_obj, pack_type):
         """
         Search for a loc with enought volume available and returne_it.
         """
-        loc = False
-        return loc
+        loc_id = False
+        if not prod_obj:
+            raise except_orm(_('Error!'), _('Not product to get \
+                                                 locations.'))
+        if not prod_obj.picking_location_id:
+            raise except_orm(_('Error!'), _('Not picking location.'))
+        pick_loc = prod_obj.picking_location_id
+        un_ca = prod_obj.un_ca
+        ca_ma = prod_obj.ca_ma
+        ma_pa = prod_obj.ma_pa
+
+        box_units = un_ca
+        mantle_units = un_ca * ca_ma
+        palet_units = un_ca * ca_ma * ma_pa
+        # If available volume in picking_loc and not older reference in storage
+        # location we return the picking location
+        if self._is_picking_loc_available(prod_obj, pick_loc):
+            loc_id = pick_loc.id
+        elif pack_type == 'palet':
+            domain = [('available_volume', '>', vol_palet)]
+            storage_loc_ids = pick_loc.get_locations_by_zone('storage',
+                                                             add_domain=domain)
+            if storage_loc_ids:
+                loc_id = self._search_closest_pick_location(prod_obj,
+                                                            storage_loc_ids)
+
+            import ipdb; ipdb.set_trace()
+        return loc_id
 
     def _propose_pack_operations(self, item):
         """
@@ -172,9 +213,10 @@ class stock_transfer_details(models.TransientModel):
 
         remaining_qty = item_qty
         while remaining_qty > 0:
+            import ipdb; ipdb.set_trace()
             if remaining_qty >= palet_units:
-                # Obtener ubicación donde quepa y mas cercana a picking
-                loc_id = self._get_available_location()
+                # get picking or storage location for a palet
+                loc_id = self._get_available_location(prod_obj, 'palet')
                 if loc_id:
                     # Crear operación y escribir next_loc_id
                     self.create_pack_operation()
@@ -182,7 +224,13 @@ class stock_transfer_details(models.TransientModel):
                 else:
                     print "Do partition"
             elif remaining_qty >= mantle_units:
-                remaining_qty -= mantle_units
+                new_ma_pa = 0
+                orig_qty = remaining_qty
+                while orig_qty >= mantle_units:
+                    orig_qty -= mantle_units
+                    new_ma_pa += 1
+
+                remaining_qty -= mantle_units * new_ma_pa
             elif remaining_qty >= box_units:
                 remaining_qty -= box_units
             else:
