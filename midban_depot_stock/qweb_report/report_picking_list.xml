@@ -29,10 +29,10 @@
                                       <strong>Machine:</strong>
                                       <p t-field="o.machine_id"/>
                                   </div>
-                                  <div t-if="o.temp_id" class="col-xs-2">
+                                 <!--  <div t-if="o.temp_id" class="col-xs-2">
                                       <strong>Temperature:</strong>
                                       <p t-field="o.temp_id"/>
-                                  </div>
+                                  </div> -->
                                   <div t-if="o.warehouse_id" class="col-xs-2">
                                       <strong>Warehouse:</strong>
                                       <p t-field="o.warehouse_id"/>

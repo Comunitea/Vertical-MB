@@ -70,7 +70,7 @@
                     <field name="task_type"/>
                     <field name="trans_route_id"/>
                     <field name="drop_code"/>
-                    <field name="temp_id" attrs="{'invisible': [('task_type', '!=', 'picking')]}"/>
+                    <field name="camera_ids" widget="many2many_tags" attrs="{'invisible': [('task_type', '!=', 'picking')]}"/>
                     
                 </field>
             </field>
@@ -100,8 +100,6 @@
             <field name="inherit_id" ref="stock.view_warehouse"/>
             <field name="arch" type="xml">
                 <field name="wh_output_stock_loc_id" position="after">
-                    <field name="storage_loc_id"/>
-                    <field name="picking_loc_id"/>
                     <field name="lot_stock_id"/>
                 </field>
 
@@ -256,7 +254,7 @@
             <field name="inherit_id" ref="stock_picking_wave.view_picking_wave_form"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="after">
-                    <field name="temp_id"/>
+                    <field name="camera_ids" widget="many2many_tags"/>
                     <field name="trans_route_id"/>
                     <field name="warehouse_id"/>
                 </field>

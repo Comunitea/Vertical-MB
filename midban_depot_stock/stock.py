@@ -42,7 +42,12 @@ class stock_picking(osv.osv):
                                       'Task Type', readonly=True),
         'trans_route_id': fields.many2one('route', 'Transport Route',
                                           readonly=True),
-        'temp_id': fields.many2one('temp.type', 'Temperature', readonly=True),
+        'camera_ids': fields.many2many('stock.location',
+                                       'pick_cameras_rel',
+                                       'pick_id',
+                                       'location_id',
+                                       'Cameras picked',
+                                       readonly=True),
         'midban_operations': fields.boolean("Exist midban operation"),
         'cross_dock': fields.boolean("From Cross Dock order"),
         'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
@@ -57,10 +62,32 @@ class stock_picking(osv.osv):
         """
         For each operation in the pickings, get the location from the package
         """
+        t_operation = self.pool.get('stock.pack.operation')
+        if context is None:
+            context = {}
         for pick in self.browse(cr, uid, ids, context=context):
-            for op in pick.pack_operation_ids:
-                if op.package_id and op.package_id.new_loc_id:
-                    op.write({'location_dest_id': op.package_id.new_loc_id.id})
+            if pick.move_lines and pick.move_lines[0].move_dest_id:
+                related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
+                # Get the correct ubication, changing each operation
+                for op in pick.pack_operation_ids:
+                    pack_id = op.result_package_id and op.result_package_id.id\
+                        or False
+                    op_vals = {
+                        'location_id': op.location_dest_id.id,
+                        'product_id': not pack_id and op.product_id.id
+                        or False,
+                        'product_qty': pack_id and 1 or op.product_qty,
+                        'product_uom_id': pack_id and False or
+                        op.product_uom_id.id,
+                        'location_dest_id': op.chained_loc_id.id,
+                        'chained_loc_id': False,
+                        'picking_id': related_pick_id,
+                        'lot_id': not pack_id and op.lot_id.id or False,
+                        'package_id': pack_id,
+                        'result_package_id': False}
+                    t_operation.create(cr, uid, op_vals, context=context)
+                self.write(cr, uid, [related_pick_id],
+                           {'midban_operations': True}, context=context)
         return True
 
     @api.cr_uid_ids_context
@@ -79,18 +106,8 @@ class stock_picking(osv.osv):
                     'processed': 'true'
                 })
         self.do_transfer(cr, uid, ids, context=context)
-
         # Prepare operations for the next chained picking if it exist
-        # for pick in self.browse(cr, uid, ids, context=context):
-        #     if pick.move_lines and pick.move_lines[0].move_dest_id:
-        #         related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
-        #         self.do_prepare_partial(cr, uid, [related_pick_id],
-        #                                 context=context)
-        #         # Get the correct ubication, changing each operation
-        #         self._change_operation_dest_loc(cr, uid, related_pick_id,
-        #                                         context=context)
-        #         self.write(cr, uid, [related_pick_id],
-        #                    {'midban_operations': True}, context=context)
+        self._change_operation_dest_loc(cr, uid, ids, context=context)
         return True
 
     @api.one
@@ -161,18 +178,12 @@ class stock_package(osv.osv):
             context = {}
         res = {}
         t_loc = self.pool.get('stock.location')
-        t_whs = self.pool.get('stock.warehouse')
         for pack in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             if pack.product_id:
                 prod = pack.product_id
-                whs_id = t_loc.get_warehouse(cr, uid, pack.location_id,
-                                             context=context)
-                warehouse = t_whs.browse(cr, uid, whs_id, context=context)
-                picking_loc_id = warehouse.picking_loc_id.id
                 loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
                                             context=context)
-                parent_loc_id = loc_dest_obj.location_id.id
                 if pack.pack_type:  # Get volume of box,palet
                     if pack.pack_type == 'box':
                         volume = prod.ca_width * \
@@ -184,7 +195,7 @@ class stock_package(osv.osv):
                         length_wood = prod.pa_length
                         height_mant = prod.ma_height
                         wood_height = prod.palet_wood_height
-                        if parent_loc_id == picking_loc_id:
+                        if loc_dest_obj.zone == 'picking':
                             wood_height = 0  # No wood in picking location
                         height_var_pal = (num_mant * height_mant) + wood_height
                         volume = width_wood * length_wood * height_var_pal
@@ -232,124 +243,124 @@ class stock_package(osv.osv):
 class stock_pack_operation(osv.osv):
     _inherit = "stock.pack.operation"
 
-    def _search_closest_pick_location(self, cr, uid, prod_obj,
-                                      free_loc_ids, context=None):
-        if context is None:
-            context = {}
-        loc_t = self.pool.get('stock.location')
-        if not free_loc_ids:
-            raise osv.except_osv(_('Error!'), _('No empty locations.'))
-        locs = [x for x in loc_t.browse(cr, uid, free_loc_ids, context)]
-        locs.append(prod_obj.picking_location_id)
-        sorted_locs = sorted(locs, key=lambda l: l.name)
-        index = sorted_locs.index(prod_obj.picking_location_id)
-        new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
-        return sorted_locs[new_index].id
+    # def _search_closest_pick_location(self, cr, uid, prod_obj,
+    #                                   free_loc_ids, context=None):
+    #     if context is None:
+    #         context = {}
+    #     loc_t = self.pool.get('stock.location')
+    #     if not free_loc_ids:
+    #         raise osv.except_osv(_('Error!'), _('No empty locations.'))
+    #     locs = [x for x in loc_t.browse(cr, uid, free_loc_ids, context)]
+    #     locs.append(prod_obj.picking_location_id)
+    #     sorted_locs = sorted(locs, key=lambda l: l.name)
+    #     index = sorted_locs.index(prod_obj.picking_location_id)
+    #     new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
+    #     return sorted_locs[new_index].id
 
-    def _older_refernce_in_storage(self, cr, uid, product, wh_obj,
-                                   context=None):
-        if context is None:
-            context = {}
-        res = False
-        t_quant = self.pool.get("stock.quant")
-        domain = [
-            ('company_id', '=', wh_obj.company_id.id),
-            ('product_id', '=', product.id),
-            ('qty', '>', 0),
-            ('location_id', 'child_of', [wh_obj.storage_loc_id.id]),
-        ]
-        quant_ids = t_quant.search(cr, uid, domain, context=context)
-        if quant_ids:
-            res = True
-        return res
+    # def _older_refernce_in_storage(self, cr, uid, product, wh_obj,
+    #                                context=None):
+    #     if context is None:
+    #         context = {}
+    #     res = False
+    #     t_quant = self.pool.get("stock.quant")
+    #     domain = [
+    #         ('company_id', '=', wh_obj.company_id.id),
+    #         ('product_id', '=', product.id),
+    #         ('qty', '>', 0),
+    #         ('location_id', 'child_of', [wh_obj.storage_loc_id.id]),
+    #     ]
+    #     quant_ids = t_quant.search(cr, uid, domain, context=context)
+    #     if quant_ids:
+    #         res = True
+    #     return res
 
-    def _get_location(self, cr, uid, ops, wh_obj, context=None):
-        """
-        For a product, choose between put it in picking zone (if it is empty
-        and no older reference stored in storage zone or put it in closest
-        storage zone to product picking location
-        """
-        if context is None:
-            context = {}
-        location_id = False
-        loc_obj = self.pool.get('stock.location')
-        storage_id = wh_obj.storage_loc_id.id
-        if (ops.operation_product_id and
-                ops.operation_product_id.picking_location_id):
-            product = ops.operation_product_id
-            pick_loc = ops.operation_product_id.picking_location_id
-            old_ref = self._older_refernce_in_storage(cr, uid, product, wh_obj,
-                                                      context=context)
-            if not pick_loc.filled_percent:  # If empty add wood volume
-                width_wood = product.pa_width
-                length_wood = product.pa_length
-                height_wood = product.palet_wood_height
-                wood_volume = width_wood * length_wood * height_wood
-                vol_aval = pick_loc.available_volume - wood_volume
-            else:
-                vol_aval = pick_loc.available_volume
-            if (not old_ref and ops.volume <= vol_aval) or \
-                    not ops.package_id:  # Only units forced going to picking
-                location_id = pick_loc.id
-            else:
-                loc_type = "standard"
-                if ops.pack_type and ops.pack_type == 'box':
-                    loc_type = "boxes"
-                temp_type = product.temp_type and product.temp_type.id or False
-                if loc_type:
-                    loc_ids = loc_obj.search(cr, uid,
-                                             [('storage_type', '=', loc_type),
-                                              ('temp_type_id', '=', temp_type),
-                                              ('location_id', 'child_of',
-                                               [storage_id])],
-                                             context=context)
-                    free_locs = []
-                    # Remove Storage location from the list
-                    if loc_ids and storage_id in loc_ids:
-                        loc_ids.remove(storage_id)
-                    for loc in loc_obj.browse(cr, uid, loc_ids,
-                                              context=context):
-                        condition = True
-                        if ops.pack_type == 'palet':
-                            condition = not loc.current_product_id
-                        if condition and loc.available_volume >= ops.volume:
-                            free_locs.append(loc.id)
+    # def _get_location(self, cr, uid, ops, wh_obj, context=None):
+    #     """
+    #     For a product, choose between put it in picking zone (if it is empty
+    #     and no older reference stored in storage zone or put it in closest
+    #     storage zone to product picking location
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     location_id = False
+    #     loc_obj = self.pool.get('stock.location')
+    #     storage_id = wh_obj.storage_loc_id.id
+    #     if (ops.operation_product_id and
+    #             ops.operation_product_id.picking_location_id):
+    #         product = ops.operation_product_id
+    #         pick_loc = ops.operation_product_id.picking_location_id
+    #         old_ref = self._older_refernce_in_storage(cr, uid, product, wh_obj,
+    #                                                   context=context)
+    #         if not pick_loc.filled_percent:  # If empty add wood volume
+    #             width_wood = product.pa_width
+    #             length_wood = product.pa_length
+    #             height_wood = product.palet_wood_height
+    #             wood_volume = width_wood * length_wood * height_wood
+    #             vol_aval = pick_loc.available_volume - wood_volume
+    #         else:
+    #             vol_aval = pick_loc.available_volume
+    #         if (not old_ref and ops.volume <= vol_aval) or \
+    #                 not ops.package_id:  # Only units forced going to picking
+    #             location_id = pick_loc.id
+    #         else:
+    #             loc_type = "standard"
+    #             if ops.pack_type and ops.pack_type == 'box':
+    #                 loc_type = "boxes"
+    #             temp_type = product.temp_type and product.temp_type.id or False
+    #             if loc_type:
+    #                 loc_ids = loc_obj.search(cr, uid,
+    #                                          [('storage_type', '=', loc_type),
+    #                                           ('temp_type_id', '=', temp_type),
+    #                                           ('location_id', 'child_of',
+    #                                            [storage_id])],
+    #                                          context=context)
+    #                 free_locs = []
+    #                 # Remove Storage location from the list
+    #                 if loc_ids and storage_id in loc_ids:
+    #                     loc_ids.remove(storage_id)
+    #                 for loc in loc_obj.browse(cr, uid, loc_ids,
+    #                                           context=context):
+    #                     condition = True
+    #                     if ops.pack_type == 'palet':
+    #                         condition = not loc.current_product_id
+    #                     if condition and loc.available_volume >= ops.volume:
+    #                         free_locs.append(loc.id)
 
-                    location_id = self.\
-                        _search_closest_pick_location(cr, uid, product,
-                                                      free_locs,
-                                                      context=context)
-        return location_id
+    #                 location_id = self.\
+    #                     _search_closest_pick_location(cr, uid, product,
+    #                                                   free_locs,
+    #                                                   context=context)
+    #     return location_id
 
-    def change_location_dest_id(self, cr, uid, ids, wh_obj,
-                                context=None):
-        """
-        Change the storage location for a specific one
-        """
-        if context is None:
-            context = {}
-        res = {}
-        for op_id in ids:
-            ops = self.browse(cr, uid, op_id, context=context)
-            prod_obj = False
-            if ops.package_id:
-                for quant in ops.package_id.quant_ids:
-                    if prod_obj and prod_obj.id != quant.product_id.id:
-                        msg = 'Can not manage packages with different products'
-                        raise osv.except_osv(_('Error!'), _(msg))
-                    else:
-                        prod_obj = quant.product_id
-            else:
-                prod_obj = ops.product_id and ops.product_id or False
-            if not prod_obj:
-                raise osv.except_osv(_('Error!'), _('No product founded\
-                                                    inside package'))
-            location_id = self._get_location(cr, uid, ops, wh_obj,
-                                             context=context)
-            if location_id:
-                ops.write({'location_dest_id': location_id})
+    # def change_location_dest_id(self, cr, uid, ids, wh_obj,
+    #                             context=None):
+    #     """
+    #     Change the storage location for a specific one
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     res = {}
+    #     for op_id in ids:
+    #         ops = self.browse(cr, uid, op_id, context=context)
+    #         prod_obj = False
+    #         if ops.package_id:
+    #             for quant in ops.package_id.quant_ids:
+    #                 if prod_obj and prod_obj.id != quant.product_id.id:
+    #                     msg = 'Can not manage packages with different products'
+    #                     raise osv.except_osv(_('Error!'), _(msg))
+    #                 else:
+    #                     prod_obj = quant.product_id
+    #         else:
+    #             prod_obj = ops.product_id and ops.product_id or False
+    #         if not prod_obj:
+    #             raise osv.except_osv(_('Error!'), _('No product founded\
+    #                                                 inside package'))
+    #         location_id = self._get_location(cr, uid, ops, wh_obj,
+    #                                          context=context)
+    #         if location_id:
+    #             ops.write({'location_dest_id': location_id})
 
-        return res
+    #     return res
 
     def _get_pack_type(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -390,16 +401,17 @@ class stock_pack_operation(osv.osv):
         res = {}
         t_loc = self.pool.get('stock.location')
         t_whs = self.pool.get('stock.warehouse')
-        import ipdb; ipdb.set_trace()
         for ope in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             whs_id = t_loc.get_warehouse(cr, uid, ope.location_dest_id,
                                          context=context)
             warehouse = t_whs.browse(cr, uid, whs_id, context=context)
-            picking_loc_id = warehouse.picking_loc_id.id
+            input_loc = warehouse.wh_input_stock_loc_id
             loc_dest_obj = t_loc.browse(cr, uid, ope.location_dest_id.id,
                                         context=context)
-            parent_loc_id = loc_dest_obj.location_id.id
+            # If goinf to input location, get volume for the chained location
+            if loc_dest_obj.id == input_loc.id and ope.chained_loc_id:
+                loc_dest_obj = ope.chained_loc_id
             if ope.pack_type:
                 if ope.pack_type == "palet":
                     num_mant = ope.num_mantles
@@ -407,7 +419,7 @@ class stock_pack_operation(osv.osv):
                     length_wood = ope.operation_product_id.pa_length
                     height_mant = ope.operation_product_id.ma_height
                     wood_height = ope.operation_product_id.palet_wood_height
-                    if parent_loc_id == picking_loc_id:
+                    if loc_dest_obj.zone == 'picking':
                         wood_height = 0  # No wood in picking location
                     height_var_pal = (num_mant * height_mant) + wood_height
                     volume = width_wood * length_wood * height_var_pal
@@ -497,10 +509,6 @@ class stock_pack_operation(osv.osv):
 class stock_warehouse(osv.osv):
     _inherit = "stock.warehouse"
     _columns = {
-        'storage_loc_id': fields.many2one('stock.location',
-                                          'Storage Location'),
-        'picking_loc_id': fields.many2one('stock.location',
-                                          'Picking Location'),
         'ubication_type_id': fields.many2one('stock.picking.type',
                                              'Ubication Task Type'),
         'reposition_type_id': fields.many2one('stock.picking.type',
@@ -555,7 +563,6 @@ class stock_location(osv.Model):
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
-        wh_obj = self.pool.get('stock.warehouse')
         t_prod = self.pool.get('product.product')
         for loc in self.browse(cr, uid, ids, context=context):
             volume = 0.0
@@ -572,15 +579,11 @@ class stock_location(osv.Model):
                 ('processed', '=', 'false'),
                 ('picking_id.state', 'in', ['assigned'])
             ]
-            import ipdb; ipdb.set_trace()
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
 
-            whs_id = self.get_warehouse(cr, uid, loc, context=context)
-            warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
-            picking_loc_id = warehouse.picking_loc_id.id
-            cond1 = loc.location_id and loc.location_id.id == picking_loc_id
+            cond1 = loc.zone == 'picking'
             cond2 = quant_ids or operation_ids
             if cond1 and cond2:
                 # Add wood volume, only one wood
@@ -626,7 +629,6 @@ class stock_location(osv.Model):
         res = {}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
-        wh_obj = self.pool.get('stock.warehouse')
         t_prod = self.pool.get('product.product')
         for loc in self.browse(cr, uid, ids, context=context):
             volume = 0.0
@@ -646,10 +648,7 @@ class stock_location(osv.Model):
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
 
-            whs_id = self.get_warehouse(cr, uid, loc, context=context)
-            warehouse = wh_obj.browse(cr, uid, whs_id, context=context)
-            picking_loc_id = warehouse.picking_loc_id.id
-            cond1 = loc.location_id and loc.location_id.id == picking_loc_id
+            cond1 = loc.zone == 'picking'
             cond2 = quant_ids or operation_ids
             if cond1 and cond2:
                 # Add wood volume. Only one wood
@@ -838,13 +837,14 @@ class stock_location(osv.Model):
     def get_locations_by_zone(self, cr, uid, ids, zone, add_domain=False,
                               context=None):
         """
-        Get the camera from the loc_id, get the children locations of
+        Get the camera from the loc_id and get the children locations of
         specified zone ('storage', 'picking')
         """
         locations = []
         loc_id = ids[0]
         if context is None:
-            context = {}
+            context = {'operation': 'greater'}
+        ctx = context.copy()
         if zone not in ['picking', 'storage']:
             raise osv.except_osv(_('Error!'), _('Zone not exist.'))
 
@@ -854,9 +854,32 @@ class stock_location(osv.Model):
                       ('usage', '=', 'internal'),
                       ('zone', '=', zone)]
             if add_domain:
+                ctx.update({'operation': 'greater'})
                 domain.extend(add_domain)
-            locations = self.search(cr, uid, domain, context=context)
+            locations = self.search(cr, uid, domain, context=ctx)
         return locations
+
+    def get_general_zone(self, cr, uid, ids, zone, context=None):
+        """
+        Get the first gereal location marked as zone (picking or storage)
+        for a child location.
+        """
+        loc_id = False
+        loc_id = ids[0]
+        if context is None:
+            context = {}
+        if zone not in ['picking', 'storage']:
+            raise osv.except_osv(_('Error!'), _('Zone not exist.'))
+        loc_camera_id = self.get_camera(cr, uid, loc_id, context=context)
+        if loc_camera_id:
+            domain = [('location_id', '=', loc_camera_id),
+                      ('zone', '=', zone)]
+            locations = self.search(cr, uid, domain, context=context)
+            loc_id = locations and locations[0] or False
+        if not loc_id:
+            raise osv.except_osv(_('Error!'), _('No general %s location \
+                                                 founded.') % zone)
+        return loc_id
 
     def on_change_parent_location(self, cr, uid, ids, loc_id, context=None):
         """
@@ -1031,7 +1054,12 @@ class stock_picking_wave(osv.osv):
     _columns = {
         'wave_report_ids': fields.one2many('wave.report', 'wave_id',
                                            'Picking List', readonly=True),
-        'temp_id': fields.many2one('temp.type', 'Temperature'),
+        'camera_ids': fields.many2many('stock.location',
+                                       'wave_cameras_rel',
+                                       'wave_id',
+                                       'location_id',
+                                       'Cameras picked',
+                                       readonly=True),
         'trans_route_id': fields.many2one('route', 'Transport Route',
                                           domain=[('state', '=', 'active')]),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
@@ -1052,7 +1080,6 @@ class stock_quant(osv.osv):
         reserved quants of storage location.
         """
         t_location = self.pool.get('stock.location')
-        t_warehouse = self.pool.get('stock.warehouse')
 
         if removal_strategy == 'depot_fefo':
             order = 'removal_date, in_date, id'
@@ -1063,10 +1090,10 @@ class stock_quant(osv.osv):
                 if record[0] is None:
                     check_storage_qty += record[1]
                     res.remove(record)
-            wh_id = t_location.get_warehouse(cr, uid, location,
-                                             context=context)
-            wh_obj = t_warehouse.browse(cr, uid, wh_id, context=context)
-            storage_id = wh_obj.storage_loc_id.id
+            if not product.picking_location_id:
+                raise osv.except_osv(_('Error!'), _('Not picking location.'))
+            pick_loc_obj = product.picking_location_id
+            storage_id = pick_loc_obj.get_general_zone('storage')
             storage_loc = storage_id and \
                 t_location.browse(cr, uid, storage_id) or False
 

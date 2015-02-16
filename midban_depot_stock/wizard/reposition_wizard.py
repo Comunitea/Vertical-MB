@@ -116,9 +116,12 @@ class reposition_wizard(osv.TransientModel):
         t_pack = self.pool.get("stock.quant.package")
 
         obj = self.browse(cr, uid, ids[0], context=context)
+        if not prod.picking_location_id:
+            raise osv.except_osv(_('Error!'), _('Not picking location.'))
+        pick_loc_obj = obj.picking_location_id
         reposition_task_type_id = obj.warehouse_id.reposition_type_id.id
-        storage_loc_id = obj.warehouse_id.storage_loc_id.id
-        picking_loc_id = obj.warehouse_id.picking_loc_id.id
+        storage_loc_id = pick_loc_obj.get_general_zone('storage')
+        picking_loc_id = pick_loc_obj.get_general_zone('picking')
 
         loc = loc_obj.browse(cr, uid, dest_id, context=context)
         # Add wood volume if picking location is empty
@@ -236,8 +239,11 @@ class reposition_wizard(osv.TransientModel):
                                               dest_id)], context=context,
                                    limit=1)
         if prod_ids:
-            storage_id = obj.warehouse_id.storage_loc_id.id
             product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
+            if not product.picking_location_id:
+                raise osv.except_osv(_('Error!'), _('Not picking location.'))
+            pick_loc_obj = obj.picking_location_id
+            storage_id = pick_loc_obj.get_general_zone('storage')
             t_quant = self.pool.get('stock.quant')
             domain = [
                 ('location_id', 'child_of', [storage_id]),
@@ -278,9 +284,8 @@ class reposition_wizard(osv.TransientModel):
             context = {}
         loc_t = self.pool.get('stock.location')
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        pick_loc_id = wzd_obj.warehouse_id.picking_loc_id.id
 
-        domain = [('location_id', 'child_of', [pick_loc_id])]
+        domain = [('zone', '=', 'picking')]
         # Get all picking locations
         picking_loc_ids = loc_t.search(cr, uid, domain, context=context)
         if not picking_loc_ids:

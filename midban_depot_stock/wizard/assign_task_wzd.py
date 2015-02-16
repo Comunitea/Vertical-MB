@@ -52,7 +52,6 @@ class assign_task_wzd(osv.TransientModel):
         'machine_id': fields.many2one('stock.machine', 'Machine'),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
-        'temp_id': fields.many2one('temp.type', 'Temperature'),
         'trans_route_id': fields.many2one('route', 'Transport Route',
                                           domain=[('state', '=', 'active')]),
         'date_planned': fields.date('Scheduled Date', required=True,
@@ -366,9 +365,10 @@ class assign_task_wzd(osv.TransientModel):
         res = False
         move_obj = self.pool.get('stock.move')
         obj = self.browse(cr, uid, ids[0], context=context)
+        loc_ids = [x.id for x in obj.location_id]
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
-            ('product_id.temp_type', '=', obj.temp_id.id),
+            ('product_id.picking_location_id', 'child_of', loc_ids),
             ('state', '=', 'confirmed'),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '!=', False)
@@ -383,8 +383,8 @@ class assign_task_wzd(osv.TransientModel):
 
     def _get_moves_from_route(self, cr, uid, ids, context=None):
         """
-        Search all the assigned moves which picking has trans_route_id and
-        temperature equals to wizard temp_id.
+        Search all the assigned moves which picking has trans_route_id
+        and picking location child of wizard.location_ids
         If not trans_route_id in wizard we get a random pending route
         """
         if context is None:
@@ -400,9 +400,10 @@ class assign_task_wzd(osv.TransientModel):
         date_planned = obj.date_planned
         start_date = date_planned + " 00:00:00"
         end_date = date_planned + " 23:59:59"
+        loc_ids = [x.id for x in obj.location_id]
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
-            ('product_id.temp_type', '=', obj.temp_id.id),
+            ('product_id.picking_location_id', 'child_of', loc_ids),
             ('state', '=', 'confirmed'),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '=', selected_route),
@@ -422,10 +423,6 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         pick_obj = self.pool.get('stock.picking')
         move_obj = self.pool.get('stock.move')
-        wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        if not wzd_obj.warehouse_id.storage_loc_id:
-            raise osv.except_osv(_('Error!'), _("Storage location not defined \
-                                                in warehouse"))
         for move in move_obj.browse(cr, uid, move_ids, context=context):
             move.action_assign()
             if move.state != 'assigned':
@@ -510,8 +507,8 @@ class assign_task_wzd(osv.TransientModel):
                                                      context=context)
         self._check_on_course(cr, uid, ids, machine_id, context=context)
 
-        if not obj.temp_id:
-            raise osv.except_osv(_('Error!'), _('Temperature is required to \
+        if not obj.location_ids:
+            raise osv.except_osv(_('Error!'), _('Locations are required to \
                                                  do a picking task'))
 
         to_pick_moves, selected_route = self._get_moves_from_route(cr, uid,
@@ -535,17 +532,18 @@ class assign_task_wzd(osv.TransientModel):
                                                       context=context)
 
         if pickings_to_wave:
+            camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
             pick_obj.write(cr, uid, pickings_to_wave,
                            {'operator_id': obj.operator_id.id,
                             'machine_id': machine_id,
                             'warehouse_id': obj.warehouse_id.id,
-                            'temp_id': obj.temp_id.id,
+                            'camera_ids': camera_ids,
                             'task_type': 'picking'},
                            context=context)
             pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
                                         context=context)
             vals = {'user_id': obj.operator_id.id,
-                    'temp_id': obj.temp_id.id,
+                    'camera_ids': camera_ids,
                     'trans_route_id': selected_route,
                     'warehouse_id': obj.warehouse_id.id,
                     'machine_id': obj.machine_id.id,
