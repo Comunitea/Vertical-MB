@@ -469,9 +469,9 @@ class assign_task_wzd(osv.TransientModel):
                 if not product:
                     product = move.product_id
 
-            boxes_div = product.supplier_un_ca or 1
-            vol_box = product.supplier_ca_width * \
-                product.supplier_ca_height * product.supplier_ca_length
+            boxes_div = product.un_ca or 1
+            vol_box = product.ca_width * \
+                product.ca_height * product.ca_length
             num_boxes = total_qty / boxes_div
             all_moves_vol = num_boxes * vol_box
             if all_moves_vol >= max_volume:

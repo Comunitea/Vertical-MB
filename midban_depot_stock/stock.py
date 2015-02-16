@@ -148,11 +148,9 @@ class stock_package(osv.osv):
         for pack in self.browse(cr, uid, ids, context=context):
             mantles = 0
             if pack.pack_type:
-                pack_type = pack.pack_type
-                # if pack_type in ['palet', 'var_palet'] and pack.product_id:
-                if pack_type == 'palet' and pack.product_id:
-                    units_in_mantle = pack.product_id.supplier_un_ca * \
-                        pack.product_id.supplier_ca_ma
+                if pack.pack_type == 'palet' and pack.product_id:
+                    units_in_mantle = pack.product_id.un_ca * \
+                        pack.product_id.ca_ma
                     if units_in_mantle:
                         mantles = math.ceil(pack.packed_qty / units_in_mantle)
             res[pack.id] = mantles
@@ -177,23 +175,23 @@ class stock_package(osv.osv):
                 parent_loc_id = loc_dest_obj.location_id.id
                 if pack.pack_type:  # Get volume of box,palet
                     if pack.pack_type == 'box':
-                        volume = prod.supplier_ca_width * \
-                            prod.supplier_ca_height * prod.supplier_ca_length
+                        volume = prod.ca_width * \
+                            prod.ca_height * prod.ca_length
                     # elif pack.pack_type in ['palet', 'var_palet']:
                     elif pack.pack_type == 'palet':
                         num_mant = pack.num_mantles
-                        width_wood = prod.supplier_pa_width
-                        length_wood = prod.supplier_pa_length
-                        height_mant = prod.supplier_ma_height
+                        width_wood = prod.pa_width
+                        length_wood = prod.pa_length
+                        height_mant = prod.ma_height
                         wood_height = prod.palet_wood_height
                         if parent_loc_id == picking_loc_id:
                             wood_height = 0  # No wood in picking location
                         height_var_pal = (num_mant * height_mant) + wood_height
                         volume = width_wood * length_wood * height_var_pal
                 if not volume:  # Get volume of individual units
-                    volume = pack.product_id.supplier_un_width * \
-                        pack.product_id.supplier_un_height * \
-                        pack.product_id.supplier_un_length * \
+                    volume = pack.product_id.un_width * \
+                        pack.product_id.un_height * \
+                        pack.product_id.un_length * \
                         pack.packed_qty
             res[pack.id] = volume
 
@@ -283,8 +281,8 @@ class stock_pack_operation(osv.osv):
             old_ref = self._older_refernce_in_storage(cr, uid, product, wh_obj,
                                                       context=context)
             if not pick_loc.filled_percent:  # If empty add wood volume
-                width_wood = product.supplier_pa_width
-                length_wood = product.supplier_pa_length
+                width_wood = product.pa_width
+                length_wood = product.pa_length
                 height_wood = product.palet_wood_height
                 wood_volume = width_wood * length_wood * height_wood
                 vol_aval = pick_loc.available_volume - wood_volume
@@ -392,6 +390,7 @@ class stock_pack_operation(osv.osv):
         res = {}
         t_loc = self.pool.get('stock.location')
         t_whs = self.pool.get('stock.warehouse')
+        import ipdb; ipdb.set_trace()
         for ope in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             whs_id = t_loc.get_warehouse(cr, uid, ope.location_dest_id,
@@ -403,10 +402,10 @@ class stock_pack_operation(osv.osv):
             parent_loc_id = loc_dest_obj.location_id.id
             if ope.pack_type:
                 if ope.pack_type == "palet":
-                    num_mant = ope.package_id.num_mantles
-                    width_wood = ope.operation_product_id.supplier_pa_width
-                    length_wood = ope.operation_product_id.supplier_pa_length
-                    height_mant = ope.operation_product_id.supplier_ma_height
+                    num_mant = ope.num_mantles
+                    width_wood = ope.operation_product_id.pa_width
+                    length_wood = ope.operation_product_id.pa_length
+                    height_mant = ope.operation_product_id.ma_height
                     wood_height = ope.operation_product_id.palet_wood_height
                     if parent_loc_id == picking_loc_id:
                         wood_height = 0  # No wood in picking location
@@ -414,13 +413,13 @@ class stock_pack_operation(osv.osv):
                     volume = width_wood * length_wood * height_var_pal
 
                 elif ope.pack_type == "box":
-                    volume = ope.operation_product_id.supplier_ca_width * \
-                        ope.operation_product_id.supplier_ca_height * \
-                        ope.operation_product_id.supplier_ca_length
+                    volume = ope.operation_product_id.ca_width * \
+                        ope.operation_product_id.ca_height * \
+                        ope.operation_product_id.ca_length
             else:
-                volume = ope.operation_product_id.supplier_un_width * \
-                    ope.operation_product_id.supplier_un_height * \
-                    ope.operation_product_id.supplier_un_length * \
+                volume = ope.operation_product_id.un_width * \
+                    ope.operation_product_id.un_height * \
+                    ope.operation_product_id.un_length * \
                     ope.product_qty
             res[ope.id] = volume
         return res
@@ -441,8 +440,8 @@ class stock_pack_operation(osv.osv):
             if ope.package_id:
                 res[ope.id] = ope.package_id.num_mantles
             elif ope.product_id and ope.product_qty:
-                un_ca = ope.product_id.supplier_un_ca
-                ca_ma = ope.product_id.supplier_ca_ma
+                un_ca = ope.product_id.un_ca
+                ca_ma = ope.product_id.ca_ma
                 mant_units = un_ca * ca_ma
                 if mant_units:
                     res[ope.id] = int(math.ceil(ope.product_qty / mant_units))
@@ -541,9 +540,9 @@ class stock_location(osv.Model):
             if quant.package_id and quant.package_id.pack_type:
                 pack_ids.add(quant.package_id.id)
             else:
-                volume += quant.product_id.supplier_un_width * \
-                    quant.product_id.supplier_un_height * \
-                    quant.product_id.supplier_un_length * \
+                volume += quant.product_id.un_width * \
+                    quant.product_id.un_height * \
+                    quant.product_id.un_length * \
                     quant.qty
         pack_ids = list(pack_ids)
         for pack in t_pack.browse(cr, uid, pack_ids, context=context):
@@ -567,10 +566,13 @@ class stock_location(osv.Model):
                                              context=context)
 
             domain = [
+                '|',
                 ('location_dest_id', '=', loc.id),
+                ('chained_loc_id', '=', loc.id),
                 ('processed', '=', 'false'),
                 ('picking_id.state', 'in', ['assigned'])
             ]
+            import ipdb; ipdb.set_trace()
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 volume += ope.volume
@@ -587,8 +589,8 @@ class stock_location(osv.Model):
                                         context=context, limit=1)
                 if prod_id:
                     prod_obj = t_prod.browse(cr, uid, prod_id, context=context)
-                    width_wood = prod_obj.supplier_pa_width
-                    length_wood = prod_obj.supplier_pa_length
+                    width_wood = prod_obj.pa_width
+                    length_wood = prod_obj.pa_length
                     height_wood = prod_obj.palet_wood_height
                     wood_volume = width_wood * length_wood * height_wood
 
@@ -656,8 +658,8 @@ class stock_location(osv.Model):
                                         context=context, limit=1)
                 if prod_id:
                     prod_obj = t_prod.browse(cr, uid, prod_id, context=context)
-                    width_wood = prod_obj.supplier_pa_width
-                    length_wood = prod_obj.supplier_pa_length
+                    width_wood = prod_obj.pa_width
+                    length_wood = prod_obj.pa_length
                     height_wood = prod_obj.palet_wood_height
                     wood_volume = width_wood * length_wood * height_wood
 

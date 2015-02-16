@@ -123,8 +123,8 @@ class reposition_wizard(osv.TransientModel):
         loc = loc_obj.browse(cr, uid, dest_id, context=context)
         # Add wood volume if picking location is empty
         if not loc.filled_percent:
-            width_wood = prod.supplier_pa_width
-            length_wood = prod.supplier_pa_length
+            width_wood = prod.pa_width
+            length_wood = prod.pa_length
             height_wood = prod.palet_wood_height
             wood_volume = width_wood * length_wood * height_wood
             vol_aval = loc.available_volume - wood_volume
@@ -164,11 +164,11 @@ class reposition_wizard(osv.TransientModel):
                 operation_dics.append(op_vals)
 
         if packs_to_split:
-            #split the pack with lowest volume
+            # split the pack with lowest volume
             packs_to_split = sorted(packs_to_split, key=lambda p: p.volume)
-            vol_mant = prod.supplier_pa_width * prod.supplier_pa_length * \
-                prod.supplier_ma_height
-            mant_units = prod.supplier_un_ca * prod.supplier_ca_ma
+            vol_mant = prod.pa_width * prod.pa_length * \
+                prod.ma_height
+            mant_units = prod.un_ca * prod.ca_ma
             num_mantles = vol_mant and math.floor(vol_aval / vol_mant) or 0.0
             if num_mantles:
                 total_move_qty += num_mantles * mant_units
@@ -311,7 +311,7 @@ class reposition_wizard(osv.TransientModel):
             raise osv.except_osv(_('Error!'), _('No reposition type founded\
                                                  You must define the picking\
                                                  type in the warehouse.'))
-        #A pick for each location, if nor operations delete the pick.
+        # A pick for each location, if nor operations delete the pick.
         for loc_id in selected_ids:
             pick_id = self._get_reposition_operations(cr, uid, ids, loc_id,
                                                       context=context)
