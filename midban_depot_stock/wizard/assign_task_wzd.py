@@ -400,7 +400,7 @@ class assign_task_wzd(osv.TransientModel):
         date_planned = obj.date_planned
         start_date = date_planned + " 00:00:00"
         end_date = date_planned + " 23:59:59"
-        loc_ids = [x.id for x in obj.location_id]
+        loc_ids = [x.id for x in obj.location_ids]
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.picking_location_id', 'child_of', loc_ids),
@@ -441,8 +441,8 @@ class assign_task_wzd(osv.TransientModel):
     def _get_pickings_to_wave(self, cr, uid, ids, moves_by_product,
                               context=None):
         """
-        @param moves_by_product: Dict: Keys are product_id and value is a list
-                                 of moves with that products.
+        @param moves_by_product: List od List: Items are
+        [product_obj, [list of moves]]. Ordered by camera, Camera 1, Camera 2
         @param return: List of created picking ids to add to the wave.
         If all the moves of a same product has a volume higher than max defined
         if the wave is empty we force it, else we check for another product.
@@ -456,9 +456,10 @@ class assign_task_wzd(osv.TransientModel):
         if not max_volume:
             raise osv.except_osv(_('Error'), _('No max volume defined in \
                                                 warehouse'))
-        for key in moves_by_product:
-            move_ids = moves_by_product[key]
-            product = False
+        for prod_moves in moves_by_product:
+            product = prod_moves[0]
+            move_ids = prod_moves[1]
+
             total_qty = 0.0
             # Can we pick all the product??
             for move in move_obj.browse(cr, uid, move_ids, context=context):
@@ -525,9 +526,10 @@ class assign_task_wzd(osv.TransientModel):
                 moves_by_product[move.product_id] = [move.id]
             else:
                 moves_by_product[move.product_id].append(move.id)
-        moves_by_product = sorted(moves_by_product,
+        # Get a order list of lists, òrdered by picking camera
+        moves_by_product = sorted(moves_by_product.items(),
                                   key=lambda p:
-                                  p.picking_location_id.get_camera())
+                                  p[0].picking_location_id.get_camera())
         # Get pickings to put in a wave
         pickings_to_wave = self._get_pickings_to_wave(cr, uid, ids,
                                                       moves_by_product,

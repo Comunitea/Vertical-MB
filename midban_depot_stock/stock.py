@@ -60,13 +60,15 @@ class stock_picking(osv.osv):
 
     def _change_operation_dest_loc(self, cr, uid, ids, context=None):
         """
-        For each operation in the pickings, get the location from the package
+        If picking is inncoming. for each operation in the pickings,
+        get the location from the package
         """
         t_operation = self.pool.get('stock.pack.operation')
         if context is None:
             context = {}
         for pick in self.browse(cr, uid, ids, context=context):
-            if pick.move_lines and pick.move_lines[0].move_dest_id:
+            if pick.picking_type_code == 'incoming' and \
+                    pick.move_lines and pick.move_lines[0].move_dest_id:
                 related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
                 # Get the correct ubication, changing each operation
                 for op in pick.pack_operation_ids:
@@ -821,11 +823,12 @@ class stock_location(osv.Model):
         'sequence': 0
     }
 
-    def get_camera(self, cr, uid, loc_id, context=None):
+    def get_camera(self, cr, uid, ids, context=None):
         """
         Get the first parent location marked as camera.
         """
         res = False
+        loc_id = ids[0]
         loc = self.browse(cr, uid, loc_id, context=context)
         while not res and loc.location_id:
             if loc.location_id.camera:
@@ -848,7 +851,7 @@ class stock_location(osv.Model):
         if zone not in ['picking', 'storage']:
             raise osv.except_osv(_('Error!'), _('Zone not exist.'))
 
-        loc_camera_id = self.get_camera(cr, uid, loc_id, context=context)
+        loc_camera_id = self.get_camera(cr, uid, [loc_id], context=context)
         if loc_camera_id:
             domain = [('location_id', 'child_of', [loc_camera_id]),
                       ('usage', '=', 'internal'),
@@ -870,7 +873,7 @@ class stock_location(osv.Model):
             context = {}
         if zone not in ['picking', 'storage']:
             raise osv.except_osv(_('Error!'), _('Zone not exist.'))
-        loc_camera_id = self.get_camera(cr, uid, loc_id, context=context)
+        loc_camera_id = self.get_camera(cr, uid, [loc_id], context=context)
         if loc_camera_id:
             domain = [('location_id', '=', loc_camera_id),
                       ('zone', '=', zone)]
