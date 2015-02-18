@@ -224,65 +224,7 @@ class product_template(osv.Model):
         'mantle_wood_height': 0.02,
         'active': False,  # Product desuctived until register state is reached
     }
-    # _sql_constraints = [('ref_uniq', 'unique(default_code)',
-    #                      'The reference must be unique!'), ]
-
-    def _check_units_values(self, cr, uid, ids, context=None):
-        p = self.browse(cr, uid, ids[0], context=context)
-        if p.product_class not in ['fresh', 'ultrafresh'] and \
-            not (p.supplier_kg_un and p.supplier_un_width and
-                 p.supplier_un_height and p.supplier_un_length and
-                 p.supplier_ca_ma and p.supplier_ma_width and
-                 p.supplier_ma_height and p.supplier_ma_length and
-                 p.supplier_ma_pa and p.supplier_pa_width and
-                 p.supplier_pa_height and p.supplier_pa_length and
-                 p.supplier_un_ca and p.supplier_ca_width and
-                 p.supplier_ca_height and p.supplier_ca_length and
-                 p.palet_wood_height and
-                 p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
-                 p.un_width and p.ca_width and p.ma_width and p.pa_width and
-                 p.un_height and p.ca_height and p.ma_height and p.pa_height
-                 and p.un_length and p.ca_length and p.ma_length
-                 and p.pa_length):
-            return False
-        return True
-
-    _constraints = [(_check_units_values, 'Error!\nSome unit dimension is \
-        equals to zero. Please check it', ['supplier_kg_un',
-                                           'supplier_un_width',
-                                           'supplier_un_height',
-                                           'supplier_un_length',
-                                           'supplier_ca_ma',
-                                           'supplier_ma_width',
-                                           'supplier_ma_height',
-                                           'supplier_ma_length',
-                                           'supplier_ma_pa',
-                                           'supplier_pa_width',
-                                           'supplier_pa_height',
-                                           'supplier_pa_length',
-                                           'supplier_un_ca',
-                                           'supplier_ca_width',
-                                           'supplier_ca_height',
-                                           'supplier_ca_length',
-                                           'palet_wood_height',
-                                           'kg_un',
-                                           'un_ca',
-                                           'ca_ma',
-                                           'ma_pa',
-                                           'un_width',
-                                           'ca_width',
-                                           'ma_width',
-                                           'pa_width',
-                                           'un_height',
-                                           'ca_height',
-                                           'ma_height',
-                                           'pa_height',
-                                           'un_length',
-                                           'ca_length',
-                                           'ma_length',
-                                           'pa_length',
-                                           ])]
-
+   
     def copy(self, cr, uid, id, default=None, context=None):
         """ Overwrites copy methos in order to no duplicate the history,
         the price history, and the sequence"""
@@ -342,10 +284,35 @@ class product_template(osv.Model):
             self._update_history(cr, uid, ids, context, product, message)
         return True
 
+    def _check_units_values(self, cr, uid, ids, context=None):
+        res = True
+        p = self.browse(cr, uid, ids[0], context=context)
+        if p.product_class not in ['fresh', 'ultrafresh'] and \
+            not (p.supplier_kg_un and p.supplier_un_width and
+                 p.supplier_un_height and p.supplier_un_length and
+                 p.supplier_ca_ma and p.supplier_ma_width and
+                 p.supplier_ma_height and p.supplier_ma_length and
+                 p.supplier_ma_pa and p.supplier_pa_width and
+                 p.supplier_pa_height and p.supplier_pa_length and
+                 p.supplier_un_ca and p.supplier_ca_width and
+                 p.supplier_ca_height and p.supplier_ca_length and
+                 p.palet_wood_height and
+                 p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
+                 p.un_width and p.ca_width and p.ma_width and p.pa_width and
+                 p.un_height and p.ca_height and p.ma_height and p.pa_height
+                 and p.un_length and p.ca_length and p.ma_length
+                 and p.pa_length):
+            res = False
+        if not res:
+            raise osv.except_osv(_('Error'), _('Some unit dimension is equals \
+                                               to zero. Please check it'))
+        return res
+
     def act_comercial_pending(self, cr, uid, ids, context=None):
         """ Fix state in commercial pending, product no active,
             update history. It's a flow method."""
         for product in self.browse(cr, uid, ids):
+            product._check_units_values()
             message = _("Logistic validate done")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'commercial_pending', 'active': False})
@@ -355,6 +322,7 @@ class product_template(osv.Model):
         """ Fix state in logic pending, product no active,
             update history. It's a flow method."""
         for product in self.browse(cr, uid, ids):
+            
             message = _("Comercial validate done")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'logic_pending', 'active': False})

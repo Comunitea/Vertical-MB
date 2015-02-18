@@ -197,19 +197,19 @@ class assign_task_wzd(osv.TransientModel):
 # ############################## UBICATION ####################################
 # #############################################################################
 
-    def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
-        if context is None:
-            context = {}
-        t_pick = self.pool.get("stock.picking")
-        t_pack_op = self.pool.get("stock.pack.operation")
-        pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
-        # Writed when a ubication task is assigned
-        if pick_obj.task_type == 'ubication':
-            wh_obj = pick_obj.warehouse_id
-            ops_ids = [x.id for x in pick_obj.pack_operation_ids]
-            t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
-                                              context=context)
-        return True
+    # def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
+    #     if context is None:
+    #         context = {}
+    #     t_pick = self.pool.get("stock.picking")
+    #     t_pack_op = self.pool.get("stock.pack.operation")
+    #     pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
+    #     # Writed when a ubication task is assigned
+    #     if pick_obj.task_type == 'ubication':
+    #         wh_obj = pick_obj.warehouse_id
+    #         ops_ids = [x.id for x in pick_obj.pack_operation_ids]
+    #         t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
+    #                                           context=context)
+    #     return True
 
     def get_location_task(self, cr, uid, ids, context=None):
         """
@@ -253,8 +253,8 @@ class assign_task_wzd(osv.TransientModel):
                     'task_type': 'ubication',
                     'warehouse_id': wzd_obj.warehouse_id.id})
 
-        self._change_operations_location_dest(cr, uid, pick.id,
-                                              context=context)
+        # self._change_operations_location_dest(cr, uid, pick.id,
+        #                                       context=context)
 
         # Create task and associate picking
         vals = {
@@ -522,10 +522,12 @@ class assign_task_wzd(osv.TransientModel):
         # Get the moves grouped by product
         for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
             if move.product_id.id not in moves_by_product:
-                moves_by_product[move.product_id.id] = [move.id]
+                moves_by_product[move.product_id] = [move.id]
             else:
-                moves_by_product[move.product_id.id].append(move.id)
-
+                moves_by_product[move.product_id].append(move.id)
+        moves_by_product = sorted(moves_by_product,
+                                  key=lambda p:
+                                  p.picking_location_id.get_camera())
         # Get pickings to put in a wave
         pickings_to_wave = self._get_pickings_to_wave(cr, uid, ids,
                                                       moves_by_product,
