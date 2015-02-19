@@ -27,7 +27,7 @@ import math
 
 class stock_picking(osv.osv):
     _inherit = "stock.picking"
-
+    _order = "name desc"
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        readonly=True,
@@ -872,7 +872,7 @@ class stock_location(osv.Model):
         if context is None:
             context = {}
         if zone not in ['picking', 'storage']:
-            raise osv.except_osv(_('Error!'), _('Zone not exist.'))
+            raise osv.except_osv(_('Error!'), _('Zone %s not exist.') % zone)
         loc_camera_id = self.get_camera(cr, uid, [loc_id], context=context)
         if loc_camera_id:
             domain = [('location_id', '=', loc_camera_id),
@@ -880,8 +880,11 @@ class stock_location(osv.Model):
             locations = self.search(cr, uid, domain, context=context)
             loc_id = locations and locations[0] or False
         if not loc_id:
+            cam = self.browse(cr, uid, loc_camera_id, context).name
             raise osv.except_osv(_('Error!'), _('No general %s location \
-                                                 founded.') % zone)
+                                                 founded in camera %s.') %
+                                 (zone, cam))
+
         return loc_id
 
     def on_change_parent_location(self, cr, uid, ids, loc_id, context=None):
@@ -1083,19 +1086,23 @@ class stock_quant(osv.osv):
         reserved quants of storage location.
         """
         t_location = self.pool.get('stock.location')
-
         if removal_strategy == 'depot_fefo':
             order = 'removal_date, in_date, id'
-            res = self._quants_get_order(cr, uid, location, product, qty,
+            # Search quants in picking location
+            pick_loc_obj = product.picking_location_id
+            if not pick_loc_obj:
+                raise osv.except_osv(_('Error!', _('Not picking location\
+                                     defined for product %s') % product.name))
+            pick_loc_id = pick_loc_obj.get_general_zone('picking')
+            pick_loc = pick_loc_id and \
+                t_location.browse(cr, uid, pick_loc_id) or False
+            res = self._quants_get_order(cr, uid, pick_loc, product, qty,
                                          domain, order, context=context)
             check_storage_qty = 0.0
             for record in res:
                 if record[0] is None:
                     check_storage_qty += record[1]
                     res.remove(record)
-            if not product.picking_location_id:
-                raise osv.except_osv(_('Error!'), _('Not picking location.'))
-            pick_loc_obj = product.picking_location_id
             storage_id = pick_loc_obj.get_general_zone('storage')
             storage_loc = storage_id and \
                 t_location.browse(cr, uid, storage_id) or False

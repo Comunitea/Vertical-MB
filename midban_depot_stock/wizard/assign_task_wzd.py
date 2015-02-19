@@ -365,7 +365,7 @@ class assign_task_wzd(osv.TransientModel):
         res = False
         move_obj = self.pool.get('stock.move')
         obj = self.browse(cr, uid, ids[0], context=context)
-        loc_ids = [x.id for x in obj.location_id]
+        loc_ids = [x.id for x in obj.location_ids]
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.picking_location_id', 'child_of', loc_ids),
@@ -483,8 +483,11 @@ class assign_task_wzd(osv.TransientModel):
             else:  # We can pick all the products
                 picking_ids = self._get_pickings(cr, uid, ids, move_ids,
                                                  context=context)
+
                 if picking_ids:
                     res.extend(picking_ids)
+                else:
+                    print "FAAAAALLLLLAAAAAAAR???????????????????"
         res = list(set(res))
         return res
 
@@ -511,7 +514,6 @@ class assign_task_wzd(osv.TransientModel):
         if not obj.location_ids:
             raise osv.except_osv(_('Error!'), _('Locations are required to \
                                                  do a picking task'))
-
         to_pick_moves, selected_route = self._get_moves_from_route(cr, uid,
                                                                    ids,
                                                                    context)
@@ -522,7 +524,7 @@ class assign_task_wzd(osv.TransientModel):
         moves_by_product = {}
         # Get the moves grouped by product
         for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
-            if move.product_id.id not in moves_by_product:
+            if move.product_id not in moves_by_product:
                 moves_by_product[move.product_id] = [move.id]
             else:
                 moves_by_product[move.product_id].append(move.id)

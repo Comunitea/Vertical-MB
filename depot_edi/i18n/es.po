@@ -506,7 +506,7 @@ msgstr "Número aviso de expedición"
 #. module: depot_edi
 #: field:stock.picking,cantemb:0
 msgid "Palet quantity"
-msgstr "CAntidad palet"
+msgstr "Cantidad palet"
 
 #. module: depot_edi
 #: model:ir.model,name:depot_edi.model_res_partner

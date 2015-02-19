@@ -180,7 +180,7 @@
                     <field name="filter_available"/>
                     <field name="available_volume" string="Available equals"  context="{'operation':'equal'}"/>
                     <field name="available_volume" string="Available greater"  context="{'operation':'greater'}"/>
-                    <field name="available_volume" string="Available less"  context="'operation':'less'}"/>
+                    <field name="available_volume" string="Available less"  context="{'operation':'less'}"/>
                 </field>
                 <filter name="supplier" position="after">
                     <filter string="Picking Camera" domain="[('camera', '=', True)]"/>
