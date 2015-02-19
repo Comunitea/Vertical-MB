@@ -38,6 +38,15 @@
         />
 
         <report 
+            string="Supplier Reception Report" 
+            id="action_report_supplier_reception" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_supplier_reception" 
+            file="midban_depot_stock.report_supplier_reception" 
+        />
+
+        <report 
             string="Supplier Report" 
             id="action_report_supplier_order" 
             model="purchase.order" 

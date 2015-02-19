@@ -74,6 +74,7 @@
         "qweb_report/report_delivery_list.xml",
         "qweb_report/report_stock_tag.xml",
         "qweb_report/report_supplier_order.xml",
+        "qweb_report/report_supplier_reception.xml",
         "report/wave_report_view.xml",
         "report/out_picking_report_view.xml",
     ],

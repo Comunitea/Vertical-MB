@@ -20,3 +20,4 @@
 ##############################################################################
 import wave_report
 import out_picking_report
+import supplier_reception_parser
