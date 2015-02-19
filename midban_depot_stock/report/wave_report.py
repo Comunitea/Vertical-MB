@@ -21,6 +21,7 @@
 
 from openerp import tools
 from openerp.osv import fields, osv
+from openerp import models, api
 
 
 class sale_report(osv.osv):
@@ -47,6 +48,17 @@ class sale_report(osv.osv):
             res[item.id]['boxes'] = num_boxes
         return res
 
+    def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
+                             context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for item in self.browse(cr, uid, ids, context=context):
+            res[item.id] = False
+            if item.location_id:
+                res[item.id] = item.location_id.get_camera()
+        return res
+
     _columns = {
         'product_id': fields.many2one('product.product', 'Product',
                                       readonly=True),
@@ -65,7 +77,11 @@ class sale_report(osv.osv):
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
         'sequence': fields.integer('Sequence', readonly=True),
-        'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
+        'wave_id': fields.many2one('stock.picking.wave', 'Wave',
+                                   readonly=True),
+        'camera_id': fields.function(_get_camera_from_loc, type='many2one',
+                                     relation='stock.location',
+                                     string='Camera', readonly=True)
     }
 
     def _select1(self):
@@ -180,3 +196,31 @@ class sale_report(osv.osv):
                     self._select2(), self._from2(), self._group_by2(),
                     self._group_by0()
                     ))
+
+
+class wave_report_parser(models.AbstractModel):
+    """ Parser to group products in camaras"""
+
+    _name = 'report.midban_depot_stock.report_picking_list'
+
+    @api.multi
+    def render_html(self, data=None):
+        report_obj = self.env['report']
+        report_name = 'midban_depot_stock.report_picking_list'
+        report = report_obj._get_report_from_name(report_name)
+        docs = []
+        products = {}
+        for wave in self.env[report.model].browse(self._ids):
+            docs.append(wave)
+            for line in wave.wave_report_ids:
+                if line.camera_id not in products:
+                    products[line.camera_id] = [line]
+                else:
+                    products[line.camera_id].append(line)
+        docargs = {
+            'doc_ids': self._ids,
+            'doc_model': report.model,
+            'docs': docs,
+            'products': products,
+        }
+        return report_obj.render(report_name, docargs)

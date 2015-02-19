@@ -9,7 +9,7 @@
                         <div class="page">
                               <div class="oe_structure"/>
 
-                              <h1 align="center">Picking List</h1>
+                              <h1 align="center">Picking List Report</h1>
 
 
                               <div class="row mt32 mb32">
@@ -39,50 +39,55 @@
                                   </div>
                               </div>
 
-                              <table class="table table-condensed">
-                                  <thead>
-                                      <tr>
-                                          <th class="text-center c">Reference</th>
-                                          <th class="text-center col-xs-2">Ean13</th>
-                                          <th class="text-center col-xs-2">Description</th>
-                                          <th class="text-center col-xs-1">Lot</th>
-                                          <th class="text-center col-xs-1" >Location</th>
-                                          <th class="text-center col-xs-1" >Units</th>
-                                          <th class="text-center col-xs-1">Boxes</th>
-                                          <th class="text-center col-xs-1">Var Weight</th>
-                                          <th class="text-center col-xs-2">Notes</th>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      <tr t-foreach="o.wave_report_ids" t-as="line">
-                                          <td>
-                                              <span t-field="line.reference"/>
-                                          </td>
-                                          <td class="text-center col-xs-2">
-                                              <span t-field="line.ean13"/>
-                                          </td>
-                                          <td class="text-center col-xs-2">
-                                              <span t-field="line.product_id.name"/>
-                                          </td>
-                                          <td class="text-center col-xs-1">
-                                              <span t-field="line.lot_id.name"/>
-                                          </td>
-                                          <td class="text-center col-xs-1">
-                                              <span t-field="line.location_id.name"/>
-                                          </td>
-                                          <td class="text-center col-xs-1">
-                                              <span t-field="line.units"/>
-                                          </td>
-                                          <td class="text-center col-xs-1">
-                                              <span t-field="line.boxes"/>
-                                          </td>
-                                          <td class="text-center col-xs-1">
-                                          </td>
-                                          <td class="text-center col-xs-2">
-                                          </td>
-                                      </tr>
-                                  </tbody>
-                            </table>
+                              <t t-foreach="products" t-as="camera">
+                                  <h3><span t-field="camera.name"/></h3>
+                                  <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center c">Reference</th>
+                                            <th class="text-center col-xs-2">Ean13</th>
+                                            <th class="text-center col-xs-2">Description</th>
+                                            <th class="text-center col-xs-1">Lot</th>
+                                            <th class="text-center col-xs-1">Location</th>
+                                            <th class="text-center col-xs-1">Units</th>
+                                            <th class="text-center col-xs-1">Boxes</th>
+                                            <th class="text-center col-xs-1">Var Weight</th>
+                                            <th class="text-center col-xs-2">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="products[camera]" t-as="line">
+                                            <td>
+                                                <span t-field="line.reference"/>
+                                            </td>
+                                            <td class="text-center col-xs-2">
+                                                <span t-field="line.ean13"/>
+                                            </td>
+                                            <td class="text-center col-xs-2">
+                                                <span t-field="line.product_id.name"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.lot_id.name"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.location_id.name"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.units"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.boxes"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                            </td>
+                                            <td class="text-center col-xs-2">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                              </t>
+
+                              
 
                             <div class="oe_structure"/>
 
