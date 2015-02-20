@@ -259,7 +259,7 @@
                     <field name="warehouse_id"/>
                 </field>
                 <field name="picking_ids" position="after">
-                    <separator string="Picking List"/>
+                    <separator string="Picking Report"/>
                     <field name="wave_report_ids"/>
                 </field>
             </field>

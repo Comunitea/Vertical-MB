@@ -45,7 +45,12 @@ class product_template(models.Model):
                                 help="Selecting both Units and boxes \
                                 will add functionality to Telesale and \
                                 Mobile App Sales (Android)")
-    box_discount = fields.Float('Box Unit Discount')
+    box_discount = fields.Float('Box Unit Discount',
+                                help="When you sale this product in boxes"
+                                "This will be the % discounted over the price"
+                                "unit. If a box have 10 units and discount is"
+                                "20%, the new box price will be 80 intead of"
+                                "100, imaging price unit equals to 1.")
     # Overwrite in order to add 4 decimals
     uos_coeff = fields.Float('Unit of Measure -> UOS Coeff',
                              digits=(16, 4),

@@ -38,7 +38,7 @@ class process_unregister_partner(osv.TransientModel):
         partner_id = context and context.get('active_id', False)
         partner_obj = self.pool.get("res.partner").browse(cr, uid, partner_id)
         message = _("Unregistered")
-        partner_obj._update_history(context, partner_obj, message)
+        self.pool.get("res.partner")._update_history(cr, uid, ids, context, partner_obj, message)
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         partner_obj.write({'state2': 'unregistered', 'active': False,
                            'unregister_reason_id': wzd_obj.reason_id.id})

@@ -64,20 +64,25 @@ class sale(osv.osv):
         'chanel': fields.selection([('erp', 'ERP'), ('telesale', 'telesale'),
                                     ('tablet', 'Tablet'),
                                     ('other', 'Other'),
-                                    ('ecomerce', 'E-comerce')], 'Chanel'),
+                                    ('ecomerce', 'E-comerce')], 'Chanel',
+                                   readonly=True),
         'date_invoice': fields.date('Date Invoice', readonly=True),
         'total_margin': fields.function(_get_total_margin, type="float",
                                         string="Total Margin",
                                         multi="mar",
-                                        digits_compute=
-                                        dp.get_precision('Account'),
+                                        digits_compute=dp.get_precision
+                                        ('Account'),
                                         readonly=True),
         'total_margin_per': fields.function(_get_total_margin, type="float",
                                             string="Margin Percentage",
                                             multi="mar",
-                                            digits_compute=
-                                            dp.get_precision('Account'),
+                                            digits_compute=dp.get_precision
+                                            ('Account'),
                                             readonly=True),
+    }
+
+    _defaults = {
+        'chanel': 'erp'
     }
 
     def create_order_from_ui(self, cr, uid, orders, context=None):
@@ -213,12 +218,12 @@ class sale_order_line(osv.osv):
 
     _columns = {
         'pvp_ref': fields.float('PVP ref',
-                                digits_compute=
-                                dp.get_precision('Product Price'),
+                                digits_compute=dp.get_precision
+                                ('Product Price'),
                                 readonly=True),
         'last_price_fresh': fields.float('Last Price Fresh',
-                                         digits_compute=
-                                         dp.get_precision('Product Price'),
+                                         digits_compute=dp.get_precision
+                                         ('Product Price'),
                                          readonly=True),
         'current_pvp': fields.function(_get_current_pvp, type="float",
                                        string="Current PVP",

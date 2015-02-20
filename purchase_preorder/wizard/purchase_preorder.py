@@ -34,8 +34,6 @@ PRODUCT_STATE_SELECTION = [('val_pending', 'Validate pending'),
                            ('registered', 'Registered'),
                            ('unregistered', 'Unegistered'),
                            ('denied', 'Denied')]
-PRODUCT_TYPE_SELECTION = [('food', 'Food'), ('mixed', 'Mixed'),
-                          ('hospitality', 'Hospitality')]
 
 
 class purchase_preorder(osv.Model):
@@ -109,10 +107,9 @@ class purchase_preorder(osv.Model):
         'supp_service_days_ids': fields.related('supplier_id',
                                                 'supp_service_days_ids',
                                                 type='many2many',
-                                                relation=
-                                                'week.days',
-                                                string=
-                                                "Supplier service days"),
+                                                relation='week.days',
+                                                string="Supplier service \
+                                                days"),
         'supp_transport_ids': fields.related('supplier_id',
                                              'supp_transport_ids',
                                              type='one2many',
@@ -603,11 +600,6 @@ class products_supplier(osv.Model):
                                         type='selection',
                                         selection=PRODUCT_STATE_SELECTION,
                                         string="State"),
-        'product_type': fields.related('product_id',
-                                       'product_type',
-                                       type='selection',
-                                       selection=PRODUCT_TYPE_SELECTION,
-                                       string="Type"),
         'min_fixed': fields.float('Min. Fixed'),
         'incoming_qty': fields.float('Incoming Qty.'),
         'date_delivery': fields.date('Date Delivery'),

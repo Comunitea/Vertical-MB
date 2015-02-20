@@ -7,6 +7,9 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Reposition wizard" version="7.0">
+                    <p>
+                    This wizard will replenish all the ubication whitch filled percent less than the givit in the capacity field.
+                    </p>
                     <group>
                         <field name="capacity"/>
                         <field name="warehouse_id"/>

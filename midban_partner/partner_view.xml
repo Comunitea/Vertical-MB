@@ -18,6 +18,16 @@
                         <field name="supplier" invisible="1"/> 
                     </header>
                 </xpath>
+                <field name="parent_id" position="before">
+                    <div expr="//field[@name='opt_out']" position="before">
+                        <button name="%(action_process_unregister_partner)d" string="Unregister"
+                                    type="action"
+                                    class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>
+                        <button name="register_again" string="Register"
+                                    type="object"
+                                    class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>   
+                    </div>
+                </field>
                 <notebook position="inside">
                     <!-- Suppliers tab. Adds transports and supplier info -->
                     <page string="Suplliers Info" attrs="{'invisible': [('supplier','=',False)]}">
@@ -141,7 +151,7 @@
         </record>
 
         <!-- Add buttons to unregister and register again under active field in Sales & Purchases tab -->
-        <record model="ir.ui.view" id="midban_res_partner_opt_out_form">
+       <!--  <record model="ir.ui.view" id="midban_res_partner_opt_out_form">
             <field name="name">midban.res.partner.opt_out.form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="email_template.res_partner_opt_out_form"/>
@@ -155,7 +165,7 @@
                                 class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>   
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
         <!-- Unregister partner reason tree view -->
         <record id="midban_unregister_partner_reason_view_tree" model="ir.ui.view">

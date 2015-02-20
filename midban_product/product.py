@@ -32,8 +32,7 @@ class temp_type(osv.Model):
     _name = 'temp.type'
     _columns = {
         'temp_id': fields.integer('Temp id', readonly="True"),
-        'name': fields.char('Temp name', size=256, required="True",
-                            readonly="True"),
+        'name': fields.char('Temp name', size=256, required="True"),
         'type': fields.selection([('chilled', 'Chilled'), ('frozen', 'Frozen'),
                                  ('dry', 'Dry')], "Type", help="Depending on "
                                  "this temperature, the product will be stored"
@@ -102,14 +101,13 @@ class product_template(osv.Model):
     _columns = {
         'ean14': fields.char('Code EAN14', size=14),
         'temp_type': fields.many2one('temp.type',
-                                     'Temp type'),
+                                     'Temp type', help="Informative field that"
+                                     "should be the same as the picking"
+                                     "location temperature type"),
         'var_weight': fields.boolean('Variable weight'),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
-        'product_type': fields.selection([('food', 'Food'), ('mixed', 'Mixed'),
-                                          ('hospitality', 'Hospitality')],
-                                         "Product Class"),
         'mark': fields.char('Mark', size=128),
         'ref': fields.char('Referencia', size=64),
         'scientific_name': fields.char('Scientific name', size=128),
@@ -194,8 +192,6 @@ class product_template(osv.Model):
         'supplier_ca_length': fields.float("CA Length Supplier", digits=(4, 2),
                                            required=True),
         'palet_wood_height': fields.float("Palet Wood Height", digits=(5, 3)),
-        'mantle_wood_height': fields.float("Mantle Wood Height",
-                                           digits=(5, 3)),
         'last_purchase_price': fields.function(_get_last_price,
                                                string="Last purchase change",
                                                type="float",
@@ -215,16 +211,19 @@ class product_template(osv.Model):
                                            ('chilled', 'Chilled'),
                                            ('ultrafresh', 'Ultrafresh'),
                                            ('no_class', 'No Class')], 'Class',
-                                          required=True)
+                                          required=True),
+        'drained_weight': fields.float('Drained net weight',
+                                       digits_compute=dp.get_precision
+                                       ('Stock Weight')),
+
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',
         'state2': 'val_pending',
         'palet_wood_height': 0.145,
-        'mantle_wood_height': 0.02,
         'active': False,  # Product desuctived until register state is reached
     }
-   
+
     def copy(self, cr, uid, id, default=None, context=None):
         """ Overwrites copy methos in order to no duplicate the history,
         the price history, and the sequence"""
@@ -322,7 +321,7 @@ class product_template(osv.Model):
         """ Fix state in logic pending, product no active,
             update history. It's a flow method."""
         for product in self.browse(cr, uid, ids):
-            
+
             message = _("Comercial validate done")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'logic_pending', 'active': False})

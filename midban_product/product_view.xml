@@ -33,7 +33,6 @@
                     <group>
                         <field name="product_class" string="Sale Type"/>
                         <field name="ean14"/>
-                        <field name="product_type"/>
                         <field name="temp_type"/>
                         <field name="temperature"/>
                     </group>
@@ -135,18 +134,15 @@
                                 confirm="Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"/>
                     </group>
                 </label>
-                <!-- <div name="options" position="before">
-                    <label for="categ_id"/>
-                    <h2><field name="categ_id"/></h2>
-                </div> -->
 
-                <!-- <field name="default_code" position="before">
-                    <field name="ean14"/>
-                </field> -->
                 <field name="standard_price" position="after">
                     <field name="margin"/>
                     <field name="last_purchase_price"/>
                     <field name="life"/>
+                </field>
+                
+                <field name="weight_net" position="after">
+                    <field name="drained_weight"/>
                 </field>
             </field>
         </record>
@@ -335,13 +331,11 @@
             <field name="name">midban_product_temp_type_view_form</field>
             <field name="model">temp.type</field>
             <field name="arch" type="xml">
-                <form string="Temp Type" version="7.0">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="type"/>
-                        </group>
-                    </sheet>
+                <form string="Temp Type">
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                    </group>
                 </form>
             </field>
         </record>
@@ -368,13 +362,30 @@
          <!-- Menu for product temp type under Stock/Configuration/Products) -->
         <menuitem action="action_temp_type" id="menu_temp_type_stock" name="Temperature type" sequence="6" parent="stock.menu_product_in_config_stock"/>
 
-        <!-- <record model="res.groups" id="group_no_variants">
+        <record model="res.groups" id="group_no_variants">
             <field name="category_id" ref="base.module_category_usability"/>
             <field name="name">View Product Variants</field>
-        </record> -->
+        </record>
+        
+         <!-- Avoid Menu of product Variants -->
+        <delete model="ir.ui.menu" search="[('id','=',ref('product.menu_products'))]"/>
+        <menuitem id="menu_products2" action="product.product_normal_action_sell" parent="base.menu_product" groups="group_no_variants" sequence="10"/>
 
-        <!-- <menuitem id="product.menu_products" action="product.product_normal_action_sell" parent="base.menu_product" groups="midban_product.group_no_variants" sequence="10"/> -->
-
+        <delete model="ir.ui.menu" search="[('id','=',ref('stock.menu_product_variant_config_stock'))]"/>
+        <menuitem
+            action="product.product_normal_action" id="menu_product_variant_config_stock2"
+            parent="stock.menu_product_in_config_stock" groups="group_no_variants" sequence="2"/>
+        <!-- Avoid page of product Variants -->
+        <record id="product_template_only_form_view_avoid_variants" model="ir.ui.view">
+            <field name="name">product.template.product.form.avoid.variants</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <page name="variants" position="attributes">
+                    <attribute name="groups" ref="group_no_variants"/>
+                </page>
+            </field>
+        </record>
 
     </data>
 </openerp>
