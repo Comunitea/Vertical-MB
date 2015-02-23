@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <!-- Supplier/Client form view, general inherit -->
+        <record id="midban_view_partner_form" model="ir.ui.view">
+            <field name="name">midban.view.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form[@string='Partners']/sheet" position="before">
+                    <header>
+                        <button name="logic_validated" string="Logistic Validated" attrs="{'invisible': [('state2','in',['commercial_pending','validated','registered','unregistered'])]}" class="oe_highlight"/>   
+                        <button name="commercial_validated" string="Commercial Validated" attrs= "{'invisible': [('state2','in',['logic_pending','validated','registered','unregistered'])]}" class="oe_highlight"/>
+                        <button name="back_pending" string="Back" attrs="{'invisible': [('state2','in',['val_pending','registered','unregistered'])]}" />
+                        <button name="active" string="Register" attrs="{'invisible': [('state2','!=','validated')]}" class="oe_highlight"/>
+                        <field name="state2" widget="statusbar"/> 
+                        <field name="supplier" invisible="1"/> 
+                    </header>
+                </xpath>
+                <field name="parent_id" position="before">
+                    <div expr="//field[@name='opt_out']" position="before">
+                        <button name="%(action_process_unregister_partner)d" string="Unregister"
+                                    type="action"
+                                    class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>
+                        <button name="register_again" string="Register"
+                                    type="object"
+                                    class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>   
+                    </div>
+                </field>
+                <notebook position="inside">
+                    <!-- Suppliers tab. Adds transports and supplier info -->
+                    <page string="Suplliers Info" attrs="{'invisible': [('supplier','=',False)]}">
+                        <group>
+                            <field name="reception_method"/>
+                            <group string="Service Days">
+                                <field name="supp_service_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                            <group string="Accept Orders Days">
+                                <field name="supp_accept_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                            <group string="Delivery Orders Time Slot">
+                                <field name="supp_times_delivery" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="time_start" widget="float_time"/>
+                                        <field name="time_end" widget="float_time"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+
+                        <separator string="Transports"/>
+                            <field name="supp_transport_ids">
+                            <tree string="Supplier transports">
+                                <field name="name"/>
+                                <field name="npalets"/>
+                                <field name="usable_height"/>
+                            </tree>
+                            <form string="Supplier transports">
+                                <group>
+                                    <field name="name"/>
+                                    <field name="npalets"/>
+                                    <field name="usable_height"/>
+                                </group>
+                            </form>
+                            </field>
+                    </page>
+
+                    <page string="Customers Info" attrs="{'invisible': [('customer','=',False)]}">
+                        <group>
+                            <field name="invoice_method"/>
+                            <field name="group_pickings"/>
+                            <group string="Delivery Days">
+                                <field name="delivery_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                            </group>
+                            <group string="Delivery Orders Time Slot">
+                                <field name="times_delivery" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="time_start"/>
+                                        <field name="time_end"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Call Days Time Slot" colspan="4">
+                                <field name="call_days_slot"  colspan="4" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="day" widget="selection"/>
+                                        <field name="time_start" widget="float_time"/>
+                                        <field name="time_end" widget="float_time"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+                    </page>
+
+                    <!-- History tab -->
+                    <page string="History">
+                        <field name="history_ids">
+                            <tree string="Partner History">
+                                <field name="user_id"/>
+                                <field name="date"/>
+                                <field name="activity"/>
+                                <field name="reason"/>
+                            </tree>
+                            <form string="Partner History">
+                                <field name="user_id"/>
+                                <field name="date"/>
+                                <field name="activity"/>
+                                <field name="reason"/>
+                                <field name="comment" colspan="4"/>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+                 <field name="parent_id" position="before">
+                    <group>
+                        <field name="unregister_reason_id" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
+                    </group>
+                </field>
+            </field>
+        </record>
+        
+        <!-- Client/Supplier search view.Add filters to search unregistered and in register process partners -->
+        <record id="midban_view_res_partner_filter" model="ir.ui.view">
+            <field name="name">midban.res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                   <filter name="supplier" position="after">
+                         <separator/>
+                         <filter string="Unregistered" name="unregistered_partner" domain="[('state2','=','unregistered'),('active','=',False)]"/>
+                         <filter string="In registering process" name="partnert_registering" domain="[('state2','in',['val_pending','commercial_pending','logic_pending','validated']),('active','=',False)]"/>
+                   </filter>                  
+            </field>
+        </record>
+
+        <!-- Add buttons to unregister and register again under active field in Sales & Purchases tab -->
+       <!--  <record model="ir.ui.view" id="midban_res_partner_opt_out_form">
+            <field name="name">midban.res.partner.opt_out.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="email_template.res_partner_opt_out_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='opt_out']" position="before">
+                    <button name="%(action_process_unregister_partner)d" string="Unregister"
+                                type="action"
+                                class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>
+                    <button name="register_again" string="Register"
+                                type="object"
+                                class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>   
+                </xpath>
+            </field>
+        </record> -->
+
+        <!-- Unregister partner reason tree view -->
+        <record id="midban_unregister_partner_reason_view_tree" model="ir.ui.view">
+            <field name="name">midban.unregister.partner.reason.view.tree</field>
+            <field name="model">unregister.partner.reason</field>
+            <field name="arch" type="xml">
+                <tree string="Unregister reasons">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Unregister partner reason form view -->
+        <record id="midban_unregister_partner_reason_view_form" model="ir.ui.view">
+            <field name="name">midban.unregister.partner.reason.view.form</field>
+            <field name="model">unregister.partner.reason</field>
+            <field name="arch" type="xml">
+                <form string="Unregister reasons" version="7.0">
+                    <group>
+                    <field name="name"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <!-- Unregister partner reason action -->
+        <record id="action_unregister_partner_reason" model="ir.actions.act_window">
+            <field name="name">Partner unregister reasons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">unregister.partner.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new unregister reason.
+              </p><p>
+                Manage the unregister reasons. Reasons defined here can be selected on the
+                unregister wizard.
+              </p>
+            </field>
+        </record>
+
+
+        <!-- Menu Unregister partner reason under Sales/configuration/Contacts(Adreess book) -->
+        <menuitem action="action_unregister_partner_reason" id="menu_unregister_partner_reason_sales" name="Unregister partner reasons" sequence="60" parent="base.menu_config_address_book"/>
+
+        <!-- Menu Unregister partner reason under Purchases/configuration/Contacts(Adreess book) -->
+        <menuitem action="action_unregister_partner_reason" id="menu_unregister_partner_reason_purchases" name="Unregister partner reasons" sequence="90" parent="purchase.menu_purchase_partner_cat"/>
+
+
+        <!-- Supplier transports tree view -->
+        <record id="midban_supplier_transport_view_tree" model="ir.ui.view">
+            <field name="name">midban.supplier.transport.view.tree</field>
+            <field name="model">supplier.transport</field>
+            <field name="arch" type="xml">
+                <tree string="Supplier Transports">
+                    <field name="name"/>
+                    <field name="npalets"/>
+                    <field name="usable_height"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Supplier transports form view -->
+        <record id="midban_supplier_transport_view_form" model="ir.ui.view">
+            <field name="name">midban.supplier.transport.view.form</field>
+            <field name="model">supplier.transport</field>
+            <field name="arch" type="xml">
+                <form string="Supplier Transports" version="7.0">
+                    <sheet>
+                        <group>
+                    <group>
+                    <field name="name"/>
+                    <field name="npalets"/>
+                    </group>
+                    <group>
+
+                    <field name="usable_height"/>
+                    <field name="supplier_id"/>
+                    </group>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Supplier transports action -->
+        <record id="action_supplier_transport" model="ir.actions.act_window">
+            <field name="name">Supplier transports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">supplier.transport</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new supplier transport.
+              </p><p>
+                Manage the supplier transport. You can see the supplier transport
+                list on supllier's view.
+              </p>
+            </field>
+        </record>
+
+        <!-- Menu Supplier transports under Purchase/Configuracion/Contacts(Adress_book)-->
+        <menuitem id="menu_supplier_transports" action="action_supplier_transport" name="Supplier Transports" parent="purchase.menu_purchase_partner_cat" sequence="100"/>
+
+    </data>
+</openerp>

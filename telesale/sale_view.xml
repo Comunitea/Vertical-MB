@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Form View Purchase order: Adding boolean field to purchase order lines -->
+        <record id="sale_view_order_form_add_telesale" model="ir.ui.view">
+            <field name="name">sale.view.order.form.add.telesale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="chanel"/>
+                </field>
+                <field name="date_order" position="after">
+                    <field name="date_invoice"/>
+                </field>
+
+                <!-- Adding margin fields -->
+                <field name="amount_untaxed" position="before">
+                    <field name="total_margin"/>
+                    <field name="total_margin_per"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_quotation_tree_add_telesale" model="ir.ui.view">
+            <field name="name">view.quotation.tree.add.telesale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="chanel" class="oe_inline"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_order_tree_add_telesale" model="ir.ui.view">
+            <field name="name">view.order.tree.add.telesale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="chanel" class="oe_inline"/>
+                </field>
+            </field>
+        </record>
+    </data>
+
+</openerp>

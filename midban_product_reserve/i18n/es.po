@@ -1,0 +1,393 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* stock_reserve
+#	* midban_product_reserve
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-31 11:52+0000\n"
+"PO-Revision-Date: 2014-12-31 11:52+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_reserve
+#: model:ir.actions.act_window,help:stock_reserve.action_stock_reservation_tree
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                    Click to create a stock reservation.\n"
+"                    </p><p>\n"
+"                    This menu allow you to prepare and reserve some quantities\n"
+"                    of products.\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                    Click para crear una reserva de stock.\n"
+"                    </p><p>\n"
+"                    Este menú te permite preparar y reservar cantidades\n"
+"                    de productos.\n"
+"                </p>\n"
+"            "
+
+#. module: midban_product_reserve
+#: model:ir.actions.act_window,help:midban_product_reserve.action_sale_reserved
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a quatation marked as reserved sale\n"
+"              </p><p>\n"
+"                It is a normal sale order. but the sales created from reserved are marked like reserved sales\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para marcar un presupuesto marcado como compra reservada\n"
+"              </p><p>\n"
+"                Es una venta normal, aquí están las ventas que se crearon desde el modelo de reservas de stock\n"
+"              </p>\n"
+"            "
+
+#. module: midban_product_reserve
+#: selection:stock.reservation,invoice_method:0
+msgid "Agreement"
+msgstr "Compromiso"
+
+#. module: midban_product_reserve
+#: selection:stock.reservation,choose_unit:0
+msgid "Box"
+msgstr "Caja"
+
+#. module: midban_product_reserve
+#: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Confirm Reserve"
+msgstr "Confirmar reserva"
+
+#. module: midban_product_reserve
+#: model:ir.actions.act_window,name:midban_product_reserve.action_sale_from_reserve
+#: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Create Sale"
+msgstr "Crear Venta"
+
+#. module: midban_product_reserve
+#: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
+msgid "Create invoice"
+msgstr "Crear factura"
+
+#. module: midban_product_reserve
+#: model:ir.model,name:midban_product_reserve.model_sale_from_reserve_wzd
+msgid "Create sales from reserve"
+msgstr "Crear ventas desde reservas"
+
+#. modules: stock_reserve, midban_product_reserve
+#: field:sale.from.reserve.wzd,create_uid:0
+#: field:stock.reservation,create_uid:0
+msgid "Created by"
+msgstr "Creado Por"
+
+#. modules: stock_reserve, midban_product_reserve
+#: field:sale.from.reserve.wzd,create_date:0
+#: field:stock.reservation,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_search_add_fields
+#: field:stock.reservation,partner_id2:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Destination Location"
+msgstr "Ubicación de destino"
+
+#. modules: stock_reserve, midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+msgid "Details"
+msgstr "Detalles"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_search_add_fields
+msgid "Done"
+msgstr "Realizado"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: midban_product_reserve
+#: code:addons/midban_product_reserve/wizard/sale_from_reserve_wzd.py:72
+#, python-format
+msgid "Error!"
+msgstr "Error!"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Group By..."
+msgstr "Agrupado por..."
+
+#. modules: stock_reserve, midban_product_reserve
+#: field:sale.from.reserve.wzd,id:0
+#: field:stock.reservation,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Information"
+msgstr "Información"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_search_add_fields
+msgid "Invoice State"
+msgstr "Estado Factura"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Invoice control"
+msgstr "Control de factura"
+
+#. module: midban_product_reserve
+#: field:stock.reservation,invoice_method:0
+msgid "Invoice method"
+msgstr "Método facturación"
+
+#. module: midban_product_reserve
+#: view:sale.order:midban_product_reserve.sale_view_order_form_add_reserved_check
+msgid "Is a reserve?"
+msgstr "Es una reserva?"
+
+#. modules: stock_reserve, midban_product_reserve
+#: field:sale.from.reserve.wzd,write_uid:0
+#: field:stock.reservation,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. modules: stock_reserve, midban_product_reserve
+#: field:sale.from.reserve.wzd,write_date:0
+#: field:stock.reservation,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. modules: stock_reserve, midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+msgid "Locations"
+msgstr "Ubicaciones"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_search_add_fields
+msgid "Moves are done."
+msgstr "Los movimientos están realizados."
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Moves are reserved."
+msgstr "Los movimientos están reservados."
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Not already reserved"
+msgstr "No reservado todavía"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+msgid "Notes"
+msgstr "Notas"
+
+#. module: midban_product_reserve
+#: code:addons/midban_product_reserve/wizard/sale_from_reserve_wzd.py:73
+#, python-format
+msgid "Only %s %s pending in the reserve"
+msgstr "Solo %s %s pendientes en la reserva"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Picking"
+msgstr "Albarán"
+
+#. module: midban_product_reserve
+#: field:stock.reservation,price_unit:0
+msgid "Price Unit"
+msgstr "Precio unitario"
+
+#. modules: stock_reserve, midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_search_add_fields
+#: model:ir.model,name:stock_reserve.model_product_product
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Product"
+msgstr "Producto"
+
+#. module: stock_reserve
+#: model:ir.model,name:stock_reserve.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Product UoM"
+msgstr "Unidad de medida"
+
+#. module: midban_product_reserve
+#: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
+#: field:sale.from.reserve.wzd,qty:0
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Quantity UOS"
+msgstr "Cantidad UOS"
+
+#. modules: stock_reserve, midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+#: view:stock.reservation:stock_reserve.view_stock_reservation_tree
+msgid "Release"
+msgstr "Liberar"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Released"
+msgstr "Liberado"
+
+#. module: stock_reserve
+#: code:addons/stock_reserve/model/stock_reserve.py:189
+#: field:stock.reservation,move_id:0
+#, python-format
+msgid "Reservation Move"
+msgstr "Movimiento reservado"
+
+#. module: stock_reserve
+#: model:stock.location,name:stock_reserve.stock_location_reservation
+msgid "Reservation Stock"
+msgstr "Stock Reservado"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Reservations have been released."
+msgstr "Las reservas han sido liberadas."
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+#: view:stock.reservation:stock_reserve.view_stock_reservation_tree
+msgid "Reserve"
+msgstr "Reservar"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Reserved"
+msgstr "Reservado"
+
+#. module: midban_product_reserve
+#: field:sale.order,reserved_sale:0
+msgid "Reserved Sale"
+msgstr "Venta reservada"
+
+#. module: midban_product_reserve
+#: model:ir.actions.act_window,name:midban_product_reserve.action_sale_reserved
+#: model:ir.ui.menu,name:midban_product_reserve.menu_sale_reserved
+#: model:stock.picking.type,name:midban_product_reserve.picking_type_sale_reserve
+msgid "Reserved Sales"
+msgstr "Ventas reservadas"
+
+#. module: midban_product_reserve
+#: view:sale.order:midban_product_reserve.view_sales_order_filter_add_reserved_filter
+msgid "Reserves"
+msgstr "Reservas"
+
+#. module: midban_product_reserve
+#: model:ir.model,name:midban_product_reserve.model_sale_order
+msgid "Sales Order"
+msgstr "Pedido de venta"
+
+#. module: midban_product_reserve
+#: view:sale.order:midban_product_reserve.view_sales_order_filter_add_reserved_filter
+msgid "Search Sales Order"
+msgstr "Buscar pedido de venta"
+
+#. module: midban_product_reserve
+#: field:stock.reservation,choose_unit:0
+msgid "Selected Unit"
+msgstr "Unidad seleccionada"
+
+#. module: midban_product_reserve
+#: field:stock.reservation,served_qty:0
+msgid "Served qty"
+msgstr "Cantidad servida"
+
+#. module: midban_product_reserve
+#: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
+msgid "Source Location"
+msgstr "Ubicación de origen"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+msgid "Status"
+msgstr "Estado"
+
+#. modules: stock_reserve, midban_product_reserve
+#: model:ir.model,name:midban_product_reserve.model_stock_reservation
+#: model:ir.model,name:stock_reserve.model_stock_reservation
+msgid "Stock Reservation"
+msgstr "Reservas de Stock"
+
+#. module: stock_reserve
+#: model:ir.actions.act_window,name:stock_reserve.action_stock_reservation_tree
+#: model:ir.ui.menu,name:stock_reserve.menu_action_stock_reservation
+#: view:product.product:stock_reserve.product_product_form_view_reservation_button
+#: view:product.template:stock_reserve.product_template_form_view_reservation_button
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+#: view:stock.reservation:stock_reserve.view_stock_reservation_search
+#: view:stock.reservation:stock_reserve.view_stock_reservation_tree
+msgid "Stock Reservations"
+msgstr "Reservas de Stock"
+
+#. module: midban_product_reserve
+#: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
+msgid "This wizard creates a sale order for the reserve and the sepecified quantity.\n"
+"                  The sale orders will be marked as reserved sales"
+msgstr "Este wizard crea un pedido de venta para la reserva y la cantidad especificada.\n"
+"                  El pedido de venta será marcado como venta reservada"
+
+#. module: midban_product_reserve
+#: selection:stock.reservation,invoice_method:0
+msgid "To be invoiced"
+msgstr "Para ser facturado"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_tree
+msgid "Total"
+msgstr "Total"
+
+#. module: midban_product_reserve
+#: selection:stock.reservation,choose_unit:0
+msgid "Unit"
+msgstr "Unidad"
+
+#. module: midban_product_reserve
+#: field:sale.from.reserve.wzd,product_uom:0
+msgid "Uom"
+msgstr "Uom"
+
+#. module: stock_reserve
+#: field:stock.reservation,date_validity:0
+msgid "Validity Date"
+msgstr "Fecha validación"
+
+#. module: stock_reserve
+#: view:stock.reservation:stock_reserve.view_stock_reservation_form
+msgid "View Reservation Move"
+msgstr "Ver Movimiento Reservado"
+

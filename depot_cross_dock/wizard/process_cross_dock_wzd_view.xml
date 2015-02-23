@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Process Cross Dock Wizard View -->
+        <record id="process_cross_dock_wzd_view" model="ir.ui.view">
+            <field name="name">process.cross.dock.wzd.view</field>
+            <field name="model">process.cross.dock.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create Cross Dock Purchases">
+                    <p>
+                    If we select create purchases for Midban products it will generate a purchase for each route in each picking to process.
+                    If we select create purchases for Cross docks products it will generate a purchase for each supplier in each picking to process.
+                    </p>
+                    <p>
+                    Important!: Transpor route must be assigned
+                    </p>
+                    
+                    
+                    <group>
+                        <field name="mode"/>
+                    </group>
+                    <footer>
+                        <button name="create_delayed_purchases" string="Create Purchases" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                 </form>
+            </field>
+        </record>
+        <record id="reset_drop_code_wzd_view" model="ir.ui.view">
+            <field name="name">reset.drop.code.wzd.view</field>
+            <field name="model">reset.drop.code.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Reset Route Drop Codes">
+                    <p>
+                        Reset the counter of drop codes in all active transport routes
+                    </p>
+                    <footer>
+                        <button name="reset_all_drop_codes" string="Reset Drop Codes" type="object"  class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                 </form>
+            </field>
+        </record>
+        <record id="action_process_cross_dock_wzd" model="ir.actions.act_window">
+            <field name="name">Create Cross Dock Purchases</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">process.cross.dock.wzd</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_process_cross_dock_wzd" id="action_process_cross_wzd_menu"  name="Create Cross Dock Purchases" parent="midban_depot_stock.menu_stock_vehicle_route_mgmt" sequence="200"/>
+
+        
+
+    </data>
+</openerp>

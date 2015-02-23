@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Rellenamos el modelo de alergenos con sus 14 tipos -->
+         <record id="t1" model="product.allergen">
+            <field name="name">Cereales que contengan gluten</field>
+        </record>
+        <record id="t2" model="product.allergen">
+            <field name="name">Crustáceos y productos a base de crustáceos</field>
+        </record>
+        <record id="t3" model="product.allergen">
+            <field name="name">Huevos y productos a base de huevo</field>
+        </record>
+        <record id="t4" model="product.allergen">
+            <field name="name">Pescado y productos a base de pescado</field>
+        </record>
+        <record id="t5" model="product.allergen">
+            <field name="name">Cacahuetes y productos a base de cacahuetes</field>
+        </record>
+        <record id="t6" model="product.allergen">
+            <field name="name">Soja y productos a base de soja</field>
+        </record>
+        <record id="t7" model="product.allergen">
+            <field name="name">Leche y sus derivados</field>
+        </record>
+        <record id="t8" model="product.allergen">
+            <field name="name">Frutos de cáscara</field>
+        </record>
+        <record id="t9" model="product.allergen">
+            <field name="name">Apio y productos derivados</field>
+        </record>
+        <record id="t10" model="product.allergen">
+            <field name="name">Mostaza y productos derivados</field>
+        </record>
+        <record id="t11" model="product.allergen">
+            <field name="name">Granos de sésamo y productos a base de granos de sésamo</field>
+        </record>
+        <record id="t12" model="product.allergen">
+            <field name="name">Dióxido de azufre y sulfitos</field>
+        </record>
+        <record id="t13" model="product.allergen">
+            <field name="name">Altramuces y productos a base de altramuces</field>
+        </record>
+        <record id="t14" model="product.allergen">
+            <field name="name">Moluscos y productos a base de moluscos</field>
+        </record>
+        <!-- Rellenamos los tipos de temperaturas -->
+        <record id="tt1" model="temp.type">
+            <field name="temp_id">1</field>
+            <field name="name">Congelado</field>
+        </record>
+        <record id="tt2" model="temp.type">
+            <field name="temp_id">2</field>
+            <field name="name">Seco</field>
+        </record>
+        <record id="tt3" model="temp.type">
+            <field name="temp_id">3</field>
+            <field name="name">Refrigerado</field>
+        </record>
+    </data>
+</openerp>

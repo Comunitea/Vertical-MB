@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        Procurement Adding field buy later and filter
+        -->
+        <record id="procurement_tree_view_add_buy_later" model="ir.ui.view">
+            <field name="name">procurement.order.tree.add.buy.later</field>
+            <field name="model">procurement.order</field>
+            <field name="inherit_id" ref="procurement.procurement_tree_view" />
+            <field name="arch" type="xml">
+                <field name="date_planned" position="after">
+                    <field name="buy_later"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="procurement_form_view_add_buy_later" model="ir.ui.view">
+            <field name="name">procurement.order.form.add.buy.later</field>
+            <field name="model">procurement.order</field>
+            <field name="inherit_id" ref="procurement.procurement_form_view"/>
+            <field name="arch" type="xml">
+                <group name="scheduling" position="inside">
+                    <field name="buy_later"/>
+                </group>
+            </field>
+        </record>
+
+        <record id="view_procurement_filter_add_buy_later" model="ir.ui.view">
+            <field name="name">procurement.order.form.add.buy.later</field>
+            <field name="model">procurement.order</field>
+            <field name="inherit_id" ref="procurement.view_procurement_filter"/>
+            <field name="inherit_id" ref="procurement.view_procurement_filter"/>
+            <field name="arch" type="xml">
+                <filter name="exceptions" position="after">
+                     <filter string="Buy later" name="buy_later" domain="[('buy_later','=',True)]"/>
+                </filter>
+            </field>
+        </record>
+
+    </data>
+</openerp>

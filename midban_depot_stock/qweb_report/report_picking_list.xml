@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data> 
+        <!-- Report of waves -->
+        <template id="report_picking_list">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="report.external_layout">
+                        <div class="page">
+                              <div class="oe_structure"/>
+
+                              <h1 align="center">Picking List Report</h1>
+
+
+                              <div class="row mt32 mb32">
+                                  <div t-if="o.name" class="col-xs-2">
+                                      <strong>Name:</strong>
+                                      <p t-field="o.name"/>
+                                  </div>
+                                  <div t-if="o.user_id" class="col-xs-2">
+                                      <strong>Operator:</strong>
+                                      <p t-field="o.user_id"/>
+                                  </div>
+                                  <div t-if="o.trans_route_id" class="col-xs-2">
+                                      <strong>Route:</strong>
+                                      <p t-field="o.trans_route_id"/>
+                                  </div>
+                                  <div t-if="o.machine_id" class="col-xs-2">
+                                      <strong>Machine:</strong>
+                                      <p t-field="o.machine_id"/>
+                                  </div>
+                                 <!--  <div t-if="o.temp_id" class="col-xs-2">
+                                      <strong>Temperature:</strong>
+                                      <p t-field="o.temp_id"/>
+                                  </div> -->
+                                  <div t-if="o.warehouse_id" class="col-xs-2">
+                                      <strong>Warehouse:</strong>
+                                      <p t-field="o.warehouse_id"/>
+                                  </div>
+                              </div>
+
+                              <t t-foreach="products" t-as="camera">
+                                  <h3><span t-field="camera.name"/></h3>
+                                  <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center c">Reference</th>
+                                            <th class="text-center col-xs-2">Ean13</th>
+                                            <th class="text-center col-xs-2">Description</th>
+                                            <th class="text-center col-xs-1">Lot</th>
+                                            <th class="text-center col-xs-1">Location</th>
+                                            <th class="text-center col-xs-1">Units</th>
+                                            <th class="text-center col-xs-1">Boxes</th>
+                                            <th class="text-center col-xs-1">Var Weight</th>
+                                            <th class="text-center col-xs-2">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="products[camera]" t-as="line">
+                                            <td>
+                                                <span t-field="line.reference"/>
+                                            </td>
+                                            <td class="text-center col-xs-2">
+                                                <span t-field="line.ean13"/>
+                                            </td>
+                                            <td class="text-center col-xs-2">
+                                                <span t-field="line.product_id.name"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.lot_id.name"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.location_id.name"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.units"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                                <span t-field="line.boxes"/>
+                                            </td>
+                                            <td class="text-center col-xs-1">
+                                            </td>
+                                            <td class="text-center col-xs-2">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                              </t>
+
+                              
+
+                            <div class="oe_structure"/>
+
+                        </div>
+                    </t>
+                 </t>
+             </t>
+        </template>
+    </data>
+</openerp>

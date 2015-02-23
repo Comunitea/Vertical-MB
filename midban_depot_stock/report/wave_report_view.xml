@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <record id="view_wave_report_tree" model="ir.ui.view">
+         <field name="name">wave.report.tree</field>
+         <field name="model">wave.report</field>
+         <field name="arch" type="xml">
+             <tree string="Picking List">
+                 <field name="sequence"/>
+                 <field name="reference"/>
+                 <field name="ean13"/>
+                 <field name="product_id"/>
+                 <field name="lot_id"/>
+                 <field name="camera_id"/>
+                 <field name="location_id"/>
+                 <field name="product_qty"/>
+                 <field name="boxes"/>
+                 <field name="units"/>
+             </tree>
+         </field>
+    </record>
+</data>
+</openerp>

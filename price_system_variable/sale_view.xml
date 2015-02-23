@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Form View Purchase order: Adding boolean field to purchase order lines -->
+        <record id="sale_view_order_form_add_to_update_to_line" model="ir.ui.view">
+            <field name="name">sale.view.order.form.add.to_update.to.line</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, parent.pricelist_id, context)"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
+                    <field name="to_update" readonly="0"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, parent.pricelist_id, context)"/>
+                    <field name="to_update" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_picking_task">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="report.external_layout">
+                        <div class="page">                             
+                             <h2>
+                               <span t-field="o.picking_type_id"/>: 
+                               <span t-field="o.name"/>
+                             </h2>
+                             <div t-if="o.operator_id">
+                                <h4><strong>Operator:  </strong><span t-field="o.operator_id"/></h4>
+                             </div>
+                             <div t-if="o.machine_id">
+                                <h4><strong>Machine:  </strong><span t-field="o.machine_id"/></h4>
+                             </div>
+                             <!-- <div t-if="o.temp_id">
+                                <h4><strong>Temperature:  </strong><span t-field="o.temp_id"/></h4>
+                             </div> -->
+                             <div t-if="o.trans_route_id">
+                                <h4><strong>Route:  </strong><span t-field="o.trans_route_id"/></h4>
+                             </div>
+                             
+                            
+
+                            <table class="table table-condensed" t-if="o.pack_operation_ids">
+                              <thead>
+                                <tr>
+                                    <th><strong>Product</strong></th>
+                                    <th><strong>Lot</strong></th>
+                                    <th><strong>Pack</strong></th>
+                                    <th class="text-right"><strong>Quantity</strong></th>
+                                    <th class="text-right"><strong>Mantles</strong></th>
+                                    <th><strong>Source</strong></th>
+                                    <th><strong>Destination</strong></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr t-foreach="o.pack_operation_ids" t-as="pack_operation">
+
+                                    <!-- Product -->
+                                    <td><span t-field="pack_operation.product_id"/>
+                                        <t t-if="not pack_operation.product_id and pack_operation.package_id">
+                                            <span  t-field="pack_operation.operation_product_id"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- Lot -->
+                                    <td>
+                                        <span t-field="pack_operation.package_id.packed_lot_id"/>
+                                    </td>
+
+                                    <!-- Pack -->
+                                    <td>
+                                        <span  t-field="pack_operation.package_id"/>
+                                    </td>
+
+                                    <!-- Quantity -->
+                                    <td class="text-right">
+                                        <!-- <span t-field="pack_operation.product_qty"/>
+                                        <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/> -->
+                                        <t t-if="pack_operation.package_id ">
+                                            <span t-field="pack_operation.package_id.packed_qty"/>
+                                        </t>
+                                        
+                                        <t t-if="not pack_operation.package_id ">
+                                            <span t-field="pack_operation.product_qty"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- Mantles -->
+                                    <td class="text-right">
+                                        <span  t-field="pack_operation.package_id.num_mantles"/>
+                                    </td>
+
+                                    <!-- Source -->
+                                    <t t-if="o.picking_type_id.code != 'incoming'">
+                                    <td>
+                                        <span t-field="pack_operation.location_id"/>
+                                        <!-- <span t-if="pack_operation.package_id">:</span>
+                                        <span t-field="pack_operation.package_id"/> -->
+                                        <span t-if="pack_operation.lot_id">:</span>
+                                        <span t-field="pack_operation.lot_id"/>
+                                      </td>
+                                    </t>
+                                    
+                                    <!-- Destination -->
+                                    <t t-if="o.picking_type_id.code != 'outgoing'">
+                                      <td>
+                                          <span t-field="pack_operation.location_dest_id"/>
+                                          <span t-if="pack_operation.result_package_id">:</span>
+                                          <span t-field="pack_operation.result_package_id"/>
+                                      </td>
+                                    </t>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </div>
+                    </t>
+                 </t>
+             </t>
+        </template>
+    </data>
+</openerp>

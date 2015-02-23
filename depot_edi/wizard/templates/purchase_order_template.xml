@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CABECERA>
+    <NODO>220</NODO>
+    <NUMPED>${o.name}</NUMPED>
+    <FECHA>${o.date_order.split(' ')[0].replace("-", u"") + o.date_order.split(' ')[1].split(':')[0] + o.date_order.split(' ')[1].split(':')[1]}</FECHA>
+    <FECHAEPR>${o.minimum_planned_date.replace("-", u"") + start}</FECHAEPR>
+    <FECHAERE>${o.minimum_planned_date.replace("-", u"")}</FECHAERE>
+    <FECHATOP>${(o.minimum_planned_date.replace("-", u"") ) + stop}</FECHATOP>
+    <OBSER TEMA="AAB">${o.notes or ''}</OBSER>
+    <COMPRADOR>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln or o.company_id.partner_id.vat}</CODINTERLOCUTOR>
+    </COMPRADOR>
+    <CLIENTE>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln or o.company_id.partner_id.vat}</CODINTERLOCUTOR>
+    </CLIENTE>
+    <RECEPTOR>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln or o.company_id.partner_id.vat}</CODINTERLOCUTOR>
+        <NOMBRE>${o.company_id.partner_id.name}</NOMBRE>
+        <DIRECCION>${o.company_id.partner_id.street} ${o.company_id.partner_id.street2 or ''}</DIRECCION>
+        <POBLACION>${o.company_id.partner_id.city or ''}</POBLACION>
+        <CP>${o.company_id.partner_id.zip or ''}</CP>
+    </RECEPTOR>
+    <VENDEDOR>
+        <CODINTERLOCUTOR>${o.partner_id.gln or o.partner_id.vat}</CODINTERLOCUTOR>
+        <NOMBRE>${o.partner_id.name}</NOMBRE>
+        <DIRECCION>${o.partner_id.street} ${o.partner_id.street2 or ''}</DIRECCION>
+        <POBLACION>${o.partner_id.city}</POBLACION>
+        <CP>${o.partner_id.zip}</CP>
+    </VENDEDOR>
+    <QPAGA>
+        <CODINTERLOCUTOR>${o.company_id.partner_id.gln or o.company_id.partner_id.vat}</CODINTERLOCUTOR>
+    </QPAGA>
+    <MONEDA>${o.currency_id.name}</MONEDA>
+    <PORTES>PP</PORTES>
+    %for line in o.order_line:
+    <LINEA>
+        %if line.product_id.ean13:
+        <REFERENCIA>${line.product_id.ean13}</REFERENCIA>
+        %elif line.product_id.ean14:
+        <REFERENCIA>${line.product_id.ean14}</REFERENCIA>
+        %endif
+        %if line.product_id.ean13:
+        <REFEAN>${line.product_id.ean13}</REFEAN>
+        %endif
+        %if line.product_id.ean14:
+        <DUN14>${line.product_id.ean14}</DUN14>
+        %endif
+        <REFCLI>${line.product_id.default_code}</REFCLI>
+        %if line.product_id.seller_ids:
+        %for supplier_info in line.product_id.seller_ids:
+        %if supplier_info.name.id == o.partner_id.id and supplier_info.product_code:
+        <REFPROV>${supplier_info.product_code}</REFPROV>
+        %endif
+        %endfor
+        %endif
+        <DESCMER>${line.product_id.name}</DESCMER>
+        <CANTPED MEDIDA="${line.product_uom.code}">${line.product_qty}</CANTPED>
+        %if line.price_unit >0:
+        <PRECION>${line.price_unit}</PRECION>
+        %endif
+        %for tax in line.taxes_id:
+        <IMPLED>
+            <TIPO>${tax.code or ''}</TIPO>
+            %if tax.amount >0:
+            <TASA>${tax.amount*100}</TASA>
+            %endif
+        </IMPLED>
+        %endfor
+    </LINEA>
+    %endfor
+</CABECERA>

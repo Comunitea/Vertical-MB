@@ -1,0 +1,218 @@
+ /* Principal screen */
+.telesale {
+    font-size: 12px;
+    font-weight: bold;
+    /*position: absolute;*/
+    position: fixed; /*con los css explicitos en la carpeta views*/
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+/* Top Bar with principal buttons */
+.telesale #topheader {
+    position:relative;
+    width: 100%;
+    height: 4%;
+    color: gray;
+    background: #393939;
+    background: -moz-linear-gradient(#7b7979, #393939);
+    background: -webkit-gradient(linear, left top, left bottom, from(#7b7979), to(#393939));
+}
+/*Content of screens*/
+.telesale #content {
+    position: relative;
+    width: 100%;
+    height: 96%;
+    background: #F0EEEE;
+
+}
+
+/******************************************** TOP BAR *******************************************************/
+/*Close button*/
+.telesale #topheader .header-button{
+    float:right;
+    height:100%;
+    padding-left:10px;
+    padding-right:10px;
+    border-right:  1px solid #3a3a3a;
+    border-left:  1px solid #3a3a3a;
+    color:#DDD;
+    line-height:200%;
+    margin-top: auto;
+    vertical-align: middle;
+    cursor: pointer;
+
+    -webkit-transition-property: background;
+    -webkit-transition-duration: 0.2s;
+    -webkit-transition-timing-function: ease-out;
+}
+/*Screens Buttons*/
+.telesale #topheader .select-screen-buttons{
+    position:relative;
+    width: 80%;
+    height: 100%;
+    color: gray;
+    background: #393939;
+    background: -moz-linear-gradient(#7b7979, #393939);
+    background: -webkit-gradient(linear, left top, left bottom, from(#7b7979), to(#393939));
+
+}
+
+/* The notifications indicator */
+.telesale .oe_ts_synch-notification{
+    float:right; 
+    color: rgba(255,255,255,0.4);
+    padding-left: 0.5%;
+    padding-right: 0.5%;
+    height:100%;
+    font-size:16px;
+    vertical-align:middle;
+    font-style: italic;
+    cursor:pointer;
+}
+.telesale .oe_ts_synch-notification.oe_inactive{
+    cursor: default;
+}
+.telesale .oe_ts_synch-notification .oe_status_red{
+    display:inline-block;
+    cursor:pointer;
+    width:16px; height:16px;
+    background: url("../img/gtk-no.png") no-repeat ;
+}
+
+.telesale .oe_ts_synch-notification .oe_status_green{
+    display:inline-block;
+    width:16px; height:16px;
+    background: url("../img/gtk-yes.png") no-repeat;
+}
+
+
+.telesale ol#screen-list-buttons {
+    display: inline;
+}
+
+.telesale li.screen-selector-button {
+    display: inline;
+}
+.telesale li.select-screen button {
+    font-weight: 900;
+}
+
+
+.telesale .summary-content{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #FF0000;
+}
+.telesale .tele-analysis-content{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #00FFFF;
+}
+
+.telesale .customer-data-content{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #FAEBD7;
+}
+
+.telesale .ui-autocomplete-input{
+    color:black;
+}
+
+.telesale input{
+    color:black;
+}
+.telesale .mandatory{
+    background:rgb(161, 161, 255);
+    
+}
+.telesale .warning-red{
+    background:#FF3232;
+    
+}
+.telesale button:focus { 
+    outline: none !important;
+    border-color: #719ECE;
+    box-shadow: 0 0 10px #FF0000;
+}
+
+.telesale input:focus { 
+    outline: none !important;
+    border-color: #000000;
+    box-shadow: 0 0 10px #000000;
+}
+
+
+.telesale .center-content{
+    display:table-cell;
+    vertical-align: middle;
+}
+
+.telesale #topheader button.selected-screen{
+    background: linear-gradient(#FC1616, #F5DAD6);
+}
+
+
+
+
+
+
+
+.ui-helper-hidden-accessible { display:none; }
+
+.ui-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  display: none;
+  min-width: 160px;
+  _width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border-color: #ccc;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-style: solid;
+  border-width: 1px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+ 
+  .ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+ 
+    &.ui-state-hover, &.ui-state-active {
+      color: #ffffff;
+      text-decoration: none;
+      background-color: #0088cc;
+      border-radius: 0px;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      background-image: none;
+    }
+  }

@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- Sequence and picking type Depot custom cross dock-->
+        
+        <!-- <record id="seq_picking_type_depot_cross_dock" model="ir.sequence">
+            <field name="name">Cross Dock Depot</field>
+            <field name="prefix">CDD</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record> -->
+        
+        <!-- Products going from suppliers to output location -->
+        <!-- <record id="picking_type_dropship" model="stock.picking.type">
+            <field name="name">Cross Dock Depot</field>
+            <field name="sequence_id" ref="seq_picking_type_depot_cross_dock"/>
+            <field name="code">incoming</field>
+            <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
+            <field name="default_location_dest_id" ref="stock.wh_output_stock_loc_id"/>
+        </record> -->
+        
+        
+        <!-- Route Cross Dock Depot -->
+        <!-- <record id="route_cross_dock_depot" model='stock.location.route'>
+            <field name="name">Cross Dock Depot</field>
+            <field name="sequence">20/field>
+            <field name="product_selectable" eval="False"/>
+            <field name="product_categ_selectable" eval="True"/>
+        </record> -->
+
+        <!-- This rule makes a procurement in customer location by moving from stock and creating a procurement -->
+        <!-- <record id="procurement_rule_cross_dock_depot" model="procurement.rule">
+            <field name="name">CDD: Out → Customers</field>
+            <field name="action">move</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="route_id" ref="route_drop_shipping"/>
+            <field name="location_id" ref="stock.stock_location_customers"/>
+            <field name="location_src_id" ref="stock.wh_output_stock_loc_id"/>
+            <field name="procure_method">make_to_order</field>
+            <field name="picking_type_id" ref="picking_type_dropship"/>
+        </record>
+
+        <record id="procurement_rule_cross_dock_depot" model="procurement.rule">
+            <field name="name">CDD: Supplier → Out</field>
+            <field name="action">buy</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="route_id" ref="route_drop_shipping"/>
+            <field name="location_id" ref="stock.wh_output_stock_loc_id"/>
+            <field name="location_src_id" ref="stock.stock_location_suppliers"/>
+            <field name="procure_method">make_to_stock</field>
+            
+            <field name="picking_type_id" ref="picking_type_dropship"/>
+        </record> -->
+    </data>
+</openerp>

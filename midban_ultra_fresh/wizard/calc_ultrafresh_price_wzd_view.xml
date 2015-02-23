@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="calac_ultrafresh_price_wzd_view" model="ir.ui.view">
+            <field name="name">calac.ultrafresh.price.wzd.view</field>
+            <field name="model">calc.ultrafresh.price.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Change Ultrafresh Prices">
+                    <sheet>
+                        <group string="Ultrafresh purchases">
+                            <field name="date"/>
+                            <field name="date_sales"/>
+                            <field name="line_ids" nolabel="1" colspan="4">
+                                <tree string="Lines" editable="top">
+                                    <field name="product_id"/>
+                                    <field name="num_purchases"/>
+                                    <field name="purchased_kg"/>
+                                    <field name="avg_price_kg"/>                                  
+                                    <field name="margin"/>
+                                    <field name="final_pvp"/>
+                                    <field name="calc_margin"/>
+                                </tree>
+                            </field>  
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="apply_changes" string="Apply" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_ultrafresh_change_prices" model="ir.actions.act_window">
+            <field name="name">Change Ultrafresh Prices</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">calc.ultrafresh.price.wzd</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_ultrafresh_change_prices" id="change_ultrafresh_pvp_menu"  name="Change Ultrafresh PVP" parent="base.menu_sales" sequence="500"/>
+
+        
+
+    </data>
+</openerp>

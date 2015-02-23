@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Form View Purchase order: Adding boolean field to purchase order lines -->
+        <record id="purchase_order_form_add_update_pricelist_to_line" model="ir.ui.view">
+            <field name="name">purchase.order.form.add.update.pricelist.to.line</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="update_pricelist"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit,context)"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Form View Purchase order: Adding button to show change variable pricelist model related to his products -->
+        <record id="purchase_order_2_stock_picking_add_link" model="ir.ui.view">
+            <field name="name">Midban Purchase Picking Inherited add link</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_2_stock_picking"/>
+            <field name="arch" type="xml">
+                  <div class="oe_right oe_button_box" position="inside">
+                        <button type="object"  name="change_pricelist_open"
+                            string="Pricelist Change" attrs="{'invisible': ['|',('state', '=', 'draft'), ('state', '=', 'cancel')]}" class="oe_inline oe_stat_button" icon="fa-star"/>
+                  </div>
+            </field>
+        </record>
+
+    </data>
+</openerp>

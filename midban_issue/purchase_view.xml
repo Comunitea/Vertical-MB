@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+
+        <record id="midban_purchase_order_2_stock_picking_issue_link" model="ir.ui.view">
+            <field name="name">Midban Purchase Picking Inherited issue link</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_2_stock_picking"/>
+            <field name="arch" type="xml">
+                  <div class="oe_right oe_button_box" position="inside">
+                        <button class="oe_inline oe_stat_button" icon="fa-star" type="object"  name="issues_open">
+                            <field string="Issues" name="issue_count" widget="statinfo"/>
+                        </button>
+                  </div>
+            </field>
+        </record>
+
+        <act_window name="Create issue"
+            res_model="issue"
+            src_model="purchase.order"
+            view_mode="form"
+            target="current"
+            key2="client_action_multi"
+            id="action_create_issue_purchase"
+            context="{'active_model2': 'purchase.order', 'active_id2': active_id}"
+            />
+
+    </data>
+</openerp>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report 
+            string="Picking Report" 
+            id="action_report_task_picking" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_picking_task" 
+            file="midban_depot_stock.report_picking_task" 
+        />
+
+        <report 
+            string="Picking List" 
+            id="action_report_picking_list" 
+            model="stock.picking.wave" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_picking_list" 
+            file="midban_depot_stock.report_picking_list" 
+        />
+
+        <report 
+            string="Stock Tags" 
+            id="action_report_stock_tag" 
+            model="tag" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_stock_tag" 
+            file="midban_depot_stock.report_stock_tag" 
+        />
+
+        <report 
+            string="Delivery List" 
+            id="action_report_delivery_list" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_delivery_list" 
+            file="midban_depot_stock.report_delivery_list" 
+        />
+
+        <report 
+            string="Supplier Reception Report" 
+            id="action_report_supplier_reception" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_supplier_reception" 
+            file="midban_depot_stock.report_supplier_reception" 
+        />
+
+        <report 
+            string="Supplier Report" 
+            id="action_report_supplier_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_supplier_order" 
+            file="midban_depot_stock.report_supplier_order" 
+        />
+
+
+    </data>
+</openerp>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="route_view_tree" model="ir.ui.view">
+            <field name="name">route.view.tree</field>
+            <field name="model">route</field>
+            <field name="arch" type="xml">
+                <tree string="Transport Routes">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="vehicle_id"/>
+                    <field name="state"/>
+                    <field name="next_dc"/>
+                </tree>
+            </field>
+        </record>
+        <record id="route_view_form" model="ir.ui.view">
+            <field name="name">route.view.form</field>
+            <field name="model">route</field>
+            <field name="arch" type="xml">
+                <form string="Routes">
+                    <header>
+                        <button name="set_active" type="object" string="Active" icon="gtk-ok" states="draft" class="oe_highlight" groups="midban_depot_stock.transport_routes_manager"/>
+                        <button name="set_draft" type="object" string="Return Draft" icon="gtk-ok" states="active" groups="midban_depot_stock.transport_routes_manager"/>
+                        <field name="state" widget="statusbar" nolabel="1"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="vehicle_id"/>
+                            <field name="next_dc"/>
+                            <button name="reset_drop_code" type="object" string="Reset" class="oe_link oe_inline" states="active" groups="midban_depot_stock.transport_routes_manager"/>
+                        </group>
+                        <group string="Route Days">
+                            <field name="route_days_ids" widget="many2many_checkboxes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_route" model="ir.actions.act_window">
+            <field name="name">Routes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new route.
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="action_route" id="menu_routes_sales_order" name="Transport Routes" sequence="2" parent="menu_stock_vehicle_route_mgmt"/>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,295 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* midban_ultra_fresh
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-31 12:53+0000\n"
+"PO-Revision-Date: 2014-12-31 12:53+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: midban_ultra_fresh
+#: model:ir.actions.act_window,help:midban_ultra_fresh.action_qualitative_note
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                    Click here to create a new qualitative comment\n"
+"                </p><p>\n"
+"                    We use it to pass information between sales and purchases\n"
+"                </p>\n"
+"\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                    Click para crear un nuevo comentario cualitativo\n"
+"                </p><p>\n"
+"                    Lo usamos para pasar información entre ventas y compras\n"
+"                </p>\n"
+"\n"
+"            "
+
+#. module: midban_ultra_fresh
+#: model:ir.actions.act_window,help:midban_ultra_fresh.action_ultrafresh_purchase
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new purchase of ultra fresh product\n"
+"              </p><p>\n"
+"                This products will be putted in the outgoing location.\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Click para crear una nueva compra de productos ultrafrescos\n"
+"              </p><p>\n"
+"                Estos productos serán puestos en la ubicación de salida.\n"
+"              </p>\n"
+"            "
+
+#. module: midban_ultra_fresh
+#: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
+msgid "Apply"
+msgstr "Aplicar"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,avg_price_kg:0
+msgid "Average Price kg "
+msgstr "Precio medio kg "
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,calc_margin:0
+msgid "Calc Margin"
+msgstr "Margen calculado"
+
+#. module: midban_ultra_fresh
+#: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: midban_ultra_fresh
+#: model:ir.ui.menu,name:midban_ultra_fresh.change_ultrafresh_pvp_menu
+msgid "Change Ultrafresh PVP"
+msgstr "Cambiar ultrafresocos PVP"
+
+#. module: midban_ultra_fresh
+#: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
+#: model:ir.actions.act_window,name:midban_ultra_fresh.action_ultrafresh_change_prices
+msgid "Change Ultrafresh Prices"
+msgstr "Cambiar Precios Ultrafrescos"
+
+#. module: midban_ultra_fresh
+#: field:calc.ultrafresh.price.wzd,line_ids:0
+msgid "Change lines"
+msgstr "Cambiar lineas"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Code"
+msgstr "Código"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Comment"
+msgstr "Comentario"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,create_uid:0
+#: field:calc.ultrafresh.price.wzd,create_uid:0
+#: field:qualitative.note,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,create_date:0
+#: field:calc.ultrafresh.price.wzd,create_date:0
+#: field:qualitative.note,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: midban_ultra_fresh
+#: field:calc.ultrafresh.price.wzd,date:0
+msgid "Date"
+msgstr "Fecha Busqueda compras"
+
+#. module: midban_ultra_fresh
+#: field:calc.ultrafresh.price.wzd,date_sales:0
+msgid "Date for sales to change"
+msgstr "Fecha ventas afectadas"
+
+#. module: midban_ultra_fresh
+#: field:sale.order.line,detail_note:0
+msgid "Details"
+msgstr "Detalles"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,final_pvp:0
+msgid "Final pvp "
+msgstr "PVP Final "
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,id:0
+#: field:calc.ultrafresh.price.wzd,id:0
+#: field:qualitative.note,id:0
+#: field:report.midban_ultra_fresh.ultrafresh_purchase_report,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,write_uid:0
+#: field:calc.ultrafresh.price.wzd,write_uid:0
+#: field:qualitative.note,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,write_date:0
+#: field:calc.ultrafresh.price.wzd,write_date:0
+#: field:qualitative.note,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización en"
+
+#. module: midban_ultra_fresh
+#: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
+msgid "Lines"
+msgstr "Lineas"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,margin:0
+msgid "Margin "
+msgstr "Margen "
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Name"
+msgstr "Nombre"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,num_purchases:0
+msgid "Nº Purchases"
+msgstr "Nº Compras"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Order"
+msgstr "Pedido"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: midban_ultra_fresh
+#: model:ir.model,name:midban_ultra_fresh.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: midban_ultra_fresh
+#: model:ir.model,name:midban_ultra_fresh.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: midban_ultra_fresh
+#: field:purchase.order.line,purchased_kg:0
+msgid "Purchased Kg"
+msgstr "Kg Comprados"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,purchased_kg:0
+msgid "Purchased kg"
+msgstr "Kg Comprados"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Qty Buy"
+msgstr "Cantidad Comprada"
+
+#. module: midban_ultra_fresh
+#: field:sale.order.line,q_note:0
+msgid "Qualitative Comment"
+msgstr "Comentario cualitativo"
+
+#. module: midban_ultra_fresh
+#: model:ir.ui.menu,name:midban_ultra_fresh.menu_qualitative_comment
+msgid "Qualitative Comments"
+msgstr "Comentarios cualitativos"
+
+#. module: midban_ultra_fresh
+#: view:qualitative.note:midban_ultra_fresh.qualitative_note_view_form
+#: view:qualitative.note:midban_ultra_fresh.qualitative_note_view_tree
+msgid "Qualitative Note"
+msgstr "Nota cualitativa"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: midban_ultra_fresh
+#: model:ir.model,name:midban_ultra_fresh.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea pedido de venta"
+
+#. module: midban_ultra_fresh
+#: model:ir.model,name:midban_ultra_fresh.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "ULTRAFRESH PURCHASE REPORT"
+msgstr "INFORME DE COMPRAS DE ULTRAFRESCO"
+
+#. module: midban_ultra_fresh
+#: model:ir.actions.act_window,name:midban_ultra_fresh.action_ultrafresh_purchase
+#: model:ir.ui.menu,name:midban_ultra_fresh.menu_ultrafresh_purchase
+#: view:purchase.order:midban_ultra_fresh.ultrafres_purchase_order_form
+msgid "UltraFresh Purchase"
+msgstr "Compra Ultrafreso"
+
+#. module: midban_ultra_fresh
+#: model:stock.picking.type,name:midban_ultra_fresh.picking_type_ultrafresh
+msgid "UltraFresh purchases"
+msgstr "Compras de ultrafresco"
+
+#. module: midban_ultra_fresh
+#: model:ir.actions.report.xml,name:midban_ultra_fresh.action_ultrafresh_report
+msgid "Ultrafresh Report"
+msgstr "Informe de ultrafresco"
+
+#. module: midban_ultra_fresh
+#: view:purchase.order:midban_ultra_fresh.view_purchase_order_filter_add_ultrafresh
+#: field:purchase.order,ultrafresh_purchase:0
+msgid "Ultrafresh purchase"
+msgstr "Compra de Ultrafresco"
+
+#. module: midban_ultra_fresh
+#: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
+msgid "Ultrafresh purchases"
+msgstr "Compras de Ultrafrescos"
+
+#. module: midban_ultra_fresh
+#: view:website:midban_ultra_fresh.ultrafresh_purchase_report
+msgid "Unit"
+msgstr "Unidades"
+
+#. module: midban_ultra_fresh
+#: field:calc.price.line,wizard_id:0
+msgid "Wizard"
+msgstr "Asistente"
+
+#. module: midban_ultra_fresh
+#: model:ir.actions.act_window,name:midban_ultra_fresh.action_qualitative_note
+msgid "action.qualitative.note"
+msgstr "action.qualitative.note"
+
+#. module: midban_ultra_fresh
+#: field:qualitative.note,code:0
+msgid "code"
+msgstr "Código"
+
+#. module: midban_ultra_fresh
+#: field:qualitative.note,name:0
+msgid "name"
+msgstr "Nombre"
+

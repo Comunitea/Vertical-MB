@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="route_order_wizard_view" model="ir.ui.view">
+            <field name="name">route.order.wizard.view</field>
+            <field name="model">route.order.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Assign Route wizard">
+                    <group>
+                        <h1>
+                            <field name="trans_route_id" placeholder="Select Route"/>
+                        </h1>
+                    </group>
+                    <footer>
+                        <button name="assign_route" string="Assign Route" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                 </form>
+            </field>
+        </record>
+
+        <act_window id="action_route_order_wizard"
+            name="Assign Route"
+            key2="client_action_multi"
+            src_model="sale.order"
+            res_model="route.order.wizard"
+            view_mode="form"
+            view_type="form"
+            target="new"
+            groups="midban_depot_stock.transport_routes_manager"/>
+
+        <act_window id="action_route_picking_wizard"
+            name="Assign Route"
+            key2="client_action_multi"
+            src_model="stock.picking"
+            res_model="route.order.wizard"
+            view_mode="form"
+            view_type="form"
+            target="new"
+            groups="midban_depot_stock.transport_routes_manager"/>
+
+    </data>
+</openerp>

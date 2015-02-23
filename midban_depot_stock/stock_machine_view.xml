@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- Form view stock.machine -->
+        <record id="stock_machine_view_form" model="ir.ui.view">
+            <field name="name">stock.machine.view.form</field>
+            <field name="model">stock.machine</field>
+            <field name="arch" type="xml">
+                <form string="Machines" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="code"/>
+                            <field name="type"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view stock.machine -->
+        <record id="stock_machine_view_tree" model="ir.ui.view">
+            <field name="name">stock.machine.view.tree</field>
+            <field name="model">stock.machine</field>
+            <field name="arch" type="xml">
+                <tree string="Machines" version="7.0">
+                    <field name="code"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search view stock.machine -->
+        <record id="stock_machine_view_search" model="ir.ui.view">
+            <field name="name">stock.machine.view.search</field>
+            <field name="model">stock.machine</field>
+            <field name="arch" type="xml">
+                <search string="Search Machines" version="7.0">
+                    <field name="code" string="Code"/>
+                    <filter string="Type" context="{'group_by':'type'}"/>
+                </search>
+            </field>
+        </record>
+
+         <!-- Action for stock.machine -->
+        <record id="action_stock_machine" model="ir.actions.act_window">
+            <field name="name">Machine</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.machine</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a Machine.
+                </p><p>
+                A machine has a unique code.
+                </p>
+            </field>
+        </record>
+
+       
+        <!-- Machine menu under  Stock/Warehouse Task Management-->
+        <menuitem id="stock_machine_menu" action="action_stock_machine" name="Machines" parent="menu_stock_task_mgmt" sequence="10"/>
+
+
+    </data>
+</openerp>
