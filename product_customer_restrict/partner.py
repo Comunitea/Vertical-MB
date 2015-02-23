@@ -112,8 +112,9 @@ class res_partner(osv.Model):
         'parent_left': fields.integer('Left Parent', select=1),
         'parent_right': fields.integer('Right Parent', select=1),
         'rule_type': fields.selection([
-                                     ('specific_catalog', 'Specific catalog'),
-                                     ('exclusive', 'Exclusive')],
+                                     ('specific_catalog',
+                                      'Only Let this prosucts'),
+                                     ('exclusive', 'Not let this products')],
             'Rule type', required=True),
     }
     _defaults = {

@@ -96,3 +96,36 @@ class product_template(osv.Model):
         action['domain'] = domain
 
         return action
+
+
+class product_product(osv.Model):
+    _inherit = 'product.product'
+
+    def search(self, cr, uid, args, offset=0, limit=None, order=None,
+               context=None, count=False):
+        """ Overwrite in order to search only allowed products for a partner
+            if partner_id is in context."""
+        if context is None:
+            context = {}
+        part_pool = self.pool.get("res.partner")
+        if context.get('partner_id', False):  # Search only allowed products
+            part_id = context['partner_id']
+            if context.get('no_rule', False):  # No rules,avoid exclusives
+                check_ids = part_pool._get_parent_ids(cr, uid, part_id)
+                check_ids.append(part_id)
+                list_ids = part_pool._remove_exclusives(cr, uid, [], check_ids,
+                                                        False)
+                exclusive_ids = []  # Add exclusives of partner and parents
+                for part in part_pool.browse(cr, uid, check_ids):
+                    exclusive_ids.extend([x.id for x in part.exclusive_ids])
+                list_ids.extend(exclusive_ids)
+                list_ids = list(set(list_ids))
+            else:  # Evaluate rules and exclusives
+                list_ids = part_pool.search_products_to_sell(cr, uid, part_id)
+                args.append(['id', 'in', list_ids])
+        return super(product_product, self).search(cr, uid, args,
+                                                   offset=offset,
+                                                   limit=limit,
+                                                   order=order,
+                                                   context=context,
+                                                   count=count)

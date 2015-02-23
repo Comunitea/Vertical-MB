@@ -119,23 +119,7 @@
                 </field>
             </field>
         </record>
-        <!-- Restricted catalog  -->
-        <record id="view_partner_restricted_catalog" model="ir.ui.view">
-            <field name="name">view.partner.restricted.catalog</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="stock.view_partner_property_form"/>
-            <field name="arch" type="xml">
-                <group groups="stock.group_locations" position="after">
-                    <group string="Restricted catalog" attrs="{'invisible': [('supplier','=',True)]}">
-                        <field name="restricted_catalog_ids" nolabel="1">
-                            <tree>
-                                <field name="name"/>
-                            </tree>
-                        </field>
-                    </group>
-                </group>
-            </field>
-        </record>
+        
         <!-- Client/Supplier search view.Add filters to search unregistered and in register process partners -->
         <record id="midban_view_res_partner_filter" model="ir.ui.view">
             <field name="name">midban.res.partner.select</field>

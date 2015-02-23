@@ -262,14 +262,16 @@ class product_template(osv.Model):
         new_id = super(product_template, self).create(cr, user, vals, context)
         return new_id
 
-    def _update_history(self, cr, uid, ids, context, product_obj, activity):
+    def _update_history(self, cr, uid, ids, context, product_obj, activity,
+                        reason=False):
         """ Update product history model for the argument partner_obj whith
             the activity defined in activity argument."""
         vals = {
             'product_tmp_id': product_obj.id,
             'user_id': uid,
             'date': time.strftime("%Y-%m-%d %H:%M:%S"),
-            'activity': activity
+            'activity': activity,
+            'reason': reason
         }
         self.pool.get("product.history").create(cr, uid, vals, context)
         return True
