@@ -69,6 +69,7 @@
         'stock_view.xml',
         'procurement_view.xml',
         "data/product_data.xml",
+        "data/stock_data.xml",
         "qweb_report/report_picking_task.xml",
         "qweb_report/report_picking_list.xml",
         "qweb_report/report_delivery_list.xml",

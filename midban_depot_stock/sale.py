@@ -137,6 +137,10 @@ class sale_order_line(osv.Model):
                                   packaging=False, fiscal_position=False,
                                   flag=False, warehouse_id=False,
                                   context=None):
+        """
+        Check virtual stock conservative, if fresh or ultrafresh product,
+        or cross_dock route marked, avoid launch a warning.
+        """
         context = context or {}
         product_uom_obj = self.pool.get('product.uom')
         product_obj = self.pool.get('product.product')
@@ -167,9 +171,12 @@ class sale_order_line(osv.Model):
         compare_qty = float_compare(prod_obj.virtual_stock_conservative, qty,
                                     precision_rounding=uom_record.rounding)
         fresh_product = prod_obj.product_class in ['fresh', 'ultrafresh']
-        if fresh_product:
+        # Check if it have cross-dock route marked
+        cross_dock_product = False
+        # TODO comprobar booleano en ruta, mejor x si hay varios almacenes
+        if fresh_product or cross_dock_product:
             del res['warning']  # Delete warning from super
-        if compare_qty == -1 and not fresh_product:
+        if compare_qty == -1 and not fresh_product and not cross_dock_product:
             warn_msg = _('You plan to sell %.2f %s but you only have %.2f %s \
                           available in conservative !\nThe real stock is \
                           %.2f %s. (without reservations)') % \

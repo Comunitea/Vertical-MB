@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-23 13:13+0000\n"
-"PO-Revision-Date: 2015-02-23 13:13+0000\n"
+"POT-Creation-Date: 2015-02-25 17:25+0000\n"
+"PO-Revision-Date: 2015-02-25 17:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -273,7 +273,7 @@ msgid "Code can not be repeated."
 msgstr "El código no puede repetirse."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:184
+#: code:addons/midban_depot_stock/sale.py:191
 #, python-format
 msgid "Configuration Error!"
 msgstr "¡Error de configuración"
@@ -345,7 +345,6 @@ msgid "Date order"
 msgstr "Fecha pedido"
 
 #. module: midban_depot_stock
-#: help:purchase.order,date_planned:0
 #: help:sale.order,date_planned:0
 msgid "Date propaged to shecduled                                               date of related picking"
 msgstr "Fecha propagada para la fecha programada en el albarán relacionado"
@@ -882,7 +881,7 @@ msgid "No ubication type founded                                                
 msgstr "No se ha encontrado el tipo ubicación. Debe definir el tipo de albarán en el almacén."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:179
+#: code:addons/midban_depot_stock/sale.py:186
 #, python-format
 msgid "Not enough stock ! : "
 msgstr "¡No hay suficiente Stock ! : "
@@ -1083,6 +1082,11 @@ msgid "Picking Report"
 msgstr "Informe de Picking"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_stock_picking_wave
+msgid "Picking Wave"
+msgstr "Agrupación de albaranes"
+
+#. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
 #: selection:stock.location,zone:0
 msgid "Picking Zone"
@@ -1190,16 +1194,6 @@ msgid "Purchase"
 msgstr "Compra"
 
 #. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_purchase_order
-msgid "Purchase Order"
-msgstr "Pedido de compra"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_purchase_order_line
-msgid "Purchase Order Line"
-msgstr "Línea pedido de compra"
-
-#. module: midban_depot_stock
 #: field:tag,purchase_id:0
 #: field:tag.item,purchase_id:0
 msgid "Purchase order"
@@ -1209,11 +1203,6 @@ msgstr "Pedido de compra"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "Purchases"
 msgstr "Compras"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_product_putaway
-msgid "Put Away Strategy"
-msgstr "Estrategia de deshecho"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_delivery_list
@@ -1267,7 +1256,9 @@ msgstr "Compras Relacionadas"
 
 #. module: midban_depot_stock
 #: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
+#: field:account.invoice,pick_ids:0
 #: field:account.invoice,purchase_ids:0
+#: field:account.invoice,sale_ids:0
 msgid "Related Sales"
 msgstr "Ventas Relacionadas"
 
@@ -1283,6 +1274,11 @@ msgstr "Reposición"
 #: field:res.users,reposition_mac_id:0
 msgid "Reposition Machine"
 msgstr "Máquina de reposición"
+
+#. module: midban_depot_stock
+#: model:stock.picking.type,name:midban_depot_stock.picking_type_reposition_task
+msgid "Reposition Task"
+msgstr "Tarea de Reposición"
 
 #. module: midban_depot_stock
 #: field:stock.warehouse,reposition_type_id:0
@@ -1354,11 +1350,6 @@ msgid "Route Days"
 msgstr "Días de Ruta"
 
 #. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_route
-msgid "Route Model"
-msgstr "Modelo ruta"
-
-#. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
 #: view:website:midban_depot_stock.report_picking_task
 #: view:website:midban_depot_stock.report_supplier_order
@@ -1393,7 +1384,6 @@ msgstr "Línea pedido de venta"
 
 #. module: midban_depot_stock
 #: field:assign.task.wzd,date_planned:0
-#: field:purchase.order,date_planned:0
 #: view:route.assign.wizard:midban_depot_stock.rote_assign_wizard_view
 #: field:sale.order,date_planned:0
 #: view:website:midban_depot_stock.report_delivery_list
@@ -1463,6 +1453,7 @@ msgid "State"
 msgstr "Estado"
 
 #. module: midban_depot_stock
+#: field:account.invoice.line,stock_move_id:0
 #: model:ir.model,name:midban_depot_stock.model_stock_move
 msgid "Stock Move"
 msgstr "Movimiento de existencias"
@@ -1629,6 +1620,11 @@ msgid "Transport Route"
 msgstr "Ruta de transporte"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_route
+msgid "Transport Route Model"
+msgstr "Transport Route Model"
+
+#. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.menu_routes_sales_order
 #: view:route:midban_depot_stock.route_view_tree
 msgid "Transport Routes"
@@ -1666,6 +1662,11 @@ msgstr "UNIDADES:"
 #: selection:stock.task,type:0
 msgid "Ubication"
 msgstr "Ubicación"
+
+#. module: midban_depot_stock
+#: model:stock.picking.type,name:midban_depot_stock.picking_type_ubication_task
+msgid "Ubication Task"
+msgstr "Tarea de Ubicación"
 
 #. module: midban_depot_stock
 #: field:stock.warehouse,ubication_type_id:0
@@ -1849,7 +1850,7 @@ msgid "You must print labels first"
 msgstr "Debes imprimir las etiquetas primero"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:173
+#: code:addons/midban_depot_stock/sale.py:180
 #, python-format
 msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
 "The real stock is                           %.2f %s. (without reservations)"
