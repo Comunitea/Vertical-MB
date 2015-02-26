@@ -22,7 +22,7 @@
 import logging
 import logging.handlers
 
-DEBUG_LOG_FILENAME = '/opt/depot_edi/odoo-edi.log'
+DEBUG_LOG_FILENAME = '/var/log/odoo-edi.log'
 
 
 class logger(object):
