@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <!-- Location Task. Necesary change src location to Input location and Dest location to stock location -->
         <record id="picking_type_ubication_task" model="stock.picking.type">

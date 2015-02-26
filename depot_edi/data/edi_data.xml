@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data>
+    <data noupdate="1">
 
         <!-- Parametres for importing folder -->
         <record id="edi_path_importation" model="ir.config_parameter">

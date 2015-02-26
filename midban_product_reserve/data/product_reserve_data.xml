@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <!-- Picking type for reserved sales. From reservation Stock to Customers locarion -->
         <record id="picking_type_sale_reserve" model="stock.picking.type">

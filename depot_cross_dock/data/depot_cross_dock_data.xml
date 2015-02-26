@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
-    <data>
+    <data noupdate="1">
         <!-- Sequence and picking type Depot custom cross dock-->
         
         <record id="seq_picking_type_depot_cross_dock" model="ir.sequence">

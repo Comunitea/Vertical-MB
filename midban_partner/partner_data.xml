@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Load week days for m2m supplier service days in suplliers views -->
         <record id="day-monday" model="week.days">
             <field name="name">Lunes</field>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Load a sequence for field code in issues.It's a internal code -->
         <record id="type1" model="issue.type">
             <field name="name">Regularización inventario</field>

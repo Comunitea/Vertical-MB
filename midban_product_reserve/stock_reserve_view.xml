@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data>
         <record id="view_stock_reservation_form_add_sales" model="ir.ui.view">
             <field name="name">stock.reservation.form.add.sales</field>
             <field name="model">stock.reservation</field>
