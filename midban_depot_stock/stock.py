@@ -999,3 +999,13 @@ class stock_quant(osv.osv):
             apply_removal_strategy(cr, uid, location, product, qty, domain,
                                    removal_strategy, context=context)
         return sup
+
+
+class stock_location_rule(osv.osv):
+    _inherit = "stock.location.route"
+
+    _columns = {
+        'cross_dock': fields.boolean('Cross Dock Route',
+                                     help="mark to avoid stock virtual"
+                                     "conservative warning"),
+    }

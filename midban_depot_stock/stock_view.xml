@@ -265,5 +265,17 @@
             </field>
         </record>
 
+        <!-- Add cross dock check to route -->
+        <record id="stock_location_route_form_view_add_cd_check" model="ir.ui.view">
+            <field name="name">stock.location.route.form.add.cd</field>
+            <field name="model">stock.location.route</field>
+            <field name="inherit_id" ref="stock.stock_location_route_form_view"/>
+            <field name="arch" type="xml">
+                <field name="sequence" position="after">
+                    <field name="cross_dock"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

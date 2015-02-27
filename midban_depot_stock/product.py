@@ -56,6 +56,20 @@ class product_template(osv.Model):
                 res[id] = realqty - outqty
         return res
 
+    def _is_cross_dock(self, cr, uid, ids, field_names=None,
+                       arg=False, context=None):
+        """
+        Return True if product has marked a route with cross dock check marked,
+        """
+        res = {}
+        for prod in self.browse(cr, uid, ids, context):
+            res[prod.id] = False
+            for route in prod.route_ids:
+                if route.cross_dock:
+                    res[prod.id] = True
+                    break
+        return res
+
     _columns = {
         'picking_location_id': fields.many2one('stock.location',
                                                'Location Picking',
@@ -69,7 +83,13 @@ class product_template(osv.Model):
                                                       type='float',
                                                       string='Virtual \
                                                               Stock \
-                                                              Conservative'),
+                                                              Conservative',
+                                                      readonly=True),
+        'is_cross_dock': fields.function(_is_cross_dock,
+                                         type='boolean',
+                                         string='Cros Dock \
+                                         Product',
+                                         readonly=True),
 
     }
     _sql_constraints = [

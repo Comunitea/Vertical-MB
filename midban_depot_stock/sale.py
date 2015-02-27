@@ -172,8 +172,7 @@ class sale_order_line(osv.Model):
                                     precision_rounding=uom_record.rounding)
         fresh_product = prod_obj.product_class in ['fresh', 'ultrafresh']
         # Check if it have cross-dock route marked
-        cross_dock_product = False
-        # TODO comprobar booleano en ruta, mejor x si hay varios almacenes
+        cross_dock_product = prod_obj.is_cross_dock
         if fresh_product or cross_dock_product:
             del res['warning']  # Delete warning from super
         if compare_qty == -1 and not fresh_product and not cross_dock_product:
