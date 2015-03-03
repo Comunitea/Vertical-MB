@@ -38,7 +38,7 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
                 var current_order= this.ts_model.get('selectedOrder')
                 current_order.addProductLine(product_id);
                 // this.ts_widget.screen_selector.set_current_screen('new_order');
-                $('button#button1').click();
+                $('button#button_no').click();
                 // current_order.selectLine(current_order.get('orderLines').last());
             }
         },

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
-
         <!-- Picking type for reserved sales. From reservation Stock to Customers locarion -->
         <record id="picking_type_sale_reserve" model="stock.picking.type">
             <field name="name">Reserved Sales</field>
@@ -31,5 +30,19 @@
             <field name="procure_method">make_to_stock</field>
             <field name="picking_type_id" ref="picking_type_sale_reserve"/>
         </record>
+    </data>
+
+    <data>
+        <!-- Sequence for reserved sales -->
+        <record id="seq_type_reserve" model="ir.sequence.type">
+            <field name="name">Reserved Sales</field>
+            <field name="code">reserved.order</field>
+        </record>
+        <record id="seq_reserve" model="ir.sequence">
+            <field name="name">Reserved Sales</field>
+            <field name="code">reserved.order</field>
+            <field name="prefix">VR</field>
+            <field name="padding">3</field>
+        </record>  
     </data>
 </openerp>

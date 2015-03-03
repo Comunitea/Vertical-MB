@@ -44,9 +44,14 @@ class sale_from_reserve_wzd(models.TransientModel):
     qty = fields.Float('Quantity', required=True)
     product_uom = fields.Many2one('product.uom', 'Uom', readonly=True,
                                   default=_get_default_uom)
+    chanel = fields.Selection([('erp', 'ERP'), ('telesale', 'telesale'),
+                               ('tablet', 'Tablet'),
+                               ('other', 'Other'),
+                               ('ecomerce', 'E-comerce')],
+                              default='erp', readonly=True)
 
     @api.multi
-    def _prepare_order_vals(self, reserve):
+    def _prepare_order_vals(self, reserve, chanel):
         order_policy = reserve.invoice_state == 'none' and 'picking' or \
             'invoiced_reserve'
         res = {
@@ -56,7 +61,8 @@ class sale_from_reserve_wzd(models.TransientModel):
             'partner_shipping_id': reserve.partner_id2.id,
             'reserved_sale': True,
             'order_policy': order_policy,
-            'name': '/',
+            'name': self.env["ir.sequence"].get('reserved.order') or '/',
+            'chanel': chanel
         }
         return res
 
@@ -95,15 +101,17 @@ class sale_from_reserve_wzd(models.TransientModel):
         t_line = self.env['sale.order.line']
         active_model = self.env.context.get('active_model')
         active_ids = self.env.context.get('active_ids')
+        chanel = self.chanel
         if not (active_model and active_ids) and \
                 active_model != 'stock_reservation':
-            return
+            raise except_orm(_('Error!'),
+                             _('Imposible create reserved sale'))
         reserve = self.env[active_model].browse(active_ids[0])
         wzd_qty = self.qty
         if reserve.choose_unit == 'box':
             wzd_qty = reserve.product_id.un_ca * self.qty
         new_served_qty = reserve.served_qty + wzd_qty
-        vals = self._prepare_order_vals(reserve)
+        vals = self._prepare_order_vals(reserve, chanel)
         so = t_order.create(vals)
         vals = self._prepare_order_line_vals(reserve, so)
         t_line.create(vals)

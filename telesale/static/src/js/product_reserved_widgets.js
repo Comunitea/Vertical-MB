@@ -148,6 +148,7 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
             model.call("create_reserve_from_ui",[this.reserve.id, ordered_qty],{context:new instance.web.CompoundContext()})
                 .then(function(){
                     alert("Reserved Sale Created")
+                    self.ts_widget.screen_selector.close_popup('add_call_popup');
                 })
         },
     });

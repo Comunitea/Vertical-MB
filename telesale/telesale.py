@@ -172,7 +172,7 @@ class StockReservation(osv.Model):
             'active_ids': [reserve_id]
         })
         t_wzd = self.pool.get("sale.from.reserve.wzd")
-        vals = {'qty': qty}
+        vals = {'qty': qty, 'chanel': 'telesale'}
         wzd_id = t_wzd.create(cr, uid, vals, context=ctx)
         wzd_obj = t_wzd.browse(cr, uid, wzd_id, context=ctx)
         wzd_obj.create_sale()

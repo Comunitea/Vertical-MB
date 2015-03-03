@@ -62,7 +62,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                 .done(function(){
                     // console.log('done');
                     // self.ts_widget.screen_selector.set_current_screen('new_order');
-                    $('button#button1').click();
+                    $('button#button_no').click();
                 }).fail(function(){
                     // console.log('fail');
                 });    
@@ -78,7 +78,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                 .done(function(){
                     // console.log('done');
                     /*self.ts_widget.screen_selector.set_current_screen('new_order');*/
-                    $('button#button1').click();
+                    $('button#button_no').click();
                 }).fail(function(){
                     // console.log('fail');
                 });

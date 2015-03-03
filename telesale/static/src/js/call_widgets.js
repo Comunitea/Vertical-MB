@@ -44,7 +44,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             order_model.set('contact_name', contact_obj.name);
             this.ts_widget.new_order_screen.data_order_widget.renderElement()
             // this.ts_widget.screen_selector.set_current_screen('new_order');
-            $('button#button1').click();
+            $('button#button_no').click();
         },
         do_call: function(){
                 var self=this;
