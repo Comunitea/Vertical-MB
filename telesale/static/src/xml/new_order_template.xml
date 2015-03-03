@@ -24,50 +24,32 @@
             <ol id="screen-list-buttons">
                 <li class="screen-selector-button">
                     <!-- New Order -->
-                    <button id="button1" class="select-screen"><t t-esc="widget.button1"/></button>
+                    <button id="button_no" class="select-screen"><t t-esc="widget.button_no"/></button>
                 </li>
                 <li class="screen-selector-button">
                     <!-- Order History -->
-                    <button id="button7" class="select-screen"><t t-esc="widget.button7"/></button>
+                    <button id="button_oh" class="select-screen"><t t-esc="widget.button_oh"/></button>
                 </li>
                  <li class="screen-selector-button">
                     <!-- Call List -->
-                    <button id="button8" class="select-screen"><t t-esc="widget.button8"/></button>
+                    <button id="button_cl" class="select-screen"><t t-esc="widget.button_cl"/></button>
                 </li>
                 <li class="screen-selector-button">
                     <!-- Product Catalog -->
-                    <button id="button9" class="select-screen"><t t-esc="widget.button9"/></button>
+                    <button id="button_pc" class="select-screen"><t t-esc="widget.button_pc"/></button>
                 </li>
                  <li class="screen-selector-button">
                     <!-- Ptroduct Reserved -->
-                    <button id="button3" class="select-screen"><t t-esc="widget.button3"/></button>
+                    <button id="button_pr" class="select-screen"><t t-esc="widget.button_pr"/></button>
                 </li>
                 <li class="screen-selector-button">
                     <!-- Summary Orders -->
-                    <button id="button2" class="select-screen"><t t-esc="widget.button2"/></button>
-                </li>          
-            </ol>
-        </div>
-    </t>
-
-    <t t-name="New_Order_Buttons_Widget">
-        <div class="select-screen-buttons">
-            <ol id="screen-list-buttons">
-                <li class="screen-selector-button">
-                    <button id="button5" class="select-screen"><t t-esc="widget.button1"/></button>
+                    <button id="button_so" class="select-screen"><t t-esc="widget.button_so"/></button>
                 </li>
                 <li class="screen-selector-button">
-                    <button id="button6" class="select-screen"><t t-esc="widget.button5"/></button>
-                </li>
-                <li class="screen-selector-button">
-                    <button id="button7" class="select-screen"><t t-esc="widget.button2"/></button>
-                </li>
-                <li class="screen-selector-button">
-                    <button id="button8" class="select-screen"><t t-esc="widget.button3"/></button>
-                </li>
-                <li class="screen-selector-button">
-                    <button id="button9" class="select-screen"><t t-esc="widget.button4"/></button>
-                </li>
+                    <!-- Key Shorts -->
+                    <button id="button_ks" class="select-screen"><t t-esc="widget.button_ks"/></button>
+                </li>                 
             </ol>
         </div>
     </t>

@@ -13,6 +13,7 @@ openerp.telesale = function(instance) {
     // openerp_ts_widgets(instance,module);    // import widgets.js
     openerp_ts_new_order_widgets(instance,module);    // import widgets.js
     openerp_ts_order_history_widgets(instance,module);    // import widgets.js
+    openerp_ts_product_reserved_widgets(instance,module);    // import widgets.js
     openerp_ts_summary_orders_widgets(instance,module);    // import widgets.js
     openerp_ts_product_catalog_widgets(instance,module);    // import widgets.js
     openerp_ts_call_widgets(instance,module);    // import widgets.js

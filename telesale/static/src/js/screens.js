@@ -49,12 +49,18 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         set_default_screen: function(){
             this.set_current_screen(this.default_client_screen);
         },
-        show_popup: function(name){
+        show_popup: function(name, extra_data){
             if(this.current_popup){
                 this.close_popup();
             }
             this.current_popup = this.popup_set[name];
-            this.current_popup.show();
+            if (name=="create_reserve_popup"){
+                this.current_popup.show(extra_data);
+            }
+            else{
+                this.current_popup.show();
+            }
+            this.current_screen.show();
         },
         close_popup: function(){
             if(this.current_popup){
@@ -187,6 +193,17 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             this._super(parent,options)
         },
         start: function(){
+            this.product_reserved_widget = new module.ProductReservedWidget(this, {});
+            this.product_reserved_widget.replace($('#placeholder-product-reserved-widget'));
+        },
+    });
+
+    module.KeyShortsScreenWidget = module.ScreenWidget.extend({
+        template: 'Key-Shorts-Screen-Widget',
+        init: function(parent,options){
+            this._super(parent,options)
+        },
+        start: function(){
 
         },
     });
@@ -269,7 +286,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             })
             this.$("#create-call").click(function(){
                 state = self.$('#state-select').val()
-                self.ts_widget.screen_selector.show_popup('add_call_popup');
+                self.ts_widget.screen_selector.show_popup('add_call_popup', false);
             })
 
         },
@@ -299,76 +316,4 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             })
         },
     });
-
-    module.AddCallPopupWidget = module.PopUpWidget.extend({
-        template: 'Add-Call-Pop-Up-Screen-Widget',
-        init: function(parent,options){
-            this._super(parent,options)
-        },
-        show: function(){
-            var self = this;
-            this._super();
-
-            var date_str = this.ts_model.getCurrentFullDateStr()
-            var date_str = date_str.replace(" ","T")
-            this.$('#date-call-create').val(date_str) // Set current date and time
-            this.$('#customer-create').val("") // Set current date and time
-            this.$('#comment-create').val("") // Set current date and time
-            this.$('#customer-create').autocomplete({
-                source: self.ts_model.get('customer_names'),
-            });
-             this.$('#create-phonecall').off('click').click(function(){
-                  if (self.check_fields()){
-                    self.create_phonecall();
-                }
-            })
-            this.$('#close-call-popup').off('click').click(function(){
-              
-                self.ts_widget.screen_selector.close_popup('add_call_popup');
-            })
-        },
-        check_fields: function(){
-            var res = true;
-            var date = this.$('#date-call-create').val()
-            var customer = this.$('#customer-create').val()
-            var comment = this.$('#comment-create').val()
-            partner_id = this.ts_model.db.partner_name_id[customer];
-            //TODO check date
-            if (!date){
-                alert(_t("Date is empty. Please select one."));
-                res = false;
-            }
-            else if (!partner_id){
-                alert(_t("Customer name '" + customer + "' does not exist"));
-                this.$('#customer-create').val("");
-                res = false;
-            }else if (!comment){
-                alert(_t("Coment is a mandatory field"));
-                res = false;
-            }
-            return res
-        },
-        create_phonecall: function(){
-            var self=this;
-            var date = (this.$('#date-call-create').val()).replace("T", " ");
-            var customer = this.$('#customer-create').val()
-            partner_id = this.ts_model.db.partner_name_id[customer];
-            var comment = this.$('#comment-create').val()
-            // console.log('date', date);
-            var model = new instance.web.Model("crm.phonecall");
-            var vals = {
-                'name': comment,
-                'partner_id': partner_id,
-                'date': date,
-            }
-            model.call("create",[vals],{context:new instance.web.CompoundContext()})
-                .then(function(){
-                    self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr());
-                    self.ts_widget.screen_selector.close_popup('add_call_popup');
-
-                })
-            
-        },
-    });
-
 } 

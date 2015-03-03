@@ -40,6 +40,7 @@
                 'crm', 'nan_partner_risk',
                 'sale_product_substitute',
                 'midban_depot_stock',
+                'midban_product_reserve',
                 'process_sale_order'],
     'qweb': ['static/src/xml/*.xml'],
     'installable': True,

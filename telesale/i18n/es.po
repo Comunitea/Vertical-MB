@@ -1005,7 +1005,7 @@ msgstr "Cantidad"
 #: code:addons/telesale/static/src/xml/summary_order_template.xml:79
 #, python-format
 msgid "Quotation Sent"
-msgstr "Presupuesto enviado"
+msgstr "Presupuesto"
 
 #. module: telesale
 #. openerp-web

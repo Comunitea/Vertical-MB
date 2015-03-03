@@ -1,0 +1,167 @@
+
+.telesale .product-reserved-screen{
+    width: 100%;
+    height:100%;
+    position:relative;
+}
+
+.telesale .product-reserved-search{
+    width: 100%;
+    height: 10%;
+    border-bottom: solid 1px #CECBCB;
+}
+
+.telesale .product-reserved-search .input-column{
+    width: 24%;
+    height: 100%;
+    float:left;
+    display:table;
+    text-align: center;
+}
+
+.telesale .product-reserved-search .input-search input{
+    width: 20%;
+    margin: auto;
+}
+
+
+
+.telesale .product-reserved-content{
+    width: 100%;
+    height:90%;
+    overflow: auto;
+}
+
+
+
+/*TABLE WITH ORDERS*/
+
+.telesale .reserved-line-table {
+    margin-top: 0.2%;
+    width: 99%;
+    border: 1px solid #000;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    font-size: 16px;
+}
+
+.telesale .reserved-line-table th{
+    border: 1px solid #000;
+    height: 9%;
+    background: #7f82ac;
+    font-size: 13px;
+    text-align: center;
+    color:black;
+}
+.telesale .reserved-line-table th.head-customer{
+    width: 22.5%;
+}
+.telesale .reserved-line-table th.head-product{
+    width: 25%;
+}
+.telesale .reserved-line-table th.head-qty{
+    width: 7.5%;
+}
+.telesale .reserved-line-table th.head-served_qty{
+    width: 7.5%;
+}
+.telesale .reserved-line-table th.head-pending_qty{
+    width: 7.5%;
+}
+.telesale .reserved-line-table th.head-state{
+    width: 10%;
+}
+.telesale .reserved-line-table th.head-invoice_state{
+    width: 10%;
+}
+.telesale .reserved-line-table th.head-create{
+    width: 10%;
+}
+
+.telesale .reserved-line-table td{
+    border: 1px solid #000;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.telesale .reserved-line-table td.cell-customer{
+    width: 22.5%;
+}
+.telesale .reserved-line-table td.cell-product{
+    width: 25%;
+}
+.telesale .reserved-line-table td.cell-qty{
+    width: 7.5%;
+}
+.telesale .reserved-line-table td.cell-served_qty{
+    width: 7.5%;
+}
+.telesale .reserved-line-table td.cell-pending_qty{
+    width: 7.5%;
+}
+.telesale .reserved-line-table td.cell-state{
+    width: 10%;
+}
+.telesale .reserved-line-table td.cell-invoice_state{
+    width: 10%;
+}
+.telesale .reserved-line-table td.cell-create{
+    width: 10%;
+}
+
+.telesale .product-reserved-screen button {
+    color: black;
+    vertical-align: middle;
+    margin-right:0px;
+    border: 1px solid #353A7E;
+    background: #7f82ac;
+    background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
+    background: -moz-linear-gradient(#b2b3d7, #7f82ac);
+    background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
+    background:      linear-gradient(#b2b3d7, #7f82ac);
+}
+
+
+.telesale .reserve-pop-up{
+    position: absolute;
+    right:1%;
+    top:25%;
+    /*width:20%;*/
+    height:40%;
+    padding:10px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    background-color: #B1B1B1;
+    border-radius: 40px;
+    box-shadow: 0px -1px white, 0px 1px white, 0px 4px #949494, 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.telesale .reserve-pop-up .popup-block{
+    position:relative;
+    width: 100%;
+    height: 25%;
+    display:table;
+}
+
+.telesale .reserve-pop-up .buttons-block{
+    position:relative;
+    width: 50%;
+    height: 100%;
+    float: left;
+    display:table;
+}
+
+.telesale .call-list-content button {
+    color: black;
+    vertical-align: middle;
+    margin-right:0px;
+    border: 1px solid #353A7E;
+    background: #7f82ac;
+    background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
+    background: -moz-linear-gradient(#b2b3d7, #7f82ac);
+    background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
+    background:      linear-gradient(#b2b3d7, #7f82ac);
+}
+

@@ -108,50 +108,39 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
         template: 'ScreenButtonWidget',
         init: function(parent,options){
             this._super(parent,options);
-            this.button1 = _t("New Order");
-            this.button2 = _t("Summary Orders");
-            this.button3 = _t("Call List");
-            // this.button4 = _t("Telemarketer Analysis");
-            // this.button5 = _t("Back");
-            // this.button6 = _t("New Order");
-            this.button8 = _t("Product Catalog");
-            this.button9 = _t("Product Reserved");
-            this.button7 = _t("Order History");
+            this.button_no = _t("New Order");
+            this.button_so = _t("Summary Orders");
+            this.button_pc = _t("Product Catalog");
+            this.button_pr = _t("Product Reserved");
+            this.button_cl = _t("Call List");
+            this.button_oh = _t("Order History");
+            this.button_ks = _t("Key Shorts");
         },
         renderElement: function(){
             var self = this;
             this._super();
             // console.log("ScreenButtons Inicializado")
-            this.$el.find('button#button1').click(function(){ self.select_screen('new_order');
+            this.$el.find('button#button_no').click(function(){ self.select_screen('new_order');
                                                               // self.select_button_block('order_buttons');
-                                                              self.setButtonSelected('button#button1');
+                                                              self.setButtonSelected('button#button_no');
                                                              });
-            this.$el.find('button#button2').click(function(){ self.select_screen('summary_order');
-                                                              self.setButtonSelected('button#button2');
+            this.$el.find('button#button_so').click(function(){ self.select_screen('summary_order');
+                                                              self.setButtonSelected('button#button_so');
                                                                  });
-            this.$el.find('button#button3').click(function(){ self.select_screen('call_list');
-                                                              self.setButtonSelected('button#button3');
+            this.$el.find('button#button_cl').click(function(){ self.select_screen('call_list');
+                                                              self.setButtonSelected('button#button_cl');
                                                                  });
-            // this.$el.find('button#button4').click(function(){ self.select_screen('tele_analysis');
-            //                                                   self.setButtonSelected('button#button4');
-            //                                                      });
-
-
-            // this.$el.find('button#button5').click(function(){ 
-            //                                                     // self.select_button_block('screen_buttons');
-            //                                                   self.setButtonSelected('button#button5');
-            //                                                  });
-            // this.$el.find('button#button6').click(function(){ self.select_screen('new_order');
-            //                                                   self.setButtonSelected('button#button6');
-            //                                                  });
-            this.$el.find('button#button7').click(function(){ self.select_screen('order_history')
-                                                              self.setButtonSelected('button#button7');
+            this.$el.find('button#button_oh').click(function(){ self.select_screen('order_history')
+                                                              self.setButtonSelected('button#button_oh');
                                                                 ; });
-            this.$el.find('button#button8').click(function(){ self.select_screen('product_catalog');
-                                                              self.setButtonSelected('button#button8');
+            this.$el.find('button#button_pc').click(function(){ self.select_screen('product_catalog');
+                                                              self.setButtonSelected('button#button_pc');
                                                              });
-            this.$el.find('button#button9').click(function(){ self.select_screen('product_reserved');
-                                                              self.setButtonSelected('button#button9');
+            this.$el.find('button#button_pr').click(function(){ self.select_screen('product_reserved');
+                                                               self.setButtonSelected('button#button_pr');
+                                                             });
+            this.$el.find('button#button_ks').click(function(){ self.select_screen('key_shorts');
+                                                               self.setButtonSelected('button#button_ks');
                                                              });
            
 
@@ -160,46 +149,5 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
             $('.selected-screen').removeClass('selected-screen');
             $(button_selector).addClass('selected-screen');
         },
-        
-
     });
-    
-    // New order buttons
-    // module.OrderButtonBlockWidget = module.ButtonBlockWidget.extend({
-    //     template: 'New_Order_Buttons_Widget',
-    //     init: function(parent,options){
-    //         this._super(parent,options)
-    //         // console.log("init")
-    //         this.button1 = _t("Back");
-    //         this.button2 = _t("Order History");
-    //         this.button3 = _t("Product Catalog");
-    //         this.button4 = _t("Product Reserved");
-    //         this.button5 = _t("Orders");
-    //     },
-    //     renderElement: function(){
-    //         var self = this;
-    //         this._super();
-    //         // console.log("OrderButtons Inicializado")
-    //         this.$el.find('button#button5').click(function(){ self.select_button_block('screen_buttons');
-    //                                                           self.setButtonSelected('button#button5');
-    //                                                          });
-    //         this.$el.find('button#button7').click(function(){ self.select_screen('order_history')
-    //                                                           self.setButtonSelected('button#button7');
-    //                                                             ; });
-    //         this.$el.find('button#button8').click(function(){ self.select_screen('product_catalog');
-    //                                                           self.setButtonSelected('button#button8');
-    //                                                          });
-    //         this.$el.find('button#button9').click(function(){ self.select_screen('product_reserved');
-    //                                                           self.setButtonSelected('button#button9');
-    //                                                          });
-    //         this.$el.find('button#button6').click(function(){ self.select_screen('new_order');
-    //                                                           self.setButtonSelected('button#button6');
-    //                                                          });
-
-    //     },
-    //     setButtonSelected: function(button_selector) {
-    //         $('.selected-screen').removeClass('selected-screen');
-    //         $(button_selector).addClass('selected-screen');
-    //     },
-    // });
 }

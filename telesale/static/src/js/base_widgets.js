@@ -98,9 +98,12 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             //TeleMarket Analysis Screen
             this.tele_analysis_screen = new module.TeleAnalysisScreenWidget(this, {});
             this.tele_analysis_screen.appendTo(this.$('#content'));
-            //Customer Data Analysis Screen
+            //Product resrved  Screen
             this.product_reserved_screen = new module.ProductReservedScreenWidget(this, {});
             this.product_reserved_screen.appendTo(this.$('#content'));
+            //Product resrved  Screen
+            this.key_shorts_screen = new module.KeyShortsScreenWidget(this, {});
+            this.key_shorts_screen.appendTo(this.$('#content'));
             //Order History Data Analysis Screen
             this.order_history_screen = new module.OrderHistoryScreenWidget(this, {});
             this.order_history_screen.appendTo(this.$('#content'));
@@ -113,6 +116,9 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             //Add Call PopUp 
             this.add_call_popup = new module.AddCallPopupWidget(this, {});
             this.add_call_popup.appendTo(this.$('#content'));
+            //Add Create Reserve PopUp 
+            this.create_reserve_popup = new module.CreateReservePopupWidget(this, {});
+            this.create_reserve_popup.appendTo(this.$('#content'));
 
             // --------  BUTTON BLOCK SELECTOR ---------
 
@@ -134,10 +140,12 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                     'product_reserved': this.product_reserved_screen,
                     'order_history': this.order_history_screen,
                     'product_catalog': this.product_catalog_screen,
+                    'key_shorts': this.key_shorts_screen,
                 },
                 popup_set:{
                     'product_sust_popup': this.product_sust_popup,
                     'add_call_popup': this.add_call_popup,
+                    'create_reserve_popup': this.create_reserve_popup,
                 },
                 default_client_screen: 'new_order',
             });
@@ -171,7 +179,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
-                self.$('#button1').click();  //new order screen
+                self.$('#button_no').click();  //new order screen
                 self.$("#partner").focus(); 
 
             });
@@ -179,7 +187,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
-                self.$('#button7').click(); //Order history page
+                self.$('#button_oh').click(); //Order history page
                 self.$('#input-customer').focus();
                 // self.$('#button2').click(); //Summary orders page
                 // self.$("#input-date_start2").focus();
@@ -188,28 +196,34 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
-                self.$('#button8').click(); //product catalog
-                self.$('#search-product').focus();
+                self.$('#button_cl').click();//call list page
+                self.$('#date-call-search').focus();
             });
             Mousetrap.bind('alt+r', function(e){
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
-                self.$('#button9').click();  //product reserved page
+                self.$('#button_pc').click(); //product catalog
+                self.$('#search-product').focus();
             });
             Mousetrap.bind('alt+t', function(e){
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
-                self.$('#button3').click();//call list page
-                self.$('#date-call-search').focus();
+                self.$('#button_pr').click();  //product reserved page
             });
             Mousetrap.bind('alt+y', function(e){
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
-                 self.$('#button2').click(); //Summary orders page
+                 self.$('#button_so').click(); //Summary orders page
                 self.$("#input-date_start2").focus();
+            });
+            Mousetrap.bind('alt+f1', function(e){
+                $( document.activeElement ).blur();
+                if (e.preventDefault) e.preventDefault();
+                else e.returnValue = false;
+                 self.$('#button_ks').click(); //key shorts page
             });
             Mousetrap.bind('ctrl+u', function(e){
                 $( document.activeElement ).blur();

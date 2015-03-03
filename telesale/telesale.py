@@ -148,9 +148,32 @@ class res_company(osv.Model):
 
     _columns = {
         'min_limit': fields.float('Minimum Limit',
-                                  digits_compute=
-                                  dp.get_precision('Product Price')),
+                                  digits_compute=dp.get_precision
+                                  ('Product Price')),
         'min_margin': fields.float('Minimum Margin',
-                                   digits_compute=
-                                   dp.get_precision('Product Price')),
+                                   digits_compute=dp.get_precision
+                                   ('Product Price')),
     }
+
+
+class StockReservation(osv.Model):
+    _inherit = 'stock.reservation'
+
+    def create_reserve_from_ui(self, cr, uid, reserve_id, qty, context=None):
+        """
+        Equals to launch wizard from a reserve record, clicking the button
+        create order
+        """
+        if context is None:
+            context = {}
+        ctx = context.copy()
+        ctx.update({
+            'active_model': 'stock.reservation',
+            'active_ids': [reserve_id]
+        })
+        t_wzd = self.pool.get("sale.from.reserve.wzd")
+        vals = {'qty': qty}
+        wzd_id = t_wzd.create(cr, uid, vals, context=ctx)
+        wzd_obj = t_wzd.browse(cr, uid, wzd_id, context=ctx)
+        wzd_obj.create_sale()
+        return True

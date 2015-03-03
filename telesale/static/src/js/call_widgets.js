@@ -123,4 +123,76 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             }
         },
     });
+
+    /* POP UP FOR CREATE CALLS*/
+    module.AddCallPopupWidget = module.PopUpWidget.extend({
+        template: 'Add-Call-Pop-Up-Screen-Widget',
+        init: function(parent,options){
+            this._super(parent,options)
+        },
+        show: function(){
+            var self = this;
+            this._super();
+
+            var date_str = this.ts_model.getCurrentFullDateStr()
+            var date_str = date_str.replace(" ","T")
+            this.$('#date-call-create').val(date_str) // Set current date and time
+            this.$('#customer-create').val("") // Set current date and time
+            this.$('#comment-create').val("") // Set current date and time
+            this.$('#customer-create').autocomplete({
+                source: self.ts_model.get('customer_names'),
+            });
+             this.$('#create-phonecall').off('click').click(function(){
+                  if (self.check_fields()){
+                    self.create_phonecall();
+                }
+            })
+            this.$('#close-call-popup').off('click').click(function(){
+              
+                self.ts_widget.screen_selector.close_popup('add_call_popup');
+            })
+        },
+        check_fields: function(){
+            var res = true;
+            var date = this.$('#date-call-create').val()
+            var customer = this.$('#customer-create').val()
+            var comment = this.$('#comment-create').val()
+            partner_id = this.ts_model.db.partner_name_id[customer];
+            //TODO check date
+            if (!date){
+                alert(_t("Date is empty. Please select one."));
+                res = false;
+            }
+            else if (!partner_id){
+                alert(_t("Customer name '" + customer + "' does not exist"));
+                this.$('#customer-create').val("");
+                res = false;
+            }else if (!comment){
+                alert(_t("Coment is a mandatory field"));
+                res = false;
+            }
+            return res
+        },
+        create_phonecall: function(){
+            var self=this;
+            var date = (this.$('#date-call-create').val()).replace("T", " ");
+            var customer = this.$('#customer-create').val()
+            partner_id = this.ts_model.db.partner_name_id[customer];
+            var comment = this.$('#comment-create').val()
+            // console.log('date', date);
+            var model = new instance.web.Model("crm.phonecall");
+            var vals = {
+                'name': comment,
+                'partner_id': partner_id,
+                'date': date,
+            }
+            model.call("create",[vals],{context:new instance.web.CompoundContext()})
+                .then(function(){
+                    self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr());
+                    self.ts_widget.screen_selector.close_popup('add_call_popup');
+
+                })
+            
+        },
+    });
 }

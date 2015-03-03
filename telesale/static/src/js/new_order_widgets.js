@@ -595,7 +595,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 var sust_id = product_obj.products_substitute_ids[key];
                                 var sust_obj = self.ts_model.db.get_product_by_id(sust_id);
                                 self.ts_model.get('sust_products').push(sust_obj)
-                                self.ts_widget.screen_selector.show_popup('product_sust_popup');
+                                self.ts_widget.screen_selector.show_popup('product_sust_popup', false);
                             }
                         }
                     }

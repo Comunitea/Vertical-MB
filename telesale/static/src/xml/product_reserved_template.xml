@@ -3,73 +3,135 @@
  <templates id="template" xml:space="preserve">
     
    <t t-name="Product-Reserved-Screen-Widget">
-        <div class="customer-data-content">
-            <p>Atajos de teclado</p>
-            <p>Convinaciones de teclas:</p>
-            <p>
-                ALT+Q ----------------> Nuevo Pedido
-                <br/>
-                ALT+W ----------------> Historial pedidos
-                <br/>
-                ALT+E ----------------> Catálogo Productos
-                <br/>
-                ALT+R ----------------> Reservados
-                <br/>
-                ALT+T ----------------> Listado llamadas
-                <br/>
-                ALT+Y ----------------> Resumen Pedidos
-                <br/>
-                <br/>
-
-                ALT+P ----------------> Nuevo Pedido
-                <br/>
-                ALT+O ----------------> Eliminar pedido
-                <br/>
-                <br/>
-
-
-                ALT+A -----------------> Añadir linea pedido
-                <br/>
-                ALT+S -----------------> Eliminar linea pedido
-                <br/>
-                <br/>
-
-                CTRL+U ----------------> Botón ULT
-                <br/>
-                CTRL+M ----------------> Botón VUM
-                <br/>
-                CTRL+A ----------------> Botón VIA
-                <br/>
-                CTRL+P ----------------> Botón PROMO
-                <br/>
-                CTRL+S ----------------> Botón SUST
-                <br/>
-                CTRL+I-----------------> Botón INFO
-                <br/>
-                CTRL+Q-----------------> Botón cliente
-                <br/>
-                <br/>
-
-                CTRL+down---------------> Selecionar linea de abajo
-                <br/>
-                CTRL+up-----------------> Selecionar linea de arriba
-                <br/>
-                <br/>
-                CTRL+left---------------> Foco en botones pedidos
-                <br/>
-                <br/>
-
-                CTRL+ALT+B-------------> Botón Borrador
-                <br/>
-                CTRL+ALT+C-------------> Botón Cancelar
-                <br/>
-                CTRL+ALT+ENTER---------> Botón Confirmar
-                <br/>
-
-
-
-            </p>
+        <div class="product-reserved-screen">
+            <div id="placeholder-product-reserved-widget">
+            </div>
         </div>
     </t>
 
+    <t t-name="Product-Reserved-Widget">
+            <div class="product-reserved-search">
+                <div class="input-column">
+                    <div class="center-content">
+                        <label for="customer">Customer:</label>
+                        <input type="text" id="input-customer" name="customer"/>
+                    </div>
+                </div>
+
+                <div class="input-column">
+                    <div class="center-content">
+                        <label for="customer">Product:</label>
+                        <input type="text" id="input-product" name="customer"/>
+                    </div>
+                </div>
+                
+                <div class="input-column">
+                    <div class="center-content">
+                        <button id="search-reserved">SEARCH</button>   
+                    </div>
+                </div>
+            </div>
+            <div class="product-reserved-content">
+                <table class="reserved-line-table">
+                    <thead>
+                        <th class="head-customer">Customer</th>
+                        <th class="head-product">Product</th>
+                        <th class="head-qty">Quantity</th>
+                        <th class="head-served_qty">Served Qty</th>
+                        <th class="head-pending_qty">Pending Qty</th>
+                        <th class="head-state">State</th>
+                        <th class="head-invoice_state">Invoice Method</th>
+                        <th class="head-create">Create order</th>
+                    </thead>
+                    <tbody class="reservedlines">
+
+                    </tbody>
+                </table>
+            </div>
+    </t>
+
+    <t t-name="Reserved-Line-Widget">
+        <tr>
+            <td class="cell-customer">
+                <t t-if="widget.reserve.partner_id2 != false">
+                    <span class="history-cell"><t t-esc="widget.reserve.partner_id2[1]"/></span>
+                </t>
+            </td>
+            <td class="cell-product">
+                <span class="history-cell"><t t-esc="widget.reserve.product_id[1]"/></span>
+            </td>
+            <td class="cell-qty">
+                <span class="history-cell"><t t-esc="widget.reserve.product_uom_qty"/></span>
+            </td>
+            <td class="cell-served_qty">
+                <span class="history-cell"><t t-esc="widget.reserve.served_qty"/></span>
+            </td>
+            <td class="cell-pending_qty">
+                <span class="history-cell"><t t-esc="widget.reserve.pending_qty"/></span>
+            </td>
+            <td class="cell-state">
+                <!-- <span class="history-cell"><t t-esc="widget.reserve.state"/></span> -->
+                <t t-if="widget.reserve.state == 'draft'">
+                    Draft
+                </t>
+                <t t-if="widget.reserve.state == 'cancel'">
+                    Canceled
+                </t>
+                <t t-if="widget.reserve.state == 'waiting'">
+                    Waiting for
+                </t>
+                <t t-if="widget.reserve.state == 'confirmed'">
+                    Waiting availability
+                </t>
+                <t t-if="widget.reserve.state == 'assigned'">
+                    Reserved
+                </t>
+                <t t-if="widget.reserve.state == 'done'">
+                    Done
+                </t>
+            </td>
+            <td class="cell-invoice-state">
+                <!-- <span class="history-cell"><t t-esc="widget.reserve.invoice_state"/></span> -->
+                <t t-if="widget.reserve.invoice_state == 'invoiced'">
+                    Invoiced
+                </t>
+                <t t-if="widget.reserve.invoice_state == '2binvoiced'">
+                    from reserve
+                </t>
+                <t t-if="widget.reserve.invoice_state == 'none'">
+                    from sale
+                </t>
+            </td>
+            <td class="cell-create">
+                <t t-if="widget.reserve.state == 'done' and widget.reserve.pending_qty > 0">
+                    <button id="button-create-reserve">Create Order</button>
+                </t>
+            </td>
+            
+        </tr>
+    </t>
+
+
+    <t t-name="Create-Reserve-Pop-Up-Screen-Widget">
+        <div class="reserve-pop-up">
+            <div class="popup-block">
+                 <div class="center-content">
+                    <label for="qty_ordered">Ordered Qty:</label>
+                    <input type="number" step="1" id="ordered-qty" name="qty_ordered"/>
+                </div>
+            </div>
+            <div class="popup-block">
+                <div class="buttons-block">
+                    <div class="center-content">
+                        <button id="create-reserve">Create</button>
+                    </div>
+                </div>
+                 <div class="buttons-block">
+                    <div class="center-content">
+                        <button id="close-reserve-popup">Close</button>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </t>
 </templates> 

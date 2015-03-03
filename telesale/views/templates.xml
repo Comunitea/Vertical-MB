@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="/telesale/static/src/css/call_list.css" id="ts-stylesheet"/>
         <link rel="stylesheet" href="/telesale/static/src/css/new_order.css" id="ts-stylesheet"/>
         <link rel="stylesheet" href="/telesale/static/src/css/order_history.css" id="ts-stylesheet"/>
+        <link rel="stylesheet" href="/telesale/static/src/css/product_reserved.css" id="ts-stylesheet"/>
         <link rel="stylesheet" href="/telesale/static/src/css/product_content.css" id="ts-stylesheet"/>
         <link rel="stylesheet" href="/telesale/static/src/css/summary_order.css" id="ts-stylesheet"/>
         <link rel="stylesheet" href="/telesale/static/src/css/telesale.css" id="ts-stylesheet"/>
