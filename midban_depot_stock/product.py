@@ -72,9 +72,7 @@ class product_template(osv.Model):
 
     _columns = {
         'picking_location_id': fields.many2one('stock.location',
-                                               'Location Picking',
-                                               domain=[('usage', '=',
-                                                        'internal')]),
+                                               'Location Picking'),
         'volume': fields.float('Volume', help="The volume in m3.",
                                digits_compute=dp.get_precision
                                ('Product Volume')),

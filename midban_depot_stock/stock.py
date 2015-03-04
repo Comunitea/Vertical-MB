@@ -773,11 +773,13 @@ class stock_location(osv.Model):
         If field zoned is setted in parent location get it in the child
         location to.
         """
+        res = {'value': {}}
         if loc_id:
             loc = self.browse(cr, uid, loc_id, context=context)
-            if loc and loc.zone:
-                return {'value': {'zone': loc.zone}}
-        return {}
+            res['value'].update({'zone': loc.zone or False})
+            res['value'].update({'temp_type_id': loc.temp_type_id and
+                                loc.temp_type_id.id or False})
+        return res
 
 
 class stock_move(osv.osv):
