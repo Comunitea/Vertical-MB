@@ -65,6 +65,7 @@
         "wizard/stock_transfer_details.xml",
         "wizard/create_tag_wizard_view.xml",
         "wizard/reset_drop_code_wzd_view.xml",
+        "wizard/create_camera_locations_view.xml",
         'stock_view.xml',
         'procurement_view.xml',
         "data/product_data.xml",

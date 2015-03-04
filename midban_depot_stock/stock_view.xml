@@ -129,7 +129,12 @@
                 </group>
                 <group string="Additional Information" position="after">
                     <group string="Properties" name="properties">
-                        <field name="camera"/>
+                        <group colspan="4" col="2">
+                            <field name="camera"/>
+                            <button name="%(action_create_camera_locations)d" string="Create Locations"
+                                    type="action"
+                                    class="oe_link oe_inline" attrs="{'invisible': [('camera','!=', True)]}"/>
+                        </group>
                         <field name="zone"/>
                         <field name="storage_type"/>
                         <field name="temp_type_id"/>
