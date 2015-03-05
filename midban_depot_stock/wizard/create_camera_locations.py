@@ -21,6 +21,7 @@
 from openerp import models, api, fields
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
+import itertools
 
 
 class create_camera_locations(models.TransientModel):
@@ -28,10 +29,111 @@ class create_camera_locations(models.TransientModel):
 
     aisle_ids = fields.One2many('aisle.record', 'wzd_id', 'Aisles Config')
 
+    def _get_my_cartesian_product(self, r_col, r_hei, r_sub):
+        lsts = []
+        res = []
+        if r_col:
+            lsts.append(r_col)
+        if r_hei:
+            lsts.append(r_hei)
+        if r_sub:
+            lsts.append(r_sub)
+
+        if len(lsts) == 1:
+            res = list(itertools.product(lsts[0]))
+        if len(lsts) == 2:
+            res = list(itertools.product(lsts[0], lsts[1]))
+        if len(lsts) == 3:
+            res = list(itertools.product(lsts[0], lsts[1], lsts[2]))
+        return res
+
+    def _create_camera_zone(self, item, camera_obj):
+        vals = {
+            'location_id': camera_obj.id,
+            'usage': 'view',
+            'temp_type_id': camera_obj.temp_type_id.id,
+            'width': item.my_width,
+            'length': item.my_length,
+            'height': item.my_height,
+        }
+        vals2 = vals
+        vals2.update({'name': 'Picking ' + camera_obj.name,
+                      'zone': 'picking'})
+        pick = self.env['stock.location'].create(vals2)
+        vals2 = vals
+        vals2.update({'name': 'Almacenaje ' + camera_obj.name,
+                      'zone': 'storage'})
+        store = self.env['stock.location'].create(vals2)
+        return pick, store
+
+    def _get_locations_vals(self, item, camera_obj):
+        res = []
+
+        r_col = [str(x + 1) for x in range(item.num_cols)]
+        r_pick = [str(x + 1) for x in range(item.pick_heights)]
+        st_heights = item.num_heights - item.pick_heights
+        r_store = [str(item.pick_heights + x + 1) for x in range(st_heights)]
+        r_subcol = [str(x + 1) for x in range(item.num_subcols)]
+
+        pick_tuples = self._get_my_cartesian_product(r_col, r_pick, r_subcol)
+        pick_names = ['/'.join(x) for x in pick_tuples]
+
+        store_tuples = self._get_my_cartesian_product(r_col, r_store, r_subcol)
+        store_names = ['/'.join(x) for x in store_tuples]
+
+        pick_zone_obj, store_zone_obj = self._create_camera_zone(item,
+                                                                 camera_obj)
+        # Create Picking vals
+        for name in pick_names:
+            vals = {
+                'usage': 'internal',
+                'temp_type_id': camera_obj.temp_type_id.id,
+                'width': item.my_width,
+                'length': item.my_length,
+                'height': item.my_height,
+                'name': str(item.aisle_num) + '/' + name,
+                'location_id': pick_zone_obj.id,
+                'zone': 'picking',
+            }
+            res.append(vals)
+        # Create Store vals
+        for name in store_names:
+            vals = {
+                'usage': 'internal',
+                'temp_type_id': camera_obj.temp_type_id.id,
+                'width': item.my_width,
+                'length': item.my_length,
+                'height': item.my_height,
+                'name': str(item.aisle_num) + '/' + name,
+                'location_id': store_zone_obj.id,
+                'zone': 'storage',
+            }
+            res.append(vals)
+        return res
+
     @api.one
     def create_locations(self):
-        raise except_orm(_('Error'), _('Aun no esta hecho primine'))
-        return
+        active_id = self._context.get('active_id', False)
+        if not active_id:
+            raise except_orm(_('Error'), _('Not camera defined in wizard'))
+
+        if not self.aisle_ids:
+            raise except_orm(_('Error'), _('Not Aisle configuration defined'))
+
+        camera_obj = self.env['stock.location'].browse(active_id)
+        new_loc_ids = []
+        for item in self.aisle_ids:
+            list_vals = self._get_locations_vals(item, camera_obj)
+            if not list_vals:
+                raise except_orm(_('Error'), _('No locations will be created'))
+            for vals in list_vals:
+                created_loc = self.env['stock.location'].create(vals)
+                new_loc_ids.append(created_loc.id)
+        import ipdb; ipdb.set_trace()
+        action_obj = self.env.ref('stock.action_location_form')
+        action = action_obj.read()[0]
+        action['domain'] = str([('id', 'in', new_loc_ids)])
+        return action
 
 
 class aisle_record(models.TransientModel):
