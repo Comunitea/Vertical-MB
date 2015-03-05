@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="product_min_rotation_tree_view" model="ir.ui.view">
+            <field name="name">product.product.tree.min.rotation</field>
+            <field name="model">product.product</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <tree colors="red:virtual_available&lt;0;blue:virtual_available&gt;=0 and state in ('draft', 'end', 'obsolete');black:virtual_available&gt;=0 and state not in ('draft', 'end', 'obsolete')" string="Products">
+                    <field name="default_code"/>
+                    <field name="name"/>
+                    <field name="categ_id" invisible="1"/>
+                    <field name="type" invisible="1"/>
+                    <field name="uom_id" string="Unit of Measure" groups="product.group_uom"/>
+                    <field name="under_rotation" invisible="1"/>
+                    <field name="min_rotation" attrs="{'invisible': [('under_rotation','=',False)]}"/>
+                    <field name="rotation" attrs="{'invisible': [('under_rotation','=',False)]}" string="Actual rotation"/>
+                    <field name="qty_available"/>
+                    <field name="virtual_available"/>
+                    <field name="lst_price"/>
+                    <field name="price" invisible="not context.get('pricelist',False)"/>
+                    <field name="standard_price" invisible="1"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="product_under_min_rotation_action" model="ir.actions.act_window">
+            <field name="name">Products low rotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="domain">[('under_rotation','=',True)]</field>
+            <field name="view_id" ref="product_min_rotation_tree_view"/>
+            <field name="search_view_id" ref="product.product_search_form_view"/>
+        </record>
+        <!-- Sales/Products/Products under min. rotation -->
+        <menuitem name="Products low rotation" id="menu_sale_product_under_min_rotation" action="product_under_min_rotation_action"
+           parent="base.menu_product" sequence="10"/>
+        <!-- Purchases/Products/Products under min. rotation -->
+        <menuitem name="Products low rotation" id="menu_purchase_product_under_min_rotation" action="product_under_min_rotation_action"
+           parent="purchase.menu_procurement_management_product" sequence="10"/>
+        <!-- Stock/Products/Products under min. rotation -->
+        <menuitem name="Products low rotation" id="menu_stock_product_under_min_rotation" action="product_under_min_rotation_action"
+           parent="stock.menu_stock_product" sequence="10"/>
+      
+      
+    </data>
+</openerp>

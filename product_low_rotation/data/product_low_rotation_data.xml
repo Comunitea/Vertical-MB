@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<openerp>
+    <data noupdate="1">
+        <!-- Action scheduled to run oce a week.
+        Call the function: "get_products_low_rotation"-->
+        <record forcecreate="True" id="ir_cron_update_rotations_action" model="ir.cron">
+            <field name="name">Update rotations</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field eval="True" name="doall"/>
+            <field eval="'product.product'" name="model"/>
+            <field eval="'get_products_low_rotation'" name="function"/>
+            <field name="args">(False,)</field>
+        </record>
+    </data>
+</openerp>

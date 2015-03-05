@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data>
+        <record id="view_product_stock_unsafety_treeadd_button" model="ir.ui.view">
+            <field name="name">product.stock.unsafety.tree.add.button</field>
+            <field name="model">product.stock.unsafety</field>
+            <field name="inherit_id" ref="product_stock_unsafety.view_product_stock_unsafety_tree" />
+            <field name="arch" type="xml">
+                <field name="virtual_stock" position="after">
+                    <button name="generate_preorder" type="object" string="Create PreOrder" states='in_progress' icon="gtk-go-forward"/>
+                    <button name="retry" type="object" string="Retry" states='exception' icon="gtk-go-forward" class="oe_highlight"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_product_stock_unsafety_formadd_button" model="ir.ui.view">
+            <field name="name">product.stock.unsafety.form.add_button</field>
+            <field name="model">product.stock.unsafety</field>
+            <field name="inherit_id" ref="product_stock_unsafety.view_product_stock_unsafety_form" />
+            <field name="arch" type="xml">
+                <header position="inside">
+                    
+                        <button name="generate_preorder" type="object" string="Create PreOrder" states='in_progress' icon="gtk-go-forward" class="oe_highlight"/>
+                        <button name="retry" type="object" string="Retry" states='exception' icon="gtk-go-forward" class="oe_highlight"/>
+                    </header>
+                
+            </field>
+        </record>
+    </data>
+</openerp>

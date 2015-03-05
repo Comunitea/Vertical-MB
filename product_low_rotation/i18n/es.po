@@ -1,0 +1,103 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_low_rotation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-01-16 12:22+0000\n"
+"PO-Revision-Date: 2014-01-16 13:23+0100\n"
+"Last-Translator: marta <marta@pexego.es>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: product_low_rotation
+#: model:ir.ui.menu,name:product_low_rotation.menu_update_rotation
+#: view:update.rotation:0
+msgid "Update rotation"
+msgstr "Actualizar rotación"
+
+#. module: product_low_rotation
+#: model:ir.model,name:product_low_rotation.model_product_product
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_low_rotation
+#: model:ir.model,name:product_low_rotation.model_product_category
+msgid "Product Category"
+msgstr "Categoría de producto"
+
+#. module: product_low_rotation
+#: model:ir.actions.act_window,name:product_low_rotation.product_under_min_rotation_action
+#: model:ir.ui.menu,name:product_low_rotation.menu_purchase_product_under_min_rotation
+#: model:ir.ui.menu,name:product_low_rotation.menu_sale_product_under_min_rotation
+#: model:ir.ui.menu,name:product_low_rotation.menu_stock_product_under_min_rotation
+msgid "Products low rotation"
+msgstr "Productos bajo mín. rotación"
+
+#. module: product_low_rotation
+#: view:update.rotation:0
+msgid "Update"
+msgstr "Actualizar"
+
+#. module: product_low_rotation
+#: view:update.rotation:0
+msgid "or"
+msgstr "o"
+
+#. module: product_low_rotation
+#: model:ir.actions.act_window,name:product_low_rotation.act_update_rotation_products
+msgid "\"Update Rotation"
+msgstr "\"Actualizar Rotación"
+
+#. module: product_low_rotation
+#: field:product.product,under_rotation:0
+msgid "Under Rotation"
+msgstr "Under Rotation"
+
+#. module: product_low_rotation
+#: field:product.category,min_rotation:0
+#: field:product.product,min_rotation:0
+#: field:product.product,rotation:0
+msgid "Mín. rotation"
+msgstr "Rotación Mín."
+
+#. module: product_low_rotation
+#: model:ir.model,name:product_low_rotation.model_update_rotation
+msgid "update.rotation"
+msgstr "update.rotation"
+
+#. module: product_low_rotation
+#: view:product.product:0
+msgid "Products"
+msgstr "Productos"
+
+#. module: product_low_rotation
+#: view:update.rotation:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: product_low_rotation
+#: view:product.product:0
+msgid "Stock and Expected Variations"
+msgstr "Existencias y variaciones esperadas"
+
+#. module: product_low_rotation
+#: view:update.rotation:0
+msgid "Are you sure you want to update rotation?"
+msgstr "Está seguro de que desea actualizar las rotaciones?"
+
+#. module: product_low_rotation
+#: view:product.product:0
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: product_low_rotation
+#: view:product.product:0
+msgid "Actual rotation"
+msgstr "Rotación Actual"
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+         <record id="view_update_rotation_wizard" model="ir.ui.view">
+            <field name="name">Update Rotation</field>
+            <field name="model">update.rotation</field>
+            <field name="arch" type="xml">
+                <form string="Update rotation" version="7.0">
+                    <group>
+                        <label string="Are you sure you want to update rotation?"/>
+                    </group>
+                    <footer>
+                        <button name="action_update_rotation" string="Update" type="object"  class="oe_highlight"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="act_update_rotation_products" model="ir.actions.act_window">
+            <field name="name">"Update Rotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">update.rotation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_update_rotation_wizard"/>
+            <field name="target">new</field>
+        </record>
+       
+        <menuitem name="Update rotation" id="menu_update_rotation" action="act_update_rotation_products"
+           parent="stock.menu_stock_product" sequence="9"/>
+    </data>
+</openerp>
