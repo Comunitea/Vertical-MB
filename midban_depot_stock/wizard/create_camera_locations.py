@@ -48,6 +48,9 @@ class create_camera_locations(models.TransientModel):
         return res
 
     def _create_camera_zone(self, item, camera_obj):
+        """
+        Create a storage zone and a pickinf zone chil of camera obj
+        """
         vals = {
             'location_id': camera_obj.id,
             'usage': 'view',
@@ -67,6 +70,9 @@ class create_camera_locations(models.TransientModel):
         return pick, store
 
     def _get_locations_vals(self, item, camera_obj):
+        """
+        Return a list of dict containing vals of the new locations
+        """
         res = []
 
         r_col = [str(x + 1) for x in range(item.num_cols)]
@@ -111,7 +117,7 @@ class create_camera_locations(models.TransientModel):
             res.append(vals)
         return res
 
-    @api.one
+    @api.multi
     def create_locations(self):
         active_id = self._context.get('active_id', False)
         if not active_id:
@@ -122,13 +128,14 @@ class create_camera_locations(models.TransientModel):
 
         camera_obj = self.env['stock.location'].browse(active_id)
         new_loc_ids = []
-        for item in self.aisle_ids:
+        for item in self[0].aisle_ids:
             list_vals = self._get_locations_vals(item, camera_obj)
             if not list_vals:
                 raise except_orm(_('Error'), _('No locations will be created'))
             for vals in list_vals:
                 created_loc = self.env['stock.location'].create(vals)
                 new_loc_ids.append(created_loc.id)
+        # No esta funcionando devolver la vista lista de ubicaciones creadas
         action_obj = self.env.ref('stock.action_location_form')
         action = action_obj.read()[0]
         action['domain'] = str([('id', 'in', new_loc_ids)])
@@ -143,6 +150,7 @@ class aisle_record(models.TransientModel):
     @api.onchange('num_cols', 'num_heights', 'num_subcols', 'pick_heights')
     def _calc_ubications_totals(self):
         """
+        Only to show info in the wizard view
         """
         nc = self.num_cols
         nh = self.num_heights
