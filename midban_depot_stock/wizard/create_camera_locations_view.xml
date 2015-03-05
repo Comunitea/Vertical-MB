@@ -24,6 +24,7 @@
                                     <field name="my_length"/>
                                     <field name="my_width"/>
                                     <field name="my_height"/>
+                                    <field name="camera_code"/>
         
                                 </tree>
                             </field>  

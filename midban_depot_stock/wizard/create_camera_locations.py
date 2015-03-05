@@ -60,11 +60,11 @@ class create_camera_locations(models.TransientModel):
             'height': item.my_height,
         }
         vals2 = vals
-        vals2.update({'name': 'Picking ' + camera_obj.name,
+        vals2.update({'name': item.camera_code + ' Picking',
                       'zone': 'picking'})
         pick = self.env['stock.location'].create(vals2)
         vals2 = vals
-        vals2.update({'name': 'Almacenaje ' + camera_obj.name,
+        vals2.update({'name': item.camera_code + ' Almacenaje ',
                       'zone': 'storage'})
         store = self.env['stock.location'].create(vals2)
         return pick, store
@@ -174,3 +174,4 @@ class aisle_record(models.TransientModel):
     my_length = fields.Float('Length', default=1.30, required=True)
     my_width = fields.Float('Width', default=0.9, required=True)
     my_height = fields.Float('Height', default=2.5, required=True)
+    camera_code = fields.Char('Camera Code', required=True)

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-25 17:25+0000\n"
-"PO-Revision-Date: 2015-02-25 17:25+0000\n"
+"POT-Creation-Date: 2015-03-05 17:42+0000\n"
+"PO-Revision-Date: 2015-03-05 17:42+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -109,6 +109,21 @@ msgstr "Activa"
 #: view:stock.location:midban_depot_stock.view_location_form_depot
 msgid "Additional Information"
 msgstr "Información adicional"
+
+#. module: midban_depot_stock
+#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
+msgid "Aisle"
+msgstr "Aisle"
+
+#. module: midban_depot_stock
+#: field:aisle.record,aisle_num:0
+msgid "Aisle number"
+msgstr "Nº de pasillo"
+
+#. module: midban_depot_stock
+#: field:create.camera.locations,aisle_ids:0
+msgid "Aisles Config"
+msgstr "Conf pasillos"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:378
@@ -224,6 +239,11 @@ msgid "Camera"
 msgstr "Cámara"
 
 #. module: midban_depot_stock
+#: field:aisle.record,camera_code:0
+msgid "Camera Code"
+msgstr "Código camara"
+
+#. module: midban_depot_stock
 #: field:stock.picking,camera_ids:0
 #: field:stock.picking.wave,camera_ids:0
 msgid "Cameras picked"
@@ -235,6 +255,7 @@ msgid "Cameras to pick"
 msgstr "Cámaras para hacer pick"
 
 #. module: midban_depot_stock
+#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
 #: view:reposition.wizard:midban_depot_stock.reposition_wizard_view
 #: view:reset.drop.code.wzd:midban_depot_stock.reset_drop_code_wzd_view
@@ -273,13 +294,36 @@ msgid "Code can not be repeated."
 msgstr "El código no puede repetirse."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:191
+#: field:aisle.record,num_cols:0
+msgid "Columns"
+msgstr "Columnas"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:190
 #, python-format
 msgid "Configuration Error!"
 msgstr "¡Error de configuración"
 
 #. module: midban_depot_stock
+#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
+msgid "Configuration aisles"
+msgstr "Configuración pasillos"
+
+#. module: midban_depot_stock
+#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
+#: view:stock.location:midban_depot_stock.view_location_form_depot
+msgid "Create Locations"
+msgstr "Crear ubicaciones"
+
+#. module: midban_depot_stock
+#: model:ir.actions.act_window,name:midban_depot_stock.action_create_camera_locations
+msgid "Create locations for camera"
+msgstr "Crear ubicaciones para cámara"
+
+#. module: midban_depot_stock
+#: field:aisle.record,create_uid:0
 #: field:assign.task.wzd,create_uid:0
+#: field:create.camera.locations,create_uid:0
 #: field:create.tag.wizard,create_uid:0
 #: field:reposition.wizard,create_uid:0
 #: field:reset.drop.code.wzd,create_uid:0
@@ -295,7 +339,9 @@ msgid "Created by"
 msgstr "Creado por"
 
 #. module: midban_depot_stock
+#: field:aisle.record,create_date:0
 #: field:assign.task.wzd,create_date:0
+#: field:create.camera.locations,create_date:0
 #: field:create.tag.wizard,create_date:0
 #: field:reposition.wizard,create_date:0
 #: field:reset.drop.code.wzd,create_date:0
@@ -309,6 +355,16 @@ msgstr "Creado por"
 #: field:tag.item,create_date:0
 msgid "Created on"
 msgstr "Creado el"
+
+#. module: midban_depot_stock
+#: field:product.template,is_cross_dock:0
+msgid "Cros Dock                                          Product"
+msgstr "Cros Dock                                          Product"
+
+#. module: midban_depot_stock
+#: field:stock.location.route,cross_dock:0
+msgid "Cross Dock Route"
+msgstr "Cross Dock Route"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_delivery_list
@@ -444,17 +500,20 @@ msgstr "Actuando como"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:457
+#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:124
+#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:127
+#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:134
 #, python-format
 msgid "Error"
 msgstr "Error"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:92
-#: code:addons/midban_depot_stock/product.py:94
+#: code:addons/midban_depot_stock/product.py:110
+#: code:addons/midban_depot_stock/product.py:112
 #: code:addons/midban_depot_stock/stock.py:733
 #: code:addons/midban_depot_stock/stock.py:756
 #: code:addons/midban_depot_stock/stock.py:765
-#: code:addons/midban_depot_stock/stock.py:975
+#: code:addons/midban_depot_stock/stock.py:977
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:114
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:130
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:139
@@ -495,7 +554,7 @@ msgid "Expiry Date"
 msgstr "Fecha caducidad"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:77
+#: code:addons/midban_depot_stock/product.py:95
 #: sql_constraint:product.template:0
 #, python-format
 msgid "Field Location picking is already setted"
@@ -575,12 +634,20 @@ msgid "Group products and lots in outgoing pickings"
 msgstr "Agrupar productos y lotes en alvaranes de salida"
 
 #. module: midban_depot_stock
+#: field:aisle.record,my_height:0
 #: field:stock.location,height:0
 msgid "Height"
 msgstr "Alto"
 
 #. module: midban_depot_stock
+#: field:aisle.record,num_heights:0
+msgid "Heights"
+msgstr "Alturas"
+
+#. module: midban_depot_stock
+#: field:aisle.record,id:0
 #: field:assign.task.wzd,id:0
+#: field:create.camera.locations,id:0
 #: field:create.tag.wizard,id:0
 #: field:out.picking.report,id:0
 #: field:report.midban_depot_stock.report_picking_list,id:0
@@ -622,6 +689,11 @@ msgid "Inventory Locations"
 msgstr "Ubicaciones de inventario"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_stock_location_route
+msgid "Inventory Routes"
+msgstr "Rutas de inventario"
+
+#. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_account_invoice
 msgid "Invoice"
 msgstr "Factura"
@@ -642,7 +714,9 @@ msgid "LOT:"
 msgstr "LOTE:"
 
 #. module: midban_depot_stock
+#: field:aisle.record,write_uid:0
 #: field:assign.task.wzd,write_uid:0
+#: field:create.camera.locations,write_uid:0
 #: field:create.tag.wizard,write_uid:0
 #: field:reposition.wizard,write_uid:0
 #: field:reset.drop.code.wzd,write_uid:0
@@ -658,7 +732,9 @@ msgid "Last Updated by"
 msgstr "Última actualización por"
 
 #. module: midban_depot_stock
+#: field:aisle.record,write_date:0
 #: field:assign.task.wzd,write_date:0
+#: field:create.camera.locations,write_date:0
 #: field:create.tag.wizard,write_date:0
 #: field:reposition.wizard,write_date:0
 #: field:reset.drop.code.wzd,write_date:0
@@ -676,6 +752,11 @@ msgstr "Última actualización en"
 #. module: midban_depot_stock
 #: field:stock.location,length:0
 msgid "Lenght"
+msgstr "Largo"
+
+#. module: midban_depot_stock
+#: field:aisle.record,my_length:0
+msgid "Length"
 msgstr "Largo"
 
 #. module: midban_depot_stock
@@ -850,6 +931,12 @@ msgid "No internal reposition                                                  p
 msgstr "Sin reposiciones internas para planificar"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:134
+#, python-format
+msgid "No locations will be created"
+msgstr "No locations will be created"
+
+#. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:457
 #, python-format
 msgid "No max volume defined in                                                 warehouse"
@@ -881,10 +968,22 @@ msgid "No ubication type founded                                                
 msgstr "No se ha encontrado el tipo ubicación. Debe definir el tipo de albarán en el almacén."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:186
+#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:127
+#, python-format
+msgid "Not Aisle configuration defined"
+msgstr "No hay configuraciones de pasillos definidas"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:124
+#, python-format
+msgid "Not camera defined in wizard"
+msgstr "No hay camara definida en el asistente"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:185
 #, python-format
 msgid "Not enough stock ! : "
-msgstr "¡No hay suficiente Stock ! : "
+msgstr "¡No hay suficioente Stock ! : "
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:373
@@ -893,7 +992,7 @@ msgid "Not enought free space."
 msgstr "No hay suficiente espacio libre."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:92
+#: code:addons/midban_depot_stock/product.py:110
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:120
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:244
 #: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:199
@@ -1043,6 +1142,11 @@ msgid "Physical Packages"
 msgstr "Paquetes físicos"
 
 #. module: midban_depot_stock
+#: field:aisle.record,pick_heights:0
+msgid "Pick heights"
+msgstr "Alturas Picking"
+
+#. module: midban_depot_stock
 #: selection:stock.picking,task_type:0
 #: field:stock.task,picking_id:0
 #: selection:stock.task,type:0
@@ -1082,15 +1186,15 @@ msgid "Picking Report"
 msgstr "Informe de Picking"
 
 #. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_picking_wave
-msgid "Picking Wave"
-msgstr "Agrupación de albaranes"
-
-#. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
 #: selection:stock.location,zone:0
 msgid "Picking Zone"
 msgstr "Zona de picking"
+
+#. module: midban_depot_stock
+#: field:aisle.record,total_pick_locs:0
+msgid "Picking locations"
+msgstr "Ubicaciones Picking"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:293
@@ -1117,7 +1221,7 @@ msgstr "Preparar Operaciones"
 #. module: midban_depot_stock
 #: field:stock.move,price_kg:0
 msgid "Price Kg"
-msgstr "Prrecio Kg"
+msgstr "Price Kg"
 
 #. module: midban_depot_stock
 #: field:product.template,price_kg:0
@@ -1130,6 +1234,7 @@ msgid "Print Reposition"
 msgstr "Imprimir Reposición"
 
 #. module: midban_depot_stock
+#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
 #: model:ir.actions.act_window,name:midban_depot_stock.action_create_tag_wizard
 #: model:ir.ui.menu,name:midban_depot_stock.print_tag_menu
@@ -1168,7 +1273,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:908
+#: code:addons/midban_depot_stock/stock.py:910
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -1194,6 +1299,16 @@ msgid "Purchase"
 msgstr "Compra"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: midban_depot_stock
 #: field:tag,purchase_id:0
 #: field:tag.item,purchase_id:0
 msgid "Purchase order"
@@ -1203,6 +1318,11 @@ msgstr "Pedido de compra"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "Purchases"
 msgstr "Compras"
+
+#. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_product_putaway
+msgid "Put Away Strategy"
+msgstr "Estrategia de deshecho"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_delivery_list
@@ -1256,9 +1376,7 @@ msgstr "Compras Relacionadas"
 
 #. module: midban_depot_stock
 #: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-#: field:account.invoice,pick_ids:0
 #: field:account.invoice,purchase_ids:0
-#: field:account.invoice,sale_ids:0
 msgid "Related Sales"
 msgstr "Ventas Relacionadas"
 
@@ -1348,6 +1466,11 @@ msgstr "Asistente asignación ruta"
 #: field:route,route_days_ids:0
 msgid "Route Days"
 msgstr "Días de Ruta"
+
+#. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_route
+msgid "Route Model"
+msgstr "Modelo ruta"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
@@ -1453,7 +1576,6 @@ msgid "State"
 msgstr "Estado"
 
 #. module: midban_depot_stock
-#: field:account.invoice.line,stock_move_id:0
 #: model:ir.model,name:midban_depot_stock.model_stock_move
 msgid "Stock Move"
 msgstr "Movimiento de existencias"
@@ -1482,6 +1604,21 @@ msgstr "Tipo almacenaje"
 #: selection:stock.location,zone:0
 msgid "Storage Zone"
 msgstr "Zona de almacenaje"
+
+#. module: midban_depot_stock
+#: field:aisle.record,storage_heights:0
+msgid "Storage heights"
+msgstr "Alturas almacenaje"
+
+#. module: midban_depot_stock
+#: field:aisle.record,total_store_locs:0
+msgid "Storage locations"
+msgstr "Ubicaciones Almacenaje"
+
+#. module: midban_depot_stock
+#: field:aisle.record,num_subcols:0
+msgid "Subcolumns"
+msgstr "Subcolumnas"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_reception
@@ -1586,6 +1723,11 @@ msgid "Total"
 msgstr "Total"
 
 #. module: midban_depot_stock
+#: field:aisle.record,total_locs:0
+msgid "Total Locations"
+msgstr "Ubicaciones totales"
+
+#. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_reception
 msgid "Total Qty"
 msgstr "Qty Total"
@@ -1618,11 +1760,6 @@ msgstr "Transpalet"
 #: field:stock.picking.wave,trans_route_id:0
 msgid "Transport Route"
 msgstr "Ruta de transporte"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_route
-msgid "Transport Route Model"
-msgstr "Transport Route Model"
 
 #. module: midban_depot_stock
 #: model:ir.ui.menu,name:midban_depot_stock.menu_routes_sales_order
@@ -1816,6 +1953,7 @@ msgid "Weight"
 msgstr "Peso"
 
 #. module: midban_depot_stock
+#: field:aisle.record,my_width:0
 #: field:stock.location,width:0
 msgid "Width"
 msgstr "Ancho"
@@ -1824,6 +1962,11 @@ msgstr "Ancho"
 #: field:tag.item,wizard_id:0
 msgid "Wizard"
 msgstr "Asistente"
+
+#. module: midban_depot_stock
+#: field:aisle.record,wzd_id:0
+msgid "Wizard id"
+msgstr "Wizard id"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/route_orders_wizard.py:41
@@ -1850,7 +1993,7 @@ msgid "You must print labels first"
 msgstr "Debes imprimir las etiquetas primero"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:180
+#: code:addons/midban_depot_stock/sale.py:179
 #, python-format
 msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
 "The real stock is                           %.2f %s. (without reservations)"
@@ -1874,7 +2017,7 @@ msgid "Zone %s not exist."
 msgstr "Zona %s no existe."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:94
+#: code:addons/midban_depot_stock/product.py:112
 #: code:addons/midban_depot_stock/stock.py:733
 #, python-format
 msgid "Zone not exist."
@@ -1884,6 +2027,11 @@ msgstr "Zone no existe."
 #: view:stock.transfer_details:midban_depot_stock.view_stock_enter_transfer_details_add_buttons
 msgid "_Apply"
 msgstr "_Aplicar"
+
+#. module: midban_depot_stock
+#: help:stock.location.route,cross_dock:0
+msgid "mark to avoid stock virtualconservative warning"
+msgstr "mark to avoid stock virtualconservative warning"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_form_depot
