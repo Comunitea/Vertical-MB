@@ -129,7 +129,6 @@ class create_camera_locations(models.TransientModel):
             for vals in list_vals:
                 created_loc = self.env['stock.location'].create(vals)
                 new_loc_ids.append(created_loc.id)
-        import ipdb; ipdb.set_trace()
         action_obj = self.env.ref('stock.action_location_form')
         action = action_obj.read()[0]
         action['domain'] = str([('id', 'in', new_loc_ids)])
