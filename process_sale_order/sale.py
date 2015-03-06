@@ -57,8 +57,8 @@ class sale_order_line(models.Model):
                                    default='unit')
     price_subtotal = fields.Float('Unit Price', compute=_amount_line,
                                   required=True, readonly=True,
-                                  digits_compute=
-                                  dp.get_precision('Product Price'),
+                                  digits_compute=dp.get_precision
+                                  ('Product Price'),
                                   states={'draft': [('readonly', False)]})
 
     @api.onchange('product_uos_qty')
@@ -68,9 +68,7 @@ class sale_order_line(models.Model):
         """
         if self.min_unit == 'box' or \
                 (self.min_unit == 'both' and self.choose_unit == 'box'):
-            self.product_uom_qty = self.product_id.uos_coeff != 0 and \
-                self.product_uos_qty / self.product_id.uos_coeff or \
-                self.product_uom_qty
+            self.product_uom_qty = self.product_uos_qty * self.product_id.un_ca
         return
 
     def product_id_change_with_wh2(self, cr, uid, ids, pricelist, product,
@@ -100,6 +98,7 @@ class sale_order_line(models.Model):
                                              'product.product_uom_unit')
             prod = self.pool.get("product.product").browse(cr, uid, product)
             min_unit = prod.min_unit
+            choose_unit = 'box' if min_unit == 'box' else choose_unit
             if min_unit == 'box' or \
                     (min_unit == 'both' and choose_unit == 'box'):
                 for key in context:  # frozen context, we need a no frozen copy
@@ -107,6 +106,7 @@ class sale_order_line(models.Model):
                 context2.update({'sale_in_boxes': True})
             my_context = context2 and context2 or context
             # sup = super(sale_order_line, self)
+            fiscal_pos = fiscal_position
             res = self.product_id_change_with_wh(cr, uid, ids, pricelist,
                                                  product, qty=qty, uom=uom,
                                                  qty_uos=qty_uos, uos=uos,
@@ -116,8 +116,7 @@ class sale_order_line(models.Model):
                                                  update_tax=update_tax,
                                                  date_order=date_order,
                                                  packaging=packaging,
-                                                 fiscal_position=
-                                                 fiscal_position,
+                                                 fiscal_position=fiscal_pos,
                                                  flag=flag,
                                                  warehouse_id=warehouse_id,
                                                  context=my_context)
@@ -127,13 +126,14 @@ class sale_order_line(models.Model):
                 # como uom acaba siendo False en el onchange se calculaa partir
                 # del uos y no nos combiene, lo volvemos a setear
                 res['value']['product_uom_qty'] = qty
-            if min_unit == 'both':
+            if min_unit in ['both','box']:
                 if choose_unit == 'unit':
                     res['value']['product_uom'] = unit_id
                     res['value']['product_uos'] = unit_id
                 else:
                     res['value']['product_uom'] = unit_id
                     res['value']['product_uos'] = box_id
+                    res['value']['product_uom_qty'] = qty
         return res
 
     @api.one

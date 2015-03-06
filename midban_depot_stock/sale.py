@@ -147,7 +147,7 @@ class sale_order_line(osv.Model):
         warning = {}
         supe = super(sale_order_line, self)
         res = supe.product_id_change_with_wh(cr, uid, ids, pricelist, product,
-                                             qty=qty, uom=False,
+                                             qty=qty, uom=uom,
                                              qty_uos=qty_uos, uos=uos,
                                              name=name, partner_id=partner_id,
                                              lang=lang, update_tax=update_tax,
