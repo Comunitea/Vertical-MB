@@ -18,78 +18,59 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# from openerp.osv import osv, fields
-# from datetime import datetime, timedelta
+from openerp.osv import osv
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+import time
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
-# class purchase_order(osv.Model):
-#     _inherit = "purchase.order"
+class purchase_order(osv.Model):
+    _inherit = "purchase.order"
 
-#     def _get_next_working_date(self, cr, uid, context=None):
-#         """
-#         Returns the next working day date respect today
-#         """
-#         today = datetime.now()
-#         week_day = today.weekday()  # Monday 0 Sunday 6
-#         delta = 1
-#         if week_day == 4:
-#             delta = 3
-#         elif week_day == 5:
-#             delta = 2
-#         new_date = today + timedelta(days=delta or 0.0)
-#         date_part = datetime.strftime(new_date, "%Y-%m-%d")
-#         res = datetime.strptime(date_part + " " + "22:59:59",
-#                                 "%Y-%m-%d %H:%M:%S")
-#         return res
-
-#     _columns = {
-#         'date_planned': fields.datetime('Scheduled Date', required=True,
-#                                         select=True,
-#                                         help="Date propaged to shecduled \
-#                                               date of related picking"),
-#     }
-#     _defaults = {
-#         'date_planned': _get_next_working_date,
-#     }
-
-#     def create(self, cr, uid, vals, context=None):
-#         if context is None:
-#             context = {}
-#         po_id = super(purchase_order, self).create(cr, uid, vals, context)
-#         if po_id:
-#             po_obj = self.browse(cr, uid, po_id, context)
-#             for line in po_obj.order_line:
-#                 line.write({'date_planned': po_obj.date_planned})
-#         return po_id
-
-#     def write(self, cr, uid, ids, vals, context=None):
-#         if context is None:
-#             context = {}
-#         res = super(purchase_order, self).write(cr, uid, ids, vals, context)
-#         for po in self.browse(cr, uid, ids, context):
-#             for line in po.order_line:
-#                 line.write({'date_planned': po.date_planned})
-#         return res
+    def action_picking_create(self, cr, uid, ids, context=None):
+        """
+        Overwrite to add the current creation date instead of the defaults
+        maX expected date of lines
+        """
+        for order in self.browse(cr, uid, ids):
+            picking_vals = {
+                'picking_type_id': order.picking_type_id.id,
+                'partner_id': order.partner_id.id,
+                # 'date': max([l.date_planned for l in order.order_line]),
+                'date': time.strftime("%Y-%m-%d %H:%M:%S"),
+                'origin': order.name
+            }
+            picking_id = self.pool.get('stock.picking').create(cr, uid,
+                                                               picking_vals,
+                                                               context=context)
+            self._create_stock_moves(cr, uid, order, order.order_line,
+                                     picking_id, context=context)
 
 
-# class purchase_order_line(osv.Model):
-#     _inherit = "purchase.order.line"
+class purchase_order_line(osv.Model):
+    _inherit = "purchase.order.line"
 
-#     def _get_date_planned(self, cr, uid, supplier_info, date_order_str,
-#                           context=None):
-#         """
-#         Overwrited.
-#         Returns the next working day date respect today
-#         """
-#         today = datetime.now()
-#         week_day = today.weekday()  # Monday 0 Sunday 6
-#         delta = 1
-#         if week_day == 4:
-#             delta = 3
-#         elif week_day == 5:
-#             delta = 2
-#         new_date = today + timedelta(days=delta or 0.0)
-#         date_part = datetime.strftime(new_date, "%Y-%m-%d")
-#         res = datetime.strptime(date_part + " " + "22:59:59",
-#                                 "%Y-%m-%d %H:%M:%S")
-#         return res
+    def _get_date_planned(self, cr, uid, supplier_info, date_order_str,
+                          context=None):
+        """
+        Overwrited.
+        Returns the supplier delivery day closest to the default delivery date
+        """
+        supplier_delay = int(supplier_info.delay) if supplier_info else 0
+        supp_res = datetime.strptime(date_order_str,
+                                     DEFAULT_SERVER_DATETIME_FORMAT) +\
+            relativedelta(days=supplier_delay)
+
+        # If supplier days calc the closest to the default date_planned
+        s_days = [x.sequence for x in supplier_info.name.supp_service_days_ids]
+        res = supp_res
+        week_day = supp_res.weekday() + 1  # bekause monday 0 sunday 6
+        if s_days and week_day not in s_days:
+
+            delta = 0
+            while week_day not in s_days:
+                delta += 1
+                week_day = 1 if week_day == 7 else week_day + 1
+            res = supp_res + timedelta(days=delta or 0.0)
+        return res
