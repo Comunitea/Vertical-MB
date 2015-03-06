@@ -32,7 +32,7 @@ class sale_order(osv.Model):
         Returns the next working day date respect today
         """
         today = datetime.now()
-        week_day = today.weekday()  # Monday is 0  and Sunday 6
+        week_day = today.weekday()  # Monday is 0  and Sunday 6, take care
         delta = 1
         if week_day == 4:
             delta = 3
