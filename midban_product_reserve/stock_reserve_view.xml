@@ -15,7 +15,8 @@
                             states="assigned,confirmed"/>
                 </button>
                 <header position="inside">
-                    <button name="confirm_reserve" states="assigned,confirmed" string="Confirm Reserve" type="object" class="oe_highlight"/>
+                    <button name="check_reserve_availability" states="confirmed" string="Check availability" type="object" class="oe_highlight"/>
+                    <button name="confirm_reserve" states="assigned" string="Confirm Reserve" type="object" class="oe_highlight"/>
                     <button name="%(action_sale_from_reserve)d" string="Create Sale" attrs="{'invisible': [('state','&lt;&gt;','done')]}" type="action" class="oe_highlight"/>
                 </header>
 

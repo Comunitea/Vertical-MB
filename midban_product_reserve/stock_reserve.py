@@ -23,6 +23,7 @@ from openerp import models, fields, api
 
 class StockReservation(models.Model):
     _inherit = 'stock.reservation'
+    _order = "id desc"
 
     @api.one
     def _get_pending_qty(self):
@@ -43,12 +44,23 @@ class StockReservation(models.Model):
                                    default='unit')
 
     @api.multi
+    def check_reserve_availability(self):
+        """ Confirm a reservation
+
+        The reservation is done using the default UOM of the product.
+        A date until which the product is reserved can be specified.
+        """
+        self.move_id.picking_id.action_assign()
+        return True
+
+    @api.multi
     def confirm_reserve(self):
         """ Confirm a reservation
 
         The reservation is done using the default UOM of the product.
         A date until which the product is reserved can be specified.
         """
+        self.move_id.picking_id.do_prepare_partial()
         self.move_id.picking_id.action_done()
         return True
 
