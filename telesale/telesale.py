@@ -94,7 +94,7 @@ class product_product(osv.Model):
             res['last_price'] = line_obj.price_unit
         # Calc min price
         min_price = 0.0
-        if product_obj.product_class in ['dry', 'frozen', 'chilled']:
+        if product_obj.product_class == 'normal':
             min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
                                                      pricelist_id)[1]
         res['min_price'] = min_price

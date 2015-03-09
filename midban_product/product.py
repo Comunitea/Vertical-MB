@@ -23,6 +23,7 @@ import openerp.addons.decimal_precision as dp
 import time
 from openerp.tools.translate import _
 from openerp import netsvc
+from openerp.tools.float_utils import float_round
 
 
 class temp_type(osv.Model):
@@ -205,12 +206,10 @@ class product_template(osv.Model):
                                      pricelist of ultrafresh products"),
         # In order to put into domains and make comprobations or identify for
         # telesale and ultrafresh_module.
-        'product_class': fields.selection([('fresh', 'Fresh'),
-                                           ('dry', 'Dry'),
-                                           ('frozen', 'Frozen'),
-                                           ('chilled', 'Chilled'),
-                                           ('ultrafresh', 'Ultrafresh'),
-                                           ('no_class', 'No Class')], 'Class',
+        'product_class': fields.selection([('normal', 'Normal'),
+                                           ('fresh', 'Fresh/Ultrafresh'),
+                                           ('ultrafresh', 'Ultrafresh')],
+                                          'Class',
                                           required=True),
         'drained_weight': fields.float('Drained net weight',
                                        digits_compute=dp.get_precision
@@ -222,6 +221,7 @@ class product_template(osv.Model):
         'state2': 'val_pending',
         'palet_wood_height': 0.145,
         'active': False,  # Product desuctived until register state is reached
+        'product_class': 'normal',
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -316,7 +316,8 @@ class product_template(osv.Model):
             product._check_units_values()
             message = _("Logistic validate done")
             self._update_history(cr, uid, ids, context, product, message)
-            product.write({'state2': 'commercial_pending', 'active': False})
+            product.write({'state2': 'commercial_pending', 'active': False,
+                           'uos_coeff': float_round(1 / product.un_ca, 4)})
         return True
 
     def act_logic_pending(self, cr, uid, ids, context=None):

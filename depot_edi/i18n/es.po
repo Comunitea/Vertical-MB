@@ -325,8 +325,8 @@ msgstr "Archivo no encontrado en directorio. Archivo: "
 
 #. module: depot_edi
 #: field:res.partner,gln:0
-msgid "GLN"
-msgstr "GLN"
+msgid "GLN EDI"
+msgstr "GLN EDI"
 
 #. module: depot_edi
 #: view:purchase.order:depot_edi.purchase_edi_form

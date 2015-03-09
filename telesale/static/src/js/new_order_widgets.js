@@ -270,11 +270,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 if (!result.value.price_unit || result.value.price_unit == 'warn') {
                                     result.value.price_unit = 0;
                                 }
-                                self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? result.value.price_unit : 0,2 ));
+                                self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? result.value.price_unit : 0,2 ));
                                 self.model.set('pvp', my_round(result.value.price_unit || 0,2));
                                 self.model.set('total', my_round(result.value.price_unit || 0,2));
-                                self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
-                                if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class != "fresh") && (product_obj.product_class != "ultrafresh") ){
+                                self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
+                                if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
                                     alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
                                     var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
                                     self.model.set('qty', new_qty);
@@ -355,7 +355,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         break;
                     }
                     var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    if ( (value > product_obj.virtual_stock_conservative) && (product_obj.product_class != "fresh") && (product_obj.product_class != "ultrafresh") ){
+                    if ( (value > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
                         alert(_t("You want sale " + value + " " + uom_name + " but only " +  product_obj.virtual_stock_conservative + " available."))
                         var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
                         this.model.set('qty', new_qty);
@@ -404,7 +404,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 }else {
                                     discount = 0;
                                 }
-                                var line_margin = (value && product_obj.product_class != "fresh") ? ((value - product_obj.cmc) / value) : 0
+                                var line_margin = (value && product_obj.product_class == "normal") ? ((value - product_obj.cmc) / value) : 0
                                 self.model.set('margin', line_margin);
                                 // self.model.set('discount', my_round(discount,2));
                                 self.model.set('discount', discount);
@@ -710,7 +710,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){
                     var product_obj = self.ts_model.db.get_product_by_id(product_id)
-                    if (product_obj.product_class !== 'fresh'){
+                    if (product_obj.product_class == 'normal'){
                         self.sum_cmc += product_obj.cmc * line.get('qty');
                         self.sum_box += line.get('boxes');
                         self.weight += line.get('weight');

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 13:14+0000\n"
-"PO-Revision-Date: 2014-12-31 13:14+0000\n"
+"POT-Creation-Date: 2015-03-09 12:51+0000\n"
+"PO-Revision-Date: 2015-03-09 12:51+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgid "Box Unit Discount"
 msgstr "Descuento unidad caja"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/product.py:70
+#: code:addons/process_sale_order/product.py:75
 #, python-format
 msgid "Box unit does not exist.                You must configured one unit like boxes"
 msgstr "La unidad caja no existe.                Debes configurar una unidad actuando como cajas"
@@ -119,17 +119,22 @@ msgid "Unit"
 msgstr "Unidad"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/product.py:78
+#: code:addons/process_sale_order/product.py:83
 #, python-format
 msgid "Units unit does not exist.                You must configured one unit like units"
 msgstr "La unidad unidades no existe.                Debes configurar una unidad actuando como unidades"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/product.py:69
-#: code:addons/process_sale_order/product.py:77
+#: code:addons/process_sale_order/product.py:74
+#: code:addons/process_sale_order/product.py:82
 #, python-format
 msgid "Warning"
 msgstr "Advertencia"
+
+#. module: process_sale_order
+#: help:product.template,box_discount:0
+msgid "When you sale this product in boxesThis will be the % discounted over the priceunit. If a box have 10 units and discount is20%, the new box price will be 80 intead of100, imaging price unit equals to 1."
+msgstr "Cuando se vende este producto en cajas, este sera el % descontado sobre el precio unitario. Si una caja tiene 10 unidades y su descueento del 20%, el nuevo precio de la caja será 80 en lugar de 100, si consideramos el precio unitario iugual a 1"
 
 #. module: process_sale_order
 #: view:sale.order:process_sale_order.sale_view_order_form_add_do_context

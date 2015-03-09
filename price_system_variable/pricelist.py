@@ -393,8 +393,8 @@ class variable_pricelist(osv.Model):
         'name': fields.char('Name', size=128, required="True"),
         'sequence': fields.integer('Sequence', required=True),
         'product_id': fields.many2one('product.product', 'Product',
-                                      domain=[('product_class', '=',
-                                               'fresh')]),
+                                      domain=[('product_class', 'in',
+                                               ['fresh, ultrafresh'])]),
         'categ_id': fields.many2one('product.category', 'Product Category'),
         'range_ids': fields.one2many('pricelist.range', 'var_pricelist_id',
                                      'Ranges table')
@@ -604,8 +604,8 @@ class change_variable_pricelist(osv.Model):
         'date': fields.datetime('Date', readonly=True, required=True),
         'product_id': fields.many2one('product.product', 'Product',
                                       readonly=True, required=True,
-                                      domain=[('product_class', '=',
-                                               'fresh')]),
+                                      domain=[('product_class', 'in',
+                                               ['fresh, ultrafresh'])]),
         'change_line_ids': fields.one2many('variable.change.line',
                                            'change_id', 'Variable pricelist'),
         'state': fields.selection([('draft', 'Draft'),
@@ -775,7 +775,7 @@ class supplier_change_line(osv.Model):
                        line.change_id.partner_id.id),
                       ('product_id', '=', line.product_id.id),
                       ('change_id.state', '=', 'updated')]
-             # Search last lines for a different parent to get 'cost' field
+            # Search last lines for a different parent to get 'cost' field
             ch_lines = self.search(cr, uid, domain, context=context,
                                    limit=1, order='id desc')
             if ch_lines:
@@ -796,32 +796,31 @@ class supplier_change_line(osv.Model):
         'product_id': fields.many2one('product.product',
                                       'Product', required=True,
                                       domain=[('product_class',
-                                               'in',
-                                              ['dry', 'frozen', 'chilled'])]),
+                                               '=', 'normal')]),
         'sup_code': fields.char('Supplier code', size=128),
         'cost': fields.function(_get_fields, method=True, type="float",
                                 multi="get", string='Current cost',
-                                digits_compute=
-                                dp.get_precision('Product Cost'),
+                                digits_compute=dp.get_precision
+                                ('Product Cost'),
                                 readonly=True),
         'new_cost': fields.float('New cost', required=True,
-                                 digits_compute=
-                                 dp.get_precision('Product Cost')),
+                                 digits_compute=dp.get_precision
+                                 ('Product Cost')),
         'percentage': fields.function(_get_fields, method=True, type="float",
                                       multi="get", string='Percentage',
-                                      digits_compute=
-                                      dp.get_precision('Product Price'),
+                                      digits_compute=dp.get_precision
+                                      ('Product Price'),
                                       readonly=True),
         'net_cost': fields.function(_get_fields, method=True, type="float",
                                     multi="get",
                                     string='Net cost',
-                                    digits_compute=
-                                    dp.get_precision('Product Cost'),
+                                    digits_compute=dp.get_precision
+                                    ('Product Cost'),
                                     readonly=True),
         'new_net_cost': fields.function(_get_fields, method=True, type="float",
                                         multi="get", string='New Net cost',
-                                        digits_compute=
-                                        dp.get_precision('Product Cost'),
+                                        digits_compute=dp.get_precision
+                                        ('Product Cost'),
                                         readonly=True),
         'date': fields.date('Date', required=True),
     }
@@ -889,28 +888,27 @@ class change_product_pvp(osv.Model):
         'product_id': fields.many2one('product.product', 'Product',
                                       readonly=True, required=True,
                                       domain=[('product_class',
-                                               'in',
-                                             ['dry', 'frozen', 'chilled'])]),
+                                               '=', 'normal')]),
         'date_cmc': fields.datetime('Updated Date', readonly=True),  # required
         'cmc': fields.float('CMC', required=True,
-                            digits_compute=
-                            dp.get_precision('Product Price'),  # p cost?
+                            digits_compute=dp.get_precision
+                            ('Product Price'),  # p cost?
                             readonly=True),
         'cmp': fields.float('CMP', required=True,  # p cost?
-                            digits_compute=
-                            dp.get_precision('Product Price'),
+                            digits_compute=dp.get_precision
+                            ('Product Price'),
                             readonly=True),
         'sec_margin': fields.float('Security Margin', required=True,
-                                   digits_compute=
-                                   dp.get_precision('Product Price'),
+                                   digits_compute=dp.get_precision
+                                   ('Product Price'),
                                    readonly=True),
         'real_stock': fields.float('Real Stock',
-                                   digits_compute=
-                                   dp.get_precision('Product Unit of Measure'),
+                                   digits_compute=dp.get_precision
+                                   ('Product Unit of Measure'),
                                    readonly=True),
         'virt_stock': fields.float('Virtual Stock',
-                                   digits_compute=
-                                   dp.get_precision('Product Unit of Measure'),
+                                   digits_compute=dp.get_precision
+                                   ('Product Unit of Measure'),
                                    readonly=True),
         'pricelist_ids': fields.one2many('pricelist.pvp.line',
                                          'change_id',
@@ -1178,8 +1176,7 @@ class specific_pvp_line(osv.Model):
         'product_id': fields.many2one('product.product', 'Product',
                                       required=True,
                                       domain=[('product_class',
-                                               'in',
-                                               ['dry', 'frozen', 'chilled'])]),
+                                               '=', 'normal')]),
         'cmc': fields.function(_get_fields, method=True, type="float",
                                multi="get", string='CMC',
                                digits_compute=

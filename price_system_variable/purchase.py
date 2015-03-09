@@ -173,7 +173,7 @@ class purchase_order(osv.Model):
         for po in self.browse(cr, uid, ids, context=context):
             for line in po.order_line:
                 if line.update_pricelist and \
-                   line.product_id.product_class == 'fresh':
+                   line.product_id.product_class in ['fresh', 'ultrafresh']:
                     # Get a list of variable_pricelist ids for the product.
                     # order by sequence
                     vpl_ids = self._search_variable_pricelist(cr, uid, ids,
@@ -254,7 +254,7 @@ class purchase_order_line(osv.Model):
             context = {}
         product = self.pool.get("product.product").browse(cr, uid, product_id,
                                                           context=context)
-        if (product.product_class == 'fresh') and \
+        if (product.product_class in ['fresh', 'ultrafresh']) and \
            (product.standard_price != price_unit):
             res['value'].update({'update_pricelist': True})
         return res

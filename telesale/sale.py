@@ -254,7 +254,7 @@ class sale_order_line(osv.osv):
         res['value']['last_price_fresh'] = 0.0
         if product and pricelist:
             prod_obj = t_product.browse(cr, uid, product, context)
-            if prod_obj.product_class == "fresh":
+            if prod_obj.product_class in ["fresh", "ultrafresh"]:
                 domain = [('product_id', '=', product),
                           ('order_id.pricelist_id', '=', pricelist),
                           ('price_unit', '!=', -1)]

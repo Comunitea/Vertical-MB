@@ -322,7 +322,7 @@ function openerp_ts_models(instance, module){
                                  total: my_round(line.price_subtotal,2),
                                  discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
                                  weight: my_round(prod_obj.weight * line.product_uom_qty,2),
-                                 margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class != "fresh") ? ( (line.price_unit - prod_obj.cmc) / line.price_unit) : 0 ), 2),
+                                 margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class == "normal") ? ( (line.price_unit - prod_obj.cmc) / line.price_unit) : 0 ), 2),
                                  taxes_ids: line.tax_id || prod_obj.taxes_id || [],
                                  pvp_ref: line.pvp_ref,
                                  boxes: this.convert_units_to_boxes(this.db.get_unit_by_id(line.product_uom[0]),prod_obj,line.product_uom_qty)
@@ -841,7 +841,7 @@ function openerp_ts_models(instance, module){
                                      // discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
                                      discount: my_round( 0, 2 ),
                                      weight: my_round(line.product_uom_qty * prod_obj.weight,2),
-                                     margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class != "fresh") ? ( (line.current_pvp - prod_obj.cmc) / line.current_pvp)  : 0 ), 2),
+                                     margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.cmc) / line.current_pvp)  : 0 ), 2),
                                      taxes_ids: line.tax_id || product_obj.taxes_id || [],
                                      pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
                                      boxes: this.ts_model.convert_units_to_boxes(this.ts_model.db.get_unit_by_id(prod_obj.uom_id[0]),prod_obj,line.product_uom_qty),
@@ -891,7 +891,7 @@ function openerp_ts_models(instance, module){
                              total: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
                              discount: 0,
                              weight: product_obj.weight || 0.0,
-                             margin: my_round( (result.value.price_unit != 0 && product_obj.product_class != "fresh") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2),
+                             margin: my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2),
                              taxes_ids: result.value.tax_id || [],
                              pvp_ref: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
                              //TODO boxes

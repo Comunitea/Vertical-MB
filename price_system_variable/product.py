@@ -30,8 +30,8 @@ class product_template(osv.Model):
     # Add 4 decimals in standard_price (defined in data/price_data.xml)
     _columns = {
         'standard_price': fields.property(type='float',
-                                          digits_compute=
-                                          dp.get_precision('Product Cost'),
+                                          digits_compute=dp.get_precision
+                                          ('Product Cost'),
                                           help="Cost price of the product \
                                           template used for standard stock \
                                           valuation in accounting and used as \
@@ -42,11 +42,7 @@ class product_template(osv.Model):
                             digits_compute=dp.get_precision('Product Cost'),
                             readonly=True,),
         'sec_margin': fields.float('Security Margin', readonly=True,
-                                   digits_compute=
-                                   dp.get_precision('Product Price')),
-    }
-    _defaults = {
-        'product_class': 'no_class'
+                                   digits_compute=dp.get_precision('Product Price')),
     }
 
     def _create_change_pvp(self, cr, uid, ids, new_cmc, new_sp, context=None):

@@ -35,7 +35,7 @@ class stock_move(models.Model):
     @api.one
     def write(self, vals):
         """
-        Overwrite in order to add th kg to the sale order line related when
+        Overwrite in order to add  kg to the sale order line related when
         the sale type of product is ultrafresh
         """
         real_weight = vals.get('real_weight', False)

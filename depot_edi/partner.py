@@ -27,4 +27,4 @@ class partner(models.Model):
     _inherit = 'res.partner'
 
     document_id = fields.Many2one('edi.doc', 'EDI Document')
-    gln = fields.Char('GLN', SIZE=13)
+    gln = fields.Char('GLN EDI', SIZE=13)

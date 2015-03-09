@@ -44,7 +44,7 @@ class sale_order_line(osv.osv):
         t_pricelist = self.pool.get("product.pricelist")
         if 'price_unit' in vals:
             for line in self.browse(cr, uid, ids, context):
-                if line.product_id.product_class in ['fresh', 'no_class']:
+                if line.product_id.product_class in ['fresh', 'ultrafresh']:
                     continue
                 pricelist_id = line.order_id.pricelist_id.id
                 min_price = t_pricelist._get_product_pvp(cr, uid,
@@ -186,7 +186,7 @@ class sale_order_line(osv.osv):
         t_pricelist = self.pool.get("product.pricelist")
         if product_id and pricelist_id:
             product = t_product.browse(cr, uid, product_id, context)
-            if product.product_class in ['dry', 'frozen', 'chilled']:
+            if product.product_class == 'normal':
                 min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
                                                          pricelist_id)[1]
                 if min_price != 0 and price_unit < min_price:
