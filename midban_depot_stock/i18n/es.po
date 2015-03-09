@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-05 17:42+0000\n"
-"PO-Revision-Date: 2015-03-05 17:42+0000\n"
+"POT-Creation-Date: 2015-03-09 17:40+0000\n"
+"PO-Revision-Date: 2015-03-09 17:40+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -528,16 +528,16 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:515
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:521
 #: code:addons/midban_depot_stock/wizard/create_tag_wizard.py:121
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:120
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:244
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:292
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:309
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:316
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:326
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:199
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:221
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:277
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:373
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:126
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:253
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:301
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:318
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:325
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:335
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:84
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:106
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:162
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:258
 #, python-format
 msgid "Error!"
 msgstr "¡Error!"
@@ -809,6 +809,11 @@ msgid "Lot"
 msgstr "Lote"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Lote/Nº de serie"
+
+#. module: midban_depot_stock
 #: field:assign.task.wzd,machine_id:0
 #: model:ir.actions.act_window,name:midban_depot_stock.action_stock_machine
 #: field:stock.picking,machine_id:0
@@ -865,6 +870,11 @@ msgid "Max. volume to move in picking"
 msgstr "Máximo volumen al hacer picking"
 
 #. module: midban_depot_stock
+#: field:reposition.wizard,limit:0
+msgid "Maximum Filled Percentage"
+msgstr "Máximo porcentaje de llenado"
+
+#. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_order
 msgid "Midban Cross Dock Order N°:"
 msgstr "Pedido Cross Dock Midban N°:"
@@ -907,7 +917,7 @@ msgid "Next Drop Code"
 msgstr "Siguiente Drop Code"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:221
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:106
 #, python-format
 msgid "No empty locations."
 msgstr "No hay ubicaciones libres."
@@ -943,14 +953,14 @@ msgid "No max volume defined in                                                 
 msgstr "No hay volumen máximo definido en el almacén"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:310
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:319
 #, python-format
 msgid "No picking location matching with                                     specified capacity."
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:296
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:316
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:325
 #, python-format
 msgid "No reposition type founded                                                 You must define the picking                                                 type in the warehouse."
 msgstr "No se ha encontrado el tipo reposición. Debe definirlo en el almacén."
@@ -986,17 +996,17 @@ msgid "Not enough stock ! : "
 msgstr "¡No hay suficioente Stock ! : "
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:373
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:258
 #, python-format
 msgid "Not enought free space."
 msgstr "No hay suficiente espacio libre."
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/product.py:110
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:120
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:244
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:199
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:277
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:126
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:253
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:84
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:162
 #, python-format
 msgid "Not picking location."
 msgstr "No hay zona de picking."
@@ -1007,7 +1017,7 @@ msgid "Notes"
 msgstr "Notas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:327
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:336
 #, python-format
 msgid "Nothing to do."
 msgstr "Nada que hacer."
@@ -1197,7 +1207,7 @@ msgid "Picking locations"
 msgstr "Ubicaciones Picking"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:293
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:302
 #, python-format
 msgid "Picking locations does not exist"
 msgstr "Las ubicaciones de picking no existen"
@@ -1381,7 +1391,17 @@ msgid "Related Sales"
 msgstr "Ventas Relacionadas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:212
+#: field:stock.production.lot,customer_ids:0
+msgid "Related customers"
+msgstr "Clientes relacionados"
+
+#. module: midban_depot_stock
+#: field:stock.production.lot,supplier_ids:0
+msgid "Related suppliers"
+msgstr "Proveedores relacionados"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:221
 #: selection:stock.picking,task_type:0
 #: selection:stock.task,type:0
 #, python-format
@@ -1951,6 +1971,11 @@ msgstr "Ola"
 #: field:tag.item,weight:0
 msgid "Weight"
 msgstr "Peso"
+
+#. module: midban_depot_stock
+#: help:reposition.wizard,limit:0
+msgid "When is reached stop the reposition"
+msgstr "Cuando es alcanzado se para la reposición"
 
 #. module: midban_depot_stock
 #: field:aisle.record,my_width:0

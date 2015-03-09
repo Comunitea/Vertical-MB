@@ -12,6 +12,7 @@
                     </p>
                     <group>
                         <field name="capacity"/>
+                        <field name="limit"/>
                         <field name="warehouse_id"/>
                     </group>
                     <footer>

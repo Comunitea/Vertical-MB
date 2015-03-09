@@ -1011,3 +1011,17 @@ class stock_location_rule(osv.osv):
                                      help="mark to avoid stock virtual"
                                      "conservative warning"),
     }
+
+
+class stock_production_lot(osv.osv):
+    _inherit = 'stock.production.lot'
+    _columns = {
+        'customer_ids': fields.many2many('res.partner', 'customers_lot_rel',
+                                         'lot_id', 'partner_id',
+                                         'Related customers',
+                                         domain=[('customer', '=', True)]),
+        'supplier_ids': fields.many2many('res.partner', 'supplier_lot_rel',
+                                         'lot_id', 'partner_id',
+                                         'Related suppliers',
+                                         domain=[('supplier', '=', True)])
+    }

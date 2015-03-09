@@ -222,6 +222,10 @@ class product_template(osv.Model):
         'palet_wood_height': 0.145,
         'active': False,  # Product desuctived until register state is reached
         'product_class': 'normal',
+        'supplier_ca_width': 0.8,
+        'supplier_ca_height': 1.2,
+        'ca_width': 0.8,
+        'ca_height': 1.2
     }
 
     def copy(self, cr, uid, id, default=None, context=None):

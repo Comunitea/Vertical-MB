@@ -31,12 +31,18 @@ class reposition_wizard(osv.TransientModel):
         'capacity': fields.
         float("Filled Percentage", required=True,
               digits_compute=dp.get_precision('Product Price')),
+        'limit': fields.float("Maximum Filled Percentage", required=True,
+                              digits_compute=dp.get_precision
+                              ('Product Price'),
+                              help="When is reached stop the reposition"),
+
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
         self.pool.get('stock.warehouse').search(cr, uid, [])[0],
+        'limit': 100,
     }
 
     def _get_packs_ordered(self, cr, uid, quant_ids, context=None):
@@ -139,11 +145,14 @@ class reposition_wizard(osv.TransientModel):
         packs_to_split = []
         total_move_qty = 0
         to_replenish_packs = []
-        while vol_aval and idx <= limit:
+        filled_per = loc.filled_percent
+        while vol_aval and filled_per < obj.limit and idx <= limit:
             candidates = pack_cands[idx]  # list of packages ordered by volume
             for pack_obj in candidates:
                 if pack_obj.volume <= vol_aval:
                     vol_aval -= pack_obj.volume
+                    vol_fill = loc.volume - vol_aval
+                    filled_per = loc.volume and (vol_fill / loc.volume) or 0.0
                     to_replenish_packs.append(pack_obj)
                 elif pack_obj.pack_type == 'palet':
                     packs_to_split.append(pack_obj)
