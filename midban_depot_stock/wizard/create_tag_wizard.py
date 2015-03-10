@@ -40,7 +40,7 @@ class create_tag_wizard(osv.TransientModel):
             active_id = context['active_id']
             picking_obj = t_picking.browse(cr, uid, active_id, context=context)
             for op in picking_obj.pack_operation_ids:
-                if op.pack_type == 'palet':
+                if op.pack_type in ['palet', 'box']:
                     vals = {}
                     prod = op.operation_product_id and \
                         op.operation_product_id or False
@@ -53,10 +53,10 @@ class create_tag_wizard(osv.TransientModel):
                         'default_code': prod.default_code,
                         'ean13': prod.ean13,
                         'purchase_id': purchase_id,
-                        'type': 'palet',
+                        'type': op.pack_type,
                         'lot_id': op.lot_id and op.lot_id.id or False,
-                        'removal_date': op.lot_id and
-                                op.lot_id.removal_date or False
+                        'removal_date': op.lot_id and op.lot_id.removal_date
+                        or False
                     }
                     if prod and picking_obj.picking_type_code == 'incoming':
                         num_units = op.product_qty
