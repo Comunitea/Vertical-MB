@@ -291,7 +291,8 @@ class partner_history(osv.Model):
     _order = "date desc"
     _columns = {
         'partner_id': fields.many2one('res.partner', 'partner',
-                                      readonly=True, required=True),
+                                      readonly=True, required=True,
+                                      ondelete="cascade"),
         'user_id': fields.many2one("res.users", 'User', readonly=True,
                                    required=True),
         'date': fields.datetime('Date', readonly=True, required=True),
