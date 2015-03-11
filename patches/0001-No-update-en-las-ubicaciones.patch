@@ -1,0 +1,24 @@
+From 53652b838631c85e58573cc7497fdaab072e34c3 Mon Sep 17 00:00:00 2001
+From: javierjcf <javier@pexego-magoi.pxgo.es>
+Date: Tue, 10 Mar 2015 18:42:19 +0100
+Subject: [PATCH] No update en las ubicaciones
+
+---
+ addons/stock/stock_data.xml |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/addons/stock/stock_data.xml b/addons/stock/stock_data.xml
+index 19a69b2..7c55478 100644
+--- a/addons/stock/stock_data.xml
++++ b/addons/stock/stock_data.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <openerp>
+-    <data>
++    <data noupdate="1">
+         
+         <record id="removal_fifo" model="product.removal">
+             <field name="name">First In First Out (FIFO)</field>
+-- 
+1.7.9.5
+

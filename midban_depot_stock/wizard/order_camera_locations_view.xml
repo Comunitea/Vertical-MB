@@ -9,9 +9,6 @@
             <field name="arch" type="xml">
                 <form string="Print Tags">
                     <sheet>
-                        <group>
-                            <field name="camera_code"/>
-                        </group>
                         <group string="Configuration aisles">
                             <field name="aisle_ids" nolabel="1" colspan="4">
                                 <tree string="Aisle" editable="top">
@@ -27,6 +24,8 @@
                                     <field name="my_length"/>
                                     <field name="my_width"/>
                                     <field name="my_height"/>
+                                    <field name="camera_code"/>
+        
                                 </tree>
                             </field>  
                         </group>

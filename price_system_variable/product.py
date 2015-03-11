@@ -42,7 +42,8 @@ class product_template(osv.Model):
                             digits_compute=dp.get_precision('Product Cost'),
                             readonly=True,),
         'sec_margin': fields.float('Security Margin', readonly=True,
-                                   digits_compute=dp.get_precision('Product Price')),
+                                   digits_compute=dp.get_precision
+                                   ('Product Price')),
     }
 
     def _create_change_pvp(self, cr, uid, ids, new_cmc, new_sp, context=None):

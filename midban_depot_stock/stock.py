@@ -333,8 +333,11 @@ class stock_pack_operation(osv.osv):
         for ope in self.browse(cr, uid, ids, context=context):
             res[ope.id] = 0
             if ope.package_id:
-                res[ope.id] = ope.package_id.num_mantles
-            elif ope.product_id and ope.product_qty:
+                if ope.package_id.pack_type == 'palet':
+                    res[ope.id] = ope.package_id.num_mantles
+            elif ope.product_id and ope.product_qty \
+                    and ope.result_package_id \
+                    and ope.result_package_id.pack_type == 'palet':
                 un_ca = ope.product_id.un_ca
                 ca_ma = ope.product_id.ca_ma
                 mant_units = un_ca * ca_ma

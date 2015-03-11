@@ -63,14 +63,16 @@ class purchase_order_line(osv.Model):
             relativedelta(days=supplier_delay)
 
         # If supplier days calc the closest to the default date_planned
-        s_days = [x.sequence for x in supplier_info.name.supp_service_days_ids]
         res = supp_res
-        week_day = supp_res.weekday() + 1  # bekause monday 0 sunday 6
-        if s_days and week_day not in s_days:
+        if supplier_info:
+            s_days = [x.sequence for x in
+                      supplier_info.name.supp_service_days_ids]
+            week_day = supp_res.weekday() + 1  # bekause monday 0 sunday 6
+            if s_days and week_day not in s_days:
 
-            delta = 0
-            while week_day not in s_days:
-                delta += 1
-                week_day = 1 if week_day == 7 else week_day + 1
-            res = supp_res + timedelta(days=delta or 0.0)
+                delta = 0
+                while week_day not in s_days:
+                    delta += 1
+                    week_day = 1 if week_day == 7 else week_day + 1
+                res = supp_res + timedelta(days=delta or 0.0)
         return res
