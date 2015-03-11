@@ -235,7 +235,6 @@ class product_pricelist(osv.Model):
                                                                context=context)
 
         price_types = {}
-
         results = {}
         for product, qty, partner in products_by_qty_by_partner:
             uom_price_already_computed = False
@@ -374,7 +373,7 @@ class product_pricelist(osv.Model):
                                          context=context)
         res = res_multi[prod_id]
         for key in res:
-            if (type(key) == int) and (type(res[key]) not in [int, float]):
+            if (type(key) == int) and (type(res[key]) not in [int, float, bool]):
                 if type(res[key]) == list:
                     res[key] = res[key][0] == 'warn' and -2.0 or res[key][0]
                 else:
@@ -885,7 +884,7 @@ class change_product_pvp(osv.Model):
     _rec_name = 'product_id'
     _order = 'date_cmc desc'
     _columns = {
-        'product_id': fields.many2one('product.product', 'Product',
+        'product_id': fields.many2one('product.template', 'Product',
                                       readonly=True, required=True,
                                       domain=[('product_class',
                                                '=', 'normal')]),

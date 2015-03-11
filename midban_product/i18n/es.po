@@ -381,7 +381,7 @@ msgstr "Validación logística realizada"
 #. module: midban_product
 #: selection:product.template,state2:0
 msgid "Logistic validation pending"
-msgstr "Validaciín logística pendiente"
+msgstr "Validación logística pendiente"
 
 #. module: midban_product
 #: field:product.template,ma_height:0

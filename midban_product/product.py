@@ -23,7 +23,6 @@ import openerp.addons.decimal_precision as dp
 import time
 from openerp.tools.translate import _
 from openerp import netsvc
-from openerp.tools.float_utils import float_round
 
 
 class temp_type(osv.Model):
@@ -207,7 +206,7 @@ class product_template(osv.Model):
         # In order to put into domains and make comprobations or identify for
         # telesale and ultrafresh_module.
         'product_class': fields.selection([('normal', 'Normal'),
-                                           ('fresh', 'Fresh/Ultrafresh'),
+                                           ('fresh', 'Fresh'),
                                            ('ultrafresh', 'Ultrafresh')],
                                           'Class',
                                           required=True),
@@ -222,8 +221,8 @@ class product_template(osv.Model):
         'palet_wood_height': 0.145,
         'active': False,  # Product desuctived until register state is reached
         'product_class': 'normal',
-        'supplier_ca_width': 0.8,
-        'supplier_ca_height': 1.2,
+        'supplier_pa_width': 0.8,
+        'supplier_pa_height': 1.2,
         'ca_width': 0.8,
         'ca_height': 1.2
     }
@@ -292,7 +291,8 @@ class product_template(osv.Model):
     def _check_units_values(self, cr, uid, ids, context=None):
         res = True
         p = self.browse(cr, uid, ids[0], context=context)
-        if p.product_class not in ['fresh', 'ultrafresh'] and \
+        if p.product_class not in ['fresh', 'ultrafresh'] \
+            and not p.is_cross_dock and \
             not (p.supplier_kg_un and p.supplier_un_width and
                  p.supplier_un_height and p.supplier_un_length and
                  p.supplier_ca_ma and p.supplier_ma_width and
@@ -320,8 +320,7 @@ class product_template(osv.Model):
             product._check_units_values()
             message = _("Logistic validate done")
             self._update_history(cr, uid, ids, context, product, message)
-            product.write({'state2': 'commercial_pending', 'active': False,
-                           'uos_coeff': float_round(1 / product.un_ca, 4)})
+            product.write({'state2': 'commercial_pending', 'active': False})
         return True
 
     def act_logic_pending(self, cr, uid, ids, context=None):
@@ -338,6 +337,7 @@ class product_template(osv.Model):
         """ Fix state in validated, product no active,
             update history. It's a flow method."""
         for product in self.browse(cr, uid, ids):
+            product._check_units_values()
             message = _("Comercial and validate done. Pending to register")
             self._update_history(cr, uid, ids, context, product, message)
             product.write({'state2': 'validated', 'active': False})

@@ -28,6 +28,7 @@ class create_camera_locations(models.TransientModel):
     _name = 'create.camera.locations'
 
     aisle_ids = fields.One2many('aisle.record', 'wzd_id', 'Aisles Config')
+    camera_code = fields.Char('Camera Code', required=True)
 
     def _get_my_cartesian_product(self, r_col, r_hei, r_sub):
         lsts = []
@@ -47,7 +48,7 @@ class create_camera_locations(models.TransientModel):
             res = list(itertools.product(lsts[0], lsts[1], lsts[2]))
         return res
 
-    def _create_camera_zone(self, item, camera_obj):
+    def _create_camera_zone(self, camera_obj):
         """
         Create a storage zone and a pickinf zone chil of camera obj
         """
@@ -55,21 +56,22 @@ class create_camera_locations(models.TransientModel):
             'location_id': camera_obj.id,
             'usage': 'view',
             'temp_type_id': camera_obj.temp_type_id.id,
-            'width': item.my_width,
-            'length': item.my_length,
-            'height': item.my_height,
+            'width': 100,
+            'length': 100,
+            'height': 100,
         }
         vals2 = vals
-        vals2.update({'name': item.camera_code + ' Picking',
+        vals2.update({'name': self.camera_code + ' Picking',
                       'zone': 'picking'})
         pick = self.env['stock.location'].create(vals2)
         vals2 = vals
-        vals2.update({'name': item.camera_code + ' Almacenaje ',
+        vals2.update({'name': self.camera_code + ' Almacenaje ',
                       'zone': 'storage'})
         store = self.env['stock.location'].create(vals2)
         return pick, store
 
-    def _get_locations_vals(self, item, camera_obj):
+    def _get_locations_vals(self, item, camera_obj, pick_zone_obj,
+                            store_zone_obj):
         """
         Return a list of dict containing vals of the new locations
         """
@@ -87,8 +89,6 @@ class create_camera_locations(models.TransientModel):
         store_tuples = self._get_my_cartesian_product(r_col, r_store, r_subcol)
         store_names = ['/'.join(x) for x in store_tuples]
 
-        pick_zone_obj, store_zone_obj = self._create_camera_zone(item,
-                                                                 camera_obj)
         # Create Picking vals
         for name in pick_names:
             vals = {
@@ -128,8 +128,11 @@ class create_camera_locations(models.TransientModel):
 
         camera_obj = self.env['stock.location'].browse(active_id)
         new_loc_ids = []
+        pick_zone_obj, store_zone_obj = self._create_camera_zone(camera_obj)
         for item in self[0].aisle_ids:
-            list_vals = self._get_locations_vals(item, camera_obj)
+            list_vals = self._get_locations_vals(item, camera_obj,
+                                                 pick_zone_obj,
+                                                 store_zone_obj)
             if not list_vals:
                 raise except_orm(_('Error'), _('No locations will be created'))
             for vals in list_vals:
@@ -174,4 +177,3 @@ class aisle_record(models.TransientModel):
     my_length = fields.Float('Length', default=1.30, required=True)
     my_width = fields.Float('Width', default=0.9, required=True)
     my_height = fields.Float('Height', default=2.5, required=True)
-    camera_code = fields.Char('Camera Code', required=True)
