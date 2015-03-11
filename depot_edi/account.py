@@ -149,8 +149,8 @@ class account_invoice(models.Model):
         self.amount_tax = sum(line.amount for line in self.tax_line)
         self.amount_total = self.amount_untaxed + self.amount_tax
         self.amount_discount = \
-            sum((line.price_unit * line.quantity) -
-                line.price_subtotal_discounted for line in self.invoice_line)
+            sum([line.price_unit * line.quantity -
+                line.price_subtotal_discounted for line in self.invoice_line])
 
     document_id = fields.Many2one('edi.doc', 'EDI Document')
     name_doc = fields.Char('Ref', readonly=True, related='document_id.name')
