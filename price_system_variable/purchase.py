@@ -273,13 +273,13 @@ class purchase_order_line(osv.Model):
             context = {}
         sup = super(purchase_order_line, self)
         # In order to avoid not calc ther pricelist if it is 0.0
-        my_price_unit = price_unit and price_unit or False
+        # my_price_unit = price_unit and price_unit or False
+        my_price_unit = False
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
                                       context=context,
                                       date_order=date_order,
-                                      fiscal_position_id=
-                                      fiscal_position_id,
+                                      fiscal_position_id=fiscal_position_id,
                                       date_planned=date_planned,
                                       name=name,
                                       price_unit=my_price_unit,
@@ -339,7 +339,6 @@ class purchase_order_line(osv.Model):
                     t_product = self.pool.get('product.product')
                     product2 = t_product.browse(cr, uid, product_id,
                                                 context=context)
-                    import ipdb; ipdb.set_trace()
                     res_multi = t_plist.price_get_multi(cr, uid, ids,
                                          products_by_qty_by_partner=
                                          [(product2, qty, partner_id)],

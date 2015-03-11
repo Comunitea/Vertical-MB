@@ -399,7 +399,8 @@ class product_history(osv.Model):
     _order = "date desc"
     _columns = {
         'product_tmp_id': fields.many2one('product.template', 'Product',
-                                          readonly=True, required=True, ),
+                                          readonly=True, required=True,
+                                          ondelete="cascade"),
         'user_id': fields.many2one("res.users", 'User', readonly=True,
                                    required=True),
         'date': fields.datetime('Date', readonly=True, required=True),
