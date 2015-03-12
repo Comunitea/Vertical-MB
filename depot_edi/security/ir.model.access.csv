@@ -1,4 +1,4 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_edi_doc","access_edi_doc","model_edi_doc","base.group_user",1,1,1,1
-"access_account_discount","access_account_discount","model_account_discount","base.group_user",1,1,1,1
-"access_account_discount_type","access_account_discount_type,"model_account_discount_type","base.group_user",1,1,1,1
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_edi_doc,access_edi_doc,model_edi_doc,base.group_user,1,1,1,1
+access_account_discount,access_account_discount,model_account_discount,base.group_user,1,1,1,1
+access_account_discount_type,access_account_discount_type,model_account_discount_type,base.group_user,1,1,1,1
