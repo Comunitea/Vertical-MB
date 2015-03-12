@@ -223,8 +223,8 @@ class product_template(osv.Model):
         'product_class': 'normal',
         'supplier_pa_width': 0.8,
         'supplier_pa_height': 1.2,
-        'ca_width': 0.8,
-        'ca_height': 1.2
+        'pa_width': 0.8,
+        'pa_height': 1.2
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -292,7 +292,7 @@ class product_template(osv.Model):
         res = True
         p = self.browse(cr, uid, ids[0], context=context)
         if p.product_class not in ['fresh', 'ultrafresh'] \
-            and not p.is_cross_dock and \
+            and not p.is_cross_dock and p.type == "product" and \
             not (p.supplier_kg_un and p.supplier_un_width and
                  p.supplier_un_height and p.supplier_un_length and
                  p.supplier_ca_ma and p.supplier_ma_width and
@@ -399,7 +399,8 @@ class product_history(osv.Model):
     _order = "date desc"
     _columns = {
         'product_tmp_id': fields.many2one('product.template', 'Product',
-                                          readonly=True, required=True, ),
+                                          readonly=True, required=True,
+                                          ondelete="cascade"),
         'user_id': fields.many2one("res.users", 'User', readonly=True,
                                    required=True),
         'date': fields.datetime('Date', readonly=True, required=True),
