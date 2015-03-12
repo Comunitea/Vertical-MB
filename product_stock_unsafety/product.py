@@ -64,8 +64,8 @@ class product_template(osv.Model):
         # First and last day of the current month in the previous year
         afirst_day, alast_day = calendar.monthrange(year, int(amonth))
         # Average daily sales in the previous year
-        cdate_start = '01-01-' + str(year) + ' 00:00:01'
-        cdate_stop = '31-12-' + str(year) + ' 23:59:59'
+        cdate_start = str(year) + "-01-01 00:00:01"
+        cdate_stop = str(year) + '-12-31 23:59:59'
         prev_year = self._get_qty(cr,
                                   uid,
                                   ids,
@@ -81,8 +81,8 @@ class product_template(osv.Model):
                 prev_year = prev_year[0][0] / 365
         avg_day.append(prev_year)
         # Average sales last month
-        cdate_start = '01-' + str(month) + '-' + ayear + ' 00:00:01'
-        date = str(last_day) + '-' + str(month) + '-' + ayear
+        cdate_start = ayear + "-" + str(month) + '-01 00:00:01'
+        date = ayear + '-' + str(month) + "-" + str(last_day)
         cdate_stop = date + ' 23:59:59'
         prev_month = self._get_qty(cr,
                                    uid,
@@ -96,8 +96,8 @@ class product_template(osv.Model):
             prev_month = prev_month[0][0] / last_day
         avg_day.append(prev_month)
         # Average sales for the same month last year
-        cdate_start = '01-' + str(amonth) + '-' + str(year) + ' 00:00:01'
-        date = str(alast_day) + '-' + str(amonth) + '-' + str(year)
+        cdate_start = str(year) + "-" + str(amonth) + '-01 00:00:01'
+        date = str(year) + '-' + str(amonth) + "-" + str(alast_day)
         cdate_stop = date + ' 23:59:59'
         month_prev_year = self._get_qty(cr,
                                         uid,
