@@ -447,6 +447,8 @@ class stock_location(osv.Model):
         if context is None:
             context = {}
         res = {}
+        for id in ids:
+            res[id] = {'available_volume': 0.0, 'filled_percent': 0.0}
         quant_obj = self.pool.get('stock.quant')
         ope_obj = self.pool.get('stock.pack.operation')
         t_prod = self.pool.get('product.product')
@@ -485,7 +487,9 @@ class stock_location(osv.Model):
 
                     volume += wood_volume
 
-            res[loc.id] = loc.volume - volume
+            res[loc.id]['available_volume'] = loc.volume - volume
+            fill_per = loc.volume and volume * 100.0 / loc.volume or 0.0
+            res[loc.id]['filled_percent'] = fill_per
 
         return res
 
@@ -506,50 +510,6 @@ class stock_location(osv.Model):
                 elif op == 'less'and loc.available_volume < volume:
                     sel_loc_ids.append(loc.id)
         res = [('id', 'in', sel_loc_ids)]
-        return res
-
-    def _get_filled_percentage(self, cr, uid, ids, name, args, context=None):
-        """ Function search to use filled % like a filter. """
-        if context is None:
-            context = {}
-        res = {}
-        quant_obj = self.pool.get('stock.quant')
-        ope_obj = self.pool.get('stock.pack.operation')
-        t_prod = self.pool.get('product.product')
-        for loc in self.browse(cr, uid, ids, context=context):
-            volume = 0.0
-            quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
-                                                    loc.id)],
-                                         context=context)
-            volume = self._get_quants_volume(cr, uid, quant_ids,
-                                             context=context)
-
-            domain = [
-                ('location_dest_id', '=', loc.id),
-                ('processed', '=', 'false'),
-                ('picking_id.state', 'in', ['assigned'])
-
-            ]
-            operation_ids = ope_obj.search(cr, uid, domain, context=context)
-            for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
-                volume += ope.volume
-
-            cond1 = loc.zone == 'picking'
-            cond2 = quant_ids or operation_ids
-            if cond1 and cond2:
-                # Add wood volume. Only one wood
-                prod_id = t_prod.search(cr, uid,
-                                        [('picking_location_id', '=', loc.id)],
-                                        context=context, limit=1)
-                if prod_id:
-                    prod_obj = t_prod.browse(cr, uid, prod_id, context=context)
-                    width_wood = prod_obj.pa_width
-                    length_wood = prod_obj.pa_length
-                    height_wood = prod_obj.palet_wood_height
-                    wood_volume = width_wood * length_wood * height_wood
-
-                    volume += wood_volume
-            res[loc.id] = loc.volume and ((volume * 100) / loc.volume) or 0.0
         return res
 
     def _search_filled_percent(self, cr, uid, obj, name, args, context=None):
@@ -670,16 +630,18 @@ class stock_location(osv.Model):
         function(_get_available_volume, readonly=True, type="float",
                  string="Available volume",
                  digits_compute=dp.get_precision('Product Volume'),
-                 fnct_search=_search_available_volume),
+                 fnct_search=_search_available_volume,
+                 multi='mult'),
         'filter_available': fields.function(_get_filter_available,
                                             type="char",
                                             string="Available Between X-Y",
                                             fnct_search=_search_filter_aval),
-        'filled_percent': fields.function(_get_filled_percentage, type="float",
+        'filled_percent': fields.function(_get_available_volume, type="float",
                                           string="Filled %",
                                           digits_compute=dp.get_precision
                                           ('Product Price'),
-                                          fnct_search=_search_filled_percent),
+                                          fnct_search=_search_filled_percent,
+                                          multi='mult'),
         'filter_percent': fields.function(_get_filter_percentage,
                                           type="char",
                                           string="Filled Between X-Y",

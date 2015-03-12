@@ -48,6 +48,7 @@
         'account_view.xml',
         'invoice_workflow.xml',
         'wizard/import_edi_view.xml',
+        'security/ir.model.access.csv',
     ],
     "demo": [],
     "test": [],

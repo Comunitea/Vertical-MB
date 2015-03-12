@@ -159,9 +159,9 @@
             <field name="inherit_id" ref="stock.view_location_tree2"/>
             <field name="arch" type="xml">
                 <field name="usage" position="after">
-                    <field name="volume"/>
+                    <!-- <field name="volume"/>
                     <field name="available_volume"/>
-                    <field name="filled_percent"/>
+                    <field name="filled_percent"/> -->
                     <field name="temp_type_id"/>
                     <field name="sequence"/>
                     <field name="camera"/>
@@ -197,6 +197,10 @@
                         <filter string="Zone" context="{'group_by':'zone'}"/>
                     </group>
                 </filter>
+                <filter icon="terp-go-home" position="after">
+                    <filter icon="terp-go-home" name="wiew_location" string="Views" domain="[('usage', '=', 'view')]" help="Views Locations"/>
+                </filter>
+                
             </field>
         </record>
 
