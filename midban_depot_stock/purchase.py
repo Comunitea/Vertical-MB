@@ -46,6 +46,9 @@ class purchase_order(osv.Model):
                                                                context=context)
             self._create_stock_moves(cr, uid, order, order.order_line,
                                      picking_id, context=context)
+    _defaults = {
+        'invoice_method': 'picking',
+    }
 
 
 class purchase_order_line(osv.Model):
