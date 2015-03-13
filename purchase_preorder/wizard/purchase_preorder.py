@@ -643,7 +643,6 @@ class products_supplier(osv.Model):
         'nov_consu_last': fields.float('Nov Consu Last'),
         'dec_consu_cur': fields.float('Dec Consu Cur'),
         'dec_consu_last': fields.float('Dec Consu Last'),
-        'onchange': fields.boolean('Onchange', readonly=True),
         'integer': fields.integer('Integer'),
         'min_qty': fields.function(_get_min_qty_supplier,
                                    type='float', string="Min quantity",

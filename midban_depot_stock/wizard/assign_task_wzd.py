@@ -197,20 +197,6 @@ class assign_task_wzd(osv.TransientModel):
 # ############################## UBICATION ####################################
 # #############################################################################
 
-    # def _change_operations_location_dest(self, cr, uid, pick_id, context=None):
-    #     if context is None:
-    #         context = {}
-    #     t_pick = self.pool.get("stock.picking")
-    #     t_pack_op = self.pool.get("stock.pack.operation")
-    #     pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
-    #     # Writed when a ubication task is assigned
-    #     if pick_obj.task_type == 'ubication':
-    #         wh_obj = pick_obj.warehouse_id
-    #         ops_ids = [x.id for x in pick_obj.pack_operation_ids]
-    #         t_pack_op.change_location_dest_id(cr, uid, ops_ids, wh_obj,
-    #                                           context=context)
-    #     return True
-
     def get_location_task(self, cr, uid, ids, context=None):
         """
         Search pickings wich picking type equals to location task, and create
@@ -252,9 +238,6 @@ class assign_task_wzd(osv.TransientModel):
                     'machine_id': machine_id,
                     'task_type': 'ubication',
                     'warehouse_id': wzd_obj.warehouse_id.id})
-
-        # self._change_operations_location_dest(cr, uid, pick.id,
-        #                                       context=context)
 
         # Create task and associate picking
         vals = {

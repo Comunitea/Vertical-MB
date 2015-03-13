@@ -88,7 +88,6 @@ class create_camera_locations(models.TransientModel):
 
         store_tuples = self._get_my_cartesian_product(r_col, r_store, r_subcol)
         store_names = ['/'.join(x) for x in store_tuples]
-
         # Create Picking vals
         for name in pick_names:
             vals = {
@@ -174,6 +173,6 @@ class aisle_record(models.TransientModel):
     total_pick_locs = fields.Integer('Picking locations', readonly=True)
     total_store_locs = fields.Integer('Storage locations', readonly=True)
     total_locs = fields.Integer('Total Locations', readonly=True)
-    my_length = fields.Float('Length', default=1.30, required=True)
-    my_width = fields.Float('Width', default=0.9, required=True)
+    my_length = fields.Float('Length', default=1.20, required=True)
+    my_width = fields.Float('Width', default=0.8, required=True)
     my_height = fields.Float('Height', default=2.5, required=True)
