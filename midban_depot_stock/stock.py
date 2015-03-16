@@ -430,6 +430,7 @@ class stock_location(osv.Model):
             context = {}
         volume = 0.0
         pack_ids = set()
+
         for quant in t_quant.browse(cr, uid, quant_ids, context=context):
             if quant.package_id and quant.package_id.pack_type:
                 pack_ids.add(quant.package_id.id)
@@ -440,7 +441,11 @@ class stock_location(osv.Model):
                     quant.qty
         pack_ids = list(pack_ids)
         for pack in t_pack.browse(cr, uid, pack_ids, context=context):
-            volume += pack.volume
+            net_qty = 0
+            for quant in pack.quant_ids:
+                net_qty += quant.qty
+            if net_qty:
+                volume += pack.volume
         return volume
 
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):

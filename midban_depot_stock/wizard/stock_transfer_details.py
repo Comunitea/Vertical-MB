@@ -67,11 +67,14 @@ class stock_transfer_details(models.TransientModel):
         domain = [
             # ('company_id', '=', wh_obj.company_id.id),
             ('product_id', '=', product.id),
-            ('qty', '>', 0),
+            # ('qty', '>', 0),
             ('location_id', 'in', storage_loc_ids),
         ]
         quant_objs = t_quant.search(domain)
-        if quant_objs:
+        net_qty = 0.0
+        for quant in quant_objs:
+            net_qty += quant.qty
+        if quant_objs and net_qty:
             res = True
         return res
 

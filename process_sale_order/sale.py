@@ -42,9 +42,9 @@ class sale_order_line2(osv.osv):
             if line.choose_unit == 'box':
                 unit_of_measure_qty = line.product_uos_qty
             else:
-                unit_of_measure_qty = self.product_uom_qty
+                unit_of_measure_qty = line.product_uom_qty
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-            taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, 
+            taxes = tax_obj.compute_all(cr, uid, line.tax_id, price,
                                         unit_of_measure_qty, line.product_id,
                                         line.order_id.partner_id)
             cur = line.order_id.pricelist_id.currency_id
