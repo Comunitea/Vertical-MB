@@ -335,6 +335,14 @@ class stock_pack_operation(osv.osv):
             if ope.package_id:
                 if ope.package_id.pack_type == 'palet':
                     res[ope.id] = ope.package_id.num_mantles
+                # If quit from a pack and put in other pack return the
+                # operation num_mantles instead of the volume
+                if ope.result_package_id and ope.product_qty:
+                    units_in_mantle = ope.product_id.un_ca * \
+                        ope.product_id.ca_ma
+                    if units_in_mantle:
+                        mantles = math.ceil(ope.product_qty / units_in_mantle)
+                        res[ope.id] = mantles
             elif ope.product_id and ope.product_qty \
                     and ope.result_package_id \
                     and ope.result_package_id.pack_type == 'palet':

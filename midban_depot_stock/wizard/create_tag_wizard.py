@@ -62,6 +62,10 @@ class create_tag_wizard(osv.TransientModel):
                         num_units = op.product_qty
                     elif prod and picking_obj.picking_type_code == 'internal':
                         num_units = op.package_id.packed_qty - op.product_qty
+                        if op.package_id and op.result_package_id:
+                            num_units = op.product_qty
+                        else:
+                            num_units = op.packed_qty
                         vals['lot_id'] = op.package_id and \
                             (op.package_id.packed_lot_id and
                              op.package_id.packed_lot_id.id or False) or False
