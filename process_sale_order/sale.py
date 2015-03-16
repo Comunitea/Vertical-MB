@@ -20,6 +20,42 @@
 ##############################################################################
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
+from openerp.osv import fields as fields2, osv
+
+
+class sale_order_line2(osv.osv):
+    _inherit = "sale.order.line"
+
+    def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
+        """
+        We must only do sale orders in units or boxes. Same products are only
+        in units or only boxes, or maybe we can sale it in boxes and units.
+        Field do_onchange is a workarround in order to control product_uos_qty and
+        product_uom_qty onchange.
+        """
+        tax_obj = self.pool.get('account.tax')
+        cur_obj = self.pool.get('res.currency')
+        res = {}
+        if context is None:
+            context = {}
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.choose_unit == 'box':
+                unit_of_measure_qty = line.product_uos_qty
+            else:
+                unit_of_measure_qty = self.product_uom_qty
+            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            taxes = tax_obj.compute_all(cr, uid, line.tax_id, price, 
+                                        unit_of_measure_qty, line.product_id,
+                                        line.order_id.partner_id)
+            cur = line.order_id.pricelist_id.currency_id
+            res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
+        return res
+
+    _columns = {
+        'price_subtotal': fields2.function(_amount_line, string='Subtotal',
+                                           digits_compute=dp.get_precision
+                                           ('Account')),
+    }
 
 
 class sale_order_line(models.Model):
@@ -31,35 +67,34 @@ class sale_order_line(models.Model):
     """
     _inherit = "sale.order.line"
 
-    @api.one
-    def _amount_line(self):
-        """
-        When we sale in boxes we want to do product_uos_qty * price unit
-        instead the default product_uom_qty * price_unit
-        Need call super???
-        """
-        self.price_subtotal = 0.0
-        if self.choose_unit == 'box':  # product_uos_qty instead uom
-            unit_of_measure_qty = self.product_uos_qty
-        else:  # choose_unit == unit
-            unit_of_measure_qty = self.product_uom_qty
-        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
-        taxes = self.tax_id.compute_all(price, unit_of_measure_qty,
-                                        self.product_id,
-                                        self.order_id.partner_id)
-        cur = self.order_id.pricelist_id.currency_id
-        self.price_subtotal = cur.round(taxes['total'])
+    # @api.one
+    # def _amount_line(self, field_name, arg):
+    #     """
+    #     When we sale in boxes we want to do product_uos_qty * price unit
+    #     instead the default product_uom_qty * price_unit
+    #     Need call super???
+    #     """
+    #     import ipdb; ipdb.set_trace()
+    #     self.price_subtotal = 0.0
+    #     if self.choose_unit == 'box':  # product_uos_qty instead uom
+    #         unit_of_measure_qty = self.product_uos_qty
+    #     else:  # choose_unit == unit
+    #         unit_of_measure_qty = self.product_uom_qty
+    #     price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
+    #     taxes = self.tax_id.compute_all(price, unit_of_measure_qty,
+    #                                     self.product_id,
+    #                                     self.order_id.partner_id)
+    #     cur = self.order_id.pricelist_id.currency_id
+    #     self.price_subtotal = cur.round(taxes['total'])
 
     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
                                 readonly=True)
     choose_unit = fields.Selection([('unit', 'Unit'),
                                     ('box', 'Box')], 'Selected Unit',
                                    default='unit')
-    price_subtotal = fields.Float('Unit Price', compute=_amount_line,
-                                  required=True, readonly=True,
-                                  digits_compute=dp.get_precision
-                                  ('Product Price'),
-                                  states={'draft': [('readonly', False)]})
+    # price_subtotal = fields.Float('Subtotal', compute=_amount_line,
+    #                               digits_compute=dp.get_precision
+    #                               ('Product Price'))
 
     @api.onchange('product_uos_qty')
     def product_uos_qty_onchange(self):
@@ -126,7 +161,7 @@ class sale_order_line(models.Model):
                 # como uom acaba siendo False en el onchange se calculaa partir
                 # del uos y no nos combiene, lo volvemos a setear
                 res['value']['product_uom_qty'] = qty
-            if min_unit in ['both','box']:
+            if min_unit in ['both', 'box']:
                 if choose_unit == 'unit':
                     res['value']['product_uom'] = unit_id
                     res['value']['product_uos'] = unit_id
