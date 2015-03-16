@@ -949,13 +949,13 @@ class stock_quant(osv.osv):
         t_location = self.pool.get('stock.location')
         if removal_strategy == 'depot_fefo':
             pick_loc_obj = product.picking_location_id
+            if not pick_loc_obj:
+                raise osv.except_osv(_('Error!'), _('Not picking location\
+                                        defined for product %s') %
+                                     product.name)
             order = 'removal_date, in_date, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
-                if not pick_loc_obj:
-                    raise osv.except_osv(_('Error!', _('Not picking location\
-                                         defined for product %s') % 
-                                         product.name))
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
                 pick_loc = pick_loc_id and \
                     t_location.browse(cr, uid, pick_loc_id) or False

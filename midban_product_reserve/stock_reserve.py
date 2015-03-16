@@ -79,6 +79,7 @@ class StockReservation(models.Model):
         self.move_id.picking_id.do_prepare_partial()
         self.move_id.picking_id.action_done()
         self.move_id.picking_id.write({'partner_id': self.partner_id2.id})
+        self.move_id.write({'is_reserve': True})
         return True
 
     @api.onchange('product_uos_qty')
@@ -180,4 +181,23 @@ class StockReservation(models.Model):
                 vals['product_uom'] = unit.id
                 vals['choose_unit'] = 'box'
         res = super(StockReservation, self).write(vals)
+        return res
+
+
+class stock_move(models.Model):
+    _inherit = 'stock.move'
+
+    is_reserve = fields.Boolean('Is reserve move', readonly=True)
+
+    @api.model
+    def _get_price_unit_invoice(self, move_line, type):
+        """ Gets price unit for invoice
+        @param move_line: Stock move lines
+        @param type: Type of invoice
+        @return: The price unit for the move line
+        Overwrited
+        """
+        res = super(stock_move, self)._get_price_unit_invoice(move_line, type)
+        if move_line.is_reserve:  # Is a reserve
+            res = move_line.price_unit
         return res

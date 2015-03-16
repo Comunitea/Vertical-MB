@@ -514,7 +514,7 @@ class purchase_preorder(osv.Model):
                         seller_delay = int(line.product_id.seller_delay)
                         format = DEFAULT_SERVER_DATETIME_FORMAT
                         dateo = datetime.strptime(date_order, format)
-                        ldate = dateo - relativedelta(days=seller_delay)
+                        ldate = dateo + relativedelta(days=seller_delay)
                         pline.create(cr,
                                      uid,
                                      {'product_id': line.product_id.id,

@@ -178,33 +178,34 @@ class sale_order_line(models.Model):
         value is not in the vals dict
         """
         t_data = self.env['ir.model.data']
-        if vals.get('product_id', False):
-            prod = self.env['product.product'].browse(vals['product_id'])
-        else:
-            prod = self.product_id
-        xml_id_name = 'midban_depot_stock.product_uom_box'
-        box_id = t_data.xmlid_to_res_id(xml_id_name)
-        unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
-        min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
-            prod.min_unit
-        choose = vals.get('choose_unit', False) and vals['choose_unit'] \
-            or self.choose_unit
-        if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
-            qty = vals.get('product_uom_qty', 0.0) and \
-                vals['product_uom_qty'] or self.product_uom_qty
-            vals['product_uos_qty'] = qty
-            vals['product_uos'] = unit_id
-            vals['product_uom'] = unit_id
-            vals['choose_unit'] = 'unit'
-        elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
-            uos_coeff = prod.uos_coeff
-            uos_qty = vals.get('product_uos_qty', 0.0) and \
-                vals['product_uos_qty'] or self.product_uos_qty
-            qty = uos_coeff and uos_qty / uos_coeff or 0.0
-            vals['product_uom_qty'] = qty
-            vals['product_uos'] = box_id
-            vals['product_uom'] = unit_id
-            vals['choose_unit'] = 'box'
+        if not vals.get('state', False) or vals['state'] not in ['confirmed']:
+            if vals.get('product_id', False):
+                prod = self.env['product.product'].browse(vals['product_id'])
+            else:
+                prod = self.product_id
+            xml_id_name = 'midban_depot_stock.product_uom_box'
+            box_id = t_data.xmlid_to_res_id(xml_id_name)
+            unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
+            min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
+                prod.min_unit
+            choose = vals.get('choose_unit', False) and vals['choose_unit'] \
+                or self.choose_unit
+            if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
+                qty = vals.get('product_uom_qty', 0.0) and \
+                    vals['product_uom_qty'] or self.product_uom_qty
+                vals['product_uos_qty'] = qty
+                vals['product_uos'] = unit_id
+                vals['product_uom'] = unit_id
+                vals['choose_unit'] = 'unit'
+            elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
+                uos_coeff = prod.uos_coeff
+                uos_qty = vals.get('product_uos_qty', 0.0) and \
+                    vals['product_uos_qty'] or self.product_uos_qty
+                qty = uos_coeff and uos_qty / uos_coeff or 0.0
+                vals['product_uom_qty'] = qty
+                vals['product_uos'] = box_id
+                vals['product_uom'] = unit_id
+                vals['choose_unit'] = 'box'
         res = super(sale_order_line, self).write(vals)
         return res
 

@@ -163,7 +163,8 @@ class stock_transfer_details(models.TransientModel):
         location
         """
         if not product.picking_location_id:
-            raise except_orm(_('Error!'), _('Not picking location.'))
+            raise except_orm(_('Error!'), _('Not picking location. Maybe is a \
+                                             cross dock order'))
         pick_loc = product.picking_location_id
         loc_obj = False
         prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
