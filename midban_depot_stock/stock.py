@@ -948,28 +948,34 @@ class stock_quant(osv.osv):
         """
         t_location = self.pool.get('stock.location')
         if removal_strategy == 'depot_fefo':
-            order = 'removal_date, in_date, id'
-            # Search quants in picking location
             pick_loc_obj = product.picking_location_id
-            if not pick_loc_obj:
-                raise osv.except_osv(_('Error!', _('Not picking location\
-                                     defined for product %s') % product.name))
-            pick_loc_id = pick_loc_obj.get_general_zone('picking')
-            pick_loc = pick_loc_id and \
-                t_location.browse(cr, uid, pick_loc_id) or False
-            res = self._quants_get_order(cr, uid, pick_loc, product, qty,
-                                         domain, order, context=context)
-            check_storage_qty = 0.0
-            for record in res:
-                if record[0] is None:
-                    check_storage_qty += record[1]
-                    res.remove(record)
+            order = 'removal_date, in_date, id'
+            if not context.get('from_reserve', False):
+                # Search quants in picking location
+                if not pick_loc_obj:
+                    raise osv.except_osv(_('Error!', _('Not picking location\
+                                         defined for product %s') % 
+                                         product.name))
+                pick_loc_id = pick_loc_obj.get_general_zone('picking')
+                pick_loc = pick_loc_id and \
+                    t_location.browse(cr, uid, pick_loc_id) or False
+                res = self._quants_get_order(cr, uid, pick_loc, product, qty,
+                                             domain, order, context=context)
+                check_storage_qty = 0.0
+                for record in res:
+                    if record[0] is None:
+                        check_storage_qty += record[1]
+                        res.remove(record)
+
             storage_id = pick_loc_obj.get_general_zone('storage')
             storage_loc = storage_id and \
                 t_location.browse(cr, uid, storage_id) or False
 
             # Search quants in storage location
             domain = [('reservation_id', '=', False), ('qty', '>', 0)]
+            if context.get('from_reserve', False):
+                check_storage_qty = qty
+                res = []
             if check_storage_qty and storage_loc:
                 res += self._quants_get_order(cr, uid, storage_loc, product,
                                               check_storage_qty, domain, order,

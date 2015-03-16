@@ -44,13 +44,29 @@ class StockReservation(models.Model):
                                    default='unit')
 
     @api.multi
+    def reserve(self):
+        """ Confirm a reservation
+
+        The reservation is done using the default UOM of the product.
+        A date until which the product is reserved can be specified.
+        """
+        self.date_expected = fields.Datetime.now()
+        self.move_id.action_confirm()
+        ctx = self._context.copy()
+        ctx.update({'from_reserve': True})  # avoid picking location
+        self.move_id.picking_id.with_context(ctx).action_assign()
+        return True
+
+    @api.multi
     def check_reserve_availability(self):
         """ Confirm a reservation
 
         The reservation is done using the default UOM of the product.
         A date until which the product is reserved can be specified.
         """
-        self.move_id.picking_id.action_assign()
+        ctx = self._context.copy()
+        ctx.update({'from_reserve': True})  #avoid picking location
+        self.move_id.picking_id.with_context(ctx).action_assign()
         return True
 
     @api.multi

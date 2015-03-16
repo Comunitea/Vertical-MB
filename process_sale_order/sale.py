@@ -30,8 +30,8 @@ class sale_order_line2(osv.osv):
         """
         We must only do sale orders in units or boxes. Same products are only
         in units or only boxes, or maybe we can sale it in boxes and units.
-        Field do_onchange is a workarround in order to control product_uos_qty and
-        product_uom_qty onchange.
+        Field do_onchange is a workarround in order to control product_uos_qty
+        and product_uom_qty onchange.
         """
         tax_obj = self.pool.get('account.tax')
         cur_obj = self.pool.get('res.currency')
