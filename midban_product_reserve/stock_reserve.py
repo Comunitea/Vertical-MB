@@ -65,7 +65,7 @@ class StockReservation(models.Model):
         A date until which the product is reserved can be specified.
         """
         ctx = self._context.copy()
-        ctx.update({'from_reserve': True})  #avoid picking location
+        ctx.update({'from_reserve': True})  # avoid picking location
         self.move_id.picking_id.with_context(ctx).action_assign()
         return True
 
@@ -78,6 +78,7 @@ class StockReservation(models.Model):
         """
         self.move_id.picking_id.do_prepare_partial()
         self.move_id.picking_id.action_done()
+        self.move_id.picking_id.write({'partner_id': self.partner_id2.id})
         return True
 
     @api.onchange('product_uos_qty')

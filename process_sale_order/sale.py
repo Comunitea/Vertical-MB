@@ -74,7 +74,6 @@ class sale_order_line(models.Model):
     #     instead the default product_uom_qty * price_unit
     #     Need call super???
     #     """
-    #     import ipdb; ipdb.set_trace()
     #     self.price_subtotal = 0.0
     #     if self.choose_unit == 'box':  # product_uos_qty instead uom
     #         unit_of_measure_qty = self.product_uos_qty
