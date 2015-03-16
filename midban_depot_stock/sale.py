@@ -79,7 +79,7 @@ class sale_order(osv.Model):
         res = super(sale_order, self).onchange_partner_id(cr,
                                                           uid,
                                                           ids,
-                                                          part=part,
+                                                          part,
                                                           context=context)
         partner_t = self.pool.get('res.partner')
         part = partner_t.browse(cr, uid, part, context=context)

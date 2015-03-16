@@ -214,6 +214,11 @@ class assign_task_wzd(osv.TransientModel):
         if not machine_id:
             machine_id = self._get_machine_from_user(cr, uid, ids, 'ubication',
                                                      context=context)
+        machine_obj = self.pool.get('stock.machine').browse(cr, uid,
+                                                            machine_id)
+        if machine_obj.type in ['prep_order', 'transpalet']:
+            raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
+                                 You must select a retractil machine'))
         self._check_on_course(cr, uid, ids, machine_id, context=context)
 
         # Get oldest internal pick in assigned state
@@ -272,6 +277,11 @@ class assign_task_wzd(osv.TransientModel):
             machine_id = self._get_machine_from_user(cr, uid, ids,
                                                      'reposition',
                                                      context=context)
+        machine_obj = self.pool.get('stock.machine').browse(cr, uid,
+                                                            machine_id)
+        if machine_obj.type in ['prep_order', 'transpalet']:
+            raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
+                                 You must select a retractil machine'))
         self._check_on_course(cr, uid, ids, machine_id, context=context)
 
         # Get oldest internal pick in assigned state
@@ -492,8 +502,13 @@ class assign_task_wzd(osv.TransientModel):
         if not machine_id:
             machine_id = self._get_machine_from_user(cr, uid, ids, 'picking',
                                                      context=context)
+        machine_obj = self.pool.get('stock.machine').browse(cr, uid,
+                                                            machine_id)
+        if machine_obj.type in ['retractil']:
+            raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
+                                 You must select a machine transpalet or order\
+                                 prepare'))
         self._check_on_course(cr, uid, ids, machine_id, context=context)
-
         if not obj.location_ids:
             raise osv.except_osv(_('Error!'), _('Locations are required to \
                                                  do a picking task'))
@@ -551,3 +566,6 @@ class assign_task_wzd(osv.TransientModel):
             task_obj.create(cr, uid, vals, context=context)
             return self._print_report(cr, uid, ids, wave_id=wave_id,
                                       context=context)
+        else:
+            raise osv.except_osv(_('Error!'), _('No pickings to put in a \
+                                                 wave'))

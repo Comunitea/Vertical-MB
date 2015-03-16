@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <report 
-            string="Picking Report" 
+            string="Warehouse Task Report" 
             id="action_report_task_picking" 
             model="stock.picking" 
             report_type="qweb-pdf"

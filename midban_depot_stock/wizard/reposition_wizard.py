@@ -124,7 +124,7 @@ class reposition_wizard(osv.TransientModel):
         obj = self.browse(cr, uid, ids[0], context=context)
         if not prod.picking_location_id:
             raise osv.except_osv(_('Error!'), _('Not picking location.'))
-        pick_loc_obj = obj.picking_location_id
+        pick_loc_obj = prod.picking_location_id
         reposition_task_type_id = obj.warehouse_id.reposition_type_id.id
         storage_loc_id = pick_loc_obj.get_general_zone('storage')
         picking_loc_id = pick_loc_obj.get_general_zone('picking')
@@ -243,7 +243,7 @@ class reposition_wizard(osv.TransientModel):
             context = {}
         prod_obj = self.pool.get('product.product')
         pick_id = False
-        obj = self.browse(cr, uid, ids[0], context=context)
+        # obj = self.browse(cr, uid, ids[0], context=context)
         prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
                                               dest_id)], context=context,
                                    limit=1)
@@ -251,7 +251,7 @@ class reposition_wizard(osv.TransientModel):
             product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
             if not product.picking_location_id:
                 raise osv.except_osv(_('Error!'), _('Not picking location.'))
-            pick_loc_obj = obj.picking_location_id
+            pick_loc_obj = product.picking_location_id
             storage_id = pick_loc_obj.get_general_zone('storage')
             t_quant = self.pool.get('stock.quant')
             domain = [

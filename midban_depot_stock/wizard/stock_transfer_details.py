@@ -109,7 +109,8 @@ class stock_transfer_details(models.TransientModel):
         sorted_locs = sorted(locs, key=lambda l: l.name)
         index = sorted_locs.index(prod_obj.picking_location_id)
         new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
-        return sorted_locs[new_index].id
+        free_loc_ids.remove(prod_obj.picking_location_id.id)
+        return sorted_locs[new_index]
 
     def get_max_qty_to_process(self, r_qty, product):
         """
@@ -161,7 +162,7 @@ class stock_transfer_details(models.TransientModel):
         if not product.picking_location_id:
             raise except_orm(_('Error!'), _('Not picking location.'))
         pick_loc = product.picking_location_id
-        loc_id = False
+        loc_obj = False
         prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
         stop = False
         while prop_qty and not stop:
@@ -169,19 +170,29 @@ class stock_transfer_details(models.TransientModel):
             domain = []
             if pack == 'units' or \
                     self._is_picking_loc_available(product, prop_qty, pack):
-                loc_id = pick_loc.id  # Return picking loc id
+                loc_obj = pick_loc  # Return picking loc id
                 stop = True
             elif pack == 'palet':
                 vol_palet = self._get_volume_for(pack, prop_qty, product)
-                domain = [('available_volume', '>', vol_palet),
-                          ('storage_type', '=', 'standard')]
+                # domain = [('available_volume', '>', vol_palet),
+                #           ('storage_type', '=', 'standard')]
+                # storage_loc_ids = \
+                #     pick_loc.get_locations_by_zone('storage',
+                #                                    add_domain=domain)
+                # Comentado por problemas de rendimiento con muchas ubicaciones
                 storage_loc_ids = \
-                    pick_loc.get_locations_by_zone('storage',
-                                                   add_domain=domain)
+                    pick_loc.get_locations_by_zone('storage')
                 if storage_loc_ids:
-                    loc_id = \
-                        self._search_closest_pick_location(product,
-                                                           storage_loc_ids)
+                    ctl = True
+                    while ctl:
+                        loc_obj = \
+                            self._search_closest_pick_location(product,
+                                                               storage_loc_ids)
+                        if loc_obj.available_volume > vol_palet:
+                            ctl = False
+                        else:
+                            storage_loc_ids.remove(loc_obj.id)
+
                     stop = True
                 else:
                     mantle_units = product.un_ca * product.ca_ma
@@ -197,11 +208,18 @@ class stock_transfer_details(models.TransientModel):
                     pick_loc.get_locations_by_zone('storage',
                                                    add_domain=domain)
                 if storage_loc_ids:
-                    loc_id = \
-                        self._search_closest_pick_location(product,
-                                                           storage_loc_ids)
+                    ctl = True
+                    while ctl:
+                        loc_obj = \
+                            self._search_closest_pick_location(product,
+                                                               storage_loc_ids)
+
+                        if loc_obj.available_volume > vol_box:
+                            ctl = False
+                        else:
+                            storage_loc_ids.remove(loc_obj.id)
                 stop = True
-        return [loc_id, prop_qty, pack]
+        return [loc_obj and loc_obj.id or False, prop_qty, pack]
 
     def _create_pack_operation(self, item, loc_id, located_qty, pack):
         t_pack = self.env['stock.quant.package']
