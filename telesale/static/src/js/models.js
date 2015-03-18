@@ -35,7 +35,7 @@ function openerp_ts_models(instance, module){
             this.db = new module.TS_LS();                       // a database used to store the products and categories
             this.db.clear('products','partners');
             // this.debug = jQuery.deparam(jQuery.param.querystring()).debug !== undefined;
-
+            this.ts_widget = attributes.ts_widget;
             this.set({
                 'currency': {symbol: $, position: 'after'},
                 'shop':                 null,
@@ -69,7 +69,7 @@ function openerp_ts_models(instance, module){
             // when all the data has loaded, we compute some stuff, and declare the Ts ready to be used. 
             $.when(this.load_server_data())
                 .done(function(){
-                    self.get_products_by_partner();
+                   /* self.get_products_by_partner();*/
                     self.log_loaded_data(); //Uncomment if you want to log the data to the console for easier debugging
                     self.check_dates();
                     
@@ -108,6 +108,8 @@ function openerp_ts_models(instance, module){
         },
         // helper function to load data from the server
         fetch: function(model, fields, domain, ctx){
+            this._load_progress = (this._load_progress || 0) + 0.05; 
+            this.ts_widget.loading_message(_t('Loading')+' '+model,this._load_progress);
             return new instance.web.Model(model).query(fields).filter(domain).context(ctx).all()
         },
          // helper function to load last_

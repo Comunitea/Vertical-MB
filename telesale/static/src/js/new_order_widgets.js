@@ -177,13 +177,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-total').change(_.bind(this.set_value, this, 'total'));
 
            //autocomplete products and units from array of names
-            var products_ref = this.ts_model.get('visible_products')[this.ts_model.db.partner_name_id[this.order.get('partner')]][1]
+            //var products_ref = this.ts_model.get('visible_products')[this.ts_model.db.partner_name_id[this.order.get('partner')]][1]
+            var products_ref = this.ts_model.get('products_codes')
             // console.log ("PARTNER PRODUCT CODES: " + this.order.get('partner') + " = " + products_ref)
             this.$('.col-code').autocomplete({
                 source: products_ref,
             });
-            var product_names = this.ts_model.get('visible_products')[this.ts_model.db.partner_name_id[this.order.get('partner')]][0]
-            // console.log ("PRODUCTS PARTNER: " + this.order.get('partner') + " = " + product_names)
+            var product_names = this.ts_model.get('products_names')
+            console.log ("PRODUCTS PARTNER: " + this.order.get('partner') + " = " + product_names)
             this.$('.col-product').autocomplete({
                 // source: this.ts_model.get('products_names'),
                 source: product_names,

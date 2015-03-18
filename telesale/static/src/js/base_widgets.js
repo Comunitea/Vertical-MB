@@ -30,9 +30,8 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
         template: 'TsWidget',
         init: function() {
             this._super(arguments[0],{});
-            instance.web.blockUI(); 
-
-            this.ts_model = new module.TsModel(this.session)
+/*            instance.web.blockUI(); 
+*/          this.ts_model = new module.TsModel(this.session,{ts_widget:this});
             this.ts_widget = this; //So that Tswidget's childs have ts_widget set automatically
         },
 
@@ -48,12 +47,13 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
 
                 // self.button_block_selector.set_default_block(); // set principal block of widgets
                 self.screen_selector.set_default_screen(); // set principal screen
-                instance.web.unblockUI();
-                self.$('.loader').animate({opacity:0},1500,'swing',function(){self.$('.loader').hide();});
+/*                instance.web.unblockUI();
+*/                self.$('.loader').animate({opacity:0},1500,'swing',function(){self.$('.loader').hide();});
                 self.add_shortkey_events();
                 self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr()); // get call list for current date
                 // self.ts_model.get('selectedOrder').bind('change', self.$("#partner").focus(), self)
-                self.$("#partner").focus();
+/*                self.$('.loader').animate({opacity:0},1500,'swing',function(){self.$('.loader').addClass('oe_hidden');});
+*/                self.$("#partner").focus();
 
 
             }).fail(function(){   // error when loading models data from the backend
@@ -357,6 +357,17 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 self.$('.selected-order button')[0].focus();
             });
 
+        },
+        loading_progress: function(fac){
+            this.$('.loader .loader-feedback').removeClass('oe_hidden');
+            this.$('.loader .progress').css({'width': ''+Math.floor(fac*100)+'%'});
+        },
+        loading_message: function(msg,progress){
+            this.$('.loader .loader-feedback').removeClass('oe_hidden');
+            this.$('.loader .message').text(msg);
+            if(typeof progress !== 'undefined'){
+                this.loading_progress(progress);
+            }
         },
         // Close funnctions. Returns to start session client action of TS menu
         try_close: function() {
