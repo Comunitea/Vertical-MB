@@ -45,6 +45,7 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
         renderElement: function() {
             var self=this;
             this._super();
+            console.log("render line")
             // this.$el.click(function(){self.show_product_info();});
             this.$('.show-product').click(_.bind(this.show_product_info, this));
             this.$('.add-product').click(_.bind(this.add_product_to_order, this));
@@ -56,7 +57,10 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
         init: function(parent, options) {
             var self = this;
             this._super(parent,options);
-            this.ts_model.get('products').bind('reset', function(){
+            /*this.ts_model.get('products').bind('reset', function(){
+                self.renderElement();
+            });*/
+            this.ts_model.bind('change:update_catalog', function(){
                 self.renderElement();
             });
             this.ts_model.bind('change:selectedOrder', this.change_selected_order, this);
@@ -85,6 +89,7 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
                     self.ts_model.set('products_names', [])
                     self.ts_model.set('products_codes', [])
                     for (key in result){
+                        console.log("catalogo para ")
                         var product_obj = self.ts_model.db.get_product_by_id(result[key])
                         if (product_obj){
                             products_list.push(product_obj);
@@ -121,7 +126,12 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             }
             this.line_widgets = []; 
             var products = this.ts_model.get("products").models || [];
-            for (var i = 0, len = products.length; i < len; i++){
+            my_len = products.length;
+            console.log("render catalog")
+            if (my_len > 20){
+                my_len = 20
+            }
+            for (var i = 0, len = my_len; i < len; i++){
                 var product_obj = products[i].attributes;
                 var product_line = new module.ProductLineWidget(self, {product: product_obj})
                 this.line_widgets.push(product_line);

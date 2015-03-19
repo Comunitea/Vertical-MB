@@ -254,6 +254,14 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                     }else{
                         var products = self.search_customer_products(query,self.ts_model.get("product_search_string"));
                         self.ts_model.get('products').reset(products);
+                        var upd = self.ts_model.get('update_catalog')
+                        if (upd === 'a'){
+                            upd = 'b'
+                        }
+                        else{
+                            upd = 'a'
+                        }
+                        self.ts_model.set('update_catalog', upd)
                         // self.$('.search-clear').fadeIn();
                     }
                 }else{

@@ -60,6 +60,7 @@ function openerp_ts_models(instance, module){
                 'nbr_pending_operations': 0,
                 'visible_products': {},
                 'call_id': false,
+                'update_catalog': 'a'  //valu to detect changes between a and b to update the catalog only when click in label
             });
 
             this.get('orders').bind('remove', function(){ self.on_removed_order(); });
@@ -105,7 +106,7 @@ function openerp_ts_models(instance, module){
                     });
                 
             }*/
-            var partner_id = this.db.partner_name_id[key];
+            /*var partner_id = this.db.partner_name_id[key];
             var model = new instance.web.Model('res.partner');
             console.log("OBTENIENDO CATALOGO POR CLIENTE")
             partner_ids_list = []
@@ -117,7 +118,7 @@ function openerp_ts_models(instance, module){
                         self.get('visible_products')[key] = result[key]
                     }
                     console.log("Ya estac cargaaaaao")
-                });
+                });*/
         },
         // helper function to load data from the server
         fetch: function(model, fields, domain, ctx){

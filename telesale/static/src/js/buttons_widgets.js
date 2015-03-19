@@ -134,6 +134,14 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
                                                               self.setButtonSelected('button#button_oh');
                                                                 ; });
             this.$el.find('button#button_pc').click(function(){ self.select_screen('product_catalog');
+                                                                var upd = self.ts_model.get('update_catalog')
+                                                                if (upd === 'a'){
+                                                                    upd = 'b'
+                                                                }
+                                                                else{
+                                                                    upd = 'a'
+                                                                }
+                                                                self.ts_model.set('update_catalog', upd)
                                                               self.setButtonSelected('button#button_pc');
                                                              });
             this.$el.find('button#button_pr').click(function(){ self.select_screen('product_reserved');
