@@ -185,7 +185,7 @@ function openerp_ts_db(instance, module){
             //     res = this.get_partner_by_id(partner_obj.contact_id[0]);
             // else 
             //     res = partner_obj;
-            console.log(partner_obj.child_ids)
+            /*console.log(partner_obj.child_ids)*/
             for(var i = 0, len = partner_obj.child_ids.length; i < len; i++){
                 var contact = this.get_partner_by_id(partner_obj.child_ids[i]);
                 if (contact.type == 'contact'){

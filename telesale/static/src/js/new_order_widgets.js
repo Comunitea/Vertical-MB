@@ -19,8 +19,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order = options.order;
             this.order.bind('destroy',function(){ self.destroy(); });
             this.ts_model.bind('change:selectedOrder', _.bind( function(ts_model) {
-                self.selectedOrder = ts_model.get('selectedOrder');
-                self.selectedOrder.unbind('change:partner');
+/*                debugger;
+*/                self.selectedOrder = ts_model.get('selectedOrder');
+               /* self.selectedOrder.unbind('change:partner');*/ //comentado para que no destruya el bind de product catalog
                 self.selectedOrder.bind('change:partner', function(){ self.renderElement(); });
                 if (self.order === self.selectedOrder) {
                     self.setButtonSelected();

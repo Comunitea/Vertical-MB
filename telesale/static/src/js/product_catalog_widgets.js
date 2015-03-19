@@ -60,14 +60,17 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
                 self.renderElement();
             });
             this.ts_model.bind('change:selectedOrder', this.change_selected_order, this);
+            this.order_model = this.ts_model.get('selectedOrder');
             this.line_widgets = [];
             this.bind_order_events(); // SET this.order_model = this.ts_model.get('selectedOrder') and his widgets
         },
         bind_order_events: function(){
-            this.order_model = this.ts_model.get('selectedOrder');
-            this.order_model.bind('change:partner', this.search_products_to_sell, this);
+            console.log("bind_order_events")
+/*            debugger
+*/            this.order_model.bind('change:partner', this.search_products_to_sell, this);
         },
         search_products_to_sell: function(){
+            
             var self = this;
             var search_string = ""
             var customer_name = this.order_model.get('partner');
@@ -75,26 +78,36 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             var partner_id = this.ts_model.db.partner_name_id[customer_name];
             if (partner_id) {
                 var model = new instance.web.Model('res.partner');
+                console.log("SEARCH PRODUCTS TO SHELL")
                 model.call("search_products_to_sell",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
                 .then(function(result){
-                    console.log('result', result)
+                    console.log("PROCESANDO")
+                    self.ts_model.set('products_names', [])
+                    self.ts_model.set('products_codes', [])
                     for (key in result){
                         var product_obj = self.ts_model.db.get_product_by_id(result[key])
                         if (product_obj){
                             products_list.push(product_obj);
                             search_string += self.ts_model.db._product_search_string(product_obj)
+                            self.ts_model.get('products_names').push(product_obj.name);
+                            self.ts_model.get('products_codes').push(product_obj.default_code);
                             // console.log("product_obj", product_obj)
                             // var product_line = new module.ProductLineWidget(self, {product: product_obj})
                             // product_line.appendTo(self.$('.productlines'))
                         }
+                   
                     }
+                     console.log("PROCESADO")
                     self.ts_model.set('product_search_string', search_string)
                     self.ts_model.get('products').reset(products_list)
                 });
              }
         },
         change_selected_order: function() {
-            this.order_model.unbind('change:partner');
+            console.log("change_selected_order")
+/*            debugger
+*/            this.order_model.unbind('change:partner');
+            this.order_model = this.ts_model.get('selectedOrder');
             this.bind_order_events();
             // this.renderElement();
             this.search_products_to_sell();
@@ -102,7 +115,6 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
         renderElement: function () {
             var self = this;
             this._super();
-
             // free subwidgets  memory from previous renders
             for(var i = 0, len = this.line_widgets.length; i < len; i++){
                 this.line_widgets[i].destroy();

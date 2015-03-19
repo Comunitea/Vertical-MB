@@ -91,7 +91,7 @@ function openerp_ts_models(instance, module){
         },
         get_products_by_partner: function(){
             var self = this;
-            for (key in this.db.partner_name_id){
+            /*for (key in this.db.partner_name_id){
                 var partner_id = this.db.partner_name_id[key];
                 var model = new instance.web.Model('res.partner');
                 model.call("get_visibele_products_names",[partner_id],{context:new instance.web.CompoundContext()})
@@ -104,7 +104,20 @@ function openerp_ts_models(instance, module){
                         
                     });
                 
-            }
+            }*/
+            var partner_id = this.db.partner_name_id[key];
+            var model = new instance.web.Model('res.partner');
+            console.log("OBTENIENDO CATALOGO POR CLIENTE")
+            partner_ids_list = []
+            model.call("search_prod2shell_by_partner",[partner_ids_list],{context:new instance.web.CompoundContext()})
+                .then(function (result){
+                    console.log("EO cargaaaando")
+                    for (key in result){
+                        console.log("PARTNERID, PRODUCT_IDS", key, result)
+                        self.get('visible_products')[key] = result[key]
+                    }
+                    console.log("Ya estac cargaaaaao")
+                });
         },
         // helper function to load data from the server
         fetch: function(model, fields, domain, ctx){
@@ -151,27 +164,30 @@ function openerp_ts_models(instance, module){
                     }
                     
                     self.db.add_units(units);
-                    
-                     return self.fetch(
+                    console.log("0 CARGANDO PRODUCTOS") 
+                    return self.fetch(
                         'product.product', 
                         ['name','product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
                         [['sale_ok','=',true]]
                         // {pricelist: self.get('shop').pricelist_id[0]} // context for price
                     );
                 }).then(function(products){
-                    for (key in products){
+                    /*for (key in products){
                         self.get('products_names').push(products[key].name);
                         self.get('products_codes').push(products[key].default_code);
-                    }
+                    }*/
+                    console.log("1 PRODUCTOS CARGADOS")
                     self.db.add_products(products);
 
-                    return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id'], [['customer','=',true]])
+                    return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
+                    console.log("2 CLIENTES CARGADOS")
                     for (key in customers){
                         self.get('customer_names').push(customers[key].name);
                         self.get('customer_codes').push(customers[key].ref);
                     }
                     self.db.add_partners(customers);
+                    console.log("2 Nombres y códifos clientes cargados")
 
                     return self.fetch('account.tax', ['amount', 'price_include', 'type'], [['type_tax_use','=','sale']]);
                 }).then(function(taxes) {

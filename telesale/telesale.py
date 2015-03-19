@@ -45,6 +45,15 @@ class res_partner(osv.Model):
         else:
             return product_ids
 
+    def search_prod2shell_by_partner(self, cr, uid, ids, context=None):
+        if not ids:
+            ids = self.search(cr, uid, [('customer', '=', True),
+                                        ('state2', '=', 'registered')])
+        res = {}
+        for part in self.browse(cr, uid, ids):
+            res[part.id] = self.search_products_to_sell(cr, uid, part.id)
+        return res
+
     _columns = {
         'contact_id': fields.many2one('res.partner', 'Contact',
                                       domain=[('customer', '=', True)]),
