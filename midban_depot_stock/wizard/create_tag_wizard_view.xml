@@ -22,7 +22,7 @@
  -->                                    <field name="num_units"/>
                                     <field name="num_boxes"/>
                                     <field name="weight"/>
-                                    <field name="lot_id"/>
+                                    <field name="lot_id" domain="[('product_id','=?', product_id)]"/>
                                     <field name="removal_date"/>
                                 </tree>
                             </field>  
