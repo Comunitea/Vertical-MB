@@ -19,8 +19,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order = options.order;
             this.order.bind('destroy',function(){ self.destroy(); });
             this.ts_model.bind('change:selectedOrder', _.bind( function(ts_model) {
-/*                debugger;
-*/                self.selectedOrder = ts_model.get('selectedOrder');
+
+               self.selectedOrder = ts_model.get('selectedOrder');
                /* self.selectedOrder.unbind('change:partner');*/ //comentado para que no destruya el bind de product catalog
                 self.selectedOrder.bind('change:partner', function(){ self.renderElement(); });
                 if (self.order === self.selectedOrder) {
@@ -173,9 +173,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-code').blur(_.bind(this.set_value, this, 'code'));
             this.$('.col-product').blur(_.bind(this.set_value, this, 'product')); //porque con change no va??
             this.$('.col-unit').blur(_.bind(this.set_value, this, 'unit')); // con change no va???
+            this.$('.col-qnote').blur(_.bind(this.set_value, this, 'qnote')); // con change no va???
             this.$('.col-qty').change(_.bind(this.set_value, this, 'qty'));
             this.$('.col-pvp').change(_.bind(this.set_value, this, 'pvp'));
             this.$('.col-total').change(_.bind(this.set_value, this, 'total'));
+            this.$('.col-detail').change(_.bind(this.set_value, this, 'detail'));
 
            //autocomplete products and units from array of names
             //var products_ref = this.ts_model.get('visible_products')[this.ts_model.db.partner_name_id[this.order.get('partner')]][1]
@@ -192,6 +194,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             });
             this.$('.col-unit').autocomplete({
                 source:this.ts_model.get('units_names')
+            });
+            this.$('.col-qnote').autocomplete({
+                source:this.ts_model.get('qnotes_names')
             });
         },
         set_value: function(key) {
@@ -452,6 +457,23 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var qty = this.$('.col-qty').val() || 1;
                     var boxes = this.ts_model.convert_units_to_boxes(uom_obj, product_obj, qty);
                     this.model.set('boxes', boxes);
+                    break;
+                case "qnote":
+                    var qnote_id = this.ts_model.db.qnote_name_id[value]
+                    if (!qnote_id){
+                        alert(_t("Qnote name '" + value + "' does not exist"));
+                        this.model.set('qnote', "");
+                        this.refresh();
+                        break;
+                    }
+                    var qnote_obj = this.ts_model.db.get_qnote_by_id(qnote_id);
+                    this.model.set('qnote', qnote_obj.name);
+                    this.refresh();
+                    break;
+                case "detail":
+                    this.model.set('detail', value);
+                    this.refresh();
+                    break;
             }
         },
         refresh: function(){

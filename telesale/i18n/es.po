@@ -495,14 +495,14 @@ msgstr "Fecha Pedido:"
 #: code:addons/telesale/static/src/xml/summary_order_template.xml:41
 #, python-format
 msgid "Date Planned"
-msgstr "Fecha de entrega"
+msgstr "Entrega:"
 
 #. module: telesale
 #. openerp-web
 #: code:addons/telesale/static/src/xml/new_order_template.xml:191
 #, python-format
 msgid "Date Planned:"
-msgstr "Fecha de entrega:"
+msgstr "Entrega:"
 
 #. module: telesale
 #. openerp-web
@@ -524,7 +524,7 @@ msgstr "Fecha Factura:"
 #: code:addons/telesale/static/src/js/call_widgets.js:163
 #, python-format
 msgid "Date is empty. Please select one."
-msgstr "Date is empty. Please select one."
+msgstr "Fecha vacía, por favor seleccione una."
 
 #. module: telesale
 #. openerp-web

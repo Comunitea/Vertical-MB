@@ -168,6 +168,8 @@ class sale(osv.osv):
                     'pvp_ref': line['pvp_ref'],
                     'min_unit': product_obj.min_unit,
                     'choose_unit': choose_unit,
+                    'q_note': line.get('qnote', False),
+                    'detail_note': line.get('detail_note', False)
                 }
                 if order['erp_id'] and order['erp_state'] == 'draft':
                     domain = [('order_id', '=', order_id)]

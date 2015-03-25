@@ -8,7 +8,7 @@
 .telesale #pagespart {
     position: relative;
     width: 100%;
-    height: 2.6%;
+    height: 4%;
     color:gray;
     border-top: solid 1px #CECBCB;
     background: -moz-linear-gradient(#7A7A7A, #4D4D4D);
@@ -178,25 +178,34 @@
     font-weight: bold;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-code{
-    width: 20%;
+    width: 10%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-product{
-    width: 36%;
+    width: 35%;
 }
 
 .telesale  #leftpart .order-container .order-line-table th.header-unit{
-    width: 10%;
+    width: 5%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-qty{
-    width: 7%;
+    width: 5%;
 }.telesale  #leftpart .order-container .order-line-table th.header-pvp{
-    width: 7%;
+    width: 5%;
+}
+}.telesale  #leftpart .order-container .order-line-table th.header-disc{
+    width: 5%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-total{
-    width: 7%;
+    width: 5%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-temp{
-    width: 7%;
+    width: 5%;
+}
+.telesale  #leftpart .order-container .order-line-table th.header-qnote{
+    width: 10%;
+}
+.telesale  #leftpart .order-container .order-line-table th.header-deta{
+    width: 15%;
 }
 
 
@@ -220,24 +229,36 @@
 
 
 .telesale  #leftpart .order-container .order-line-table td.cell-code{
-    width: 20%;
+    width: 10%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-product{
-    width: 36%;
+    width: 35%;
 }
 
 .telesale  #leftpart .order-container .order-line-table td.cell-unit{
-    width: 10%;
+    width: 5%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-qty{
-    width: 7%;
+    width: 5%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-pvp{
-    width: 7%;
+    width: 5%;
+}
+.telesale  #leftpart .order-container .order-line-table td.cell-disc{
+    width: 5%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-total{
-    width: 7%;
+    width: 5%;
     text-align: right;
+}
+.telesale  #leftpart .order-container .order-line-table td.cell-tmp{
+    width: 5%;
+}
+.telesale  #leftpart .order-container .order-line-table td.cell-qnote{
+    width: 10%;
+}
+.telesale  #leftpart .order-container .order-line-table td.cell-deta{
+    width: 15%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-total input{
     text-align: right;
@@ -245,6 +266,7 @@
 .telesale  #leftpart .order-container .order-line-table td.cell-temp input{
     text-align: center;
 }
+
 
 .telesale #leftpart .selected{
     background: #8B0000; 

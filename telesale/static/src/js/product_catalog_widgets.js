@@ -70,8 +70,8 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
         },
         bind_order_events: function(){
             console.log("bind_order_events")
-/*            debugger
-*/            this.order_model.bind('change:partner', this.search_products_to_sell, this);
+
+            this.order_model.bind('change:partner', this.search_products_to_sell, this);
         },
         search_products_to_sell: function(){
             
@@ -110,8 +110,8 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
         },
         change_selected_order: function() {
             console.log("change_selected_order")
-/*            debugger
-*/            this.order_model.unbind('change:partner');
+
+            this.order_model.unbind('change:partner');
             this.order_model = this.ts_model.get('selectedOrder');
             this.bind_order_events();
             // this.renderElement();

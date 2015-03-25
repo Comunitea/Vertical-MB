@@ -1,2 +1,3 @@
 * Al darle a ALT+P(Nuevo pedido) debería ir a la pestaña de nuevo pedido, si no
   estás ya en ella no te enteras de que se ha creado una nueva ventana de pedido
+* El local storage debería poder gestionarse y borrarse.

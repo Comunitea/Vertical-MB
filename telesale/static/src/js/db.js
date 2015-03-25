@@ -26,6 +26,9 @@ function openerp_ts_db(instance, module){
             this.unit_by_id = {};
             this.unit_name_id = {};
             this.all_units = {};
+            this.qnote_by_id = {};
+            this.qnote_name_id = {};
+            this.all_qnotes = {};
         },
         
         /* loads a record store from the database. returns default if nothing is found */
@@ -100,6 +103,18 @@ function openerp_ts_db(instance, module){
                 this.unit_name_id[unit.name] = unit.id;
             }
             this.all_units = units
+        },
+        add_qnotes: function(qnotes){
+            if(!qnotes instanceof Array){
+                qnotes = [qnotes];
+            }
+            for(var i = 0, len = qnotes.length; i < len; i++){
+                var qnote = qnotes[i];
+
+                this.qnote_by_id[qnote.id] = qnote;
+                this.qnote_name_id[qnote.name] = qnote.id;
+            }
+            this.all_qnotes = qnotes
         },
         add_partners: function(partners){
             if(!partners instanceof Array){
@@ -198,7 +213,9 @@ function openerp_ts_db(instance, module){
         get_unit_by_id: function(id){
             return this.unit_by_id[id];
         },
-        
+        get_qnote_by_id: function(id){
+            return this.qnote_by_id[id];
+        },
         add_order: function(order){
             var last_id = this.load('last_order_id',0);
             var orders  = this.load('orders',[]);

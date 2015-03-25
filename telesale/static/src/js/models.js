@@ -53,6 +53,8 @@ function openerp_ts_models(instance, module){
                 'ts_config':            null,
                 'units':                [], // Array of units
                 'units_names':          [], // Array of units names
+                'qnotes':                [], // Array of qualitative note
+                'qnotes_names':          [], // Array of qualitative note names
                 'customer_names':          [], // Array of customer names
                 'customer_codes':          [], // Array of customer refs
                 'pricelist':            null,
@@ -60,7 +62,7 @@ function openerp_ts_models(instance, module){
                 'nbr_pending_operations': 0,
                 'visible_products': {},
                 'call_id': false,
-                'update_catalog': 'a'  //valu to detect changes between a and b to update the catalog only when click in label
+                'update_catalog': 'a'  //value to detect changes between a and b to update the catalog only when click in label
             });
 
             this.get('orders').bind('remove', function(){ self.on_removed_order(); });
@@ -203,6 +205,12 @@ function openerp_ts_models(instance, module){
                     return self.fetch('account.fiscal.position', ['name', 'tax_ids']);
                 }).then(function(fposition) {
                     self.db.add_fiscal_position(fposition);
+                    return self.fetch('qualitative.note', ['name', 'code']);
+                }).then(function(qnotes) {
+                    for (key in qnotes){
+                        self.get('qnotes_names').push(qnotes[key].code)
+                    }
+                    self.db.add_qnotes(qnotes);
                 })
 
             return loaded;
@@ -344,7 +352,9 @@ function openerp_ts_models(instance, module){
                                  margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class == "normal") ? ( (line.price_unit - prod_obj.cmc) / line.price_unit) : 0 ), 2),
                                  taxes_ids: line.tax_id || prod_obj.taxes_id || [],
                                  pvp_ref: line.pvp_ref,
-                                 boxes: this.convert_units_to_boxes(this.db.get_unit_by_id(line.product_uom[0]),prod_obj,line.product_uom_qty)
+                                 boxes: this.convert_units_to_boxes(this.db.get_unit_by_id(line.product_uom[0]),prod_obj,line.product_uom_qty),
+                                 qnote: line.q_note[1] || "",
+                                 detail: line.detail_note || "",
                                 }
                 var line = new module.Orderline(line_vals);
                 order_model.get('orderLines').add(line);
@@ -493,6 +503,8 @@ function openerp_ts_models(instance, module){
             code: '',
             product: '',
             unit: '',
+            qnote: '',
+            detail: '',
             qty: 1,
             pvp: 0,
             pvp_ref: 0, //in order to change the discount
@@ -539,16 +551,18 @@ function openerp_ts_models(instance, module){
         export_as_JSON: function() {
             var product_id = this.ts_model.db.product_name_id[this.get('product')];
             var unit_id = this.ts_model.db.unit_name_id[this.get('unit')];
+            var qnote_id = this.ts_model.db.qnote_name_id[this.get('qnote')];
             /*var product_obj = this.ts_model.db.product_by_id[product_id];
             var uom_obj = this.ts_model.db.unit_by_id[unit_id];*/
-
             return {
                 qty: this.get('qty'),
                 price_unit: this.get('pvp'),
                 product_id:  product_id,
                 product_uom: unit_id,
+                qnote: qnote_id,
                 tax_ids: this.get('taxes_ids'),
                 pvp_ref: this.get('pvp_ref'),
+                detail_note: this.get('detail') || "",
             };
         },
         get_price_without_tax: function(){
@@ -823,9 +837,8 @@ function openerp_ts_models(instance, module){
             // console.log(date_str);
             var self=this;
             var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done']]]
-            console.log("AAAAAAAAAAAA")
             var loaded = self.ts_model.fetch('sale.order.line',
-                                            ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp'],
+                                            ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
                                             domain
                                             )
                 .then(function(order_lines){
@@ -864,6 +877,8 @@ function openerp_ts_models(instance, module){
                                      taxes_ids: line.tax_id || product_obj.taxes_id || [],
                                      pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
                                      boxes: this.ts_model.convert_units_to_boxes(this.ts_model.db.get_unit_by_id(prod_obj.uom_id[0]),prod_obj,line.product_uom_qty),
+                                     qnote: line['q_note'][1] || "",
+                                     detail: line["detail_note"] || "",
                                     }
                     var line = new module.Orderline(line_vals);
                     this.get('orderLines').add(line);
@@ -879,7 +894,7 @@ function openerp_ts_models(instance, module){
                 .then(function(order){
                     // console.log(order)
                     return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp'],
+                                                ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
                                                 [
                                                     ['order_id', '=', order.id],  
                                                  ]);
