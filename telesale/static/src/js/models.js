@@ -335,7 +335,6 @@ function openerp_ts_models(instance, module){
             order_model.set('state', state);
             order_model.set('date_invoice', order_obj.date_invoice);
             order_model.set('date_planned', order_obj.date_planned);
-            order_model.set('date_planned', order_obj.date_order);
             order_model.set('num_order',order_obj.name);
             for (key in order_lines){
                 var line = order_lines[key];

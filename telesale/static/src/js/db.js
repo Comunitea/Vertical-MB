@@ -112,7 +112,7 @@ function openerp_ts_db(instance, module){
                 var qnote = qnotes[i];
 
                 this.qnote_by_id[qnote.id] = qnote;
-                this.qnote_name_id[qnote.name] = qnote.id;
+                this.qnote_name_id[qnote.code] = qnote.id;
             }
             this.all_qnotes = qnotes
         },

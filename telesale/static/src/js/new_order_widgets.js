@@ -278,7 +278,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                     result.value.price_unit = 0;
                                 }
                                 self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? result.value.price_unit : 0,2 ));
-                                self.model.set('pvp', my_round(result.value.price_unit || 0,2));
+                                self.model.set('pvp', my_round( (product_obj.product_class == "normal") ? (result.value.price_unit || 0) : (result.value.last_price_fresh || 0), 2));
                                 self.model.set('total', my_round(result.value.price_unit || 0,2));
                                 self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
                                 if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
@@ -467,7 +467,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         break;
                     }
                     var qnote_obj = this.ts_model.db.get_qnote_by_id(qnote_id);
-                    this.model.set('qnote', qnote_obj.name);
+                    this.model.set('qnote', qnote_obj.code);
                     this.refresh();
                     break;
                 case "detail":
@@ -734,6 +734,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){
                     var product_obj = self.ts_model.db.get_product_by_id(product_id)
+/*                    debugger;*/
                     if (product_obj.product_class == 'normal'){
                         self.sum_cmc += product_obj.cmc * line.get('qty');
                         self.sum_box += line.get('boxes');
@@ -747,7 +748,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                        
                     }
                     else{
-                        self.sum_fresh += line.get('fresh_price');
+                        self.sum_fresh += line.get_price_without_tax('total');
                     }
                 }
             }, this));

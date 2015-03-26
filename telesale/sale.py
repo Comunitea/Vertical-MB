@@ -22,6 +22,7 @@ from openerp.osv import fields, osv
 from openerp import netsvc
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+import time
 
 
 class sale(osv.osv):
@@ -108,13 +109,14 @@ class sale(osv.osv):
                 'chanel': 'telesale',
                 'order_policy': 'picking',
                 'date_invoice': order['date_invoice'] or False,
-                'date_order': order['date_order'] or False,
+                'date_order': time.strftime("%Y-%m-%d %H:%M:%S"),
                 'date_planned':
                 order['date_planned'] and order['date_planned'] + " 22:59:59"
                 or False,
                 'note': order['note'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
             }
+            import ipdb; ipdb.set_trace()
             if order['erp_id'] and order['erp_state'] == 'draft':
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)
                 if order['note'] and (order_obj.note != order['note']):
