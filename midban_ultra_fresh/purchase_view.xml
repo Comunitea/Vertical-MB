@@ -3,8 +3,8 @@
 <openerp>
     <data>
         <!-- Overwrite to add ultrafresh check and display correctly the name of picking type id-->
-        <record id="ultrafres_purchase_order_form" model="ir.ui.view">
-            <field name="name">ultrafres.purchase.order.form</field>
+        <record id="ultrafresh_purchase_order_form" model="ir.ui.view">
+            <field name="name">ultrafresh.purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
