@@ -8,3 +8,4 @@ access_stock_vehicle_manager,access_stock_vehicle_manager,model_stock_vehicle,mi
 access_wave_report,access_wave_report,model_wave_report,base.group_user,1,1,1,1
 access_out_picking_report,access_out_picking_report,model_out_picking_report,base.group_user,1,1,1,1
 access_tag,access_tag,model_tag,base.group_user,1,1,1,1
+access_route_zip,access_route_zip,model_route_zip,base.group_user,1,1,1,1

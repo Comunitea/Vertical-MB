@@ -9,9 +9,11 @@
                 <tree string="Transport Routes">
                     <field name="code"/>
                     <field name="name"/>
-                    <field name="vehicle_id"/>
+                   <!--  <field name="vehicle_id"/> -->
+                    <field name="day_id"/>
+                    <field name="comercial_id"/>
+                     <field name="type"/>
                     <field name="state"/>
-                    <field name="next_dc"/>
                 </tree>
             </field>
         </record>
@@ -26,18 +28,42 @@
                         <field name="state" widget="statusbar" nolabel="1"/>
                     </header>
                     <sheet>
-                        <group>
+                        <group string="Route Info">
                             <field name="code"/>
                             <field name="name"/>
-                            <field name="vehicle_id"/>
-                            <field name="next_dc"/>
-                            <button name="reset_drop_code" type="object" string="Reset" class="oe_link oe_inline" states="active" groups="midban_depot_stock.transport_routes_manager"/>
+                           <!--  <field name="vehicle_id"/> -->
+                            <field name="day_id"/>
+                            <field name="type"/>
+                            <field name="comercial_id"/>
+                            <field name="next_dc" class="oe_line"/>
+                            <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/>
+                            <group string="Zip Codes" colspan="4">
+                                <field name="zip_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
+                            </group>
                         </group>
-                        <group string="Route Days">
+                        <!-- <group string="Route Days">
                             <field name="route_days_ids" widget="many2many_checkboxes" nolabel="1"/>
-                        </group>
+                        </group> -->
                     </sheet>
                 </form>
+            </field>
+        </record>
+        <record id="route_view_search" model="ir.ui.view">
+            <field name="name">route.view.search</field>
+            <field name="model">route</field>
+            <field name="arch" type="xml">
+                <search string="Search Route">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="day_id"/>
+                    <field name="comercial_id"/>
+                    <group expand="1" string="Group By...">
+                        <filter string="Day" domain="[]" context="{'group_by': 'day_id'}"/>
+                        <filter string="Comercial" domain="[]" context="{'group_by': 'comercial_id'}"/>
+                        <filter string="Type" domain="[]" context="{'group_by': 'type'}"/>
+                    </group>
+                </search>
             </field>
         </record>
         <record id="action_route" model="ir.actions.act_window">
@@ -53,7 +79,7 @@
             </field>
         </record>
 
-        <menuitem action="action_route" id="menu_routes_sales_order" name="Transport Routes" sequence="2" parent="menu_stock_vehicle_route_mgmt"/>
+        <menuitem action="action_route" id="menu_routes_sales_order" name="Rutery" sequence="2" parent="menu_stock_vehicle_route_mgmt"/>
 
 
     </data>
