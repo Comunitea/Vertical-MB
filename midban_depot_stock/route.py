@@ -169,6 +169,17 @@ class route(models.Model):
     def reset_drop_code(self):
         self.next_dc = 1
 
+    @api.one
+    def get_last_pending_date(self):
+        domain = [
+            ('route_id', '=', self.id),
+            ('state', '=', 'pending'),
+        ]
+        last_pending = self.env['route.detail'].search(domain,
+                                                       order="date desc",
+                                                       limit=1)
+        return last_pending and last_pending.date or "1988-02-15"
+
 
 class route_detail(models.Model):
     _name = 'route.detail'

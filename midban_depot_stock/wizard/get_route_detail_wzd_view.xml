@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="get_route_detail_wzd_form_view" model="ir.ui.view">
+            <field name="name">get_route_detail_wzd_form_view</field>
+            <field name="model">get.route.detail.wzd</field>
+            <field name="arch" type="xml">
+                <form>
+                    <head>
+                        
+                    </head>
+                    <sheet>
+                        <p>This wizard will generate de detailed routes for the selected routes.
+                           If no dates in the lines the wizard will use the globals dates 
+                        </p>
+                        <group colspan="4">
+                            <group col="2">
+                                <field name="start_date"/>
+                            </group>
+                            <group col="2">
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                        <group string="Selected routes">
+                            <field name="item_ids" nolabel="1">
+                                <tree editable="top">
+                                    <field name="route_id"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="last_pending_date"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_get_route_details_wizard"
+            name="Generate Deatail Routes"
+            key2="client_action_multi"
+            src_model="route"
+            res_model="get.route.detail.wzd"
+            view_mode="form"
+            view_type="form"
+            target="new"
+            groups="midban_depot_stock.transport_routes_manager"/>
+    </data>
+</openerp>
