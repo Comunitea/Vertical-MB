@@ -19,8 +19,29 @@
 #
 ##############################################################################
 from openerp.osv import osv, fields
-from openerp import api
 from openerp.tools.translate import _
+from openerp import models, fields as fields2, api
+
+
+class partnerRoute(models.Model):
+    _name = 'partner.route'
+    _rec_name = 'route_id'
+
+    partner_id = fields2.Many2one('res.parter', 'Customer')
+    regularity = fields2.Selection([('daily', 'Daily'),
+                                    ('weekly', 'Weekly'),
+                                    ('bimonthly', 'Bimonthly'),
+                                    ('monthly', 'Monthly')], 'Regularity')
+    last_date = fields2.Date('Last Date')
+    next_date = fields2.Date('Next Date')
+    route_id = fields2.Many2one('route', 'Route')
+
+
+class resPartner(models.Model):
+    _inherit = 'res.partner'
+
+    route_ids = fields2.One2many('partner.route', 'partner_id',
+                                 'Assigned Routes')
 
 
 class res_partner(osv.Model):

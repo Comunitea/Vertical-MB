@@ -13,7 +13,24 @@
                     <field name="reposition_mac_id" attrs="{'invisible': [('operator','=',False)]}"/>
                     <field name="picking_mac_id" attrs="{'invisible': [('operator','=',False)]}"/>
                 </field>
+
+                <notebook position="inside">
+                  <page string="Routes">
+                    <group string="Asigned Routes">
+                        <field name="route_ids" nolabel="1">
+                            <tree string="Asigned Routes">
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="day_id"/>
+                                <field name="type"/>
+                            </tree>
+                        </field>
+                    </group>
+                  </page>
+               </notebook>
+
             </field>
+
         </record>
     </data>
 </openerp>

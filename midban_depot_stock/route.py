@@ -61,10 +61,11 @@ class route(models.Model):
                             ('ways', 'Ways'),
                             ('other', 'Other')], 'Type', required=True,
                             default='comercial')
-    comercial_id = fields.Many2one('res.users', 'Comercial', required=True)
+    comercial_id = fields.Many2one('res.users', 'Comercial')
     zip_ids = fields.Many2many('route.zip', 'route_zip_codes_rel',
                                'route_id', 'route_zip_id', 'Zip codes',
                                required=True)
+    detail_ids = fields.One2many('route.detail', 'route_id')
 
     @api.onchange('zip_ids')
     @api.multi
@@ -165,3 +166,48 @@ class route(models.Model):
     @api.multi
     def reset_drop_code(self):
         self.next_dc = 1
+
+
+class route_detail(models.Model):
+    _name = 'route.detail'
+    _description = "Detail for a route of one day"
+    _rec_name = 'route_id'
+
+    route_id = fields.Many2one('route', 'Route')
+    date = fields.Date('Date')
+    state = fields.Selection([('pending', 'Pending'),
+                              ('on_course', 'On course'),
+                              ('cancelled', 'Cancelled'),
+                              ('closed', 'Closed')],
+                             string="State",
+                             default='pending')
+    customer_ids = fields.One2many('customer.list', 'detail_id',
+                                   'Customer List')
+
+    @api.multi
+    def set_cancelled(self):
+        self.state = 'cancelled'
+
+    @api.multi
+    def set_closed(self):
+        self.state = 'closed'
+
+    @api.multi
+    def set_pending(self):
+        self.state = 'pending'
+
+
+class customer_list(models.Model):
+    _name = 'customer.list'
+    _description = "Order of customer to visit"
+    _rec_name = 'sequence'
+
+    detail_id = fields.Many2one('route.detail', 'Detail')
+    sequence = fields.Integer('Order')
+    customer_id = fields.Many2one('res.partner', 'Customer',
+                                  domain=[('customer', '=', True)],
+                                  required=True)
+    result = fields.Selection([('pending', 'Pending'),
+                               ('sale_done', 'Sale done')],
+                              string="result",
+                              default='pending')

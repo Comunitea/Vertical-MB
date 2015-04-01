@@ -16,7 +16,7 @@
                         </group>
                         <group>
                             <field name="location_ids" domain="[('camera', '=', True)]" widget="many2many_tags"/>
-                            <field name="trans_route_id"/>
+                            <field name="trans_route_id" domain="[('type', '=', 'delivery')]"/>
                             <field name="date_planned"/>
                         </group>
                     </group>

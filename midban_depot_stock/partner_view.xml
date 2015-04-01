@@ -10,6 +10,20 @@
                 <field name="invoice_method"  position="before">
                     <field name="trans_route_id"/>
                 </field>
+                <notebook position="inside">
+                    <page string="Assigned Routes" attrs="{'invisible': [('customer','=', False)]}">
+                        <group string="Assigned Routes">
+                            <field name="route_ids" nolabel="1">
+                                <tree editable="top">
+                                    <field name="route_id"/>
+                                    <field name="regularity"/>
+                                    <field name="last_date"/>
+                                    <field name="next_date"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </notebook>
             </field>
         </record>
     </data>

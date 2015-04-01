@@ -25,10 +25,10 @@
                     <header>
                         <button name="set_active" type="object" string="Active" icon="gtk-ok" states="draft" class="oe_highlight" groups="midban_depot_stock.transport_routes_manager"/>
                         <button name="set_draft" type="object" string="Return Draft" icon="gtk-ok" states="active" groups="midban_depot_stock.transport_routes_manager"/>
-                        <field name="state" widget="statusbar" nolabel="1"/>
+                        <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
-                        <group string="Route Info">
+                        <group string="Route Info" colspan="2">
                             <field name="code"/>
                             <field name="name"/>
                            <!--  <field name="vehicle_id"/> -->
@@ -37,9 +37,41 @@
                             <field name="comercial_id"/>
                             <field name="next_dc" class="oe_line"/>
                             <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/>
-                            <group string="Zip Codes" colspan="4">
+                            <group string="Zip Codes" colspan="2">
                                 <field name="zip_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
                             </group>
+                        </group>
+                        <group string="Route details" colspan="4">
+                                <field name="detail_ids" nolabel="1">
+                                    <tree string="Route Details">
+                                        <field name="date"/>
+                                        <field name="state"/>
+                                    </tree>
+                                    <form string="Route Detail">
+                                        <header>
+                                            <field name="state" widget="statusbar"/>
+                                            <button name="set_cancelled" type="object" string="Cancel" icon="gtk-ok" states="pending,on_course" groups="midban_depot_stock.transport_routes_manager"/>
+                                            <button name="set_closed" type="object" string="Close" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
+                                            <button name="set_pending" type="object" string="Back to Pending" icon="gtk-ok" states="cancelled,closed" groups="midban_depot_stock.transport_routes_manager"/>
+                                        </header>
+                                        <sheet>
+                                            <group string="Route Details">
+                                                <field name="date"/>
+                                                
+                                            </group>
+                                            <group string="Customer List">
+                                                <field name="customer_ids" nolabel="1">
+                                                    <tree editable="top">
+                                                        <field name="sequence"/>
+                                                        <field name="customer_id"/>
+                                                        <field name="result"/>
+                                                    </tree>
+                                                </field>
+                                            </group>
+                                        </sheet>
+
+                                    </form>
+                                </field>
                         </group>
                         <!-- <group string="Route Days">
                             <field name="route_days_ids" widget="many2many_checkboxes" nolabel="1"/>

@@ -27,15 +27,17 @@ class stock_picking_in(osv.osv):
         'operator': fields.boolean('Operator'),
         # 'frozen_operator': fields.boolean('Frozen Operator'),
         'location_mac_id': fields.many2one('stock.machine', 'Location Machine',
-                                           domain=
-                                           [('type', '=', 'retractil')]),
+                                           domain=[('type', '=',
+                                                    'retractil')]),
         'reposition_mac_id': fields.many2one('stock.machine',
                                              'Reposition Machine',
-                                             domain=
-                                             [('type', '=', 'retractil')]),
+                                             domain=[('type', '=',
+                                                      'retractil')]),
         'picking_mac_id': fields.many2one('stock.machine', 'Picking Machine',
-                                          domain=
-                                          ['|',
-                                           ('type', '=', 'transpalet'),
-                                           ('type', '=', 'prep_order')])
+                                          domain=['|',
+                                                  ('type', '=', 'transpalet'),
+                                                  ('type', '=',
+                                                   'prep_order')]),
+        'route_ids': fields.one2many('route', 'comercial_id',
+                                     "Assigned routes")
     }
