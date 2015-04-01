@@ -11,4 +11,4 @@ access_tag,access_tag,model_tag,base.group_user,1,1,1,1
 access_route_zip,access_route_zip,model_route_zip,base.group_user,1,1,1,1
 access_route_detail,access_route_detail,model_route_detail,base.group_user,1,1,1,1
 access_customer_list,access_customer_list,model_customer_list,base.group_user,1,1,1,1
-access_partner_route,access_partner_route,model_partner_route,base.group_user,1,1,1,1
+access_partner_route_info,access_partner_route_info,model_partner_route_info,base.group_user,1,1,1,1

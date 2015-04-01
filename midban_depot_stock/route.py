@@ -66,6 +66,8 @@ class route(models.Model):
                                'route_id', 'route_zip_id', 'Zip codes',
                                required=True)
     detail_ids = fields.One2many('route.detail', 'route_id')
+    partner_ids = fields.One2many('partner.route.info', 'route_id',
+                                  'Customers')
 
     @api.onchange('zip_ids')
     @api.multi

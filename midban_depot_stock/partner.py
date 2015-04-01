@@ -23,11 +23,13 @@ from openerp.tools.translate import _
 from openerp import models, fields as fields2, api
 
 
-class partnerRoute(models.Model):
-    _name = 'partner.route'
+class partner_route_info(models.Model):
+    _name = 'partner.route.info'
     _rec_name = 'route_id'
 
-    partner_id = fields2.Many2one('res.parter', 'Customer')
+    sequence = fields2.Integer('Order')
+    partner_id = fields2.Many2one('res.partner', 'Customer',
+                                  domain=[('customer', '=', True)])
     regularity = fields2.Selection([('daily', 'Daily'),
                                     ('weekly', 'Weekly'),
                                     ('bimonthly', 'Bimonthly'),
@@ -40,8 +42,8 @@ class partnerRoute(models.Model):
 class resPartner(models.Model):
     _inherit = 'res.partner'
 
-    route_ids = fields2.One2many('partner.route', 'partner_id',
-                                 'Assigned Routes')
+    route_part_ids = fields2.One2many('partner.route.info', 'partner_id',
+                                      'Assigned Routes')
 
 
 class res_partner(osv.Model):

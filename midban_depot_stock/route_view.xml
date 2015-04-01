@@ -73,6 +73,17 @@
                                     </form>
                                 </field>
                         </group>
+                        <group string="Assigned Customers">
+                                                <field name="partner_ids" nolabel="1">
+                                                    <tree editable="top">
+                                                         <field name="sequence"/>
+                                                        <field name="partner_id"/>
+                                                        <field name="regularity"/>
+                                                        <field name="last_date"/>
+                                                        <field name="next_date"/>
+                                                    </tree>
+                                                </field>
+                                            </group>
                         <!-- <group string="Route Days">
                             <field name="route_days_ids" widget="many2many_checkboxes" nolabel="1"/>
                         </group> -->

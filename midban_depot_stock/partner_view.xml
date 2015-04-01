@@ -13,7 +13,7 @@
                 <notebook position="inside">
                     <page string="Assigned Routes" attrs="{'invisible': [('customer','=', False)]}">
                         <group string="Assigned Routes">
-                            <field name="route_ids" nolabel="1">
+                            <field name="route_part_ids" nolabel="1">
                                 <tree editable="top">
                                     <field name="route_id"/>
                                     <field name="regularity"/>
