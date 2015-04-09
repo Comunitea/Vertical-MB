@@ -19,8 +19,8 @@
 #
 ##############################################################################
 from openerp import models, fields, api
-# from openerp.exceptions import except_orm
-# from openerp.tools.translate import _
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
 
 
 class get_route_detail_wzd(models.TransientModel):
@@ -34,8 +34,8 @@ class get_route_detail_wzd(models.TransientModel):
     @api.model
     def default_get(self, fields_list):
         """
-        Ensure default value of computed field `product_qty` is not set
-        as it would raise an error
+        Get marked routes and his last pending date to show loaded in the
+        wizard of create detailed routes.
         """
         res = super(get_route_detail_wzd, self).default_get(fields_list)
         active_ids = self.env.context.get('active_ids')
@@ -52,6 +52,23 @@ class get_route_detail_wzd(models.TransientModel):
                 created_items_ids.append(item_obj.id)
             res.update({'item_ids': created_items_ids})
         return res
+
+    @api.multi
+    def create_route_details(self):
+        """
+        Create deatils of routes based on the wizard dates and the regularity
+        defined in the customers.
+        """
+        if not self.item_ids:
+            raise except_orm(_('Error'), _('No routes to shedule.'))
+        start_date = self.start_date
+        end_date = self.end_date
+        for item in self.item_ids:
+            start_date = item.start_date and item.start_date or start_date
+            end_date = item.end_date and item.end_date or end_date
+            route = item.route_id
+            route.calc_route_details(start_date, end_date)
+        return
 
 
 class item_create_route(models.TransientModel):

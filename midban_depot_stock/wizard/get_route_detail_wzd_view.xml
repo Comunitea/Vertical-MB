@@ -32,6 +32,10 @@
                             </field>
                         </group>
                     </sheet>
+                    <footer>
+                        <button name="create_route_details" string="Create Details" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>

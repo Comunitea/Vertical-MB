@@ -21,6 +21,8 @@
 from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+from datetime import datetime
+from dateutil.rrule import *
 
 
 class route_zip(models.Model):
@@ -151,7 +153,7 @@ class route(models.Model):
                                              _('The zip code %s is already \
                                                assigned in the\
                                                route %s. Change it or you can \
-                                               can not save th \
+                                               can not save the \
                                                route' % (zip_c.code,
                                                          route_obj.code)))
         res = super(route, self).create(vals)
@@ -179,6 +181,38 @@ class route(models.Model):
                                                        order="date desc",
                                                        limit=1)
         return last_pending and last_pending.date or "1988-02-15"
+
+    @api.one
+    def calc_route_details(self, start_date, end_date):
+        # Check aquí mejor de las fechas, creo que si
+        dt_sta = datetime.strptime(start_date, "%Y-%m-%d")
+        dt_end = datetime.strptime(end_date, "%Y-%m-%d")
+        if not self.partner_ids:
+            raise except_orm(_('Error'),
+                             _('No customers assigned to the route'))
+        for p_info in self.partner_ids:
+            reg = p_info.regularity
+            interval = 1 if reg == '1_week' else (2 if reg == '2_week' else
+                                                  (3 if reg == '3_week' else
+                                                      (4 if reg == '4_week'
+                                                          else False)))
+            # import ipdb; ipdb.set_trace()
+            rrules = rrule(WEEKLY, interval=interval).between(dt_sta, dt_end,
+                                                              inc=True)
+            customer_dates = [datetime.strftime(x, "%Y-%m-%d") for x in rrules]
+            print "customer" + p_info.partner_id.name + " :"
+            print customer_dates
+            if not customer_dates:
+                raise except_orm(_('Error'),
+                                 _('Imposible to schedule dates between %s and \
+                                    %s with regularity of %s \
+                                    week(s)' % (start_date, end_date,
+                                                str(interval))))
+            # for date in customer_dates:
+            #     domain = [
+            #         ('date', '=', date),
+            #         ('route_id', '=' p_info.route_id.id)]
+            #     detail_objs = self.env['route.detail'].search(domain)
 
 
 class route_detail(models.Model):
