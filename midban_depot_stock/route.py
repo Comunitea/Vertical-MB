@@ -184,7 +184,7 @@ class route(models.Model):
 
     @api.one
     def calc_route_details(self, start_date, end_date):
-        # Check aquí mejor de las fechas, creo que si
+        # TODO Check aquí mejor de las fechas, creo que si
         dt_sta = datetime.strptime(start_date, "%Y-%m-%d")
         dt_end = datetime.strptime(end_date, "%Y-%m-%d")
         if not self.partner_ids:
@@ -196,37 +196,80 @@ class route(models.Model):
                                                   (3 if reg == '3_week' else
                                                       (4 if reg == '4_week'
                                                           else False)))
-            # import ipdb; ipdb.set_trace()
             rrules = rrule(WEEKLY, interval=interval).between(dt_sta, dt_end,
                                                               inc=True)
             customer_dates = [datetime.strftime(x, "%Y-%m-%d") for x in rrules]
-            print "customer" + p_info.partner_id.name + " :"
-            print customer_dates
             if not customer_dates:
                 raise except_orm(_('Error'),
                                  _('Imposible to schedule dates between %s and \
                                     %s with regularity of %s \
                                     week(s)' % (start_date, end_date,
                                                 str(interval))))
-            # for date in customer_dates:
-            #     domain = [
-            #         ('date', '=', date),
-            #         ('route_id', '=' p_info.route_id.id)]
-            #     detail_objs = self.env['route.detail'].search(domain)
+            for date in customer_dates:
+                domain = [
+                    ('date', '=', date),
+                    ('route_id', '=', p_info.route_id.id),
+                ]
+                detail_objs = self.env['route.detail'].search(domain)
+                # Create a detail for the date and add the customer to de list
+                if not detail_objs:
+                    vals = {
+                        'route_id': p_info.route_id.id,
+                        'date': date,
+                        'state': 'pending',
+                    }
+                    det_obj = self.env['route.detail'].create(vals)
+                    # Add customer to customer lists of detail
+                    vals = {
+                        'detail_id': det_obj.id,
+                        'sequence': p_info.sequence,
+                        'customer_id': p_info.partner_id.id,
+                        'result': 'pending'
+                    }
+                    self.env['customer.list'].create(vals)
+
+                # Detail obj already exists for the date, re-write it
+                else:
+                    if len(detail_objs) > 1:  # Bad situation
+                        raise except_orm(_('Error'),
+                                         _('2 details of same day for same \
+                                           route'))
+                    det_obj = detail_objs[0]
+                    if det_obj.state in ['done', 'on_course']:
+                        raise except_orm(_('Error'),
+                                         _('Can not re-schedule a route in %s \
+                                           state' % det_obj.state))
+                    # Put the existing detail to pending
+                    det_obj.write({'state': 'pending'})
+                    # Check if customer is already in customers lists
+                    domain = [('detail_id', '=', det_obj.id),
+                              ('customer_id', '=', p_info.partner_id.id)]
+                    cust_objs = self.env['customer.list'].search(domain)
+                    if cust_objs:
+                        cust_objs.unlink()  # Delete the customer list regiser
+                    # Create a customer list record for the detail
+                    vals = {
+                        'detail_id': det_obj.id,
+                        'sequence': p_info.sequence,
+                        'customer_id': p_info.partner_id.id
+                    }
+                    self.env['customer.list'].create(vals)
 
 
 class route_detail(models.Model):
     _name = 'route.detail'
     _description = "Detail for a route of one day"
     _rec_name = 'route_id'
+    _order = 'date'
 
-    route_id = fields.Many2one('route', 'Route')
-    date = fields.Date('Date')
+    route_id = fields.Many2one('route', 'Route', required=True)
+    date = fields.Date('Date', required=True)
     state = fields.Selection([('pending', 'Pending'),
                               ('on_course', 'On course'),
                               ('cancelled', 'Cancelled'),
                               ('closed', 'Closed')],
                              string="State",
+                             required=True,
                              default='pending')
     customer_ids = fields.One2many('customer.list', 'detail_id',
                                    'Customer List')
@@ -256,5 +299,4 @@ class customer_list(models.Model):
                                   required=True)
     result = fields.Selection([('pending', 'Pending'),
                                ('sale_done', 'Sale done')],
-                              string="result",
-                              default='pending')
+                              string="result")

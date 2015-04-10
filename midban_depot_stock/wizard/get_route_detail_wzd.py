@@ -30,6 +30,9 @@ class get_route_detail_wzd(models.TransientModel):
     end_date = fields.Date('End Date', default=fields.Date.today())
     item_ids = fields.One2many('item.create.route', 'wzd_id',
                                'Selected Routes')
+    delete = fields.Boolean('Delete Future',
+                            help='if checked will delete all details in the'
+                                 'future.')
 
     @api.model
     def default_get(self, fields_list):
@@ -67,7 +70,7 @@ class get_route_detail_wzd(models.TransientModel):
             start_date = item.start_date and item.start_date or start_date
             end_date = item.end_date and item.end_date or end_date
             route = item.route_id
-            route.calc_route_details(start_date, end_date)
+            route.calc_route_details(start_date, end_date, self.delete)
         return
 
 

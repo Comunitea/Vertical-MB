@@ -38,7 +38,7 @@ class partner_route_info(models.Model):
                                    default="1_week", required=True)
     last_date = fields2.Date('Last Date')
     next_date = fields2.Date('Next Date')
-    route_id = fields2.Many2one('route', 'Route')
+    route_id = fields2.Many2one('route', 'Route', required=True)
 
 
 class resPartner(models.Model):
