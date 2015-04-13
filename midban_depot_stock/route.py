@@ -375,7 +375,9 @@ class route_detail(models.Model):
     def name_get(self):
         res = []
         for detail in self:
-            name = detail.route_id.name + ", " + detail.date
+            date_split = detail.date.split('-')
+            date = date_split[2] + "-" + date_split[1] + "-" + date_split[0]
+            name = detail.route_id.name + ", " + date
             res.append((detail.id, name))
         return res
 

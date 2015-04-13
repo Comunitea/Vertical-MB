@@ -21,7 +21,9 @@
 from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
+import time
 # from datetime import datetime, timedelta
+from openerp.exceptions import except_orm
 
 
 class sale_order(osv.Model):
@@ -57,7 +59,7 @@ class sale_order(osv.Model):
                                          string='Route',
                                          type="many2one",
                                          relation="route"),
-        'route_detail_id': fields.many2one('route.detail', 'Detailed Route'),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
         'date_planned': fields.datetime('Scheduled Date', required=True,
                                         select=True,
                                         help="Date propaged to shecduled \
@@ -92,22 +94,29 @@ class sale_order(osv.Model):
 
         # Get next detail of a delivery route
         if not res['value'].get('route_detail_id', False):
-            for p_info in part.route_part_ids:
-                if p_info.route_id.type == 'delivery':
-                    if p_info.next_date:
-                        domain = [('date', '=', p_info.next_date)]
-                        detail_ids = detail_t.search(cr, uid, domain,
-                                                     context=context)
-                        res['value']['route_detail_id'] = \
-                            detail_ids and detail_ids[0] or False
-                        res['value']['date_planned'] = p_info.next_date + \
-                            " 18:59:59"
+            partner_routes = [x.route_id.id for x in part.route_part_ids
+                              if x.route_id.type == 'delivery']
+
+            if partner_routes:
+                domain = [
+                    ('route_id', 'in', partner_routes),
+                    ('date', '>', time.strftime("%Y-%m-%d"))
+                ]
+                detail_ids = detail_t.search(cr, uid, domain,
+                                             context=context,
+                                             order="date")
+                if detail_ids:
+                    detail_obj = detail_t.browse(cr, uid, detail_ids[0])
+                    res['value']['route_detail_id'] = detail_obj.id
+                    res['value']['date_planned'] = detail_obj.date + \
+                        " 19:00:00"
+
         if part and not res['value'].get('route_detail_id', False):
             res['value']['route_detail_id'] = False
             res['value']['date_planned'] = False
             res['warning'] = {'title': _('Warning!'),
                               'message': _('No delivery routes assigned in\
-                               the customer')}
+                               the customer. You will not confirm the order')}
         return res
 
     def _prepare_order_line_procurement(self, cr, uid, order, line,
@@ -132,6 +141,12 @@ class sale_order(osv.Model):
         if context is None:
             context = {}
         procurement_obj = self.pool.get('procurement.order')
+        for order in self.browse(cr, uid, ids, context=context):
+            if not order.route_detail_id:
+                raise except_orm(_('Error'),
+                                 _('Detail of route must be assigned to \
+                                    confirm the order'))
+
         res = super(sale_order, self).action_ship_create(cr, uid, ids,
                                                          context=context)
         for order in self.browse(cr, uid, ids, context=context):
