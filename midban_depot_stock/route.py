@@ -22,7 +22,7 @@ from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
 from datetime import datetime
-from dateutil.rrule import *
+from dateutil.rrule import rrule, WEEKLY
 
 
 class route_zip(models.Model):
@@ -44,22 +44,16 @@ class route(models.Model):
 
     code = fields.Char('Code', size=32, required=True)
     name = fields.Char('Name', size=255, required=True)
-    # 'vehicle_id': fields.many2one('stock.vehicle', 'Vehicle',
-    #                               required=True),
     state = fields.Selection([('draft', 'Draft'), ('active', 'Active')],
                              string="State", readonly=True,
                              default='draft')
     next_dc = fields.Integer('Next Drop Code', readonly=True,
                              required=True, default=1)
-    # 'route_days_ids': fields.many2many('week.days',
-    #                                    'routedays_week_days_rel',
-    #                                    'route_id',
-    #                                    'route_days_id',
-    #                                    'Route Days'),
     day_id = fields.Many2one('week.days', 'Week_day', required=True)
     type = fields.Selection([('auto_sale', 'Auto Sale'),
                             ('comercial', 'Comercial'),
                             ('delivery', 'Delivery'),
+                            ('telesale', 'Telesale'),
                             ('ways', 'Ways'),
                             ('other', 'Other')], 'Type', required=True,
                             default='comercial')
@@ -101,6 +95,16 @@ class route(models.Model):
                             not_check_more = True
                     if not_check_more:
                         break
+            for p_info in self.partner_ids:
+                if not p_info.partner_id.zip:
+                    raise except_orm(_('Error'),
+                                     _('Customer %s has not zip \
+                                        code' % p_info.partner_id.name))
+                if p_info.partner_id.zip not in zip_codes:
+                    raise except_orm(_('Error'),
+                                     _('Zip code of customer %s (%s) not \
+                                      in the route' % (p_info.partner_id.name,
+                                                       p_info.partner_id.zip)))
         if warning:
             res['warning'] = warning
         return res
@@ -131,8 +135,19 @@ class route(models.Model):
                                                can not save th \
                                                route' % (zip_c.code,
                                                          route_obj.code)))
-        res = super(route, self).write(vals)
-        return res
+
+            for p_info in self.partner_ids:
+                    if not p_info.partner_id.zip:
+                        raise except_orm(_('Error'),
+                                         _('Customer %s has not zip \
+                                            code' % p_info.partner_id.name))
+                    if p_info.partner_id.zip not in zip_codes:
+                        raise except_orm(_('Error'),
+                                         _('Zip code of customer %s (%s) not \
+                                          in the route' % (p_info.partner_id.name,
+                                                           p_info.partner_id.zip)))
+            res = super(route, self).write(vals)
+            return res
 
     @api.model
     def create(self, vals):
@@ -156,6 +171,16 @@ class route(models.Model):
                                                can not save the \
                                                route' % (zip_c.code,
                                                          route_obj.code)))
+            for p_info in self.partner_ids:
+                if not p_info.partner_id.zip:
+                    raise except_orm(_('Error'),
+                                     _('Customer %s has not zip \
+                                        code' % p_info.partner_id.name))
+                if p_info.partner_id.zip not in zip_codes:
+                    raise except_orm(_('Error'),
+                                     _('Zip code of customer %s (%s) not \
+                                      in the route' % (p_info.partner_id.name,
+                                                       p_info.partner_id.zip)))
         res = super(route, self).create(vals)
         return res
 
@@ -182,11 +207,25 @@ class route(models.Model):
                                                        limit=1)
         return last_pending and last_pending.date or "1988-02-15"
 
+    def _valid_dates(self, dt_sta, dt_end):
+        res = True
+        format_date = "%Y-%m-%d"
+        today_str = datetime.strftime(datetime.today(), format_date)
+        today = datetime.strptime(today_str, format_date)
+        if (dt_sta < today or dt_end <= dt_sta):
+            res = False
+        return res
+
     @api.one
-    def calc_route_details(self, start_date, end_date):
-        # TODO Check aquí mejor de las fechas, creo que si
+    def calc_route_details(self, start_date, end_date, delete):
         dt_sta = datetime.strptime(start_date, "%Y-%m-%d")
         dt_end = datetime.strptime(end_date, "%Y-%m-%d")
+
+        # Check Dates
+        if not self._valid_dates(dt_sta, dt_end):
+            raise except_orm(_('Error'),
+                             _('Date range not valid.'))
+
         if not self.partner_ids:
             raise except_orm(_('Error'),
                              _('No customers assigned to the route'))
@@ -297,6 +336,17 @@ class customer_list(models.Model):
     customer_id = fields.Many2one('res.partner', 'Customer',
                                   domain=[('customer', '=', True)],
                                   required=True)
-    result = fields.Selection([('pending', 'Pending'),
-                               ('sale_done', 'Sale done')],
+    result = fields.Selection([('sale_done', 'Sale done'),
+                               ('visited_no_order', 'Visited without order'),
+                               ('closed_day', 'Closed day'),
+                               ('closed_holidays', 'Holidays'),
+                               ('closed_reform', 'Closed Reform'),
+                               ('no_visited', 'No visited'),
+                               ('delivered_ok', 'Delivered OK'),
+                               ('delivered_issue', 'Delivered with issue'),
+                               ('not_responding', 'Not responding'),
+                               ('comunicate', 'Comunicate'),
+                               ('call_no_order', 'Call without order'),
+                               ('call_other_day', 'Call other day'),
+                               ('call_no_done', 'Call not done')],
                               string="result")

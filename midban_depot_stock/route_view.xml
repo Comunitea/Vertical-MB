@@ -28,65 +28,71 @@
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
-                        <group string="Route Info" colspan="2">
-                            <field name="code"/>
-                            <field name="name"/>
-                           <!--  <field name="vehicle_id"/> -->
-                            <field name="day_id"/>
-                            <field name="type"/>
-                            <field name="comercial_id"/>
-                            <field name="next_dc" class="oe_line"/>
-                            <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/>
-                            <group string="Zip Codes" colspan="2">
-                                <field name="zip_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
-                            </group>
-                        </group>
-                        <group string="Route details" colspan="4">
-                                <field name="detail_ids" nolabel="1">
-                                    <tree string="Route Details">
-                                        <field name="date"/>
-                                        <field name="state"/>
-                                    </tree>
-                                    <form string="Route Detail">
-                                        <header>
-                                            <field name="state" widget="statusbar"/>
-                                            <button name="set_cancelled" type="object" string="Cancel" icon="gtk-ok" states="pending,on_course" groups="midban_depot_stock.transport_routes_manager"/>
-                                            <button name="set_closed" type="object" string="Close" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
-                                            <button name="set_pending" type="object" string="Back to Pending" icon="gtk-ok" states="cancelled,closed" groups="midban_depot_stock.transport_routes_manager"/>
-                                        </header>
-                                        <sheet>
-                                            <group string="Route Details">
-                                                <field name="date"/>
-                                                
-                                            </group>
-                                            <group string="Customer List">
-                                                <field name="customer_ids" nolabel="1">
-                                                    <tree editable="top">
-                                                        <field name="sequence"/>
-                                                        <field name="customer_id"/>
-                                                        <field name="result"/>
-                                                    </tree>
-                                                </field>
-                                            </group>
-                                        </sheet>
+                        <h1>
+                             <field name="name"/>
+                        </h1>
+                        <h2>
+                             <field name="code"/>
+                        </h2>
+                        <notebook>
+                            <page string="General">
+                                <group string="Route Info" colspan="2">
+                                    <field name="day_id"/>
+                                    <field name="type"/>
+                                    <field name="comercial_id"/>
+                                    <field name="next_dc" class="oe_line"/>
+                                    <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/>
+                                    <group string="Zip Codes" colspan="2">
+                                        <field name="zip_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
+                                    </group>
+                                </group>
+                                <group string="Route details" colspan="4">
+                                    <field name="detail_ids" nolabel="1">
+                                        <tree string="Route Details">
+                                            <field name="date"/>
+                                            <field name="state"/>
+                                        </tree>
+                                        <form string="Route Detail">
+                                            <header>
+                                                <field name="state" widget="statusbar"/>
+                                                <button name="set_cancelled" type="object" string="Cancel" icon="gtk-ok" states="pending,on_course" groups="midban_depot_stock.transport_routes_manager"/>
+                                                <button name="set_closed" type="object" string="Close" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
+                                                <button name="set_pending" type="object" string="Back to Pending" icon="gtk-ok" states="cancelled,closed" groups="midban_depot_stock.transport_routes_manager"/>
+                                            </header>
+                                            <sheet>
+                                                <group string="Route Details">
+                                                    <field name="date"/>
+                                                    
+                                                </group>
+                                                <group string="Customer List">
+                                                    <field name="customer_ids" nolabel="1">
+                                                        <tree editable="top">
+                                                            <field name="sequence"/>
+                                                            <field name="customer_id"/>
+                                                            <field name="result"/>
+                                                        </tree>
+                                                    </field>
+                                                </group>
+                                            </sheet>
+                                        </form>
+                                    </field>
+                                </group>
+                            </page>
 
-                                    </form>
-                                </field>
-                        </group>
-                        <group string="Assigned Customers">
-                                                <field name="partner_ids" nolabel="1">
-                                                    <tree editable="top">
-                                                         <field name="sequence"/>
-                                                        <field name="partner_id"/>
-                                                        <field name="regularity"/>
-                                                        <field name="last_date"/>
-                                                        <field name="next_date"/>
-                                                    </tree>
-                                                </field>
-                                            </group>
-                        <!-- <group string="Route Days">
-                            <field name="route_days_ids" widget="many2many_checkboxes" nolabel="1"/>
-                        </group> -->
+                            <page string="Customers">
+                                <group string="Assigned Customers">
+                                    <field name="partner_ids" nolabel="1">
+                                        <tree editable="top">
+                                            <field name="sequence"/>
+                                            <field name="partner_id"/>
+                                            <field name="regularity"/>
+                                            <field name="last_date"/>
+                                            <field name="next_date"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

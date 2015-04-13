@@ -21,11 +21,13 @@
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 from openerp import models, fields as fields2, api
+from openerp.exceptions import except_orm
 
 
 class partner_route_info(models.Model):
     _name = 'partner.route.info'
     _rec_name = 'route_id'
+    _order = 'sequence'
 
     sequence = fields2.Integer('Order')
     partner_id = fields2.Many2one('res.partner', 'Customer',
@@ -39,6 +41,58 @@ class partner_route_info(models.Model):
     last_date = fields2.Date('Last Date')
     next_date = fields2.Date('Next Date')
     route_id = fields2.Many2one('route', 'Route', required=True)
+
+    # @api.one
+    # def _recalculate_routes(self, vals):
+    @api.one
+    def write(self, vals):
+        """
+        Overwrite to Check there if partnerzip code is in route zip code
+        """
+        t_route = self.env['route']
+        t_partner = self.env['res.partner']
+        partner_id = vals.get('partner_id', False) and vals['partner_id'] or \
+            self.partner_id.id
+        route_id = vals.get('route_id', False) and vals['route_id'] or \
+            self.route_id.id
+        partner_obj = t_partner.browse(partner_id)
+        route_obj = t_route.browse(route_id)
+        partner_obj = t_partner.browse(partner_id)
+        route_obj = t_route.browse(route_id)
+        route_zip_codes = [x.code for x in route_obj.zip_ids]
+        if not partner_obj.zip:
+            raise except_orm(_('Error'), _('The customer has no zip code'))
+        if partner_obj.zip not in route_zip_codes:
+            raise except_orm(_('Error'), _('Zip code %s of customer %s \
+                             is not included in the route \
+                             %s' % (partner_obj.zip, partner_obj.name,
+                                    route_obj.name)))
+        res = super(partner_route_info, self).write(vals)
+        # self._recalculate_routes()
+        return res
+
+    @api.model
+    def create(self, vals):
+        t_route = self.env['route']
+        t_partner = self.env['res.partner']
+        partner_id = vals.get('partner_id', False) and vals['partner_id'] or \
+            False
+        route_id = vals.get('route_id', False) and vals['route_id'] or \
+            False
+        if partner_id and route_id:
+            partner_obj = t_partner.browse(partner_id)
+            route_obj = t_route.browse(route_id)
+            route_zip_codes = [x.code for x in route_obj.zip_ids]
+            if not partner_obj.zip:
+                raise except_orm(_('Error'), _('The customer has no zip code'))
+            if partner_obj.zip not in route_zip_codes:
+                raise except_orm(_('Error'), _('Zip code %s of customer %s \
+                                 is not included in the route \
+                                 %s' % (partner_obj.zip, partner_obj.name,
+                                        route_obj.name)))
+        res = super(partner_route_info, self).create(vals)
+        self._recalculate_routes()
+        return res
 
 
 class resPartner(models.Model):
