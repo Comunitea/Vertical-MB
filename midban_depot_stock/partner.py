@@ -32,6 +32,33 @@ class partner_route_info(models.Model):
     _rec_name = 'route_id'
     _order = 'sequence'
 
+    @api.one
+    # @api.depends('invoice_line.price_subtotal', 'tax_line.amount',
+    #              'amount_discount')
+    def _compute_dates(self):
+        """
+        Calc dates
+        """
+        domain = [
+            ('route_id', '=', self.route_id.id),
+            ('state', '=', 'closed'),
+            ('date', '<', time.strftime(FORMAT)),
+        ]
+        detail_objs = self.env['route.detail'].search(domain,
+                                                      order="date desc")
+        if detail_objs:
+            self.last_date = detail_objs[0].date
+
+        domain = [
+            ('route_id', '=', self.route_id.id),
+            ('state', '=', 'pending'),
+            ('date', '>=', time.strftime(FORMAT)),
+        ]
+        detail_objs = self.env['route.detail'].search(domain,
+                                                      order="date asc")
+        if detail_objs:
+            self.next_date = detail_objs[0].date
+
     sequence = fields2.Integer('Order')
     partner_id = fields2.Many2one('res.partner', 'Customer',
                                   domain=[('customer', '=', True)],
@@ -41,8 +68,10 @@ class partner_route_info(models.Model):
                                     ('3_week', '3 Weeks'),
                                     ('4_week', '4 Weeks')], 'Regularity',
                                    default="1_week", required=True)
-    last_date = fields2.Date('Last Date')
-    next_date = fields2.Date('Next Date')
+    last_date = fields2.Date('Last Date', compute='_compute_dates',
+                             readonly=False)
+    next_date = fields2.Date('Next Date', compute='_compute_dates',
+                             readonly=False)
     route_id = fields2.Many2one('route', 'Route', required=True)
 
     @api.one

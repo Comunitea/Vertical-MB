@@ -58,10 +58,13 @@
                                                 <button name="set_cancelled" type="object" string="Cancel" icon="gtk-ok" states="pending,on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                                 <button name="set_closed" type="object" string="Close" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                                 <button name="set_pending" type="object" string="Back to Pending" icon="gtk-ok" states="cancelled,closed" groups="midban_depot_stock.transport_routes_manager"/>
+                                                <button name="set_on_course" type="object" string="On course" icon="gtk-ok" states="pending" groups="midban_depot_stock.transport_routes_manager"/>
+                                                <button name="set_closed" type="object" string="Closed" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                             </header>
                                             <sheet>
                                                 <group string="Route Details">
                                                     <field name="date"/>
+                                                    <field name="comercial_id"/>
                                                     
                                                 </group>
                                                 <group string="Customer List">

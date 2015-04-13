@@ -21,45 +21,47 @@
 from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 
 
 class sale_order(osv.Model):
     _inherit = 'sale.order'
 
-    def _get_next_working_date(self, cr, uid, context=None):
-        """
-        Returns the next working day date respect today
-        """
-        today = datetime.now()
-        week_day = today.weekday()  # Monday is 0  and Sunday 6, take care
-        delta = 1
-        if week_day == 4:
-            delta = 3
-        elif week_day == 5:
-            delta = 2
-        new_date = today + timedelta(days=delta or 0.0)
-        date_part = datetime.strftime(new_date, "%Y-%m-%d")
-        res = datetime.strptime(date_part + " " + "22:59:59",
-                                "%Y-%m-%d %H:%M:%S")
-        return res
+    # def _get_next_working_date(self, cr, uid, context=None):
+    #     """
+    #     Returns the next working day date respect today
+    #     """
+    #     today = datetime.now()
+    #     week_day = today.weekday()  # Monday is 0  and Sunday 6, take care
+    #     delta = 1
+    #     if week_day == 4:
+    #         delta = 3
+    #     elif week_day == 5:
+    #         delta = 2
+    #     new_date = today + timedelta(days=delta or 0.0)
+    #     date_part = datetime.strftime(new_date, "%Y-%m-%d")
+    #     res = datetime.strptime(date_part + " " + "22:59:59",
+    #                             "%Y-%m-%d %H:%M:%S")
+    #     return res
 
     _columns = {
-        'trans_route_id': fields.many2one('route', 'Transport Route',
-                                          domain=[('state', '=', 'active')],
-                                          readonly=True, states={'draft':
-                                                                 [('readonly',
-                                                                   False)],
-                                                                 'sent':
-                                                                 [('readonly',
-                                                                   False)]}),
+        # 'trans_route_id': fields.many2one('route', 'Transport Route',
+        #                                   domain=[('state', '=', 'active')],
+        #                                   readonly=True, states={'draft':
+        #                                                          [('readonly',
+        #                                                            False)],
+        #                                                          'sent':
+        #                                                          [('readonly',
+        #                                                            False)]}),
+        'trans_route_id': fields.related('route_detail_id', 'route_id',
+                                         string='Route',
+                                         type="many2one",
+                                         relation="route"),
+        'route_detail_id': fields.many2one('route.detail', 'Detailed Route'),
         'date_planned': fields.datetime('Scheduled Date', required=True,
                                         select=True,
                                         help="Date propaged to shecduled \
                                               date of related picking"),
-    }
-    _defaults = {
-        'date_planned': _get_next_working_date,
     }
 
     def _get_date_planned(self, cr, uid, order, line, start_date,
@@ -82,10 +84,30 @@ class sale_order(osv.Model):
                                                           part,
                                                           context=context)
         partner_t = self.pool.get('res.partner')
+        detail_t = self.pool.get('route.detail')
         part = partner_t.browse(cr, uid, part, context=context)
-        if not res['value'].get('trans_route_id', []):
-            if part.trans_route_id:
-                res['value']['trans_route_id'] = part.trans_route_id.id
+        # if not res['value'].get('trans_route_id', []):
+        #     if part.trans_route_id:
+        #         res['value']['trans_route_id'] = part.trans_route_id.id
+
+        # Get next detail of a delivery route
+        if not res['value'].get('route_detail_id', False):
+            for p_info in part.route_part_ids:
+                if p_info.route_id.type == 'delivery':
+                    if p_info.next_date:
+                        domain = [('date', '=', p_info.next_date)]
+                        detail_ids = detail_t.search(cr, uid, domain,
+                                                     context=context)
+                        res['value']['route_detail_id'] = \
+                            detail_ids and detail_ids[0] or False
+                        res['value']['date_planned'] = p_info.next_date + \
+                            " 18:59:59"
+        if part and not res['value'].get('route_detail_id', False):
+            res['value']['route_detail_id'] = False
+            res['value']['date_planned'] = False
+            res['warning'] = {'title': _('Warning!'),
+                              'message': _('No delivery routes assigned in\
+                               the customer')}
         return res
 
     def _prepare_order_line_procurement(self, cr, uid, order, line,

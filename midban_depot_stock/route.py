@@ -330,18 +330,23 @@ class route_detail(models.Model):
                              default='pending')
     customer_ids = fields.One2many('customer.list', 'detail_id',
                                    'Customer List')
+    comercial_id = fields.Many2one('res.users', 'Comercial')
 
     @api.multi
     def set_cancelled(self):
         self.state = 'cancelled'
 
     @api.multi
-    def set_closed(self):
-        self.state = 'closed'
-
-    @api.multi
     def set_pending(self):
         self.state = 'pending'
+
+    @api.multi
+    def set_on_course(self):
+        self.state = 'on_course'
+
+    @api.multi
+    def set_closed(self):
+        self.state = 'closed'
 
     @api.one
     def unlink(self):
@@ -355,6 +360,23 @@ class route_detail(models.Model):
                          deleted' % (self.date, self.state))
             raise except_orm(_('ERROR'), msg)
         res = super(route_detail, self).unlink()
+        return res
+
+    @api.model
+    def create(self, vals):
+        if vals.get('route_id', False) and not vals.get('comercial_id'):
+            route_obj = self.env['route'].browse(vals['route_id'])
+            if route_obj.comercial_id:
+                vals['comercial_id'] = route_obj.comercial_id.id
+        res = super(route_detail, self).create(vals)
+        return res
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for detail in self:
+            name = detail.route_id.name + ", " + detail.date
+            res.append((detail.id, name))
         return res
 
 

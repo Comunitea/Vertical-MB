@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <field name='project_id' position="after">
                     <field name="trans_route_id"/>
+                    <field name="route_detail_id"/>
                 </field>
                 <field name='date_order' position="after">
                     <field name="date_planned"/>
@@ -23,6 +24,7 @@
             <field name="arch" type="xml">
                 <field name='state' position="after">
                     <field name="trans_route_id"/>             
+                    <field name="route_detail_id"/>             
                 </field>
              </field>
          </record>
@@ -34,6 +36,7 @@
             <field name="arch" type="xml">
                 <field name='state' position="after">
                     <field name="trans_route_id"/>
+                    <field name="route_detail_id"/>
                 </field>
              </field>
          </record>

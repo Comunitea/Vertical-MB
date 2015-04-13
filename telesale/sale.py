@@ -116,7 +116,6 @@ class sale(osv.osv):
                 'note': order['note'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
             }
-            import ipdb; ipdb.set_trace()
             if order['erp_id'] and order['erp_state'] == 'draft':
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)
                 if order['note'] and (order_obj.note != order['note']):
