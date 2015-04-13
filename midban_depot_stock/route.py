@@ -23,6 +23,10 @@ from openerp.tools.translate import _
 from openerp.exceptions import except_orm
 from datetime import datetime
 from dateutil.rrule import rrule, WEEKLY
+import time
+
+
+FORMAT = "%Y-%m-%d"
 
 
 class route_zip(models.Model):
@@ -144,10 +148,11 @@ class route(models.Model):
                     if p_info.partner_id.zip not in zip_codes:
                         raise except_orm(_('Error'),
                                          _('Zip code of customer %s (%s) not \
-                                          in the route' % (p_info.partner_id.name,
-                                                           p_info.partner_id.zip)))
-            res = super(route, self).write(vals)
-            return res
+                                          in the \
+                                          route' % (p_info.partner_id.name,
+                                                    p_info.partner_id.zip)))
+        res = super(route, self).write(vals)
+        return res
 
     @api.model
     def create(self, vals):
@@ -205,40 +210,53 @@ class route(models.Model):
         last_pending = self.env['route.detail'].search(domain,
                                                        order="date desc",
                                                        limit=1)
-        return last_pending and last_pending.date or "1988-02-15"
+        return last_pending and last_pending.date or False
 
     def _valid_dates(self, dt_sta, dt_end):
         res = True
-        format_date = "%Y-%m-%d"
+        format_date = FORMAT
         today_str = datetime.strftime(datetime.today(), format_date)
         today = datetime.strptime(today_str, format_date)
-        if (dt_sta < today or dt_end <= dt_sta):
+        if (dt_sta < today or dt_end < dt_sta):
             res = False
         return res
 
     @api.one
-    def calc_route_details(self, start_date, end_date, delete):
-        dt_sta = datetime.strptime(start_date, "%Y-%m-%d")
-        dt_end = datetime.strptime(end_date, "%Y-%m-%d")
+    def calc_route_details(self, start_date, end_date, delete, recalc=True):
+        dt_sta = datetime.strptime(start_date, FORMAT)
+        day_number = self.day_id.sequence - 1
+        dt_end = datetime.strptime(end_date, FORMAT)
 
         # Check Dates
         if not self._valid_dates(dt_sta, dt_end):
             raise except_orm(_('Error'),
                              _('Date range not valid.'))
 
-        if not self.partner_ids:
+        if not self.partner_ids and not recalc:
             raise except_orm(_('Error'),
                              _('No customers assigned to the route'))
+
+        domain = [
+            ('date', '>=', start_date),
+            ('route_id', '=', self.id),
+        ]
+        if not delete:
+            domain.append(('date', '<=', end_date))
+        detail_objs = self.env['route.detail'].search(domain)
+        # Create a detail for the date and add the customer to de list
+        if detail_objs:
+            detail_objs.unlink()
         for p_info in self.partner_ids:
             reg = p_info.regularity
             interval = 1 if reg == '1_week' else (2 if reg == '2_week' else
                                                   (3 if reg == '3_week' else
                                                       (4 if reg == '4_week'
                                                           else False)))
-            rrules = rrule(WEEKLY, interval=interval).between(dt_sta, dt_end,
-                                                              inc=True)
-            customer_dates = [datetime.strftime(x, "%Y-%m-%d") for x in rrules]
-            if not customer_dates:
+            rrules = rrule(WEEKLY, interval=interval,
+                           byweekday=day_number).between(dt_sta, dt_end,
+                                                         inc=True)
+            customer_dates = [datetime.strftime(x, FORMAT) for x in rrules]
+            if not customer_dates and not recalc:
                 raise except_orm(_('Error'),
                                  _('Imposible to schedule dates between %s and \
                                     %s with regularity of %s \
@@ -263,7 +281,7 @@ class route(models.Model):
                         'detail_id': det_obj.id,
                         'sequence': p_info.sequence,
                         'customer_id': p_info.partner_id.id,
-                        'result': 'pending'
+                        # 'result': 'pending'
                     }
                     self.env['customer.list'].create(vals)
 
@@ -324,6 +342,20 @@ class route_detail(models.Model):
     @api.multi
     def set_pending(self):
         self.state = 'pending'
+
+    @api.one
+    def unlink(self):
+        if self.state not in ['pending'] or self.date < time.strftime(FORMAT):
+            if self.date < time.strftime(FORMAT):
+                msg = _('Detail route for day %s can not be deleted because is\
+                         a past date' % self.date)
+            else:
+                msg = _('Detail route for day %s with state is %s can not be \
+                         deleted. Only pending routes can be\
+                         deleted' % (self.date, self.state))
+            raise except_orm(_('ERROR'), msg)
+        res = super(route_detail, self).unlink()
+        return res
 
 
 class customer_list(models.Model):

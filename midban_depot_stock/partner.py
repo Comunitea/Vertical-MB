@@ -22,6 +22,9 @@ from openerp.osv import osv, fields
 from openerp.tools.translate import _
 from openerp import models, fields as fields2, api
 from openerp.exceptions import except_orm
+import time
+
+FORMAT = "%Y-%m-%d"
 
 
 class partner_route_info(models.Model):
@@ -42,8 +45,26 @@ class partner_route_info(models.Model):
     next_date = fields2.Date('Next Date')
     route_id = fields2.Many2one('route', 'Route', required=True)
 
-    # @api.one
-    # def _recalculate_routes(self, vals):
+    @api.one
+    def _recalculate_routes(self, route_new, route_old):
+        routes = []
+        if route_new:
+            routes.append(route_new)
+        if route_old:
+            routes.append(route_old)
+        for route in routes:
+            today = time.strftime(FORMAT)
+            domain = [
+                ('route_id', '=', route.id),
+                ('date', '>=', today),
+            ]
+            details = self.env['route.detail'].search(domain,
+                                                      order="date desc")
+            if details:
+                last_date = details[0].date
+                route.calc_route_details(today, last_date, False)
+        return
+
     @api.one
     def write(self, vals):
         """
@@ -67,12 +88,18 @@ class partner_route_info(models.Model):
                              is not included in the route \
                              %s' % (partner_obj.zip, partner_obj.name,
                                     route_obj.name)))
+        old_route = False
+        if vals.get('route_id', False) and self.route_id:
+            old_route = self.route_id
         res = super(partner_route_info, self).write(vals)
-        # self._recalculate_routes()
+        self._recalculate_routes(route_obj, old_route)
         return res
 
     @api.model
     def create(self, vals):
+        """
+        Overwrite to Check there if partnerzip code is in route zip code
+        """
         t_route = self.env['route']
         t_partner = self.env['res.partner']
         partner_id = vals.get('partner_id', False) and vals['partner_id'] or \
@@ -91,7 +118,15 @@ class partner_route_info(models.Model):
                                  %s' % (partner_obj.zip, partner_obj.name,
                                         route_obj.name)))
         res = super(partner_route_info, self).create(vals)
-        self._recalculate_routes()
+        route_obj = t_route.browse(route_id)
+        res._recalculate_routes(route_obj, False)
+        return res
+
+    @api.one
+    def unlink(self):
+        route_obj = self.route_id
+        res = super(partner_route_info, self).unlink()
+        self._recalculate_routes(route_obj, False)
         return res
 
 

@@ -70,7 +70,8 @@ class get_route_detail_wzd(models.TransientModel):
             start_date = item.start_date and item.start_date or start_date
             end_date = item.end_date and item.end_date or end_date
             route = item.route_id
-            route.calc_route_details(start_date, end_date, self.delete)
+            route.calc_route_details(start_date, end_date, self.delete,
+                                     recalc=False)
         return
 
 
