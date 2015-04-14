@@ -52,10 +52,10 @@ class stock_picking(osv.osv):
         'cross_dock': fields.boolean("From Cross Dock order"),
         'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
                                           'Delivery List', readonly=True),
-        'drop_code': fields.related('move_lines', 'procurement_id',
-                                    'drop_code', type="integer",
-                                    string="Drop Code",
-                                    readonly=True),
+        # 'drop_code': fields.related('move_lines', 'procurement_id',
+        #                             'drop_code', type="integer",
+        #                             string="Drop Code",
+        #                             readonly=True),
     }
 
     def _change_operation_dest_loc(self, cr, uid, ids, context=None):
@@ -769,9 +769,9 @@ class stock_move(osv.osv):
                                          string='Transport Route',
                                          relation="route",
                                          type="many2one"),
-        'drop_code': fields.related('procurement_id', 'drop_code',
-                                    string="Drop Code",
-                                    type='integer', readonly=True),
+        # 'drop_code': fields.related('procurement_id', 'drop_code',
+        #                             string="Drop Code",
+        #                             type='integer', readonly=True),
         'real_weight': fields.float('Real weight'),
         'price_kg': fields.float('Price Kg'),
     }
@@ -781,7 +781,7 @@ class stock_move(osv.osv):
             _prepare_procurement_from_move(cr, uid, move, context=context)
         route_id = move.trans_route_id and move.trans_route_id.id or False
         res['trans_route_id'] = route_id
-        res['drop_code'] = move.drop_code
+        # res['drop_code'] = move.drop_code
         return res
 
     def onchange_product_id(self, cr, uid, ids, prod_id=False, loc_id=False,

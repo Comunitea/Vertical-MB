@@ -21,19 +21,19 @@
 from openerp.osv import osv
 
 
-class reset_drop_code_wzd(osv.TransientModel):
-    _name = "reset.drop.code.wzd"
+# class reset_drop_code_wzd(osv.TransientModel):
+#     _name = "reset.drop.code.wzd"
 
-    def reset_all_drop_codes(self, cr, uid, ids, context=None):
-        """
-        Reset all the transport routes drop codes.
-        Field next_dc will be setted to 1
-        """
-        if context is None:
-            context = {}
-        t_route = self.pool.get("route")
-        route_ids = t_route.search(cr, uid, [('state', '=', 'active')],
-                                   context=context)
-        if route_ids:
-            t_route.write(cr, uid, route_ids, {'next_dc': 1}, context=context)
-        return
+    # def reset_all_drop_codes(self, cr, uid, ids, context=None):
+    #     """
+    #     Reset all the transport routes drop codes.
+    #     Field next_dc will be setted to 1
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     t_route = self.pool.get("route")
+    #     route_ids = t_route.search(cr, uid, [('state', '=', 'active')],
+    #                                context=context)
+    #     if route_ids:
+    #         t_route.write(cr, uid, route_ids, {'next_dc': 1}, context=context)
+    #     return

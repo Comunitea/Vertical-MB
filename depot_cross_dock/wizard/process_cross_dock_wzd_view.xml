@@ -27,7 +27,7 @@
                  </form>
             </field>
         </record>
-        <record id="reset_drop_code_wzd_view" model="ir.ui.view">
+        <!-- <record id="reset_drop_code_wzd_view" model="ir.ui.view">
             <field name="name">reset.drop.code.wzd.view</field>
             <field name="model">reset.drop.code.wzd</field>
             <field name="type">form</field>
@@ -43,7 +43,7 @@
                     </footer>
                  </form>
             </field>
-        </record>
+        </record> -->
         <record id="action_process_cross_dock_wzd" model="ir.actions.act_window">
             <field name="name">Create Cross Dock Purchases</field>
             <field name="type">ir.actions.act_window</field>

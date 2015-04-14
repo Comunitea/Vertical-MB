@@ -59,7 +59,7 @@
                                 <th class="text-right"><strong>Qty</strong></th>
                                 <th class="text-right"><strong>Unit Price</strong></th>
                                 <th class="text-right"><strong>Net Price</strong></th>
-                                <th class="text-right"><strong>Drop Code</strong></th>
+                                <!-- <th class="text-right"><strong>Drop Code</strong></th> -->
                                 <t t-if="not o.partner_id.regulator">
                                     <th class="text-right"><strong>Route</strong></th>
                                 </t>
@@ -81,9 +81,9 @@
                                     <td class="text-right">
                                         <span t-esc="proc.product_qty * line.price_unit"/>
                                                                             </td>
-                                    <td class="text-right">
+                                    <!-- <td class="text-right">
                                         <span t-field="proc.drop_code"/>
-                                    </td>
+                                    </td> -->
                                      <t t-if="not o.partner_id.regulator">
                                          <td class="text-right">
                                             <span t-field="proc.trans_route_id"/>

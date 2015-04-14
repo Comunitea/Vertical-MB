@@ -51,8 +51,8 @@ class route(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('active', 'Active')],
                              string="State", readonly=True,
                              default='draft')
-    next_dc = fields.Integer('Next Drop Code', readonly=True,
-                             required=True, default=1)
+    # next_dc = fields.Integer('Next Drop Code', readonly=True,
+    #                          required=True, default=1)
     day_id = fields.Many2one('week.days', 'Week_day', required=True)
     type = fields.Selection([('auto_sale', 'Auto Sale'),
                             ('comercial', 'Comercial'),
@@ -196,9 +196,9 @@ class route(models.Model):
     def set_draft(self):
         self.state = 'draft'
 
-    @api.multi
-    def reset_drop_code(self):
-        self.next_dc = 1
+    # @api.multi
+    # def reset_drop_code(self):
+    #     self.next_dc = 1
 
     @api.one
     def get_last_pending_date(self):

@@ -40,7 +40,7 @@
                                     <field name="day_id"/>
                                     <field name="type"/>
                                     <field name="comercial_id"/>
-                                    <field name="next_dc" class="oe_line"/>
+<!--                                     <field name="next_dc" class="oe_line"/> -->
                                     <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/>
                                 </group>
                                 <group string="Route details" colspan="4">

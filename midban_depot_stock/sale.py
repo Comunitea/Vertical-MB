@@ -164,7 +164,7 @@ class sale_order(osv.Model):
         """
         if context is None:
             context = {}
-        procurement_obj = self.pool.get('procurement.order')
+        # procurement_obj = self.pool.get('procurement.order')
 
         # If not detail route asigned raise an error
         for order in self.browse(cr, uid, ids, context=context):
@@ -175,18 +175,18 @@ class sale_order(osv.Model):
 
         res = super(sale_order, self).action_ship_create(cr, uid, ids,
                                                          context=context)
-        for order in self.browse(cr, uid, ids, context=context):
-            if order.procurement_group_id:
-                proc_ids = \
-                    [x.id for x in order.procurement_group_id.procurement_ids]
-                if proc_ids:
-                    dc = order.trans_route_id and \
-                        order.trans_route_id.next_dc or 0
-                    vals = {'drop_code': dc}
-                    procurement_obj.write(cr, uid, proc_ids, vals, context)
-            if order.trans_route_id:
-                next_dc = order.trans_route_id.next_dc
-                order.trans_route_id.write({'next_dc': next_dc + 1})
+        # for order in self.browse(cr, uid, ids, context=context):
+        #     if order.procurement_group_id:
+        #         proc_ids = \
+        #             [x.id for x in order.procurement_group_id.procurement_ids]
+        #         if proc_ids:
+        #             dc = order.trans_route_id and \
+        #                 order.trans_route_id.next_dc or 0
+        #             vals = {'drop_code': dc}
+        #             procurement_obj.write(cr, uid, proc_ids, vals, context)
+        #     if order.trans_route_id:
+        #         next_dc = order.trans_route_id.next_dc
+        #         order.trans_route_id.write({'next_dc': next_dc + 1})
         return res
 
 

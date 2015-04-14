@@ -20,10 +20,10 @@
 ##############################################################################
 import assign_task_wzd
 import reposition_wizard
-import route_assign_wizard
-import route_orders_wizard
+# import route_assign_wizard
+# import route_orders_wizard
 import stock_transfer_details
 import create_tag_wizard
-import reset_drop_code_wzd
+# import reset_drop_code_wzd
 import create_camera_locations
 import get_route_detail_wzd

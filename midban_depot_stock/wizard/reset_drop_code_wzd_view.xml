@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
         <record id="reset_drop_code_wzd_view" model="ir.ui.view">
@@ -31,4 +31,4 @@
         <menuitem action="action_reset_drop_code" id="reset_drop_code_menu"  name="Reset Drop Codes" parent="menu_stock_vehicle_route_mgmt" groups="midban_depot_stock.transport_routes_manager" sequence="100"/>
 
     </data>
-</openerp>
+</openerp> -->

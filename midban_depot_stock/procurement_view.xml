@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <group name="scheduling" position="inside">
                     <field name="trans_route_id"/>
-                    <field name="drop_code"/>
+<!--                     <field name="drop_code"/> -->
                 </group>
             </field>
         </record>
