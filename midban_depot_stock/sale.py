@@ -24,6 +24,7 @@ from openerp.tools.translate import _
 import time
 # from datetime import datetime, timedelta
 from openerp.exceptions import except_orm
+from openerp import api
 
 
 class sale_order(osv.Model):
@@ -58,13 +59,50 @@ class sale_order(osv.Model):
         'trans_route_id': fields.related('route_detail_id', 'route_id',
                                          string='Route',
                                          type="many2one",
-                                         relation="route"),
-        'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
+                                         relation="route",
+                                         readonly=True),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
+                                           readonly=True,
+                                           states={'draft': [('readonly',
+                                                             False)],
+                                                   'sent': [('readonly',
+                                                            False)]}),
         'date_planned': fields.datetime('Scheduled Date', required=True,
                                         select=True,
                                         help="Date propaged to shecduled \
                                               date of related picking"),
     }
+
+    @api.onchange('route_detail_id')
+    @api.multi
+    def onchange_route_detail_id(self):
+        res = {}
+        warning = False
+        if self.route_detail_id:
+            if not self.partner_id:
+                self.route_detail_id = False
+                warning = {
+                    'title': _('Warning!'),
+                    'message': _('Customer must be assigned')
+                }
+            else:
+                found = False
+                for cust in self.route_detail_id.customer_ids:
+                    if cust.customer_id.id == self.partner_id.id:
+                        found = True
+                        break
+                if not found:
+                    name_detail = self.route_detail_id.name_get()[0][1]
+                    warning = {
+                        'title': _('Warning!'),
+                        'message': _('The customer is not included in the \
+                                      customer list of detailed route\
+                                      %s' % name_detail)
+                    }
+            if warning:
+                res['warning'] = warning
+                self.route_detail_id = False
+        return res
 
     def _get_date_planned(self, cr, uid, order, line, start_date,
                           context=None):
@@ -149,6 +187,8 @@ class sale_order(osv.Model):
         if context is None:
             context = {}
         procurement_obj = self.pool.get('procurement.order')
+
+        # If not detail route asigned raise an error
         for order in self.browse(cr, uid, ids, context=context):
             if not order.route_detail_id:
                 raise except_orm(_('Error'),

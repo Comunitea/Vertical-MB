@@ -633,7 +633,7 @@ msgstr "Entregado con incidencia"
 #: selection:route,type:0
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Delivery"
-msgstr "Envío"
+msgstr "Reparto"
 
 #. module: midban_depot_stock
 #: model:ir.actions.report.xml,name:midban_depot_stock.action_report_delivery_list
