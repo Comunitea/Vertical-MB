@@ -42,6 +42,7 @@
         "midban_product",
         "midban_issue",
         "price_system_variable",
+        "l10n_es_toponyms",
     ],
     "data": [
         'res_users_view.xml',

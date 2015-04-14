@@ -62,23 +62,22 @@ class route(models.Model):
                             ('other', 'Other')], 'Type', required=True,
                             default='comercial')
     comercial_id = fields.Many2one('res.users', 'Comercial')
-    zip_ids = fields.Many2many('route.zip', 'route_zip_codes_rel',
-                               'route_id', 'route_zip_id', 'Zip codes',
-                               required=True)
+    bzip_ids = fields.Many2many('res.better.zip', 'better_zip_routes_rel',
+                                'route_id', 'zip_id', 'Zip codes')
     detail_ids = fields.One2many('route.detail', 'route_id')
     partner_ids = fields.One2many('partner.route.info', 'route_id',
                                   'Customers')
 
-    @api.onchange('zip_ids')
+    @api.onchange('bzip_ids')
     @api.multi
-    def onchange_zip_ids(self):
+    def onchange_bzip_ids(self):
         """
         Check there is no same zip code in a route of same day and same type.
         """
         res = {}
         warning = False
-        if self.zip_ids:
-            zip_codes = [x.code for x in self.zip_ids]
+        if self.bzip_ids:
+            bzip_codes = [x.name for x in self.bzip_ids]
             domain = [('day_id', '=', self.day_id.id),
                       ('type', '=', self.type),
                       ('code', '!=', self.code)]
@@ -86,16 +85,16 @@ class route(models.Model):
             if route_objs:
                 not_check_more = False
                 for route in route_objs:
-                    for zip_c in route.zip_ids:
-                        if zip_c.code in zip_codes:
+                    for bzip_c in route.bzip_ids:
+                        if bzip_c.name in bzip_codes:
                             warning = {
                                 'title': _('Warning!'),
                                 'message': _('The zip code %s is already \
                                               assigned in the\
                                               route %s. Change it or you can \
                                               not save de \
-                                              route' % (zip_c.code,
-                                                        route.code))}
+                                              route' % (bzip_c.name,
+                                                        route.name))}
                             not_check_more = True
                     if not_check_more:
                         break
@@ -104,7 +103,7 @@ class route(models.Model):
                     raise except_orm(_('Error'),
                                      _('Customer %s has not zip \
                                         code' % p_info.partner_id.name))
-                if p_info.partner_id.zip not in zip_codes:
+                if p_info.partner_id.zip not in bzip_codes:
                     raise except_orm(_('Error'),
                                      _('Zip code of customer %s (%s) not \
                                       in the route' % (p_info.partner_id.name,
@@ -119,10 +118,10 @@ class route(models.Model):
         Overwrite to Check there is no same zip code in a route of same day
         and same type.
         """
-        if vals.get('zip_ids', False):
-            zip_ids = vals['zip_ids'][0][2]
-            zip_objs = self.env['route.zip'].browse(zip_ids)
-            zip_codes = [x.code for x in zip_objs]
+        if vals.get('bzip_ids', False):
+            bzip_ids = vals['bzip_ids'][0][2]
+            bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
+            bzip_codes = [x.name for x in bzip_objs]
             domain = [('day_id', '=', self.day_id.id),
                       ('type', '=', self.type),
                       ('code', '!=', self.code)]
@@ -130,14 +129,14 @@ class route(models.Model):
             route_objs = self.search(domain)
             if route_objs:
                 for route_obj in route_objs:
-                    for zip_c in route_obj.zip_ids:
-                        if zip_c.code in zip_codes:
+                    for bzip_c in route_obj.zip_ids:
+                        if bzip_c.name in bzip_codes:
                             raise except_orm(_('Error'),
                                              _('The zip code %s is already \
                                                assigned in the\
                                                route %s. Change it or you can \
                                                can not save th \
-                                               route' % (zip_c.code,
+                                               route' % (bzip_c.name,
                                                          route_obj.code)))
 
             for p_info in self.partner_ids:
@@ -145,7 +144,7 @@ class route(models.Model):
                         raise except_orm(_('Error'),
                                          _('Customer %s has not zip \
                                             code' % p_info.partner_id.name))
-                    if p_info.partner_id.zip not in zip_codes:
+                    if p_info.partner_id.zip not in bzip_codes:
                         raise except_orm(_('Error'),
                                          _('Zip code of customer %s (%s) not \
                                           in the \
@@ -156,10 +155,10 @@ class route(models.Model):
 
     @api.model
     def create(self, vals):
-        if vals.get('zip_ids', False):
-            zip_ids = vals['zip_ids'][0][2]
-            zip_objs = self.env['route.zip'].browse(zip_ids)
-            zip_codes = [x.code for x in zip_objs]
+        if vals.get('bzip_ids', False):
+            bzip_ids = vals['bzip_ids'][0][2]
+            bzip_objs = self.env['route.zip'].browse(bzip_ids)
+            bzip_codes = [x.name for x in bzip_objs]
             domain = [('day_id', '=', vals['day_id']),
                       ('type', '=', vals['type']),
                       ('code', '!=', vals['code'])]
@@ -167,21 +166,21 @@ class route(models.Model):
             route_objs = self.search(domain)
             if route_objs:
                 for route_obj in route_objs:
-                    for zip_c in route_obj.zip_ids:
-                        if zip_c.code in zip_codes:
+                    for bzip_c in route_obj.zip_ids:
+                        if bzip_c.name in bzip_codes:
                             raise except_orm(_('Error'),
                                              _('The zip code %s is already \
                                                assigned in the\
                                                route %s. Change it or you can \
                                                can not save the \
-                                               route' % (zip_c.code,
+                                               route' % (bzip_c.name,
                                                          route_obj.code)))
             for p_info in self.partner_ids:
                 if not p_info.partner_id.zip:
                     raise except_orm(_('Error'),
                                      _('Customer %s has not zip \
                                         code' % p_info.partner_id.name))
-                if p_info.partner_id.zip not in zip_codes:
+                if p_info.partner_id.zip not in bzip_codes:
                     raise except_orm(_('Error'),
                                      _('Zip code of customer %s (%s) not \
                                       in the route' % (p_info.partner_id.name,

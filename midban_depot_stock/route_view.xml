@@ -42,9 +42,6 @@
                                     <field name="comercial_id"/>
                                     <field name="next_dc" class="oe_line"/>
                                     <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/>
-                                    <group string="Zip Codes" colspan="2">
-                                        <field name="zip_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
-                                    </group>
                                 </group>
                                 <group string="Route details" colspan="4">
                                     <field name="detail_ids" nolabel="1">
@@ -82,6 +79,12 @@
                                 </group>
                             </page>
 
+                            <page string="Zip Codes">
+                                 <group string="Zip Codes" colspan="2">
+                                        <field name="bzip_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
+                                 </group>
+                            </page>  
+  
                             <page string="Customers">
                                 <group string="Assigned Customers">
                                     <field name="partner_ids" nolabel="1">

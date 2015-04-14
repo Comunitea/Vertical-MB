@@ -109,10 +109,10 @@ class partner_route_info(models.Model):
         route_obj = t_route.browse(route_id)
         partner_obj = t_partner.browse(partner_id)
         route_obj = t_route.browse(route_id)
-        route_zip_codes = [x.code for x in route_obj.zip_ids]
+        route_bzip_codes = [x.name for x in route_obj.bzip_ids]
         if not partner_obj.zip:
             raise except_orm(_('Error'), _('The customer has no zip code'))
-        if partner_obj.zip not in route_zip_codes:
+        if partner_obj.zip not in route_bzip_codes:
             raise except_orm(_('Error'), _('Zip code %s of customer %s \
                              is not included in the route \
                              %s' % (partner_obj.zip, partner_obj.name,
@@ -138,10 +138,10 @@ class partner_route_info(models.Model):
         if partner_id and route_id:
             partner_obj = t_partner.browse(partner_id)
             route_obj = t_route.browse(route_id)
-            route_zip_codes = [x.code for x in route_obj.zip_ids]
+            route_bzip_codes = [x.name for x in route_obj.bzip_ids]
             if not partner_obj.zip:
                 raise except_orm(_('Error'), _('The customer has no zip code'))
-            if partner_obj.zip not in route_zip_codes:
+            if partner_obj.zip not in route_bzip_codes:
                 raise except_orm(_('Error'), _('Zip code %s of customer %s \
                                  is not included in the route \
                                  %s' % (partner_obj.zip, partner_obj.name,
