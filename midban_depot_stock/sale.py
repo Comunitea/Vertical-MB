@@ -105,8 +105,16 @@ class sale_order(osv.Model):
                 detail_ids = detail_t.search(cr, uid, domain,
                                              context=context,
                                              order="date")
-                if detail_ids:
-                    detail_obj = detail_t.browse(cr, uid, detail_ids[0])
+                # Get the first detail by date whith customer in customer list
+                detail_obj = False
+                for detail in detail_t.browse(cr, uid, detail_ids, context):
+                    for cust in detail.customer_ids:
+                        if cust.customer_id.id == part.id:
+                            detail_obj = detail
+                    if detail_obj:
+                        break
+                if detail_obj:
+                    # detail_obj = detail_t.browse(cr, uid, detail_ids[0])
                     res['value']['route_detail_id'] = detail_obj.id
                     res['value']['date_planned'] = detail_obj.date + \
                         " 19:00:00"
