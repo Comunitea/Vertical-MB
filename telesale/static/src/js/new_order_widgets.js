@@ -87,6 +87,19 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order_model.set(key, value);
             this.perform_onchange(key, value);
         },
+        check_partner_routes: function(partner_id) {
+            self = this
+            var model = new instance.web.Model('res.partner');
+            model.call("any_detail_founded",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
+            .then(function(result){
+                if (!result){
+                    alert(_t("Customer has no assigned any delivery route"));
+                    self.order_model.set('partner', "");
+                    self.order_model.set('partner_code', "");
+                    self.refresh();
+                }
+            });
+        },
         perform_onchange: function(key, value) {
             if (!value) {return;}
             switch (key){
@@ -106,6 +119,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
                     this.order_model.set('contact_name', contact_obj.name);
                     this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
+                    this.check_partner_routes(partner_id);
                     this.refresh();
                     this.$('#date_invoice').focus();
                     break;
@@ -126,6 +140,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
                     this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
                     this.order_model.set('contact_name', contact_obj.name);
+                    this.check_partner_routes(partner_id);
                     this.refresh();
                     this.$('#partner_code').focus();
                     break;

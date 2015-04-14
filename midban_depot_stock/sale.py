@@ -21,7 +21,6 @@
 from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
-import time
 # from datetime import datetime, timedelta
 from openerp.exceptions import except_orm
 from openerp import api
@@ -124,38 +123,17 @@ class sale_order(osv.Model):
                                                           part,
                                                           context=context)
         partner_t = self.pool.get('res.partner')
-        detail_t = self.pool.get('route.detail')
         part = partner_t.browse(cr, uid, part, context=context)
-        # if not res['value'].get('trans_route_id', []):
-        #     if part.trans_route_id:
-        #         res['value']['trans_route_id'] = part.trans_route_id.id
 
         # Get next detail of a delivery route
         if not res['value'].get('route_detail_id', False):
-            partner_routes = [x.route_id.id for x in part.route_part_ids
-                              if x.route_id.type == 'delivery']
-
-            if partner_routes:
-                domain = [
-                    ('route_id', 'in', partner_routes),
-                    ('date', '>', time.strftime("%Y-%m-%d"))
-                ]
-                detail_ids = detail_t.search(cr, uid, domain,
-                                             context=context,
-                                             order="date")
-                # Get the first detail by date whith customer in customer list
-                detail_obj = False
-                for detail in detail_t.browse(cr, uid, detail_ids, context):
-                    for cust in detail.customer_ids:
-                        if cust.customer_id.id == part.id:
-                            detail_obj = detail
-                    if detail_obj:
-                        break
-                if detail_obj:
-                    # detail_obj = detail_t.browse(cr, uid, detail_ids[0])
-                    res['value']['route_detail_id'] = detail_obj.id
-                    res['value']['date_planned'] = detail_obj.date + \
-                        " 19:00:00"
+            detail_obj = part.get_next_route_detail()
+            if detail_obj:
+                detail_obj = detail_obj
+                # detail_obj = detail_t.browse(cr, uid, detail_ids[0])
+                res['value']['route_detail_id'] = detail_obj.id
+                res['value']['date_planned'] = detail_obj.date + \
+                    " 19:00:00"
 
         if part and not res['value'].get('route_detail_id', False):
             res['value']['route_detail_id'] = False

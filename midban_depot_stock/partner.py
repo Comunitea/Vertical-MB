@@ -165,6 +165,34 @@ class resPartner(models.Model):
     route_part_ids = fields2.One2many('partner.route.info', 'partner_id',
                                       'Assigned Routes')
 
+    @api.multi
+    def get_next_route_detail(self):
+        detail_obj = False
+        if self.route_part_ids:
+            detail_t = self.env['route.detail']
+            partner_routes = [x.route_id.id for x in self.route_part_ids
+                              if x.route_id.type == 'delivery']
+            domain = [
+                ('route_id', 'in', partner_routes),
+                ('date', '>', time.strftime("%Y-%m-%d"))
+            ]
+            detail_objs = detail_t.search(domain, order="date")
+            for detail in detail_objs:
+                for cust in detail.customer_ids:
+                    if cust.customer_id.id == self.id:
+                        detail_obj = detail
+                if detail_obj:
+                    break
+        return detail_obj
+
+    @api.multi
+    def any_detail_founded(self):
+        res = False
+        detail = self.get_next_route_detail()
+        if detail:
+            res = True
+        return res
+
 
 class res_partner(osv.Model):
     _inherit = 'res.partner'

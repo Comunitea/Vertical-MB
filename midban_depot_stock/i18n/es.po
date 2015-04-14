@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-14 10:31+0000\n"
-"PO-Revision-Date: 2015-04-14 10:31+0000\n"
+"POT-Creation-Date: 2015-04-14 16:50+0000\n"
+"PO-Revision-Date: 2015-04-14 16:50+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -436,7 +436,7 @@ msgid "Comunicate"
 msgstr "Comunica"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:227
+#: code:addons/midban_depot_stock/sale.py:253
 #, python-format
 msgid "Configuration Error!"
 msgstr "¡Error de configuración"
@@ -553,6 +553,12 @@ msgid "Customer List"
 msgstr "Listado Clientes"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:85
+#, python-format
+msgid "Customer must be assigned"
+msgstr "El cliente debe estar asignado"
+
+#. module: midban_depot_stock
 #: view:route:midban_depot_stock.route_view_form
 #: field:route,partner_ids:0
 msgid "Customers"
@@ -633,7 +639,7 @@ msgstr "Entregado con incidencia"
 #: selection:route,type:0
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Delivery"
-msgstr "Reparto"
+msgstr "Envío"
 
 #. module: midban_depot_stock
 #: model:ir.actions.report.xml,name:midban_depot_stock.action_report_delivery_list
@@ -673,7 +679,7 @@ msgid "Detail ids"
 msgstr "Detalle ids"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:147
+#: code:addons/midban_depot_stock/sale.py:173
 #, python-format
 msgid "Detail of route must be assigned to                                     confirm the order"
 msgstr "El detalle de la ruta debe estar asignado para confirmar el pedido"
@@ -781,7 +787,7 @@ msgstr "Actuando como"
 #: code:addons/midban_depot_stock/route.py:259
 #: code:addons/midban_depot_stock/route.py:290
 #: code:addons/midban_depot_stock/route.py:295
-#: code:addons/midban_depot_stock/sale.py:146
+#: code:addons/midban_depot_stock/sale.py:172
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:450
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:123
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:126
@@ -1278,7 +1284,7 @@ msgid "No customers assigned to the route"
 msgstr "Npo hay clientes asignados a la ruta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:118
+#: code:addons/midban_depot_stock/sale.py:142
 #, python-format
 msgid "No delivery routes assigned in                               the customer. You will not confirm the order"
 msgstr "No hay rutas de reparto asignadas en el cliente. No podrás confirmar el pedido"
@@ -1377,7 +1383,7 @@ msgid "Not camera defined in wizard"
 msgstr "No hay camara definida en el asistente"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:222
+#: code:addons/midban_depot_stock/sale.py:248
 #, python-format
 msgid "Not enough stock ! : "
 msgstr "¡No hay suficiente Stock ! : "
@@ -2044,8 +2050,8 @@ msgid "Selected Routes"
 msgstr "Rutas seleccionada"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:203
-#: code:addons/midban_depot_stock/partner.py:242
+#: code:addons/midban_depot_stock/partner.py:231
+#: code:addons/midban_depot_stock/partner.py:270
 #, python-format
 msgid "Selected delivery days are not in the                                  transport Route!"
 msgstr "Selected delivery days are not in the                                  transport Route!"
@@ -2221,8 +2227,14 @@ msgid "The customer has no zip code"
 msgstr "El cliente no tiene código postal"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:218
-#: code:addons/midban_depot_stock/partner.py:257
+#: code:addons/midban_depot_stock/sale.py:97
+#, python-format
+msgid "The customer is not included in the                                       customer list of detailed route                                      %s"
+msgstr "El cliente no está asignado al listado de clientes del detalle de la ruta                                      %s"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/partner.py:246
+#: code:addons/midban_depot_stock/partner.py:285
 #, python-format
 msgid "The days %s are not in the selected                                       transport route"
 msgstr "The days %s are not in the selected                                       transport route"
@@ -2246,13 +2258,13 @@ msgid "The zip code %s is already                                               
 msgstr "El código postal %s ya está asignado a la ruta %s. Cambialo o no podras guardar cambios en la ruta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:189
+#: code:addons/midban_depot_stock/partner.py:217
 #, python-format
 msgid "There is no delivery days in this customer!"
 msgstr "There is no delivery days in this customer!"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:194
+#: code:addons/midban_depot_stock/partner.py:222
 #, python-format
 msgid "There is no route days in the selected route!"
 msgstr "There is no route days in the selected route!"
@@ -2507,14 +2519,16 @@ msgid "Warehouse:"
 msgstr "Almacén:"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:188
-#: code:addons/midban_depot_stock/partner.py:193
-#: code:addons/midban_depot_stock/partner.py:202
-#: code:addons/midban_depot_stock/partner.py:217
-#: code:addons/midban_depot_stock/partner.py:241
-#: code:addons/midban_depot_stock/partner.py:256
+#: code:addons/midban_depot_stock/partner.py:216
+#: code:addons/midban_depot_stock/partner.py:221
+#: code:addons/midban_depot_stock/partner.py:230
+#: code:addons/midban_depot_stock/partner.py:245
+#: code:addons/midban_depot_stock/partner.py:269
+#: code:addons/midban_depot_stock/partner.py:284
 #: code:addons/midban_depot_stock/route.py:91
-#: code:addons/midban_depot_stock/sale.py:117
+#: code:addons/midban_depot_stock/sale.py:84
+#: code:addons/midban_depot_stock/sale.py:96
+#: code:addons/midban_depot_stock/sale.py:141
 #: code:addons/midban_depot_stock/wizard/route_orders_wizard.py:42
 #, python-format
 msgid "Warning!"
@@ -2590,7 +2604,7 @@ msgid "You must print labels first"
 msgstr "Debes imprimir las etiquetas primero"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:216
+#: code:addons/midban_depot_stock/sale.py:242
 #, python-format
 msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
 "The real stock is                           %.2f %s. (without reservations)"
