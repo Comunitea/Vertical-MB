@@ -21,6 +21,7 @@
 from openerp import models, api, fields
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
+from datetime import datetime
 
 
 class stock_transfer_details(models.TransientModel):
@@ -84,7 +85,8 @@ class stock_transfer_details(models.TransientModel):
         """
         res = False
         if not product.picking_location_id:
-            raise except_orm(_('Error!'), _('Not picking location.'))
+            raise except_orm(_('Error!'), _('Not picking location for product \
+                             %s.' % product.name))
 
         pick_loc = product.picking_location_id
         volume = self._get_volume_for(pack, prop_qty, product,
@@ -111,7 +113,10 @@ class stock_transfer_details(models.TransientModel):
         locs = loc_t.browse(free_loc_ids)
         sorted_locs = sorted(locs, key=lambda l: l.name)
         index = sorted_locs.index(prod_obj.picking_location_id)
-        new_index = index == len(sorted_locs) - 1 and index - 1 or index + 1
+        if index == (len(sorted_locs) - 1):
+            new_index = index - 1
+        else:
+            new_index = index + 1
         free_loc_ids.remove(prod_obj.picking_location_id.id)
         return sorted_locs[new_index]
 
@@ -142,7 +147,7 @@ class stock_transfer_details(models.TransientModel):
             pack = 'box'
         return [prop_qty, pack]
 
-    def _get_loc_and_qty(self, r_qty, product):
+    def _get_loc_and_qty(self, r_qty, product, multipack=False):
         """
         @parm r_qty: remaining_qty for the item considered
         @param product: product to locate
@@ -169,14 +174,17 @@ class stock_transfer_details(models.TransientModel):
         loc_obj = False
         prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
         stop = False
+        if multipack:
+            if prop_qty < r_qty:
+                stop = True
         while prop_qty and not stop:
             # Try to put in picking location
-            domain = []
+            # domain = []
             if pack == 'units' or \
                     self._is_picking_loc_available(product, prop_qty, pack):
                 loc_obj = pick_loc  # Return picking loc id
                 stop = True
-            elif pack == 'palet':
+            elif pack == 'palet' and not multipack:
                 vol_palet = self._get_volume_for(pack, prop_qty, product)
                 # domain = [('available_volume', '>', vol_palet),
                 #           ('storage_type', '=', 'standard')]
@@ -184,11 +192,10 @@ class stock_transfer_details(models.TransientModel):
                 #     pick_loc.get_locations_by_zone('storage',
                 #                                    add_domain=domain)
                 # Comentado por problemas de rendimiento con muchas ubicaciones
-                storage_loc_ids = \
-                    pick_loc.get_locations_by_zone('storage')
+                storage_loc_ids = pick_loc.get_locations_by_zone('storage')
                 if storage_loc_ids:
                     ctl = True
-                    while ctl:
+                    while ctl and storage_loc_ids:
                         loc_obj = \
                             self._search_closest_pick_location(product,
                                                                storage_loc_ids)
@@ -204,16 +211,18 @@ class stock_transfer_details(models.TransientModel):
                         stop = True
                     else:
                         prop_qty -= mantle_units  # Remove 1 mantle
-            elif pack == 'box':
+            elif pack == 'box' and not multipack:
                 vol_box = self._get_volume_for(pack, prop_qty, product)
-                domain = [('available_volume', '>', vol_box),
-                          ('storage_type', '=', 'boxes')]
-                storage_loc_ids = \
-                    pick_loc.get_locations_by_zone('storage',
-                                                   add_domain=domain)
+                # domain = [('available_volume', '>', vol_box),
+                #           ('storage_type', '=', 'boxes')]
+                # storage_loc_ids = \
+                #     pick_loc.get_locations_by_zone('storage',
+                #                                    add_domain=domain)
+                # Comentado por problemas de rendimiento con muchas ubicaciones
+                storage_loc_ids = pick_loc.get_locations_by_zone('storage')
                 if storage_loc_ids:
                     ctl = True
-                    while ctl:
+                    while ctl and storage_loc_ids:
                         loc_obj = \
                             self._search_closest_pick_location(product,
                                                                storage_loc_ids)
@@ -223,9 +232,12 @@ class stock_transfer_details(models.TransientModel):
                         else:
                             storage_loc_ids.remove(loc_obj.id)
                 stop = True
+            elif multipack:
+                stop = True
         return [loc_obj and loc_obj.id or False, prop_qty, pack]
 
-    def _create_pack_operation(self, item, loc_id, located_qty, pack):
+    def _create_pack_operation(self, item, loc_id, located_qty, pack,
+                               multipack=False):
         t_pack = self.env['stock.quant.package']
         t_ope = self.env['stock.pack.operation']
         op_vals = {
@@ -235,13 +247,18 @@ class stock_transfer_details(models.TransientModel):
             'product_uom_id': item.product_uom_id.id,
             'location_dest_id': item.destinationloc_id.id,
             'chained_loc_id': loc_id,
-            'picking_id': item.transfer_id.picking_id.id,
+            'picking_id': self.picking_id.id,
             'lot_id': item.lot_id.id,
-            'result_package_id': False
+            'result_package_id': False,
+            'owner_id': item.owner_id.id,
+            'date': item.date if item.date else datetime.now(),
         }
         if pack in ['palet', 'box']:
             pack_obj = t_pack.create({'pack_type': pack})
-            pack_name = pack == 'palet' and 'PALET' or 'CAJA'
+            if multipack:
+                pack_name = pack == 'palet' and 'M.PALET' or 'CAJA'
+            else:
+                pack_name = pack == 'palet' and 'PALET' or 'CAJA'
             new_name = pack_obj.name.replace("PACK", pack_name)
             op_vals['result_package_id'] = pack_obj.id
             pack_obj.write({'name': new_name})
@@ -268,11 +285,72 @@ class stock_transfer_details(models.TransientModel):
                 remaining_qty = -1
         return remaining_qty == 0.0 and True or False
 
+    def _get_multipack_operations(self, item_lst, pick_loc):
+        for item in item_lst:
+            product = item.product_id
+            qty = item.quantity
+        return
+
     @api.one
     def prepare_package_type_operations(self):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
+        # import ipdb; ipdb.set_trace()
+        items_to_propose = []
+        # Separate items to propose of multipacks items
         for item in self.item_ids:
+            if not item.result_package_id:
+                self.item_ids -= item  # Quit item because will be proposed
+                items_to_propose.append(item)
+
+        # for items proposed to be part of a multiproduct pack, try to locate
+        # it in picking location if it is possible.
+        for item in self.item_ids:
+            remaining_qty = item.quantity
+            product = item.product_id
+            loc_id, located_qty, pack = self._get_loc_and_qty(remaining_qty,
+                                                              product,
+                                                              multipack=True)
+            if loc_id:
+                remaining_qty -= located_qty
+                if remaining_qty:
+                    raise except_orm(_('Error'), _('More units than an entire \
+                                      palet, or entire number of mantles\
+                                      for product %s' % product.name))
+                self._create_pack_operation(item, loc_id, located_qty, pack)
+                self.item_ids -= item  # Quit item because will be proposed
+
+        # Group items with pack setted by pack
+        items_by_pack = {}
+        for item in self.item_ids:  # item_ids only with pack explicit setted
+            if item.result_package_id not in items_by_pack:
+                items_by_pack[item.result_package_id] = [item]
+            else:
+                items_by_pack[item.result_package_id].append(item)
+
+        # Check if the finally multiproducts packs proposed have products of
+        # same camera and create operations
+        for pack in items_by_pack:
+            camera_founded = False
+            # Picking location to locate the multipack closest to it
+            pick_loc_founded = False
+            for item in items_by_pack[pack]:
+                product = item.product_id
+                if not pick_loc_founded:
+                    pick_loc_founded = product.picking_location_id
+                prod_camera = product.picking_location_id.get_camera()
+                if not camera_founded:
+                    camera_founded = prod_camera
+                elif camera_founded != prod_camera:
+                    raise except_orm(_('Error!'),
+                                     _('You are trying to mount a multiproduct\
+                                        palet, with products of different \
+                                        cameras'))
+            self._get_multipack_operations(items_by_pack[pack],
+                                           pick_loc_founded)
+
+        # Get operations for monoproduct packs
+        for item in items_to_propose:
             sucess = self._propose_pack_operations(item)
             if sucess:
                 self.picking_id.write({'midban_operations': True})

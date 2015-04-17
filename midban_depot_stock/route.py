@@ -157,7 +157,7 @@ class route(models.Model):
     def create(self, vals):
         if vals.get('bzip_ids', False):
             bzip_ids = vals['bzip_ids'][0][2]
-            bzip_objs = self.env['route.zip'].browse(bzip_ids)
+            bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
             bzip_codes = [x.name for x in bzip_objs]
             domain = [('day_id', '=', vals['day_id']),
                       ('type', '=', vals['type']),

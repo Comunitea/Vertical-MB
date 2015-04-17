@@ -70,24 +70,33 @@ class stock_picking(osv.osv):
             if pick.picking_type_code == 'incoming' and \
                     pick.move_lines and pick.move_lines[0].move_dest_id:
                 related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
+                related_pick = pick.move_lines[0].move_dest_id.picking_id
+                related_pick.do_prepare_partial()
+                for op in related_pick.pack_operation_ids:
+                    pack_id = op.package_id.id
+                    for op2 in pick.pack_operation_ids:
+                        if op2.result_package_id.id == pack_id:
+                            op.write({'location_dest_id':
+                                      op2.chained_loc_id.id})
+                            break
                 # Get the correct ubication, changing each operation
-                for op in pick.pack_operation_ids:
-                    pack_id = op.result_package_id and op.result_package_id.id\
-                        or False
-                    op_vals = {
-                        'location_id': op.location_dest_id.id,
-                        'product_id': not pack_id and op.product_id.id
-                        or False,
-                        'product_qty': pack_id and 1 or op.product_qty,
-                        'product_uom_id': pack_id and False or
-                        op.product_uom_id.id,
-                        'location_dest_id': op.chained_loc_id.id,
-                        'chained_loc_id': False,
-                        'picking_id': related_pick_id,
-                        'lot_id': not pack_id and op.lot_id.id or False,
-                        'package_id': pack_id,
-                        'result_package_id': False}
-                    t_operation.create(cr, uid, op_vals, context=context)
+                # for op in pick.pack_operation_ids:
+                #     pack_id = op.result_package_id and op.result_package_id.id\
+                #         or False
+                #     op_vals = {
+                #         'location_id': op.location_dest_id.id,
+                #         'product_id': not pack_id and op.product_id.id
+                #         or False,
+                #         'product_qty': pack_id and 1 or op.product_qty,
+                #         'product_uom_id': pack_id and False or
+                #         op.product_uom_id.id,
+                #         'location_dest_id': op.chained_loc_id.id,
+                #         'chained_loc_id': False,
+                #         'picking_id': related_pick_id,
+                #         'lot_id': not pack_id and op.lot_id.id or False,
+                #         'package_id': pack_id,
+                #         'result_package_id': False}
+                #     t_operation.create(cr, uid, op_vals, context=context)
                 self.write(cr, uid, [related_pick_id],
                            {'midban_operations': True}, context=context)
         return True
