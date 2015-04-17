@@ -22,6 +22,7 @@ from openerp import models, api, fields
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 from datetime import datetime
+import math
 
 
 class stock_transfer_details(models.TransientModel):
@@ -265,7 +266,7 @@ class stock_transfer_details(models.TransientModel):
         t_ope.create(op_vals)
         return True
 
-    def _propose_pack_operations(self, item):
+    def _propose_pack_operations(self, item, multipack=False):
         """
         This method try to get a maximum pack logisic unit and a location for
         it.
@@ -276,19 +277,62 @@ class stock_transfer_details(models.TransientModel):
         remaining_qty = item.quantity
         product = item.product_id
         while remaining_qty > 0.0:
-            loc_id, located_qty, pack = self._get_loc_and_qty(remaining_qty,
-                                                              product)
+            loc_id, located_qty, pack = \
+                self._get_loc_and_qty(remaining_qty, product,
+                                      multipack=multipack)
             if loc_id and located_qty:
                 self._create_pack_operation(item, loc_id, located_qty, pack)
                 remaining_qty -= located_qty
             else:
+                if multipack:
+                    item.quantity = remaining_qty
                 remaining_qty = -1
         return remaining_qty == 0.0 and True or False
 
-    def _get_multipack_operations(self, item_lst, pick_loc):
+    def _get_multipack_operations(self, item_lst):
+        sum_heights = 0
+        width_wood = 0
+        length_wood = 0
         for item in item_lst:
             product = item.product_id
+            if product.pa_width > width_wood:
+                width_wood = product.pa_width
+                length_wood = product.pa_length
             qty = item.quantity
+            un_ca = product.un_ca
+            ca_ma = product.ca_ma
+            mantle_height = product.ma_height
+
+            mantle_units = un_ca * ca_ma
+            if qty < mantle_units:
+                raise except_orm(_('Error'),
+                                 _('You are trying to mount a multiproduct \
+                                    palet, with product %s and %s units. \
+                                    You need at least one mantle (%s \
+                                     units)' % (product.name, qty,
+                                                mantle_units)))
+            # Maximum entire mantles
+            num_mantles = math.ceil(qty / mantle_units)
+            sum_heights += num_mantles * mantle_height
+
+        vol_pack = width_wood * length_wood * sum_heights
+        pick_loc = product.picking_location_id
+        storage_loc_ids = pick_loc.get_locations_by_zone('storage')
+        if not storage_loc_ids:
+            raise except_orm(_('Error'), _('Not free space to alocate \
+                                            multiproduct pack'))
+        ctl = True
+        while ctl and storage_loc_ids:
+            loc_obj = self._search_closest_pick_location(product,
+                                                         storage_loc_ids)
+            if loc_obj.available_volume > vol_pack:
+                ctl = False
+            else:
+                storage_loc_ids.remove(loc_obj.id)
+        if not ctl:  # location founded
+            for item in item_lst:
+                self._create_pack_operation(item, loc_obj.id, item.quantity,
+                                            'palet', multipack=True)
         return
 
     @api.one
@@ -304,21 +348,11 @@ class stock_transfer_details(models.TransientModel):
                 items_to_propose.append(item)
 
         # for items proposed to be part of a multiproduct pack, try to locate
-        # it in picking location if it is possible.
+        # it in picking location all possible.
         for item in self.item_ids:
-            remaining_qty = item.quantity
-            product = item.product_id
-            loc_id, located_qty, pack = self._get_loc_and_qty(remaining_qty,
-                                                              product,
-                                                              multipack=True)
-            if loc_id:
-                remaining_qty -= located_qty
-                if remaining_qty:
-                    raise except_orm(_('Error'), _('More units than an entire \
-                                      palet, or entire number of mantles\
-                                      for product %s' % product.name))
-                self._create_pack_operation(item, loc_id, located_qty, pack)
-                self.item_ids -= item  # Quit item because will be proposed
+            done = self._propose_pack_operations(item, multipack=True)
+            if done:
+                self.item_ids -= item  # Quit item because it is alocated
 
         # Group items with pack setted by pack
         items_by_pack = {}
@@ -333,11 +367,8 @@ class stock_transfer_details(models.TransientModel):
         for pack in items_by_pack:
             camera_founded = False
             # Picking location to locate the multipack closest to it
-            pick_loc_founded = False
             for item in items_by_pack[pack]:
                 product = item.product_id
-                if not pick_loc_founded:
-                    pick_loc_founded = product.picking_location_id
                 prod_camera = product.picking_location_id.get_camera()
                 if not camera_founded:
                     camera_founded = prod_camera
@@ -346,8 +377,7 @@ class stock_transfer_details(models.TransientModel):
                                      _('You are trying to mount a multiproduct\
                                         palet, with products of different \
                                         cameras'))
-            self._get_multipack_operations(items_by_pack[pack],
-                                           pick_loc_founded)
+            self._get_multipack_operations(items_by_pack[pack])
 
         # Get operations for monoproduct packs
         for item in items_to_propose:
