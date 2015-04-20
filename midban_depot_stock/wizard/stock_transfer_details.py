@@ -254,15 +254,17 @@ class stock_transfer_details(models.TransientModel):
             'owner_id': item.owner_id.id,
             'date': item.date if item.date else datetime.now(),
         }
+        # import ipdb; ipdb.set_trace()
         if pack in ['palet', 'box']:
-            pack_obj = t_pack.create({'pack_type': pack})
             if multipack:
-                pack_name = pack == 'palet' and 'M.PALET' or 'CAJA'
+                multipack.name = 'M.' + multipack.name
+                op_vals['result_package_id'] = multipack.id
             else:
+                pack_obj = t_pack.create({'pack_type': pack})
                 pack_name = pack == 'palet' and 'PALET' or 'CAJA'
-            new_name = pack_obj.name.replace("PACK", pack_name)
-            op_vals['result_package_id'] = pack_obj.id
-            pack_obj.write({'name': new_name})
+                new_name = pack_obj.name.replace("PACK", pack_name)
+                op_vals['result_package_id'] = pack_obj.id
+                pack_obj.write({'name': new_name})
         t_ope.create(op_vals)
         return True
 
@@ -332,14 +334,15 @@ class stock_transfer_details(models.TransientModel):
         if not ctl:  # location founded
             for item in item_lst:
                 self._create_pack_operation(item, loc_obj.id, item.quantity,
-                                            'palet', multipack=True)
+                                            'palet',
+                                            multipack=item.result_package_id)
         return
 
     @api.one
     def prepare_package_type_operations(self):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
-        # import ipdb; ipdb.set_trace()
+        import ipdb; ipdb.set_trace()
         items_to_propose = []
         # Separate items to propose of multipacks items
         for item in self.item_ids:
