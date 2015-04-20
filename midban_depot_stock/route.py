@@ -129,7 +129,7 @@ class route(models.Model):
             route_objs = self.search(domain)
             if route_objs:
                 for route_obj in route_objs:
-                    for bzip_c in route_obj.zip_ids:
+                    for bzip_c in route_obj.bzip_ids:
                         if bzip_c.name in bzip_codes:
                             raise except_orm(_('Error'),
                                              _('The zip code %s is already \
@@ -166,7 +166,7 @@ class route(models.Model):
             route_objs = self.search(domain)
             if route_objs:
                 for route_obj in route_objs:
-                    for bzip_c in route_obj.zip_ids:
+                    for bzip_c in route_obj.bzip_ids:
                         if bzip_c.name in bzip_codes:
                             raise except_orm(_('Error'),
                                              _('The zip code %s is already \
