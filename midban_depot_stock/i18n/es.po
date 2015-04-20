@@ -1479,7 +1479,7 @@ msgstr "Operador:"
 #: field:customer.list,sequence:0
 #: field:partner.route.info,sequence:0
 msgid "Order"
-msgstr "Pedido"
+msgstr "Orden"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_delivery_list

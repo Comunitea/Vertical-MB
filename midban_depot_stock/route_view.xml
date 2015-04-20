@@ -89,8 +89,9 @@
                                 <group string="Assigned Customers">
                                     <field name="partner_ids" nolabel="1">
                                         <tree editable="top">
+                                            <field name="route_id" invisible="1"/>
                                             <field name="sequence"/>
-                                            <field name="partner_id"/>
+                                            <field name="partner_id" context="{'route_id': parent.id}"/>
                                             <field name="regularity"/>
                                             <field name="last_date"/>
                                             <field name="next_date"/>

@@ -193,6 +193,29 @@ class resPartner(models.Model):
             res = True
         return res
 
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        """ """
+        # import ipdb; ipdb.set_trace()
+        if self._context.get('route_id', False):
+            route_obj = self.env['route'].browse(self._context['route_id'])
+            bzip_codes = [x.name for x in route_obj.bzip_ids]
+            args.append(['zip', 'in', bzip_codes])
+        return super(resPartner, self).search(args,
+                                              offset=offset,
+                                              limit=limit,
+                                              order=order,
+                                              count=count)
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
+        # import ipdb; ipdb.set_trace()
+        if self._context.get('route_id', False):
+            recs = self.search(args)
+        return recs.name_get()
+
 
 class res_partner(osv.Model):
     _inherit = 'res.partner'
