@@ -295,11 +295,13 @@ class stock_transfer_details(models.TransientModel):
         sum_heights = 0
         width_wood = 0
         length_wood = 0
+        wood_height = 0
         for item in item_lst:
             product = item.product_id
             if product.pa_width > width_wood:
                 width_wood = product.pa_width
                 length_wood = product.pa_length
+                wood_height = product.palet_wood_height
             qty = item.quantity
             un_ca = product.un_ca
             ca_ma = product.ca_ma
@@ -317,6 +319,7 @@ class stock_transfer_details(models.TransientModel):
             num_mantles = math.ceil(qty / mantle_units)
             sum_heights += num_mantles * mantle_height
 
+        sum_heights += wood_height  # Add wood height
         vol_pack = width_wood * length_wood * sum_heights
         pick_loc = product.picking_location_id
         storage_loc_ids = pick_loc.get_locations_by_zone('storage')
@@ -342,7 +345,7 @@ class stock_transfer_details(models.TransientModel):
     def prepare_package_type_operations(self):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         items_to_propose = []
         # Separate items to propose of multipacks items
         for item in self.item_ids:

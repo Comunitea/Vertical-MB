@@ -63,7 +63,7 @@ class stock_picking(osv.osv):
         If picking is inncoming. for each operation in the pickings,
         get the location from the package
         """
-        t_operation = self.pool.get('stock.pack.operation')
+        # t_operation = self.pool.get('stock.pack.operation')
         if context is None:
             context = {}
         for pick in self.browse(cr, uid, ids, context=context):
@@ -191,32 +191,79 @@ class stock_package(osv.osv):
         t_loc = self.pool.get('stock.location')
         for pack in self.browse(cr, uid, ids, context=context):
             volume = 0.0
-            if pack.product_id:
-                prod = pack.product_id
-                loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
-                                            context=context)
-                if pack.pack_type:  # Get volume of box,palet
-                    if pack.pack_type == 'box':
-                        volume = prod.ca_width * \
-                            prod.ca_height * prod.ca_length
-                    # elif pack.pack_type in ['palet', 'var_palet']:
-                    elif pack.pack_type == 'palet':
-                        num_mant = pack.num_mantles
-                        width_wood = prod.pa_width
-                        length_wood = prod.pa_length
-                        height_mant = prod.ma_height
-                        wood_height = prod.palet_wood_height
-                        if loc_dest_obj.zone == 'picking':
-                            wood_height = 0  # No wood in picking location
-                        height_var_pal = (num_mant * height_mant) + wood_height
-                        volume = width_wood * length_wood * height_var_pal
-                if not volume:  # Get volume of individual units
-                    volume = pack.product_id.un_width * \
-                        pack.product_id.un_height * \
-                        pack.product_id.un_length * \
-                        pack.packed_qty
-            res[pack.id] = volume
+            # if pack.product_id:
+            #     prod = pack.product_id
+            #     loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
+            #                                 context=context)
+            #     if pack.pack_type:  # Get volume of box,palet
+            #         if pack.pack_type == 'box':
+            #             volume = prod.ca_width * \
+            #                 prod.ca_height * prod.ca_length
+            #         # elif pack.pack_type in ['palet', 'var_palet']:
+            #         elif pack.pack_type == 'palet':
+            #             num_mant = pack.num_mantles
+            #             width_wood = prod.pa_width
+            #             length_wood = prod.pa_length
+            #             height_mant = prod.ma_height
+            #             wood_height = prod.palet_wood_height
+            #             if loc_dest_obj.zone == 'picking':
+            #                 wood_height = 0  # No wood in picking location
+            #             height_var_pal = (num_mant * height_mant) + wood_height
+            #             volume = width_wood * length_wood * height_var_pal
+            #     if not volume:  # Get volume of individual units
+            #         volume = pack.product_id.un_width * \
+            #             pack.product_id.un_height * \
+            #             pack.product_id.un_length * \
+            #             pack.packed_qty
+            # res[pack.id] = volume
 
+            loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
+                                        context=context)
+            if pack.pack_type == 'box':  # No multiproduct
+                prod = pack.product_id
+                volume = prod.ca_width * prod.ca_height * prod.ca_length
+            elif pack.pack_type == 'palet':  # Maybe multiproduct
+                quants_by_prod = {}
+                # Group quants inside the package by product
+                for quant in pack.quant_ids:
+                    product = quant.product_id
+                    if product not in quants_by_prod:
+                        quants_by_prod[product] = [quant]
+                    else:
+                        quants_by_prod.append(quant)
+
+                # Get total height, grouping mantles by product
+                width_wood = 0
+                length_wood = 0
+                sum_heights = 0
+                wood_height = 0
+                for product in quants_by_prod:
+                    # Get product with maximun base by the width
+                    if product.pa_width > width_wood:
+                        width_wood = product.pa_width
+                        length_wood = product.pa_length
+                        wood_height = product.palet_wood_height
+                    quant_lst = quants_by_prod[prod]
+                    qty = 0
+                    for quant in quant_lst:
+                        qty += quant.qty
+
+                    mantle_units = product.un_ca * product.ca_ma
+                    num_mantles = math.ceil(qty / mantle_units)
+                    mantle_height = product.ma_height
+                    sum_heights += num_mantles * mantle_height
+
+                # No wood in picking location, it will be added later
+                if loc_dest_obj.zone == 'picking':
+                    wood_height = 0
+                sum_heights += wood_height  # Add wood height
+                volume = width_wood * length_wood * sum_heights
+            # else:  # Only units but I think never is the case. Not make sense
+            #     volume = pack.product_id.un_width * \
+            #         pack.product_id.un_height * \
+            #          pack.product_id.un_length * \
+            #          pack.packed_qty
+            res[pack.id] = volume
         return res
 
     _columns = {
@@ -490,8 +537,37 @@ class stock_location(osv.Model):
                 ('picking_id.state', 'in', ['assigned'])
             ]
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
+            # for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
+            #     volume += ope.volume
+            ops_by_pack = {}
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
-                volume += ope.volume
+                if ope.result_package_id and not ope.package_id:
+                    pack = ope.result_package_id
+                    if pack not in ops_by_pack:
+                        ops_by_pack[ope.result_package_id] = [ope]
+                    else:
+                        ops_by_pack[ope.result_package_id].append(ope)
+                elif ope.package_id and not ope.result_package_id:
+                    volume += ope.package_id.volume  # only monoproducts pack
+
+            for pack in ops_by_pack:  # For multiproducts packs
+                ops_lst = ops_by_pack[pack]
+                sum_heights = 0
+                width_wood = 0
+                length_wood = 0
+                # wood_height = 0
+                for ope in ops_lst:
+                    product = ope.product_id
+                    if product.pa_width > width_wood:
+                        width_wood = product.pa_width
+                        length_wood = product.pa_length
+                        # wood_height = product.palet_wood_height
+                    qty = ope.product_qty
+                    mantle_units = product.un_ca * product.ca_ma
+                    num_mantles = math.ceil(qty / mantle_units)
+                    mantle_height = product.ma_height
+                    sum_heights += num_mantles * mantle_height
+                volume += width_wood * length_wood * sum_heights
 
             cond1 = loc.zone == 'picking'
             cond2 = quant_ids or operation_ids
