@@ -217,7 +217,7 @@ class resPartner(models.Model):
                                                   limit=limit)
         if self._context.get('route_id', False):
             recs = self.search(args)
-            res = recs.name_get
+            res = recs.name_get()
         return res
 
 
