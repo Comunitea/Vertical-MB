@@ -41,7 +41,8 @@ class stock_transfer_details(models.TransientModel):
         ca_ma = product.ca_ma
         mantle_units = un_ca * ca_ma
         if pack == 'palet':
-            num_mant = prop_qty // mantle_units
+            # num_mant = prop_qty // mantle_units
+            num_mant = math.ceil(prop_qty / mantle_units)
             width_wood = product.pa_width
             length_wood = product.pa_length
             height_mant = product.ma_height
@@ -175,6 +176,7 @@ class stock_transfer_details(models.TransientModel):
         loc_obj = False
         prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
         stop = False
+        # import ipdb; ipdb.set_trace()
         if multipack:
             if prop_qty < r_qty:
                 stop = True
@@ -257,7 +259,9 @@ class stock_transfer_details(models.TransientModel):
         # import ipdb; ipdb.set_trace()
         if pack in ['palet', 'box']:
             if multipack:
-                multipack.name = 'M.' + multipack.name
+                if not multipack.pack_type:  # First time
+                    multipack.name = 'M.' + multipack.name
+                    multipack.pack_type = 'palet'  # new api, it is a write
                 op_vals['result_package_id'] = multipack.id
             else:
                 pack_obj = t_pack.create({'pack_type': pack})
@@ -276,6 +280,7 @@ class stock_transfer_details(models.TransientModel):
         removing mantle by mantle and trying to find available space.
         If not space for a mantle, location cant be founded and return False
         """
+        # import ipdb; ipdb.set_trace()
         remaining_qty = item.quantity
         product = item.product_id
         while remaining_qty > 0.0:
@@ -316,7 +321,7 @@ class stock_transfer_details(models.TransientModel):
                                      units)' % (product.name, qty,
                                                 mantle_units)))
             # Maximum entire mantles
-            num_mantles = math.ceil(qty / mantle_units)
+            num_mantles = int(math.ceil(qty / mantle_units))
             sum_heights += num_mantles * mantle_height
 
         sum_heights += wood_height  # Add wood height
