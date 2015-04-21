@@ -61,8 +61,7 @@ class partner_route_info(models.Model):
 
     sequence = fields2.Integer('Order')
     partner_id = fields2.Many2one('res.partner', 'Customer',
-                                  domain=[('customer', '=', True)],
-                                  required=True)
+                                  domain=[('customer', '=', True)])
     regularity = fields2.Selection([('1_week', '1 Week'),
                                     ('2_week', '2 Weeks'),
                                     ('3_week', '3 Weeks'),
@@ -72,7 +71,7 @@ class partner_route_info(models.Model):
                              readonly=False)
     next_date = fields2.Date('Next Date', compute='_compute_dates',
                              readonly=False)
-    route_id = fields2.Many2one('route', 'Route', required=True)
+    route_id = fields2.Many2one('route', 'Route')
 
     @api.one
     def _recalculate_routes(self, route_new, route_old):
