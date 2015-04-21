@@ -212,9 +212,13 @@ class resPartner(models.Model):
         args = args or []
         recs = self.browse()
         # import ipdb; ipdb.set_trace()
+        res = super(resPartner, self).name_search(name, args=args,
+                                                  operator=operator,
+                                                  limit=limit)
         if self._context.get('route_id', False):
             recs = self.search(args)
-        return recs.name_get()
+            res = recs.name_get
+        return res
 
 
 class res_partner(osv.Model):
