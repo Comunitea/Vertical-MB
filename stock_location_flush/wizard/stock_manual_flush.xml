@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="stock_location_manual_flush_form" model="ir.ui.view">
+            <field name="name">stock.location.manual.flush.form</field>
+            <field name="model">stock.location.manual.flush</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Manual flush">
+                    <group>
+                        <field name="from_location" domain="[('location_flush_dest', '!=', False)]"/>
+                    </group>
+                    <button string="Flush" name="flush" type="object" icon="gtk-ok"/>
+                    <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Manual flush"
+            res_model="stock.location.manual.flush"
+            view_id="stock_location_manual_flush_form"
+            view_mode="form"
+            target="new"
+            id="stock_manual_flush_action"/>
+
+        <menuitem id="stock_manual_flush_menu" name="Manual flush" string="Manual flush"
+            action="stock_manual_flush_action" parent="stock.menu_stock_configuration"/>
+
+    </data>
+</openerp>
+

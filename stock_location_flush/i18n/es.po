@@ -1,0 +1,86 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * stock_location_flush
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-09 08:12+0000\n"
+"PO-Revision-Date: 2015-04-09 08:12+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_location_flush
+#: view:stock.location.manual.flush:stock_location_flush.stock_location_manual_flush_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: stock_location_flush
+#: field:stock.location.manual.flush,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: stock_location_flush
+#: field:stock.location.manual.flush,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: stock_location_flush
+#: view:stock.location.manual.flush:stock_location_flush.stock_location_manual_flush_form
+msgid "Flush"
+msgstr "Vaciar"
+
+#. module: stock_location_flush
+#: field:stock.location,location_flush_dest:0
+msgid "Flush location"
+msgstr "Localización de vacío"
+
+#. module: stock_location_flush
+#: field:stock.location.manual.flush,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: stock_location_flush
+#: model:ir.model,name:stock_location_flush.model_stock_location
+msgid "Inventory Locations"
+msgstr "Ubicaciones de inventario"
+
+#. module: stock_location_flush
+#: field:stock.location.manual.flush,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: stock_location_flush
+#: field:stock.location.manual.flush,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: stock_location_flush
+#: code:addons/stock_location_flush/stock.py:36
+#, python-format
+msgid "Location %s not have flush destination"
+msgstr "La ubicación %s no tiene una ubicación de vacío"
+
+#. module: stock_location_flush
+#: code:addons/stock_location_flush/stock.py:35
+#, python-format
+msgid "Location error"
+msgstr "Error de ubicación"
+
+#. module: stock_location_flush
+#: field:stock.location.manual.flush,from_location:0
+msgid "Location to flush"
+msgstr "Ubicación a vaciar"
+
+#. module: stock_location_flush
+#: model:ir.actions.act_window,name:stock_location_flush.stock_manual_flush_action
+#: model:ir.ui.menu,name:stock_location_flush.stock_manual_flush_menu
+#: view:stock.location.manual.flush:stock_location_flush.stock_location_manual_flush_form
+msgid "Manual flush"
+msgstr "Vaciar ubicación manualmente"
+
