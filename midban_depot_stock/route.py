@@ -193,6 +193,15 @@ class route(models.Model):
         self.state = 'active'
 
     @api.multi
+    def copy(self, default=None):
+        res = super(route, self).copy(default=default)
+        # create a new partner_info model equals to the old
+        for p_info in self.partner_ids:
+            new_p_info = p_info.copy()
+            new_p_info.route_id = res.id
+        return res
+
+    @api.multi
     def set_draft(self):
         self.state = 'draft'
 
