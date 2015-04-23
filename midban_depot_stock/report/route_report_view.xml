@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_route_report_graph" model="ir.ui.view">
+         <field name="name">view.route.report.graph</field>
+         <field name="model">route.report</field>
+         <field name="arch" type="xml">
+             <graph string="Route Analysis" type="pivot" stacked="True">
+                 <field name="route_id" type="row"/>
+                 <field name="date" interval="month" type="col"/>
+                 <field name="count_visits" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+   <!--  <record id="view_route_report_tree" model="ir.ui.view">
+            <field name="name">view.route.report.tree</field>
+            <field name="model">route.report</field>
+            <field name="arch" type="xml">
+                <tree string="Route Analysis">
+                    <field name="customer_id"/>
+                    <field name="result"/>
+                    <field name="route_id"/>
+                    <field name="date"/>
+                    <field name="detail_state"/>
+                 <field name="comercial_id"/>
+                    <field name="route_day_id"/>
+                    <field name="route_type"/>
+                    <field name="route_state"/>
+                </tree>
+            </field>
+    </record> -->
+
+    <record id="view_route_report_search" model="ir.ui.view">
+         <field name="name">view.route.report.search</field>
+         <field name="model">route.report</field>
+         <field name="arch" type="xml">
+             <search string="Sales Analysis">
+                <field name="customer_id"/>
+                <field name="result"/>
+                <field name="route_id"/>
+                <field name="date"/>
+                <field name="detail_state"/>
+                <field name="comercial_id"/>
+                <field name="route_day_id"/>
+                <field name="route_type"/>
+                <field name="route_state"/>
+                <separator/>
+                <filter string="This Year" name="year" invisible="1" domain="[('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                <filter name="Quotations" domain="[('state','in',('draft','sent'))]"/>
+                <filter name="Sales" string="Sales" domain="[('state','not in',('draft','sent','cancel'))]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" context="{'group_by':'customer_id'}"/>
+                    <filter string="Result Visit" context="{'group_by':'result'}"/>
+                    <filter string="Route" context="{'group_by':'route_id'}"/>
+                    <filter string="Date" context="{'group_by':'date'}"/>
+                    <filter string="Detail State" context="{'group_by':'detail_state'}"/>
+                    <filter string="Comercial" context="{'group_by':'comercial_id'}"/>
+                    <filter string="Route day" context="{'group_by':'route_day_id'}"/>
+                    <filter string="Route Type" context="{'group_by':'route_type'}"/>
+                    <filter string="Route State" context="{'group_by':'route_state'}"/>
+                    <separator/>
+                    <filter string="Order Month" context="{'group_by':'date:month'}" help="Ordered date of the sales order"/>
+                </group>
+            </search>
+         </field>
+    </record>
+
+    <record id="action_route_report" model="ir.actions.act_window">
+        <field name="name">Route Analysis</field>
+        <field name="res_model">route.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="search_view_id" ref="view_route_report_search"/>
+        <field name="view_id" ref="view_route_report_graph"/>
+       <!--  <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field> -->
+        <field name="help">This report performs analysis on your routes.</field>
+    </record>
+
+    <menuitem action="action_route_report" id="menu_routes_report" name="Route Analysis" sequence="3" parent="menu_stock_vehicle_route_mgmt"/>
+</data>
+</openerp>

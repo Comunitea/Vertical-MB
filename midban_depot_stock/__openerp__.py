@@ -43,6 +43,7 @@
         "midban_issue",
         "price_system_variable",
         "l10n_es_toponyms",
+        "report",
     ],
     "data": [
         'res_users_view.xml',
@@ -79,6 +80,7 @@
         "qweb_report/report_supplier_order.xml",
         "qweb_report/report_supplier_reception.xml",
         "report/wave_report_view.xml",
+        "report/route_report_view.xml",
         "report/out_picking_report_view.xml",
     ],
     "demo": [],
