@@ -36,7 +36,7 @@
          <field name="name">view.route.report.search</field>
          <field name="model">route.report</field>
          <field name="arch" type="xml">
-             <search string="Sales Analysis">
+             <search string="Route Analysis">
                 <field name="customer_id"/>
                 <field name="result"/>
                 <field name="route_id"/>
@@ -48,8 +48,8 @@
                 <field name="route_state"/>
                 <separator/>
                 <filter string="This Year" name="year" invisible="1" domain="[('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]"/>
-                <filter name="Quotations" domain="[('state','in',('draft','sent'))]"/>
-                <filter name="Sales" string="Sales" domain="[('state','not in',('draft','sent','cancel'))]"/>
+                <filter string="Sale done" domain="[('result','=','sale_done')]"/>
+                <filter string="Visited without order" domain="[('result','=','visited_no_order')]"/>
                 <separator/>
                 <group expand="1" string="Group By">
                     <filter string="Customer" context="{'group_by':'customer_id'}"/>
@@ -62,7 +62,7 @@
                     <filter string="Route Type" context="{'group_by':'route_type'}"/>
                     <filter string="Route State" context="{'group_by':'route_state'}"/>
                     <separator/>
-                    <filter string="Order Month" context="{'group_by':'date:month'}" help="Ordered date of the sales order"/>
+                    <filter string="Order Month" context="{'group_by':'date:month'}"/>
                 </group>
             </search>
          </field>
