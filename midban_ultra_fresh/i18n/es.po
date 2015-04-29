@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_ultra_fresh
+#   * midban_ultra_fresh
 #
 msgid ""
 msgstr ""
@@ -70,7 +70,7 @@ msgstr "Cancelar"
 #. module: midban_ultra_fresh
 #: model:ir.ui.menu,name:midban_ultra_fresh.change_ultrafresh_pvp_menu
 msgid "Change Ultrafresh PVP"
-msgstr "Cambiar ultrafresocos PVP"
+msgstr "Cambiar ultrafrescos PVP"
 
 #. module: midban_ultra_fresh
 #: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
