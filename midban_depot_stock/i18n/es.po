@@ -178,7 +178,7 @@ msgstr "Nada pendiente de picking"
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Approve operations"
-msgstr "Aprovar operaciones"
+msgstr "Aprobar operaciones"
 
 #. module: midban_depot_stock
 #: view:res.users:midban_depot_stock.view_users_operator_form

@@ -48,8 +48,12 @@ class stock_task(osv.Model):
                                   'State', readonly=True, required=True),
         'picking_id': fields.many2one('stock.picking', 'Picking',
                                       readonly=True),
-        'machine_id': fields.many2one('stock.machine', 'Machine', readonly=True),
-        'wave_id': fields.many2one('stock.picking.wave', 'Wave', readonly=True)
+        'machine_id': fields.many2one('stock.machine', 'Machine',
+                                      readonly=True),
+        'wave_id': fields.many2one('stock.picking.wave', 'Wave',
+                                   readonly=True),
+        'operation_ids': fields.one2many('stock.pack.operation', 'task_id',
+                                         'Operations', readonly=True)
     }
     _defaults = {
         'state': 'assigned',
