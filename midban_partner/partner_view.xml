@@ -10,12 +10,12 @@
             <field name="arch" type="xml">
                 <xpath expr="/form[@string='Partners']/sheet" position="before">
                     <header>
-                        <button name="logic_validated" string="Logistic Validated" attrs="{'invisible': [('state2','in',['commercial_pending','validated','registered','unregistered'])]}" class="oe_highlight"/>   
+                        <button name="logic_validated" string="Logistic Validated" attrs="{'invisible': [('state2','in',['commercial_pending','validated','registered','unregistered'])]}" class="oe_highlight"/>
                         <button name="commercial_validated" string="Commercial Validated" attrs= "{'invisible': [('state2','in',['logic_pending','validated','registered','unregistered'])]}" class="oe_highlight"/>
                         <button name="back_pending" string="Back" attrs="{'invisible': [('state2','in',['val_pending','registered','unregistered'])]}" />
                         <button name="active" string="Register" attrs="{'invisible': [('state2','!=','validated')]}" class="oe_highlight"/>
-                        <field name="state2" widget="statusbar"/> 
-                        <field name="supplier" invisible="1"/> 
+                        <field name="state2" widget="statusbar"/>
+                        <field name="supplier" invisible="1"/>
                     </header>
                 </xpath>
                 <field name="parent_id" position="before">
@@ -25,7 +25,7 @@
                                     class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>
                         <button name="register_again" string="Register"
                                     type="object"
-                                    class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>   
+                                    class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
                     </div>
                 </field>
                 <notebook position="inside">
@@ -119,18 +119,27 @@
                 </field>
             </field>
         </record>
-        
+
         <!-- Client/Supplier search view.Add filters to search unregistered and in register process partners -->
         <record id="midban_view_res_partner_filter" model="ir.ui.view">
             <field name="name">midban.res.partner.select</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
-                   <filter name="supplier" position="after">
-                         <separator/>
-                         <filter string="Unregistered" name="unregistered_partner" domain="[('state2','=','unregistered'),('active','=',False)]"/>
-                         <filter string="In registering process" name="partnert_registering" domain="[('state2','in',['val_pending','commercial_pending','logic_pending','validated']),('active','=',False)]"/>
-                   </filter>                  
+                <field name="name" position="replace">
+                    <field name="name"
+                       filter_domain="['|','|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self),('comercial','ilike',self)]"/>
+                       <field name="street" filter_domain="['|',('street','ilike',self),('street2','ilike',self)]"/>
+                       <field name="city"/>
+                       <field name="state_id"/>
+                       <field name="zip"/>
+                       <field name="country_id"/>
+                </field>
+               <filter name="supplier" position="after">
+                     <separator/>
+                     <filter string="Unregistered" name="unregistered_partner" domain="[('state2','=','unregistered'),('active','=',False)]"/>
+                     <filter string="In registering process" name="partnert_registering" domain="[('state2','in',['val_pending','commercial_pending','logic_pending','validated']),('active','=',False)]"/>
+               </filter>
             </field>
         </record>
 
@@ -146,7 +155,7 @@
                                 class="oe_link" attrs="{'invisible': [('state2','!=','registered')]}"/>
                     <button name="register_again" string="Register"
                                 type="object"
-                                class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>   
+                                class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
                 </xpath>
             </field>
         </record> -->
