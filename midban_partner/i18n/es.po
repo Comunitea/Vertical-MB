@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_partner
+#   * midban_partner
 #
 msgid ""
 msgstr ""
@@ -96,6 +96,12 @@ msgstr "Franja Horaria Días de llamada"
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
 msgid "Cancel"
 msgstr "Cancelar"
+
+#. module: midban_partner
+#: code:addons/midban_partner/partner.py:261
+#, python-format
+msgid "Cannot activate a customer without vat"
+msgstr "No se puede activar un cliente sin nif"
 
 #. module: midban_partner
 #: code:addons/midban_partner/partner.py:249

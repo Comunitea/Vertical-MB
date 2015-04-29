@@ -41,14 +41,14 @@
              <field name="flow_stop">True</field>
             <field name="action">act_active()</field>
         </record>
-        
+
          <!-- TRANSITIONS -->
         <record id="trans_validate_to_commercial" model="workflow.transition">
             <field name="act_from" ref="act_validate_pending"/>
             <field name="act_to" ref="act_commercial_pending"/>
             <field name="signal">logic_validated</field>
         </record>
-        
+
         <record id="trans_validate_to_logic" model="workflow.transition">
             <field name="act_from" ref="act_validate_pending"/>
             <field name="act_to" ref="act_logic_pending"/>
@@ -84,6 +84,6 @@
             <field name="act_to" ref="act_validate_pending"/>
             <field name="signal">back_pending</field>
         </record>
-        
+
     </data>
 </openerp>

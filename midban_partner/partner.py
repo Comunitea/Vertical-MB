@@ -21,7 +21,7 @@
 from openerp.osv import osv, fields
 import time
 from openerp.tools.translate import _
-from openerp import workflow
+from openerp import workflow, exceptions
 
 
 class supplier_transport(osv.Model):
@@ -255,6 +255,10 @@ class res_partner(osv.Model):
         """ Fix state in registered, partner active,
             update history. It's a flow method"""
         for partner in self.pool.get("res.partner").browse(cr, uid, ids):
+            if partner.customer and not partner.vat:
+                raise exceptions.Warning(
+                    _('Partner error'),
+                    _('Cannot activate a customer without vat'))
             message = _("Registered")
             self._update_history(cr, uid, ids, context, partner, message)
             partner.write({'state2': 'registered', 'active': True})
