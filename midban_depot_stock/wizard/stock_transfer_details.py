@@ -408,3 +408,9 @@ class stock_transfer_details(models.TransientModel):
             related_pick.do_prepare_partial()
             related_pick.write({'midban_operations': True})
         return res
+
+class stock_transfer_details_items(models.TransientModel):
+    _inherit = 'stock.transfer_details_items'
+
+    life_date = fields.Datetime('Life date',
+                                related='lot_id.life_date')

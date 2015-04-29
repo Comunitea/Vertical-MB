@@ -38,6 +38,7 @@
         "procurement",
         "purchase",
         "product",
+        "product_expiry",
         "midban_partner",
         "midban_product",
         "midban_issue",

@@ -12,6 +12,9 @@
                     <button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('midban_operations', '=', True), ('picking_type_code', '!=', 'incoming')]}"/>
                     <button name="do_detailed_transfer" string="_Apply" type="object" attrs="{'invisible': [('midban_operations', '=', True)]}"/>
                 </button>
+                <field name="lot_id" position="after">
+                    <field name="life_date"/>
+                </field>
             </field>
         </record>
 
