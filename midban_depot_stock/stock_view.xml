@@ -299,5 +299,28 @@
                 </group>
             </field>
         </record>
+
+        <record id="view_stock_config_settings_custom" model="ir.ui.view">
+            <field name="name">stock settings custom</field>
+            <field name="model">stock.config.settings</field>
+            <field name="inherit_id" ref="stock.view_stock_config_settings"/>
+            <field name="arch" type="xml">
+                <separator string="Traceability" position="before">
+                    <group string="Routes">
+                        <label for="id" string="Routering configuration"/>
+                        <div>
+                            <div>
+                                <field name="check_route_zip" class="oe_inline"/>
+                                <label for= "check_route_zip"/>
+                            </div>
+                            <div>
+                                <field name="check_customer_comercial" class="oe_inline"/>
+                                <label for= "check_customer_comercial"/>
+                            </div>
+                        </div>    
+                    </group>     
+                </separator>
+            </field>
+         </record>
     </data>
 </openerp>

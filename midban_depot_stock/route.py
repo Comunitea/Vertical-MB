@@ -98,16 +98,8 @@ class route(models.Model):
                             not_check_more = True
                     if not_check_more:
                         break
-            for p_info in self.partner_ids:
-                if not p_info.partner_id.zip:
-                    raise except_orm(_('Error'),
-                                     _('Customer %s has not zip \
-                                        code' % p_info.partner_id.name))
-                if p_info.partner_id.zip not in bzip_codes:
-                    raise except_orm(_('Error'),
-                                     _('Zip code of customer %s (%s) not \
-                                      in the route' % (p_info.partner_id.name,
-                                                       p_info.partner_id.zip)))
+        # Check only if configured
+        # self._check_partner_zip_in_route(force=True)
         if warning:
             res['warning'] = warning
         return res
@@ -118,6 +110,7 @@ class route(models.Model):
         Overwrite to Check there is no same zip code in a route of same day
         and same type.
         """
+        # import ipdb; ipdb.set_trace()
         if vals.get('bzip_ids', False):
             bzip_ids = vals['bzip_ids'][0][2]
             bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
@@ -138,23 +131,12 @@ class route(models.Model):
                                                can not save th \
                                                route' % (bzip_c.name,
                                                          route_obj.code)))
-
-            for p_info in self.partner_ids:
-                    if not p_info.partner_id.zip:
-                        raise except_orm(_('Error'),
-                                         _('Customer %s has not zip \
-                                            code' % p_info.partner_id.name))
-                    if p_info.partner_id.zip not in bzip_codes:
-                        raise except_orm(_('Error'),
-                                         _('Zip code of customer %s (%s) not \
-                                          in the \
-                                          route' % (p_info.partner_id.name,
-                                                    p_info.partner_id.zip)))
         res = super(route, self).write(vals)
         return res
 
     @api.model
     def create(self, vals):
+        # import ipdb; ipdb.set_trace()
         if vals.get('bzip_ids', False):
             bzip_ids = vals['bzip_ids'][0][2]
             bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
@@ -175,16 +157,7 @@ class route(models.Model):
                                                can not save the \
                                                route' % (bzip_c.name,
                                                          route_obj.code)))
-            for p_info in self.partner_ids:
-                if not p_info.partner_id.zip:
-                    raise except_orm(_('Error'),
-                                     _('Customer %s has not zip \
-                                        code' % p_info.partner_id.name))
-                if p_info.partner_id.zip not in bzip_codes:
-                    raise except_orm(_('Error'),
-                                     _('Zip code of customer %s (%s) not \
-                                      in the route' % (p_info.partner_id.name,
-                                                       p_info.partner_id.zip)))
+        self._check_partner_zip_in_route()
         res = super(route, self).create(vals)
         return res
 

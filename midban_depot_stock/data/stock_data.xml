@@ -21,5 +21,16 @@
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
+
+         <!-- Parametres for routes configuration -->
+        <record id="check_route_zip" model="ir.config_parameter">
+            <field name="key">check.route.zip</field>
+            <field name="value">False</field>
+        </record>
+
+        <record id="check_customer_comercial" model="ir.config_parameter">
+            <field name="key">check.customer.comercial</field>
+            <field name="value">False</field>
+        </record>
     </data>
 </openerp>

@@ -73,6 +73,54 @@ class partner_route_info(models.Model):
                              readonly=False)
     route_id = fields2.Many2one('route', 'Route')
 
+    @api.onchange('partner_id', 'route_id')
+    @api.multi
+    def onchange_partner_id(self):
+        """
+        Warning if you select a customer which zip code is not in the route
+        zip codes list.
+        The if configurations let it you will be able to save the route.
+        """
+        res = {}
+        warning = False
+        if self.partner_id and self.route_id:
+            if self.route_id.bzip_ids:
+                bzip_codes = [x.name for x in self.route_id.bzip_ids]
+                if not self.partner_id.zip:
+                    warning = {
+                        'title': _('Warning!'),
+                        'message': _('Customer %s must have a zip code. \
+                                     ' % self.partner_id.name),
+                    }
+                elif self.partner_id.zip not in bzip_codes:
+                    warning = {
+                        'title': _('Warning!'),
+                        'message': _('The zip code %s is not in the route zip \
+                                      codes list' % self.partner_id.zip),
+                    }
+            if self.route_id.type not in ['telesale', 'delivery']:
+                route_obj = self.env['route'].search([('name', '=',
+                                                     self.route_id.name)])
+                if route_obj:
+                    domain = [
+                        ('route_id', '!=', route_obj.id),
+                        ('partner_id', '=', self.partner_id.id),
+                        ('route_id.type', 'not in', ['telesale', 'delivery']),
+                        ('route_id.comercial_id', '!=',
+                            self.route_id.comercial_id.id),
+                    ]
+                    info_objs = self.search(domain)
+                    if info_objs:
+                        warning = {
+                            'title': _('Warning!'),
+                            'message': _('Customer %s is asigned to a route of \
+                                          other comercial' %
+                                         self.partner_id.name),
+                        }
+        if warning:
+            res['warning'] = warning
+        return res
+
     @api.one
     def _recalculate_routes(self, route_new, route_old):
         routes = []
@@ -93,10 +141,30 @@ class partner_route_info(models.Model):
                 route.calc_route_details(today, last_date, False)
         return
 
+    @api.multi
+    def _get_route_settings(self):
+        """
+        Returns a dict with configuration values
+        """
+        res = {}
+        domain = [('key', '=', 'check.route.zip')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        if param_obj:
+            value = True if param_obj.value == 'True' else False
+            res['check_route_zip'] = value
+
+        domain = [('key', '=', 'check.customer.comercial')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        if param_obj:
+            value = True if param_obj.value == 'True' else False
+            res['check_customer_comercial'] = value
+        return res
+
     @api.one
     def write(self, vals):
         """
-        Overwrite to Check there if partnerzip code is in route zip code
+        Overwrite to Check there if partnerzip code is in route zip code, if
+        configured like that
         """
         t_route = self.env['route']
         t_partner = self.env['res.partner']
@@ -109,13 +177,34 @@ class partner_route_info(models.Model):
         partner_obj = t_partner.browse(partner_id)
         route_obj = t_route.browse(route_id)
         route_bzip_codes = [x.name for x in route_obj.bzip_ids]
-        if not partner_obj.zip:
-            raise except_orm(_('Error'), _('The customer has no zip code'))
-        if partner_obj.zip not in route_bzip_codes:
-            raise except_orm(_('Error'), _('Zip code %s of customer %s \
-                             is not included in the route \
-                             %s' % (partner_obj.zip, partner_obj.name,
-                                    route_obj.name)))
+        settings = self._get_route_settings()
+        # Check if customer zip is in route zips list
+        check_zips = settings.get('check_route_zip', False)
+        if check_zips:
+            if not partner_obj.zip:
+                raise except_orm(_('Error'), _('The customer has no zip code'))
+            if partner_obj.zip not in route_bzip_codes:
+                raise except_orm(_('Error'), _('Zip code %s of customer %s \
+                                 is not included in the route \
+                                 %s' % (partner_obj.zip, partner_obj.name,
+                                        route_obj.name)))
+
+        check_customers = settings.get('check_customer_comercial', False)
+        # Check if there is no other route with same client and different
+        # Comercial
+        if check_customers:
+            domain = [
+                ('route_id', '!=', route_obj.id),
+                ('partner_id', '=', partner_obj.id),
+                ('route_id.type', 'not in', ['telesale', 'delivery']),
+                ('route_id.comercial_id', '!=',
+                    self.route_id.comercial_id.id),
+            ]
+            info_objs = self.search(domain)
+            if info_objs:
+                raise except_orm(_('Error'),
+                                 _('Customer %s is asigned to a route of \
+                                    other comercial' % partner_obj.name))
         old_route = False
         if vals.get('route_id', False) and self.route_id:
             old_route = self.route_id
@@ -126,7 +215,8 @@ class partner_route_info(models.Model):
     @api.model
     def create(self, vals):
         """
-        Overwrite to Check there if partnerzip code is in route zip code
+        Overwrite to Check there if partnerzip code is in route zip code, if
+        configured like that
         """
         t_route = self.env['route']
         t_partner = self.env['res.partner']
@@ -138,14 +228,38 @@ class partner_route_info(models.Model):
             partner_obj = t_partner.browse(partner_id)
             route_obj = t_route.browse(route_id)
             route_bzip_codes = [x.name for x in route_obj.bzip_ids]
-            if not partner_obj.zip:
-                raise except_orm(_('Error'), _('The customer has no zip code'))
-            if partner_obj.zip not in route_bzip_codes:
-                raise except_orm(_('Error'), _('Zip code %s of customer %s \
-                                 is not included in the route \
-                                 %s' % (partner_obj.zip, partner_obj.name,
-                                        route_obj.name)))
-        res = super(partner_route_info, self).create(vals)
+            settings = self._get_route_settings()
+            check_zips = settings.get('check_route_zip', False)
+            if check_zips:  # Configured to check
+                if not partner_obj.zip:
+                    raise except_orm(_('Error'),
+                                     _('The customer has no zip code'))
+                if partner_obj.zip not in route_bzip_codes:
+                    raise except_orm(_('Error'),
+                                     _('Zip code %s of customer %s \
+                                     is not included in the route \
+                                     %s' % (partner_obj.zip, partner_obj.name,
+                                            route_obj.name)))
+
+            check_customers = settings.get('check_customer_comercial', False)
+            # Check if there is no other route with same client and different
+            # Comercial
+            if check_customers:
+                if route_obj:
+                    domain = [
+                        ('route_id', '!=', route_obj.id),
+                        ('partner_id', '=', partner_obj.id),
+                        ('route_id.type', 'not in', ['telesale', 'delivery']),
+                        ('route_id.comercial_id', '!=',
+                            route_obj.comercial_id.id),
+                    ]
+                    info_objs = self.search(domain)
+                    if info_objs:
+                        raise except_orm(_('Error'),
+                                         _('Customer %s is asigned to a route \
+                                            of other \
+                                            comercial' % partner_obj.name))
+            res = super(partner_route_info, self).create(vals)
         route_obj = t_route.browse(route_id)
         res._recalculate_routes(route_obj, False)
         return res
@@ -196,7 +310,10 @@ class resPartner(models.Model):
     def search(self, args, offset=0, limit=None, order=None, count=False):
         """ """
         # import ipdb; ipdb.set_trace()
-        if self._context.get('route_id', False):
+        domain = [('key', '=', 'check.route.zip')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        if self._context.get('route_id', False) and value:
             route_obj = self.env['route'].browse(self._context['route_id'])
             bzip_codes = [x.name for x in route_obj.bzip_ids]
             args.append(['zip', 'in', bzip_codes])
@@ -214,7 +331,10 @@ class resPartner(models.Model):
         res = super(resPartner, self).name_search(name, args=args,
                                                   operator=operator,
                                                   limit=limit)
-        if self._context.get('route_id', False):
+        domain = [('key', '=', 'check.route.zip')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        if self._context.get('route_id', False) and value:
             recs = self.search(args)
             res = recs.name_get()
         return res

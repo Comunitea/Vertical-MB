@@ -19,7 +19,8 @@
 #
 ##############################################################################
 from openerp.osv import osv, fields
-from openerp import api
+from openerp import api, models
+from openerp import fields as fields2
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 import math
@@ -79,24 +80,6 @@ class stock_picking(osv.osv):
                             op.write({'location_dest_id':
                                       op2.chained_loc_id.id})
                             break
-                # Get the correct ubication, changing each operation
-                # for op in pick.pack_operation_ids:
-                #     pack_id = op.result_package_id and op.result_package_id.id\
-                #         or False
-                #     op_vals = {
-                #         'location_id': op.location_dest_id.id,
-                #         'product_id': not pack_id and op.product_id.id
-                #         or False,
-                #         'product_qty': pack_id and 1 or op.product_qty,
-                #         'product_uom_id': pack_id and False or
-                #         op.product_uom_id.id,
-                #         'location_dest_id': op.chained_loc_id.id,
-                #         'chained_loc_id': False,
-                #         'picking_id': related_pick_id,
-                #         'lot_id': not pack_id and op.lot_id.id or False,
-                #         'package_id': pack_id,
-                #         'result_package_id': False}
-                #     t_operation.create(cr, uid, op_vals, context=context)
                 self.write(cr, uid, [related_pick_id],
                            {'midban_operations': True}, context=context)
         return True
@@ -193,32 +176,6 @@ class stock_package(osv.osv):
         # import ipdb; ipdb.set_trace()
         for pack in self.browse(cr, uid, ids, context=context):
             volume = 0.0
-            # if pack.product_id:
-            #     prod = pack.product_id
-            #     loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
-            #                                 context=context)
-            #     if pack.pack_type:  # Get volume of box,palet
-            #         if pack.pack_type == 'box':
-            #             volume = prod.ca_width * \
-            #                 prod.ca_height * prod.ca_length
-            #         # elif pack.pack_type in ['palet', 'var_palet']:
-            #         elif pack.pack_type == 'palet':
-            #             num_mant = pack.num_mantles
-            #             width_wood = prod.pa_width
-            #             length_wood = prod.pa_length
-            #             height_mant = prod.ma_height
-            #             wood_height = prod.palet_wood_height
-            #             if loc_dest_obj.zone == 'picking':
-            #                 wood_height = 0  # No wood in picking location
-            #             height_var_pal = (num_mant * height_mant) + wood_height
-            #             volume = width_wood * length_wood * height_var_pal
-            #     if not volume:  # Get volume of individual units
-            #         volume = pack.product_id.un_width * \
-            #             pack.product_id.un_height * \
-            #             pack.product_id.un_length * \
-            #             pack.packed_qty
-            # res[pack.id] = volume
-
             loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
                                         context=context)
             if pack.pack_type == 'box':  # No multiproduct
@@ -567,7 +524,8 @@ class stock_location(osv.Model):
                 ('picking_id.state', 'in', ['assigned'])
             ]
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
-            # for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
+            # for ope in ope_obj.browse(cr, uid, operation_ids,
+            # context=context):
             #     volume += ope.volume
             ops_by_pack = {}
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
@@ -1142,3 +1100,48 @@ class stock_production_lot(osv.osv):
                                          'Related suppliers',
                                          domain=[('supplier', '=', True)])
     }
+
+###############################################################################
+###############################################################################
+
+
+class stock_config_settings(models.TransientModel):
+    # _name = 'stock.config.settings'
+    _inherit = 'stock.config.settings'
+
+    check_route_zip = fields2.Boolean('Check zips in routes',
+                                      help='When adding a customer to a'
+                                      'route, imposible to save if customer\
+                                       zip is not in route zips')
+    check_customer_comercial = fields2.Boolean('Check customer in routes',
+                                               help='When adding a customer \
+                                               to a route, imposible to save \
+                                               if customer is in other route \
+                                               of diferent comercial if route \
+                                               is not telesale or delivery')
+
+    @api.multi
+    def get_default_check_route_zip(self, fields):
+        domain = [('key', '=', 'check.route.zip')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'check_route_zip': value}
+
+    @api.multi
+    def set_default_check_route_zip(self):
+        domain = [('key', '=', 'check.route.zip')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.check_route_zip else 'False'
+
+    @api.multi
+    def get_default_customer_comercial(self, fields):
+        domain = [('key', '=', 'check.customer.comercial')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'check_customer_comercial': value}
+
+    @api.multi
+    def set_default_customer_comercial(self):
+        domain = [('key', '=', 'check.customer.comercial')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.check_customer_comercial else 'False'
