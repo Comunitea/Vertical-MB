@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* nan_partner_risk
+#       * nan_partner_risk
 #
 msgid ""
 msgstr ""
@@ -136,7 +136,7 @@ msgstr "Efectos en circulación"
 #. module: nan_partner_risk
 #: model:res.groups,name:nan_partner_risk.group_risk_manager
 msgid "Risk Manager"
-msgstr "GEstor de riesgo"
+msgstr "Gestor de riesgo"
 
 #. module: nan_partner_risk
 #: model:ir.model,name:nan_partner_risk.model_sale_order
