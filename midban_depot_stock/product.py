@@ -88,6 +88,7 @@ class product_template(osv.Model):
                                          string='Cros Dock \
                                          Product',
                                          readonly=True),
+        'limit_time': fields.integer('min useful time'),
 
     }
     _sql_constraints = [

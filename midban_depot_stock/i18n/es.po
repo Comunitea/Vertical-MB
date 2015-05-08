@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#   * midban_depot_stock
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-30 17:14+0000\n"
-"PO-Revision-Date: 2015-04-30 17:14+0000\n"
+"POT-Creation-Date: 2015-05-08 09:55+0000\n"
+"PO-Revision-Date: 2015-05-08 09:55+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -415,6 +415,12 @@ msgid "Code can not be repeated."
 msgstr "El código no puede repetirse."
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:435
+#, python-format
+msgid "Code of reason_id does not exist"
+msgstr "Code of reason_id does not exist"
+
+#. module: midban_depot_stock
 #: field:aisle.record,num_cols:0
 msgid "Columns"
 msgstr "Columnas"
@@ -799,15 +805,15 @@ msgstr "Actuando como"
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:124
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:127
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:134
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:317
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:332
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:321
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:336
 #, python-format
 msgid "Error"
 msgstr "Error"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:110
-#: code:addons/midban_depot_stock/product.py:112
+#: code:addons/midban_depot_stock/product.py:111
+#: code:addons/midban_depot_stock/product.py:113
 #: code:addons/midban_depot_stock/stock.py:802
 #: code:addons/midban_depot_stock/stock.py:825
 #: code:addons/midban_depot_stock/stock.py:834
@@ -836,14 +842,19 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:319
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:326
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:336
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:90
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:113
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:173
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:387
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:399
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:94
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:117
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:177
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:391
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:403
 #, python-format
 msgid "Error!"
 msgstr "¡Error!"
+
+#. module: midban_depot_stock
+#: sql_constraint:product.template:0
+msgid "Esa ubicación de picking ya está asignada"
+msgstr "Esa ubicación de picking ya está asignada"
 
 #. module: midban_depot_stock
 #: field:stock.picking,midban_operations:0
@@ -857,8 +868,7 @@ msgid "Expiry Date"
 msgstr "Fecha caducidad"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:95
-#: sql_constraint:product.template:0
+#: code:addons/midban_depot_stock/product.py:96
 #, python-format
 msgid "Field Location picking is already setted"
 msgstr "Esa ubicación de picking ya está asignada"
@@ -1041,6 +1051,12 @@ msgid "Invoice Line"
 msgstr "Línea de factura"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:434
+#, python-format
+msgid "Issue error"
+msgstr "Issue error"
+
+#. module: midban_depot_stock
 #: selection:product.uom,like_type:0
 msgid "Kg"
 msgstr "Kg"
@@ -1106,6 +1122,11 @@ msgstr "Largo"
 #: field:aisle.record,my_length:0
 msgid "Length"
 msgstr "Largo"
+
+#. module: midban_depot_stock
+#: field:stock.transfer_details_items,life_date:0
+msgid "Life date"
+msgstr "Life date"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_route_zip
@@ -1290,7 +1311,7 @@ msgid "No delivery routes assigned in                               the customer
 msgstr "No hay rutas de reparto asignadas en el cliente. No podrás confirmar el pedido"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:113
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:117
 #, python-format
 msgid "No empty locations."
 msgstr "No hay ubicaciones libres."
@@ -1390,13 +1411,13 @@ msgid "Not enough stock ! : "
 msgstr "¡No hay suficiente Stock ! : "
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:399
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:403
 #, python-format
 msgid "Not enought free space."
 msgstr "No hay suficiente espacio libre."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:332
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:336
 #, python-format
 msgid "Not free space to alocate                                             multiproduct pack"
 msgstr "No hay espacio disponible para alojar el palet multiproducto"
@@ -1408,13 +1429,13 @@ msgid "Not picking location                                        defined for p
 msgstr "No hay ubicación de picking definida para el producto %s"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:90
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:94
 #, python-format
 msgid "Not picking location for product                              %s."
 msgstr "No hay ubicación de picking para el producto                              %s."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:110
+#: code:addons/midban_depot_stock/product.py:111
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:126
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:254
 #, python-format
@@ -1422,7 +1443,7 @@ msgid "Not picking location."
 msgstr "No hay zona de picking."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:173
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:177
 #, python-format
 msgid "Not picking location. Maybe is a                                              cross dock order"
 msgstr "No hay ubicación de picking. Quizás sea un pedido cross dock"
@@ -2665,13 +2686,13 @@ msgid "Wizard id"
 msgstr "Wizard id"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:388
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:392
 #, python-format
 msgid "You are trying to mount a multiproduct                                        palet, with products of different                                         cameras"
 msgstr "Estas intentando montar un palet multiproducto con productos de diferentes cámaras"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:321
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:325
 #, python-format
 msgid "You are trying to mount a multiproduct                                     palet, with product %s and %s units.                                     You need at least one mantle (%s                                      units)"
 msgstr "Estás intentando montar un palet multiproducto, con producto %s y %s unidades.Necesitas al menos un manoto (%s                                      unidades)"
@@ -2746,7 +2767,7 @@ msgid "Zone %s not exist."
 msgstr "Zona %s no existe."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:112
+#: code:addons/midban_depot_stock/product.py:113
 #: code:addons/midban_depot_stock/stock.py:802
 #, python-format
 msgid "Zone not exist."
@@ -2766,6 +2787,11 @@ msgstr "Si está marcado borraremos los detalles futoros a  la decha de fin."
 #: help:stock.location.route,cross_dock:0
 msgid "mark to avoid stock virtualconservative warning"
 msgstr "Marcar para evitar advertencia de stock virtual conservativo"
+
+#. module: midban_depot_stock
+#: field:product.template,limit_time:0
+msgid "min useful time"
+msgstr "vida útil mínima de entrada"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_form_depot
