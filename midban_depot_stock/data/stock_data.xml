@@ -32,5 +32,16 @@
             <field name="key">check.customer.comercial</field>
             <field name="value">False</field>
         </record>
+
+        <!-- Parametres for task configuration -->
+        <record id="max_loc_ops" model="ir.config_parameter">
+            <field name="key">max.loc.ops</field>
+            <field name="value">15</field>
+        </record>
+
+        <record id="min_loc_replenish" model="ir.config_parameter">
+            <field name="key">min.loc.replenish</field>
+            <field name="value">1</field>
+        </record>
     </data>
 </openerp>

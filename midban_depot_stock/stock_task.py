@@ -66,11 +66,47 @@ class stock_task(osv.Model):
         if context is None:
             context = {}
         for task in self.browse(cr, uid, ids, context):
-            if task.picking_id:
-                pick_obj = task.picking_id
+            # if task.picking_id:
+            #     pick_obj = task.picking_id
 
-                if pick_obj.state not in ['done', 'draft', 'cancel']:
-                    pick_obj.approve_pack_operations()
+            #     if pick_obj.state not in ['done', 'draft', 'cancel']:
+            #         pick_obj.approve_pack_operations()
+            if task.operation_ids:
+                pick_obj = task.operation_ids[0].picking_id
+                t_transfer = self.pool.get('stock.transfer_details')
+                t_item = self.pool.get('stock.transfer_details_items')
+                t_ops = self.pool.get('stock.pack.operation')
+                transfer_id = t_transfer.create(cr, uid,
+                                                {'picking_id': pick_obj.id},
+                                                context)
+                transfer_obj = t_transfer.browse(cr, uid, transfer_id, context)
+                for op in task.operation_ids:
+                    item = {
+                        'packop_id': op.id,
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'quantity': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'sourceloc_id': op.location_id.id,
+                        'destinationloc_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'date': op.date,
+                        'owner_id': op.owner_id.id,
+                        'transfer_id': transfer_id,
+                    }
+                    t_item.create(cr, uid, item, context)
+                # import ipdb; ipdb.set_trace()
+                # domain = [('picking_id', '=', pick_obj.id),
+                #           ('id', 'not in', [x.id for x in task.operation_ids])]
+                # np_ops_ids = t_ops.search(cr, uid, domain, context=context)
+                # np_ops_vals = t_ops.read(cr, uid, np_ops_ids, [],
+                #                          load='_classic_write',
+                #                          context=context)
+                # for dic in np_ops_vals:
+                #     del dic['id']
+                #     pick_obj.write({'pack_operation_ids': [(0, 0, dic)]})
+                transfer_obj.do_detailed_transfer()
             else:
                 for picking in task.wave_id.picking_ids:
                     if picking.state not in ['done', 'draft', 'cancel']:

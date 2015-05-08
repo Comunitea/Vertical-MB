@@ -1119,6 +1119,18 @@ class stock_config_settings(models.TransientModel):
                                                if customer is in other route \
                                                of diferent comercial if route \
                                                is not telesale or delivery')
+    max_loc_ops = fields2.Integer('Max. location operations',
+                                  help='Max. nº of location operations to'
+                                  'assign in a location task. If a location'
+                                  'has more than this nº of operation the task'
+                                  'wizard will be assign only the max number'
+                                  'this will result in a partial transfer.')
+    min_loc_replenish = fields2.Integer('Min locations to replenish',
+                                        help='The task wizard will assign the'
+                                        'operations that cover tne indicated'
+                                        'nº of locations to replenish. Maybe'
+                                        'will be transfer several replenish'
+                                        'pickings')
 
     @api.multi
     def get_default_check_route_zip(self, fields):
@@ -1145,3 +1157,29 @@ class stock_config_settings(models.TransientModel):
         domain = [('key', '=', 'check.customer.comercial')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = 'True' if self.check_customer_comercial else 'False'
+
+    @api.multi
+    def get_default_max_loc_ops(self, fields):
+        domain = [('key', '=', 'max.loc.ops')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = int(param_obj.value)
+        return {'max_loc_ops': value}
+
+    @api.multi
+    def set_max_loc_ops(self):
+        domain = [('key', '=', 'max.loc.ops')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = str(self.max_loc_ops)
+
+    @api.multi
+    def get_default_min_loc_replenish(self, fields):
+        domain = [('key', '=', 'min.loc.replenish')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = int(param_obj.value)
+        return {'min_loc_replenish': value}
+
+    @api.multi
+    def set_min_loc_replenish(self):
+        domain = [('key', '=', 'min.loc.replenish')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = str(self.min_loc_replenish)

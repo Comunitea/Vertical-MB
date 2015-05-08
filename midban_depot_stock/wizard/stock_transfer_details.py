@@ -21,8 +21,12 @@
 from openerp import models, api, fields
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
-from datetime import datetime
+from datetime import datetime, timedelta
 import math
+from openerp.addons.midban_issue.issue_generator import issue_generator
+
+
+issue_gen = issue_generator()
 
 
 class stock_transfer_details(models.TransientModel):
@@ -409,8 +413,64 @@ class stock_transfer_details(models.TransientModel):
             related_pick.write({'midban_operations': True})
         return res
 
+
 class stock_transfer_details_items(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
-    life_date = fields.Datetime('Life date',
-                                related='lot_id.life_date')
+    life_date = fields.Datetime('Life date')
+
+    @api.multi
+    def write(self, vals):
+        """
+            Cuando se modifica life date, el resto de fechas se establecen con
+            life date - (product.life_time - product.campo_time)
+        """
+        picking = self.env['stock.picking'].browse(
+            self.env.context.get('active_id', False))
+        if picking.picking_type_code != 'incoming':
+            return super(stock_transfer_details_items, self).write(vals)
+        reason = self.env['issue.reason'].search([('code', '=', 'reason22')])
+        if not reason:
+            raise exceptions.Warning(_('Issue error'),
+                                     _('Code of reason_id does not exist'))
+        changed = False
+        if vals.get('life_date', False) and vals.get('life_date', False) \
+                != self.lot_id.life_date:
+            changed = True
+        res = super(stock_transfer_details_items, self).write(vals)
+        if changed:
+            for line in self:
+                line.lot_id.life_date = vals.get('life_date')
+                life_date = datetime.strptime(line.life_date,
+                                              '%Y-%m-%d %H:%M:%S')
+                if life_date < datetime.now() + \
+                        timedelta(days=line.product_id.limit_time):
+                    # Generar incidencia
+                    picking_id = line.transfer_id.picking_id
+                    issue = self.env['issue'].search(
+                        [('res_id', '=', picking_id.id),
+                         ('reason_id', '=', reason.id)])
+                    if not issue:
+                        issue = issue_gen.create_issue(
+                            self._cr, self._uid, self._ids,
+                            'stock.picking', [picking_id.id], 'reason22',
+                            flow='purchase.order,' +
+                            str(picking_id.purchase_id.id),
+                            origin=picking_id.name)
+                        issue = self.env['issue'].browse(issue)
+                    self.env['product.info'].create(
+                        {'issue_id': issue.id,
+                         'product_id': line.product_id.id,
+                         'product_qty': line.quantity,
+                         'uom_id': line.product_uom_id.id,
+                         'lot_id': line.lot_id.id, 'reason_id': reason.id})
+                for field in ['use_', 'removal_', 'alert_']:
+                    diff_days = line.product_id.life_time - \
+                        line.product_id[field + 'time']
+                    line.lot_id[field + 'date'] = life_date - \
+                        timedelta(days=diff_days)
+        return res
+
+    @api.onchange('lot_id')
+    def onchange_lot_id(self):
+        self.life_date = self.lot_id.life_date
