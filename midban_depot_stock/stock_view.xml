@@ -318,7 +318,21 @@
                                 <label for= "check_customer_comercial"/>
                             </div>
                         </div>    
-                    </group>     
+                    </group>
+
+                    <group string="Schedule Task Wizard">
+                        <label for="id" string="Tasks configuration"/>
+                        <div>
+                            <div>
+                                <field name="max_loc_ops" class="oe_inline"/>
+                                <label for= "max_loc_ops"/>
+                            </div>
+                            <div>
+                                <field name="min_loc_replenish" class="oe_inline"/>
+                                <label for= "min_loc_replenish"/>
+                            </div>
+                        </div>    
+                    </group>          
                 </separator>
             </field>
          </record>
