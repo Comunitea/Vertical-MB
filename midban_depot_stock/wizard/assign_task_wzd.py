@@ -208,6 +208,7 @@ class assign_task_wzd(osv.TransientModel):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
+        t_ops = self.pool.get("stock.pack.operation")
 
         # Check if operator has a task on course
         machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
@@ -238,22 +239,56 @@ class assign_task_wzd(osv.TransientModel):
         if not pick_id:
             raise osv.except_osv(_('Error!'), _('No internal pickings to\
                                                  schedule'))
-        pick = t_pick.browse(cr, uid, pick_id[0], context)
-        pick.write({'operator_id': wzd_obj.operator_id.id,
-                    'machine_id': machine_id,
-                    'task_type': 'ubication',
-                    'warehouse_id': wzd_obj.warehouse_id.id})
 
-        # Create task and associate picking
+        pick = t_pick.browse(cr, uid, pick_id[0], context)
+        # import ipdb; ipdb.set_trace()
+        domain = [('picking_id.state', '=', 'assigned'),
+                  ('picking_id.picking_type_id', '=', location_task_type_id),
+                  ('task_id', '=', False)]
+        ops_ids = t_ops.search(cr, uid, domain, limit=1,
+                               order="picking_id asc", context=context)
+        if not ops_ids:
+            raise osv.except_osv(_('Error'), _('No location operations to \
+                                                schedule'))
+        operation = t_ops.browse(cr, uid, ops_ids, context=context)
+        pick = operation.picking_id
         vals = {
             'user_id': wzd_obj.operator_id.id,
             'type': 'ubication',
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
-            'picking_id': pick.id,
+            # 'picking_id': pick.id,
             'state': 'assigned',
             'machine_id': machine_id
         }
-        t_task.create(cr, uid, vals, context=context)
+        task_id = t_task.create(cr, uid, vals, context=context)
+        domain = [('key', '=', 'max.loc.ops')]
+        t_config = self.pool.get('ir.config_parameter')
+        param_ids = t_config.search(cr, uid, domain, context=context)
+        param_obj = t_config.browse(cr, uid, param_ids, context)[0]
+        max_ops = int(param_obj.value)
+        num_ops = len(pick.pack_operation_ids)
+        if not max_ops:
+            max_ops = num_ops
+        assigned = 0
+        for op in pick.pack_operation_ids:
+            if assigned < max_ops and not op.task_id:
+                op.write({'task_id': task_id})
+                assigned += 1
+
+        # pick.write({'operator_id': wzd_obj.operator_id.id,
+        #             'machine_id': machine_id,
+        #             'task_type': 'ubication',
+        #             'warehouse_id': wzd_obj.warehouse_id.id})
+        # Create task and associate picking
+        # vals = {
+        #     'user_id': wzd_obj.operator_id.id,
+        #     'type': 'ubication',
+        #     'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
+        #     'picking_id': pick.id,
+        #     'state': 'assigned',
+        #     'machine_id': machine_id
+        # }
+        # t_task.create(cr, uid, vals, context=context)
 
         return self._print_report(cr, uid, ids, picking_id=pick.id,
                                   context=context)
