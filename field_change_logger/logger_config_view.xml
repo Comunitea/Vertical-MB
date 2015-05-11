@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="logger_config_tree" model="ir.ui.view">
+            <field name="name">logger.config.tree</field>
+            <field name="model">logger.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Logger config">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="logger_config" model="ir.ui.view">
+            <field name="name">logger.config.form</field>
+            <field name="model">logger.config</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Logger config">
+                    <sheet>
+                        <group>
+                        <field name="name"/>
+                        <field name="watch_fields" domain="[('model_id', '=', name)]"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="logger_config_filter" model="ir.ui.view">
+            <field name="name">logger.config.search</field>
+            <field name="model">logger.config</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Config">
+                   <field name="name"/>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_logger_config">
+            <field name="name">Logger config</field>
+            <field name="res_model">logger.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="logger_config_tree"/>
+            <field name="search_view_id" ref="logger_config_filter"/>
+        </record>
+
+        <menuitem name="Logger config" parent="base.menu_custom" action="action_logger_config" id="logger_config_menu"/>
+
+    </data>
+</openerp>
