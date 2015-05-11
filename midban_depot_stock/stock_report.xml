@@ -55,6 +55,16 @@
             file="midban_depot_stock.report_supplier_order" 
         />
 
+        <!-- Report for tasks of type ubication and reposition -->
+        <report 
+            string="Operations List" 
+            id="action_report_operations_list" 
+            model="stock.task" 
+            report_type="qweb-pdf"
+            name="midban_depot_stock.report_operations_list" 
+            file="midban_depot_stock.report_operations_list" 
+        />
+
 
     </data>
 </openerp>

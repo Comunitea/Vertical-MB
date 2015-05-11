@@ -53,7 +53,7 @@ class stock_task(osv.Model):
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
         'operation_ids': fields.one2many('stock.pack.operation', 'task_id',
-                                         'Operations', readonly=True)
+                                         'Operations', readonly=True),
     }
     _defaults = {
         'state': 'assigned',
@@ -63,14 +63,63 @@ class stock_task(osv.Model):
         """
         Button method cancel a task
         """
+        t_transfer = self.pool.get('stock.transfer_details')
+        t_item = self.pool.get('stock.transfer_details_items')
+        t_ops = self.pool.get('stock.pack.operation')
+        t_pick = self.pool.get('stock.picking')
         if context is None:
             context = {}
         for task in self.browse(cr, uid, ids, context):
-            if task.picking_id:
-                pick_obj = task.picking_id
+            # if task.picking_id:
+            #     pick_obj = task.picking_id
 
-                if pick_obj.state not in ['done', 'draft', 'cancel']:
-                    pick_obj.approve_pack_operations()
+                # if pick_obj.state not in ['done', 'draft', 'cancel']:
+                #     pick_obj.approve_pack_operations()
+            if task.operation_ids and task.type == 'ubication':
+                pick_obj = task.operation_ids[0].picking_id
+                transfer_id = t_transfer.create(cr, uid,
+                                                {'picking_id': pick_obj.id},
+                                                context)
+                transfer_obj = t_transfer.browse(cr, uid, transfer_id, context)
+                for op in task.operation_ids:
+                    item = {
+                        'packop_id': op.id,
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'quantity': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'sourceloc_id': op.location_id.id,
+                        'destinationloc_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'date': op.date,
+                        'owner_id': op.owner_id.id,
+                        'transfer_id': transfer_id,
+                    }
+                    t_item.create(cr, uid, item, context)
+                # import ipdb; ipdb.set_trace()
+                domain = [('picking_id', '=', pick_obj.id),
+                          ('id', 'not in', [x.id for x in task.operation_ids])]
+                np_ops_ids = t_ops.search(cr, uid, domain, context=context)
+                np_ops_vals = t_ops.read(cr, uid, np_ops_ids, [],
+                                         load='_classic_write',
+                                         context=context)
+                transfer_obj.do_detailed_transfer()
+                new_pick_id = t_pick.search(cr, uid,
+                                            [('backorder_id', '=',
+                                              pick_obj.id)])
+                if new_pick_id:
+                    for dic in np_ops_vals:
+                        del dic['id']
+                        del dic['linked_move_operation_ids']
+                        t_pick.write(cr, uid, new_pick_id,
+                                     {'pack_operation_ids': [(0, 0, dic)]})
+            elif task.operation_ids and task.type == 'reposition':
+                pick_objs = \
+                    list(set([x.picking_id for x in task.operation_ids]))
+                for pick_obj in pick_objs:
+                    if pick_obj.state not in ['done', 'draft', 'cancel']:
+                        pick_obj.approve_pack_operations()
             else:
                 for picking in task.wave_id.picking_ids:
                     if picking.state not in ['done', 'draft', 'cancel']:
@@ -92,15 +141,31 @@ class stock_task(osv.Model):
         """
         Button method cancel a task
         """
+        t_pick = self.pool.get("stock.picking")
         if context is None:
             context = {}
         if isinstance(ids, (int, long)):
             ids = [ids]
         for task in self.browse(cr, uid, ids, context=context):
-            if task.picking_id:
-                task.picking_id.write({'operator_id': False,
-                                       'machine_id': False})
-                task.picking_id.action_cancel()
+            # if task.picking_id:
+            #     task.picking_id.write({'operator_id': False,
+            #                            'machine_id': False})
+            #     task.picking_id.action_cancel()
+            if task.operation_ids:
+                if task.type == 'reposition':
+                    pick_ids = \
+                        list(
+                            set([x.picking_id.id for x in task.operation_ids]))
+                    vals = {
+                        'operator_id': False,
+                        'machine_id': False,
+                        'warehouse_id': False,
+                        'task_type': False
+                    }
+                    t_pick.write(cr, uid, pick_ids, vals, context=context)
+                ops_ids = [x.id for x in task.operation_ids]
+                self.pool.get('stock.pack.operation').write(cr, uid, ops_ids,
+                                                            {'task_id': False})
             elif task.wave_id:
                 for picking in task.wave_id.picking_ids:
                     picking.write({'operator_id': False,

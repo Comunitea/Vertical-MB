@@ -33,19 +33,19 @@ class create_tag_wizard(osv.TransientModel):
             context = {}
         t_item = self.pool.get('tag.item')
         item_ids = []
-        t_picking = self.pool.get('stock.picking')
+        t_task = self.pool.get('stock.task')
         if context.get('active_model', False) and \
                 context.get('active_id', False)and \
-                context['active_model'] == 'stock.picking':
+                context['active_model'] == 'stock.task':
             active_id = context['active_id']
-            picking_obj = t_picking.browse(cr, uid, active_id, context=context)
-            for op in picking_obj.pack_operation_ids:
+            task_obj = t_task.browse(cr, uid, active_id, context=context)
+            for op in task_obj.operation_ids:
                 if op.pack_type in ['palet', 'box']:
                     vals = {}
                     prod = op.operation_product_id and \
                         op.operation_product_id or False
-                    purchase_id = picking_obj.purchase_id and \
-                        picking_obj.purchase_id.id or False
+                    purchase_id = op.picking_id.purchase_id and \
+                        op.picking_id.purchase_id.id or False
                     num_units = 0
                     num_boxes = 0
                     vals = {
@@ -58,9 +58,10 @@ class create_tag_wizard(osv.TransientModel):
                         'removal_date': op.lot_id and op.lot_id.removal_date
                         or False
                     }
-                    if prod and picking_obj.picking_type_code == 'incoming':
+                    if prod and op.picking_id.picking_type_code == 'incoming':
                         num_units = op.product_qty
-                    elif prod and picking_obj.picking_type_code == 'internal':
+                    elif prod and \
+                            op.picking_id.picking_type_code == 'internal':
                         num_units = op.package_id.packed_qty - op.product_qty
                         if op.package_id and op.result_package_id:
                             num_units = op.product_qty
@@ -124,14 +125,14 @@ class create_tag_wizard(osv.TransientModel):
         if wzd_obj.tag_ids and not wzd_obj.printed:
             raise osv.except_osv(_('Error!'), _("You must print labels first"))
 
-        if context.get('active_model', False) == 'stock.picking':
-            picking_id = context.get('active_id', False)
-            if picking_id:
-                ctx['active_ids'] = [picking_id]
-                ctx['active_model'] = 'stock.picking'
+        if context.get('active_model', False) == 'stock.task':
+            task_id = context.get('active_id', False)
+            if task_id:
+                ctx['active_ids'] = [task_id]
+                ctx['active_model'] = 'stock.task'
             return self.pool.get("report").\
                 get_action(cr, uid, [],
-                           'midban_depot_stock.report_picking_task',
+                           'midban_depot_stock.report_operations_list',
                            context=ctx)
         return
 
