@@ -545,7 +545,7 @@ class stock_location(osv.Model):
                         self._get_volume_for(ope.result_package_id.pack_type,
                                              ope.product_qty,
                                              ope.product_id,
-                                             pick_zone=True)
+                                             picking_zone=True)
                 # Units operations, no packages
                 else:
                     volume += ope.operation_product_id.un_width * \

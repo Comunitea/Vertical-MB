@@ -13,11 +13,13 @@
                             <field name="warehouse_id"/>
                             <field name="operator_id"/>
                             <field name="machine_id"/>
+                            <field name="max_loc_ops"/>
                         </group>
                         <group>
                             <field name="location_ids" domain="[('camera', '=', True)]" widget="many2many_tags"/>
                             <field name="trans_route_id" domain="[('type', '=', 'delivery')]"/>
                             <field name="date_planned"/>
+                            <field name="min_loc_replenish"/>
                         </group>
                     </group>
                     <footer>
