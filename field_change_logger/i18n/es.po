@@ -1,0 +1,122 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * field_change_logger
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-11 08:47+0000\n"
+"PO-Revision-Date: 2015-05-11 08:47+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:40
+#, python-format
+msgid "<br/>Field %s changed:"
+msgstr "<br/>Campo %s modificado:"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:71
+#, python-format
+msgid "<br/>Field %s changed: %s -> %s"
+msgstr "<br/>Campo %s modificado: %s -> %s"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:45
+#: code:addons/field_change_logger/logger_config.py:52
+#: code:addons/field_change_logger/logger_config.py:63
+#, python-format
+msgid "Added %s"
+msgstr "Añadido %s"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:33
+#, python-format
+msgid "Changed fields:"
+msgstr "Campos modificados:"
+
+#. module: field_change_logger
+#: view:logger.config:field_change_logger.logger_config_filter
+msgid "Config"
+msgstr "Config"
+
+#. module: field_change_logger
+#: field:logger.config,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: field_change_logger
+#: field:logger.config,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: field_change_logger
+#: model:ir.model,name:field_change_logger.model_ir_model_fields
+msgid "Fields"
+msgstr "Campos"
+
+#. module: field_change_logger
+#: field:logger.config,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: field_change_logger
+#: field:logger.config,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: field_change_logger
+#: field:logger.config,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: field_change_logger
+#: field:ir.model.fields,logger_id:0
+msgid "Logger"
+msgstr "Logger"
+
+#. module: field_change_logger
+#: model:ir.actions.act_window,name:field_change_logger.action_logger_config
+#: model:ir.ui.menu,name:field_change_logger.logger_config_menu
+#: view:logger.config:field_change_logger.logger_config
+#: view:logger.config:field_change_logger.logger_config_tree
+msgid "Logger config"
+msgstr "Configuración de logger"
+
+#. module: field_change_logger
+#: field:logger.config,name:0
+msgid "Model"
+msgstr "Modelo"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:119
+#: code:addons/field_change_logger/logger_config.py:130
+#, python-format
+msgid "Model error"
+msgstr "Error de modelo"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:55
+#: code:addons/field_change_logger/logger_config.py:67
+#, python-format
+msgid "Removed %s"
+msgstr "Eliminado %s"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:119
+#: code:addons/field_change_logger/logger_config.py:130
+#, python-format
+msgid "The model %s not have messaging"
+msgstr "El modelo %s no tiene mensajería"
+
+#. module: field_change_logger
+#: field:logger.config,watch_fields:0
+msgid "Watch fields"
+msgstr "Watch fields"
+
