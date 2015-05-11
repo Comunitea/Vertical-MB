@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp import models, api, fields
 from openerp.exceptions import except_orm
+from openerp import exceptions
 from openerp.tools.translate import _
 from datetime import datetime, timedelta
 import math
@@ -180,7 +181,6 @@ class stock_transfer_details(models.TransientModel):
         loc_obj = False
         prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
         stop = False
-        # import ipdb; ipdb.set_trace()
         if multipack:
             if prop_qty < r_qty:
                 stop = True
@@ -260,7 +260,6 @@ class stock_transfer_details(models.TransientModel):
             'owner_id': item.owner_id.id,
             'date': item.date if item.date else datetime.now(),
         }
-        # import ipdb; ipdb.set_trace()
         if pack in ['palet', 'box']:
             if multipack:
                 if not multipack.pack_type:  # First time
@@ -284,7 +283,6 @@ class stock_transfer_details(models.TransientModel):
         removing mantle by mantle and trying to find available space.
         If not space for a mantle, location cant be founded and return False
         """
-        # import ipdb; ipdb.set_trace()
         remaining_qty = item.quantity
         product = item.product_id
         while remaining_qty > 0.0:
@@ -354,7 +352,6 @@ class stock_transfer_details(models.TransientModel):
     def prepare_package_type_operations(self):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
-        # import ipdb; ipdb.set_trace()
         items_to_propose = []
         # Separate items to propose of multipacks items
         for item in self.item_ids:

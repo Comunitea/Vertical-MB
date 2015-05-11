@@ -149,7 +149,9 @@ class reposition_wizard(osv.TransientModel):
         while vol_aval and filled_per < obj.limit and idx <= limit:
             candidates = pack_cands[idx]  # list of packages ordered by volume
             for pack_obj in candidates:
-                if pack_obj.volume <= vol_aval:
+                quants_by_prod = pack_obj.get_products_quants()
+                multipack = True if len(quants_by_prod) > 1 else False
+                if pack_obj.volume <= vol_aval and not multipack:
                     vol_aval -= pack_obj.volume
                     vol_fill = loc.volume - vol_aval
                     filled_per = loc.volume and (vol_fill / loc.volume) or 0.0
@@ -177,15 +179,19 @@ class reposition_wizard(osv.TransientModel):
                 operation_dics.append(op_vals)
 
         if packs_to_split:
-            # split the pack with lowest volume
+            # split the pack with lowest volume, split multiproduct palets
             packs_to_split = sorted(packs_to_split, key=lambda p: p.volume)
             vol_mant = prod.pa_width * prod.pa_length * \
                 prod.ma_height
             mant_units = prod.un_ca * prod.ca_ma
             num_mantles = vol_mant and math.floor(vol_aval / vol_mant) or 0.0
+            max_units = num_mantles * mant_units
             if num_mantles:
-                total_move_qty += num_mantles * mant_units
+                total_move_qty += max_units
                 pack_obj = packs_to_split[0]  # the little pack
+                qtys_by_prod = pack_obj.get_products_qtys()
+                packed_qty = qtys_by_prod[prod]
+                pack_qty = packed_qty if max_units > packed_qty else max_units
                 new_pack_id = t_pack.create(cr, uid, {'pack_type': 'palet'})
                 new_pack_obj = t_pack.browse(cr, uid, new_pack_id, context)
                 new_name = new_pack_obj.name.replace("PACK", 'PALET')
@@ -194,7 +200,7 @@ class reposition_wizard(osv.TransientModel):
                     'picking_id': False,  # to set later, when pick created
                     'product_id': prod.id,
                     'product_uom_id': prod.uom_id.id,
-                    'product_qty': num_mantles * mant_units,
+                    'product_qty': pack_qty,
                     'package_id': pack_obj.id,
                     'location_id': pack_obj.location_id.id,
                     'location_dest_id': dest_id,
@@ -326,7 +332,7 @@ class reposition_wizard(osv.TransientModel):
             raise osv.except_osv(_('Error!'), _('No reposition type founded\
                                                  You must define the picking\
                                                  type in the warehouse.'))
-        # A pick for each location, if nor operations delete the pick.
+        # A pick for each location, if not operations delete the pick.
         for loc_id in selected_ids:
             pick_id = self._get_reposition_operations(cr, uid, ids, loc_id,
                                                       context=context)

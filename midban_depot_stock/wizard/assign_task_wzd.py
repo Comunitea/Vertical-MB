@@ -261,7 +261,6 @@ class assign_task_wzd(osv.TransientModel):
                                                  schedule'))
 
         pick = t_pick.browse(cr, uid, pick_id[0], context)
-        # import ipdb; ipdb.set_trace()
         domain = [('picking_id.state', '=', 'assigned'),
                   ('picking_id.picking_type_id', '=', location_task_type_id),
                   ('task_id', '=', False)]

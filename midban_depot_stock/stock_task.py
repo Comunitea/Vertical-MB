@@ -97,7 +97,6 @@ class stock_task(osv.Model):
                         'transfer_id': transfer_id,
                     }
                     t_item.create(cr, uid, item, context)
-                # import ipdb; ipdb.set_trace()
                 domain = [('picking_id', '=', pick_obj.id),
                           ('id', 'not in', [x.id for x in task.operation_ids])]
                 np_ops_ids = t_ops.search(cr, uid, domain, context=context)

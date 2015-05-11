@@ -173,7 +173,6 @@ class stock_package(osv.osv):
             context = {}
         res = {}
         t_loc = self.pool.get('stock.location')
-        # import ipdb; ipdb.set_trace()
         for pack in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
@@ -184,12 +183,13 @@ class stock_package(osv.osv):
             elif pack.pack_type == 'palet':  # Maybe multiproduct
                 quants_by_prod = {}
                 # Group quants inside the package by product
-                for quant in pack.quant_ids:
-                    product = quant.product_id
-                    if product not in quants_by_prod:
-                        quants_by_prod[product] = [quant]
-                    else:
-                        quants_by_prod[product].append(quant)
+                quants_by_prod = pack.get_products_quants()
+                # for quant in pack.quant_ids:
+                #     product = quant.product_id
+                #     if product not in quants_by_prod:
+                #         quants_by_prod[product] = [quant]
+                #     else:
+                #         quants_by_prod[product].append(quant)
 
                 # Get total height, grouping mantles by product
                 width_wood = 0
@@ -256,6 +256,35 @@ class stock_package(osv.osv):
                                   ('Product Volume')),
     }
 
+    def get_products_quants(self, cr, uid, ids, context=None):
+        """
+        Returns a dictionary containing the quants for each product
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            for quant in pack.quant_ids:
+                product = quant.product_id
+                if product not in res:
+                    res[product] = [quant]
+                else:
+                    res[product].append(quant)
+        return res
+
+    def get_products_qtys(self, cr, uid, ids, context=None):
+        """
+        Returns a dictionary containing the quants for each product
+        """
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            quants_by_prod = pack.get_products_quants()
+            for prod in quants_by_prod:
+                res[prod] = sum([x.qty for x in quants_by_prod[prod]])
+        return res
+
 
 class stock_pack_operation(osv.osv):
     _inherit = "stock.pack.operation"
@@ -296,7 +325,6 @@ class stock_pack_operation(osv.osv):
     # def _get_operation_volume(self, cr, uid, ids, name, args, context=None):
     #     if context is None:
     #         context = {}
-    #     # import ipdb; ipdb.set_trace()
     #     res = {}
     #     t_loc = self.pool.get('stock.location')
     #     t_whs = self.pool.get('stock.warehouse')
@@ -503,7 +531,6 @@ class stock_location(osv.Model):
         if context is None:
             context = {}
         res = {}
-        # import ipdb; ipdb.set_trace()
         for id in ids:
             res[id] = {'available_volume': 0.0, 'filled_percent': 0.0}
         quant_obj = self.pool.get('stock.quant')
@@ -594,7 +621,6 @@ class stock_location(osv.Model):
             res[loc.id]['available_volume'] = loc.volume - volume
             fill_per = loc.volume and volume * 100.0 / loc.volume or 0.0
             res[loc.id]['filled_percent'] = fill_per
-        # import ipdb; ipdb.set_trace()
         return res
 
     def _search_available_volume(self, cr, uid, obj, name, args, context=None):

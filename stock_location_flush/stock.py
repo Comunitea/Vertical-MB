@@ -30,7 +30,6 @@ class StockLocation(models.Model):
 
     @api.one
     def flush_location(self):
-        import ipdb; ipdb.set_trace()
         if not self.location_flush_dest:
             raise exceptions.Warning(
                 _('Location error'),
