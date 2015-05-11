@@ -59,6 +59,7 @@ class reposition_wizard(osv.TransientModel):
         for quant in t_quant.browse(cr, uid, quant_ids, context=context):
             if quant.package_id:
                 packs_set.add(quant.package_id)
+            # TODO que pasa si no tiene paquete, estamos ignorando unid sueltas
         pack_list = list(packs_set)
         res = sorted(pack_list, key=lambda p: p.volume, reverse=True)
         return res
@@ -280,6 +281,7 @@ class reposition_wizard(osv.TransientModel):
                     lot_ids.append(quant.lot_id.id)
                 elif not quant.lot_id:
                     quant_ids_no_lot.append(quant.id)
+                    quant_ids.remove(quant.id)
 
             # Get list of lists of packages for each quant with or without lot
             pack_cands = self._get_pack_candidates(cr, uid, quant_ids, lot_ids,
