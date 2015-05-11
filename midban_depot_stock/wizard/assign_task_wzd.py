@@ -90,17 +90,17 @@ class assign_task_wzd(osv.TransientModel):
         'min_loc_replenish': _get_min_loc_replenish,
     }
 
-    def _print_report(self, cr, uid, ids, picking_id=False, wave_id=False,
+    def _print_report(self, cr, uid, ids, task_id=False, wave_id=False,
                       context=None):
         if context is None:
             context = {}
         ctx = dict(context)
-        if picking_id:
-            ctx['active_ids'] = [picking_id]
-            ctx['active_model'] = 'stock.picking'
+        if task_id:
+            ctx['active_ids'] = [task_id]
+            ctx['active_model'] = 'stock.task'
             return self.pool.get("report").\
                 get_action(cr, uid, [],
-                           'midban_depot_stock.report_picking_task',
+                           'midban_depot_stock.report_operations_list',
                            context=ctx)
         elif wave_id:
             ctx['active_model'] = 'stock.picking.wave'
@@ -209,7 +209,7 @@ class assign_task_wzd(osv.TransientModel):
                                       context=context)
         else:
             return self._print_report(cr, uid, ids,
-                                      picking_id=task.picking_id.id,
+                                      task_id=task.id,
                                       context=context)
 
 # #############################################################################
@@ -310,7 +310,7 @@ class assign_task_wzd(osv.TransientModel):
         # }
         # t_task.create(cr, uid, vals, context=context)
 
-        return self._print_report(cr, uid, ids, picking_id=pick.id,
+        return self._print_report(cr, uid, ids, task_id=task_id,
                                   context=context)
 
 # #############################################################################
@@ -321,7 +321,6 @@ class assign_task_wzd(osv.TransientModel):
         """
         Get reposition task assigned in reposition wizard.
         """
-        import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
@@ -405,12 +404,12 @@ class assign_task_wzd(osv.TransientModel):
         #                           context=context)
 
         # Apaño para queimprima algo, junto con etiquetas
-        pick = t_pick.browse(cr, uid, pick_ids[0], context)
+        # pick = t_pick.browse(cr, uid, pick_ids[0], context)
         context2 = dict(context)
         context2.update({
-            'active_model': 'stock.picking',
-            'active_id': pick.id,
-            'active_ids': [pick.id],
+            'active_model': 'stock.task',
+            'active_id': task_id,
+            'active_ids': [task_id],
             'show_print_report': True,
         })
         action = {
