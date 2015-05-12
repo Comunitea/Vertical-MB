@@ -21,40 +21,33 @@
 from openerp.osv import osv
 from openerp import pooler
 from openerp.tools.translate import _
-
+import openerp
 
 class procurement_order(osv.Model):
     _inherit = 'procurement.order'
 
-    def _procure_orderpoint_confirm(self, cr, uid, automatic=False,
-                                    use_new_cursor=False, context=None,
-                                    user_id=False):
+    def _procure_orderpoint_confirm(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
         '''
-        Create Under Minimums based on Orderpoint
-        use_new_cursor: False or the dbname
+        Create procurement based on Orderpoint
 
-        @param self: The object pointer
-        @param cr: The current row, from the database cursor,
-        @param user_id: The current user ID for security checks
-        @param context: A standard dictionary for contextual values
-        @param param: False or the dbname
-        @return:  Dictionary of values
-        """
+        :param bool use_new_cursor: if set, use a dedicated cursor and auto-commit after processing each procurement.
+            This is appropriate for batch jobs only.
         '''
         if context is None:
             context = {}
         if use_new_cursor:
-            cr = pooler.get_db(use_new_cursor).cursor()
+            cr = openerp.registry(cr.dbname).cursor()
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
+
+        procurement_obj = self.pool.get('procurement.order')
+        prod = self.pool.get('product.template')
         stock_unsafety = self.pool.get('product.stock.unsafety')
-        prod = self.pool.get('product.product')
-        offset = 0
-        ids = [1]
-        seller = False
-        if automatic:
-            self.create_automatic_op(cr, uid, context=context)
-        while ids:
-            ids = orderpoint_obj.search(cr, uid, [], offset=offset, limit=100)
+        dom = company_id and [('company_id', '=', company_id)] or []
+        orderpoint_ids = orderpoint_obj.search(cr, uid, dom)
+        prev_ids = []
+        while orderpoint_ids:
+            ids = orderpoint_ids[:100]
+            del orderpoint_ids[:100]
             for op in orderpoint_obj.browse(cr, uid, ids, context=context):
                 virtual_stock = op.product_id.virtual_stock_conservative
                 days_sale = op.product_id.remaining_days_sale
@@ -95,9 +88,13 @@ class procurement_order(osv.Model):
                                           uid,
                                           vals,
                                           context=context)
-            offset += len(ids)
             if use_new_cursor:
                 cr.commit()
+            if prev_ids == ids:
+                break
+            else:
+                prev_ids = ids
+
         if use_new_cursor:
             cr.commit()
             cr.close()

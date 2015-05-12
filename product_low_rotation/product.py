@@ -104,7 +104,7 @@ class product_template(osv.Model):
                             sum(m.product_qty * pu.factor / pu2.factor) \
                             FROM stock_move m \
                             INNER JOIN stock_picking s ON s.id=m.picking_id \
-                            INNER JOIN stock_picking_type pt on S.picking_type_id=pt.id \
+                            INNER JOIN stock_picking_type spt on S.picking_type_id=spt.id \
                             INNER JOIN product_product p ON p.id=m.product_id \
                             INNER JOIN product_template pt \
                             ON (p.product_tmpl_id=pt.id) \
@@ -112,7 +112,7 @@ class product_template(osv.Model):
                             INNER JOIN product_uom pu2 \
                             ON (m.product_uom=pu2.id) \
                             WHERE m.state='done' \
-                            AND pt.code='outgoing' \
+                            AND spt.code='outgoing' \
                             AND m.date>=%s \
                             AND m.date<=%s \
                             AND m.product_id=%s \

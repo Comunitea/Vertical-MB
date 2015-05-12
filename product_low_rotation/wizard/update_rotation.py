@@ -27,6 +27,6 @@ class update_rotation(osv.TransientModel):
     def action_update_rotation(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        product = self.pool.get('product.product')
+        product = self.pool.get('product.template')
         product.get_products_low_rotation(cr, uid, ids, context=context)
         return {'type': 'ir.actions.act_window_close'}

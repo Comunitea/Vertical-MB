@@ -2,7 +2,7 @@
 
 
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Action scheduled to run oce a week.
         Call the function: "get_products_low_rotation"-->
         <record forcecreate="True" id="ir_cron_update_rotations_action" model="ir.cron">
@@ -12,7 +12,7 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field eval="True" name="doall"/>
-            <field eval="'product.product'" name="model"/>
+            <field eval="'product.template'" name="model"/>
             <field eval="'get_products_low_rotation'" name="function"/>
             <field name="args">(False,)</field>
         </record>

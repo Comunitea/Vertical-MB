@@ -323,9 +323,8 @@ class purchase_preorder(osv.Model):
             vals['supplier_id'] = supplier.id
         return vals
 
-    @api.cr_uid_ids_context
-    def create_preorder(self, cr, uid, ids, context=None, product_id=False,
-                        product_qty=0.0):
+    def create_preorder(self, cr, uid, ids, product_id=False,
+                        product_qty=0.0, min_proposal=0.0, context=None):
         """
         Function to create the pre-order.
         Returns the view of pre-order filled with all possible data.
@@ -413,10 +412,11 @@ class purchase_preorder(osv.Model):
                                         [('preorder_id', '=', preorder),
                                          ('product_id', '=', product_id)])
                     if l:
+                        qtys = prodsupp.onchange_uoms(cr, uid, l[0], product_id, product_qty, 0, 0, 0, 'unitskg', 0)
                         prodsupp.write(cr,
                                        uid,
                                        l[0],
-                                       {'unitskg': product_qty})
+                                       qtys['value'])
         form_res = mod_obj.get_object_reference(cr,
                                                 uid,
                                                 'purchase_preorder',
