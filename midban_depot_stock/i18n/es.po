@@ -2317,7 +2317,7 @@ msgstr "Tareas"
 #. module: midban_depot_stock
 #: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
 msgid "Tasks configuration"
-msgstr "Tasks configuration"
+msgstr "Configuración de tareas"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_order

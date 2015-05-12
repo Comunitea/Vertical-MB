@@ -110,7 +110,6 @@ class route(models.Model):
         Overwrite to Check there is no same zip code in a route of same day
         and same type.
         """
-        # import ipdb; ipdb.set_trace()
         if vals.get('bzip_ids', False):
             bzip_ids = vals['bzip_ids'][0][2]
             bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
@@ -136,7 +135,6 @@ class route(models.Model):
 
     @api.model
     def create(self, vals):
-        # import ipdb; ipdb.set_trace()
         if vals.get('bzip_ids', False):
             bzip_ids = vals['bzip_ids'][0][2]
             bzip_objs = self.env['res.better.zip'].browse(bzip_ids)

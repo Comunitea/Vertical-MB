@@ -309,7 +309,6 @@ class resPartner(models.Model):
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
         """ """
-        # import ipdb; ipdb.set_trace()
         domain = [('key', '=', 'check.route.zip')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         value = True if param_obj.value == 'True' else False
@@ -327,7 +326,6 @@ class resPartner(models.Model):
     def name_search(self, name, args=None, operator='ilike', limit=100):
         args = args or []
         recs = self.browse()
-        # import ipdb; ipdb.set_trace()
         res = super(resPartner, self).name_search(name, args=args,
                                                   operator=operator,
                                                   limit=limit)
