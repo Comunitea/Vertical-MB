@@ -1,0 +1,4 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_partner_promotion_group_partner_manager","res_partner group_partner_manager","model_partner_promotion","base.group_user",1,1,1,1
+"access_partner_promotion_group_user","res_partner group_user","model_partner_promotion","base.group_user",1,1,1,1
+"access_partner_promotion_group_partner_manager","res_partner group_partner_manager","model_partner_promotion_rel","base.group_user",1,1,1,1

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record id="discount_type_promotions" model="account.discount.type">
+            <field name="code">PROM</field>
+            <field name="name">Promociones</field>
+        </record>
+    </data>
+</openerp>

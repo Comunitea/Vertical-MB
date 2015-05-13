@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_partner_form_promotion" model="ir.ui.view">
+            <field name="name">res.partner.form.promotion</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@string='Sales &amp; Purchases']" position="after">
+                    <page string="Promotions">
+                                <field name="promotion_ids" colspan="4" nolabel="1">
+                                    <tree string="Promotions" editable="top">
+                                        <field name="accumulated" readonly="1"/>
+                                        <field name="sequence"/>
+                                        <field name="promotion_id" on_change="onchange_promotion_id(promotion_id, context)"/>
+                                    </tree>
+                                </field>
+                            </page>
+                 </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

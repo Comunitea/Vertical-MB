@@ -151,7 +151,6 @@ class account_invoice(models.Model):
         self.amount_discount = \
             sum([line.price_unit * line.quantity -
                 line.price_subtotal_discounted for line in self.invoice_line])
-
     document_id = fields.Many2one('edi.doc', 'EDI Document')
     name_doc = fields.Char('Ref', readonly=True, related='document_id.name')
     file_name_doc = fields.Char('File Name', readonly=True,
