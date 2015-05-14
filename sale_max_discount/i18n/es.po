@@ -1,0 +1,258 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * sale_max_discount
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-14 09:38+0000\n"
+"PO-Revision-Date: 2015-05-14 09:38+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_max_discount
+#: view:sale.specific.price:sale_max_discount.sale_specific_price_form
+msgid "Approve"
+msgstr "Aprobar"
+
+#. module: sale_max_discount
+#: selection:sale.specific.price,state:0
+msgid "Approved"
+msgstr "Aprobado"
+
+#. module: sale_max_discount
+#: model:ir.actions.act_window,name:sale_max_discount.action_product_category_max_discount
+#: model:ir.actions.act_window,name:sale_max_discount.action_product_template_max_discount
+#: model:ir.ui.menu,name:sale_max_discount.max_discount_category_menu
+#: view:product.category:sale_max_discount.product_category_max_discount_filter
+#: view:product.category:sale_max_discount.product_category_max_discount_tree
+msgid "Categories max discounts"
+msgstr "Descuentos máximos de categoría"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,cost_price:0
+msgid "Cost price"
+msgstr "Precio de coste"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,customer_id:0
+msgid "Customer"
+msgstr "Cliente"
+
+#. module: sale_max_discount
+#: help:sale.specific.price,message_last_post:0
+msgid "Date of the last message posted on the record."
+msgstr "Date of the last message posted on the record."
+
+#. module: sale_max_discount
+#: code:addons/sale_max_discount/sale.py:51
+#, python-format
+msgid "Discount is greather than the maximun discount of product. The sale need to be approved"
+msgstr "El descuento es mayor al máximo permitido. Debe ser aprovado"
+
+#. module: sale_max_discount
+#: selection:sale.specific.price,state:0
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,end_date:0
+msgid "End date"
+msgstr "Fecha fin"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,message_follower_ids:0
+msgid "Followers"
+msgstr "Followers"
+
+#. module: sale_max_discount
+#: help:sale.specific.price,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+
+#. module: sale_max_discount
+#: field:sale.specific.price,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: sale_max_discount
+#: help:sale.specific.price,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "If checked new messages require your attention."
+
+#. module: sale_max_discount
+#: field:sale.specific.price,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Is a Follower"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,message_last_post:0
+msgid "Last Message Date"
+msgstr "Last Message Date"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: sale_max_discount
+#: field:product.category,last_edit:0
+#: field:product.template,last_edit:0
+msgid "Last edit"
+msgstr "Última edición"
+
+#. module: sale_max_discount
+#: help:product.category,last_edit:0
+#: help:product.template,last_edit:0
+msgid "Last edition of max discount"
+msgstr "Última edición del descuento máximo"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,margin:0
+msgid "Margin"
+msgstr "Margen"
+
+#. module: sale_max_discount
+#: field:product.category,max_discount:0
+#: view:product.template:sale_max_discount.product_template_add_max_discount_form
+#: field:product.template,max_discount:0
+msgid "Max discount"
+msgstr "Descuento máximo"
+
+#. module: sale_max_discount
+#: help:product.category,max_discount:0
+#: help:product.template,max_discount:0
+msgid "Maximum discount for sales"
+msgstr "Descuento máximo para ventas"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: sale_max_discount
+#: help:sale.specific.price,message_ids:0
+msgid "Messages and communication history"
+msgstr "Messages and communication history"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,pricelist_price:0
+msgid "Pricelist price"
+msgstr "Precio tarifa"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: sale_max_discount
+#: model:ir.model,name:sale_max_discount.model_product_category
+msgid "Product Category"
+msgstr "Categoría de producto"
+
+#. module: sale_max_discount
+#: model:ir.model,name:sale_max_discount.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: sale_max_discount
+#: model:ir.ui.menu,name:sale_max_discount.max_discount_template_menu
+msgid "Products max discounts"
+msgstr "Descuentos máxmios de producto"
+
+#. module: sale_max_discount
+#: view:sale.specific.price:sale_max_discount.sale_specific_price_form
+msgid "Reject"
+msgstr "Rechazar"
+
+#. module: sale_max_discount
+#: selection:sale.specific.price,state:0
+msgid "Rejected"
+msgstr "Rechazado"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,sale_line_id:0
+msgid "Sale line id"
+msgstr "Sale line id"
+
+#. module: sale_max_discount
+#: model:ir.actions.act_window,name:sale_max_discount.action_sale_specific_price
+#: model:ir.ui.menu,name:sale_max_discount.sale_specific_price_menu
+msgid "Sale specific price"
+msgstr "Precio específico"
+
+#. module: sale_max_discount
+#: model:ir.model,name:sale_max_discount.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea pedido de venta"
+
+#. module: sale_max_discount
+#: field:sale.order.line,specific_price_id:0
+#: view:sale.specific.price:sale_max_discount.sale_specific_price_form
+#: field:sale.specific.price,specific_price:0
+msgid "Specific price"
+msgstr "Precio específico"
+
+#. module: sale_max_discount
+#: view:sale.specific.price:sale_max_discount.sale_specific_price_tree
+msgid "Specific prices"
+msgstr "Precios específicos"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,start_date:0
+msgid "Start date"
+msgstr "Fecha inicio"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,state:0
+msgid "State"
+msgstr "Estado"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,message_summary:0
+msgid "Summary"
+msgstr "Summary"
+
+#. module: sale_max_discount
+#: code:addons/sale_max_discount/sale_specific_price.py:51
+#, python-format
+msgid "The sale is invoiced"
+msgstr "La venta ya ha sido facturada"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,message_unread:0
+msgid "Unread Messages"
+msgstr "Unread Messages"
+
+#. module: sale_max_discount
+#: code:addons/sale_max_discount/sale.py:50
+#, python-format
+msgid "Warning!"
+msgstr "Warning!"
+
+#. module: sale_max_discount
+#: view:product.template:sale_max_discount.product_template_max_discount_filter
+#: view:product.template:sale_max_discount.product_template_max_discount_tree
+msgid "products max discounts"
+msgstr "Descuentos máximos de producto"
+
