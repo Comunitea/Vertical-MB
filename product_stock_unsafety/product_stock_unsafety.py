@@ -36,7 +36,7 @@ class product_stock_unsafety(osv.Model):
                                       required=True),
         'supplier_id': fields.many2one('res.partner',
                                        'Supplier'),
-        'min_fixed': fields.float('Min. Fixed', required=True),
+        'min_fixed': fields.float('Min. Fixed', required=True, help="Minimum quantity fixed by orderpoint"),
         'remaining_days_sale': fields.related('product_id',
                                               'remaining_days_sale',
                                               type='float',
@@ -58,11 +58,16 @@ class product_stock_unsafety(osv.Model):
                                        'incoming_qty',
                                        type='float',
                                        string='Incoming qty.'),
-        'minimum_proposal': fields.float('Min. Proposal')
+        'minimum_proposal': fields.float('Min. Proposal', help="Quantity necessary to reach the minimum days of preorder")
     }
     _defaults = {
         'date':  time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
+
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('min_fixed', False):
+            vals['product_qty'] = vals['min_fixed']
+        return super(product_stock_unsafety, self).create(cr, uid, vals, context)
 
     def cancel(self, cr, uid, ids, context=None):
         if context is None:

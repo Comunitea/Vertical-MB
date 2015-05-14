@@ -7,7 +7,7 @@
             <field name="model">purchase.preorder</field>
             <field name="inherit_id" ref="purchase_preorder.purchase_preorder_form"/>
              <field name="arch" type="xml">
-                 <xpath expr="//form[@string='Products Supplier']/group/group/group[1]/field[@name='list_price']" position="after">
+                 <xpath expr="//form[@string='Products Supplier']/group/group[3]/group[1]/field[@name='list_price']" position="after">
                     <field name="precentage_promo"/>
                     <field name="have_promotion"/>
                  </xpath>
