@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="sale_specific_price_tree" model="ir.ui.view">
+            <field name="name">sale.specific.price.tree</field>
+            <field name="model">sale.specific.price</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Specific prices">
+                    <field name="customer_id"/>
+                    <field name="product_id"/>
+                    <field name="cost_price"/>
+                    <field name="pricelist_price"/>
+                    <field name="specific_price"/>
+                    <field name="margin"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sale_specific_price_form" model="ir.ui.view">
+            <field name="name">sale.specific.price.form</field>
+            <field name="model">sale.specific.price</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Specific price">
+                    <header>
+                        <button name="approve" states="draft" string="Approve"/>
+                        <button name="reject" states="draft" string="Reject"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="customer_id"/>
+                                <field name="product_id"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group>
+                                <field name="cost_price"/>
+                                <field name="pricelist_price"/>
+                                <field name="specific_price"/>
+                                <field name="margin"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_specific_price_filter" model="ir.ui.view">
+            <field name="name">sale.specific.price.search</field>
+            <field name="model">sale.specific.price</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="">
+                   <field name="customer_id"/>
+                   <field name="product_id"/>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sale_specific_price">
+            <field name="name">Sale specific price</field>
+            <field name="res_model">sale.specific.price</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="sale_specific_price_tree"/>
+            <field name="search_view_id" ref="sale_specific_price_filter"/>
+        </record>
+
+        <menuitem name="Sale specific price" parent="base.menu_sales" action="action_sale_specific_price" id="sale_specific_price_menu"/>
+
+    </data>
+</openerp>

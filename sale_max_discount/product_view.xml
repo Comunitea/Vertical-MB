@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="product_category_add_max_discount_form" model="ir.ui.view">
+            <field name="name">product.category.form</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="max_discount"/>
+                    <field name="last_edit" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_template_add_max_discount_form" model="ir.ui.view">
+            <field name="name">product.template.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <field name="description_sale"  position="after">
+                    <group colspan="4" col="8" string="Max discount">
+                        <field name="max_discount"/>
+                        <field name="last_edit" readonly="1"/>
+                    </group>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_category_max_discount_tree" model="ir.ui.view">
+            <field name="name">product.category.tree</field>
+            <field name="model">product.category</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Categories max discounts" editable="top">
+                    <field name="complete_name"/>
+                    <field name="max_discount"/>
+                    <field name="last_edit" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_category_max_discount_filter" model="ir.ui.view">
+            <field name="name">product.category.search</field>
+            <field name="model">product.category</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Categories max discounts">
+                   <field name="name"/>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_product_category_max_discount">
+            <field name="name">Categories max discounts</field>
+            <field name="res_model">product.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="product_category_max_discount_tree"/>
+            <field name="search_view_id" ref="product_category_max_discount_filter"/>
+        </record>
+
+        <menuitem name="Categories max discounts" parent="product.prod_config_main" action="action_product_category_max_discount" id="max_discount_category_menu"/>
+
+        <record id="product_template_max_discount_tree" model="ir.ui.view">
+            <field name="name">product.template.tree</field>
+            <field name="model">product.template</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="products max discounts" editable="top">
+                    <field name="name"/>
+                    <field name="category_max_discount"/>
+                    <field name="max_discount"/>
+                    <field name="last_edit" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_template_max_discount_filter" model="ir.ui.view">
+            <field name="name">product.template.search</field>
+            <field name="model">product.template</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="products max discounts">
+                   <field name="name"/>
+               </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_product_template_max_discount">
+            <field name="name">Categories max discounts</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="product_template_max_discount_tree"/>
+            <field name="search_view_id" ref="product_template_max_discount_filter"/>
+        </record>
+
+        <menuitem name="Products max discounts" parent="product.prod_config_main" action="action_product_template_max_discount" id="max_discount_template_menu"/>
+
+    </data>
+</openerp>
