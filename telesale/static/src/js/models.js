@@ -373,7 +373,8 @@ function openerp_ts_models(instance, module){
         },
         get_calls_by_date_state: function(date, state){
             var self=this;
-            if (date){
+            debugger;
+            if (date || state){
                 var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"],['partner_id', '!=', false]]
                 if (state){
                     if (state != "any")

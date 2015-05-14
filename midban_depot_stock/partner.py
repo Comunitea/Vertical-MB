@@ -306,20 +306,26 @@ class resPartner(models.Model):
             res = True
         return res
 
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        """ """
+    def search(self, cr, user, args, offset=0, limit=None, order=None,
+               context=None, count=False):
+        if context is None:
+            context = {}
         domain = [('key', '=', 'check.route.zip')]
-        param_obj = self.env['ir.config_parameter'].search(domain)
-        value = True if param_obj.value == 'True' else False
-        if self._context.get('route_id', False) and value:
-            route_obj = self.env['route'].browse(self._context['route_id'])
-            bzip_codes = [x.name for x in route_obj.bzip_ids]
-            args.append(['zip', 'in', bzip_codes])
-        return super(resPartner, self).search(args,
+        param_ids = self.pool['ir.config_parameter'].search(cr, user, domain)
+        if param_ids:
+            param_obj = self.pool['ir.config_parameter'].browse(cr, user,
+                                                                param_ids[0])
+            value = True if param_obj.value == 'True' else False
+            if context.get('route_id', False) and value:
+                route_obj = self.pool['route'].browse(cr, user,
+                                                      context['route_id'])
+                bzip_codes = [x.name for x in route_obj.bzip_ids]
+                args.append(['zip', 'in', bzip_codes])
+        return super(resPartner, self).search(cr, user, args,
                                               offset=offset,
                                               limit=limit,
                                               order=order,
+                                              context=context,
                                               count=count)
 
     @api.model

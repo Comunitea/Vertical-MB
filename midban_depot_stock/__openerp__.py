@@ -72,6 +72,7 @@
         "wizard/get_route_detail_wzd_view.xml",
         'stock_view.xml',
         'procurement_view.xml',
+        'crm_phonecall_view.xml',
         "data/product_data.xml",
         "data/stock_data.xml",
         "qweb_report/report_picking_task.xml",
