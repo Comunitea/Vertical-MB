@@ -18,20 +18,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import stock
-import procurement
-import stock_machine
-import stock_task
-import res_users
-import wizard
-import product
-import stock_vehicle
-import route
-import partner
-import sale
-import stock
-import purchase
-import report
-import tag
-import account
-import crm_phonecall
+from openerp import models, fields
+
+
+class crm_phonecall(models.Model):
+    _inherit = 'crm.phonecall'
+
+    route_call_id = fields.Many2one('customer.list', 'Call from',
+                                    readonly=True)
