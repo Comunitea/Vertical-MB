@@ -60,136 +60,7 @@
                         </group>
                         <notebook colspan="6">
                             <page string="Products Supplier">
-                                <field name="product_supplier_ids">
-                                    <tree string="Products Supplier">
-                                        <field name="sequence" invisible="1"/>
-                                        <field name="incoming_qty" readonly="1"/>
-                                        <field name="date_delivery" readonly="1"/>
-                                        <field name="product_id" readonly="1"/>
-                                        <field name="unitskg" string="Units Ordered" />
-                                        <field name="min_fixed" readonly="1"/>
-                                        <field name="real_stock" readonly="1"/>
-                                        <field name="virtual_stock" readonly="1"/>
-                                    </tree>
-                                    <form string="Products Supplier">
-                                        <div class="oe_title">
-                                            <h1>
-                                                <field name="product_id" readonly="1" />
-                                            </h1>
-                                        </div>
-                                        <newline />
-                                        <group>
-                                            <group string="Quantities and amounts" colspan="4">
-                                                <group>
-                                                    <div class="oe_inline">
-                                                        <label for="price_purchase" />
-                                                        <button name="update_price" string="(update product price)" type="object" class="oe_edit_only oe_link" />
-                                                    </div>
-                                                    <field name="price_purchase" nolabel="1" />
-                                                    <field name="subtotal" readonly="1" />
-                                                </group>
-                                                <group>
-                                                    <field name="integer" invisible="1" />
-                                                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets', integer)" />
-                                                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles', integer)" />
-                                                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes', integer)" />
-                                                    <field name="unitskg" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg',integer)" />
-                                                </group>
-                                            </group>
-                                            <group>
-                                                <group string="Supplier" >
-                                                    <field name="min_qty" />
-                                                    <field name="min_mantles" />
-                                                    <field name="min_palets" />
-                                                </group>
-                                                <group string="Stocks">
-                                                    <field name="min_fixed" readonly="1" />
-                                                    <field name="real_stock" readonly="1" />
-                                                    <field name="virtual_stock" readonly="1" />
-                                                    <field name="product_state" readonly="1" />
-                                                </group>
-                                                <group string="Last Purchase">
-                                                    <field name="date_last_purchase" readonly="1" />
-                                                    <field name="qty_last_purchase" readonly="1" />
-                                                    <field name="price_last_purchase" readonly="1" />
-                                                </group>
-                                                <group string="Amounts awaiting">
-                                                    <field name="incoming_qty" readonly="1" />
-                                                    <field name="date_delivery" readonly="1" />
-                                                </group>
-                                            </group>
-                                            <newline />
-                                            <separator string="Amounts" />
-                                            <newline />
-                                            <group>
-                                                <group>
-                                                    <field name="list_price" readonly="1" />
-                                                </group>
-                                                <group>
-                                                    <field name="net_cost" readonly="1" />
-                                                    <field name="net_net_cost" readonly="1" />
-                                                </group>
-                                            </group>
-                                        </group>
-                                        <notebook>
-                                            <page string="Consumptions">
-                                                <group colspan="4" col="3">
-                                                    <label string="Months" />
-                                                    <label string="Previous" />
-                                                    <label string="Current" />
-                                                    <newline />
-                                                    <label string="January" />
-                                                    <field name="jan_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="jan_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="February" />
-                                                    <field name="feb_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="feb_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="March" />
-                                                    <field name="mar_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="mar_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="April" />
-                                                    <field name="apr_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="apr_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="May" />
-                                                    <field name="may_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="may_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="June" />
-                                                    <field name="jun_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="jun_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="July" />
-                                                    <field name="jul_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="jul_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="August" />
-                                                    <field name="aug_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="aug_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="September" />
-                                                    <field name="sep_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="sep_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="October" />
-                                                    <field name="oct_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="oct_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="November" />
-                                                    <field name="nov_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="nov_consu_cur" nolabel="1" readonly="1" />
-                                                    <newline />
-                                                    <label string="December" />
-                                                    <field name="dec_consu_last" nolabel="1" readonly="1" />
-                                                    <field name="dec_consu_cur" nolabel="1" readonly="1" />
-                                                </group>
-                                            </page>
-                                        </notebook>
-                                    </form>
-                                </field>
+                                <field name="product_supplier_ids"/>
                             </page>
                             <page string="State Supplier">
                                 <group>
@@ -226,6 +97,155 @@
                         <button name="create_preorder" type="object" string="Create PreOrder" icon="gtk-apply"/>
                         <button special="cancel" string="Cancel" icon="gtk-cancel"/>
                     </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_supplier_preorder_tree" model="ir.ui.view">
+            <field name="name">products.supplier.tree</field>
+            <field name="model">products.supplier</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Products Supplier">
+                    <field name="sequence" invisible="1"/>
+                    <field name="incoming_qty" readonly="1"/>
+                    <field name="date_delivery" readonly="1"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="unitskg" string="Units Ordered" />
+                    <field name="min_fixed" readonly="1"/>
+                    <field name="real_stock" readonly="1"/>
+                    <field name="virtual_stock" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_supplier_preorder_form" model="ir.ui.view">
+            <field name="name">products.supplier.form</field>
+            <field name="model">products.supplier</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Products Supplier">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="product_id" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Quantities and amounts" colspan="4">
+                            <group>
+                                <div class="oe_inline">
+                                    <label for="price_purchase" />
+                                    <button name="update_price" string="(update product price)" type="object" class="oe_edit_only oe_link" />
+                                </div>
+                                <field name="price_purchase" nolabel="1" />
+                                <field name="subtotal" readonly="1" />
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="integer" invisible="1" />
+                                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets', integer)" />
+                                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles', integer)" />
+                                </group>
+                                <group>
+                                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes', integer)" />
+                                    <field name="unitskg" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg',integer)" />
+                                </group>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <notebook>
+                                    <page string="Consumptions">
+                                        <group col="3">
+                                            <label string="Months" />
+                                            <label string="Previous" />
+                                            <label string="Current" />
+                                            <newline />
+                                            <label string="January" />
+                                            <field name="jan_consu_last" nolabel="1" readonly="1" />
+                                            <field name="jan_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="February" />
+                                            <field name="feb_consu_last" nolabel="1" readonly="1" />
+                                            <field name="feb_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="March" />
+                                            <field name="mar_consu_last" nolabel="1" readonly="1" />
+                                            <field name="mar_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="April" />
+                                            <field name="apr_consu_last" nolabel="1" readonly="1" />
+                                            <field name="apr_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="May" />
+                                            <field name="may_consu_last" nolabel="1" readonly="1" />
+                                            <field name="may_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="June" />
+                                            <field name="jun_consu_last" nolabel="1" readonly="1" />
+                                            <field name="jun_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="July" />
+                                            <field name="jul_consu_last" nolabel="1" readonly="1" />
+                                            <field name="jul_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="August" />
+                                            <field name="aug_consu_last" nolabel="1" readonly="1" />
+                                            <field name="aug_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="September" />
+                                            <field name="sep_consu_last" nolabel="1" readonly="1" />
+                                            <field name="sep_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="October" />
+                                            <field name="oct_consu_last" nolabel="1" readonly="1" />
+                                            <field name="oct_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="November" />
+                                            <field name="nov_consu_last" nolabel="1" readonly="1" />
+                                            <field name="nov_consu_cur" nolabel="1" readonly="1" />
+                                            <newline />
+                                            <label string="December" />
+                                            <field name="dec_consu_last" nolabel="1" readonly="1" />
+                                            <field name="dec_consu_cur" nolabel="1" readonly="1" />
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </group>
+                            <group string="Supplier" >
+                                <field name="min_qty" />
+                                <field name="min_mantles" />
+                                <field name="min_palets" />
+                                <newline />
+                                <separator string="Stocks"/>
+                                <newline />
+                                <field name="min_fixed" readonly="1" />
+                                <field name="real_stock" readonly="1" />
+                                <field name="virtual_stock" readonly="1" />
+                                <field name="product_state" readonly="1" />
+                                <separator string="Last Purchase" />
+                                <newline />
+                                <field name="date_last_purchase" readonly="1" />
+                                <field name="qty_last_purchase" readonly="1" />
+                                <field name="price_last_purchase" readonly="1" />
+                            </group>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Amounts awaiting">
+                            <field name="incoming_qty" readonly="1" />
+                            <field name="date_delivery" readonly="1" />
+                        </group>
+                        <group string="Amounts">
+                            <group>
+                                <field name="list_price" readonly="1" />
+                            </group>
+                            <group>
+                                <field name="net_cost" readonly="1" />
+                                <field name="net_net_cost" readonly="1" />
+                            </group>
+                        </group>
+                    </group>
                 </form>
             </field>
         </record>

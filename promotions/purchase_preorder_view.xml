@@ -3,14 +3,14 @@
     <data>
 
         <record id="view_purchase_preorder_promotion_form" model="ir.ui.view">
-            <field name="name">purchase.preorder.form</field>
-            <field name="model">purchase.preorder</field>
-            <field name="inherit_id" ref="purchase_preorder.purchase_preorder_form"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//form[@string='Products Supplier']/group/group[3]/group[1]/field[@name='list_price']" position="after">
+            <field name="name">products.supplier.form</field>
+            <field name="model">products.supplier</field>
+            <field name="inherit_id" ref="purchase_preorder.product_supplier_preorder_form"/>
+            <field name="arch" type="xml">
+                 <field name="list_price" position="after">
                     <field name="precentage_promo"/>
                     <field name="have_promotion"/>
-                 </xpath>
+                 </field>
 
                 <page string="Consumptions" position="after">
                     <page string="Promotions">
@@ -23,7 +23,7 @@
                         </field>
                     </page>
                 </page>
-              </field>
+            </field>
         </record>
     </data>
 </openerp>
