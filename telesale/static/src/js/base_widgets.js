@@ -113,9 +113,12 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             //Product PopUp 
             this.product_sust_popup = new module.SustPopupWidget(this, {});
             this.product_sust_popup.appendTo(this.$('#content'));
-            //Add Call PopUp 
+            //Add Create Call PopUp 
             this.add_call_popup = new module.AddCallPopupWidget(this, {});
             this.add_call_popup.appendTo(this.$('#content'));
+            //Add Finish Call PopUp 
+            this.finish_call_popup = new module.FinishCallPopupWidget(this, {});
+            this.finish_call_popup.appendTo(this.$('#content'));
             //Add Create Reserve PopUp 
             this.create_reserve_popup = new module.CreateReservePopupWidget(this, {});
             this.create_reserve_popup.appendTo(this.$('#content'));
@@ -145,6 +148,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 popup_set:{
                     'product_sust_popup': this.product_sust_popup,
                     'add_call_popup': this.add_call_popup,
+                    'finish_call_popup': this.finish_call_popup,
                     'create_reserve_popup': this.create_reserve_popup,
                 },
                 default_client_screen: 'new_order',

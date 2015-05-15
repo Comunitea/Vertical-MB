@@ -55,6 +55,11 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             }
             this.current_popup = this.popup_set[name];
             if (name=="create_reserve_popup"){
+                // extra data will be the reserve line widget
+                this.current_popup.show(extra_data);
+            }
+            if (name=="finish_call_popup"){
+                // extra data will be the call line widget
                 this.current_popup.show(extra_data);
             }
             else{

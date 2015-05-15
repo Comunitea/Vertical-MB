@@ -255,14 +255,6 @@ class route(models.Model):
                         'state': 'pending',
                     }
                     det_obj = self.env['route.detail'].create(vals)
-                    # Add customer to customer lists of detail
-                    vals = {
-                        'detail_id': det_obj.id,
-                        'sequence': p_info.sequence,
-                        'customer_id': p_info.partner_id.id,
-                        # 'result': 'pending'
-                    }
-                    self.env['customer.list'].create(vals)
 
                 # Detail obj already exists for the date, re-write it
                 else:
@@ -283,13 +275,27 @@ class route(models.Model):
                     cust_objs = self.env['customer.list'].search(domain)
                     if cust_objs:
                         cust_objs.unlink()  # Delete the customer list regiser
-                    # Create a customer list record for the detail
+
+                # Create a customer list record for the detail
+                if self.type != 'telesale':
+                    # Add customer to customer lists of detail
                     vals = {
                         'detail_id': det_obj.id,
                         'sequence': p_info.sequence,
-                        'customer_id': p_info.partner_id.id
+                        'customer_id': p_info.partner_id.id,
+                        # 'result': 'pending'
                     }
                     self.env['customer.list'].create(vals)
+                # Create the list of calls
+                else:
+                    det_name = det_obj.name_get()[0][1]
+                    vals = {
+                        'name': _("Telesale Call ") + p_info.partner_id.name,
+                        'partner_id': p_info.partner_id.id,
+                        'description': _("Scheduled Call from %s" % det_name),
+                        'date': det_obj.date,
+                    }
+                    self.env['crm.phonecall'].create(vals)
 
 
 class route_detail(models.Model):
@@ -309,7 +315,15 @@ class route_detail(models.Model):
                              default='pending')
     customer_ids = fields.One2many('customer.list', 'detail_id',
                                    'Customer List')
+    call_ids = fields.One2many('crm.phonecall', 'detail_id', 'Call list')
     comercial_id = fields.Many2one('res.users', 'Comercial')
+    route_type = fields.Selection([('auto_sale', 'Auto Sale'),
+                                   ('comercial', 'Comercial'),
+                                   ('delivery', 'Delivery'),
+                                   ('telesale', 'Telesale'),
+                                   ('ways', 'Ways'),
+                                   ('other', 'Other')], 'Type',
+                                  related='route_id.type')
 
     @api.multi
     def set_cancelled(self):
@@ -378,52 +392,5 @@ class customer_list(models.Model):
                                ('closed_reform', 'Closed Reform'),
                                ('no_visited', 'No visited'),
                                ('delivered_ok', 'Delivered OK'),
-                               ('delivered_issue', 'Delivered with issue'),
-                               ('not_responding', 'Not responding'),
-                               ('comunicate', 'Comunicate'),
-                               ('call_no_order', 'Call without order'),
-                               ('call_other_day', 'Call other day'),
-                               ('call_no_done', 'Call not done')],
+                               ('delivered_issue', 'Delivered with issue')],
                               string="result")
-
-    @api.model
-    def create(self, vals):
-        record_list = super(customer_list, self).create(vals)
-        if record_list.detail_id.route_id.type == 'telesale':
-            detail_name = record_list.detail_id.name_get()[0][1]
-            vals = {
-                'name': _("Telesale Call ") + record_list.customer_id.name,
-                'partner_id': record_list.customer_id.id,
-                'description': _("Scheduled Call from %s" % detail_name),
-                'date': record_list.detail_id.date,
-                'route_call_id': record_list.id
-            }
-            self.env['crm.phonecall'].create(vals)
-        return record_list
-
-    @api.one
-    def write(self, vals):
-        res = super(customer_list, self).write(vals)
-        if self.detail_id.route_id.type == 'telesale':
-            call_objs = self.env['crm.phonecall'].search([('route_call_id',
-                                                           '=', self.id)])
-            if call_objs:
-                detail_name = self.detail_id.name_get()[0][1]
-                vals = {
-                    'name': _("Telesale Call ") + self.customer_id.name,
-                    'partner_id': self.customer_id.id,
-                    'description': _("Scheduled Call from %s" % detail_name),
-                    'date': self.detail_id.date,
-                    'route_call_id': self.id
-                }
-            self.env['crm.phonecall'].create(vals)
-        return res
-
-    @api.one
-    def unlink(self):
-        call_objs = self.env['crm.phonecall'].search([('route_call_id', '=',
-                                                       self.id)])
-        if call_objs:
-            call_objs.unlink()
-        res = super(customer_list, self).unlink()
-        return res

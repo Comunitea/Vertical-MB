@@ -1,16 +1,30 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-    <!--Logged Phonecalls Tree View -->
-        <record model="ir.ui.view" id="case_inbound_phone_tree_view_add_route">
-            <field name="name">case.inbound.phone.tree.view.add.route</field>
+        <!--Logged Phonecalls Tree View -->
+        <record model="ir.ui.view" id="case_inbound_phone_tree_view_add_result">
+            <field name="name">case.inbound.phone.tree.view.add.result</field>
             <field name="model">crm.phonecall</field>
             <field name="inherit_id" ref="crm.crm_case_inbound_phone_tree_view"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
-                    <field name="route_call_id"/>
+                    <field name="detail_id"/>
+                    <field name="result"/>
                 </field>
             </field>
         </record>
+        <!--Logged Phonecalls Form View -->
+        <record model="ir.ui.view" id="crm_case_phone_form_view_add_result">
+            <field name="name">crm.case.phone.form.view.add.result</field>
+            <field name="model">crm.phonecall</field>
+            <field name="inherit_id" ref="crm.crm_case_phone_form_view"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="detail_id"/>
+                    <field name="result"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>

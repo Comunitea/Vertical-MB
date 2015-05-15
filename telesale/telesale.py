@@ -142,9 +142,9 @@ class crm_phonecall(osv.Model):
     _inherit = 'crm.phonecall'
     _columns = {
         'state': fields.selection([('draft', 'Draft'),
-                                   ('open', 'Confirmed'),
+                                   ('open', 'Pending'),
                                    ('calling', 'In Course'),
-                                   ('pending', 'Not Held'),
+                                   ('pending', 'No response'),
                                    ('cancel', 'Cancelled'),
                                    ('done', 'Held')],
                                   string='Status', size=16, readonly=True,

@@ -22,10 +22,10 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             this._super();
             this.$('.save-call').off("click").click(_.bind(this.save_call, this));
             this.$('#do-call').off("click").click(_.bind(this.do_call, this));
-            this.$('#finish-call').off("click").click(_.bind(this.finish_call, this));
+            this.$('#finish-call').off("click").click(_.bind(this.finish_call_pop, this));
         },
         save_call: function(){
-            alert(this.call.id)
+           this.ts_widget.screen_selector.show_popup('finish_call_popup', false);
         },
         create_order_from_call: function(){
             
@@ -79,13 +79,42 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
                 })
                 // sACUERDATEEEEEEEEEEEEEEEE
         },
-        finish_call: function(){
+        finish_call_pop: function(){
+            var call_line=this
+            this.ts_widget.screen_selector.show_popup('finish_call_popup', call_line);
+        },
+        _get_call_reset_code: function(value){
+            result_code = false
+            switch(value){
+                case "Sale done":
+                    result_code = "sale_done";
+                    break;
+                case "Not responding":
+                    result_code = "not_responding";
+                    break;
+                case "Comunicate":
+                    result_code = "comunicate";
+                    break;
+                case "Call other moment":
+                    result_code = "call_other_moment";
+                    break;
+                case "Call without order":
+                    result_code = "call_no_order";
+                    break;
+                case "Call not done":
+                    result_code = "call_no_done";
+                    break;
+            }
+            return result_code
+        },
+        finish_call: function(result_call){
             var self=this;
             var call_id =Number(this.call.id);
+            result_code = self._get_call_reset_code(result_call)
             // console.log("CALL ID: ", call_id);
             //obtenr fin y guardarlo psrs obtener duracción
             var model = new instance.web.Model("crm.phonecall");
-             model.call("write",[[call_id], {'state': "done"}],{context:new instance.web.CompoundContext()}).then(function(result){
+             model.call("write",[[call_id], {'result': result_code}],{context:new instance.web.CompoundContext()}).then(function(result){
                 self.ts_model.set('call_id', false);
                 // self.call.state = 'done';
                 self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr());
@@ -193,6 +222,27 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
 
                 })
             
+        },
+    });
+    
+    /* POP UP FOR FINISH CALLS*/
+    module.FinishCallPopupWidget = module.PopUpWidget.extend({
+        template: 'Finish-Call-Pop-Up-Screen-Widget',
+        init: function(parent,options){
+            this._super(parent,options)
+        },
+        show: function(call_line){
+            var self = this;
+            this._super();
+
+            result = this.$('#result_call').val() // Get result call
+             this.$('#finish-call').off('click').click(function(){
+                call_line.finish_call(result)
+            })
+            this.$('#close-finish-call-popup').off('click').click(function(){
+              
+                self.ts_widget.screen_selector.close_popup('finish_call_popup');
+            })
         },
     });
 }

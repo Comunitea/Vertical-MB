@@ -80,6 +80,9 @@
             <td class="call-cell-state">
                 <!-- <span class="call-cell"><t t-esc="widget.call.state"/></span> -->
                 <span class="call-cell">
+                    <t t-if="widget.call.state == 'draft'">
+                        Draft
+                    </t>
                     <t t-if="widget.call.state == 'open'">
                         Pending
                     </t>
@@ -88,6 +91,12 @@
                     </t>
                     <t t-if="widget.call.state == 'done'">
                         Realized
+                    </t>
+                    <t t-if="widget.call.state == 'cancel'">
+                        Canceled
+                    </t>
+                    <t t-if="widget.call.state == 'pending'">
+                        Not response
                     </t>
                 </span>
             </td>
@@ -145,6 +154,36 @@
                  <div class="buttons-block">
                     <div class="center-content">
                         <button id="close-call-popup">Close</button>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="Finish-Call-Pop-Up-Screen-Widget">
+        <div class="phonecall-pop-up">
+            <div class="popup-block">
+                <div class="center-content">
+                     <label for="result_call">State:</label>
+                        <select id="result_call">
+                            <option>Sale done</option>
+                            <option>Not responding</option>
+                            <option>Comunicate</option>
+                            <option>Call other moment</option>
+                            <option>Call without order</option>
+                            <option selected="selected">Call not done</option>
+                        </select>
+                 </div>
+            </div>
+            <div class="popup-block">
+                <div class="buttons-block">
+                    <div class="center-content">
+                        <button id="finish-call">Finish Call</button>
+                    </div>
+                </div>
+                 <div class="buttons-block">
+                    <div class="center-content">
+                        <button id="close-finish-call-popup">Close</button>
                     </div>
                  </div>
             </div>
