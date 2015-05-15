@@ -275,7 +275,7 @@ class route(models.Model):
                     cust_objs = self.env['customer.list'].search(domain)
                     if cust_objs:
                         cust_objs.unlink()  # Delete the customer list regiser
-
+                import ipdb; ipdb.set_trace()
                 # Create a customer list record for the detail
                 if self.type != 'telesale':
                     # Add customer to customer lists of detail
@@ -292,6 +292,7 @@ class route(models.Model):
                     vals = {
                         'name': _("Telesale Call ") + p_info.partner_id.name,
                         'partner_id': p_info.partner_id.id,
+                        'detail_id': det_obj.id,
                         'description': _("Scheduled Call from %s" % det_name),
                         'date': det_obj.date,
                     }
