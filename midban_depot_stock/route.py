@@ -275,7 +275,6 @@ class route(models.Model):
                     cust_objs = self.env['customer.list'].search(domain)
                     if cust_objs:
                         cust_objs.unlink()  # Delete the customer list regiser
-                import ipdb; ipdb.set_trace()
                 # Create a customer list record for the detail
                 if self.type != 'telesale':
                     # Add customer to customer lists of detail
