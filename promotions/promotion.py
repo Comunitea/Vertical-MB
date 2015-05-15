@@ -58,6 +58,7 @@ class partner_promotion(osv.Model):
             raise osv.except_osv(_('Not found register'),
                                  _('Not found promotion discount type'))
         promo_obj = self.pool.get('partner.promotion.rel')
+        context = dict(context)
         context.update({'type_promo': 'purchase',
                         'domain_promotion': type})
         applieds = promo_obj.get_applied_promos(cr, uid, product_id,
