@@ -339,6 +339,7 @@ class resPartner(models.Model):
         param_obj = self.env['ir.config_parameter'].search(domain)
         value = True if param_obj.value == 'True' else False
         if self._context.get('route_id', False) and value:
+            args.append(('name', operator, name))
             recs = self.search(args)
             res = recs.name_get()
         return res
