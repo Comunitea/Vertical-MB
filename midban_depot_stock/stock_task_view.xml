@@ -28,7 +28,7 @@
                                 <field name="duration" widget="float_time"/>
                             </group>
                         </group>
-                        <group string="Assigned Operations">
+                        <group string="Assigned Operations" attrs="{'invisible': [('type', '=', 'picking')]}">
                              <field name="operation_ids" nolabel="1" colspan="4">
                                 <tree>
                                     <field name="product_id"/>
