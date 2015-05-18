@@ -255,3 +255,10 @@ class sale_order_line(osv.Model):
             }
             res.update({'warning': warning})
         return res
+
+    def _prepare_order_line_invoice_line(self, cr, uid, line, account_id=False, context=None):
+        import ipdb; ipdb.set_trace()
+        res = super(sale_order_line, self)._prepare_order_line_invoice_line(cr, uid, line, account_id, context)
+        if not line.invoiced:
+            res['price_unit'] = line.price_unit
+        return res
