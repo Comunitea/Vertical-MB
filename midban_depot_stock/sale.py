@@ -129,8 +129,6 @@ class sale_order(osv.Model):
         if not res['value'].get('route_detail_id', False):
             detail_obj = part.get_next_route_detail()
             if detail_obj:
-                detail_obj = detail_obj
-                # detail_obj = detail_t.browse(cr, uid, detail_ids[0])
                 res['value']['route_detail_id'] = detail_obj.id
                 res['value']['date_planned'] = detail_obj.date + \
                     " 19:00:00"
@@ -164,29 +162,14 @@ class sale_order(osv.Model):
         """
         if context is None:
             context = {}
-        # procurement_obj = self.pool.get('procurement.order')
-
         # If not detail route asigned raise an error
         for order in self.browse(cr, uid, ids, context=context):
             if not order.route_detail_id:
                 raise except_orm(_('Error'),
                                  _('Detail of route must be assigned to \
                                     confirm the order'))
-
         res = super(sale_order, self).action_ship_create(cr, uid, ids,
                                                          context=context)
-        # for order in self.browse(cr, uid, ids, context=context):
-        #     if order.procurement_group_id:
-        #         proc_ids = \
-        #             [x.id for x in order.procurement_group_id.procurement_ids]
-        #         if proc_ids:
-        #             dc = order.trans_route_id and \
-        #                 order.trans_route_id.next_dc or 0
-        #             vals = {'drop_code': dc}
-        #             procurement_obj.write(cr, uid, proc_ids, vals, context)
-        #     if order.trans_route_id:
-        #         next_dc = order.trans_route_id.next_dc
-        #         order.trans_route_id.write({'next_dc': next_dc + 1})
         return res
 
 
@@ -256,8 +239,11 @@ class sale_order_line(osv.Model):
             res.update({'warning': warning})
         return res
 
-    def _prepare_order_line_invoice_line(self, cr, uid, line, account_id=False, context=None):
-        res = super(sale_order_line, self)._prepare_order_line_invoice_line(cr, uid, line, account_id, context)
+    def _prepare_order_line_invoice_line(self, cr, uid, line, account_id=False,
+                                         context=None):
+        res = super(sale_order_line, self).\
+            _prepare_order_line_invoice_line(cr, uid, line, account_id,
+                                             context)
         if not line.invoiced:
             res['price_unit'] = line.price_unit
         return res

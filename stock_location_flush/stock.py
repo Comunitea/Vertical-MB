@@ -30,6 +30,7 @@ class StockLocation(models.Model):
 
     @api.one
     def flush_location(self):
+        import ipdb; ipdb.set_trace()
         if not self.location_flush_dest:
             raise exceptions.Warning(
                 _('Location error'),
@@ -82,8 +83,8 @@ class StockLocation(models.Model):
                 move_dict['restrict_lot_id'] = quant['lot_id'][0]
             self.env['stock.move'].create(move_dict).action_confirm()
         picking_id.action_assign()
-        picking_id.do_prepare_partial()
-        picking_id.do_transfer()
+        # picking_id.do_prepare_partial()
+        # picking_id.do_transfer()
 
     @api.model
     def flush_location_cron(self):

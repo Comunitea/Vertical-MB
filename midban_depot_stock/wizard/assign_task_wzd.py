@@ -275,15 +275,10 @@ class assign_task_wzd(osv.TransientModel):
             'user_id': wzd_obj.operator_id.id,
             'type': 'ubication',
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
-            # 'picking_id': pick.id,
             'state': 'assigned',
             'machine_id': machine_id
         }
         task_id = t_task.create(cr, uid, vals, context=context)
-        # domain = [('key', '=', 'max.loc.ops')]
-        # param_ids = t_config.search(cr, uid, domain, context=context)
-        # param_obj = t_config.browse(cr, uid, param_ids, context)[0]
-        # param_value = t_config.get_param(cr, uid, 'max.loc.ops', default='0')
         max_ops = wzd_obj.max_loc_ops
         num_ops = len(pick.pack_operation_ids)
         if not max_ops:
@@ -293,21 +288,6 @@ class assign_task_wzd(osv.TransientModel):
             if assigned < max_ops and not op.task_id:
                 op.write({'task_id': task_id})
                 assigned += 1
-
-        # pick.write({'operator_id': wzd_obj.operator_id.id,
-        #             'machine_id': machine_id,
-        #             'task_type': 'ubication',
-        #             'warehouse_id': wzd_obj.warehouse_id.id})
-        # Create task and associate picking
-        # vals = {
-        #     'user_id': wzd_obj.operator_id.id,
-        #     'type': 'ubication',
-        #     'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
-        #     'picking_id': pick.id,
-        #     'state': 'assigned',
-        #     'machine_id': machine_id
-        # }
-        # t_task.create(cr, uid, vals, context=context)
 
         return self._print_report(cr, uid, ids, task_id=task_id,
                                   context=context)
@@ -349,10 +329,15 @@ class assign_task_wzd(osv.TransientModel):
         min_locs = wzd_obj.min_loc_replenish
         if not min_locs:
             min_locs = 1
+        if not wzd_obj.location_ids:
+            raise osv.except_osv(_('Error!'), _('Cameras are required to do a \
+                                 reposition task'))
+        camera_ids = [x.id for x in wzd_obj.location_ids]
         pick_ids = t_pick.search(cr, uid, [('state', '=', 'assigned'),
                                            ('picking_type_id',
                                             '=',
                                             reposition_task_type_id),
+                                           ('camera_id', 'in', camera_ids)
                                            ('operator_id', '=',
                                            False)],
                                  limit=min_locs, order="id asc",
@@ -360,18 +345,10 @@ class assign_task_wzd(osv.TransientModel):
         if not pick_ids:
             raise osv.except_osv(_('Error!'), _('No internal reposition \
                                                  pickings to schedule'))
-
-        # pick = t_pick.browse(cr, uid, pick_id[0], context)
-        # pick.write({'operator_id': wzd_obj.operator_id.id,
-        #             'machine_id': machine_id,
-        #             'warehouse_id': wzd_obj.warehouse_id.id,
-        #             'task_type': 'reposition'})
-        # Create task and associate picking
         vals = {
             'user_id': wzd_obj.operator_id.id,
             'type': 'reposition',
             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
-            # 'picking_id': pick.id,
             'state': 'assigned',
             'machine_id': machine_id
         }
@@ -391,19 +368,6 @@ class assign_task_wzd(osv.TransientModel):
                                                 schedule'))
         t_ops.write(cr, uid, ops_ids, {'task_id': task_id}, context=context)
 
-        # wzd_obj.write({'state': 'tag'})
-        # server_obj = self.pool.get('ir.actions.server')
-        # context2 = {
-        #     'active_id': pick.id,
-        #     'active_model': 'stock.picking'
-        # }
-        # return server_obj.run(cr, uid, [538], context=context2)
-
-        # return self._print_report(cr, uid, ids, picking_id=pick.id,
-        #                           context=context)
-
-        # Apaño para queimprima algo, junto con etiquetas
-        # pick = t_pick.browse(cr, uid, pick_ids[0], context)
         context2 = dict(context)
         context2.update({
             'active_model': 'stock.task',

@@ -68,8 +68,9 @@
                     <field name="machine_id"/>
                     <field name="warehouse_id"/>
                     <field name="task_type"/>
+                    <field name="camera_id" attrs="{'invisible': [('task_type', '!=', 'reposition')]}"/>
                     <field name="trans_route_id"/>
-                   <!--  <field name="drop_code"/> -->
+                    
                     <field name="camera_ids" widget="many2many_tags" attrs="{'invisible': [('task_type', '!=', 'picking')]}"/>
 
                 </field>
