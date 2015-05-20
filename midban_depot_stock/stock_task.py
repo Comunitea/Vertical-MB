@@ -146,10 +146,6 @@ class stock_task(osv.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         for task in self.browse(cr, uid, ids, context=context):
-            # if task.picking_id:
-            #     task.picking_id.write({'operator_id': False,
-            #                            'machine_id': False})
-            #     task.picking_id.action_cancel()
             if task.operation_ids:
                 if task.type == 'reposition':
                     pick_ids = \
@@ -159,7 +155,7 @@ class stock_task(osv.Model):
                         'operator_id': False,
                         'machine_id': False,
                         'warehouse_id': False,
-                        'task_type': False
+                        # 'task_type': False
                     }
                     t_pick.write(cr, uid, pick_ids, vals, context=context)
                 ops_ids = [x.id for x in task.operation_ids]

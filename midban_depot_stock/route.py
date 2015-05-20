@@ -67,6 +67,7 @@ class route(models.Model):
     detail_ids = fields.One2many('route.detail', 'route_id')
     partner_ids = fields.One2many('partner.route.info', 'route_id',
                                   'Customers')
+    active = fields.Boolean('Active', default=True)
 
     @api.onchange('bzip_ids')
     @api.multi
@@ -175,10 +176,6 @@ class route(models.Model):
     @api.multi
     def set_draft(self):
         self.state = 'draft'
-
-    # @api.multi
-    # def reset_drop_code(self):
-    #     self.next_dc = 1
 
     @api.one
     def get_last_pending_date(self):
@@ -385,7 +382,11 @@ class customer_list(models.Model):
     customer_id = fields.Many2one('res.partner', 'Customer',
                                   domain=[('customer', '=', True)],
                                   required=True)
+    sale_id = fields.Many2one('sale.order', 'Order', readonly=True,
+                              help='is linked when confirm a order with this\
+                              detail route')
     result = fields.Selection([('sale_done', 'Sale done'),
+                               ('pending', 'Pending'),
                                ('visited_no_order', 'Visited without order'),
                                ('closed_day', 'Closed day'),
                                ('closed_holidays', 'Holidays'),
@@ -393,4 +394,4 @@ class customer_list(models.Model):
                                ('no_visited', 'No visited'),
                                ('delivered_ok', 'Delivered OK'),
                                ('delivered_issue', 'Delivered with issue')],
-                              string="result")
+                              string="result", default='pending')

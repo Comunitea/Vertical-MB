@@ -21,40 +21,14 @@
 from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
-# from datetime import datetime, timedelta
 from openerp.exceptions import except_orm
-from openerp import api
+# from openerp import api
 
 
 class sale_order(osv.Model):
     _inherit = 'sale.order'
 
-    # def _get_next_working_date(self, cr, uid, context=None):
-    #     """
-    #     Returns the next working day date respect today
-    #     """
-    #     today = datetime.now()
-    #     week_day = today.weekday()  # Monday is 0  and Sunday 6, take care
-    #     delta = 1
-    #     if week_day == 4:
-    #         delta = 3
-    #     elif week_day == 5:
-    #         delta = 2
-    #     new_date = today + timedelta(days=delta or 0.0)
-    #     date_part = datetime.strftime(new_date, "%Y-%m-%d")
-    #     res = datetime.strptime(date_part + " " + "22:59:59",
-    #                             "%Y-%m-%d %H:%M:%S")
-    #     return res
-
     _columns = {
-        # 'trans_route_id': fields.many2one('route', 'Transport Route',
-        #                                   domain=[('state', '=', 'active')],
-        #                                   readonly=True, states={'draft':
-        #                                                          [('readonly',
-        #                                                            False)],
-        #                                                          'sent':
-        #                                                          [('readonly',
-        #                                                            False)]}),
         'trans_route_id': fields.related('route_detail_id', 'route_id',
                                          string='Route',
                                          type="many2one",
@@ -72,36 +46,41 @@ class sale_order(osv.Model):
                                               date of related picking"),
     }
 
-    @api.onchange('route_detail_id')
-    @api.multi
-    def onchange_route_detail_id(self):
-        res = {}
-        warning = False
-        if self.route_detail_id:
-            if not self.partner_id:
-                self.route_detail_id = False
-                warning = {
-                    'title': _('Warning!'),
-                    'message': _('Customer must be assigned')
-                }
-            else:
-                found = False
-                for cust in self.route_detail_id.customer_ids:
-                    if cust.customer_id.id == self.partner_id.id:
-                        found = True
-                        break
-                if not found:
-                    name_detail = self.route_detail_id.name_get()[0][1]
-                    warning = {
-                        'title': _('Warning!'),
-                        'message': _('The customer is not included in the \
-                                      customer list of detailed route\
-                                      %s' % name_detail)
-                    }
-            if warning:
-                res['warning'] = warning
-                self.route_detail_id = False
-        return res
+    # @api.onchange('route_detail_id')
+    # @api.multi
+    # def onchange_route_detail_id(self):
+    #     """
+    #     Try to find a route detail model of the closest day scheduled in a
+    #     customer list of a detail model and assign it, also assign de date
+    #     planned with the detail date
+    #     """
+    #     res = {}
+    #     warning = False
+    #     if self.route_detail_id:
+    #         if not self.partner_id:
+    #             self.route_detail_id = False
+    #             warning = {
+    #                 'title': _('Warning!'),
+    #                 'message': _('Customer must be assigned')
+    #             }
+    #         else:
+    #             found = False
+    #             for cust in self.route_detail_id.customer_ids:
+    #                 if cust.customer_id.id == self.partner_id.id:
+    #                     found = True
+    #                     break
+    #             if not found:
+    #                 name_detail = self.route_detail_id.name_get()[0][1]
+    #                 warning = {
+    #                     'title': _('Warning!'),
+    #                     'message': _('The customer is not included in the \
+    #                                   customer list of detailed route\
+    #                                   %s' % name_detail)
+    #                 }
+    #         if warning:
+    #             res['warning'] = warning
+    #             self.route_detail_id = False
+    #     return res
 
     def _get_date_planned(self, cr, uid, order, line, start_date,
                           context=None):
@@ -115,7 +94,12 @@ class sale_order(osv.Model):
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
         """
-        When changing the partner the asociated route is filled, if any.
+        When changing the partner the asociated route detail is filled.
+        If no detailed found, get a warning when is configured this way with
+        check sale orders.
+        When we match a detailed route of closest day we put the date in date
+        planned field to pass it to the picking, if no detail matched we put
+        default date planned.
         """
         res = super(sale_order, self).onchange_partner_id(cr,
                                                           uid,
@@ -127,18 +111,23 @@ class sale_order(osv.Model):
 
         # Get next detail of a delivery route
         if not res['value'].get('route_detail_id', False):
-            detail_obj = part.get_next_route_detail()
+            detail_obj = part.get_next_route_detail(route_type='delivery')
             if detail_obj:
                 res['value']['route_detail_id'] = detail_obj.id
                 res['value']['date_planned'] = detail_obj.date + \
                     " 19:00:00"
 
         if part and not res['value'].get('route_detail_id', False):
-            res['value']['route_detail_id'] = False
-            res['value']['date_planned'] = False
-            res['warning'] = {'title': _('Warning!'),
-                              'message': _('No delivery routes assigned in\
-                               the customer. You will not confirm the order')}
+            t_config = self.pool.get('ir.config_parameter')
+            param_value = t_config.get_param(cr, uid, 'check.sale.order',
+                                             default='True')
+            if param_value == 'True':
+                res['value']['route_detail_id'] = False
+                res['value']['date_planned'] = False
+                res['warning'] = {'title': _('Warning!'),
+                                  'message': _('No delivery routes assigned in\
+                                   the customer. You will not confirm the \
+                                   order')}
         return res
 
     def _prepare_order_line_procurement(self, cr, uid, order, line,
@@ -155,19 +144,55 @@ class sale_order(osv.Model):
             order.trans_route_id.id or False
         return res
 
+    def _get_mandatory_camera(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+        t_config = self.pool.get('ir.config_parameter')
+        param_value = t_config.get_param(cr, uid, 'mandatory.camera',
+                                         default='True')
+        return True if param_value == 'True' else False
+
     def action_ship_create(self, cr, uid, ids, context=None):
         """
-        Overwrited to assign a drop code for each order, an update the next_dc
-        field in transport route model.
+        Overwrited to check if there is a detail route assigned when this
+        behaivor is configured. If no detail route assigned and check sale
+        orders is configured it will raise an error.
+        If detail route (of delivery type) is assigned we find the customer
+        in the customer list and write the orderl, if not customer scheduled
+        for the selected detail we create it.
         """
         if context is None:
             context = {}
-        # If not detail route asigned raise an error
+        # If not detail route asigned raise an error if it is configured
+        t_config = self.pool.get('ir.config_parameter')
+        param_value = t_config.get_param(cr, uid, 'check.sale.order',
+                                         default='True')
         for order in self.browse(cr, uid, ids, context=context):
-            if not order.route_detail_id:
+            if not order.route_detail_id and param_value == 'True':
                 raise except_orm(_('Error'),
                                  _('Detail of route must be assigned to \
                                     confirm the order'))
+            if order.route_detail_id:
+                if order.route_detail_id.route_type != 'delivery':
+                    route_name = order.route_detail_id.name_get()[0][1]
+                    raise except_orm(_('Error'),
+                                     _('Detail route %s must be of delivery \
+                                        type' % route_name))
+                selected_record = False
+                for record in order.route_detail_id.customer_ids:
+                    if record.customer_id.id == order.partner_id.id:
+                        selected_record = record
+                        break
+                if selected_record:
+                    selected_record.write({'sale_id': order.id})
+                else:
+                    vals = {
+                        'detail_id': order.route_detail_id.id,
+                        'customer_id': order.partner_id.id,
+                        'sale_id': order.id,
+                    }
+                    self.pool.get('customer.list').create(cr, uid, vals,
+                                                          context)
         res = super(sale_order, self).action_ship_create(cr, uid, ids,
                                                          context=context)
         return res
@@ -241,6 +266,9 @@ class sale_order_line(osv.Model):
 
     def _prepare_order_line_invoice_line(self, cr, uid, line, account_id=False,
                                          context=None):
+        """
+        #TODO!
+        """
         res = super(sale_order_line, self).\
             _prepare_order_line_invoice_line(cr, uid, line, account_id,
                                              context)

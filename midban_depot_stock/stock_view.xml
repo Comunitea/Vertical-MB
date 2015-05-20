@@ -318,6 +318,10 @@
                                 <field name="check_customer_comercial" class="oe_inline"/>
                                 <label for= "check_customer_comercial"/>
                             </div>
+                            <div>
+                                <field name="check_sale_order" class="oe_inline"/>
+                                <label for= "check_sale_order"/>
+                            </div>
                         </div>
                     </group>
 
@@ -331,6 +335,10 @@
                             <div>
                                 <field name="min_loc_replenish" class="oe_inline"/>
                                 <label for= "min_loc_replenish"/>
+                            </div>
+                            <div>
+                                <field name="mandatory_camera" class="oe_inline"/>
+                                <label for= "mandatory_camera"/>
                             </div>
                         </div>
                     </group>

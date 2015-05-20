@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <field name='project_id' position="after">
                     <field name="trans_route_id"/>
-                    <field name="route_detail_id"/>
+                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"/>
                 </field>
                 <field name='date_order' position="after">
                     <field name="date_planned"/>
@@ -52,6 +52,7 @@
                 </field>
                 <filter string="Order Month" position="after">
                     <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
+                    <filter string="Detail Route" context="{'group_by':'trans_route_id'}"/>
                 </filter>
             </field>
         </record>
