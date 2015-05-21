@@ -211,9 +211,8 @@ class reposition_wizard(osv.TransientModel):
                 }
                 operation_dics.append(op_vals)
 
-        import ipdb; ipdb.set_trace()
-        camera_obj = loc.get_camera()
-        if not camera_obj:
+        camera_id = loc.get_camera()
+        if not camera_id:
             raise osv.except_osv(_('Error!'),
                                  _('The location to replenish %s is not child\
                                     of a camera location, you must configure\
@@ -224,7 +223,7 @@ class reposition_wizard(osv.TransientModel):
                 'name': '/',
                 'picking_type_id': reposition_task_type_id,
                 'task_type': 'reposition',
-                'camera_id': camera_obj.id,  # To search picking for camera
+                'camera_id': camera_id,  # To search picking for camera
             }
             pick_id = t_pick.create(cr, uid, vals, context=context)
             vals = {

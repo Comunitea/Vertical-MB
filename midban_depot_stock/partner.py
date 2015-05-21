@@ -279,7 +279,11 @@ class resPartner(models.Model):
                                       'Assigned Routes')
 
     @api.multi
-    def get_next_route_detail(self):
+    def get_next_route_detail(self, route_type=False):
+        """
+        Get the closest detail route obj of all defined partner routes,
+        if route_type passed we search details of this route type only
+        """
         detail_obj = False
         if self.route_part_ids:
             detail_t = self.env['route.detail']
@@ -289,6 +293,8 @@ class resPartner(models.Model):
                 ('route_id', 'in', partner_routes),
                 ('date', '>', time.strftime("%Y-%m-%d"))
             ]
+            if route_type:
+                domain.append(('route_type', '=', route_type))
             detail_objs = detail_t.search(domain, order="date")
             for detail in detail_objs:
                 for cust in detail.customer_ids:

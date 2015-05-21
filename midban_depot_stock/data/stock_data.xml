@@ -33,6 +33,11 @@
             <field name="value">False</field>
         </record>
 
+        <record id="check_sale_order" model="ir.config_parameter">
+            <field name="key">check.sale.order</field>
+            <field name="value">False</field>
+        </record>
+
         <!-- Parametres for task configuration -->
         <record id="max_loc_ops" model="ir.config_parameter">
             <field name="key">max.loc.ops</field>
@@ -43,5 +48,12 @@
             <field name="key">min.loc.replenish</field>
             <field name="value">1</field>
         </record>
+
+        <record id="mandatory_camera" model="ir.config_parameter">
+            <field name="key">mandatory.camera</field>
+            <field name="value">False</field>
+        </record>
+
+
     </data>
 </openerp>

@@ -54,7 +54,8 @@ class stock_picking(osv.osv):
         'cross_dock': fields.boolean("From Cross Dock order"),
         'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
                                           'Delivery List', readonly=True),
-        'camera_id': fields.many2one('stock.location', readonly=True,
+        'camera_id': fields.many2one('stock.location', 'Affected camera',
+                                     readonly=True,
                                      help='Writed only by reposition wizard\
         to get a reposition task of the selected cameras in the task wizard')
     }
@@ -1082,7 +1083,7 @@ class stock_config_settings(models.TransientModel):
     _inherit = 'stock.config.settings'
 
     check_route_zip = fields2.Boolean('Check zips in routes',
-                                      help='When adding a customer to a'
+                                      help='When adding a customer to a '
                                       'route, imposible to save if customer\
                                        zip is not in route zips')
     check_customer_comercial = fields2.Boolean('Check customer in routes',
@@ -1092,17 +1093,27 @@ class stock_config_settings(models.TransientModel):
                                                of diferent comercial if route \
                                                is not telesale or delivery')
     max_loc_ops = fields2.Integer('Max. location operations',
-                                  help='Max. nº of location operations to'
-                                  'assign in a location task. If a location'
+                                  help='Max. nº of location operations to '
+                                  'assign in a location task. If a location '
                                   'has more than this nº of operation the task'
-                                  'wizard will be assign only the max number'
-                                  'this will result in a partial transfer.')
+                                  ' wizard will be assign only the max number'
+                                  ' this will result in a partial transfer.')
     min_loc_replenish = fields2.Integer('Min locations to replenish',
                                         help='The task wizard will assign the'
-                                        'operations that cover tne indicated'
-                                        'nº of locations to replenish. Maybe'
-                                        'will be transfer several replenish'
-                                        'pickings')
+                                        ' operations that cover tne indicated'
+                                        ' nº of locations to replenish. Maybe'
+                                        ' will be transfer several replenish'
+                                        ' pickings')
+    mandatory_camera = fields2.Boolean('Mandarory camera',
+                                       help='If checked when you ask for a \
+                                       reposition or ubication task you must \
+                                       set the camera or cameras to get \
+                                       operations')
+    check_sale_order = fields2.Boolean('Check route in sale order',
+                                       help='If checked, when you try confirm \
+                                       a sale order you will not be able to do\
+                                       it if there is no a delivery route \
+                                       detail scheduled for the customer')
 
     @api.multi
     def get_default_check_route_zip(self, fields):
@@ -1155,3 +1166,29 @@ class stock_config_settings(models.TransientModel):
         domain = [('key', '=', 'min.loc.replenish')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = str(self.min_loc_replenish)
+
+    @api.multi
+    def get_default_mandatory_camera(self, fields):
+        domain = [('key', '=', 'mandatory.camera')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'mandatory_camera': value}
+
+    @api.multi
+    def set_default_mandatory_camera(self):
+        domain = [('key', '=', 'mandatory.camera')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.mandatory_camera else 'False'
+
+    @api.multi
+    def get_default_check_sale_order(self, fields):
+        domain = [('key', '=', 'check.sale.order')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'check_sale_order': value}
+
+    @api.multi
+    def set_default_check_sale_order(self):
+        domain = [('key', '=', 'check.sale.order')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.check_sale_order else 'False'

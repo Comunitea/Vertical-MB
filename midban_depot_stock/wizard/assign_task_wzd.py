@@ -60,6 +60,14 @@ class assign_task_wzd(osv.TransientModel):
                                          default='1')
         return int(param_value)
 
+    def _get_mandatory_camera(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+        t_config = self.pool.get('ir.config_parameter')
+        param_value = t_config.get_param(cr, uid, 'mandatory.camera',
+                                         default='True')
+        return True if param_value == 'True' else False
+
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        required=True,
@@ -71,15 +79,26 @@ class assign_task_wzd(osv.TransientModel):
                                           domain=[('state', '=', 'active')]),
         'date_planned': fields.date('Scheduled Date', required=True,
                                     select=True,
-                                    help="Date propaged to shecduled \
-                                          date of related picking"),
+                                    help="Date to search moves for picking"),
         'location_ids': fields.many2many('stock.location',
                                          'wzd_cameras_rel',
                                          'wzd_id',
                                          'location_id',
-                                         'Cameras to pick'),
-        'max_loc_ops': fields.integer('Max. nº of location operations'),
-        'min_loc_replenish': fields.integer('Min. nº replenish location'),
+                                         'Operations by cameras'),
+        'max_loc_ops': fields.integer('Max. nº of location operations',
+                                      help='The wizard will assign this nº of \
+                                      operations of an unique picking of \
+                                      ubication task type'),
+        'min_loc_replenish': fields.integer('Min. nº replenish location',
+                                            help='the wizard will assign \
+                                            operations to replenish the \
+                                            defined number of locations'),
+        'mandatory_camera': fields.boolean('Mandarory camera',
+                                           help='If checked when you ask for a\
+                                           reposition or ubication task you \
+                                           muste the cameras to get operations\
+                                           if not checked it will assign \
+                                           operations of any camera')
 
     }
     _defaults = {
@@ -88,6 +107,7 @@ class assign_task_wzd(osv.TransientModel):
         'date_planned': _get_next_working_date,
         'max_loc_ops': _get_max_loc_ops,
         'min_loc_replenish': _get_min_loc_replenish,
+        'mandatory_camera': _get_mandatory_camera,
     }
 
     def _print_report(self, cr, uid, ids, task_id=False, wave_id=False,
@@ -227,8 +247,6 @@ class assign_task_wzd(osv.TransientModel):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
-        t_ops = self.pool.get("stock.pack.operation")
-        # t_config = self.pool.get('ir.config_parameter')
 
         # Check if operator has a task on course
         machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
@@ -256,21 +274,11 @@ class assign_task_wzd(osv.TransientModel):
                                            False)],
                                 limit=1, order="id asc",
                                 context=context)
-        if not pick_id:
-            raise osv.except_osv(_('Error!'), _('No internal pickings to\
-                                                 schedule'))
 
         pick = t_pick.browse(cr, uid, pick_id[0], context)
-        domain = [('picking_id.state', '=', 'assigned'),
-                  ('picking_id.picking_type_id', '=', location_task_type_id),
-                  ('task_id', '=', False)]
-        ops_ids = t_ops.search(cr, uid, domain, limit=1,
-                               order="picking_id asc", context=context)
-        if not ops_ids:
-            raise osv.except_osv(_('Error'), _('No location operations to \
-                                                schedule'))
-        operation = t_ops.browse(cr, uid, ops_ids, context=context)
-        pick = operation.picking_id
+        if not pick.pack_operation_ids:
+            raise osv.except_osv(_('Error!'), _('No internal pickings to\
+                                                 schedule'))
         vals = {
             'user_id': wzd_obj.operator_id.id,
             'type': 'ubication',
@@ -284,10 +292,34 @@ class assign_task_wzd(osv.TransientModel):
         if not max_ops:
             max_ops = num_ops
         assigned = 0
+        camera_ids = [x.id for x in wzd_obj.location_ids]
+        if not camera_ids and wzd_obj.mandatory_camera:
+            raise osv.except_osv(_('Error!'),
+                                 _('No cameras defined. It is configured \
+                                    to get locations operations by camera\
+                                    mandatorily'))
+        assigned_ops = []
         for op in pick.pack_operation_ids:
             if assigned < max_ops and not op.task_id:
+                if wzd_obj.location_ids:
+                    camera_id = op.location_dest_id.get_camera()
+                    if not camera_id:
+                        raise osv.except_osv(_('Error!'),
+                                             _('Some operation of picking %s\
+                                                have no a scheduled location\
+                                                child of any \
+                                                camera' % pick.name))
+                    if not (camera_id in camera_ids):
+                        continue
+
                 op.write({'task_id': task_id})
+                assigned_ops.append(op)
                 assigned += 1
+        if not assigned_ops:
+            raise osv.except_osv(_('Error!'),
+                                 _('Not found operations of the selected\
+                                    cameras fot the picking \
+                                    %s' % pick.name))
 
         return self._print_report(cr, uid, ids, task_id=task_id,
                                   context=context)
@@ -329,19 +361,22 @@ class assign_task_wzd(osv.TransientModel):
         min_locs = wzd_obj.min_loc_replenish
         if not min_locs:
             min_locs = 1
-        if not wzd_obj.location_ids:
+        if not wzd_obj.location_ids and wzd_obj.mandatory_camera:
             raise osv.except_osv(_('Error!'), _('Cameras are required to do a \
                                  reposition task'))
+        domain = [('state', '=', 'assigned'),
+                  ('picking_type_id', '=', reposition_task_type_id),
+                  ('operator_id', '=', False)]
         camera_ids = [x.id for x in wzd_obj.location_ids]
-        pick_ids = t_pick.search(cr, uid, [('state', '=', 'assigned'),
-                                           ('picking_type_id',
-                                            '=',
-                                            reposition_task_type_id),
-                                           ('camera_id', 'in', camera_ids)
-                                           ('operator_id', '=',
-                                           False)],
-                                 limit=min_locs, order="id asc",
-                                 context=context)
+        if not camera_ids and wzd_obj.mandatory_camera:
+            raise osv.except_osv(_('Error!'),
+                                 _('No cameras defined. It is configured \
+                                    to get reposition operations by camera\
+                                    mandatorily'))
+        if camera_ids:
+            domain.append(('camera_id', 'in', camera_ids))
+        pick_ids = t_pick.search(cr, uid, domain, limit=min_locs,
+                                 order="id asc", context=context)
         if not pick_ids:
             raise osv.except_osv(_('Error!'), _('No internal reposition \
                                                  pickings to schedule'))
