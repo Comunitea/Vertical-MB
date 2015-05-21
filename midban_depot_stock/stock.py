@@ -390,8 +390,15 @@ class stock_pack_operation(osv.osv):
                                           help="Location where the products "
                                           "will be pushed to a specific "
                                           "location"),
-        'task_id': fields.many2one('stock.task', 'In task', readonly=True)
+        'task_id': fields.many2one('stock.task', 'In task', readonly=True),
+        'to_process': fields.boolean('To process',
+                                     help="When checked the operation will be\
+                                     process when you finish task, else\
+                                     will be unassigned")
 
+    }
+    _default = {
+        'to_process': True,
     }
 
 

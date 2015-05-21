@@ -51,7 +51,7 @@
                                         </tree>
                                         <form string="Route Detail">
                                             <header>
-                                                <field name="state" widget="statusbar"/>
+                                                <field name="state" widget="statusbar" clickable="True"/>
                                                 <button name="set_cancelled" type="object" string="Cancel" icon="gtk-ok" states="pending,on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                                 <button name="set_closed" type="object" string="Close" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                                 <button name="set_pending" type="object" string="Back to Pending" icon="gtk-ok" states="cancelled,closed" groups="midban_depot_stock.transport_routes_manager"/>
@@ -170,7 +170,7 @@
             <field name="arch" type="xml">
                 <form string="Route detail">
                      <header>
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" widget="statusbar" clickable="True"/>
                     </header>
                     <sheet>
                         <h1>

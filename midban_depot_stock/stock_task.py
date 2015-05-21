@@ -24,6 +24,7 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
 import time
 # from openerp.tools.translate import _
+from openerp import api
 
 
 class stock_task(osv.Model):
@@ -53,15 +54,27 @@ class stock_task(osv.Model):
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
         'operation_ids': fields.one2many('stock.pack.operation', 'task_id',
-                                         'Operations', readonly=True),
+                                         'Operations', readonly=True,
+                                         states={'assigned': [('readonly',
+                                                               False)]})
     }
     _defaults = {
         'state': 'assigned',
     }
 
+    @api.one
+    def finish_partial_task(self):
+        # import ipdb; ipdb.set_trace()
+        # for op in self.operation_ids:
+        #     if op.to_process:
+        #         print op.id
+        #     else:
+        #         op.task_id = False  # New Api write
+        return
+
     def finish_task(self, cr, uid, ids, context=None):
         """
-        Button method cancel a task
+        Button method finish a task
         """
         t_transfer = self.pool.get('stock.transfer_details')
         t_item = self.pool.get('stock.transfer_details_items')
@@ -70,11 +83,6 @@ class stock_task(osv.Model):
         if context is None:
             context = {}
         for task in self.browse(cr, uid, ids, context):
-            # if task.picking_id:
-            #     pick_obj = task.picking_id
-
-                # if pick_obj.state not in ['done', 'draft', 'cancel']:
-                #     pick_obj.approve_pack_operations()
             if task.operation_ids and task.type == 'ubication':
                 pick_obj = task.operation_ids[0].picking_id
                 transfer_id = t_transfer.create(cr, uid,
