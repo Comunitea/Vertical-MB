@@ -41,9 +41,9 @@ class sale_order_line(models.Model):
                 specific_price = self.env['sale.specific.price'].search(
                     [('product_id', '=', line.product_id.id),
                      ('customer_id', '=', line.order_id.partner_id.id),
-                     ('specific_price', '<=',
-                      line.price_unit * (1 - (line.discount/100))),
+                     ('discount', '<=', line.discount),
                      ('state', '=', 'approved'),
+                     ('pricelist_id', '=', line.order_id.pricelist_id.id),
                      ('start_date', '<=', date.today()),
                      ('end_date', '>=', date.today())])
                 if not specific_price:
@@ -61,8 +61,8 @@ than the maximun discount of product. The sale need to be approved""")}
         specific_price = self.env['sale.specific.price'].search(
             [('product_id', '=', line.product_id.id),
              ('customer_id', '=', line.order_id.partner_id.id),
-             ('specific_price', '<=', line.price_unit *
-              (1 - (line.discount/100))),
+             ('pricelist_id', '=', line.order_id.pricelist_id.id),
+             ('discount', '<=', line.discount),
              ('state', '=', 'approved'), ('start_date', '<=', date.today()),
              ('end_date', '>=', date.today())])
         if max_discount and line.discount > max_discount and not \
@@ -71,8 +71,8 @@ than the maximun discount of product. The sale need to be approved""")}
                 'customer_id': line.order_id.partner_id.id,
                 'product_id': line.product_id.id,
                 'cost_price': line.product_id.standard_price,
-                'pricelist_price': line.price_unit,
-                'specific_price': line.price_unit * (1 - (line.discount/100)),
+                'discount': line.discount,
+                'pricelist_id': line.order_id.pricelist_id.id,
                 'margin': line.product_id.margin,
                 'start_date': date.today(),
                 'end_date': date.today() + timedelta(days=30),
@@ -92,8 +92,8 @@ than the maximun discount of product. The sale need to be approved""")}
                 _specific_price = self.env['sale.specific.price'].search(
                     [('product_id', '=', line.product_id.id),
                      ('customer_id', '=', line.order_id.partner_id.id),
-                     ('specific_price', '<=',
-                      line.price_unit * (1 - (line.discount/100))),
+                     ('discount', '<=', line.discount),
+                     ('pricelist_id', '=', line.order_id.pricelist_id.id),
                      ('state', '=', 'approved'),
                      ('start_date', '<=', date.today()),
                      ('end_date', '>=', date.today())])
@@ -105,10 +105,9 @@ than the maximun discount of product. The sale need to be approved""")}
                             'customer_id': line.order_id.partner_id.id,
                             'product_id': line.product_id.id,
                             'cost_price': line.product_id.standard_price,
-                            'pricelist_price': line.price_unit,
-                            'specific_price': line.price_unit *
-                            (1 - (line.discount/100)),
+                            'discount': line.discount,
                             'margin': line.product_id.margin,
+                            'pricelist_id': line.order_id.pricelist_id.id,
                             'start_date': date.today(),
                             'end_date': date.today() + timedelta(days=30),
                             'sale_line_id': line.id,
@@ -119,9 +118,36 @@ than the maximun discount of product. The sale need to be approved""")}
                             'customer_id': line.order_id.partner_id.id,
                             'product_id': line.product_id.id,
                             'cost_price': line.product_id.standard_price,
-                            'pricelist_price': line.price_unit,
-                            'specific_price': line.price_unit *
-                            (1 - (line.discount/100)),
+                            'discount': line.discount,
+                            'pricelist_id': line.order_id.pricelist_id,
                             'margin': line.product_id.margin,
                         })
+        return res
+
+
+
+    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+                          uom=False, qty_uos=0, uos=False, name='',
+                          partner_id=False, lang=False, update_tax=True,
+                          date_order=False, packaging=False,
+                          fiscal_position=False, flag=False, context=None):
+        sup = super(sale_order_line, self)
+        res = sup.product_id_change(cr, uid, ids, pricelist, product,
+                                    qty=qty, uom=uom, qty_uos=qty_uos, uos=uos,
+                                    name=name, partner_id=partner_id,
+                                    lang=lang, update_tax=update_tax,
+                                    date_order=date_order,
+                                    packaging=packaging,
+                                    fiscal_position=fiscal_position,
+                                    flag=flag, context=context)
+        if not product or not partner_id:
+            return res
+        specific_price = self.pool['sale.specific.price'].search(cr, uid,
+                    [('product_id', '=', product),
+                     ('customer_id', '=', partner_id),
+                     ('state', '=', 'approved'),
+                     ('start_date', '<=', date.today()),
+                     ('end_date', '>=', date.today())], context=context)
+        if specific_price:
+            res['value']['discount'] = self.pool.get('sale.specific.price').browse(cr, uid, specific_price, context).discount
         return res

@@ -24,6 +24,7 @@ from openerp.tools.translate import _
 from openerp import tools
 from lxml import etree
 import time
+from datetime import date
 
 # ****************************************************************************
 # ************************PRICELIST MODEL OVERWRITES**************************
@@ -287,7 +288,7 @@ class product_pricelist(osv.Model):
                         else:
                             uom_price_already_computed = True
                         for line in seller.pricelist_ids:
-                            if line.min_quantity <= qty_in_seller_uom:
+                            if line.min_quantity <= qty_in_seller_uom and line.from_date <= date and line.to_date >= date:
                                 price = line.price
 
                 # BASED ON VARIABLE PRICE
