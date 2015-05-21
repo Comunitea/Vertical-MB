@@ -42,7 +42,9 @@
                             </group>
                             <group>
                                 <field name="cost_price"/>
+                                <field name="pricelist_id"/>
                                 <field name="pricelist_price"/>
+                                <field name="discount"/>
                                 <field name="specific_price"/>
                                 <field name="margin"/>
                             </group>

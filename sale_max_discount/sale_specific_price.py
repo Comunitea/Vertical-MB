@@ -26,14 +26,27 @@ class sale_specific_price(models.Model):
     _name = 'sale.specific.price'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
 
-    customer_id = fields.Many2one('res.partner', 'Customer')
-    product_id = fields.Many2one('product.template', 'Product')
+    @api.one
+    @api.depends('customer_id', 'product_id', 'sale_line_id', 'pricelist_id')
+    def _get_pricelist_price(self):
+        price = self.pricelist_id.price_get(self.product_id.product_variant_ids[0].id, 1.0, self.customer_id.id)
+        self.pricelist_price = price[self.pricelist_id.id]
+
+    @api.one
+    @api.depends('pricelist_price', 'discount')
+    def _get_specific_price(self):
+        self.specific_price = self.pricelist_price * (1 - (self.discount/100))
+
+    customer_id = fields.Many2one('res.partner', 'Customer', required=True)
+    product_id = fields.Many2one('product.template', 'Produt', required=True)
     cost_price = fields.Float('Cost price')
-    pricelist_price = fields.Float('Pricelist price')
-    specific_price = fields.Float('Specific price')
+    pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True)
+    pricelist_price = fields.Float('Pricelist price', compute='_get_pricelist_price')
+    specific_price = fields.Float('Specific price', compute='_get_specific_price')
     margin = fields.Float('Margin')
-    start_date = fields.Date('Start date')
-    end_date = fields.Date('End date')
+    start_date = fields.Date('Start date', required=True)
+    end_date = fields.Date('End date', required=True)
+    discount = fields.Float('Discount', required=True)
     sale_line_id = fields.Many2one('sale.order.line', 'Sale line id')
     state = fields.Selection(
         (('draft', 'Draft'), ('approved', 'Approved'),
