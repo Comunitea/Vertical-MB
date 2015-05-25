@@ -161,3 +161,15 @@ class product_template(osv.Model):
         action['domain'] = domain
 
         return action
+
+
+class pricelist_partnerinfo(osv.Model):
+
+    _inherit = 'pricelist.partnerinfo'
+    _order = 'from_date asc'
+
+    _columns = {
+        'from_date': fields.date('Init date'),
+        'to_date': fields.date('End date'),
+    }
+

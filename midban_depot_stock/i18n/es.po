@@ -676,7 +676,7 @@ msgstr "Entregado con incidencia"
 #: selection:route.report,route_type:0
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Delivery"
-msgstr "Envío"
+msgstr "Reparto"
 
 #. module: midban_depot_stock
 #: model:ir.actions.report.xml,name:midban_depot_stock.action_report_delivery_list
@@ -1279,7 +1279,7 @@ msgstr "Max. operaciones ubicación"
 #. module: midban_depot_stock
 #: field:assign.task.wzd,max_loc_ops:0
 msgid "Max. nº of location operations"
-msgstr "Max. nº de operaciones de ubicació"
+msgstr "Max. nº de operaciones de ubicación"
 
 #. module: midban_depot_stock
 #: help:stock.config.settings,max_loc_ops:0

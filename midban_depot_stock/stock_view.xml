@@ -25,7 +25,7 @@
                 </button>
 
                 <!-- New Buttons to manage pack operations" -->
-                <button name="do_enter_transfer_details" position="after">  
+                <button name="do_enter_transfer_details" position="after">
                     <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
 
                     <button name="delete_picking_package_operations" string="Delete operations" groups="stock.group_stock_user" type="object"/>
@@ -47,7 +47,7 @@
                                 <field name="packed_lot_id" groups="stock.group_tracking_lot"/>
                                 <field name="packed_qty" groups="stock.group_tracking_lot"/>
                                 <field name="num_mantles" groups="stock.group_tracking_lot"/>
-<!--                                 <field name="pack_type" groups="stock.group_tracking_lot"/>-->                       
+<!--                                 <field name="pack_type" groups="stock.group_tracking_lot"/>-->
                                 <field name="location_id"/>
                                 <field name="location_dest_id"/>
                                 <field name="result_package_id" groups="stock.group_tracking_lot"/>
@@ -68,10 +68,11 @@
                     <field name="machine_id"/>
                     <field name="warehouse_id"/>
                     <field name="task_type"/>
+                    <field name="camera_id" attrs="{'invisible': [('task_type', '!=', 'reposition')]}"/>
                     <field name="trans_route_id"/>
-                   <!--  <field name="drop_code"/> -->
-                    <field name="camera_ids" widget="many2many_tags" attrs="{'invisible': [('task_type', '!=', 'picking')]}"/>
                     
+                    <field name="camera_ids" widget="many2many_tags" attrs="{'invisible': [('task_type', '!=', 'picking')]}"/>
+
                 </field>
             </field>
         </record>
@@ -200,7 +201,7 @@
                 <filter icon="terp-go-home" position="after">
                     <filter icon="terp-go-home" name="wiew_location" string="Views" domain="[('usage', '=', 'view')]" help="Views Locations"/>
                 </filter>
-                
+
             </field>
         </record>
 
@@ -317,7 +318,11 @@
                                 <field name="check_customer_comercial" class="oe_inline"/>
                                 <label for= "check_customer_comercial"/>
                             </div>
-                        </div>    
+                            <div>
+                                <field name="check_sale_order" class="oe_inline"/>
+                                <label for= "check_sale_order"/>
+                            </div>
+                        </div>
                     </group>
 
                     <group string="Schedule Task Wizard">
@@ -331,8 +336,12 @@
                                 <field name="min_loc_replenish" class="oe_inline"/>
                                 <label for= "min_loc_replenish"/>
                             </div>
-                        </div>    
-                    </group>          
+                            <div>
+                                <field name="mandatory_camera" class="oe_inline"/>
+                                <label for= "mandatory_camera"/>
+                            </div>
+                        </div>
+                    </group>
                 </separator>
             </field>
          </record>

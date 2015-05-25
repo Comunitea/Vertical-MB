@@ -210,6 +210,8 @@ class stock_transfer_details(models.TransientModel):
                             ctl = False
                         else:
                             storage_loc_ids.remove(loc_obj.id)
+                            if not len(storage_loc_ids):
+                                loc_obj = False
 
                     stop = True
                 else:

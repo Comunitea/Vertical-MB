@@ -54,10 +54,10 @@ class stock_picking(osv.osv):
         'cross_dock': fields.boolean("From Cross Dock order"),
         'out_report_ids': fields.one2many('out.picking.report', 'picking_id',
                                           'Delivery List', readonly=True),
-        # 'drop_code': fields.related('move_lines', 'procurement_id',
-        #                             'drop_code', type="integer",
-        #                             string="Drop Code",
-        #                             readonly=True),
+        'camera_id': fields.many2one('stock.location', 'Affected camera',
+                                     readonly=True,
+                                     help='Writed only by reposition wizard\
+        to get a reposition task of the selected cameras in the task wizard')
     }
 
     def _change_operation_dest_loc(self, cr, uid, ids, context=None):
@@ -110,6 +110,51 @@ class stock_picking(osv.osv):
         for op in self.pack_operation_ids:
             op.unlink()
         self.write({'midban_operations': False})
+
+    @api.one
+    def approve_pack_operations2(self):
+        t_transfer = self.env['stock.transfer_details']
+        t_item = self.env['stock.transfer_details_items']
+        transfer_obj = t_transfer.create({'picking_id': self.id})
+        pending_ops_vals = []
+        for op in self.pack_operation_ids:
+            if op.to_process:
+                item = {
+                    'packop_id': op.id,
+                    'product_id': op.product_id.id,
+                    'product_uom_id': op.product_uom_id.id,
+                    'quantity': op.product_qty,
+                    'package_id': op.package_id.id,
+                    'lot_id': op.lot_id.id,
+                    'sourceloc_id': op.location_id.id,
+                    'destinationloc_id': op.location_dest_id.id,
+                    'result_package_id': op.result_package_id.id,
+                    'date': op.date,
+                    'owner_id': op.owner_id.id,
+                    'transfer_id': transfer_obj.id,
+                }
+                t_item.create(item)
+            else:
+                new_ops_vals = {
+                    'product_id': op.product_id.id,
+                    'product_uom_id': op.product_uom_id.id,
+                    'product_qty': op.product_qty,
+                    'package_id': op.package_id.id,
+                    'lot_id': op.lot_id.id,
+                    'location_id': op.location_id.id,
+                    'location_dest_id': op.location_dest_id.id,
+                    'result_package_id': op.result_package_id.id,
+                    'owner_id': op.owner_id.id,
+
+                }
+                pending_ops_vals.append(new_ops_vals)
+        transfer_obj.do_detailed_transfer()
+        new_pick_obj = self.search([('backorder_id', '=', self.id)])
+        if new_pick_obj and pending_ops_vals:
+            for vals in pending_ops_vals:
+                vals['picking_id'] = new_pick_obj.id
+                new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
+        return
 
 
 class stock_package(osv.osv):
@@ -172,6 +217,7 @@ class stock_package(osv.osv):
     def _get_pack_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
+        no_wood = context.get('no_wood', False)
         res = {}
         t_loc = self.pool.get('stock.location')
         for pack in self.browse(cr, uid, ids, context=context):
@@ -185,14 +231,6 @@ class stock_package(osv.osv):
                 quants_by_prod = {}
                 # Group quants inside the package by product
                 quants_by_prod = pack.get_products_quants()
-                # for quant in pack.quant_ids:
-                #     product = quant.product_id
-                #     if product not in quants_by_prod:
-                #         quants_by_prod[product] = [quant]
-                #     else:
-                #         quants_by_prod[product].append(quant)
-
-                # Get total height, grouping mantles by product
                 width_wood = 0
                 length_wood = 0
                 sum_heights = 0
@@ -214,15 +252,10 @@ class stock_package(osv.osv):
                     sum_heights += num_mantles * mantle_height
 
                 # No wood in picking location, it will be added later
-                if loc_dest_obj.zone == 'picking':
+                if loc_dest_obj.zone == 'picking' or no_wood:
                     wood_height = 0
                 sum_heights += wood_height  # Add wood height
                 volume = width_wood * length_wood * sum_heights
-            # else:  # Only units but I think never is the case. Not make sense
-            #     volume = pack.product_id.un_width * \
-            #         pack.product_id.un_height * \
-            #          pack.product_id.un_length * \
-            #          pack.packed_qty
             res[pack.id] = volume
         return res
 
@@ -323,47 +356,6 @@ class stock_pack_operation(osv.osv):
 
         return res
 
-    # def _get_operation_volume(self, cr, uid, ids, name, args, context=None):
-    #     if context is None:
-    #         context = {}
-    #     res = {}
-    #     t_loc = self.pool.get('stock.location')
-    #     t_whs = self.pool.get('stock.warehouse')
-    #     for ope in self.browse(cr, uid, ids, context=context):
-    #         volume = 0.0
-    #         whs_id = t_loc.get_warehouse(cr, uid, ope.location_dest_id,
-    #                                      context=context)
-    #         warehouse = t_whs.browse(cr, uid, whs_id, context=context)
-    #         input_loc = warehouse.wh_input_stock_loc_id
-    #         loc_dest_obj = t_loc.browse(cr, uid, ope.location_dest_id.id,
-    #                                     context=context)
-    #         # If goinf to input location, get volume for the chained location
-    #         if loc_dest_obj.id == input_loc.id and ope.chained_loc_id:
-    #             loc_dest_obj = ope.chained_loc_id
-    #         if ope.pack_type:
-    #             if ope.pack_type == "palet":
-    #                 num_mant = ope.num_mantles
-    #                 width_wood = ope.operation_product_id.pa_width
-    #                 length_wood = ope.operation_product_id.pa_length
-    #                 height_mant = ope.operation_product_id.ma_height
-    #                 wood_height = ope.operation_product_id.palet_wood_height
-    #                 if loc_dest_obj.zone == 'picking':
-    #                     wood_height = 0  # No wood in picking location
-    #                 height_var_pal = (num_mant * height_mant) + wood_height
-    #                 volume = width_wood * length_wood * height_var_pal
-
-    #             elif ope.pack_type == "box":
-    #                 volume = ope.operation_product_id.ca_width * \
-    #                     ope.operation_product_id.ca_height * \
-    #                     ope.operation_product_id.ca_length
-    #         else:
-    #             volume = ope.operation_product_id.un_width * \
-    #                 ope.operation_product_id.un_height * \
-    #                 ope.operation_product_id.un_length * \
-    #                 ope.product_qty
-    #         res[ope.id] = volume
-    #     return res
-
     def _get_num_mantles(self, cr, uid, ids, name, args, context=None):
         """
         Return number of mantles of each operation. If we already have a pack
@@ -417,10 +409,6 @@ class stock_pack_operation(osv.osv):
     _columns = {
         'pack_type': fields.function(_get_pack_type, type='char',
                                      string='Pack Type', readonly=True),
-        # 'volume': fields.
-        # function(_get_operation_volume, readonly=True, type="float",
-        #          string="Volume",
-        #          digits_compute=dp.get_precision('Product Volume')),
         'operation_product_id': fields.function(_get_real_product,
                                                 type="many2one",
                                                 relation="product.product",
@@ -443,8 +431,15 @@ class stock_pack_operation(osv.osv):
                                           help="Location where the products "
                                           "will be pushed to a specific "
                                           "location"),
-        'task_id': fields.many2one('stock.task', 'In task', readonly=True)
+        'task_id': fields.many2one('stock.task', 'In task', readonly=True),
+        'to_process': fields.boolean('To process',
+                                     help="When checked the operation will be\
+                                     process when you finish task, else\
+                                     will be unassigned")
 
+    }
+    _defaults = {
+        'to_process': True,
     }
 
 
@@ -552,10 +547,9 @@ class stock_location(osv.Model):
                 ('picking_id.state', 'in', ['assigned'])
             ]
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
-            # for ope in ope_obj.browse(cr, uid, operation_ids,
-            # context=context):
-            #     volume += ope.volume
+
             ops_by_pack = {}
+            is_pick_zone = loc.zone == 'picking'
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
                 # Operation Beach to input
                 if not ope.package_id and ope.result_package_id:
@@ -566,7 +560,10 @@ class stock_location(osv.Model):
                         ops_by_pack[ope.result_package_id].append(ope)
                 # Location task operations or reposition
                 elif ope.package_id and not ope.result_package_id:
-                    volume += ope.package_id.volume  # only monoproducts pack
+                    pack_obj = ope.package_id
+                    if is_pick_zone:
+                        pack_obj = ope.package_id.with_context(no_wood=True)
+                    volume += pack_obj.volume
                 # Reposition operations
                 elif ope.package_id and ope.result_package_id:
                     volume += \
@@ -581,7 +578,6 @@ class stock_location(osv.Model):
                         ope.operation_product_id.un_length * \
                         ope.product_qty
 
-            cond1 = loc.zone == 'picking'
             for pack in ops_by_pack:  # For multiproducts packs
                 ops_lst = ops_by_pack[pack]
                 sum_heights = 0
@@ -600,13 +596,11 @@ class stock_location(osv.Model):
                     mantle_height = product.ma_height
                     sum_heights += num_mantles * mantle_height
                 # If storage location add volume of wood
-                if not cond1:
+                if not is_pick_zone:
                     sum_heights += wood_height
                 volume += width_wood * length_wood * sum_heights
 
-            cond2 = quant_ids or ops_by_pack
-            # Add wood volume, only one wood
-            if cond1 and cond2:
+            if is_pick_zone:   # Add wood volume, only one wood
                 prod_id = t_prod.search(cr, uid,
                                         [('picking_location_id', '=', loc.id)],
                                         context=context, limit=1)
@@ -1137,7 +1131,7 @@ class stock_config_settings(models.TransientModel):
     _inherit = 'stock.config.settings'
 
     check_route_zip = fields2.Boolean('Check zips in routes',
-                                      help='When adding a customer to a'
+                                      help='When adding a customer to a '
                                       'route, imposible to save if customer\
                                        zip is not in route zips')
     check_customer_comercial = fields2.Boolean('Check customer in routes',
@@ -1147,17 +1141,27 @@ class stock_config_settings(models.TransientModel):
                                                of diferent comercial if route \
                                                is not telesale or delivery')
     max_loc_ops = fields2.Integer('Max. location operations',
-                                  help='Max. nº of location operations to'
-                                  'assign in a location task. If a location'
+                                  help='Max. nº of location operations to '
+                                  'assign in a location task. If a location '
                                   'has more than this nº of operation the task'
-                                  'wizard will be assign only the max number'
-                                  'this will result in a partial transfer.')
+                                  ' wizard will be assign only the max number'
+                                  ' this will result in a partial transfer.')
     min_loc_replenish = fields2.Integer('Min locations to replenish',
                                         help='The task wizard will assign the'
-                                        'operations that cover tne indicated'
-                                        'nº of locations to replenish. Maybe'
-                                        'will be transfer several replenish'
-                                        'pickings')
+                                        ' operations that cover tne indicated'
+                                        ' nº of locations to replenish. Maybe'
+                                        ' will be transfer several replenish'
+                                        ' pickings')
+    mandatory_camera = fields2.Boolean('Mandarory camera',
+                                       help='If checked when you ask for a \
+                                       reposition or ubication task you must \
+                                       set the camera or cameras to get \
+                                       operations')
+    check_sale_order = fields2.Boolean('Check route in sale order',
+                                       help='If checked, when you try confirm \
+                                       a sale order you will not be able to do\
+                                       it if there is no a delivery route \
+                                       detail scheduled for the customer')
 
     @api.multi
     def get_default_check_route_zip(self, fields):
@@ -1210,3 +1214,29 @@ class stock_config_settings(models.TransientModel):
         domain = [('key', '=', 'min.loc.replenish')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = str(self.min_loc_replenish)
+
+    @api.multi
+    def get_default_mandatory_camera(self, fields):
+        domain = [('key', '=', 'mandatory.camera')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'mandatory_camera': value}
+
+    @api.multi
+    def set_default_mandatory_camera(self):
+        domain = [('key', '=', 'mandatory.camera')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.mandatory_camera else 'False'
+
+    @api.multi
+    def get_default_check_sale_order(self, fields):
+        domain = [('key', '=', 'check.sale.order')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'check_sale_order': value}
+
+    @api.multi
+    def set_default_check_sale_order(self):
+        domain = [('key', '=', 'check.sale.order')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.check_sale_order else 'False'

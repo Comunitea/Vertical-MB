@@ -40,19 +40,18 @@
                                     <field name="day_id"/>
                                     <field name="type"/>
                                     <field name="comercial_id"/>
-<!--                                     <field name="next_dc" class="oe_line"/> -->
-                                   <!--  <button name="reset_drop_code" type="object" string="Reset" class="oe_link" states="active" groups="midban_depot_stock.transport_routes_manager"/> -->
+                                    <field name="active"/>
                                 </group>
                                 <group string="Route details" colspan="4">
                                     <field name="detail_ids" nolabel="1">
                                         <tree string="Route Details">
                                             <field name="date"/>
                                             <field name="state"/>
-                                            <field name="route_type" invisible="1"/>
+                                            <field name="route_type"/>
                                         </tree>
                                         <form string="Route Detail">
                                             <header>
-                                                <field name="state" widget="statusbar"/>
+                                                <field name="state" widget="statusbar" clickable="True"/>
                                                 <button name="set_cancelled" type="object" string="Cancel" icon="gtk-ok" states="pending,on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                                 <button name="set_closed" type="object" string="Close" icon="gtk-ok" states="on_course" groups="midban_depot_stock.transport_routes_manager"/>
                                                 <button name="set_pending" type="object" string="Back to Pending" icon="gtk-ok" states="cancelled,closed" groups="midban_depot_stock.transport_routes_manager"/>
@@ -71,6 +70,7 @@
                                                         <tree editable="top">
                                                             <field name="sequence"/>
                                                             <field name="customer_id"/>
+                                                            <field name="sale_id"/>
                                                             <field name="result"/>
                                                         </tree>
                                                     </field>
@@ -126,6 +126,7 @@
                     <field name="type"/>
                     <field name="day_id"/>
                     <field name="comercial_id"/>
+                    <filter string="Desactived" domain="[('active', '=', False)]" context="{'group_by': 'active'}"/>
                     <group expand="1" string="Group By...">
                         <filter string="Day" domain="[]" context="{'group_by': 'day_id'}"/>
                         <filter string="Comercial" domain="[]" context="{'group_by': 'comercial_id'}"/>
@@ -149,12 +150,6 @@
 
         <menuitem action="action_route" id="menu_routes_sales_order" name="Rutery" sequence="2" parent="menu_stock_vehicle_route_mgmt"/>
 
-
-
-
-
-
-
         <record id="route_detail_view_tree" model="ir.ui.view">
             <field name="name">route.detail.view.tree</field>
             <field name="model">route.detail</field>
@@ -164,6 +159,7 @@
                     <field name="route_id"/>
                     <field name="comercial_id"/>
                     <field name="state"/>
+                    <field name="route_type"/>
                 </tree>
             </field>
         </record>
@@ -174,19 +170,37 @@
             <field name="arch" type="xml">
                 <form string="Route detail">
                      <header>
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" widget="statusbar" clickable="True"/>
                     </header>
                     <sheet>
                         <h1>
-                             <field name="route_id"/>
+                             <field name="route_id" placeholder="Route"/>
                         </h1>
                         <group>
                             <field name="date"/>
                             <field name="comercial_id"/>
+                            <field name="route_type"/>
                         </group>
-                        <group string="Customer List" colspan="4">
-                            <field name="customer_ids"  widget="many2many_tags" nolabel="1" colspan="4"/>
+                        <group string="Customer List" attrs="{'invisible': [('route_type','=','telesale')]}">
+                            <field name="customer_ids" nolabel="1">
+                                <tree editable="top">
+                                    <field name="sequence"/>
+                                    <field name="customer_id"/>
+                                    <field name="sale_id"/>
+                                    <field name="result"/>
+                                </tree>
+                            </field>
                         </group>
+                        <group string="Call List" attrs="{'invisible': [('route_type','!=','telesale')]}">
+                            <field name="call_ids" nolabel="1">
+                                <tree editable="top">
+                                    <field name="partner_id"/>
+                                    <field name="name"/>
+                                    <field name="result"/>
+                                    <field name="state" readonly="1"/>
+                                </tree>
+                            </field>
+                    </group>
                     </sheet>
                 </form>
             </field>
@@ -201,11 +215,13 @@
                     <field name="date"/>
                     <field name="state"/>
                     <field name="comercial_id"/>
+                    <field name="route_type"/>
                     <group expand="1" string="Group By...">
                         <filter string="Date" domain="[]" context="{'group_by': 'date'}"/>
                         <filter string="Comercial" domain="[]" context="{'group_by': 'comercial_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
                         <filter string="Route" domain="[]" context="{'group_by': 'route_id'}"/>
+                        <filter string="Route Type" domain="[]" context="{'group_by': 'route_type'}"/>
                     </group>
                 </search>
             </field>

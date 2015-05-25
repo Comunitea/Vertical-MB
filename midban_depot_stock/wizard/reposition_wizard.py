@@ -211,11 +211,19 @@ class reposition_wizard(osv.TransientModel):
                 }
                 operation_dics.append(op_vals)
 
+        camera_id = loc.get_camera()
+        if not camera_id:
+            raise osv.except_osv(_('Error!'),
+                                 _('The location to replenish %s is not child\
+                                    of a camera location, you must configure\
+                                    it well' % loc.name))
         if total_move_qty > 0 and operation_dics:
             vals = {
                 'state': 'draft',
                 'name': '/',
-                'picking_type_id': reposition_task_type_id
+                'picking_type_id': reposition_task_type_id,
+                'task_type': 'reposition',
+                'camera_id': camera_id,  # To search picking for camera
             }
             pick_id = t_pick.create(cr, uid, vals, context=context)
             vals = {

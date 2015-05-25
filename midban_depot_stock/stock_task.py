@@ -24,6 +24,7 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
 import time
 # from openerp.tools.translate import _
+from openerp import api
 
 
 class stock_task(osv.Model):
@@ -53,15 +54,30 @@ class stock_task(osv.Model):
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
         'operation_ids': fields.one2many('stock.pack.operation', 'task_id',
-                                         'Operations', readonly=True),
+                                         'Operations', readonly=True,
+                                         states={'assigned': [('readonly',
+                                                               False)]})
     }
     _defaults = {
         'state': 'assigned',
     }
 
+    @api.one
+    def finish_partial_task(self):
+        pick_objs = list(set([x.picking_id for x in self.operation_ids]))
+        for pick in pick_objs:
+            pick.approve_pack_operations2()
+        duration = datetime.now() - \
+            datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
+        vals = {
+            'date_end': time.strftime("%Y-%m-%d %H:%M:%S"),
+            'duration': duration.seconds / float(60),
+            'state': 'done'}
+        return self.write(vals)
+
     def finish_task(self, cr, uid, ids, context=None):
         """
-        Button method cancel a task
+        Button method finish a task
         """
         t_transfer = self.pool.get('stock.transfer_details')
         t_item = self.pool.get('stock.transfer_details_items')
@@ -70,11 +86,6 @@ class stock_task(osv.Model):
         if context is None:
             context = {}
         for task in self.browse(cr, uid, ids, context):
-            # if task.picking_id:
-            #     pick_obj = task.picking_id
-
-                # if pick_obj.state not in ['done', 'draft', 'cancel']:
-                #     pick_obj.approve_pack_operations()
             if task.operation_ids and task.type == 'ubication':
                 pick_obj = task.operation_ids[0].picking_id
                 transfer_id = t_transfer.create(cr, uid,
@@ -146,10 +157,6 @@ class stock_task(osv.Model):
         if isinstance(ids, (int, long)):
             ids = [ids]
         for task in self.browse(cr, uid, ids, context=context):
-            # if task.picking_id:
-            #     task.picking_id.write({'operator_id': False,
-            #                            'machine_id': False})
-            #     task.picking_id.action_cancel()
             if task.operation_ids:
                 if task.type == 'reposition':
                     pick_ids = \
@@ -159,7 +166,7 @@ class stock_task(osv.Model):
                         'operator_id': False,
                         'machine_id': False,
                         'warehouse_id': False,
-                        'task_type': False
+                        # 'task_type': False
                     }
                     t_pick.write(cr, uid, pick_ids, vals, context=context)
                 ops_ids = [x.id for x in task.operation_ids]
