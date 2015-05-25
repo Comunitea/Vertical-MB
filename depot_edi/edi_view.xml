@@ -76,11 +76,63 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.ui.view" id="edi_tree">
+            <field name="name">edi.tree</field>
+            <field name="model">edi</field>
+            <field name="arch" type="xml">
+                <tree string="EDI services">
+                    <field name="name"/>
+                    <field name="path"/>
+                    <field name="backup_path"/>
+                    <field name="output_path"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="edi_from">
+            <field name="name">edi.form</field>
+            <field name="model">edi</field>
+            <field name="arch" type="xml">
+                <form string="EDI service">
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                        <field name="path"/>
+                        <field name="backup_path"/>
+                        <field name="output_path"/>
+                        <separator string="Related doc. types" colspan="4"/>
+                        <field name="doc_type_ids" colspan="4" nolabel="1">
+                            <tree>
+                                <field name="code"/>
+                                <field name="name"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <separator string="Description" colspan="4"/>
+                                    <field name="description" colspan="4" nolabel="1"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_edi">
+            <field name="name">EDI services</field>
+            <field name="res_model">edi</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
      <!-- **************************** MENUS ***************************** -->
     <menuitem id="menu_edi" name="EDI" parent="base.menu_administration"/>
     <!--menuitem id="menu_edi_configuration" parent="menu_edi" name="EDI configuration" action="act_edi_configuration" sequence="1"/-->
-    <menuitem id="menu_edi_doc" parent="menu_edi" name="Documents" action="act_edi_doc" sequence="1"/>
+    <menuitem id="menu_edi_service" parent="menu_edi" name="Services" action="act_edi" sequence="1"/>
+    <menuitem id="menu_edi_doc" parent="menu_edi" name="Documents" action="act_edi_doc" sequence="2"/>
 
     </data>
 </openerp>

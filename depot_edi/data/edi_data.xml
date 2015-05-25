@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
-        <!-- Parametres for importing folder -->
-        <record id="edi_path_importation" model="ir.config_parameter">
-            <field name="key">edi.path.importation</field>
-            <field name="value">/opt/depot_edi/in</field>
+        <record id="edi_doc_type_purchase" model="edi.doc.type">
+            <field name="code">purchase_order</field>
+            <field name="name">Purchase Orders</field>
         </record>
 
-        <!-- Parametres for exporting folder -->
-        <record id="edi_path_exportation" model="ir.config_parameter">
-            <field name="key">edi.path.exportation</field>
-            <field name="value">/opt/depot_edi/out</field>
+        <record id="edi_doc_type_picking" model="edi.doc.type">
+            <field name="code">stock_picking</field>
+            <field name="name">Pickings</field>
         </record>
 
-        <!-- Parametres for templates folder -->
-        <record id="edi_path_templates" model="ir.config_parameter">
-            <field name="key">edi.path.templates</field>
-            <field name="value">/opt/BUILDOUTS/midban-depot/project-addons/depot_edi/wizard/templates</field>
+        <record id="edi_doc_type_invoice" model="edi.doc.type">
+            <field name="code">invoice</field>
+            <field name="name">Invoices</field>
         </record>
 
-        <!-- Parametres for backups  folder -->
-        <record id="edi_path_backups" model="ir.config_parameter">
-            <field name="key">edi.path.buckups</field>
-            <field name="value">/opt/depot_edi/backups</field>
+        <record id="edi_doc_type_sale" model="edi.doc.type">
+            <field name="code">sale_order</field>
+            <field name="name">Sale Orders</field>
         </record>
 
     </data>

@@ -27,5 +27,6 @@ class import_edi_wzd(models.TransientModel):
 
     @api.multi
     def get_files(self):
-        self.env['edi'].run_scheduler(automatic=False, use_new_cursor=False)
+        all_edi_services = self.env['edi'].search([])
+        all_edi_services.run_scheduler(automatic=False, use_new_cursor=False)
         return

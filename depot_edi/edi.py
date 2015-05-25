@@ -2,6 +2,7 @@
 ##############################################################################
 #
 #    Copyright (C) 2014 Pexego Sistemas Informáticos All Rights Reserved
+#    Copyright (C) 2015 Comunitea Servicios Tecnológicos All Rights Reserved
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -17,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields
+from openerp import models, fields, api
 from openerp.tools.translate import _
 from wizard.edi_logging import logger
 import os
@@ -33,6 +34,15 @@ issue_gen = issue_generator()
 log = logger("import_edi")
 
 
+class EdiDocType(models.Model):
+
+    _name = "edi.doc.type"
+
+    code = fields.Char("Code", required=True)
+    name = fields.Char("Name", required=True)
+    description = fields.Text("Description")
+
+
 class edi_doc(models.Model):
     """
     Model for EDI document
@@ -42,11 +52,7 @@ class edi_doc(models.Model):
 
     name = fields.Char('Ref.', size=255, required=True)
     file_name = fields.Char('File Name', size=255, required=True)
-    doc_type = fields.Selection([('purchase_order', 'Purchase'),
-                                 ('stock_picking', 'Stock picking'),
-                                 ('invoice', 'Invoice'),
-                                 ('sale_order', 'Sale order')],
-                                'Document type', select=1)
+    doc_type = fields.Many2one("edi.doc.type", 'Document type')
     date = fields.Datetime('Downloaded')
     date_process = fields.Datetime('Process')
     state = fields.Selection([('draft', 'Sin procesar'),
@@ -58,7 +64,7 @@ class edi_doc(models.Model):
                                            'Response Document')
     send_response = fields.Char('Response', size=255, select=1)
     send_date = fields.Datetime('Last Send Date', select=1)
-    message = fields.Text('Messagge')
+    message = fields.Text('Message')
     errors = fields.Text('Errors')
 
 
@@ -70,34 +76,40 @@ class edi(models.Model):
     _name = 'edi'
     _description = 'Provides general functions to impor edi files'
 
+    name = fields.Char("Service name", required=True)
+    path = fields.Char("System path", required=True)
+    active = fields.Boolean("Active", default=True)
+    backup_path = fields.Char("Backup path", required=True)
+    output_path = fields.Char("Output path", required=True)
+    doc_type_ids = fields.Many2many("edi.doc.type", string="Doc. types")
+
+    @api.model
     def make_backup(self, path, file_name):
-        """
+        for service in self:
+            src_file = path
+            dst_file = ''
+            param_pool = self.env["ir.config_parameter"]
+            param_obj = param_pool.search([('key', '=', 'edi.path.buckups')])
+            year = time.strftime('%Y')
+            month = time.strftime('%B')
+            dst_file = os.path.join(str(service.backup_path + '/' +
+                                    str(year) + '/' + month), file_name)
+            dir_month = str(service.backup_path + str(year) + '/' + month)
+            dir_year = str(service.backup_path + str(year))
+            if not os.path.exists(service.backup_path):
+                os.mkdir(service.backup_path)
+                os.mkdir(dir_year)
+                os.mkdir(dir_month)
+            elif not os.path.exists(dir_year):
+                os.mkdir(dir_year)
+                os.mkdir(dir_month)
+            elif os.path.exists(dir_year) and not os.path.exists(dir_month):
+                os.mkdir(dir_month)
+            shutil.copy(src_file, dst_file)
+            log.info(_(u'%s: The copy of the file to the backup was '
+                        'successful. File %s' % (service.name, file_name)))
 
-        """
-        src_file = path
-        dst_file = ''
-        param_pool = self.env["ir.config_parameter"]
-        param_obj = param_pool.search([('key', '=', 'edi.path.buckups')])
-        year = time.strftime('%Y')
-        month = time.strftime('%B')
-        dst_file = os.path.join(str(param_obj.value + '/' + str(year) + '/' +
-                                    month),
-                                file_name)
-        dir_month = str(param_obj.value + str(year) + '/' + month)
-        dir_year = str(param_obj.value + str(year))
-        if not os.path.exists(param_obj.value):
-            os.mkdir(param_obj.value)
-            os.mkdir(dir_year)
-            os.mkdir(dir_month)
-        elif not os.path.exists(dir_year):
-            os.mkdir(dir_year)
-            os.mkdir(dir_month)
-        elif os.path.exists(dir_year) and not os.path.exists(dir_month):
-            os.mkdir(dir_month)
-        shutil.copy(src_file, dst_file)
-        return log.info(_(u'The copy of the file to the backup was \
-                         successful. Archivo %s' % file_name))
-
+    @api.model
     def _check_fields(self, file_path, root, fields):
         """
         Check if a list of fields are int the DESADV or INVOIC file.
@@ -122,6 +134,7 @@ class edi(models.Model):
 # **************************** PICKINGS **************************************
 # ****************************************************************************
 
+    @api.model
     def _check_picking_fields(self, file_path, root, type_fields='file'):
         """
         Check fields of DESADV edi document, return True if correct False
@@ -138,6 +151,7 @@ class edi(models.Model):
         fields = type_fields == 'file' and fields_file or fields_line
         return self._check_fields(file_path, root, fields)
 
+    @api.model
     def _create_operation_from_line(self, move, qty_serv, lot_id):
         """
         move is the matched move from the edi line with the erp
@@ -156,6 +170,7 @@ class edi(models.Model):
         }
         return t_pack.create(vals)
 
+    @api.model
     def _create_issue(self, reason_str, move=None, new_qty=0.0, picking=None):
         # Pedido de compra no servible / Imposible servir en plazo pactado
         type = self.env['issue.type'].search([('code', '=', 'type2')])
@@ -197,6 +212,7 @@ class edi(models.Model):
                                product_ids=product_lines)
         return
 
+    @api.model
     def _parse_picking_from_desadv(self, file_path, root):
         """
         Read and process the DESADV file, returning the picking_obj
@@ -319,6 +335,7 @@ class edi(models.Model):
 
         return picking
 
+    @api.model
     def parse_picking(self, file_path, doc):
         """
         This function parse the DESADV document in the call to
@@ -338,7 +355,7 @@ class edi(models.Model):
         else:
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             correct.write({'document_id': doc.id})
-            # self.make_backup(file_path, doc.file_name)
+            self.make_backup(file_path, doc.file_name)
             os.remove(file_path)
         return
 
@@ -346,6 +363,7 @@ class edi(models.Model):
 # ****************************************************************************
 # **************************** INVOICES **************************************
 # ****************************************************************************
+    @api.model
     def _check_invoice_fields(self, file_path, root, type_fields='head'):
         """
         Get a list of mandatory invoice edi files to check.
@@ -386,6 +404,7 @@ class edi(models.Model):
             fields = fields_file
         return self._check_fields(file_path, root, fields)
 
+    @api.model
     def _create_invoice_from_picking(self, picking):
         """
         This function creates a invoice from a picking obj
@@ -399,6 +418,7 @@ class edi(models.Model):
             invoice = self.env['account.invoice'].browse(invoice_ids[0])
         return invoice
 
+    @api.model
     def _get_related_invoice(self, root):
         """
         This function search the invoice related with PEDIDO edi tag,
@@ -429,6 +449,7 @@ class edi(models.Model):
             return False
         return invoice
 
+    @api.model
     def _search_product(self, line):
         """
         Search a product by the ean13 field.
@@ -440,6 +461,7 @@ class edi(models.Model):
             product_obj = self.env['product.product'].search(domain)
         return product_obj
 
+    @api.model
     def generate_discount_statments(self, discount):
         disc_type_obj = self.env['account.discount.type']
         discount_search = []
@@ -471,6 +493,7 @@ class edi(models.Model):
             create['amount'] = amount.text
         return (discount_search, create)
 
+    @api.model
     def _search_taxes(self, product, line):
         tax_obj = self.env['account.tax']
         for tax in line.iter('IMPLFAC'):
@@ -488,6 +511,7 @@ class edi(models.Model):
                 return False
         return tax_objs
 
+    @api.model
     def _create_invoice_issue(self, reason_str, inv_line=None,
                               invoice=None, new_qty=0.0, bad_product_id=None):
         # Error en recepción de factura
@@ -534,6 +558,7 @@ class edi(models.Model):
                                product_ids=product_lines)
         return
 
+    @api.model
     def _parse_invoic_file(self, root, invoice):
         """
         Read an compare de invoic EDI file with the invoice obj founded
@@ -756,6 +781,7 @@ class edi(models.Model):
         # invoice.signal_workflow('invoice_receives')
         return invoice
 
+    @api.model
     def _parse_invoice_from_invoic(self, file_path, root):
         """
         This function return false if some error founded, return the invoice
@@ -778,6 +804,7 @@ class edi(models.Model):
                           in the INVOIC file ') + file_path)
         return invoice
 
+    @api.model
     def parse_invoice(self, file_path, doc):
         """
         This function parse the INVOIC document in the call to
@@ -792,92 +819,110 @@ class edi(models.Model):
         else:
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             invoice.write({'document_id': doc.id})
-            # self.make_backup(file_path, doc.file_name)
-            # os.remove(file_path)
+            self.make_backup(file_path, doc.file_name)
+            os.remove(file_path)
         return
 
 # ****************************************************************************
 # **************************** GENERAL EDI ***********************************
 # ****************************************************************************
 
+    @api.model
     def process_files(self, path):
         """
         Search all edi docs in error or draft state and process it depending
         on the document type (picking, invoice)
         """
-        domain = [('state', 'in', ['draft', 'error'])]
-        edi_docs = self.env['edi.doc'].search(domain)
-        for doc in edi_docs:
-            if doc.file_name not in os.listdir(path):
-                log.warning(_("File not found in folder. File: ") +
-                            doc.file_name)
-                continue
-            log.set_errors("")
-            file_path = path + os.sep + doc.file_name
-            if doc.doc_type == 'stock_picking':
-                self.parse_picking(file_path, doc)
-            elif doc.doc_type == 'invoice':
-                self.parse_invoice(file_path, doc)
-            doc.write({'errors': log.get_errors()})
-        return
+        for service in self:
+            domain = [('state', 'in', ['draft', 'error'])]
+            edi_docs = self.env['edi.doc'].search(domain)
+            for doc in edi_docs:
+                if doc.file_name not in os.listdir(path):
+                    log.warning(_("%s: File not found in folder. File: %s")
+                                % (service.name, doc.file_name))
+                    continue
+                log.set_errors("")
+                process = False
+                file_path = path + os.sep + doc.file_name
+                if doc.doc_type.code == 'stock_picking':
+                    service.parse_picking(file_path, doc)
+                    process = True
+                elif doc.doc_type.code == 'invoice':
+                    service.parse_invoice(file_path, doc)
+                    process = True
+                if process:
+                    doc.write({'errors': log.get_errors()})
 
+
+    @api.model
+    def _get_file_type(self, filename):
+        doc_type_obj = self.env['edi.doc.type']
+        if filename.startswith('INVOIC'):
+            ftype = doc_type_obj.search([('code', '=', 'invoice')])[0]
+        elif filename.startswith('DESADV'):
+            ftype = doc_type_obj.search([('code', '=', 'stock_picking')])[0]
+        else:
+            ftype = False
+        return ftype
+
+    @api.model
     def run_scheduler(self, automatic=False, use_new_cursor=False):
         """
         This function will import all the files in the inmportation folder
         defined in the system parametres.
         The function also process the documents (DESADEV, INVOIC)
         """
-        domain = [('key', '=', 'edi.path.importation')]
-        param_obj = self.env['ir.config_parameter'].search(domain)
-        path = param_obj.value  # Path for /out folder for edi files
-        log.info(_(u'Importing files'))
-        files_downloaded = 0
-        for file_name in os.listdir(path):
-            if file_name.startswith('INVOIC'):
-                type = 'invoice'
-            elif file_name.startswith('DESADV'):
-                type = 'stock_picking'
-            else:
-                continue
-            doc_type, name = file_name.replace('.xml', '').split('_')
-            # Search first edi documents in error state
-            domain = [('name', '=', name), ('state', '=', 'error')]
-            error_doc = self.env['edi.doc'].search(domain)
+        for service in self:
+            path = service.path
+            log.info(_(u'%s: Importing files') % service.name)
+            files_downloaded = 0
+            for file_name in os.listdir(path):
+                type = self._get_file_type(file_name)
+                if type.code in ('invoice', 'stock_picking'):
+                    doc_type, name = file_name.replace('.xml', '').split('_')
+                    # Search first edi documents in error state
+                    domain = [('name', '=', name), ('state', '=', 'error')]
+                    error_doc = self.env['edi.doc'].search(domain)
 
-            if error_doc:
-                error_doc = error_doc[0]
-                f = codecs.open(path + os.sep + file_name, "r", "ISO-8859-1",
-                                'ignore')
-                error_doc.write({'state': 'draft', 'message': f.read()})
-                f.close()
-                files_downloaded += 1
-                log.info(u"Updated previus error file %s " % file_name)
+                    if error_doc:
+                        error_doc = error_doc[0]
+                        f = codecs.open(path + os.sep + file_name, "r",
+                                        "ISO-8859-1", 'ignore')
+                        error_doc.write({'state': 'draft',
+                                         'message': f.read()})
+                        f.close()
+                        files_downloaded += 1
+                        log.info(u"%s: Updated previous error file %s "
+                                 % (service.name, file_name))
 
-            # If no edi document founded we create it
-            domain = [('file_name', '=', file_name)]
-            exist_doc = self.env['edi.doc'].search(domain)
-            if not exist_doc:
-                f = codecs.open(path + os.sep + file_name, "r", "ISO-8859-1",
-                                'ignore')
-                vals = {
-                    'name': name,
-                    'file_name': file_name,
-                    'state': 'draft',
-                    'date': time.strftime('%Y-%m-%d %H:%M:%S'),
-                    'doc_type': type,
-                    'message': f.read(),
-                }
-                self.env['edi.doc'].create(vals)
-                f.close()
-                files_downloaded += 1
-                log.info(u"Imported %s " % file_name)
-            # Ignore in case of edi doc already exists
-            else:
-                log.info(u"Ignored %s, It's already in the system" % file_name)
-        domain = [('state', 'in', ['draft', 'error'])]
-        n_docs = self.env['edi.doc'].search_count(domain)
-        log.info(u"%s document(s) imported."
-                 % files_downloaded)
-        log.info(u"%s document(s) pending to process."
-                 % n_docs)
-        return self.process_files(path)
+                    # If no edi document founded we create it
+                    domain = [('file_name', '=', file_name)]
+                    exist_doc = self.env['edi.doc'].search(domain)
+                    if not exist_doc:
+                        f = codecs.open(path + os.sep + file_name, "r",
+                                        "ISO-8859-1", 'ignore')
+                        vals = {
+                            'name': name,
+                            'file_name': file_name,
+                            'state': 'draft',
+                            'date': fields.Datetime.now(),
+                            'doc_type': type.id,
+                            'message': f.read(),
+                        }
+                        self.env['edi.doc'].create(vals)
+                        f.close()
+                        files_downloaded += 1
+                        log.info(u"%s: Imported %s "
+                                 % (service.name, file_name))
+                    # Ignore in case of edi doc already exists
+                    else:
+                        log.info(u"%s: Ignored %s, It's already in the system"
+                                 % (service.name, file_name))
+            if files_downloaded:
+                domain = [('state', 'in', ['draft', 'error'])]
+                n_docs = self.env['edi.doc'].search_count(domain)
+                log.info(u"%s document(s) imported."
+                         % files_downloaded)
+                log.info(u"%s document(s) pending to process."
+                         % n_docs)
+                service.process_files(path)

@@ -53,6 +53,7 @@ class unregister_partner_reason(osv.Model):
     _name = 'unregister.partner.reason'
     _columns = {
         'name': fields.char('Unregister reason', size=256, required=True),
+        'code': fields.char("Code", size=1, required=True)
     }
 
 
@@ -116,7 +117,7 @@ class res_partner(osv.Model):
                                     'Comercial validation pending'),
                                    ('validated', 'Validated'),
                                    ('registered', 'Registered'),
-                                   ('unregistered', 'unregistered')],
+                                   ('unregistered', 'Unregistered')],
                                    'Status', readonly=True, required=True,
                                    help="* Validate pending: no validation"
                                    "passed\n"
