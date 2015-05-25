@@ -64,13 +64,16 @@ class stock_task(osv.Model):
 
     @api.one
     def finish_partial_task(self):
-        # import ipdb; ipdb.set_trace()
-        # for op in self.operation_ids:
-        #     if op.to_process:
-        #         print op.id
-        #     else:
-        #         op.task_id = False  # New Api write
-        return
+        pick_objs = list(set([x.picking_id for x in self.operation_ids]))
+        for pick in pick_objs:
+            pick.approve_pack_operations2()
+        duration = datetime.now() - \
+            datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
+        vals = {
+            'date_end': time.strftime("%Y-%m-%d %H:%M:%S"),
+            'duration': duration.seconds / float(60),
+            'state': 'done'}
+        return self.write(vals)
 
     def finish_task(self, cr, uid, ids, context=None):
         """

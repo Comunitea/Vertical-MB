@@ -274,7 +274,9 @@ class assign_task_wzd(osv.TransientModel):
                                            False)],
                                 limit=1, order="id asc",
                                 context=context)
-
+        if not pick_id:
+            raise osv.except_osv(_('Error!'), _('No internal pickings to\
+                                                 schedule'))
         pick = t_pick.browse(cr, uid, pick_id[0], context)
         if not pick.pack_operation_ids:
             raise osv.except_osv(_('Error!'), _('No internal pickings to\
