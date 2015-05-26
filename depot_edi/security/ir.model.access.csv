@@ -2,3 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_edi_doc,access_edi_doc,model_edi_doc,base.group_user,1,1,1,1
 access_account_discount,access_account_discount,model_account_discount,base.group_user,1,1,1,1
 access_account_discount_type,access_account_discount_type,model_account_discount_type,base.group_user,1,1,1,1
+access_edi,access_edi,model_edi,base.group_user,1,0,0,0
+access_edi_manager,access_edi_manager,model_edi,base.group_erp_manager,1,1,1,1
+access_edi_doc_type,edi_doc_type,model_edi_doc_type,base.group_user,1,0,0,0
+access_edi_doc_type_manager,edi_doc_type_manager,model_edi_doc_type,base.group_erp_manager,1,1,1,1

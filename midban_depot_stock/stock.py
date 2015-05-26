@@ -111,6 +111,51 @@ class stock_picking(osv.osv):
             op.unlink()
         self.write({'midban_operations': False})
 
+    @api.one
+    def approve_pack_operations2(self):
+        t_transfer = self.env['stock.transfer_details']
+        t_item = self.env['stock.transfer_details_items']
+        transfer_obj = t_transfer.create({'picking_id': self.id})
+        pending_ops_vals = []
+        for op in self.pack_operation_ids:
+            if op.to_process:
+                item = {
+                    'packop_id': op.id,
+                    'product_id': op.product_id.id,
+                    'product_uom_id': op.product_uom_id.id,
+                    'quantity': op.product_qty,
+                    'package_id': op.package_id.id,
+                    'lot_id': op.lot_id.id,
+                    'sourceloc_id': op.location_id.id,
+                    'destinationloc_id': op.location_dest_id.id,
+                    'result_package_id': op.result_package_id.id,
+                    'date': op.date,
+                    'owner_id': op.owner_id.id,
+                    'transfer_id': transfer_obj.id,
+                }
+                t_item.create(item)
+            else:
+                new_ops_vals = {
+                    'product_id': op.product_id.id,
+                    'product_uom_id': op.product_uom_id.id,
+                    'product_qty': op.product_qty,
+                    'package_id': op.package_id.id,
+                    'lot_id': op.lot_id.id,
+                    'location_id': op.location_id.id,
+                    'location_dest_id': op.location_dest_id.id,
+                    'result_package_id': op.result_package_id.id,
+                    'owner_id': op.owner_id.id,
+
+                }
+                pending_ops_vals.append(new_ops_vals)
+        transfer_obj.do_detailed_transfer()
+        new_pick_obj = self.search([('backorder_id', '=', self.id)])
+        if new_pick_obj and pending_ops_vals:
+            for vals in pending_ops_vals:
+                vals['picking_id'] = new_pick_obj.id
+                new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
+        return
+
 
 class stock_package(osv.osv):
     _inherit = "stock.quant.package"
@@ -364,10 +409,6 @@ class stock_pack_operation(osv.osv):
     _columns = {
         'pack_type': fields.function(_get_pack_type, type='char',
                                      string='Pack Type', readonly=True),
-        # 'volume': fields.
-        # function(_get_operation_volume, readonly=True, type="float",
-        #          string="Volume",
-        #          digits_compute=dp.get_precision('Product Volume')),
         'operation_product_id': fields.function(_get_real_product,
                                                 type="many2one",
                                                 relation="product.product",
@@ -397,7 +438,7 @@ class stock_pack_operation(osv.osv):
                                      will be unassigned")
 
     }
-    _default = {
+    _defaults = {
         'to_process': True,
     }
 

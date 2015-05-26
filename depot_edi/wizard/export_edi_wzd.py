@@ -36,11 +36,13 @@ class export_edi_wzd(models.TransientModel):
         Create the edi.doc model linked to the purchased order obj.
         """
         active_model = self._context.get('active_model')
+        doc_type_obj = self.env["edi.doc.type"]
         if obj:
             name = doc_type = False
             if active_model == u'purchase.order':
                 name = obj.name.replace(' ', '').replace('.', '')
-                doc_type = 'purchase_order'
+                doc_type = doc_type_obj.search([('code', '=',
+                                                 'purchase_order')])[0]
             else:
                 raise except_orm(_('Error'), _('The model is not a \
                                                 purchase order'))
@@ -55,7 +57,7 @@ class export_edi_wzd(models.TransientModel):
                 'state': 'export',
                 'date': time.strftime('%Y-%m-%d %H:%M:%S'),
                 'date_process': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'doc_type': doc_type,
+                'doc_type': doc_type.id,
                 'message': f.read(),
             }
             f.close()
@@ -144,7 +146,7 @@ class export_edi_wzd(models.TransientModel):
         """
         Fills the template purchase_order_template to get ORDERS file
         """
-        active_model = self._context.get('active_model')
+        active_model = self.env.context.get('active_model')
         active_ids = self.env.context.get('active_ids')
 
         domain = [('key', '=', 'edi.path.exportation')]
