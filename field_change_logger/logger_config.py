@@ -28,7 +28,11 @@ if 'old_write' not in dir(models.BaseModel):
 @api.multi
 def write(self, vals):
     model = self.env['ir.model'].search([('model', '=', str(self._model))])
-    field_logger = self.env['logger.config'].search([('name', '=', model.id)])
+    try:
+        field_logger = self.env['logger.config'].search([('name', '=',
+                                                          model.id)])
+    except:
+        return self.old_write(vals)
     if field_logger:
         changes = _("Changed fields:")
         watch_fields = {}
