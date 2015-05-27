@@ -24,3 +24,4 @@ import stock_transfer_details
 import create_tag_wizard
 import create_camera_locations
 import get_route_detail_wzd
+import manual_transfer_wzd

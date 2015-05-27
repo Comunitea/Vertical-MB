@@ -259,6 +259,21 @@ class stock_package(osv.osv):
             res[pack.id] = volume
         return res
 
+    def _is_multiproduct_pack(self, cr, uid, ids, name, args, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for pack in self.browse(cr, uid, ids, context=context):
+            product_id = False
+            is_multiproduct = False
+            for quant in pack.quant_ids:
+                product_id = quant.product_id.id
+                if product_id != quant.lot_id.id:  # Founded diferents products
+                    is_multiproduct = True
+                    break
+            res[pack.id] = is_multiproduct
+        return res
+
     _columns = {
         'pack_type': fields.selection([('box', 'Box'),
                                        ('palet', 'Palet')],
@@ -288,6 +303,10 @@ class stock_package(osv.osv):
                                   string="Volume",
                                   digits_compute=dp.get_precision
                                   ('Product Volume')),
+        'is_multiproduct': fields.function(_is_multiproduct_pack,
+                                           readonly=True,
+                                           type="boolean",
+                                           string="Is multiproduct")
     }
 
     def get_products_quants(self, cr, uid, ids, context=None):
@@ -871,6 +890,45 @@ class stock_location(osv.Model):
                                 loc.temp_type_id.id or False})
         return res
 
+    def search(self, cr, uid, args, offset=0, limit=None, order=None,
+               context=None, count=False):
+        """ Overwrite in order to search only location of a unique product
+            if search_product_id is in context."""
+        if context is None:
+            context = {}
+        quant_t = self.pool.get("stock.quant")
+        # import ipdb; ipdb.set_trace()
+        if context.get('search_product_id', False):
+            args = []
+            product_id = context['search_product_id']
+            domain = [('product_id', '=', product_id)]
+            quant_ids = quant_t.search(cr, uid, domain, context=context)
+            loc_ids = set()
+            for quant in quant_t.browse(cr, uid, quant_ids, context=context):
+                loc_ids.add(quant.location_id.id)
+            loc_ids = list(loc_ids)
+            args.append(['id', 'in', loc_ids])
+        return super(stock_location, self).search(cr, uid, args,
+                                                  offset=offset,
+                                                  limit=limit,
+                                                  order=order,
+                                                  context=context,
+                                                  count=count)
+
+    def name_search(self, cr, uid, name,
+                    args=None, operator='ilike', context=None, limit=80):
+        """
+        Redefine the search to search by company name.
+        """
+        # import ipdb; ipdb.set_trace()
+        if context.get('search_product_id', False):
+            loc_ids = self.search(cr, uid, args, context=context)
+            args = [('id', 'in', loc_ids)]
+        res = super(stock_location, self).name_search(cr, uid, name, args=args,
+                                                      operator=operator,
+                                                      limit=limit)
+        return res
+
 
 class stock_move(osv.osv):
     _inherit = "stock.move"
@@ -1057,9 +1115,20 @@ class stock_quant(osv.osv):
         location.
         Then by overwriting action_assign of stock move, we will find the
         reserved quants of storage location.
+        If force_quants_location in context wy try to get quants only of
+        location
         """
+        # import ipdb; ipdb.set_trace()
         t_location = self.pool.get('stock.location')
-        if removal_strategy == 'depot_fefo':
+
+        # When quants already assigned we use the super no midban depot fefo
+        already_reserved = False
+        for x in domain:
+            if x[0] == 'reservation_id' and x[2]:
+                already_reserved = True
+                removal_strategy = 'fefo'
+        if removal_strategy == 'depot_fefo' and not already_reserved and not \
+                ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
             if not pick_loc_obj:
                 raise osv.except_osv(_('Error!'), _('Not picking location\
@@ -1092,6 +1161,15 @@ class stock_quant(osv.osv):
                 res += self._quants_get_order(cr, uid, storage_loc, product,
                                               check_storage_qty, domain, order,
                                               context=context)
+            return res
+        elif context.get('force_quants_location', False):
+            # domain.append(('location_id', '=', location.id))
+            # res = self._quants_get_order(cr, uid, location, product, qty,
+            #                              domain, context=context)
+            res = context['force_quants_location']
+            if not res:
+                raise osv.except_osv(_('Error!'), _('No quants to force the \
+                                                    assignament'))
             return res
         sup = super(stock_quant, self).\
             apply_removal_strategy(cr, uid, location, product, qty, domain,
