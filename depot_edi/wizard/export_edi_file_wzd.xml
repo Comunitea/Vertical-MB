@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="export_edi_file_form" model="ir.ui.view">
+            <field name="name">edi.export.wizard.form</field>
+            <field name="model">edi.export.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Export Edi file">
+                    <group colspan="4">
+                        <field name="service_id"/>
+                    </group>
+                    <button special="cancel" string="Cancel"/>
+                    <button type="object" name="export_files" string="Export"/>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

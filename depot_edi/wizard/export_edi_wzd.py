@@ -18,52 +18,50 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models
+from openerp import models, api, fields, tools
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import os
-import time
 import math
 
 
 class export_edi_wzd(models.TransientModel):
+
     _name = "edi.export.wizard"
 
-    def create_doc(self, obj, file_name):
-        """
-        Create the edi.doc model linked to the purchased order obj.
-        """
-        active_model = self._context.get('active_model')
-        doc_type_obj = self.env["edi.doc.type"]
-        if obj:
-            name = doc_type = False
-            if active_model == u'purchase.order':
-                name = obj.name.replace(' ', '').replace('.', '')
-                doc_type = doc_type_obj.search([('code', '=',
-                                                 'purchase_order')])[0]
-            else:
-                raise except_orm(_('Error'), _('The model is not a \
-                                                purchase order'))
-            # Search for existing docs to delete it. It will be regenerated
-            doc_objs = self.env['edi.doc'].search([('name', '=', name)])
-            for doc in doc_objs:
-                doc.unlink()
-            f = open(file_name)
-            values = {
-                'name': name,
-                'file_name': file_name.split('/')[-1],
-                'state': 'export',
-                'date': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'date_process': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'doc_type': doc_type.id,
-                'message': f.read(),
-            }
-            f.close()
-            file_obj = self.env['edi.doc'].create(values)
-            obj.write({'document_id': file_obj.id})
+    service_id = fields.Many2one('edi', 'Service', required=True)
 
+    @api.model
+    def create_doc(self, doc_name, file_name, doc_type, obj=False):
+        doc_objs = self.env['edi.doc'].search([('name', '=', doc_name)])
+        doc_objs.unlink()
+        f = open(file_name)
+        values = {
+            'name': doc_name,
+            'file_name': file_name.split(os.sep)[-1],
+            'state': 'export',
+            'date': fields.Datetime.now(),
+            'date_process': fields.Datetime.now(),
+            'doc_type': doc_type.id,
+            'message': f.read(),
+            'service_id': self.service_id.id
+        }
+        f.close()
+        file_obj = self.env['edi.doc'].create(values)
+        if obj:
+            obj.write({'document_id': file_obj.id})
+        return file_obj
+
+    @staticmethod
+    def addons_path(path):
+        report_module = path.split(os.path.sep)[0]
+        for addons_path in tools.config['addons_path'].split(','):
+            if os.path.lexists(addons_path+os.path.sep+report_module):
+                return os.path.normpath(addons_path+os.path.sep+path)
+
+    @api.model
     def _check_purchase_obj(self, obj):
         """
         Raise exceptions if purchase order obj or related objets have fields
@@ -116,6 +114,7 @@ class export_edi_wzd(models.TransientModel):
                                             configured'))
         return
 
+    @api.model
     def _get_start_end_hours(self, obj):
         """
         Get and format the start hour and the end hour og warehouse related
@@ -142,31 +141,29 @@ class export_edi_wzd(models.TransientModel):
             warehouse_stop_hour
         return warehouse_start_hour, warehouse_stop_hour
 
+    @api.model
     def export_purchase_order(self):
         """
         Fills the template purchase_order_template to get ORDERS file
         """
         active_model = self.env.context.get('active_model')
         active_ids = self.env.context.get('active_ids')
-
-        domain = [('key', '=', 'edi.path.exportation')]
-        param_obj = self.env['ir.config_parameter'].search(domain)
-        path = param_obj.value  # Path for /out folder for edi files
-        domain = [('key', '=', 'edi.path.templates')]
-        param_obj = self.env['ir.config_parameter'].search(domain)
-        templates_path = param_obj.value  # Path for templates folder
+        doc_type_obj = self.env["edi.doc.type"]
+        doc_type = doc_type_obj.search([("code", '=', "purchase_order")])[0]
+        path = self[0].service_id.output_path
+        templates_path = self.addons_path('depot_edi') + os.sep + 'wizard' + \
+            os.sep + 'templates' + os.sep
         tmp_name = ''
         for obj in self.env[active_model].browse(active_ids):
             self._check_purchase_obj(obj)
 
             tmp_name = u'purchase_order_template.xml'
-            file_name = u'%s%sORDERS_%s.xml' % (path, os.sep,
-                                                obj.name.replace(' ', u'')
-                                                .replace('.', u''))
+            filename = u'ORDERS_%s.xml' % (obj.name.replace(' ', u'')
+                                           .replace('.', u''))
             mylookup = TemplateLookup(input_encoding='utf-8',
                                       output_encoding='utf-8',
                                       encoding_errors='replace')
-            tmp = Template(filename=templates_path + os.sep + tmp_name,
+            tmp = Template(filename=templates_path + tmp_name,
                            lookup=mylookup, default_filters=['decode.utf8'])
 
             # Convert warehouse hour to pass it to the template
@@ -177,11 +174,12 @@ class export_edi_wzd(models.TransientModel):
             doc = tmp.render_unicode(o=obj, start=start,
                                      stop=stop).encode('utf-8', 'replace')
             # Creating the fisical file in the correct path
+            file_name = path + os.sep + filename
             f = file(file_name, 'w')
             f.write(doc)
             f.close()
             # Creates the model EDI doc
-            self.create_doc(obj, file_name)
+            self.create_doc(filename, file_name, doc_type, obj=obj)
 
             # Post a notification message
             vals = {
@@ -193,6 +191,7 @@ class export_edi_wzd(models.TransientModel):
             vals['body'] = vals['body'] + u' ' + file_name
             self.env['mail.message'].create(vals)
 
+    @api.multi
     def export_files(self):
         """
         General function tu expor files from diferent modules like purchase
