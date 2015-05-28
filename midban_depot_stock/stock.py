@@ -897,7 +897,6 @@ class stock_location(osv.Model):
         if context is None:
             context = {}
         quant_t = self.pool.get("stock.quant")
-        # import ipdb; ipdb.set_trace()
         if context.get('search_product_id', False):
             args = []
             product_id = context['search_product_id']
@@ -920,7 +919,6 @@ class stock_location(osv.Model):
         """
         Redefine the search to search by company name.
         """
-        # import ipdb; ipdb.set_trace()
         if context.get('search_product_id', False):
             loc_ids = self.search(cr, uid, args, context=context)
             args = [('id', 'in', loc_ids)]

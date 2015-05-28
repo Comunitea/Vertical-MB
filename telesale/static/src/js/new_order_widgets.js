@@ -749,7 +749,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){
                     var product_obj = self.ts_model.db.get_product_by_id(product_id)
-/*                    debugger;*/
                     if (product_obj.product_class == 'normal'){
                         self.sum_cmc += product_obj.cmc * line.get('qty');
                         self.sum_box += line.get('boxes');
