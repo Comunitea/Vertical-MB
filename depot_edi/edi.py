@@ -31,7 +31,7 @@ from openerp.exceptions import except_orm
 from openerp.addons.midban_issue.issue_generator import issue_generator
 
 issue_gen = issue_generator()
-log = logger("import_edi")
+log = logger("depot_edi")
 
 
 class EdiDocType(models.Model):
@@ -65,10 +65,11 @@ class edi(models.Model):
             dst_file = ''
             year = time.strftime('%Y')
             month = time.strftime('%B')
-            dst_file = os.path.join(str(service.backup_path + '/' +
-                                    str(year) + '/' + month), file_name)
-            dir_month = str(service.backup_path + str(year) + '/' + month)
-            dir_year = str(service.backup_path + str(year))
+            dst_file = os.path.join(str(service.backup_path + os.sep +
+                                    str(year) + os.sep + month), file_name)
+            dir_month = str(service.backup_path + os.sep + str(year) +
+                            os.sep + month)
+            dir_year = str(service.backup_path + os.sep + str(year))
             if not os.path.exists(service.backup_path):
                 os.mkdir(service.backup_path)
                 os.mkdir(dir_year)
@@ -80,7 +81,7 @@ class edi(models.Model):
                 os.mkdir(dir_month)
             shutil.copy(src_file, dst_file)
             log.info(_(u'%s: The copy of the file to the backup was '
-                        'successful. File %s' % (service.name, file_name)))
+                       'successful. File %s' % (service.name, file_name)))
 
     @api.model
     def _check_fields(self, file_path, root, fields):
@@ -331,7 +332,6 @@ class edi(models.Model):
             self.make_backup(file_path, doc.file_name)
             os.remove(file_path)
         return
-
 
 # ****************************************************************************
 # **************************** INVOICES **************************************
@@ -807,7 +807,8 @@ class edi(models.Model):
         on the document type (picking, invoice)
         """
         for service in self:
-            domain = [('state', 'in', ['draft', 'error'])]
+            domain = [('state', 'in', ['draft', 'error']),
+                      ('service_id', '=', service.id)]
             edi_docs = self.env['edi.doc'].search(domain)
             for doc in edi_docs:
                 if doc.file_name not in os.listdir(path):
@@ -826,7 +827,6 @@ class edi(models.Model):
                 if process:
                     doc.write({'errors': log.get_errors()})
 
-
     @api.model
     def _get_file_type(self, filename):
         doc_type_obj = self.env['edi.doc.type']
@@ -841,7 +841,7 @@ class edi(models.Model):
     @api.model
     def _get_file_name(self, filename, type):
         if type.code in ('invoice', 'stock_picking'):
-            return file_name.replace('.xml', '').split('_')[1]
+            return filename.replace('.xml', '').split('_')[1]
 
     @api.model
     def run_scheduler(self, automatic=False, use_new_cursor=False):

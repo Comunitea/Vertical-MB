@@ -62,44 +62,44 @@
 
                 <field name="description_purchase" position="after">
                     <group colspan="4" col="8" string="Supplier Units">
-                        <field name="supplier_kg_un"/>
-                        <field name="supplier_un_width"/>
-                        <field name="supplier_un_height"/>
-                        <field name="supplier_un_length"/>
-                        <field name="supplier_un_ca"/>
-                        <field name="supplier_ca_width"/>
-                        <field name="supplier_ca_height"/>
-                        <field name="supplier_ca_length"/>
-                        <field name="supplier_ca_ma"/>
-                        <field name="supplier_ma_width"/>
-                        <field name="supplier_ma_height"/>
-                        <field name="supplier_ma_length"/>
-                        <field name="supplier_ma_pa"/>
-                        <field name="supplier_pa_width"/>
-                        <field name="supplier_pa_height"/>
-                        <field name="supplier_pa_length"/>
+                        <field name="supplier_kg_un" required="1"/>
+                        <field name="supplier_un_width" required="1"/>
+                        <field name="supplier_un_height" required="1"/>
+                        <field name="supplier_un_length" required="1"/>
+                        <field name="supplier_un_ca" required="1"/>
+                        <field name="supplier_ca_width" required="1"/>
+                        <field name="supplier_ca_height" required="1"/>
+                        <field name="supplier_ca_length" required="1"/>
+                        <field name="supplier_ca_ma" required="1"/>
+                        <field name="supplier_ma_width" required="1"/>
+                        <field name="supplier_ma_height" required="1"/>
+                        <field name="supplier_ma_length" required="1"/>
+                        <field name="supplier_ma_pa" required="1"/>
+                        <field name="supplier_pa_width" required="1"/>
+                        <field name="supplier_pa_height" required="1"/>
+                        <field name="supplier_pa_length" required="1"/>
                     </group>
                 </field>
 
                 <field name="description_sale"  position="after">
 
                     <group colspan="4" col="8" string="Mandatory Units">
-                        <field name="kg_un"/>
-                        <field name="un_width"/>
-                        <field name="un_height"/>
-                        <field name="un_length"/>
-                        <field name="un_ca"/>
-                        <field name="ca_width"/>
-                        <field name="ca_height"/>
-                        <field name="ca_length"/>
-                        <field name="ca_ma"/>
-                        <field name="ma_width"/>
-                        <field name="ma_height"/>
-                        <field name="ma_length"/>
-                        <field name="ma_pa"/>
-                        <field name="pa_width"/>
-                        <field name="pa_height"/>
-                        <field name="pa_length"/>
+                        <field name="kg_un" required="1"/>
+                        <field name="un_width" required="1"/>
+                        <field name="un_height" required="1"/>
+                        <field name="un_length" required="1"/>
+                        <field name="un_ca" required="1"/>
+                        <field name="ca_width" required="1"/>
+                        <field name="ca_height" required="1"/>
+                        <field name="ca_length" required="1"/>
+                        <field name="ca_ma" required="1"/>
+                        <field name="ma_width" required="1"/>
+                        <field name="ma_height" required="1"/>
+                        <field name="ma_length" required="1"/>
+                        <field name="ma_pa" required="1"/>
+                        <field name="pa_width" required="1"/>
+                        <field name="pa_height" required="1"/>
+                        <field name="pa_length" required="1"/>
                     </group>
 
                 </field>
@@ -140,7 +140,7 @@
                     <field name="last_purchase_price"/>
                     <field name="life"/>
                 </field>
-                
+
                 <field name="weight_net" position="after">
                     <field name="drained_weight"/>
                 </field>
@@ -166,7 +166,7 @@
                 </xpath>
             </field>
         </record>
-        
+
         <!-- Search view for products. Adds filters to see unregistered products, deny products, and in registering
         process products -->
         <record id="midban_product_search_form_view" model="ir.ui.view">
@@ -386,7 +386,7 @@
             <field name="category_id" ref="base.module_category_usability"/>
             <field name="name">View Product Variants</field>
         </record>
-        
+
          <!-- Avoid Menu of product Variants -->
         <delete model="ir.ui.menu" search="[('id','=',ref('product.menu_products'))]"/>
         <menuitem id="menu_products2" action="product.product_normal_action_sell" parent="base.menu_product" groups="group_no_variants" sequence="10"/>
