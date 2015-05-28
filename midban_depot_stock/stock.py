@@ -112,13 +112,14 @@ class stock_picking(osv.osv):
         self.write({'midban_operations': False})
 
     @api.one
-    def approve_pack_operations2(self):
+    def approve_pack_operations2(self, task_id):
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
         transfer_obj = t_transfer.create({'picking_id': self.id})
         pending_ops_vals = []
+        something_done = False
         for op in self.pack_operation_ids:
-            if op.to_process:
+            if op.to_process and op.task_id and op.task_id.id == task_id:
                 item = {
                     'packop_id': op.id,
                     'product_id': op.product_id.id,
@@ -134,6 +135,7 @@ class stock_picking(osv.osv):
                     'transfer_id': transfer_obj.id,
                 }
                 t_item.create(item)
+                something_done = True
             else:
                 new_ops_vals = {
                     'product_id': op.product_id.id,
@@ -145,15 +147,21 @@ class stock_picking(osv.osv):
                     'location_dest_id': op.location_dest_id.id,
                     'result_package_id': op.result_package_id.id,
                     'owner_id': op.owner_id.id,
+                    'task_id': op.task_id.id,
 
                 }
                 pending_ops_vals.append(new_ops_vals)
-        transfer_obj.do_detailed_transfer()
-        new_pick_obj = self.search([('backorder_id', '=', self.id)])
-        if new_pick_obj and pending_ops_vals:
-            for vals in pending_ops_vals:
-                vals['picking_id'] = new_pick_obj.id
-                new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
+
+        if something_done:
+            transfer_obj.do_detailed_transfer()
+            new_pick_obj = self.search([('backorder_id', '=', self.id)])
+            if new_pick_obj and pending_ops_vals:
+                for vals in pending_ops_vals:
+                    vals['picking_id'] = new_pick_obj.id
+                    new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
+        else:
+            for op in self.pack_operation_ids:
+                op.task_id = False  # Write to be able to assign later
         return
 
 
@@ -1116,7 +1124,6 @@ class stock_quant(osv.osv):
         If force_quants_location in context wy try to get quants only of
         location
         """
-        # import ipdb; ipdb.set_trace()
         t_location = self.pool.get('stock.location')
 
         # When quants already assigned we use the super no midban depot fefo

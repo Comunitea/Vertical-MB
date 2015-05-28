@@ -951,7 +951,7 @@ msgstr "Porcentaje mínimo"
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_form
 msgid "Finish Partial Task"
-msgstr "Finish Partial Task"
+msgstr "Finalizar procesadas"
 
 #. module: midban_depot_stock
 #: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view

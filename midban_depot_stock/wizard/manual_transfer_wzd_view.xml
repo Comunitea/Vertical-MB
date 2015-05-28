@@ -15,6 +15,7 @@
                                 <field name="package_id"/>
                                 <field name="product_id" required="1"/>
                                 <field name="quantity" required="1"/>
+                                <field name="lot_id" domain="[('product_id','=?', product_id)]"/>
                                 <field name="src_location_id" required="1" context="{'search_product_id': product_id}"/>
                                 <field name="dest_location_id" required="1"/>
                                 <field name="do_pack"/>

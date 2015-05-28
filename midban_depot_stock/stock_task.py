@@ -66,7 +66,7 @@ class stock_task(osv.Model):
     def finish_partial_task(self):
         pick_objs = list(set([x.picking_id for x in self.operation_ids]))
         for pick in pick_objs:
-            pick.approve_pack_operations2()
+            pick.approve_pack_operations2(self.id)
         duration = datetime.now() - \
             datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
         vals = {
