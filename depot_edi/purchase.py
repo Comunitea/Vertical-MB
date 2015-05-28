@@ -36,7 +36,7 @@ class purchase_order(models.Model):
                                        related='document_id.date_process')
     state_doc = fields.Selection('State', readonly=True,
                                  related='document_id.state')
-    message = fields.Text('Messagge', readonly=True,
+    message = fields.Text('Message', readonly=True,
                           related='document_id.message')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse',
                                    readonly=True,
@@ -45,6 +45,12 @@ class purchase_order(models.Model):
     @api.multi
     def export_edi(self):
         ctx = {'active_model': 'purchase.order', 'active_ids': self._ids}
-        wzd_obj = self.env['edi.export.wizard'].with_context(ctx).create({})
-        wzd_obj.export_files()
-        return
+        edi_obj = self.env["edi"]
+        edis = edi_obj.search([])
+        for service in edis:
+            for dtype in service.doc_type_ids:
+                if dtype.code == "purchase_order":
+                    wzd = self.env['edi.export.wizard'].with_context(ctx).\
+                        create({'service_id': service.id})
+                    wzd.export_files()
+                    return

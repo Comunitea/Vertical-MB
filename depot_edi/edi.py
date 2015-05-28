@@ -31,7 +31,7 @@ from openerp.exceptions import except_orm
 from openerp.addons.midban_issue.issue_generator import issue_generator
 
 issue_gen = issue_generator()
-log = logger("import_edi")
+log = logger("depot_edi")
 
 
 class EdiDocType(models.Model):
@@ -41,31 +41,6 @@ class EdiDocType(models.Model):
     code = fields.Char("Code", required=True)
     name = fields.Char("Name", required=True)
     description = fields.Text("Description")
-
-
-class edi_doc(models.Model):
-    """
-    Model for EDI document
-    """
-    _name = 'edi.doc'
-    _description = 'EDI document'
-
-    name = fields.Char('Ref.', size=255, required=True)
-    file_name = fields.Char('File Name', size=255, required=True)
-    doc_type = fields.Many2one("edi.doc.type", 'Document type')
-    date = fields.Datetime('Downloaded')
-    date_process = fields.Datetime('Process')
-    state = fields.Selection([('draft', 'Sin procesar'),
-                              ('imported', 'Importado'),
-                              ('export', 'Exportado'),
-                              ('error', 'Con incidencias')],
-                             'State', select=1)
-    response_document_id = fields.Many2one('edi.doc',
-                                           'Response Document')
-    send_response = fields.Char('Response', size=255, select=1)
-    send_date = fields.Datetime('Last Send Date', select=1)
-    message = fields.Text('Message')
-    errors = fields.Text('Errors')
 
 
 class edi(models.Model):
@@ -88,14 +63,13 @@ class edi(models.Model):
         for service in self:
             src_file = path
             dst_file = ''
-            param_pool = self.env["ir.config_parameter"]
-            param_obj = param_pool.search([('key', '=', 'edi.path.buckups')])
             year = time.strftime('%Y')
             month = time.strftime('%B')
-            dst_file = os.path.join(str(service.backup_path + '/' +
-                                    str(year) + '/' + month), file_name)
-            dir_month = str(service.backup_path + str(year) + '/' + month)
-            dir_year = str(service.backup_path + str(year))
+            dst_file = os.path.join(str(service.backup_path + os.sep +
+                                    str(year) + os.sep + month), file_name)
+            dir_month = str(service.backup_path + os.sep + str(year) +
+                            os.sep + month)
+            dir_year = str(service.backup_path + os.sep + str(year))
             if not os.path.exists(service.backup_path):
                 os.mkdir(service.backup_path)
                 os.mkdir(dir_year)
@@ -107,7 +81,7 @@ class edi(models.Model):
                 os.mkdir(dir_month)
             shutil.copy(src_file, dst_file)
             log.info(_(u'%s: The copy of the file to the backup was '
-                        'successful. File %s' % (service.name, file_name)))
+                       'successful. File %s' % (service.name, file_name)))
 
     @api.model
     def _check_fields(self, file_path, root, fields):
@@ -358,7 +332,6 @@ class edi(models.Model):
             self.make_backup(file_path, doc.file_name)
             os.remove(file_path)
         return
-
 
 # ****************************************************************************
 # **************************** INVOICES **************************************
@@ -834,7 +807,8 @@ class edi(models.Model):
         on the document type (picking, invoice)
         """
         for service in self:
-            domain = [('state', 'in', ['draft', 'error'])]
+            domain = [('state', 'in', ['draft', 'error']),
+                      ('service_id', '=', service.id)]
             edi_docs = self.env['edi.doc'].search(domain)
             for doc in edi_docs:
                 if doc.file_name not in os.listdir(path):
@@ -853,7 +827,6 @@ class edi(models.Model):
                 if process:
                     doc.write({'errors': log.get_errors()})
 
-
     @api.model
     def _get_file_type(self, filename):
         doc_type_obj = self.env['edi.doc.type']
@@ -864,6 +837,11 @@ class edi(models.Model):
         else:
             ftype = False
         return ftype
+
+    @api.model
+    def _get_file_name(self, filename, type):
+        if type.code in ('invoice', 'stock_picking'):
+            return filename.replace('.xml', '').split('_')[1]
 
     @api.model
     def run_scheduler(self, automatic=False, use_new_cursor=False):
@@ -878,51 +856,83 @@ class edi(models.Model):
             files_downloaded = 0
             for file_name in os.listdir(path):
                 type = self._get_file_type(file_name)
-                if type.code in ('invoice', 'stock_picking'):
-                    doc_type, name = file_name.replace('.xml', '').split('_')
-                    # Search first edi documents in error state
-                    domain = [('name', '=', name), ('state', '=', 'error')]
-                    error_doc = self.env['edi.doc'].search(domain)
+                name = self._get_file_name(file_name, type)
 
-                    if error_doc:
-                        error_doc = error_doc[0]
-                        f = codecs.open(path + os.sep + file_name, "r",
-                                        "ISO-8859-1", 'ignore')
-                        error_doc.write({'state': 'draft',
-                                         'message': f.read()})
-                        f.close()
-                        files_downloaded += 1
-                        log.info(u"%s: Updated previous error file %s "
-                                 % (service.name, file_name))
+                # Search first edi documents in error state
+                domain = [('name', '=', name), ('state', '=', 'error'),
+                          ('doc_type', '=', type.id),
+                          ('service_id', '=', service.id)]
+                error_doc = self.env['edi.doc'].search(domain)
 
-                    # If no edi document founded we create it
-                    domain = [('file_name', '=', file_name)]
-                    exist_doc = self.env['edi.doc'].search(domain)
-                    if not exist_doc:
-                        f = codecs.open(path + os.sep + file_name, "r",
-                                        "ISO-8859-1", 'ignore')
-                        vals = {
-                            'name': name,
-                            'file_name': file_name,
-                            'state': 'draft',
-                            'date': fields.Datetime.now(),
-                            'doc_type': type.id,
-                            'message': f.read(),
-                        }
-                        self.env['edi.doc'].create(vals)
-                        f.close()
-                        files_downloaded += 1
-                        log.info(u"%s: Imported %s "
-                                 % (service.name, file_name))
-                    # Ignore in case of edi doc already exists
-                    else:
-                        log.info(u"%s: Ignored %s, It's already in the system"
-                                 % (service.name, file_name))
+                if error_doc:
+                    error_doc = error_doc[0]
+                    f = codecs.open(path + os.sep + file_name, "r",
+                                    "ISO-8859-1", 'ignore')
+                    error_doc.write({'state': 'draft',
+                                     'message': f.read()})
+                    f.close()
+                    files_downloaded += 1
+                    log.info(u"%s: Updated previous error file %s "
+                             % (service.name, file_name))
+
+                # If no edi document founded we create it
+                domain = [('file_name', '=', file_name),
+                          ('doc_type', '=', type.id),
+                          ('service_id', '=', service.id)]
+                exist_doc = self.env['edi.doc'].search(domain)
+                if not exist_doc:
+                    f = codecs.open(path + os.sep + file_name, "r",
+                                    "ISO-8859-1", 'ignore')
+                    vals = {
+                        'name': name,
+                        'file_name': file_name,
+                        'state': 'draft',
+                        'date': fields.Datetime.now(),
+                        'doc_type': type.id,
+                        'message': f.read(),
+                        'service_id': service.id
+                    }
+                    self.env['edi.doc'].create(vals)
+                    f.close()
+                    files_downloaded += 1
+                    log.info(u"%s: Imported %s "
+                             % (service.name, file_name))
+                # Ignore in case of edi doc already exists
+                else:
+                    log.info(u"%s: Ignored %s, It's already in the system"
+                             % (service.name, file_name))
             if files_downloaded:
-                domain = [('state', 'in', ['draft', 'error'])]
+                domain = [('state', 'in', ['draft', 'error']),
+                          ('service_id', '=', service.id)]
                 n_docs = self.env['edi.doc'].search_count(domain)
-                log.info(u"%s document(s) imported."
-                         % files_downloaded)
-                log.info(u"%s document(s) pending to process."
-                         % n_docs)
+                log.info(u"%s: %s document(s) imported."
+                         % (service.name, files_downloaded))
+                log.info(u"%s: %s document(s) pending to process."
+                         % (service.name, n_docs))
                 service.process_files(path)
+
+
+class edi_doc(models.Model):
+    """
+    Model for EDI document
+    """
+    _name = 'edi.doc'
+    _description = 'EDI document'
+
+    name = fields.Char('Ref.', size=255, required=True)
+    file_name = fields.Char('File Name', size=255, required=True)
+    doc_type = fields.Many2one("edi.doc.type", 'Document type')
+    date = fields.Datetime('Downloaded')
+    date_process = fields.Datetime('Process')
+    state = fields.Selection([('draft', 'Sin procesar'),
+                              ('imported', 'Importado'),
+                              ('export', 'Exportado'),
+                              ('error', 'Con incidencias')],
+                             'State', select=1)
+    response_document_id = fields.Many2one('edi.doc',
+                                           'Response Document')
+    send_response = fields.Char('Response', size=255, select=1)
+    send_date = fields.Datetime('Last Send Date', select=1)
+    message = fields.Text('Message')
+    errors = fields.Text('Errors')
+    service_id = fields.Many2one("edi", "Service", required=True)

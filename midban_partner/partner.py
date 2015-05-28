@@ -181,6 +181,9 @@ class res_partner(osv.Model):
                                           'Delivery Time Slots'),
         'call_days_slot': fields.one2many('call.days.time.slot', 'partner_id',
                                           'Call Days Time Slot '),
+        'ref_history_ids': fields.one2many('res.partner.ref.history',
+                                           'partner_id', 'Refs history',
+                                           readonly=True)
     }
     _defaults = {
         'active': False,  # it's fixed true when you register a product
@@ -204,6 +207,21 @@ class res_partner(osv.Model):
             workflow.trg_validate(uid, 'res.partner', partner_id,
                                   'active', cr)
         return partner_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = {}
+        if vals.get("ref"):
+            ref_history_obj = self.pool["res.partner.ref.history"]
+            for partner in self.browse(cr, uid, ids):
+                if partner.ref and partner.ref != vals["ref"] and \
+                        (vals.get("is_company") or partner.is_company) and \
+                        (vals.get("customer") or partner.customer):
+                    ref_history_obj.create(cr, uid,
+                                           {'partner_id': partner.id,
+                                            'old_ref': partner.ref})
+        return super(res_partner, self).write(cr, uid, ids, vals,
+                                              context=context)
 
     def _update_history(self, cr, uid, ids, context, partner_obj, activity):
         """ Update partner history model for the argument partner_obj whith
@@ -304,4 +322,21 @@ class partner_history(osv.Model):
         'activity': fields.char('Activity', size=256),
         'reason': fields.char('Reason', size=256),
         'comment': fields.text('Comment')
+    }
+
+
+class ResPartnerRefHistory(osv.Model):
+
+    _name = "res.partner.ref.history"
+    _order = "date desc, id desc"
+
+    _columns = {'date': fields.date("Change date", required=True,
+                                    readonly=True),
+                'partner_id': fields.many2one('res.partner', 'Partner',
+                                              required=True,
+                                              readonly=True),
+                'old_ref': fields.char("Ref", required=True, readonly=True)}
+
+    _defaults = {
+        'date': fields.date.context_today
     }

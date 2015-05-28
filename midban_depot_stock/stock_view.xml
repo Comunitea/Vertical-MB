@@ -85,6 +85,7 @@
             <field name="arch" type="xml">
                 <field name="ul_id" position="before">
                     <field name="pack_type"/>
+                    <field name="is_multiproduct"/>
                     <field name="product_id"/>
                     <field name="packed_lot_id"/>
                     <field name="packed_qty"/>

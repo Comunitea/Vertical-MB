@@ -49,6 +49,7 @@
         'invoice_workflow.xml',
         'wizard/import_edi_view.xml',
         'security/ir.model.access.csv',
+        'wizard/export_edi_file_wzd.xml'
     ],
     "demo": [],
     "test": [],

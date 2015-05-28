@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="manual_transfer_wzd_view_form" model="ir.ui.view">
+            <field name="name">manual.transfer.wzd.view.form</field>
+            <field name="model">manual.transfer.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Manual transfer stock wizard">
+                    <group string="Transfer products">
+                        <field name="prod_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="package_id"/>
+                                <field name="product_id" required="1"/>
+                                <field name="quantity" required="1"/>
+                                <field name="src_location_id" required="1" context="{'search_product_id': product_id}"/>
+                                <field name="dest_location_id" required="1"/>
+                                <field name="do_pack"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Transfer packs">
+                        <field name="pack_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="package_id" required="1"/>
+                                <field name="src_location_id" readonly="0"/>
+                                <field name="dest_location_id"/>
+                                <field name="do_pack"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <button string="Transfer" name="do_manual_transfer" type="object" icon="gtk-ok"  class="oe_highlight"/>
+                    <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Manual Transfer"
+            res_model="manual.transfer.wzd"
+            view_id="manual_transfer_wzd_view_form"
+            view_mode="form"
+            target="new"
+            id="action_manual_transfer_wzd"/>
+
+        <menuitem id="manual_transfer_wzd_menu" name="Manual Transfer Wizard" string="Manual Transfer Wizard"
+            action="action_manual_transfer_wzd" parent="stock.menu_stock_configuration"/>
+
+    </data>
+</openerp>
