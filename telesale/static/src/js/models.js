@@ -373,30 +373,30 @@ function openerp_ts_models(instance, module){
         },
         get_calls_by_date_state: function(date, state){
             var self=this;
-            debugger;
-            if (date || state){
-                var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"],['partner_id', '!=', false]]
-                if (state){
-                    if (state != "any")
-                        domain.push(['state','=',state])
-                }
-                // console.log('domain', domain);
-                var context = new instance.web.CompoundContext()
-                self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration'],domain,context)
-                .then(function(calls){
-                    if (!$.isEmptyObject(calls)){
-                        
-                        for (key in calls){
-                            calls[key].date = self.parse_utc_to_str_date(calls[key].date); //set dates in browser timezone
-                            calls[key].duration = self.parse_duration_watch_format(calls[key].duration); //set dates in browser timezone
-                            calls[key].partner_phone = self.db.get_partner_contact(calls[key].partner_id[0]).phone|| "-" //set phone of contact
-                            calls[key].contact_name = self.db.get_partner_contact(calls[key].partner_id[0]).name //add contact name to phone
-                        }
-                        // console.log("EEEEEEEEEEEE CAAAAAAAAAAAAAAAAAALLLS ", calls)
-                    }
-                    self.get('calls').reset(calls);
-                });
+            if (!state){state = $('#state-select').val()}
+            if (!date){date = $('#date-call-search').val()}        
+            var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"],['partner_id', '!=', false]]
+            if (state){
+                if (state != "any")
+                    domain.push(['state','=',state])
             }
+            // console.log('domain', domain);
+            var context = new instance.web.CompoundContext()
+            self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration'],domain,context)
+            .then(function(calls){
+                if (!$.isEmptyObject(calls)){
+                    
+                    for (key in calls){
+                        calls[key].date = self.parse_utc_to_str_date(calls[key].date); //set dates in browser timezone
+                        calls[key].duration = self.parse_duration_watch_format(calls[key].duration); //set dates in browser timezone
+                        calls[key].partner_phone = self.db.get_partner_contact(calls[key].partner_id[0]).phone|| "-" //set phone of contact
+                        calls[key].contact_name = self.db.get_partner_contact(calls[key].partner_id[0]).name //add contact name to phone
+                    }
+                    // console.log("EEEEEEEEEEEE CAAAAAAAAAAAAAAAAAALLLS ", calls)
+                }
+                self.get('calls').reset(calls);
+            });
+
         },
         getCurrentFullDateStr: function() {
             var date = new Date();

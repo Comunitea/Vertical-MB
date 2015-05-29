@@ -77,49 +77,58 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
                     }
 
                 })
-                // sACUERDATEEEEEEEEEEEEEEEE
         },
         finish_call_pop: function(){
             var call_line=this
             this.ts_widget.screen_selector.show_popup('finish_call_popup', call_line);
         },
-        _get_call_reset_code: function(value){
+/*        _get_call_reset_code: function(value){
             result_code = false
             switch(value){
-                case "Sale done":
+                case "Venta realizada":
                     result_code = "sale_done";
                     break;
-                case "Not responding":
+                case "No responde":
                     result_code = "not_responding";
                     break;
-                case "Comunicate":
+                case "Comunica":
                     result_code = "comunicate";
                     break;
-                case "Call other moment":
+                case "LLamar en otro momento":
                     result_code = "call_other_moment";
                     break;
-                case "Call without order":
+                case "LLamada sin pedido":
                     result_code = "call_no_order";
                     break;
-                case "Call not done":
+                case "LLamada no realizada":
                     result_code = "call_no_done";
                     break;
             }
             return result_code
-        },
+        },*/
         finish_call: function(result_call){
             var self=this;
             var call_id =Number(this.call.id);
-            result_code = self._get_call_reset_code(result_call)
-            // console.log("CALL ID: ", call_id);
-            //obtenr fin y guardarlo psrs obtener duracción
-            var model = new instance.web.Model("crm.phonecall");
-             model.call("write",[[call_id], {'result': result_code}],{context:new instance.web.CompoundContext()}).then(function(result){
-                self.ts_model.set('call_id', false);
-                // self.call.state = 'done';
-                self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr());
-                self.ts_widget.call_list_screen.call_list_widget.renderElement();
-            });
+            /*result_code = self._get_call_reset_code(result_call)*/
+            result_code = result_call
+            if (result_code){
+                // console.log("CALL ID: ", call_id);
+                //obtenr fin y guardarlo psrs obtener duracción
+                var model = new instance.web.Model("crm.phonecall");
+                 model.call("write",[[call_id], {'result': result_code}],{context:new instance.web.CompoundContext()}).then(function(result){
+                    self.ts_model.set('call_id', false);
+                    // self.call.state = 'done';
+                    var state = $('#state-select').val()
+                    //var date = self.ts_model.getCurrentDateStr()
+                    var date = $('#date-call-search').val()
+                    self.ts_model.get_calls_by_date_state(date, state);
+                    self.ts_widget.call_list_screen.call_list_widget.renderElement();
+                    self.ts_widget.screen_selector.close_popup('add_call_popup');
+                });
+            }
+            else{
+                alert(_t("Not found a result code for result call of '" + result_call + "'"));
+            }
         },
     });
 
@@ -234,9 +243,9 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
         show: function(call_line){
             var self = this;
             this._super();
-
-            result = this.$('#result_call').val() // Get result call
+            
              this.$('#finish-call').off('click').click(function(){
+                result = self.$('#result_call').val() // Get result call
                 call_line.finish_call(result)
             })
             this.$('#close-finish-call-popup').off('click').click(function(){

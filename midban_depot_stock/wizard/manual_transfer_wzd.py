@@ -129,6 +129,7 @@ class transfer_lines(models.TransientModel):
     quantity = fields.Float('Quantity',
                             digits=dp.get_precision('Product Unit of Measure'),
                             default=1.0)
+    lot_id = fields.Many2one('stock.production.lot', 'Lot')
     src_location_id = fields.Many2one('stock.location', 'From location',
                                       required=True)
     dest_location_id = fields.Many2one('stock.location', 'To location',
@@ -141,6 +142,7 @@ class transfer_lines(models.TransientModel):
     def onchange_package_id(self):
         """ Get source location related with pack"""
         self.src_location_id = self.package_id.location_id.id
+        self.lot_id = self.package_id.packed_lot_id.id
 
     @api.multi
     def get_quants_line(self, forced_quants_list=False):
@@ -167,6 +169,8 @@ class transfer_lines(models.TransientModel):
                       ('location_id', '=', line.src_location_id.id),
                       ('qty', '>', 0.0),
                       ('package_id', '=', line.package_id.id)]
+            if line.lot_id:
+                domain.append(('lot_id', '=', line.lot_id.id))
             quants_objs = t_quant.search(domain)
             assigned_qty = 0
             for quant in quants_objs:
@@ -224,7 +228,7 @@ class transfer_lines(models.TransientModel):
             'product_uom_id': product and product.uom_id.id or False,
             'product_qty': qty,
             'package_id': line.package_id.id,
-            'lot_id': line.package_id.packed_lot_id.id,  # No multiproduct
+            'lot_id': line.lot_id.id,  # No multiproduct
             'location_id': line.src_location_id.id,
             'location_dest_id': line.dest_location_id.id,
             'result_package_id': result_pack_id,

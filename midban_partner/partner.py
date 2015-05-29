@@ -199,7 +199,7 @@ class res_partner(osv.Model):
         if not context:
             context = {}
         partner_id = super(res_partner, self).create(cr, uid, vals, context)
-        if vals.get('parent_id', False):
+        if not vals.get('is_company', False):
             workflow.trg_validate(uid, 'res.partner', partner_id,
                                   'logic_validated', cr)
             workflow.trg_validate(uid, 'res.partner', partner_id,
@@ -274,7 +274,7 @@ class res_partner(osv.Model):
         """ Fix state in registered, partner active,
             update history. It's a flow method"""
         for partner in self.pool.get("res.partner").browse(cr, uid, ids):
-            if partner.customer and not partner.vat:
+            if partner.customer and partner.is_company and not partner.vat:
                 raise exceptions.Warning(
                     _('Partner error'),
                     _('Cannot activate a customer without vat'))

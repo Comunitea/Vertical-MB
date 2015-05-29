@@ -112,13 +112,22 @@ class stock_picking(osv.osv):
         self.write({'midban_operations': False})
 
     @api.one
-    def approve_pack_operations2(self):
+    def approve_pack_operations2(self, task_id):
+        """
+        It is only called by the finish_partial_task
+        Approve only operations checked as to process and of a same task.
+        Other operations will be copied to the new picking when do the partial
+        transfer. If operations were checked to not process, then we don't
+        assign the new operation to any task, if the operations were assigned
+        to a task then we assign the task in the copied operation
+        """
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
         transfer_obj = t_transfer.create({'picking_id': self.id})
         pending_ops_vals = []
+        something_done = False
         for op in self.pack_operation_ids:
-            if op.to_process:
+            if op.to_process and op.task_id and op.task_id.id == task_id:
                 item = {
                     'packop_id': op.id,
                     'product_id': op.product_id.id,
@@ -134,7 +143,12 @@ class stock_picking(osv.osv):
                     'transfer_id': transfer_obj.id,
                 }
                 t_item.create(item)
+                something_done = True
             else:
+                assigned_task_id = False  # If marked to not do deassign it
+                if op.to_process and op.task_id:  # Conservate the task
+                    assigned_task_id = op.task_id.id
+
                 new_ops_vals = {
                     'product_id': op.product_id.id,
                     'product_uom_id': op.product_uom_id.id,
@@ -145,15 +159,21 @@ class stock_picking(osv.osv):
                     'location_dest_id': op.location_dest_id.id,
                     'result_package_id': op.result_package_id.id,
                     'owner_id': op.owner_id.id,
+                    'task_id': assigned_task_id,
 
                 }
                 pending_ops_vals.append(new_ops_vals)
-        transfer_obj.do_detailed_transfer()
-        new_pick_obj = self.search([('backorder_id', '=', self.id)])
-        if new_pick_obj and pending_ops_vals:
-            for vals in pending_ops_vals:
-                vals['picking_id'] = new_pick_obj.id
-                new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
+
+        if something_done:
+            transfer_obj.do_detailed_transfer()
+            new_pick_obj = self.search([('backorder_id', '=', self.id)])
+            if new_pick_obj and pending_ops_vals:
+                for vals in pending_ops_vals:
+                    vals['picking_id'] = new_pick_obj.id
+                    new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
+        else:
+            for op in self.pack_operation_ids:
+                op.task_id = False  # Write to be able to assign later
         return
 
 
@@ -897,7 +917,6 @@ class stock_location(osv.Model):
         if context is None:
             context = {}
         quant_t = self.pool.get("stock.quant")
-        # import ipdb; ipdb.set_trace()
         if context.get('search_product_id', False):
             args = []
             product_id = context['search_product_id']
@@ -920,7 +939,6 @@ class stock_location(osv.Model):
         """
         Redefine the search to search by company name.
         """
-        # import ipdb; ipdb.set_trace()
         if context.get('search_product_id', False):
             loc_ids = self.search(cr, uid, args, context=context)
             args = [('id', 'in', loc_ids)]
@@ -1118,7 +1136,6 @@ class stock_quant(osv.osv):
         If force_quants_location in context wy try to get quants only of
         location
         """
-        # import ipdb; ipdb.set_trace()
         t_location = self.pool.get('stock.location')
 
         # When quants already assigned we use the super no midban depot fefo

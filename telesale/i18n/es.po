@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-15 10:10+0000\n"
-"PO-Revision-Date: 2015-05-15 10:10+0000\n"
+"POT-Creation-Date: 2015-05-28 14:59+0000\n"
+"PO-Revision-Date: 2015-05-28 14:59+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -117,6 +117,13 @@ msgstr "Añadir"
 #, python-format
 msgid "Add Lines"
 msgstr "Añadir lineas"
+
+#. module: telesale
+#. openerp-web
+#: code:addons/telesale/static/src/xml/call_list_template.xml:22
+#, python-format
+msgid "Any"
+msgstr "Cualquiera"
 
 #. module: telesale
 #. openerp-web
@@ -270,6 +277,13 @@ msgid "Canceled"
 msgstr "Cancelado"
 
 #. module: telesale
+#. openerp-web
+#: code:addons/telesale/static/src/xml/call_list_template.xml:21
+#, python-format
+msgid "Cancelled"
+msgstr "Cancelada"
+
+#. module: telesale
 #: field:sale.order,chanel:0
 msgid "Chanel"
 msgstr "Canal de venta"
@@ -328,10 +342,10 @@ msgstr "Error de combinación!"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/call_widgets.js:200
+#: code:addons/telesale/static/src/js/call_widgets.js:208
 #, python-format
 msgid "Coment is a mandatory field"
-msgstr "Comentario es un campo obligatorio"
+msgstr "El comentario es un campo obligatorio"
 
 #. module: telesale
 #. openerp-web
@@ -488,7 +502,7 @@ msgstr "El cliente no tiene asignada ninguna ruta de reparto"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/call_widgets.js:196
+#: code:addons/telesale/static/src/js/call_widgets.js:204
 #: code:addons/telesale/static/src/js/new_order_widgets.js:130
 #, python-format
 msgid "Customer name '' does not exist"
@@ -565,7 +579,7 @@ msgstr "Fecha Factura:"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/call_widgets.js:192
+#: code:addons/telesale/static/src/js/call_widgets.js:200
 #, python-format
 msgid "Date is empty. Please select one."
 msgstr "Fecha vacía, por favor seleccione una."
@@ -590,7 +604,7 @@ msgstr "Detalle"
 #: code:addons/telesale/static/src/xml/new_order_template.xml:169
 #, python-format
 msgid "Disc."
-msgstr "Desc."
+msgstr "Disc."
 
 #. module: telesale
 #. openerp-web
@@ -630,13 +644,14 @@ msgstr "¿Desea eliminar este pedido?"
 
 #. module: telesale
 #. openerp-web
+#: code:addons/telesale/static/src/xml/call_list_template.xml:20
 #: code:addons/telesale/static/src/xml/new_order_template.xml:151
 #: code:addons/telesale/static/src/xml/order_history_template.xml:101
 #: code:addons/telesale/static/src/xml/product_reserved_template.xml:89
 #: code:addons/telesale/static/src/xml/summary_order_template.xml:100
 #, python-format
 msgid "Done"
-msgstr "Realizado"
+msgstr "Realizada"
 
 #. module: telesale
 #. openerp-web
@@ -672,14 +687,6 @@ msgstr "E-commerce"
 #: selection:sale.order,chanel:0
 msgid "ERP"
 msgstr "ERP"
-
-#. module: telesale
-#. openerp-web
-#: code:addons/telesale/static/src/xml/call_list_template.xml:49
-#: code:addons/telesale/static/src/xml/call_list_template.xml:104
-#, python-format
-msgid "Edit"
-msgstr "Editar"
 
 #. module: telesale
 #: code:addons/telesale/sale.py:102
@@ -799,7 +806,7 @@ msgstr "Última Cantidad"
 #. module: telesale
 #: field:ts.session.opening,write_uid:0
 msgid "Last Updated by"
-msgstr "ültima actualización por"
+msgstr "Última actualización por"
 
 #. module: telesale
 #: field:ts.session.opening,write_date:0
@@ -838,7 +845,7 @@ msgstr "Margen (%):"
 #. module: telesale
 #: field:sale.order,total_margin_per:0
 msgid "Margin Percentage"
-msgstr "Porcentaje margen"
+msgstr "Porcentage margen"
 
 #. module: telesale
 #. openerp-web
@@ -939,6 +946,13 @@ msgstr "No hay suficiente cantidad reservada"
 
 #. module: telesale
 #. openerp-web
+#: code:addons/telesale/static/src/js/call_widgets.js:129
+#, python-format
+msgid "Not found a result code for result call of ''"
+msgstr "No se encotró codigo interno para el resultado de la llmada de ''"
+
+#. module: telesale
+#. openerp-web
 #: code:addons/telesale/static/src/xml/call_list_template.xml:170
 #, python-format
 msgid "Not responding"
@@ -1001,7 +1015,7 @@ msgstr "Las lineas de pedido no pueden estar vacías."
 #: code:addons/telesale/static/src/xml/product_reserved_template.xml:119
 #, python-format
 msgid "Ordered Qty:"
-msgstr "Cant Pedida:"
+msgstr "Cnt pedida:"
 
 #. module: telesale
 #: selection:sale.order,chanel:0
@@ -1041,6 +1055,7 @@ msgstr "El cliente no puede estar vacio."
 
 #. module: telesale
 #. openerp-web
+#: code:addons/telesale/static/src/xml/call_list_template.xml:19
 #: code:addons/telesale/static/src/xml/call_list_template.xml:86
 #, python-format
 msgid "Pending"
@@ -1051,7 +1066,7 @@ msgstr "Pendiente"
 #: code:addons/telesale/static/src/xml/product_reserved_template.xml:41
 #, python-format
 msgid "Pending Qty"
-msgstr "Cnt Pendiente"
+msgstr "Cnt pendiente"
 
 #. module: telesale
 #. openerp-web
@@ -1177,7 +1192,7 @@ msgstr "Cantidad"
 #: code:addons/telesale/static/src/xml/product_reserved_template.xml:39
 #, python-format
 msgid "Quantity"
-msgstr "Quantity"
+msgstr "Cantidad"
 
 #. module: telesale
 #. openerp-web
@@ -1625,28 +1640,28 @@ msgstr "No se puede realizar una llamada con un estado diferente de confirmado"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/new_order_widgets.js:824
+#: code:addons/telesale/static/src/js/new_order_widgets.js:823
 #, python-format
 msgid "You cant cancel an order which state is diferent than draft."
 msgstr "No puedes cancelar un pedido cuyo estado es diferente de borrador."
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/new_order_widgets.js:811
+#: code:addons/telesale/static/src/js/new_order_widgets.js:810
 #, python-format
 msgid "You cant confirm an order which state is diferent than draft."
 msgstr "No puedes confirmar un pedido con un estado diferente de borrador."
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/new_order_widgets.js:814
+#: code:addons/telesale/static/src/js/new_order_widgets.js:813
 #, python-format
 msgid "You cant confirm this order because you are exceeding customer limit credit. Please save as draft"
 msgstr "No se puede confirmar el pedido porque se está excediendo el límite de crédito. Por favor guardalo como borrador"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/new_order_widgets.js:834
+#: code:addons/telesale/static/src/js/new_order_widgets.js:833
 #, python-format
 msgid "You cant save as draft an order which state is diferent than draft."
 msgstr "No puedes guardar como borrador un pedido cuyo estado es diferente de borrador."
@@ -1688,27 +1703,6 @@ msgstr "Añadir"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/xml/call_list_template.xml:22
-#, python-format
-msgid "any"
-msgstr "Cualquiera"
-
-#. module: telesale
-#. openerp-web
-#: code:addons/telesale/static/src/xml/call_list_template.xml:21
-#, python-format
-msgid "cancel"
-msgstr "Cancelar"
-
-#. module: telesale
-#. openerp-web
-#: code:addons/telesale/static/src/xml/call_list_template.xml:20
-#, python-format
-msgid "done"
-msgstr "Realizado"
-
-#. module: telesale
-#. openerp-web
 #: code:addons/telesale/static/src/xml/product_reserved_template.xml:98
 #, python-format
 msgid "from reserve"
@@ -1720,13 +1714,6 @@ msgstr "Desde reserva"
 #, python-format
 msgid "from sale"
 msgstr "Desde venta"
-
-#. module: telesale
-#. openerp-web
-#: code:addons/telesale/static/src/xml/call_list_template.xml:19
-#, python-format
-msgid "open"
-msgstr "Confirmada"
 
 #. module: telesale
 #: code:addons/telesale/telesale.py:85
