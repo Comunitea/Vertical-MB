@@ -211,7 +211,7 @@ class assign_task_wzd(osv.TransientModel):
         if not on_course_tasks:
             raise osv.except_osv(_('Error!'), _("Imposible to cancel the task\
                                                 You haven't a task assigned."))
-        t_task.finish_task(cr, uid, on_course_tasks, context=context)
+        t_task.finish_partial_task(cr, uid, on_course_tasks, context=context)
 
     def reprint_task(self, cr, uid, ids, context=None):
         if context is None:
@@ -247,6 +247,7 @@ class assign_task_wzd(osv.TransientModel):
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
+        t_op = self.pool.get('stock.pack.operation')
 
         # Check if operator has a task on course
         machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
@@ -266,21 +267,37 @@ class assign_task_wzd(osv.TransientModel):
                                                  You must define the picking\
                                                  type in the warehouse.'))
         location_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
-        pick_id = t_pick.search(cr, uid, [('state', '=', 'assigned'),
-                                          ('picking_type_id',
-                                           '=',
-                                           location_task_type_id),
-                                          ('operator_id', '=',
-                                           False)],
-                                limit=1, order="id asc",
-                                context=context)
-        if not pick_id:
+        # Search withid desc because of complete the partial picking picks
+        # first.
+        pick_ids = t_pick.search(cr, uid, [('state', '=', 'assigned'),
+                                           ('picking_type_id',
+                                            '=',
+                                            location_task_type_id)],
+                                 order="id desc", context=context)
+        if not pick_ids:
             raise osv.except_osv(_('Error!'), _('No internal pickings to\
                                                  schedule'))
-        pick = t_pick.browse(cr, uid, pick_id[0], context)
-        if not pick.pack_operation_ids:
-            raise osv.except_osv(_('Error!'), _('No internal pickings to\
-                                                 schedule'))
+        camera_ids = [x.id for x in wzd_obj.location_ids]
+        if not camera_ids and wzd_obj.mandatory_camera:
+            raise osv.except_osv(_('Error!'),
+                                 _('No cameras defined. It is configured \
+                                    to get locations operations by camera\
+                                    mandatorily'))
+        max_ops = wzd_obj.max_loc_ops
+        # if not max_ops:
+        #     max_ops = 1 # ????
+        op_ids = []
+        pick = False  # The pick selected for operations
+        for pick_id in pick_ids:  # Search operations of one UNIQUE picking
+            domain = [
+                ('picking_id', '=', pick_id),
+                ('task_id', '=', False),
+            ]
+            op_ids = t_op.search(cr, uid, domain, limit=max_ops)
+            if op_ids:
+                pick = t_pick.browse(cr, uid, pick_id, context=context)
+                break
+
         vals = {
             'user_id': wzd_obj.operator_id.id,
             'type': 'ubication',
@@ -289,34 +306,22 @@ class assign_task_wzd(osv.TransientModel):
             'machine_id': machine_id
         }
         task_id = t_task.create(cr, uid, vals, context=context)
-        max_ops = wzd_obj.max_loc_ops
-        num_ops = len(pick.pack_operation_ids)
-        if not max_ops:
-            max_ops = num_ops
-        assigned = 0
-        camera_ids = [x.id for x in wzd_obj.location_ids]
-        if not camera_ids and wzd_obj.mandatory_camera:
-            raise osv.except_osv(_('Error!'),
-                                 _('No cameras defined. It is configured \
-                                    to get locations operations by camera\
-                                    mandatorily'))
-        assigned_ops = []
-        for op in pick.pack_operation_ids:
-            if assigned < max_ops and not op.task_id:
-                if wzd_obj.location_ids:
-                    camera_id = op.location_dest_id.get_camera()
-                    if not camera_id:
-                        raise osv.except_osv(_('Error!'),
-                                             _('Some operation of picking %s\
-                                                have no a scheduled location\
-                                                child of any \
-                                                camera' % pick.name))
-                    if not (camera_id in camera_ids):
-                        continue
 
-                op.write({'task_id': task_id})
-                assigned_ops.append(op)
-                assigned += 1
+        assigned_ops = []
+        for op in t_op.browse(cr, uid, op_ids, context=context):
+            if wzd_obj.location_ids:
+                camera_id = op.location_dest_id.get_camera()
+                if not camera_id:
+                    raise osv.except_osv(_('Error!'),
+                                         _('Some operation of picking %s\
+                                            have no a scheduled location\
+                                            child of any \
+                                            camera' % pick.name))
+                if not (camera_id in camera_ids):
+                    continue
+
+            op.write({'task_id': task_id})
+            assigned_ops.append(op)
         if not assigned_ops:
             raise osv.except_osv(_('Error!'),
                                  _('Not found operations of the selected\

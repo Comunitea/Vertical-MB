@@ -113,6 +113,14 @@ class stock_picking(osv.osv):
 
     @api.one
     def approve_pack_operations2(self, task_id):
+        """
+        It is only called by the finish_partial_task
+        Approve only operations checked as to process and of a same task.
+        Other operations will be copied to the new picking when do the partial
+        transfer. If operations were checked to not process, then we don't
+        assign the new operation to any task, if the operations were assigned
+        to a task then we assign the task in the copied operation
+        """
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
         transfer_obj = t_transfer.create({'picking_id': self.id})
@@ -137,6 +145,10 @@ class stock_picking(osv.osv):
                 t_item.create(item)
                 something_done = True
             else:
+                assigned_task_id = False  # If marked to not do deassign it
+                if op.to_process and op.task_id:  # Conservate the task
+                    assigned_task_id = op.task_id.id
+
                 new_ops_vals = {
                     'product_id': op.product_id.id,
                     'product_uom_id': op.product_uom_id.id,
@@ -147,7 +159,7 @@ class stock_picking(osv.osv):
                     'location_dest_id': op.location_dest_id.id,
                     'result_package_id': op.result_package_id.id,
                     'owner_id': op.owner_id.id,
-                    'task_id': op.task_id.id,
+                    'task_id': assigned_task_id,
 
                 }
                 pending_ops_vals.append(new_ops_vals)
