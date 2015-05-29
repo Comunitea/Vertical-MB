@@ -9,6 +9,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Manual transfer stock wizard">
+                    <p>
+                        In the first part you can Transfer productos from packs, or products without pack<br/>
+                        If no pack defined to put away he product, the wizard will only search stock for products without package.<br/>
+                        You can put the selected units in a new pack of type box or palet if you want to calc
+                        the volume moved correctly.<br/>
+                        In the second part you can move entire packs between locations.<br/>
+                        The wizard will create an internal picking with all to move.
+                    </p>
                     <group string="Transfer products">
                         <field name="prod_line_ids" nolabel="1">
                             <tree editable="bottom">

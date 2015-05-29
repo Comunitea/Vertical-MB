@@ -160,6 +160,7 @@ class stock_picking(osv.osv):
                     'result_package_id': op.result_package_id.id,
                     'owner_id': op.owner_id.id,
                     'task_id': assigned_task_id,
+                    'to_process': True
 
                 }
                 pending_ops_vals.append(new_ops_vals)
@@ -174,6 +175,7 @@ class stock_picking(osv.osv):
         else:
             for op in self.pack_operation_ids:
                 op.task_id = False  # Write to be able to assign later
+                op.to_process = True  # Write to be to process by default
         return
 
 

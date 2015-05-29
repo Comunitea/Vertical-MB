@@ -395,13 +395,13 @@ class assign_task_wzd(osv.TransientModel):
             'machine_id': machine_id
         }
         task_id = t_task.create(cr, uid, vals, context=context)
-        vals = {
-            'operator_id': wzd_obj.operator_id.id,
-            'machine_id': machine_id,
-            'warehouse_id': wzd_obj.warehouse_id.id,
-            'task_type': 'reposition'
-        }
-        t_pick.write(cr, uid, pick_ids, vals, context=context)
+        # vals = {
+        #     'operator_id': wzd_obj.operator_id.id,
+        #     'machine_id': machine_id,
+        #     'warehouse_id': wzd_obj.warehouse_id.id,
+        #     'task_type': 'reposition'
+        # }
+        # t_pick.write(cr, uid, pick_ids, vals, context=context)
         domain = [('picking_id', 'in', pick_ids), ('task_id', '=', False)]
         ops_ids = t_ops.search(cr, uid, domain, order="picking_id asc",
                                context=context)
