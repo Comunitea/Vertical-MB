@@ -21,8 +21,24 @@
                 <form string="Logger config">
                     <sheet>
                         <group>
-                        <field name="name"/>
-                        <field name="watch_fields" domain="[('model_id', '=', name)]"/>
+                            <field name="name"/>
+                            <field name="watch_fields">
+                                <tree>
+                                    <field name="log_field"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="log_field" domain="[('model_id', '=', parent.name)]"/>
+                                            <field name="field_type" invisible="1"/>
+                                            <field name="relation_name" invisible="1"/>
+                                            <field name="use_field" domain="[('model_id.model', '=', relation_name)]"
+                                                   attrs="{'invisible': [('field_type', 'not in', ('many2one', 'one2many', 'many2many'))],
+                                                           'required': [('field_type', 'in', ('many2one', 'one2many', 'many2many'))]}"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
                         </group>
                     </sheet>
                 </form>

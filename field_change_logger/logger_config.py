@@ -19,7 +19,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api, exceptions, _
-
+from openerp.addons.base.ir import ir_model
 
 if 'old_write' not in dir(models.BaseModel):
     models.BaseModel.old_write = models.BaseModel.write
@@ -36,52 +36,71 @@ def write(self, vals):
     if field_logger:
         changes = _("Changed fields:")
         watch_fields = {}
-        for field in field_logger.watch_fields:
+        for watch_field in field_logger.watch_fields:
             """
                 Se busca la traduccion manualmente porque utilizando _() no
                 funciona correctamente
             """
+            field = watch_field.log_field
             translation = self.env['ir.translation'].search(
                 [('src', '=', field.field_description),
                  ('lang', '=', self.env.context.get('lang', 'en_US'))])
             watch_fields[field.name] = (translation and translation[0].value or
                                         field.field_description, field.ttype,
-                                        field.relation)
+                                        field.relation,
+                                        watch_field.use_field.name)
         for field in vals.keys():
             if field in watch_fields.keys():
+                model = watch_fields[field][2]
+                show_field = watch_fields[field][3]
                 if watch_fields[field][1] == 'one2many' or \
                         watch_fields[field][1] == 'many2many':
                     change_list = [_('<br/>Field %s changed:') %
                                    _(watch_fields[field][0])]
                     for record in vals[field]:
                         if record[0] == 0:
-                            if 'name' in record[2].keys():
+                            if show_field in record[2].keys():
                                 change_list.append(_('Added %s') %
-                                                   record[2]['name'])
+                                                   record[2][show_field])
                         elif record[0] == 1:
                             pass
                         elif record[0] in (2, 3, 4):
-                            recordset = self.env[watch_fields[field][2]].browse(record[1])
+                            recordset = self.env[model].browse(record[1])
                             if record[0] == 4:
                                 change_list.append(_('Added %s') %
-                                                   recordset.name)
+                                                   recordset[show_field])
                             else:
                                 change_list.append(_('Removed %s') %
-                                                   recordset.name)
+                                                   recordset[show_field])
                         elif record[0] == 5:
                             chage_list.append('Removed all')
                         elif record[0] == 6:
                             for record_id in record[2]:
                                 if record_id not in self[field]._ids:
-                                    recordset = self.env[watch_fields[field][2]].browse(record_id)
+                                    recordset = self.env[model].browse(
+                                        record_id)
                                     change_list.append(_('Added %s') %
-                                                       recordset.name)
+                                                       recordset[show_field])
                             for record_id in self[field]._ids:
                                 if record_id not in record[2]:
-                                    recordset = self.env[watch_fields[field][2]].browse(record_id)
+                                    recordset = self.env[model].browse(
+                                        record_id)
                                     change_list.append(_('Removed %s') %
-                                                       recordset.name)
+                                                       recordset[show_field])
                     changes += '<br/>'.join(change_list)
+                elif watch_fields[field][1] == 'many2one':
+                    if not vals[field]:
+                        changes += _("<br/>Field %s removed: %s") % \
+                            (watch_fields[field][0], self[field][show_field])
+                    elif not self[field]:
+                        new_obj = self.env[model].browse(vals[field])
+                        changes += _("<br/>Field %s added: %s") % \
+                            (watch_fields[field][0], new_obj[show_field])
+                    elif vals[field] != self[field].id:
+                        new_obj = self.env[model].browse(vals[field])
+                        changes += _("<br/>Field %s changed: %s -> %s") % \
+                            (watch_fields[field][0], self[field][show_field],
+                             new_obj[show_field])
                 else:
                     if vals[field] != self[field]:
                         changes += _("<br/>Field %s changed: %s -> %s") % \
@@ -100,12 +119,8 @@ class logger_config(models.Model):
     _name = 'logger.config'
 
     name = fields.Many2one('ir.model', 'Model')
-    watch_fields = fields.Many2many(
-        'ir.model.fields',
-        'logger_model_fields_rel',
-        'logger_id',
-        'field_id',
-        'Watch fields')
+    watch_fields = fields.One2many('logger.config.field', 'logger',
+                                   'Watch fields')
 
     @api.model
     def create(self, vals):
@@ -132,3 +147,16 @@ class logger_config(models.Model):
                                          _('The model %s not have messaging')
                                          % model.name)
         return super(logger_config, self).write(vals)
+
+
+class loggerConfigField(models.Model):
+
+    _name = 'logger.config.field'
+
+    log_field = fields.Many2one('ir.model.fields', 'Field', required=True)
+    field_type = fields.Selection(ir_model._get_fields_type, 'Field type',
+                                  related='log_field.ttype', readonly=True)
+    relation_name = fields.Char('Relation', related='log_field.relation',
+                                readonly=True)
+    use_field = fields.Many2one('ir.model.fields', 'Show field')
+    logger = fields.Many2one('logger.config', 'Logger')

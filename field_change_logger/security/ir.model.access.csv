@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_logger_config,access_logger_config,model_logger_config,base.group_user,1,1,1,1
+access_logger_config_field,access_logger_config_field,model_logger_config_field,base.group_user,1,1,1,1

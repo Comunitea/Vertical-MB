@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-11 08:47+0000\n"
-"PO-Revision-Date: 2015-05-11 08:47+0000\n"
+"POT-Creation-Date: 2015-06-01 14:16+0000\n"
+"PO-Revision-Date: 2015-06-01 14:16+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,27 +16,41 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:40
+#: code:addons/field_change_logger/logger_config.py:97
+#, python-format
+msgid "<br/>Field %s added: %s"
+msgstr "<br/>Campo %s Añadido: %s"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:58
 #, python-format
 msgid "<br/>Field %s changed:"
 msgstr "<br/>Campo %s modificado:"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:71
+#: code:addons/field_change_logger/logger_config.py:101
+#: code:addons/field_change_logger/logger_config.py:106
 #, python-format
 msgid "<br/>Field %s changed: %s -> %s"
 msgstr "<br/>Campo %s modificado: %s -> %s"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:45
-#: code:addons/field_change_logger/logger_config.py:52
+#: code:addons/field_change_logger/logger_config.py:93
+#, python-format
+msgid "<br/>Field %s removed: %s"
+msgstr "<br/>Campo %s eliminado: %s"
+
+#. module: field_change_logger
 #: code:addons/field_change_logger/logger_config.py:63
+#: code:addons/field_change_logger/logger_config.py:70
+#: code:addons/field_change_logger/logger_config.py:82
 #, python-format
 msgid "Added %s"
 msgstr "Añadido %s"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:33
+#: code:addons/field_change_logger/logger_config.py:37
+#: code:addons/field_change_logger/logger_config.py:109
 #, python-format
 msgid "Changed fields:"
 msgstr "Campos modificados:"
@@ -48,13 +62,20 @@ msgstr "Config"
 
 #. module: field_change_logger
 #: field:logger.config,create_uid:0
+#: field:logger.config.field,create_uid:0
 msgid "Created by"
 msgstr "Created by"
 
 #. module: field_change_logger
 #: field:logger.config,create_date:0
+#: field:logger.config.field,create_date:0
 msgid "Created on"
 msgstr "Created on"
+
+#. module: field_change_logger
+#: field:logger.config.field,log_field:0
+msgid "Field"
+msgstr "Campo"
 
 #. module: field_change_logger
 #: model:ir.model,name:field_change_logger.model_ir_model_fields
@@ -63,21 +84,24 @@ msgstr "Campos"
 
 #. module: field_change_logger
 #: field:logger.config,id:0
+#: field:logger.config.field,id:0
 msgid "ID"
 msgstr "ID"
 
 #. module: field_change_logger
 #: field:logger.config,write_uid:0
+#: field:logger.config.field,write_uid:0
 msgid "Last Updated by"
 msgstr "Last Updated by"
 
 #. module: field_change_logger
 #: field:logger.config,write_date:0
+#: field:logger.config.field,write_date:0
 msgid "Last Updated on"
 msgstr "Last Updated on"
 
 #. module: field_change_logger
-#: field:ir.model.fields,logger_id:0
+#: field:logger.config.field,logger:0
 msgid "Logger"
 msgstr "Logger"
 
@@ -95,22 +119,27 @@ msgid "Model"
 msgstr "Modelo"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:119
-#: code:addons/field_change_logger/logger_config.py:130
+#: code:addons/field_change_logger/logger_config.py:133
+#: code:addons/field_change_logger/logger_config.py:146
 #, python-format
 msgid "Model error"
 msgstr "Error de modelo"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:55
-#: code:addons/field_change_logger/logger_config.py:67
+#: code:addons/field_change_logger/logger_config.py:73
+#: code:addons/field_change_logger/logger_config.py:88
 #, python-format
 msgid "Removed %s"
 msgstr "Eliminado %s"
 
 #. module: field_change_logger
-#: code:addons/field_change_logger/logger_config.py:119
-#: code:addons/field_change_logger/logger_config.py:130
+#: field:logger.config.field,use_field:0
+msgid "Show field"
+msgstr "Campo a mostrar"
+
+#. module: field_change_logger
+#: code:addons/field_change_logger/logger_config.py:134
+#: code:addons/field_change_logger/logger_config.py:147
 #, python-format
 msgid "The model %s not have messaging"
 msgstr "El modelo %s no tiene mensajería"
