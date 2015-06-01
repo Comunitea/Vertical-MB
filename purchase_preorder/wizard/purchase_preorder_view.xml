@@ -106,12 +106,18 @@
             <field name="model">products.supplier</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Products Supplier">
+                <tree string="Products Supplier" editable="top">
+                    <button name="open_in_form" string="Show form" type="object" icon="terp-gtk-jump-to-ltr"/>
                     <field name="sequence" invisible="1"/>
                     <field name="incoming_qty" readonly="1"/>
                     <field name="date_delivery" readonly="1"/>
                     <field name="product_id" readonly="1"/>
-                    <field name="unitskg" string="Units Ordered" />
+                    <field name="price_purchase"/>
+                    <button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" />
+                    <field name="unitskg" string="Units Ordered" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg')"/>
+                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')"/>
+                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')"/>
+                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')"/>
                     <field name="min_fixed" readonly="1"/>
                     <field name="real_stock" readonly="1"/>
                     <field name="virtual_stock" readonly="1"/>
@@ -142,13 +148,12 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="integer" invisible="1" />
-                                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets', integer)" />
-                                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles', integer)" />
+                                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')" />
+                                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')" />
                                 </group>
                                 <group>
-                                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes', integer)" />
-                                    <field name="unitskg" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg',integer)" />
+                                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')" />
+                                    <field name="unitskg" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg'd)" />
                                 </group>
                             </group>
                         </group>

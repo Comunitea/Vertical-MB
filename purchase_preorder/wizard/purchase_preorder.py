@@ -643,7 +643,6 @@ class products_supplier(osv.Model):
         'nov_consu_last': fields.float('Nov Consu Last'),
         'dec_consu_cur': fields.float('Dec Consu Cur'),
         'dec_consu_last': fields.float('Dec Consu Last'),
-        'integer': fields.integer('Integer'),
         'min_qty': fields.function(_get_min_qty_supplier,
                                    type='float', string="Min quantity",
                                    multi="min_qty", readonly=True),
@@ -656,9 +655,6 @@ class products_supplier(osv.Model):
         'net_cost': fields.float('Net cost'),
         'net_net_cost': fields.float('Net net cost'),
     }
-    _defaults = {
-        'integer': 0
-    }
 
     def update_price(self, cr, uid, ids, context=None):
         prod_obj = self.pool.get('product.product')
@@ -669,56 +665,63 @@ class products_supplier(osv.Model):
         return True
 
     def onchange_uoms(self, cr, uid, ids, product_id, unitskg, boxes,
-                      mantles, palets, flag, integer):
+                      mantles, palets, flag):
         """
         Performs conversion through product configuration and fill
         units, boxes, mantles and pallets.
         """
-        # Due to bug # 1203343 we have to opt for this workaround to maintain
-        # the proper functioning of the onchange and not falling loop.
-        if integer == 0:
-            if not product_id:
-                return {'value': {'unitskg': 0.0,
-                                  'boxes': 0.0,
-                                  'mantles': 0.0,
-                                  'palets': 0.0}}
-            product = self.pool.get('product.product').browse(cr,
-                                                              uid,
-                                                              product_id)
-            un_ca = product.supplier_un_ca
-            ca_ma = product.supplier_ca_ma
-            ma_pa = product.supplier_ma_pa
-            box = 0.0
-            man = 0.0
-            pal = 0.0
-            uni = 0.0
-            if flag == 'unitskg':
-                uni = unitskg
-                box = un_ca and (uni / un_ca) or 0.0
-                man = ca_ma and (box / ca_ma) or 0.0
-                pal = ma_pa and (man / ma_pa) or 0.0
-            if flag == 'boxes':
-                box = boxes
-                uni = box * un_ca
-                man = ca_ma and (box / ca_ma) or 0.0
-                pal = ma_pa and (man / ma_pa) or 0.0
-            if flag == 'mantles':
-                man = mantles
-                box = man * ca_ma
-                uni = box * un_ca
-                pal = ma_pa and (man / ma_pa) or 0.0
-            if flag == 'palets':
-                pal = palets
-                man = pal * ma_pa
-                box = man * ca_ma
-                uni = box * un_ca
-            return {'value': {'unitskg': round(uni, 2),
-                              'boxes': round(box, 2),
-                              'mantles': round(man, 2),
-                              'palets': round(pal, 2),
-                              'integer': 1}}
-        elif integer == 3:
-            return {'value': {'integer': 0}}
-        else:
-            return {'value': {'integer': integer + 1}}
-        return {}
+        if not product_id:
+            return {'value': {'unitskg': 0.0,
+                              'boxes': 0.0,
+                              'mantles': 0.0,
+                              'palets': 0.0}}
+        product = self.pool.get('product.product').browse(cr,
+                                                          uid,
+                                                          product_id)
+        un_ca = product.supplier_un_ca
+        ca_ma = product.supplier_ca_ma
+        ma_pa = product.supplier_ma_pa
+        box = 0.0
+        man = 0.0
+        pal = 0.0
+        uni = 0.0
+        if flag == 'unitskg':
+            uni = unitskg
+            box = un_ca and (uni / un_ca) or 0.0
+            man = ca_ma and (box / ca_ma) or 0.0
+            pal = ma_pa and (man / ma_pa) or 0.0
+        if flag == 'boxes':
+            box = boxes
+            uni = box * un_ca
+            man = ca_ma and (box / ca_ma) or 0.0
+            pal = ma_pa and (man / ma_pa) or 0.0
+        if flag == 'mantles':
+            man = mantles
+            box = man * ca_ma
+            uni = box * un_ca
+            pal = ma_pa and (man / ma_pa) or 0.0
+        if flag == 'palets':
+            pal = palets
+            man = pal * ma_pa
+            box = man * ca_ma
+            uni = box * un_ca
+        return {'value': {'unitskg': round(uni, 2),
+                          'boxes': round(box, 2),
+                          'mantles': round(man, 2),
+                          'palets': round(pal, 2)}}
+
+    def open_in_form(self, cr, uid, ids, context=None):
+        view_ref = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'purchase_preorder', 'product_supplier_preorder_form')
+        view_id = view_ref and view_ref[1] or False,
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Products Supplier',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'view_id': view_id,
+            'res_model': 'products.supplier',
+            'nodestroy': True,
+            'res_id': ids[0], # assuming the many2one
+            'target':'new',
+            'context': context,
+        }
