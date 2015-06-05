@@ -202,7 +202,7 @@ class res_partner(osv.Model):
         res = [x[0] for x in res]
         return res
 
-    def search_products_to_sell(self, cr, uid, partner_id):
+    def search_products_to_sell(self, cr, uid, partner_id, context={}):
         """ Returns ids of products that can be sold for the customer"""
         partner_pool = self.pool.get("res.partner")
         product_pool = self.pool.get("product.product")
@@ -210,7 +210,8 @@ class res_partner(osv.Model):
         check_ids = self._get_parent_ids(cr, uid, partner_id)
         check_ids.append(partner_id)  # In order to check child node too
         partner_ids = partner_pool.search(cr, uid, [('id', 'in', check_ids),
-                                                    ('rule_ids', '!=', False)])
+                                                    ('rule_ids', '!=', False)],
+                                          context=context)
         rule_type = False
         if partner_ids:
             rule_type = self.browse(cr, uid, partner_ids[0]).rule_type

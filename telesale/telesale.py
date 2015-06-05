@@ -51,7 +51,8 @@ class res_partner(osv.Model):
                                         ('state2', '=', 'registered')])
         res = {}
         for part in self.browse(cr, uid, ids):
-            res[part.id] = self.search_products_to_sell(cr, uid, part.id)
+            res[part.id] = self.search_products_to_sell(cr, uid, part.id,
+                                                        context)
         return res
 
     _columns = {

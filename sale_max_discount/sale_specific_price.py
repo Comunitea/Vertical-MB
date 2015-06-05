@@ -29,8 +29,12 @@ class sale_specific_price(models.Model):
     @api.one
     @api.depends('customer_id', 'product_id', 'sale_line_id', 'pricelist_id')
     def _get_pricelist_price(self):
-        price = self.pricelist_id.price_get(self.product_id.product_variant_ids[0].id, 1.0, self.customer_id.id)
-        self.pricelist_price = price[self.pricelist_id.id]
+        if self.product_id and self.pricelist_id:
+            import ipdb; ipdb.set_trace()
+            price = self.pricelist_id.price_get(self.product_id.product_variant_ids[0].id, 1.0, self.customer_id.id)
+            self.pricelist_price = price[self.pricelist_id.id]
+        else:
+            self.pricelist_price = 0
 
     @api.one
     @api.depends('pricelist_price', 'discount')

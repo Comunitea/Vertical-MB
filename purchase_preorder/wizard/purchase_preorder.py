@@ -412,7 +412,9 @@ class purchase_preorder(osv.Model):
                                         [('preorder_id', '=', preorder),
                                          ('product_id', '=', product_id)])
                     if l:
-                        qtys = prodsupp.onchange_uoms(cr, uid, l[0], product_id, product_qty, 0, 0, 0, 'unitskg', 0)
+                        qtys = prodsupp.onchange_uoms(cr, uid, l[0],
+                                                      product_id, product_qty,
+                                                      0, 0, 0, 'unitskg', 0)
                         prodsupp.write(cr,
                                        uid,
                                        l[0],
@@ -711,7 +713,8 @@ class products_supplier(osv.Model):
                           'palets': round(pal, 2)}}
 
     def open_in_form(self, cr, uid, ids, context=None):
-        view_ref = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'purchase_preorder', 'product_supplier_preorder_form')
+        view_ref = self.pool.get('ir.model.data').get_object_reference(
+            cr, uid, 'purchase_preorder', 'product_supplier_preorder_form')
         view_id = view_ref and view_ref[1] or False,
         return {
             'type': 'ir.actions.act_window',
@@ -721,7 +724,7 @@ class products_supplier(osv.Model):
             'view_id': view_id,
             'res_model': 'products.supplier',
             'nodestroy': True,
-            'res_id': ids[0], # assuming the many2one
-            'target':'new',
+            'res_id': ids[0],  # assuming the many2one
+            'target': 'new',
             'context': context,
         }

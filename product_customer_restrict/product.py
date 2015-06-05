@@ -53,7 +53,8 @@ class product_template(osv.Model):
                 list_ids.extend(exclusive_ids)
                 list_ids = list(set(list_ids))
             else:  # Evaluate rules and exclusives
-                list_ids = part_pool.search_products_to_sell(cr, uid, part_id)
+                list_ids = part_pool.search_products_to_sell(cr, uid, part_id,
+                                                             context)
                 args.append(['id', 'in', list_ids])
         return super(product_template, self).search(cr, uid, args,
                                                     offset=offset,
@@ -76,7 +77,8 @@ class product_template(osv.Model):
             partner_ids = part_pool.search(cr, uid, [])
             for part in part_pool.browse(cr, uid, partner_ids):
                 partner_products = part_pool.search_products_to_sell(cr, uid,
-                                                                     part.id)
+                                                                     part.id,
+                                                                     context)
                 if product.id in partner_products:
                     res.append(part.id)
         return res
@@ -121,7 +123,8 @@ class product_product(osv.Model):
                 list_ids.extend(exclusive_ids)
                 list_ids = list(set(list_ids))
             else:  # Evaluate rules and exclusives
-                list_ids = part_pool.search_products_to_sell(cr, uid, part_id)
+                list_ids = part_pool.search_products_to_sell(cr, uid, part_id,
+                                                             context)
                 args.append(['id', 'in', list_ids])
         return super(product_product, self).search(cr, uid, args,
                                                    offset=offset,
