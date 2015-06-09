@@ -424,9 +424,8 @@ class stock_transfer_details_items(models.TransientModel):
             Cuando se modifica life date, el resto de fechas se establecen con
             life date - (product.life_time - product.campo_time)
         """
-        picking = self.env['stock.picking'].browse(
-            self.env.context.get('active_id', False))
-        if picking.picking_type_code != 'incoming':
+        picking = self and self[0].transfer_id.picking_id or False
+        if picking and picking.picking_type_code != 'incoming' or not picking:
             return super(stock_transfer_details_items, self).write(vals)
         reason = self.env['issue.reason'].search([('code', '=', 'reason22')])
         if not reason:
