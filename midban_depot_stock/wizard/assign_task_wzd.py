@@ -293,7 +293,7 @@ class assign_task_wzd(osv.TransientModel):
                 ('picking_id', '=', pick_id),
                 ('task_id', '=', False),
             ]
-            op_ids = t_op.search(cr, uid, domain, limit=max_ops)
+            op_ids = t_op.search(cr, uid, domain)
             if op_ids:
                 pick = t_pick.browse(cr, uid, pick_id, context=context)
                 break
@@ -309,6 +309,8 @@ class assign_task_wzd(osv.TransientModel):
 
         assigned_ops = []
         for op in t_op.browse(cr, uid, op_ids, context=context):
+            if len(assigned_ops) == max_ops:
+                break
             if wzd_obj.location_ids:
                 camera_id = op.location_dest_id.get_camera()
                 if not camera_id:

@@ -121,6 +121,7 @@ class stock_picking(osv.osv):
         assign the new operation to any task, if the operations were assigned
         to a task then we assign the task in the copied operation
         """
+        import ipdb; ipdb.set_trace()
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
         transfer_obj = t_transfer.create({'picking_id': self.id})
