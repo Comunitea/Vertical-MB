@@ -113,7 +113,7 @@
                     <field name="date_delivery" readonly="1"/>
                     <field name="product_id" readonly="1"/>
                     <field name="price_purchase"/>
-                    <button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" />
+                    <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
                     <field name="unitskg" string="Units Ordered" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg')"/>
                     <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')"/>
                     <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')"/>
