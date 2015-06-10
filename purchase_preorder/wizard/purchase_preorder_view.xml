@@ -141,19 +141,19 @@
                             <group>
                                 <div class="oe_inline">
                                     <label for="price_purchase" />
-                                    <button name="update_price" string="(update product price)" type="object" class="oe_edit_only oe_link" />
+                                    <!--button name="update_price" string="(update product price)" type="object" class="oe_edit_only oe_link" /-->
                                 </div>
-                                <field name="price_purchase" nolabel="1" />
+                                <field name="price_purchase" nolabel="1" readonly="1"/>
                                 <field name="subtotal" readonly="1" />
                             </group>
                             <group>
                                 <group>
-                                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')" />
-                                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')" />
+                                    <field name="palets" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')" />
+                                    <field name="mantles" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')" />
                                 </group>
                                 <group>
-                                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')" />
-                                    <field name="unitskg" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg'd)" />
+                                    <field name="boxes" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')" />
+                                    <field name="unitskg" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg'd)" />
                                 </group>
                             </group>
                         </group>
