@@ -121,7 +121,6 @@ class stock_picking(osv.osv):
         assign the new operation to any task, if the operations were assigned
         to a task then we assign the task in the copied operation
         """
-        import ipdb; ipdb.set_trace()
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
         transfer_obj = t_transfer.create({'picking_id': self.id})
@@ -161,8 +160,11 @@ class stock_picking(osv.osv):
                     'result_package_id': op.result_package_id.id,
                     'owner_id': op.owner_id.id,
                     'task_id': assigned_task_id,
-                    'to_process': True
-
+                    'to_process': True,
+                    'old_id': op.id,
+                    # To remember the original operation when we scan a barcode
+                    # in warehouse_scan_gun_module, because maybe the assigned
+                    # operation were deleted by doinf a partial picking.
                 }
                 pending_ops_vals.append(new_ops_vals)
 
@@ -477,7 +479,11 @@ class stock_pack_operation(osv.osv):
         'to_process': fields.boolean('To process',
                                      help="When checked the operation will be\
                                      process when you finish task, else\
-                                     will be unassigned")
+                                     will be unassigned"),
+        # Used when aprovepackoperation2 on stock.picking, because this method
+        # unlink the original operation and wee ned to remember it
+        # In the scan_gun_warehouse module
+        'old_id': fields.integer('Old id', readonly=True)
 
     }
     _defaults = {
