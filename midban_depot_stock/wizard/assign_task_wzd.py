@@ -504,7 +504,7 @@ class assign_task_wzd(osv.TransientModel):
         move_obj = self.pool.get('stock.move')
         for move in move_obj.browse(cr, uid, move_ids, context=context):
             move.action_assign()
-            if move.state != 'assigned':
+            if move.state != 'assigned':  # Pending move to assign later.
                 continue
             if move.picking_id and len(move.picking_id.move_lines) <= 1:
                 res.add(move.picking_id.id)

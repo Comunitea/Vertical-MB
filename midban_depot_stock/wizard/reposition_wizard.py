@@ -110,7 +110,7 @@ class reposition_wizard(osv.TransientModel):
         We check pack_cands and try to replenish the maximum possible.
         @param dest_id: Ubication to replenish
         @param pack_cands: List of lists of packages ordered by volume dec
-                           each list is a lot o packages without lotç
+                           each list is a lot or packages without lot
         @param return: Id of created picking or False
         """
         if context is None:
@@ -162,6 +162,7 @@ class reposition_wizard(osv.TransientModel):
                     idx = limit + 1  # force out of while
             idx += 1
 
+        force_quants_assign = []  # to reserve the quants of the operations
         if to_replenish_packs:
             for pack in to_replenish_packs:
                 total_move_qty += pack.packed_qty
@@ -177,6 +178,8 @@ class reposition_wizard(osv.TransientModel):
                     'lot_id': pack.packed_lot_id and
                     pack.packed_lot_id.id or False,
                 }
+                for q in pack.quant_ids:
+                    force_quants_assign.append((q, q.qty))
                 operation_dics.append(op_vals)
 
         if packs_to_split:
@@ -209,6 +212,15 @@ class reposition_wizard(osv.TransientModel):
                     'lot_id': pack_obj.packed_lot_id and
                     pack_obj.packed_lot_id.id or False,
                 }
+                assigned = 0
+                for q in pack_obj.quant_ids:
+                    if q.product_id.id == prod.id and assigned < pack_qty:
+                        if pack_qty > q.qty:
+                            force_quants_assign.append((q, q.qty))
+                            assigned += q.qty
+                        else:
+                            force_quants_assign.append((q, pack_qty))
+                            assigned += pack_qty
                 operation_dics.append(op_vals)
 
         camera_id = loc.get_camera()
@@ -238,7 +250,9 @@ class reposition_wizard(osv.TransientModel):
             }
             move_obj.create(cr, uid, vals, context=context)
             t_pick.action_confirm(cr, uid, [pick_id], context=context)
-            t_pick.action_assign(cr, uid, [pick_id], context=context)
+            ctx = context.copy()  # force the assignement
+            ctx.update({'force_quants_location': force_quants_assign})
+            t_pick.action_assign(cr, uid, [pick_id], context=ctx)
             t_pick.do_prepare_partial(cr, uid, [pick_id], context=context)
             pick_obj = t_pick.browse(cr, uid, pick_id, context=context)
             for op in pick_obj.pack_operation_ids:

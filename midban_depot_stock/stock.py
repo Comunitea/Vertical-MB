@@ -1146,7 +1146,6 @@ class stock_quant(osv.osv):
         location
         """
         t_location = self.pool.get('stock.location')
-
         # When quants already assigned we use the super no midban depot fefo
         already_reserved = False
         for x in domain:
