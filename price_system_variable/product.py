@@ -169,7 +169,7 @@ class pricelist_partnerinfo(osv.Model):
     _order = 'from_date asc'
 
     _columns = {
-        'from_date': fields.date('Init date'),
-        'to_date': fields.date('End date'),
+        'from_date': fields.date('Init date', required=True),
+        'to_date': fields.date('End date', required=True),
     }
 

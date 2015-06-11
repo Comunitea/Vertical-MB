@@ -307,7 +307,7 @@ class purchase_preorder(osv.Model):
                 t_pricelist = self.pool.get('product.pricelist')
                 pricelist_id = supplier.property_product_pricelist_purchase.id
                 prices = t_pricelist.price_get(cr, uid, [pricelist_id],
-                                               product.id, 1, supplier,
+                                               product.id, 1, supplier.id,
                                                context=context)
                 if prices:
                     vals['list_price'] = prices[pricelist_id]
