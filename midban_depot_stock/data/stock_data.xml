@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="seq_picking_type_ubication" model="ir.sequence">
             <field name="name">Ubication seq</field>
