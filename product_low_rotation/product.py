@@ -25,7 +25,9 @@ from datetime import datetime, timedelta
 class product_template(osv.Model):
     _inherit = "product.template"
     _columns = {
-        'min_rotation': fields.float('Mín. rotation'),
+        'min_rotation': fields.float('Mín. rotation', help="Product minimal \
+rotation. If the average weekly sales decline last month of this amount is \
+added to the product as low minimum rotation"),
         'under_rotation': fields.boolean('Under Rotation', readonly=True),
         'rotation': fields.float('Mín. rotation', readonly=True),
     }

@@ -88,7 +88,7 @@ class product_template(osv.Model):
                                          string='Cros Dock \
                                          Product',
                                          readonly=True),
-        'limit_time': fields.integer('min useful time'),
+        'limit_time': fields.integer('min useful time', help='Minimum days of expiration. If you enter a product in stock with lower incidence expiration is created.'),
 
     }
     _sql_constraints = [

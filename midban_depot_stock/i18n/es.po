@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#   * midban_depot_stock
 #
 msgid ""
 msgstr ""
@@ -3140,6 +3140,11 @@ msgstr "Marcar para evitar advertencia de stock virtual conservativo"
 #: field:product.template,limit_time:0
 msgid "min useful time"
 msgstr "vida útil mínima de entrada"
+
+#. module: midban_depot_stock
+#: help:product.template,limit_time:0
+msgid "Minimum days of expiration. If you enter a product in stock with lower incidence expiration is created."
+msgstr "Días mínimos de caducidad. Si entra un producto en el almacén con caducidad inferior se crea una incidencia."
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_form_depot
