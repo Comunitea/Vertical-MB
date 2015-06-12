@@ -179,7 +179,7 @@ msgstr "Validación comercial realizada"
 #. module: midban_product
 #: selection:product.template,state2:0
 msgid "Comercial validation pending"
-msgstr "Validación comercial pendiente"
+msgstr "Pendiente validación comercial"
 
 #. module: midban_product
 #: field:product.history,comment:0
@@ -400,7 +400,7 @@ msgstr "Validación logística realizada"
 #. module: midban_product
 #: selection:product.template,state2:0
 msgid "Logistic validation pending"
-msgstr "Validaciín logística pendiente"
+msgstr "Pendiente validación logística"
 
 #. module: midban_product
 #: field:product.template,ma_height:0
@@ -644,7 +644,7 @@ msgstr "Dar de alta"
 #. module: midban_product
 #: selection:product.template,state2:0
 msgid "Registered"
-msgstr "Dado de alta"
+msgstr "Alta"
 
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form
@@ -831,7 +831,7 @@ msgstr "Usuario"
 #. module: midban_product
 #: selection:product.template,state2:0
 msgid "Validate pending"
-msgstr "Validación pendiente"
+msgstr "Pendiente de validación"
 
 #. module: midban_product
 #: selection:product.template,state2:0
