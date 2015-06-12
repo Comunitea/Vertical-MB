@@ -262,7 +262,7 @@ products do not require units for validation'),
         return super(product_template, self).copy(cr, uid, id, default=default,
                                                   context=context)
 
-    def write(self, cr, uid, ids, vals, context=None):
+    '''def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = {}
         if not ids:
@@ -274,7 +274,7 @@ products do not require units for validation'),
                                  _('You cannot change the value \
                                     of consignment field.'))
         return super(product_template, self).write(cr, uid, ids,
-                                                   vals, context=context)
+                                                   vals, context=context)'''
 
     def create(self, cr, user, vals, context=None):
         """ Generates a sequence in the internal reference name.
