@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
+
+        <record id="seq_picking_type_ubication" model="ir.sequence">
+            <field name="name">Ubication seq</field>
+            <field name="prefix">UBI</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
 
         <!-- Location Task. Necesary change src location to Input location and Dest location to stock location -->
         <record id="picking_type_ubication_task" model="stock.picking.type">
             <field name="name">Ubication Task</field>
             
-            <field name="sequence_id" ref="stock.seq_picking_internal"/>
+            <field name="sequence_id" ref="seq_picking_type_ubication"/>
             <field name="code">internal</field>
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
         </record>
 
-        <!-- Location Task. Necesary change src location and Dest location to stock location -->
+        <record id="seq_picking_type_reposition" model="ir.sequence">
+            <field name="name">Reposition seq</field>
+            <field name="prefix">REP</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Reposition Task. Necesary change src location and Dest location to stock location -->
         <record id="picking_type_reposition_task" model="stock.picking.type">
             <field name="name">Reposition Task</field>
             
-            <field name="sequence_id" ref="stock.seq_picking_internal"/>
+            <field name="sequence_id" ref="seq_picking_type_reposition"/>
             <field name="code">internal</field>
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
             <field name="default_location_dest_id" ref="stock.stock_location_customers"/>
