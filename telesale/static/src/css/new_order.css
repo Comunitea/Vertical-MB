@@ -17,7 +17,7 @@
 .telesale #toppart {
     position: relative;
     width: 100%;
-    height: 15%;
+    height: 18%;
     border-top: solid 1px #CECBCB;
     border-bottom: solid 1px #CECBCB;
 }
@@ -26,20 +26,20 @@
     position: relative;
     float:left;
     width:75.8%;
-    height: 60%;
+    height: 50%;
     border-right: solid 1px #CECBCB;
 }
 .telesale #rightpart {
     position: relative;
     float: left;
     width:24%;
-    height: 60%;
+    height: 50%;
 }
 .telesale #bottompart {
     position: relative;
     clear:both;
     width: 100%;
-    height: 20%;
+    height: 27.7%;
     border-top: solid 1px #CECBCB;
 }
 
@@ -96,11 +96,23 @@
 .telesale #toppart .toppart-form {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 80%;
+    display: table;
+}
+.telesale #toppart .toppart-form2 {
+    position: relative;
+    width: 100%;
+    height: 20%;
     display: table;
 }
 .telesale #toppart .form-col {
     width: 19%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+.telesale #toppart .form-col2 {
+    width: 100%;
     height: 100%;
     display: table-cell;
     vertical-align: middle;
@@ -113,6 +125,16 @@
 .telesale #toppart .toppart-form .form-col input {
     /*display: line;*/
     width: 50%;
+    line-height: 10px;
+}
+.telesale #toppart .toppart-form2 .form-col2 label {
+    width: 6%;
+    float: left;
+    margin-left: 1.2%;
+}
+.telesale #toppart .toppart-form2 .form-col2 input {
+    /*display: line;*/
+    width: 90%;
     line-height: 10px;
 }
 
@@ -157,7 +179,7 @@
 /* order container Table*/
 .telesale  #leftpart .order-container{
     position: relative;
-    height: 90%;
+    height: 69%;
     width:100%;
     overflow:auto;
 }
@@ -181,28 +203,28 @@
     width: 10%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-product{
-    width: 35%;
+    width: 23%;
 }
 
 .telesale  #leftpart .order-container .order-line-table th.header-unit{
-    width: 5%;
+    width: 9%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-qty{
-    width: 5%;
+    width: 6%;
 }.telesale  #leftpart .order-container .order-line-table th.header-pvp{
-    width: 5%;
+    width: 6%;
 }
 }.telesale  #leftpart .order-container .order-line-table th.header-disc{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-total{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-temp{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-qnote{
-    width: 10%;
+    width: 15%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-deta{
     width: 15%;
@@ -232,27 +254,27 @@
     width: 10%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-product{
-    width: 35%;
+    width: 23%;
 }
 
 .telesale  #leftpart .order-container .order-line-table td.cell-unit{
-    width: 5%;
+    width: 9%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-qty{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-pvp{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-disc{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-total{
-    width: 5%;
+    width: 6%;
     text-align: right;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-tmp{
-    width: 5%;
+    width: 6%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-qnote{
     width: 10%;

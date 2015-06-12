@@ -189,10 +189,6 @@
                     <br/>
                     <label for="num_order">Nº order:</label>
                     <input type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/>
-                    <br/>
-                    <br/>
-                    <label for="coment">Notes:</label>
-                    <input type="text" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
                 </div>
                 <div class="form-col">
                      <label for="code">Customer code:</label>
@@ -227,6 +223,12 @@
                     <label for="customer_debt">Customer Debt:</label>
                     <input type="numeric" id='customer_debt' name="customer_debt"
                         t-att-value="widget.order_model.get('customer_debt').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                </div>
+            </div>
+            <div class="toppart-form2">
+                <div class="form-col2">
+                    <label for="coment">Notes:</label>
+                    <input type="text" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
                 </div>
             </div>
         </div>
