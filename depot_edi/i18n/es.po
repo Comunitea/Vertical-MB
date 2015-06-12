@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#       * depot_edi
+#   * depot_edi
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-29 09:45+0000\n"
-"PO-Revision-Date: 2015-05-29 09:45+0000\n"
+"POT-Creation-Date: 2015-06-12 09:03+0000\n"
+"PO-Revision-Date: 2015-06-12 09:03+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -77,7 +77,7 @@ msgstr "Cancelar"
 #: code:addons/depot_edi/account.py:313
 #, python-format
 msgid "Charge"
-msgstr "Cargo"
+msgstr "Chargo"
 
 #. module: depot_edi
 #: field:account.discount.type,code:0
@@ -150,7 +150,7 @@ msgstr "Comentarios diferentes en la factura"
 #: code:addons/depot_edi/edi.py:613
 #, python-format
 msgid "Diferent Due dates"
-msgstr "Diferente fecha de vencimiento"
+msgstr "Diferentes fecha de vencimiento"
 
 #. module: depot_edi
 #: code:addons/depot_edi/edi.py:567
@@ -313,6 +313,11 @@ msgid "EDI documents"
 msgstr "Documentos EDI"
 
 #. module: depot_edi
+#: field:res.partner,edi_mailbox:0
+msgid "EDI mailbox"
+msgstr "Buzón EDI"
+
+#. module: depot_edi
 #: view:edi:depot_edi.edi_from
 msgid "EDI service"
 msgstr "Servicio EDI"
@@ -429,7 +434,7 @@ msgstr "Identificación"
 #. module: depot_edi
 #: view:edi.import:depot_edi.wizard_edi_import
 msgid "Import EDI"
-msgstr "Importar EDI"
+msgstr "IMportar EDI"
 
 #. module: depot_edi
 #: model:ir.ui.menu,name:depot_edi.view_wizard_edi_import
@@ -466,7 +471,7 @@ msgstr "Impuesto de factura"
 #. module: depot_edi
 #: field:edi.doc,send_date:0
 msgid "Last Send Date"
-msgstr "Última fecha de envío"
+msgstr "ültima fecha de envío"
 
 #. module: depot_edi
 #: field:account.discount,write_uid:0
@@ -488,7 +493,7 @@ msgstr "Última actualización por"
 #: field:edi.export.wizard,write_date:0
 #: field:edi.import,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización el"
+msgstr "Última actualización en"
 
 #. module: depot_edi
 #: field:account.discount,invoice_line_id:0
@@ -516,7 +521,7 @@ msgstr "Nombre"
 #: code:addons/depot_edi/edi.py:776
 #, python-format
 msgid "Not found corect NODO value                           in the INVOIC file "
-msgstr "No encontrado valor correcto para NODO en el archivo INVOIC"
+msgstr "No encontrado valor correcto para NODO                           en el archivo INVOIC"
 
 #. module: depot_edi
 #: code:addons/depot_edi/edi.py:247
@@ -596,7 +601,7 @@ msgstr "Albarán"
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:82
 #, python-format
 msgid "Planned date field not                                 configured!"
-msgstr "¡Fecha planificada no configurada!"
+msgstr "Fecha planificada no configurada!"
 
 #. module: depot_edi
 #: field:edi.doc,date_process:0
@@ -611,7 +616,7 @@ msgstr "Unidad de medida del producto"
 #. module: depot_edi
 #: model:ir.model,name:depot_edi.model_edi
 msgid "Provides general functions to impor edi files"
-msgstr "Provee funciones generales para importar ficheros edi"
+msgstr "Provve funciones generales para importar ficheros edi"
 
 #. module: depot_edi
 #: model:ir.model,name:depot_edi.model_purchase_order
@@ -641,7 +646,7 @@ msgstr "Documento Respuesta"
 #. module: depot_edi
 #: field:account.discount,sequence:0
 msgid "Sequence"
-msgstr "Secuencia"
+msgstr "Sequencia"
 
 #. module: depot_edi
 #: field:edi.doc,service_id:0
@@ -695,7 +700,7 @@ msgstr "Impuesto"
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:78
 #, python-format
 msgid "The depot has not gln or NIF"
-msgstr "El distribuidor no tiene GLN o NIF"
+msgstr "El depot no tiene GLN or NIF"
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:186
@@ -707,19 +712,19 @@ msgstr "El fichero ha sido creado correctamente"
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:104
 #, python-format
 msgid "The product not have                                        ean13/ean14. "
-msgstr "El producto no tiene ean13/ean14. "
+msgstr "El producto no tiene                                        ean13/ean14. "
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:97
 #, python-format
 msgid "The street configured for the                                 depot is not complete!"
-msgstr "La calle configurada para el distribuidor no está completa!"
+msgstr "La calle configurada para el                                 depot no está completa!"
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:90
 #, python-format
 msgid "The street configured for the                                 supplier is not complete!"
-msgstr "La calle configurada para el distribuidor no está completa!"
+msgstr "La calle configurada para el                                 depot no está completa!"
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:73
@@ -731,14 +736,14 @@ msgstr "El proveedor no tiene GLN"
 #: code:addons/depot_edi/edi.py:255
 #, python-format
 msgid "The value of CENVFAC field is not an                             integer"
-msgstr "EL valor del campo CENVFAC es un entero"
+msgstr "EL valor de CENVFAC fieldno es un                            entero"
 
 #. module: depot_edi
 #: view:edi.import:depot_edi.wizard_edi_import
 msgid "This wizard will import all files in the input edi Folder.\n"
 "                       The system parameter for edi importation must be correctly setted"
 msgstr "Este asistente importara todos los campos en el directorio de entrada de EDI.\n"
-"El parametro de ssstema para la importación EDI tiene que estar correctamente configurado"
+"                       El parametro de sístema para la importación EDI tiene que estar correctamente configurado"
 
 #. module: depot_edi
 #: field:account.discount,type_id:0

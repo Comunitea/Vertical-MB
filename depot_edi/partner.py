@@ -28,3 +28,4 @@ class partner(models.Model):
 
     document_id = fields.Many2one('edi.doc', 'EDI Document')
     gln = fields.Char('GLN EDI', SIZE=13)
+    edi_mailbox = fields.Char('EDI mailbox')

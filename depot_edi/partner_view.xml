@@ -8,12 +8,15 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
                 <field name="title" position="after">
-                    
+
                     <field name="gln"/>
+                    <field name="edi_mailbox" />
                 </field>
                 <xpath expr="/form/sheet/notebook/page[@string='Contacts']/field[@name='child_ids']/form" position="inside">
                     <label for="gln"/>
                     <field name="gln"/>
+                    <label for="edi_mailbox"/>
+                    <field name="edi_mailbox"/>
                 </xpath>
             </field>
         </record>
@@ -25,10 +28,12 @@
                 <group position="before">
                     <label for="gln"/>
                     <field name="gln"/>
+                    <label for="edi_mailbox"/>
+                    <field name="edi_mailbox"/>
                 </group>
-                
+
             </field>
         </record>
 
     </data>
-</openerp>  
+</openerp>
