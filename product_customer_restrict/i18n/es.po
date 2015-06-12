@@ -61,7 +61,7 @@ msgstr "Fecha Fin"
 #: view:product.template:product_customer_restrict.midban_depot_product_form_view
 #: field:product.template,exclusive_ids:0
 msgid "Exclusive customers"
-msgstr "Cliestes Exclusivos"
+msgstr "Clientes Exclusivos"
 
 #. module: product_customer_restrict
 #: view:res.partner:product_customer_restrict.view_partner_rules_form
