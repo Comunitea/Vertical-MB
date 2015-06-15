@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#   * midban_depot_stock
 #
 msgid ""
 msgstr ""
@@ -723,7 +723,7 @@ msgstr "Detalle"
 #: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
 #: field:sale.order,route_detail_id:0
 msgid "Detail Route"
-msgstr "Dettalle ruta"
+msgstr "Detalle ruta"
 
 #. module: midban_depot_stock
 #: view:route.report:midban_depot_stock.view_route_report_search
