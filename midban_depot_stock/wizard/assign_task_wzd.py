@@ -84,7 +84,12 @@ class assign_task_wzd(osv.TransientModel):
                                          'wzd_cameras_rel',
                                          'wzd_id',
                                          'location_id',
-                                         'Operations by cameras'),
+                                         'Operations by cameras',
+                                         help="Select one or more camera \
+                                         locations to assign operations to \
+                                         task in order to get operations \
+                                         whitch products are child of the \
+                                         selected cameras."),
         'max_loc_ops': fields.integer('Max. nº of location operations',
                                       help='The wizard will assign this nº of \
                                       operations of an unique picking of \

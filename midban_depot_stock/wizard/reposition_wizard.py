@@ -30,7 +30,9 @@ class reposition_wizard(osv.TransientModel):
     _columns = {
         'capacity': fields.
         float("Filled Percentage", required=True,
-              digits_compute=dp.get_precision('Product Price')),
+              digits_compute=dp.get_precision('Product Price'),
+              help="Picking location with less or equal filled percentaje \
+              will be proposed to reposition if is possible."),
         'limit': fields.float("Maximum Filled Percentage", required=True,
                               digits_compute=dp.get_precision
                               ('Product Price'),
