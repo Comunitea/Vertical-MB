@@ -247,7 +247,7 @@
                             </group>
                             <group>
                                 <field name="net_cost" readonly="1" />
-                                <field name="net_net_cost" readonly="1" />
+                                <!--field name="net_net_cost" readonly="1" /-->
                             </group>
                         </group>
                     </group>

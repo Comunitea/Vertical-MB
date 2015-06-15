@@ -1242,7 +1242,7 @@ msgstr "Largo"
 #. module: midban_depot_stock
 #: field:stock.transfer_details_items,life_date:0
 msgid "Life date"
-msgstr "Life date"
+msgstr "Fecha de caducidad"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_route_zip
