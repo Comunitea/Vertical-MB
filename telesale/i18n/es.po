@@ -801,7 +801,7 @@ msgstr "Ultimo precio fresco"
 #: code:addons/telesale/static/src/xml/new_order_template.xml:318
 #, python-format
 msgid "Last Quantity"
-msgstr "Última Cantidad"
+msgstr "Última Cant."
 
 #. module: telesale
 #: field:ts.session.opening,write_uid:0
@@ -1126,7 +1126,7 @@ msgstr "Catálogo Productos"
 #: code:addons/telesale/static/src/xml/new_order_template.xml:359
 #, python-format
 msgid "Product Margin"
-msgstr "Margen Producto"
+msgstr "Margen"
 
 #. module: telesale
 #. openerp-web
@@ -1380,7 +1380,7 @@ msgstr "Factura en el envío de existencias"
 #: code:addons/telesale/static/src/xml/new_order_template.xml:309
 #, python-format
 msgid "Stock Product"
-msgstr "Stock Producto"
+msgstr "Stock"
 
 #. module: telesale
 #: model:ir.model,name:telesale.model_stock_reservation

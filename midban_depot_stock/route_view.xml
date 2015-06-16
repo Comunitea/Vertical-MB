@@ -29,10 +29,10 @@
                     </header>
                     <sheet>
                         <h1>
-                             <field name="name"/>
+                             <field name="name" placeholder="Route name"/>
                         </h1>
                         <h2>
-                             <field name="code"/>
+                             <field name="code" placeholder="Route code"/>
                         </h2>
                         <notebook>
                             <page string="General">

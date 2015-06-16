@@ -24,7 +24,9 @@ from openerp.osv import osv, fields
 class product_category(osv.Model):
     _inherit = "product.category"
     _columns = {
-        'min_rotation': fields.float('Mín. rotation'),
+        'min_rotation': fields.float('Mín. rotation', help="Product minimal \
+rotation. If the average weekly sales decline last month of this amount is \
+added to the product as low minimum rotation"),
     }
     _defaults = {
         'min_rotation': 0.00,

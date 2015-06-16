@@ -76,6 +76,18 @@ class product_template(osv.Model):
         Product have a unique sequence but can bee overwriten.
         It adds supplier units for purchases and mandatory units for sales"""
 
+    def _get_hidde_variant_page(self, cr, uid, ids, field_name, arg, context):
+        res = {}
+        dummy, group_id = self.pool.get('ir.model.data').get_object_reference(
+            cr, 1, 'midban_product', 'group_no_variants')
+        user = self.pool.get('res.users').browse(cr, uid, uid)
+        for product in self.browse(cr, uid, ids):
+            if group_id in [x.id for x in user.groups_id]:
+                res[product.id] = False
+            else:
+                res[product.id] = True
+        return res
+
     def _get_last_price(self, cr, uid, ids, field_name, arg, context):
         """ Calculates the last purchase price searching in purchase order
             lines"""
@@ -189,7 +201,9 @@ class product_template(osv.Model):
                                            digits=(4, 2)),
         'supplier_ca_length': fields.float("CA Length Supplier",
                                            digits=(4, 2)),
-        'palet_wood_height': fields.float("Palet Wood Height", digits=(5, 3)),
+        'palet_wood_height': fields.float("Palet Wood Height", digits=(5, 3),
+                                          help='Size wood pallet, affects the \
+calculation of the volume'),
         'last_purchase_price': fields.function(_get_last_price,
                                                string="Last purchase change",
                                                type="float",
@@ -207,11 +221,17 @@ class product_template(osv.Model):
                                            ('fresh', 'Fresh'),
                                            ('ultrafresh', 'Ultrafresh')],
                                           'Class',
-                                          required=True),
+                                          required=True,
+                                          help='Fresh and ultra-fresh \
+products do not require units for validation'),
         'drained_weight': fields.float('Drained net weight',
                                        digits_compute=dp.get_precision
                                        ('Stock Weight')),
-
+        'hidde_variant_page': fields.function(_get_hidde_variant_page,
+                                              string="Hidde variant page",
+                                              type="boolean",
+                                              method=True,
+                                              readonly=True)
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',
@@ -241,7 +261,7 @@ class product_template(osv.Model):
         return super(product_template, self).copy(cr, uid, id, default=default,
                                                   context=context)
 
-    def write(self, cr, uid, ids, vals, context=None):
+    '''def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = {}
         if not ids:
@@ -253,7 +273,7 @@ class product_template(osv.Model):
                                  _('You cannot change the value \
                                     of consignment field.'))
         return super(product_template, self).write(cr, uid, ids,
-                                                   vals, context=context)
+                                                   vals, context=context)'''
 
     def create(self, cr, user, vals, context=None):
         """ Generates a sequence in the internal reference name.

@@ -30,7 +30,9 @@ class product_template(osv.Model):
                                           'product_id',
                                           'partner_id',
                                           'Exclusive customers',
-                                          domain=[('customer', '=', True)]),
+                                          domain=[('customer', '=', True)],
+                                          help='This product will only be \
+exclusive to customers who appear here'),
     }
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None,
