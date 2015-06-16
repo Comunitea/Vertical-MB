@@ -413,7 +413,7 @@ class assign_task_wzd(osv.TransientModel):
         ops_ids = t_ops.search(cr, uid, domain, order="picking_id asc",
                                context=context)
         if not ops_ids:
-            raise osv.except_osv(_('Error'), _('No location operations to \
+            raise osv.except_osv(_('Error'), _('No reposition operations to \
                                                 schedule'))
         t_ops.write(cr, uid, ops_ids, {'task_id': task_id}, context=context)
 

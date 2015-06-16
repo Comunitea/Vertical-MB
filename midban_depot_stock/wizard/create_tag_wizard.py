@@ -34,12 +34,19 @@ class create_tag_wizard(osv.TransientModel):
         t_item = self.pool.get('tag.item')
         item_ids = []
         t_task = self.pool.get('stock.task')
+        t_pick = self.pool.get('stock.picking')
         if context.get('active_model', False) and \
-                context.get('active_id', False)and \
-                context['active_model'] == 'stock.task':
+                context.get('active_id', False):
             active_id = context['active_id']
-            task_obj = t_task.browse(cr, uid, active_id, context=context)
-            for op in task_obj.operation_ids:
+            operation_ids = []
+            if context['active_model'] == 'stock.task':
+                task_obj = t_task.browse(cr, uid, active_id, context=context)
+                operation_ids = task_obj.operation_ids
+            elif context['active_model'] == 'stock.picking':
+                pick_obj = t_pick.browse(cr, uid, active_id, context=context)
+                operation_ids = pick_obj.pack_operation_ids
+
+            for op in operation_ids:
                 if op.pack_type in ['palet', 'box']:
                     vals = {}
                     prod = op.operation_product_id and \

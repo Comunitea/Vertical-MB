@@ -1525,7 +1525,7 @@ msgstr "Sin reposiciones internas para planificar"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:416
 #, python-format
 msgid "No location operations to                                                 schedule"
-msgstr "No hay operaciones de ubicacioón que planificar"
+msgstr "No hay operaciones de ubicación que planificar"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:136
