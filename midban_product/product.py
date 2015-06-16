@@ -240,7 +240,6 @@ products do not require units for validation'),
         'active': False,  # Product desuctived until register state is reached
         'product_class': 'normal',
         'supplier_pa_width': 0.8,
-        'supplier_pa_height': 0.0,
         'supplier_pa_length': 1.2,
         'pa_width': 0.8,
         'pa_length': 1.2,

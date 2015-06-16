@@ -414,7 +414,7 @@ class purchase_preorder(osv.Model):
                     if l:
                         qtys = prodsupp.onchange_uoms(cr, uid, l[0],
                                                       product_id, product_qty,
-                                                      0, 0, 0, 'unitskg', 0)
+                                                      0, 0, 'unitskg', 0)
                         prodsupp.write(cr,
                                        uid,
                                        l[0],
