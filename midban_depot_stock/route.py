@@ -66,7 +66,7 @@ class route(models.Model):
                                 'route_id', 'zip_id', 'Zip codes')
     detail_ids = fields.One2many('route.detail', 'route_id')
     partner_ids = fields.One2many('partner.route.info', 'route_id',
-                                  'Customers')
+                                  'Customers', ondelete='cascade')
     active = fields.Boolean('Active', default=True)
 
     @api.onchange('bzip_ids')
@@ -138,6 +138,17 @@ class route(models.Model):
                                                route' % (bzip_c.name,
                                                          route_obj.code)))
         res = super(route, self).write(vals)
+        return res
+
+    @api.one
+    def unlink(self):
+        """
+        Delete de partner_route_info model in the partners side
+        """
+        for p in self.partner_ids:
+            if p.route_id.id == self.id:
+                p.unlink()
+        res = super(route, self).unlink()
         return res
 
     # @api.model
