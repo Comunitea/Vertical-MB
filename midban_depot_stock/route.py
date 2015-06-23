@@ -81,7 +81,8 @@ class route(models.Model):
             bzip_codes = [x.name for x in self.bzip_ids]
             domain = [('day_id', '=', self.day_id.id),
                       ('type', '=', self.type),
-                      ('code', '!=', self.code)]
+                      ('id', '!=', self.id),
+                      ('state', '=', 'active')]
             route_objs = self.search(domain)
             if route_objs:
                 not_check_more = False
@@ -111,13 +112,17 @@ class route(models.Model):
         Overwrite to Check there is no same zip code in a route of same day
         and same type.
         """
-        if vals.get('bzip_ids', False):
-            bzip_ids = vals['bzip_ids'][0][2]
-            bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
+        day_id = vals.get('day_id', False) and vals['day_id'] or self.day_id.id
+        type = vals.get('type', False) and vals['type'] or self.type
+        bzip_ids = vals.get('bzip_ids', False) and vals['bzip_ids'][0][2] or \
+            [x.id for x in self.bzip_ids]
+        bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
+        if bzip_objs and self.state == 'active':
             bzip_codes = [x.name for x in bzip_objs]
-            domain = [('day_id', '=', self.day_id.id),
-                      ('type', '=', self.type),
-                      ('code', '!=', self.code)]
+            domain = [('day_id', '=', day_id),
+                      ('type', '=', type),
+                      ('id', '!=', self.id),
+                      ('state', '=', 'active')]
 
             route_objs = self.search(domain)
             if route_objs:
@@ -127,22 +132,53 @@ class route(models.Model):
                             raise except_orm(_('Error'),
                                              _('The zip code %s is already \
                                                assigned in the\
-                                               route %s. Change it or you can \
+                                               route %s. Change it or you \
+                                               can \
                                                can not save th \
                                                route' % (bzip_c.name,
                                                          route_obj.code)))
         res = super(route, self).write(vals)
         return res
 
-    @api.model
-    def create(self, vals):
-        if vals.get('bzip_ids', False):
-            bzip_ids = vals['bzip_ids'][0][2]
-            bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
-            bzip_codes = [x.name for x in bzip_objs]
-            domain = [('day_id', '=', vals['day_id']),
-                      ('type', '=', vals['type']),
-                      ('code', '!=', vals['code'])]
+    # @api.model
+    # def create(self, vals):
+    #     if vals.get('bzip_ids', False):
+    #         bzip_ids = vals['bzip_ids'][0][2]
+    #         bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
+    #         bzip_codes = [x.name for x in bzip_objs]
+    #         domain = [('day_id', '=', vals['day_id']),
+    #                   ('type', '=', vals['type']),
+    #                   ('code', '!=', vals['code'])]
+
+    #         route_objs = self.search(domain)
+    #         if route_objs:
+    #             for route_obj in route_objs:
+    #                 for bzip_c in route_obj.bzip_ids:
+    #                     if bzip_c.name in bzip_codes:
+    #                         raise except_orm(_('Error'),
+    #                                          _('The zip code %s is already \
+    #                                            assigned in the\
+    #                                            route %s. Change it or you \
+    # can \
+    #                                            can not save the \
+    #                                            route' % (bzip_c.name,
+    #                                                      route_obj.code)))
+    #     # self._check_partner_zip_in_route()
+    #     res = super(route, self).create(vals)
+    #     return res
+
+    @api.one
+    def set_active(self):
+        """
+        If there is a route of same day and same type with the same zip codes,
+        (some of them), the route can not be activated.
+        """
+        if self.bzip_ids:
+            bzip_codes = [x.name for x in self.bzip_ids]
+            domain = [('day_id', '=', self.day_id.id),
+                      ('type', '=', self.type),
+                      ('id', '!=', self.id),
+                      ('state', '=', 'active')]
 
             route_objs = self.search(domain)
             if route_objs:
@@ -152,16 +188,11 @@ class route(models.Model):
                             raise except_orm(_('Error'),
                                              _('The zip code %s is already \
                                                assigned in the\
-                                               route %s. Change it or you can \
-                                               can not save the \
-                                               route' % (bzip_c.name,
+                                               route %s. It is no permited \
+                                               routes of same type and same \
+                                               day with the same zip \
+                                               codes' % (bzip_c.name,
                                                          route_obj.code)))
-        # self._check_partner_zip_in_route()
-        res = super(route, self).create(vals)
-        return res
-
-    @api.multi
-    def set_active(self):
         self.state = 'active'
 
     @api.multi
