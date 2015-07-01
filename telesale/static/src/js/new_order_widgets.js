@@ -14,6 +14,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
     module.OrderButtonWidget = module.TsBaseWidget.extend({
         template:'Order-Button-Widget',
         init: function(parent, options) {
+            
             this._super(parent,options);
             var self = this;
             this.order = options.order;
