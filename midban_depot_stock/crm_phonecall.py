@@ -44,7 +44,7 @@ class crm_phonecall(models.Model):
                 vals['state'] = 'done'
             elif vals['result'] in ['comunicate', 'not_responding']:
                 vals['state'] = 'pending'
-            elif vals['result'] in ['call_other_day']:
+            elif vals['result'] in ['call_other_day', 'call_other_moment']:
                 vals['state'] = 'open'
             elif vals['result'] in ['call_no_done']:
                 vals['state'] = 'cancel'
