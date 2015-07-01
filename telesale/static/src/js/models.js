@@ -375,7 +375,7 @@ function openerp_ts_models(instance, module){
             var self=this;
             if (!state){state = $('#state-select').val()}
             if (!date){date = $('#date-call-search').val()}        
-            var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:01"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
+            var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
             if (state){
                 if (state != "any")
                     domain.push(['state','=',state])
