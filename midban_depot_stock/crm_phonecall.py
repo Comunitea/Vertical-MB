@@ -24,7 +24,8 @@ from openerp import models, fields, api
 class crm_phonecall(models.Model):
     _inherit = 'crm.phonecall'
 
-    detail_id = fields.Many2one('route.detail', 'Route detail', readonly=True)
+    detail_id = fields.Many2one('route.detail', 'Route detail', readonly=True,
+                                ondelete="cascade")
     result = fields.Selection([('sale_done', 'Sale done'),
                                ('not_responding', 'Not responding'),
                                ('comunicate', 'Comunicate'),
