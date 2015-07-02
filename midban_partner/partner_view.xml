@@ -18,6 +18,8 @@
                         <field name="supplier" invisible="1"/>
                     </header>
                 </xpath>
+                <field name="ref" position="replace">
+                </field>
                 <field name="parent_id" position="before">
                     <div expr="//field[@name='opt_out']" position="before">
                         <button name="%(action_process_unregister_partner)d" string="Unregister"
@@ -27,6 +29,9 @@
                                     type="object"
                                     class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
                     </div>
+                    <group>
+                        <field name="ref"/>
+                    </group>
                 </field>
                 <notebook position="inside">
                     <!-- Suppliers tab. Adds transports and supplier info -->
