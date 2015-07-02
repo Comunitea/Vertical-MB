@@ -95,6 +95,9 @@
 
                     <!-- History tab -->
                     <page string="History">
+                        <label for="create_date" string="Create Date:"/>
+                        <field name="create_date" class="oe_inline"/>
+                        <separator string="History"/>
                         <field name="history_ids">
                             <tree string="Partner History">
                                 <field name="user_id"/>
