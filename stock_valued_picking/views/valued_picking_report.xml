@@ -240,7 +240,8 @@
                             </table>
                             <br/>
                             <br/>
-                            <table class="table table-condensed" t-if="not o.pack_operation_ids">
+                          <!--   <table class="table table-condensed" t-if="not o.pack_operation_ids"> -->
+                            <table class="table table-condensed">
                               <thead>
                                 <tr>
                                     <th><strong>Product</strong></th>
