@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * stock_valued_picking
+#	* stock_valued_picking
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-26 10:39+0000\n"
-"PO-Revision-Date: 2015-03-26 10:39+0000\n"
+"POT-Creation-Date: 2015-07-03 11:09+0000\n"
+"PO-Revision-Date: 2015-07-03 11:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,24 +26,14 @@ msgid "% margin"
 msgstr "% margen"
 
 #. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Commitment Date"
-msgstr "Fecha compromiso"
-
-#. module: stock_valued_picking
 #: field:stock.move,cost_subtotal:0
 msgid "Cost subtotal"
 msgstr "Subtotal"
 
 #. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Customer Address:"
-msgstr "Dirección de cliente:"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Delivery Address:"
-msgstr "Dirección de envío:"
+#: help:res.partner,valued_picking:0
+msgid "If checked It will print valued picks for this customer"
+msgstr "Si está marcado, se imprimirán albaranes de salida valorados para este cliente"
 
 #. module: stock_valued_picking
 #: field:stock.move,margin:0
@@ -51,9 +41,9 @@ msgid "Margin"
 msgstr "Margen"
 
 #. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Order (Origin)"
-msgstr "Pedido (Origen)"
+#: model:ir.model,name:stock_valued_picking.model_res_partner
+msgid "Partner"
+msgstr "Empresa"
 
 #. module: stock_valued_picking
 #: model:ir.model,name:stock_valued_picking.model_stock_picking
@@ -62,34 +52,18 @@ msgstr "Albarán"
 
 #. module: stock_valued_picking
 #: field:stock.move,order_price_unit:0
-#: view:website:stock_valued_picking.report_valued_picking
 msgid "Price unit"
 msgstr "Precio unitario"
 
 #. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Product"
-msgstr "Producto"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Quantity"
-msgstr "Cantidad"
+#: field:res.partner,valued_picking:0
+msgid "Print valued picking"
+msgstr "Imprimir albarán valorado"
 
 #. module: stock_valued_picking
 #: field:stock.picking,amount_discounted:0
 msgid "Sale price"
 msgstr "Precio de venta"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Scheduled Date"
-msgstr "Fecha prevista"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "State"
-msgstr "Estado"
 
 #. module: stock_valued_picking
 #: model:ir.model,name:stock_valued_picking.model_stock_move
@@ -102,46 +76,19 @@ msgid "Subtotal"
 msgstr "Subtotal"
 
 #. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Supplier Address:"
-msgstr "Dirección del proveedor:"
-
-#. module: stock_valued_picking
 #: field:stock.picking,amount_tax:0
-#: view:website:stock_valued_picking.report_valued_picking
 msgid "Taxes"
 msgstr "Impuestos"
 
 #. module: stock_valued_picking
 #: field:stock.picking,amount_total:0
-#: view:website:stock_valued_picking.report_valued_picking
 msgid "Total"
 msgstr "Total"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Total Without Taxes"
-msgstr "Total sin impuestos"
 
 #. module: stock_valued_picking
 #: field:stock.picking,amount_untaxed:0
 msgid "Untaxed Amount"
 msgstr "Valor sin impuestos"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "VAT:"
-msgstr "NIF:"
-
-#. module: stock_valued_picking
-#: model:ir.actions.report.xml,name:stock_valued_picking.action_report_valued_picking
-msgid "Valued picking"
-msgstr "Albarán valorado"
-
-#. module: stock_valued_picking
-#: view:website:stock_valued_picking.report_valued_picking
-msgid "Warehouse Address:"
-msgstr "Dirección del almacén"
 
 #. module: stock_valued_picking
 #: field:stock.picking,amount_gross:0
