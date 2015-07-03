@@ -18,7 +18,7 @@ msgstr ""
 #. module: product_customer_restrict
 #: view:res.partner:product_customer_restrict.view_partner_rules_form
 msgid "Catalog Customer rules"
-msgstr "Reglas Clinete catálogo de productos "
+msgstr "Reglas Cliente catálogo de productos "
 
 #. module: product_customer_restrict
 #: field:partner.rules,category_id:0

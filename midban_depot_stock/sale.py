@@ -108,7 +108,6 @@ class sale_order(osv.Model):
                                                           context=context)
         partner_t = self.pool.get('res.partner')
         part = partner_t.browse(cr, uid, part, context=context)
-
         # Get next detail of a delivery route
         if not res['value'].get('route_detail_id', False):
             detail_obj = part.get_next_route_detail(route_type='delivery')
