@@ -63,6 +63,7 @@
                 "product",
                 "purchase",
                 "account",
+                "product_unique_default_code",
                 "sale",
                 "stock"],
     "data": ["wizard/process_unregister_product_view.xml",
