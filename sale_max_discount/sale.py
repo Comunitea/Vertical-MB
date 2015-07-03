@@ -73,7 +73,6 @@ than the maximun discount of product. The sale need to be approved""")}
                 'cost_price': line.product_id.standard_price,
                 'discount': line.discount,
                 'pricelist_id': line.order_id.pricelist_id.id,
-                'margin': line.product_id.margin,
                 'start_date': date.today(),
                 'end_date': date.today() + timedelta(days=30),
                 'sale_line_id': line.id,
@@ -106,7 +105,6 @@ than the maximun discount of product. The sale need to be approved""")}
                             'product_id': line.product_id.id,
                             'cost_price': line.product_id.standard_price,
                             'discount': line.discount,
-                            'margin': line.product_id.margin,
                             'pricelist_id': line.order_id.pricelist_id.id,
                             'start_date': date.today(),
                             'end_date': date.today() + timedelta(days=30),
@@ -120,11 +118,8 @@ than the maximun discount of product. The sale need to be approved""")}
                             'cost_price': line.product_id.standard_price,
                             'discount': line.discount,
                             'pricelist_id': line.order_id.pricelist_id,
-                            'margin': line.product_id.margin,
                         })
         return res
-
-
 
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
@@ -142,12 +137,13 @@ than the maximun discount of product. The sale need to be approved""")}
                                     flag=flag, context=context)
         if not product or not partner_id:
             return res
-        specific_price = self.pool['sale.specific.price'].search(cr, uid,
-                    [('product_id', '=', product),
-                     ('customer_id', '=', partner_id),
-                     ('state', '=', 'approved'),
-                     ('start_date', '<=', date.today()),
-                     ('end_date', '>=', date.today())], context=context)
+        specific_price = self.pool['sale.specific.price'].search(
+            cr, uid,
+            [('product_id', '=', product),
+             ('customer_id', '=', partner_id),
+             ('state', '=', 'approved'),
+             ('start_date', '<=', date.today()),
+             ('end_date', '>=', date.today())], context=context)
         if specific_price:
             res['value']['discount'] = self.pool.get('sale.specific.price').browse(cr, uid, specific_price, context).discount
         return res

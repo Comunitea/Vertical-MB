@@ -46,7 +46,7 @@
                                 <field name="pricelist_price"/>
                                 <field name="discount"/>
                                 <field name="specific_price"/>
-                                <field name="margin"/>
+                                <field name="margin" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
