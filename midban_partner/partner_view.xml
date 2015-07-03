@@ -2,6 +2,18 @@
 
 <openerp>
     <data>
+
+        <record id="view_partner_tree_add_somercial" model="ir.ui.view">
+            <field name="name">res.partner.tree.add.comercial</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="email" position="after">
+                    <field name="comercial"/>
+                </field>
+            </field>
+        </record>
+
         <!-- Supplier/Client form view, general inherit -->
         <record id="midban_view_partner_form" model="ir.ui.view">
             <field name="name">midban.view.partner.form</field>

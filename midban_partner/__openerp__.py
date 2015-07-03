@@ -62,6 +62,7 @@
                 "email_template",
                 "stock",
                 "purchase",
+                "l10n_es_partner"
                 # "report_aeroo"
                 ],
     "data": ['wizard/process_unregister_partner_view.xml',
