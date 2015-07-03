@@ -24,7 +24,8 @@ from openerp import models, fields, api
 class crm_phonecall(models.Model):
     _inherit = 'crm.phonecall'
 
-    detail_id = fields.Many2one('route.detail', 'Route detail', readonly=True)
+    detail_id = fields.Many2one('route.detail', 'Route detail', readonly=True,
+                                ondelete="cascade")
     result = fields.Selection([('sale_done', 'Sale done'),
                                ('not_responding', 'Not responding'),
                                ('comunicate', 'Comunicate'),
@@ -44,7 +45,7 @@ class crm_phonecall(models.Model):
                 vals['state'] = 'done'
             elif vals['result'] in ['comunicate', 'not_responding']:
                 vals['state'] = 'pending'
-            elif vals['result'] in ['call_other_day']:
+            elif vals['result'] in ['call_other_day', 'call_other_moment']:
                 vals['state'] = 'open'
             elif vals['result'] in ['call_no_done']:
                 vals['state'] = 'cancel'

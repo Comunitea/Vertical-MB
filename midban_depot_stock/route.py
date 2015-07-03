@@ -332,7 +332,7 @@ class route(models.Model):
                         'partner_id': p_info.partner_id.id,
                         'detail_id': det_obj.id,
                         'description': _("Scheduled Call from %s" % det_name),
-                        'date': det_obj.date,
+                        'date': det_obj.date + " 06:00:00"
                     }
                     self.env['crm.phonecall'].create(vals)
 
@@ -391,6 +391,10 @@ class route_detail(models.Model):
                          deleted. Only pending routes can be\
                          deleted' % (self.date, self.state))
             raise except_orm(_('ERROR'), msg)
+        for rec in self.customer_ids:
+            rec.unlink()
+        for rec in self.call_ids:
+            rec.unlink()
         res = super(route_detail, self).unlink()
         return res
 

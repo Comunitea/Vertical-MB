@@ -129,6 +129,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         template: 'Order-Screen-Widget',
         init: function(parent,options){
             this._super(parent,options)
+            document.title = "Televenta"
         },
         start: function(){
             var self = this;

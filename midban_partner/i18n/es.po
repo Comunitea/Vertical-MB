@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 10:52+0000\n"
-"PO-Revision-Date: 2015-06-12 10:52+0000\n"
+"POT-Creation-Date: 2015-07-02 15:21+0000\n"
+"PO-Revision-Date: 2015-07-02 15:21+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -139,6 +139,11 @@ msgstr "Comentario"
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Commercial Validated"
 msgstr "Validación comercial realizada"
+
+#. module: midban_partner
+#: view:res.partner:midban_partner.midban_view_partner_form
+msgid "Create Date:"
+msgstr "Fecha de creación:"
 
 #. module: midban_partner
 #: field:call.days.time.slot,create_uid:0

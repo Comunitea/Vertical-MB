@@ -61,7 +61,6 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
                         alert(_t("This call is in course by other person"));
                     }
                     else if(res.state == "open"){  // set call on course
-                        
                         var model = new instance.web.Model("crm.phonecall");
                         var date_init = self.ts_model.parse_str_date_to_utc(self.ts_model.getCurrentFullDateStr())  //set dat in UTC from write in correct GMT0 openerp
                         //set date to calculate duration from server

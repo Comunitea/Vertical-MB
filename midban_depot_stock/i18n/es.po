@@ -307,7 +307,7 @@ msgstr "Listado llamadas"
 #: selection:crm.phonecall,result:0
 #: selection:route.report,result:0
 msgid "Call not done"
-msgstr "LLamada no realizada"
+msgstr "Llamada no realizada"
 
 #. module: midban_depot_stock
 #: selection:route.report,result:0
@@ -328,7 +328,7 @@ msgstr "Resultado llamada"
 #: selection:crm.phonecall,result:0
 #: selection:route.report,result:0
 msgid "Call without order"
-msgstr "LLamada sin pedido"
+msgstr "Llamada sin pedido"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
@@ -2351,7 +2351,7 @@ msgstr "Asistente planificador de tareas"
 #: code:addons/midban_depot_stock/route.py:292
 #, python-format
 msgid "Scheduled Call from %s"
-msgstr "LLamada planificada a %s"
+msgstr "Llamada planificada a %s"
 
 #. module: midban_depot_stock
 #: field:assign.task.wzd,date_planned:0
@@ -2574,7 +2574,7 @@ msgstr "Televenta"
 #: code:addons/midban_depot_stock/route.py:289
 #, python-format
 msgid "Telesale Call "
-msgstr "LLamada televenta "
+msgstr "Llamada televenta "
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent

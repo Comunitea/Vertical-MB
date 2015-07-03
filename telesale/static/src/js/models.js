@@ -375,7 +375,7 @@ function openerp_ts_models(instance, module){
             var self=this;
             if (!state){state = $('#state-select').val()}
             if (!date){date = $('#date-call-search').val()}        
-            var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"],['partner_id', '!=', false]]
+            var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
             if (state){
                 if (state != "any")
                     domain.push(['state','=',state])
@@ -459,7 +459,14 @@ function openerp_ts_models(instance, module){
             return today;  
         },
         parse_str_date_to_utc: function(str_date){
-            return instance.web.datetime_to_str(Date.parse(str_date));
+            
+            // Todo esto porque lo de abajo cambia el mes por el día, le cambiamos la fecha antes para obtener el resultado correcto
+            str_date2 = instance.web.datetime_to_str(Date.parse(str_date));
+            str_year = str_date2.split(" ")[0].split("-")[0]
+            str_month = str_date2.split(" ")[0].split("-")[1]
+            str_day = str_date2.split(" ")[0].split("-")[2]
+            new_str = str_year + "-" + str_day + "-" + str_month + " " + str_date2.split(" ")[1]
+            return new_str
         },
         parse_utc_to_str_date: function(str_date){
             return this.datetimeToStr(instance.web.str_to_datetime(str_date));
