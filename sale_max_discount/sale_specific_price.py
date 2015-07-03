@@ -46,7 +46,7 @@ class sale_specific_price(models.Model):
     pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True)
     pricelist_price = fields.Float('Pricelist price', compute='_get_pricelist_price')
     specific_price = fields.Float('Specific price', compute='_get_specific_price')
-    margin = fields.Float('Margin')
+    margin = fields.Char('Margin', compute='_get_margin')
     start_date = fields.Date('Start date', required=True)
     end_date = fields.Date('End date', required=True)
     discount = fields.Float('Discount', required=True)
@@ -54,6 +54,15 @@ class sale_specific_price(models.Model):
     state = fields.Selection(
         (('draft', 'Draft'), ('approved', 'Approved'),
          ('rejected', 'Rejected')), 'State', default='draft')
+
+    @api.one
+    def _get_margin(self):
+        if self.cost_price:
+            margin = ((self.specific_price - self.cost_price) * 100) / \
+                self.cost_price
+            self.margin = str(round(margin, 2)) + ' %'
+        else:
+            self.margin = '0 %'
 
     @api.multi
     def act_approve(self):
