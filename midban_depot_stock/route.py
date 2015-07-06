@@ -143,11 +143,18 @@ class route(models.Model):
     @api.one
     def unlink(self):
         """
-        Delete de partner_route_info model in the partners side
+        Delete de partner_route_info model in the partners side, and de detail
+        routes
         """
+        if self.state == 'active':
+            raise except_orm(_('Error!'), ('Actives routes con not be \
+                                            deleted'))
         for p in self.partner_ids:
             if p.route_id.id == self.id:
                 p.unlink()
+
+        for d in self.detail_ids:
+            d.unlink()
         res = super(route, self).unlink()
         return res
 
@@ -382,19 +389,22 @@ class route_detail(models.Model):
 
     @api.one
     def unlink(self):
-        if self.state not in ['pending'] or self.date < time.strftime(FORMAT):
-            if self.date < time.strftime(FORMAT):
-                msg = _('Detail route for day %s can not be deleted because is\
-                         a past date' % self.date)
-            else:
-                msg = _('Detail route for day %s with state is %s can not be \
-                         deleted. Only pending routes can be\
-                         deleted' % (self.date, self.state))
-            raise except_orm(_('ERROR'), msg)
-        for rec in self.customer_ids:
-            rec.unlink()
-        for rec in self.call_ids:
-            rec.unlink()
+        if self.route_id.state == 'active':
+            if self.state not in ['pending'] or \
+                    self.date < time.strftime(FORMAT):
+                if self.date < time.strftime(FORMAT):
+                    msg = _('Detail route for day %s can not be deleted \
+                             because is a past date' % self.date)
+                else:
+                    msg = _('Detail route for day %s with state is %s can not \
+                             be deleted. Only pending routes can be\
+                             deleted' % (self.date, self.state))
+                raise except_orm(_('ERROR'), msg)
+        else:
+            for rec in self.customer_ids:
+                rec.unlink()
+            for rec in self.call_ids:
+                rec.unlink()
         res = super(route_detail, self).unlink()
         return res
 
