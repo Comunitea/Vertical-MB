@@ -47,7 +47,7 @@
         />
 
         <report 
-            string="Supplier Report" 
+            string="Cross Dock Supplier Report" 
             id="action_report_supplier_order" 
             model="purchase.order" 
             report_type="qweb-pdf"
