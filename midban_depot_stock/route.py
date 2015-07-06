@@ -148,8 +148,8 @@ class route(models.Model):
         routes
         """
         if self.state == 'active':
-            raise except_orm(_('Error!'), ('Actives routes con not be \
-                                            deleted'))
+            raise except_orm(_('Error!'), _('Actives routes can not be \
+                                            deleted. Put it in draft state'))
         for p in self.partner_ids:
             if p.route_id.id == self.id:
                 p.unlink()
