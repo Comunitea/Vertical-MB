@@ -45,6 +45,7 @@
         "price_system_variable",
         "l10n_es_toponyms",
         "report",
+        "stock_valued_picking",
     ],
     "data": [
         'res_users_view.xml',

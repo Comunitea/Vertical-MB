@@ -143,8 +143,10 @@ class sale_order(osv.Model):
         res = super(sale_order, self).\
             _prepare_order_line_procurement(cr, uid, order, line,
                                             group_id=group_id, context=context)
-        res['trans_route_id'] = order.trans_route_id and \
-            order.trans_route_id.id or False
+        # res['trans_route_id'] = order.trans_route_id and \
+        #     order.trans_route_id.id or False
+        res['route_detail_id'] = order.route_detail_id and \
+            order.route_detail_id.id or False
         return res
 
     def _get_mandatory_camera(self, cr, uid, context=None):

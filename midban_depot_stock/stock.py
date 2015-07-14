@@ -41,8 +41,22 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        'trans_route_id': fields.many2one('route', 'Transport Route',
-                                          readonly=True),
+        # 'trans_route_id': fields.many2one('route', 'Transport Route',
+        #                                   readonly=True),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
+                                           domain=[('state', '=', 'active')]),
+        'trans_route_id': fields.related('route_detail_id', 'route_id',
+                                         string='Transport Route',
+                                         type="many2one",
+                                         relation="route",
+                                         store=True,
+                                         readonly=True),
+        'detail_date': fields.related('route_detail_id', 'date',
+                                      string='Route Date',
+                                      type="date",
+                                      relation="route.detail",
+                                      store=True,
+                                      readonly=True),
         'camera_ids': fields.many2many('stock.location',
                                        'pick_cameras_rel',
                                        'pick_id',
@@ -57,7 +71,9 @@ class stock_picking(osv.osv):
         'camera_id': fields.many2one('stock.location', 'Affected camera',
                                      readonly=True,
                                      help='Writed only by reposition wizard\
-        to get a reposition task of the selected cameras in the task wizard')
+        to get a reposition task of the selected cameras in the task wizard'),
+        'order_note': fields.related('sale_id', 'note', readonly=True,
+                                     type="char", string="Order Note"),
     }
 
     def _change_operation_dest_loc(self, cr, uid, ids, context=None):
@@ -965,6 +981,11 @@ class stock_move(osv.osv):
                                          string='Transport Route',
                                          relation="route",
                                          type="many2one"),
+        'route_detail_id': fields.related('procurement_id', 'route_detail_id',
+                                          readonly=True,
+                                          string='Detail Route',
+                                          relation="route.detail",
+                                          type="many2one"),
         # 'drop_code': fields.related('procurement_id', 'drop_code',
         #                             string="Drop Code",
         #                             type='integer', readonly=True),
@@ -975,8 +996,9 @@ class stock_move(osv.osv):
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
         res = super(stock_move, self).\
             _prepare_procurement_from_move(cr, uid, move, context=context)
-        route_id = move.trans_route_id and move.trans_route_id.id or False
-        res['trans_route_id'] = route_id
+        route_detail_id = move.route_detail_id and move.route_detail_id.id or \
+            False
+        res['route_detail_id'] = route_detail_id
         # res['drop_code'] = move.drop_code
         return res
 
@@ -1014,8 +1036,9 @@ class stock_move(osv.osv):
                 if procurement:
                     procurement = proc_obj.browse(cr, uid, procurement,
                                                   context=context)
-                    if procurement.trans_route_id:
-                        vls = {'trans_route_id': procurement.trans_route_id.id}
+                    if procurement.route_detail_id:
+                        vls = {'route_detail_id':
+                               procurement.route_detail_id.id}
                         pick_obj.write(cr, uid, vals['picking_id'], vls,
                                        context=context)
         if vals.get('real_weight', False):
