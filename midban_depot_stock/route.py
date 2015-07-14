@@ -351,6 +351,15 @@ class route_detail(models.Model):
     _rec_name = 'route_id'
     _order = 'date'
 
+    @api.multi
+    @api.depends('route_id', 'date')
+    def _get_detail_name_str(self):
+        """
+        Calc name str
+        """
+        for detail in self:
+            detail.detail_name_str = detail.route_id.code + " " + detail.date
+
     route_id = fields.Many2one('route', 'Route', required=True)
     date = fields.Date('Date', required=True)
     state = fields.Selection([('pending', 'Pending'),
@@ -372,6 +381,9 @@ class route_detail(models.Model):
                                    ('other', 'Other')], 'Type',
                                   related='route_id.type',
                                   readonly=True)
+    detail_name_str = fields.Char("Detail name", readonly=True,
+                                  compute='_get_detail_name_str',
+                                  store=True)
 
     @api.multi
     def set_cancelled(self):
@@ -425,8 +437,23 @@ class route_detail(models.Model):
         for detail in self:
             date_split = detail.date.split('-')
             date = date_split[2] + "-" + date_split[1] + "-" + date_split[0]
-            name = detail.route_id.name + ", " + date
+            name = detail.route_id.code + ", " + date
             res.append((detail.id, name))
+        return res
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
+        res = super(route_detail, self).name_search(name, args=args,
+                                                    operator=operator,
+                                                    limit=limit)
+        args.append(('detail_name_str', operator, name))
+        recs = self.search(args)
+        for r in recs:
+            if r.date < time.strftime("%Y-%m-%d"):
+                recs -= r
+        res = recs.name_get()
         return res
 
 
