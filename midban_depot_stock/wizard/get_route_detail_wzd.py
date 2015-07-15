@@ -79,7 +79,7 @@ class item_create_route(models.TransientModel):
     _name = 'item.create.route'
 
     wzd_id = fields.Many2one('get.route.detail.wzd', 'Wizard')
-    route_id = fields.Many2one('route', 'Route', required=True)
+    route_id = fields.Many2one('route', 'Route')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
     last_pending_date = fields.Date('Last Pending Date', readonly=True)

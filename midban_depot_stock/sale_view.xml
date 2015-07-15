@@ -9,10 +9,11 @@
             <field name="arch" type="xml">
                 <field name='project_id' position="after">
                     <field name="trans_route_id"/>
-                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"/>
+                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
+                           attrs="{'readonly': [('state', 'in', [('progress,' 'manual', 'shipping_except', 'invoice_except', 'done')])]}"/>
                 </field>
                 <field name='date_order' position="after">
-                    <field name="date_planned"/>
+                    <field name="date_planned" attrs="{'readonly': [('route_detail_id', '!=', False)]}"/>
                 </field>
              </field>
          </record>
@@ -24,7 +25,8 @@
             <field name="arch" type="xml">
                 <field name='state' position="after">
                     <field name="trans_route_id"/>             
-                    <field name="route_detail_id"/>             
+                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
+                           attrs="{'readonly': [('state', 'in', [('progress,' 'manual', 'shipping_except', 'invoice_except', 'done')])]}"/>             
                     <field name="detail_date" invisible="1"/>             
                 </field>
              </field>
@@ -37,7 +39,8 @@
             <field name="arch" type="xml">
                 <field name='state' position="after">
                     <field name="trans_route_id"/>
-                    <field name="route_detail_id"/>
+                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
+                           attrs="{'readonly': [('state', 'in', [('progress,' 'manual', 'shipping_except', 'invoice_except', 'done')])]}"/>
                     <field name="detail_date" invisible="1"/>         
                 </field>
              </field>

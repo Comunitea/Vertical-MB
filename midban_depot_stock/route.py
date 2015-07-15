@@ -159,33 +159,6 @@ class route(models.Model):
         res = super(route, self).unlink()
         return res
 
-    # @api.model
-    # def create(self, vals):
-    #     if vals.get('bzip_ids', False):
-    #         bzip_ids = vals['bzip_ids'][0][2]
-    #         bzip_objs = self.env['res.better.zip'].browse(bzip_ids)
-    #         bzip_codes = [x.name for x in bzip_objs]
-    #         domain = [('day_id', '=', vals['day_id']),
-    #                   ('type', '=', vals['type']),
-    #                   ('code', '!=', vals['code'])]
-
-    #         route_objs = self.search(domain)
-    #         if route_objs:
-    #             for route_obj in route_objs:
-    #                 for bzip_c in route_obj.bzip_ids:
-    #                     if bzip_c.name in bzip_codes:
-    #                         raise except_orm(_('Error'),
-    #                                          _('The zip code %s is already \
-    #                                            assigned in the\
-    #                                            route %s. Change it or you \
-    # can \
-    #                                            can not save the \
-    #                                            route' % (bzip_c.name,
-    #                                                      route_obj.code)))
-    #     # self._check_partner_zip_in_route()
-    #     res = super(route, self).create(vals)
-    #     return res
-
     @api.one
     def set_active(self):
         """

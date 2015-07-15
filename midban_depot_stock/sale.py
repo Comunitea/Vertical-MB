@@ -22,7 +22,7 @@ from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
-# from openerp import api
+from openerp import api
 
 
 class sale_order(osv.Model):
@@ -41,50 +41,23 @@ class sale_order(osv.Model):
                                       relation="route.detail",
                                       store=True,
                                       readonly=True),
-        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
-                                           states={'done': [('readonly',
-                                                             True)]}),
-        'date_planned': fields.datetime('Scheduled Date', required=True,
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
+        'date_planned': fields.datetime('Scheduled Date',
                                         select=True,
                                         help="Date propaged to shecduled \
                                               date of related picking"),
     }
 
-    # @api.onchange('route_detail_id')
-    # @api.multi
-    # def onchange_route_detail_id(self):
-    #     """
-    #     Try to find a route detail model of the closest day scheduled in a
-    #     customer list of a detail model and assign it, also assign de date
-    #     planned with the detail date
-    #     """
-    #     res = {}
-    #     warning = False
-    #     if self.route_detail_id:
-    #         if not self.partner_id:
-    #             self.route_detail_id = False
-    #             warning = {
-    #                 'title': _('Warning!'),
-    #                 'message': _('Customer must be assigned')
-    #             }
-    #         else:
-    #             found = False
-    #             for cust in self.route_detail_id.customer_ids:
-    #                 if cust.customer_id.id == self.partner_id.id:
-    #                     found = True
-    #                     break
-    #             if not found:
-    #                 name_detail = self.route_detail_id.name_get()[0][1]
-    #                 warning = {
-    #                     'title': _('Warning!'),
-    #                     'message': _('The customer is not included in the \
-    #                                   customer list of detailed route\
-    #                                   %s' % name_detail)
-    #                 }
-    #         if warning:
-    #             res['warning'] = warning
-    #             self.route_detail_id = False
-    #     return res
+    @api.onchange('route_detail_id')
+    @api.multi
+    def onchange_route_detail_id(self):
+        """
+        Try to find a route detail model of the closest day scheduled in a
+        customer list of a detail model and assign it, also assign de date
+        planned with the detail date
+        """
+        if self.route_detail_id:
+            self.date_planned = self.route_detail_id.date + " 19:00:00"
 
     def _get_date_planned(self, cr, uid, order, line, start_date,
                           context=None):
@@ -93,7 +66,11 @@ class sale_order(osv.Model):
         the date setted in the new date_planned field. From procurement pass to
         move throught date_expected field.
         """
-        date_planned = order.date_planned
+        res = super(sale_order, self)._get_date_planned(cr, uid, order, line,
+                                                        start_date,
+                                                        context=context)
+
+        date_planned = order.date_planned and order.date_planned or res
         return date_planned
 
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
@@ -110,6 +87,7 @@ class sale_order(osv.Model):
                                                           ids,
                                                           part,
                                                           context=context)
+        # import ipdb; ipdb.set_trace()
         partner_t = self.pool.get('res.partner')
         part = partner_t.browse(cr, uid, part, context=context)
         # Get next detail of a delivery route
@@ -119,6 +97,9 @@ class sale_order(osv.Model):
                 res['value']['route_detail_id'] = detail_obj.id
                 res['value']['date_planned'] = detail_obj.date + \
                     " 19:00:00"
+            else:
+                res['value']['route_detail_id'] = False
+                res['value']['date_planned'] = False
 
         if part and not res['value'].get('route_detail_id', False):
             t_config = self.pool.get('ir.config_parameter')
@@ -200,6 +181,21 @@ class sale_order(osv.Model):
                                                           context)
         res = super(sale_order, self).action_ship_create(cr, uid, ids,
                                                          context=context)
+        return res
+
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrited in order to write the read_only date_planned when a
+        detail_route is setted.
+        """
+        for order in self:
+            if vals.get('route_detail_id', False):
+                t_detail = self.env['route.detail']
+                detail_obj = t_detail.browse(vals['route_detail_id'])
+                detail_date = detail_obj.date + " 19:00:00"
+                order.date_planned = detail_date
+        res = super(sale_order, self).write(vals)
         return res
 
 

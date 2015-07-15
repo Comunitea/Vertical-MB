@@ -536,42 +536,57 @@ class assign_task_wzd(osv.TransientModel):
         move_obj = self.pool.get('stock.move')
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         res = []
-        max_volume = wzd_obj.warehouse_id.max_volume
-        if not max_volume:
-            raise osv.except_osv(_('Error'), _('No max volume defined in \
-                                                warehouse'))
-        for prod_moves in moves_by_product:
-            product = prod_moves[0]
-            move_ids = prod_moves[1]
 
-            total_qty = 0.0
-            # Can we pick all the product??
-            for move in move_obj.browse(cr, uid, move_ids, context=context):
-                total_qty += move.product_uom_qty
-                if not product:
-                    product = move.product_id
+        # Check if we get moves in wave by defined maximun volume or not
+        t_config = self.pool.get('ir.config_parameter')
+        param_value = t_config.get_param(cr, uid, 'pick.by.volume',
+                                         default='False')
+        by_volume = True if param_value == 'True' else False
+        if by_volume:
+            max_volume = wzd_obj.warehouse_id.max_volume
+            if not max_volume:
+                raise osv.except_osv(_('Error'), _('No max volume defined in \
+                                                    warehouse'))
+            for prod_moves in moves_by_product:
+                product = prod_moves[0]
+                move_ids = prod_moves[1]
 
-            boxes_div = product.un_ca or 1
-            vol_box = product.ca_width * \
-                product.ca_height * product.ca_length
-            num_boxes = total_qty / boxes_div
-            all_moves_vol = num_boxes * vol_box
-            if all_moves_vol >= max_volume:
-                if not res:  # Wave is empty so we force put in it
+                total_qty = 0.0
+                # Can we pick all the product??
+                for move in move_obj.browse(cr, uid, move_ids,
+                                            context=context):
+                    total_qty += move.product_uom_qty
+                    if not product:
+                        product = move.product_id
+
+                boxes_div = product.un_ca or 1
+                vol_box = product.ca_width * \
+                    product.ca_height * product.ca_length
+                num_boxes = total_qty / boxes_div
+                all_moves_vol = num_boxes * vol_box
+                if all_moves_vol >= max_volume:
+                    if not res:  # Wave is empty so we force put in it
+                        picking_ids = self._get_pickings(cr, uid, ids,
+                                                         move_ids,
+                                                         context=context)
+                        res.extend(picking_ids)
+                        break
+                    else:  # wave is not empty so we check for another product
+                        continue
+                else:  # We can pick all the products
                     picking_ids = self._get_pickings(cr, uid, ids, move_ids,
                                                      context=context)
-                    res.extend(picking_ids)
-                    break
-                else:  # wave is not empty so we check for another product
-                    continue
-            else:  # We can pick all the products
-                picking_ids = self._get_pickings(cr, uid, ids, move_ids,
-                                                 context=context)
 
-                if picking_ids:
-                    res.extend(picking_ids)
-                else:
-                    print "FAAAAALLLLLAAAAAAAR???????????????????"
+                    if picking_ids:
+                        res.extend(picking_ids)
+        else:  # All moves will be in the picking wave
+            for prod_moves in moves_by_product:
+                product = prod_moves[0]
+                move_ids = prod_moves[1]
+            picking_ids = self._get_pickings(cr, uid, ids, move_ids,
+                                             context=context)
+            if picking_ids:
+                        res.extend(picking_ids)
         res = list(set(res))
         return res
 

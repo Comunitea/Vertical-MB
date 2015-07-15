@@ -43,8 +43,7 @@ class stock_picking(osv.osv):
                                       'Task Type', readonly=True),
         # 'trans_route_id': fields.many2one('route', 'Transport Route',
         #                                   readonly=True),
-        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
-                                           domain=[('state', '=', 'active')]),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
         'trans_route_id': fields.related('route_detail_id', 'route_id',
                                          string='Transport Route',
                                          type="many2one",
@@ -196,6 +195,45 @@ class stock_picking(osv.osv):
                 op.task_id = False  # Write to be able to assign later
                 op.to_process = True  # Write to be to process by default
         return
+
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrited in order to write in the picking of type pick the detail
+        route if the pick is not done.
+        """
+        for pick in self:
+            if vals.get('route_detail_id', False):
+                t_detail = self.env['route.detail']
+                detail_obj = t_detail.browse(vals['route_detail_id'])
+                detail_date = detail_obj.date + " 19:00:00"
+                pick.min_date = detail_date
+
+            if pick.sale_id and pick.group_id and \
+                    vals.get('route_detail_id', False) and \
+                    pick.picking_type_code == 'outgoing':
+                domain = [('id', '!=', pick.id),
+                          ('group_id', '=', pick.group_id.id),
+                          ('picking_type_code', '!=', 'outgoing')]
+                pick_objs = self.search(domain)
+                for pick2 in pick_objs:
+                    if pick2.state != 'done':
+                        vals = {'route_detail_id': vals['route_detail_id'],
+                                'min_date': detail_date}
+                        pick2.write(vals)
+        res = super(stock_picking, self).write(vals)
+        return res
+
+    @api.onchange('route_detail_id')
+    @api.multi
+    def onchange_route_detail_id(self):
+        """
+        Try to find a route detail model of the closest day scheduled in a
+        customer list of a detail model and assign it, also assign de date
+        planned with the detail date
+        """
+        if self.route_detail_id:
+            self.min_date = self.route_detail_id.date + " 19:00:00"
 
 
 class stock_package(osv.osv):
@@ -1287,6 +1325,13 @@ class stock_config_settings(models.TransientModel):
                                        a sale order you will not be able to do\
                                        it if there is no a delivery route \
                                        detail scheduled for the customer')
+    pick_by_volume = fields2.Boolean('Picking task by volume',
+                                     help='If checked when we get a picking\
+        task, from all moves of a kind of product we only put in the task \
+        moves until reach the max volume. If max volume is reached it will be\
+        ignored all product moves and continues with other product moves\
+        If not checked all moves of a route and a concret date will be\
+        considered in a unique task without limit.')
 
     @api.multi
     def get_default_check_route_zip(self, fields):
@@ -1365,3 +1410,16 @@ class stock_config_settings(models.TransientModel):
         domain = [('key', '=', 'check.sale.order')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = 'True' if self.check_sale_order else 'False'
+
+    @api.multi
+    def get_default_pick_by_volume(self, fields):
+        domain = [('key', '=', 'pick.by.volume')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'pick_by_volume': value}
+
+    @api.multi
+    def set_default_pick_by_volume(self):
+        domain = [('key', '=', 'pick.by.volume')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.pick_by_volume else 'False'
