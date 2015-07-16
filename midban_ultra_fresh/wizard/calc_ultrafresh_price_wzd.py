@@ -30,11 +30,11 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
     """
     _name = "calc.ultrafresh.price.wzd"
 
-    date = fields.Date('Date', default=fields.Date.today(),
+    date = fields.Date('Date', default=fields.Date.context_today,
                        help="Date to search for approved purchase\
                              order lines, and get the above lines.")
     date_sales = fields.Date('Date for sales to change',
-                             default=fields.Date.today(),
+                             default=fields.Date.context_today,
                              help="Date to search for not cancel or done\
                                    sale order lines tthat will be writen\
                                    with the kg price")
