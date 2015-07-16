@@ -18,7 +18,7 @@ msgstr "Información logística"
 msgid "Relations units - logistic"
 msgstr "Relación unidades - logística"
 
-# #. module: product
-# #: view:product.supplierinfo:product.product_supplierinfo_form_view
-# msgid "Coefficients and sizes of logistic units"
-# msgstr "Coeficientes y tamaños de unidades logísticas"
+#. module: product
+#: view:product.supplierinfo:product.product_supplierinfo_form_view
+msgid "Coefficients and sizes of logistic units"
+msgstr "Coeficientes y tamaños de unidades logísticas"

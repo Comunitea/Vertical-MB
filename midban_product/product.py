@@ -479,10 +479,10 @@ class ProductSupplierinfo(models.Model):
     log_base_id = fields2.Many2one('product.uom', 'Base',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic base')
-    log_box_id = fields2.Many2one('product.uom', 'Unit',
+    log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic unit')
-    log_unit_id = fields2.Many2one('product.uom', 'Box',
+    log_unit_id = fields2.Many2one('product.uom', 'Unit',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic box')
 
