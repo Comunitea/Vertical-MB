@@ -26,8 +26,8 @@ from openerp.tools.translate import _
 class get_route_detail_wzd(models.TransientModel):
     _name = 'get.route.detail.wzd'
 
-    start_date = fields.Date('Start Date', default=fields.Date.today())
-    end_date = fields.Date('End Date', default=fields.Date.today())
+    start_date = fields.Date('Start Date', default=fields.Date.context_today)
+    end_date = fields.Date('End Date', default=fields.Date.context_today)
     item_ids = fields.One2many('item.create.route', 'wzd_id',
                                'Selected Routes')
     delete = fields.Boolean('Delete Future',
