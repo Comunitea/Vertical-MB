@@ -83,23 +83,48 @@
 
                 <field name="description_sale"  position="after">
 
-                    <group colspan="4" col="8" string="Mandatory Units">
-                        <field name="kg_un" required="1"/>
-                        <field name="un_width" required="1"/>
-                        <field name="un_height" required="1"/>
-                        <field name="un_length" required="1"/>
-                        <field name="un_ca" required="1"/>
-                        <field name="ca_width" required="1"/>
-                        <field name="ca_height" required="1"/>
-                        <field name="ca_length" required="1"/>
-                        <field name="ca_ma" required="1"/>
-                        <field name="ma_width" required="1"/>
-                        <field name="ma_height" required="1"/>
-                        <field name="ma_length" required="1"/>
-                        <field name="ma_pa" required="1"/>
-                        <field name="pa_width" required="1"/>
-                        <field name="pa_height" required="1"/>
-                        <field name="pa_length" required="1"/>
+                    <group colspan="2" col="4" string="Relations units - logistic">
+                        <group col="2">
+                            <field name="log_base_id"/>
+                            <field name="log_unit_id"/>
+                            <field name="log_box_id"/>
+                        </group>
+                        <group col="2">
+                            <field name="base_use_sale"/>
+                            <field name="unit_use_sale"/>
+                            <field name="box_use_sale"/>
+                        </group>
+                        
+                    </group>
+                    <group colspan="4" col="10" string="Coefficients and sizes of logistic units">
+                        <group col="2">
+                            <field name="var_coeff_un" required="1"/>
+                            <field name="var_coeff_ca" required="1"/>
+                        </group>
+                        <group col="2">
+                            <field name="kg_un" required="1"/>
+                            <field name="un_ca" required="1"/>
+                            <field name="ca_ma" required="1"/>
+                            <field name="ma_pa" required="1"/>
+                        </group>
+                        <group col="2">
+                            <field name="un_width" required="1"/>
+                            <field name="ca_width" required="1"/>
+                            <field name="ma_width" required="1"/>
+                            <field name="pa_width" required="1"/>
+                        </group>
+                        <group col="2">
+                            <field name="un_height" required="1"/>
+                            <field name="ca_height" required="1"/>
+                            <field name="ma_height" required="1"/>
+                            <field name="pa_height" required="1"/>
+                        </group>
+                        <group col="2">
+                            <field name="un_length" required="1"/>
+                            <field name="ca_length" required="1"/>
+                            <field name="ma_length" required="1"/>
+                            <field name="pa_length" required="1"/>
+                        </group>
                     </group>
 
                 </field>
@@ -407,6 +432,90 @@
                 <page name="variants" position="attributes">
                     <attribute name="attrs">{'invisible': [('hidde_variant_page', '=', True)]}</attribute>
                 </page>
+            </field>
+        </record>
+
+
+         <record id="product.product_supplierinfo_form_view" model="ir.ui.view">
+            <field name="name">product.supplierinfo.form.view</field>
+            <field name="model">product.supplierinfo</field>
+            <!-- <field name="inherit_id" ref="product.product_supplierinfo_form_view"/> -->
+            <field name="arch" type="xml">
+                <form string="Supplier Information">
+                    <notebook>
+                        <page string="Information">
+                            <group col="4">
+                            <field name="name" context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"/>
+                            <field name="sequence"/>
+                            <field name="product_name"/>
+                            <field name="product_code"/>
+                            <field name="min_qty"/>
+                            <field name="product_uom" groups="product.group_uom"/>
+                            <field name="delay"/>
+                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                            </group>
+                            <p groups="product.group_purchase_pricelist" class="oe_grey">The prices below will only be taken into account when your pricelist is set as based on supplier prices.</p>
+                            <field groups="product.group_purchase_pricelist" name="pricelist_ids">
+                                <tree editable="bottom" string="Pricelist">
+                                    <field name="min_quantity"/>
+                                    <field name="price"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="min_quantity"/>
+                                        <field name="price"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+
+                        <page string="Logistic Information">
+                            <group colspan="2" col="4" string="Relations units - logistic">
+                            <group col="2">
+                                <field name="log_base_id"/>
+                                <field name="log_unit_id"/>
+                                <field name="log_box_id"/>
+                            </group>
+                            <group col="2">
+                                <field name="base_use_purchase"/>
+                                <field name="unit_use_purchase"/>
+                                <field name="box_use_purchase"/>
+                            </group>
+                            
+                            </group>
+                            <group colspan="4" col="10" string="Coefficients and sizes of logistic units">
+                                <group col="2">
+                                    <field name="var_coeff_un"/>
+                                    <field name="var_coeff_ca"/>
+                                </group>
+                                <group col="2">
+                                    <field name="supp_kg_un" required="1"/>
+                                    <field name="supp_un_ca" required="1"/>
+                                    <field name="supp_ca_ma" required="1"/>
+                                    <field name="supp_ma_pa" required="1"/>
+                                </group>
+                                <group col="2">
+                                    <field name="supp_un_width" required="1"/>
+                                    <field name="supp_ca_width" required="1"/>
+                                    <field name="supp_ma_width" required="1"/>
+                                    <field name="supp_pa_width" required="1"/>
+                                </group>
+                                <group col="2">
+                                    <field name="supp_un_height" required="1"/>
+                                    <field name="supp_ca_height" required="1"/>
+                                    <field name="supp_ma_height" required="1"/>
+                                    <field name="supp_pa_height" required="1"/>
+                                </group>
+                                <group col="2">
+                                    <field name="supp_un_length" required="1"/>
+                                    <field name="supp_ca_length" required="1"/>
+                                    <field name="supp_ma_length" required="1"/>
+                                    <field name="supp_pa_length" required="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </form>
             </field>
         </record>
 

@@ -23,6 +23,8 @@ import openerp.addons.decimal_precision as dp
 import time
 from openerp.tools.translate import _
 from openerp import netsvc
+from openerp import models
+from openerp import fields as fields2
 
 
 class temp_type(osv.Model):
@@ -429,3 +431,83 @@ class product_history(osv.Model):
         'reason': fields.char('Reason', size=256),
         'comment': fields.text('Comment')
     }
+
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    var_coeff_un = fields2.Boolean('Variable coefficient',
+                                   help='If checked we can manage'
+                                   ' products of variable weight.\n'
+                                   'System will not convert between units')
+    var_coeff_ca = fields2.Boolean('Variable coefficient',
+                                   help='If checked we can manage'
+                                   ' products of variable weight.\n'
+                                   'System will not convert between units.')
+    log_base_id = fields2.Many2one('product.uom', 'Base',
+                                   help='The defined unit of measure will be'
+                                   ' related with the logistic base')
+    log_box_id = fields2.Many2one('product.uom', 'Box',
+                                  help='The defined unit of measure will be'
+                                  ' related with the logistic box')
+    log_unit_id = fields2.Many2one('product.uom', 'Unit',
+                                   help='The defined unit of measure will be'
+                                   ' related with the logistic unit')
+
+    base_use_sale = fields2.Boolean('Can be used on sales',
+                                    help='Allows you to sale in the defined'
+                                    ' logistic base.')
+    unit_use_sale = fields2.Boolean('Can be used on sales',
+                                    help='Allows you to sale in the defined'
+                                    ' logistic unit.')
+    box_use_sale = fields2.Boolean('Can be used on sales',
+                                   help='Allows you to sale in the defined'
+                                   ' logistic box')
+
+
+class ProductSupplierinfo(models.Model):
+    _inherit = 'product.supplierinfo'
+
+    var_coeff_un = fields2.Boolean('Variable coefficient',
+                                   help='If checked we can manage'
+                                   ' products of variable weight.\n'
+                                   'System will not convert between units')
+    var_coeff_ca = fields2.Boolean('Variable coefficient',
+                                   help='If checked we can manage'
+                                   ' products of variable weight.\n'
+                                   'System will not convert between units.')
+    log_base_id = fields2.Many2one('product.uom', 'Base',
+                                   help='The defined unit of measure will be'
+                                   ' related with the logistic base')
+    log_box_id = fields2.Many2one('product.uom', 'Unit',
+                                  help='The defined unit of measure will be'
+                                  ' related with the logistic unit')
+    log_unit_id = fields2.Many2one('product.uom', 'Box',
+                                   help='The defined unit of measure will be'
+                                   ' related with the logistic box')
+
+    base_use_purchase = fields2.Boolean('Can be used on purchases',
+                                        help='Allows you to buy in the defined'
+                                        ' logistic base.')
+    unit_use_purchase = fields2.Boolean('Can be used on purchases',
+                                        help='Allows you to buy in the defined'
+                                        ' logistic unit.')
+    box_use_purchase = fields2.Boolean('Can be used on purchases',
+                                       help='Allows you to buy in the defined'
+                                       ' logistic box')
+    supp_kg_un = fields2.Float("KG/UN Supplier", digits=(4, 2))
+    supp_un_width = fields2.Float("UN Width Supplier", digits=(4, 2))
+    supp_un_height = fields2.Float("UN Height Supplier", digits=(4, 2))
+    supp_un_length = fields2.Float("UN Length Supplier", digits=(4, 2))
+    supp_ca_ma = fields2.Float("CA/MA Supplier", digits=(4, 2))
+    supp_ma_width = fields2.Float("MA Width Supplier", digits=(4, 2))
+    supp_ma_height = fields2.Float("MA Height Supplier", digits=(4, 2))
+    supp_ma_length = fields2.Float("MA Length Supplier", digits=(4, 2))
+    supp_ma_pa = fields2.Float("MA/PA Supplier", digits=(4, 2))
+    supp_pa_width = fields2.Float("PA Width Supplier", digits=(4, 2))
+    supp_pa_height = fields2.Float("PA Height Supplier", digits=(4, 2))
+    supp_pa_length = fields2.Float("PA Length Supplier", digits=(4, 2))
+    supp_un_ca = fields2.Float("UN/CA Supplier", digits=(4, 2))
+    supp_ca_width = fields2.Float("CA Width Supplier", digits=(4, 2))
+    supp_ca_height = fields2.Float("CA Height Supplier", digits=(4, 2))
+    supp_ca_length = fields2.Float("CA Length Supplier", digits=(4, 2))
