@@ -35,30 +35,30 @@ class sale(osv.osv):
         """
         Get the margins against cmc.
         """
-        cur_obj = self.pool.get('res.currency')
+        # cur_obj = self.pool.get('res.currency')
         res = {}
         for order in self.browse(cr, uid, ids, context=context):
-            cur = order.pricelist_id.currency_id
+            # cur = order.pricelist_id.currency_id
             res[order.id] = {
                 'total_margin': 0.0,
                 'total_margin_per': 0.0,
             }
-            sum_cmc = 0
-            sum_margin = 0
-            for line in order.order_line:
-                qty = line.choose_unit == 'box' and line.product_uos_qty or \
-                    line.product_uom_qty
-                prod_cmc = line.product_id.cmc
-                sum_cmc += line.product_id.cmc * qty
-                pvp = line.price_unit
-                sum_margin += (pvp - prod_cmc) * qty
+            # sum_cmc = 0
+            # sum_margin = 0
+            # for line in order.order_line:
+            #     qty = line.choose_unit == 'box' and line.product_uos_qty or \
+            #         line.product_uom_qty
+            #     prod_cmc = line.product_id.cmc
+            #     sum_cmc += line.product_id.cmc * qty
+            #     pvp = line.price_unit
+            #     sum_margin += (pvp - prod_cmc) * qty
 
-            total_margin = cur_obj.round(cr, uid, cur, sum_margin)
-            res[order.id]['total_margin'] = total_margin
-            if order.amount_untaxed:
-                op = (order.amount_untaxed - sum_cmc) / order.amount_untaxed
-                total_margin_per = cur_obj.round(cr, uid, cur, op * 100)
-                res[order.id]['total_margin_per'] = total_margin_per
+            # total_margin = cur_obj.round(cr, uid, cur, sum_margin)
+            # res[order.id]['total_margin'] = total_margin
+            # if order.amount_untaxed:
+            #     op = (order.amount_untaxed - sum_cmc) / order.amount_untaxed
+            #     total_margin_per = cur_obj.round(cr, uid, cur, op * 100)
+            #     res[order.id]['total_margin_per'] = total_margin_per
         return res
 
     _columns = {
@@ -167,7 +167,7 @@ class sale(osv.osv):
                     'product_uos_qty': product_uos_qty,
                     'tax_id': [(6, 0, line['tax_ids'])],
                     'pvp_ref': line['pvp_ref'],
-                    'min_unit': product_obj.min_unit,
+                    # 'min_unit': product_obj.min_unit,
                     'choose_unit': choose_unit,
                     'q_note': line.get('qnote', False),
                     'detail_note': line.get('detail_note', False)

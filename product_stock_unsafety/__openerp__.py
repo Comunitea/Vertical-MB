@@ -38,7 +38,7 @@ Module that adds the management to the products under minimal.
                 "purchase",
                 "stock",
                 "procurement",
-                "midban_depot_stock"  # Add for virtual stock conservative
+                "midban_depot_stock",  # Add for virtual stock conservative
                 ],
     "data": ["minimum_days_view.xml",
              "product_view.xml",

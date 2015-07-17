@@ -29,8 +29,8 @@
                         <field name="picking_id" readonly="1" string="Picking"/>
                         <field name="served_qty"/>
                         <field name="pending_qty"/>
-                        <field name="min_unit"/>
-                        <field name="choose_unit" attrs="{'readonly': [('min_unit','&lt;&gt;','both')]}"/>
+                      <!--   <field name="min_unit"/>
+                        <field name="choose_unit" attrs="{'readonly': [('min_unit','&lt;&gt;','both')]}"/> -->
                     </group>               
                 </group>
                 <group name="location" position="replace">
@@ -45,12 +45,14 @@
                         <field name="product_id" string="Product"/>
                        <label for ="product_uom_qty" string="Quantity"/>
                        <div>
-                            <field name="product_uom_qty" class="oe_inline" attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/>
+                           <!--  <field name="product_uom_qty" class="oe_inline" attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/> -->
+                           <field name="product_uom_qty" class="oe_inline"/>
                             <field name="product_uom" readonly="True" class="oe_inline"/>
                         </div>
                         <label for="product_uos_qty" string="Quantity UOS"/>
                         <div>
-                            <field name="product_uos_qty" class="oe_inline" attrs="{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/>
+                           <!--  <field name="product_uos_qty" class="oe_inline" attrs="{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/> -->
+                             <field name="product_uos_qty" class="oe_inline"/>
                             <field name="product_uos" readonly="True" class="oe_inline"/>
                         </div>
                         <field name="date_validity"/>
