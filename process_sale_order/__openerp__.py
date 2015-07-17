@@ -35,13 +35,13 @@
     """,
     "images": [],
     "depends": ["base",
-                "product",
+                "midban_product",  #log_base_id, base_use_field... fields
                 "sale",
                 "sale_stock",
                 "midban_depot_stock"],
     "data": [
-        # 'product_view.xml',
-        # 'sale_view.xml',
+        'product_view.xml',
+        'sale_view.xml',
     ],
     "demo": [],
     "test": [],

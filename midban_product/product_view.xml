@@ -98,8 +98,8 @@
                     </group>
                     <group colspan="4" col="10" string="Coefficients and sizes of logistic units">
                         <group col="2">
-                            <field name="var_coeff_un" required="1"/>
-                            <field name="var_coeff_ca" required="1"/>
+                            <field name="var_coeff_un"/>
+                            <field name="var_coeff_ca"/>
                         </group>
                         <group col="2">
                             <field name="kg_un" required="1"/>

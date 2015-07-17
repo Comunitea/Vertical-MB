@@ -19,7 +19,7 @@
 #
 ##############################################################################
 from openerp import models, fields, api
-# import openerp.addons.decimal_precision as dp
+import openerp.addons.decimal_precision as dp
 # from openerp.osv import fields as fields2, osv
 
 
@@ -106,70 +106,70 @@ from openerp import models, fields, api
 #             self.product_uom_qty = self.product_uos_qty * self.product_id.un_ca
 #         return
 
-#     def product_id_change_with_wh2(self, cr, uid, ids, pricelist, product,
-#                                    qty=0,
-#                                    uom=False, qty_uos=0, uos=False, name='',
-#                                    partner_id=False, lang=False,
-#                                    update_tax=True,
-#                                    date_order=False,
-#                                    packaging=False,
-#                                    fiscal_position=False, flag=False,
-#                                    warehouse_id=False,
-#                                    choose_unit='unit', context=None):
-#         """
-#         We overwrite with this name because of midban_depot_stock dependency.
-#         If we have seted minumum unit of sale, we will call product_id_change
-#         of price_system_variable module with a 'sale_in_boxes' context in order
-#         to apply the box_discount field of product to the pricelist price.
-#         """
-#         if context is None:
-#             context = {}
-#         else:
-#             context2 = {}
-#             t_data = self.pool.get('ir.model.data')
-#             xml_id_name = 'midban_depot_stock.product_uom_box'
-#             box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
-#             unit_id = t_data.xmlid_to_res_id(cr, uid,
-#                                              'product.product_uom_unit')
-#             prod = self.pool.get("product.product").browse(cr, uid, product)
-#             min_unit = prod.min_unit
-#             choose_unit = 'box' if min_unit == 'box' else choose_unit
-#             if min_unit == 'box' or \
-#                     (min_unit == 'both' and choose_unit == 'box'):
-#                 for key in context:  # frozen context, we need a no frozen copy
-#                     context2[key] = context[key]
-#                 context2.update({'sale_in_boxes': True})
-#             my_context = context2 and context2 or context
-#             # sup = super(sale_order_line, self)
-#             fiscal_pos = fiscal_position
-#             res = self.product_id_change_with_wh(cr, uid, ids, pricelist,
-#                                                  product, qty=qty, uom=uom,
-#                                                  qty_uos=qty_uos, uos=uos,
-#                                                  name=name,
-#                                                  partner_id=partner_id,
-#                                                  lang=lang,
-#                                                  update_tax=update_tax,
-#                                                  date_order=date_order,
-#                                                  packaging=packaging,
-#                                                  fiscal_position=fiscal_pos,
-#                                                  flag=flag,
-#                                                  warehouse_id=warehouse_id,
-#                                                  context=my_context)
-#             if min_unit == 'unit' or \
-#                     (min_unit == 'both' and choose_unit == 'unit'):
-#                 res['value']['product_uos_qty'] = qty
-#                 # como uom acaba siendo False en el onchange se calculaa partir
-#                 # del uos y no nos combiene, lo volvemos a setear
-#                 res['value']['product_uom_qty'] = qty
-#             if min_unit in ['both', 'box']:
-#                 if choose_unit == 'unit':
-#                     res['value']['product_uom'] = unit_id
-#                     res['value']['product_uos'] = unit_id
-#                 else:
-#                     res['value']['product_uom'] = unit_id
-#                     res['value']['product_uos'] = box_id
-#                     res['value']['product_uom_qty'] = qty
-#         return res
+    # def product_id_change_with_wh2(self, cr, uid, ids, pricelist, product,
+    #                                qty=0,
+    #                                uom=False, qty_uos=0, uos=False, name='',
+    #                                partner_id=False, lang=False,
+    #                                update_tax=True,
+    #                                date_order=False,
+    #                                packaging=False,
+    #                                fiscal_position=False, flag=False,
+    #                                warehouse_id=False,
+    #                                choose_unit='unit', context=None):
+    #     """
+    #     We overwrite with this name because of midban_depot_stock dependency.
+    #     If we have seted minumum unit of sale, we will call product_id_change
+    #     of price_system_variable module with a 'sale_in_boxes' context in order
+    #     to apply the box_discount field of product to the pricelist price.
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     else:
+    #         context2 = {}
+    #         t_data = self.pool.get('ir.model.data')
+    #         xml_id_name = 'midban_depot_stock.product_uom_box'
+    #         box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
+    #         unit_id = t_data.xmlid_to_res_id(cr, uid,
+    #                                          'product.product_uom_unit')
+    #         prod = self.pool.get("product.product").browse(cr, uid, product)
+    #         min_unit = prod.min_unit
+    #         choose_unit = 'box' if min_unit == 'box' else choose_unit
+    #         if min_unit == 'box' or \
+    #                 (min_unit == 'both' and choose_unit == 'box'):
+    #             for key in context:  # frozen context, we need a no frozen copy
+    #                 context2[key] = context[key]
+    #             context2.update({'sale_in_boxes': True})
+    #         my_context = context2 and context2 or context
+    #         # sup = super(sale_order_line, self)
+    #         fiscal_pos = fiscal_position
+    #         res = self.product_id_change_with_wh(cr, uid, ids, pricelist,
+    #                                              product, qty=qty, uom=uom,
+    #                                              qty_uos=qty_uos, uos=uos,
+    #                                              name=name,
+    #                                              partner_id=partner_id,
+    #                                              lang=lang,
+    #                                              update_tax=update_tax,
+    #                                              date_order=date_order,
+    #                                              packaging=packaging,
+    #                                              fiscal_position=fiscal_pos,
+    #                                              flag=flag,
+    #                                              warehouse_id=warehouse_id,
+    #                                              context=my_context)
+    #         if min_unit == 'unit' or \
+    #                 (min_unit == 'both' and choose_unit == 'unit'):
+    #             res['value']['product_uos_qty'] = qty
+    #             # como uom acaba siendo False en el onchange se calculaa partir
+    #             # del uos y no nos combiene, lo volvemos a setear
+    #             res['value']['product_uom_qty'] = qty
+    #         if min_unit in ['both', 'box']:
+    #             if choose_unit == 'unit':
+    #                 res['value']['product_uom'] = unit_id
+    #                 res['value']['product_uos'] = unit_id
+    #             else:
+    #                 res['value']['product_uom'] = unit_id
+    #                 res['value']['product_uos'] = box_id
+    #                 res['value']['product_uom_qty'] = qty
+    #     return res
 
 #     @api.one
 #     def write(self, vals):
@@ -270,3 +270,52 @@ from openerp import models, fields, api
 #                                        line.order_id.partner_id)['taxes']:
 #                 val += c.get('amount', 0.0)
 #         return val
+
+class sale_order_line(models.Model):
+    _inherit = "sale.order.line"
+
+    # product_udv_qty = fields.Float('Quantity (UdV)',
+    #                                digits_compute=dp.get_precision
+    #                                ('Product UoS'))
+    # product_udv = fields.Many2one('product.uom', 'UdV')
+    price_udv = fields.Float('Price UdV',
+                             digits_compute=dp.get_precision('Product Price'))
+
+    def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
+                                  qty=0, uom=False, qty_uos=0, uos=False,
+                                  name='', partner_id=False, lang=False,
+                                  update_tax=True,
+                                  date_order=False,
+                                  packaging=False,
+                                  fiscal_position=False, flag=False,
+                                  warehouse_id=False, context=None):
+        """
+        We overwrite with this name because of midban_depot_stock dependency.
+        Is defined in sale_stock module
+        """
+        if context is None:
+            context = {}
+        fpos = fiscal_position
+        sup = super(sale_order_line, self)
+        res = sup.product_id_change_with_wh(cr, uid, ids, pricelist,
+                                            product, qty=qty, uom=uom,
+                                            qty_uos=qty_uos, uos=uos,
+                                            name=name,
+                                            partner_id=partner_id,
+                                            lang=lang,
+                                            update_tax=update_tax,
+                                            date_order=date_order,
+                                            packaging=packaging,
+                                            fiscal_position=fpos,
+                                            flag=flag,
+                                            warehouse_id=warehouse_id,
+                                            context=context)
+        if not product:
+            return res
+        prod_obj = self.pool.get('product.product').browse(cr, uid,
+                                                           product,
+                                                           context=context)
+        product_udv_ids = prod_obj.get_sale_unit_ids()
+        uom_domain = [('id', 'in', product_udv_ids)]
+        res['domain'] = {'product_uos': uom_domain}
+        return res

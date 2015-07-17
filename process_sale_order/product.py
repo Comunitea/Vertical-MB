@@ -98,10 +98,12 @@ class product_template(models.Model):
     #     self.un_ca = self.uos_coeff and float_round(1 / self.uos_coeff, 2) \
     #         or 0.0
 
+    
 
-# class product_product(models.Model):
 
-#     _inherit = "product.product"
+class product_product(models.Model):
+
+    _inherit = "product.product"
 
 #     @api.onchange('un_ca')
 #     def onchange_un_ca(self):
@@ -112,3 +114,14 @@ class product_template(models.Model):
 #     def onchange_uos_coeff(self):
 #         """ Change un_ca acordely to product.uos_coeff"""
 #         self.un_ca = self.uos_coeff and 1 / self.uos_coeff or 0.0
+
+    @api.model
+    def get_sale_unit_ids(self):
+        res = []
+        if self.base_use_sale and self.log_base_id:
+            res.append(self.log_base_id.id)
+        if self.unit_use_sale and self.log_unit_id:
+            res.append(self.log_unit_id.id)
+        if self.box_use_sale and self.log_box_id:
+            res.append(self.log_box_id.id)
+        return res

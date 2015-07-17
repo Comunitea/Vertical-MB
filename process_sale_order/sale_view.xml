@@ -72,9 +72,21 @@
             </field>
         </record> -->
 
-         <!--  <record id="sale_view_order_form_add_do_context" model="ir.ui.view">
-            <field name="name">sale.view.order.form.add.do_context</field>
+          <!-- Product form view. Add field min_unit -->
+        <record id="midban_sale_view_order_form" model="ir.ui.view">
+            <field name="name">midban_sale_view_order_form</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
+                        <field name="price_udv"/>
+                 </xpath>
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">
+                        <field name="price_udv"/>
+                 </xpath>
+
+
+            </field>
+        </record>
     </data>
 </openerp>
