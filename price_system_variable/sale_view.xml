@@ -8,13 +8,13 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
-                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, parent.pricelist_id, context)"/>
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, parent.pricelist_id, product_uos, context)"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
                     <field name="to_update" readonly="0"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">
-                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, parent.pricelist_id, context)"/>
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, parent.pricelist_id, product_uos, context)"/>
                     <field name="to_update" invisible="1"/>
                 </xpath>
             </field>

@@ -72,12 +72,14 @@
             </field>
         </record> -->
 
-          <!-- Product form view. Add field min_unit -->
+          <!-- Edits behavior of sale order lines -->
         <record id="midban_sale_view_order_form" model="ir.ui.view">
             <field name="name">midban_sale_view_order_form</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
             <field name="arch" type="xml">
+
+                <!-- Add field price of the unit of measure -->
                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
                         <field name="price_udv"/>
                  </xpath>
@@ -85,7 +87,40 @@
                         <field name="price_udv"/>
                  </xpath>
 
+                 <!-- Avoid onchanges in product_uom_qty and product_uom -->
+                <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom_qty']" position="replace">
+                   <field name="product_uom_qty" class="oe_inline" readonly="True"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
+                    <field name="product_uom" class="oe_inline oe_no_button" readonly="True"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="replace">
+                      <field name="product_uom_qty" readonly="True"/>  
+                 </xpath>
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom']" position="replace">
+                      <field name="product_uom" readonly="True"/> 
+                 </xpath>
 
+                  <!-- Avoid onchanges in product_uos_qty and make it required ad context in product_uos to get only the domain units names-->
+                 <xpath expr="//field[@name='order_line']/form//field[@name='product_uos_qty']" position="replace">
+                       <field name="product_uos_qty" class="oe_inline" required="1"/>
+                 </xpath>  
+                  <xpath expr="//field[@name='order_line']/form//field[@name='product_uos']" position="replace">
+                       <field name="product_uos" class="oe_inline" required="1" context="{'product_id': product_id}"/>
+                 </xpath>
+
+                 <!-- Overwrite in price_system_variable module price unit onchange, adding the product uos-->
+                <!--  <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, product_uos, parent.pricelist_id, context)"/>
+                </xpath>  
+                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">
+                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, product_uos, parent.pricelist_id, context)"/>
+                    <field name="to_update" invisible="1"/>
+                </xpath> 
+ -->
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
+                    <field name="to_update" invisible="1"/>
+                </xpath>
             </field>
         </record>
     </data>

@@ -174,7 +174,7 @@ class sale_order_line(osv.osv):
         return res
 
     def onchange_price_unit(self, cr, uid, ids, product_id, price_unit,
-                            pricelist_id, context=None):
+                            pricelist_id, product_uos, context=None):
         """
         Raises a warning if price unit lower than minimum price defined in
         change_product_pvp for the current product.
