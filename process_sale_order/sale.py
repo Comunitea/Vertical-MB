@@ -197,34 +197,3 @@ class sale_order_line(models.Model):
                 self.price_unit = uom_pu
             else:
                 self.do_onchange = True
-
-    # @api.multi
-    # def onchange_price_unit(self, product_id, price_unit, pricelist_id,
-    #                         product_uos):
-    #     """
-    #     Raises a warning if price unit lower than minimum price defined in
-    #     change_product_pvp for the current product.
-    #     """
-    #     import ipdb; ipdb.set_trace()
-    #     res = super(sale_order_line, self).onchange_price_unit(product_id,
-    #                                                            price_unit,
-    #                                                            pricelist_id,
-    #                                                            product_uos)
-
-    #     t_product = self.env["product.product"]
-    #     # t_pricelist = self.env["product.pricelist"]
-    #     t_uom = self.env["product.uom"]
-    #     if product_id and pricelist_id and product_uos:
-    #         if self.do_onchange:
-    #             product = t_product.browse(product_id)
-    #             uos = t_uom.browse(product_uos)
-    #             uos_id = uos.id
-    #             uom_pu, uos_pu = \
-    #                 product.get_uom_uos_prices(uos_id,
-    #                                            custom_price_unit=price_unit)
-    #             self.do_onchange = False
-    #             res['value']['price_udv'] = uos_pu
-    #             res['value']['price_unit'] = price_unit
-    #         else:
-    #             self.do_onchange = True
-        # return res

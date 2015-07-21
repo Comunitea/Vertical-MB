@@ -1,102 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <!-- Product form view. Add field min_unit -->
-       <!--  <record id="sale_view_order_form_add_do_context" model="ir.ui.view">
-            <field name="name">sale.view.order.form.add.do_context</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
-            <field name="arch" type="xml"> -->
-                <!-- Add chose_unit to onchange form method  -->
-                <!-- <xpath expr="//field[@name='order_line']/form/group/group/field[@name='product_id']" position="replace">
-                    <field name="product_id"
-                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
-                    groups="base.group_user"
-                    on_change="product_id_change_with_wh2(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False,parent.warehouse_id, choose_unit,context)"/>
 
-                    <field name="choose_unit" attrs="{'invisible': [('min_unit','!=','both')]}"
-                        on_change="product_id_change_with_wh2(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False,parent.warehouse_id, choose_unit,context)"/>
-                    <field name="min_unit"/>
-                </xpath>
-                <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom_qty']" position="replace">
-                    <field
-                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id,'uom':product_uom}"
-                    name="product_uom_qty" class="oe_inline"
-                    on_change="product_id_change_with_wh2(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,parent.partner_id, False, False, parent.date_order, False, parent.fiscal_position, True, parent.warehouse_id, choose_unit,context)"
-                    attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/>
-                </xpath>
-
-                <xpath expr="//field[@name='order_line']/form/group/group/div[@groups='product.group_uos']/field[@name='product_uos_qty']" position="replace">
-                    <field name="product_uos_qty" class="oe_inline"  attrs="{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"/>
-                </xpath>
- -->
-                <!-- Make units read only -->
-               <!--  <field name="product_uom" position="replace">
-                    <field name="product_uom" readonly="1" groups="product.group_uom" class="oe_inline oe_no_button"
-                       on_change="product_uom_change(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,parent.partner_id, False, False, parent.date_order, context)"/>
-                </field>
-
-                <field name="product_uos" position="replace">
-                    <field name="product_uos" readonly="1" class="oe_inline"/>
-                </field>
- -->
-
-                 <!-- Add chose_unit to onchange tree method  -->
-               <!--  <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="replace"> -->
-                <!--         <field name="product_id"
-                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
-                    groups="base.group_user"
-                    on_change="product_id_change_with_wh2(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False,parent.warehouse_id, choose_unit,context)"/>
-                </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="replace">
-                    <field name="choose_unit" attrs="{'invisible': [('min_unit','!=','both')]}"
-                        on_change="product_id_change_with_wh2(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False,parent.warehouse_id, choose_unit,context)"/>
-                    <field name="min_unit" invisible="1"/>
-                    <field
-                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id,'uom':product_uom}"
-                    name="product_uom_qty"
-                    on_change="product_id_change_with_wh2(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,parent.partner_id, False, False, parent.date_order, False, parent.fiscal_position, True, parent.warehouse_id, choose_unit,context)"
-                    attrs="{'readonly': ['|', ('min_unit','=','box'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'box')]}"/>
-                </xpath>
-
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uos_qty']" position="attributes">
-                    <attribute name="invisible">0</attribute>
-                    <attribute name="attrs">{'readonly': ['|', ('min_unit','=','unit'),'&amp;', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}</attribute>
-                </xpath>
-                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uos']" position="attributes">
-                    <attribute name="invisible">0</attribute>
-                </xpath>
-
-
-
-            </field>
-        </record> -->
-
-          <!-- Edits behavior of sale order lines -->
+        <!-- Editing behavior of sale order lines -->
         <record id="midban_sale_view_order_form" model="ir.ui.view">
             <field name="name">midban_sale_view_order_form</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
             <field name="arch" type="xml">
-
+                <!-- ####################################FORM VIEW MODIFICATIONS#################################### -->
                 <!-- Add field price of the unit of measure -->
                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
                         <field name="price_udv"/>
-                        <field name="do_onchange"/>
-                 </xpath>
-                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">
-                        <field name="price_udv"/>
-                        <field name="do_onchange"/>
-                 </xpath>
-
-
-                 <!-- Avoid onchanges in product_uom_qty and product_uom -->
+                        
+                </xpath>
+                <!-- Avoid onchanges in product_uom_qty and product_uom -->
                 <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom_qty']" position="replace">
                    <field name="product_uom_qty" class="oe_inline" readonly="True"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
                     <field name="product_uom" class="oe_inline oe_no_button" readonly="True"/>
                 </xpath>
+                <!-- Avoid onchanges in product_uos_qty and make it required ad context in product_uos to get only the domain units names-->
+                <xpath expr="//field[@name='order_line']/form//field[@name='product_uos_qty']" position="replace">
+                       <field name="product_uos_qty" class="oe_inline" required="1"/>
+                </xpath>  
+                <xpath expr="//field[@name='order_line']/form//field[@name='product_uos']" position="replace">
+                       <field name="product_uos" class="oe_inline" required="1" context="{'product_id': product_id}"/>
+                </xpath>
+                <!-- Avoid onchange in price unit -->
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">
+                    <field name="price_unit"/>
+                    <field name="price_udv"/>
+                    <field name="do_onchange" invisible="1"/>  <!-- To control bidireccional onchanges -->
+                </xpath>
+
+
+                <!-- ####################################TREE VIEW MODIFICATIONS#################################### -->
+                <!-- To control bidireccional onchanges -->
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">
+                        <field name="do_onchange" invisible="1"/>   
+                 </xpath>
+
+                 <!-- Replace it in order to move product it after name field, because they are invisible in default view -->
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_uos_qty']" position="replace">
+                 </xpath>
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_uos']" position="replace">
+                 </xpath>
+
+                 <!-- Movin help UoS fields and price UdV before of uom fields -->
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+                      <field name="product_uos_qty" required="1"/>  
+                      <field name="product_uos" context="{'product_id': product_id}" required="1"/>
+                      <field name="price_udv"/>  
+                 </xpath>
+
+                <!-- Avoid onchanges in product_uom_qty and product_uom -->
                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="replace">
                       <field name="product_uom_qty" readonly="True"/>  
                  </xpath>
@@ -104,26 +63,6 @@
                       <field name="product_uom" readonly="True"/> 
                  </xpath>
 
-                  <!-- Avoid onchanges in product_uos_qty and make it required ad context in product_uos to get only the domain units names-->
-                 <xpath expr="//field[@name='order_line']/form//field[@name='product_uos_qty']" position="replace">
-                       <field name="product_uos_qty" class="oe_inline" required="1"/>
-                 </xpath>  
-                  <xpath expr="//field[@name='order_line']/form//field[@name='product_uos']" position="replace">
-                       <field name="product_uos" class="oe_inline" required="1" context="{'product_id': product_id}"/>
-                 </xpath>
-
-                 <!-- Overwrite in price_system_variable module price unit onchange, adding the product uos-->
-                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
-                    <field name="price_unit"/>
-                </xpath>  
-                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">
-                    <field name="price_unit"/>
-                    <field name="to_update" invisible="1"/>
-                </xpath> 
-
-                <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
-                    <field name="to_update" invisible="1"/>
-                </xpath>
             </field>
         </record>
     </data>
