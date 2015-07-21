@@ -107,12 +107,13 @@ class sale_order_line(models.Model):
             self.product_uom_qty = conv[log_unit]
 
             # Calculate prices
-            uom_pu, uos_pu = product.get_uom_uos_prices(uos_id)
+            uom_pu, uos_pu = product.get_uom_uos_prices(uos_id,
+                                                        custom_price_unit=self.
+                                                        price_unit)
             self.do_onchange = False
             # self.price_unit = uom_pu
             self.price_udv = uos_pu
             self.do_onchange = False  # Avoid onchange_price_udv
-
 
     @api.model
     def write(self, vals):
@@ -158,19 +159,25 @@ class sale_order_line(models.Model):
 
         return res
 
-    # @api.onchange('price_unit')
-    # def price_unit_onchange(self):
-    #     """
-    #     We change the product_uom_qty
-    #     """
-    #     product = self.product_id
-    #     if product:
-    #         uos_id = self.product_uos.id
-    #         # Calculate prices
-    #         uom_pu, uos_pu = product.get_uom_uos_prices(uos_id,
-    #                                                     self.price_unit)
-    #         # self.price_unit = uom_pu
-    #         self.price_udv = uos_pu
+    @api.onchange('price_unit')
+    def onchange_price_unit(self):
+        """
+        We change the product_uom_qty
+        """
+        # import ipdb; ipdb.set_trace()
+        product = self.product_id
+        if product:
+            if self.do_onchange:
+                uos = self.product_uos
+                uos_id = uos.id
+                uom_pu, uos_pu = \
+                    product.get_uom_uos_prices(uos_id,
+                                               custom_price_unit=self.
+                                               price_unit)
+                self.do_onchange = False
+                self.price_udv = uos_pu
+            else:
+                self.do_onchange = True
 
     @api.onchange('price_udv')
     def price_udv_onchange(self):
@@ -221,22 +228,3 @@ class sale_order_line(models.Model):
     #         else:
     #             self.do_onchange = True
         # return res
-
-    @api.onchange('price_unit')
-    def onchange_price_unit(self):
-        """
-        We change the product_uom_qty
-        """
-        # import ipdb; ipdb.set_trace()
-        product = self.product_id
-        if product:
-            if self.do_onchange:
-                uos = self.product_uos
-                uos_id = uos.id
-                uom_pu, uos_pu = \
-                    product.get_uom_uos_prices(uos_id,
-                                               custom_price_unit=self.price_unit)
-                self.do_onchange = False
-                self.price_udv = uos_pu
-            else:
-                self.do_onchange = True
