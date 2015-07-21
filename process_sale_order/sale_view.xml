@@ -82,10 +82,13 @@
                 <!-- Add field price of the unit of measure -->
                 <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
                         <field name="price_udv"/>
+                        <field name="do_onchange"/>
                  </xpath>
                  <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">
                         <field name="price_udv"/>
+                        <field name="do_onchange"/>
                  </xpath>
+
 
                  <!-- Avoid onchanges in product_uom_qty and product_uom -->
                 <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom_qty']" position="replace">
@@ -110,14 +113,14 @@
                  </xpath>
 
                  <!-- Overwrite in price_system_variable module price unit onchange, adding the product uos-->
-                <!--  <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
-                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, product_uos, parent.pricelist_id, context)"/>
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                    <field name="price_unit"/>
                 </xpath>  
                  <xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_unit']" position="replace">
-                    <field name="price_unit" on_change="onchange_price_unit(product_id, price_unit, product_uos, parent.pricelist_id, context)"/>
+                    <field name="price_unit"/>
                     <field name="to_update" invisible="1"/>
                 </xpath> 
- -->
+
                 <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
                     <field name="to_update" invisible="1"/>
                 </xpath>

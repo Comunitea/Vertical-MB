@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!-- Form View Purchase order: Adding boolean field to purchase order lines -->
-        <record id="sale_view_order_form_add_to_update_to_line" model="ir.ui.view">
+       <!--  <record id="sale_view_order_form_add_to_update_to_line" model="ir.ui.view">
             <field name="name">sale.view.order.form.add.to_update.to.line</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
@@ -18,6 +18,6 @@
                     <field name="to_update" invisible="1"/>
                 </xpath>
             </field>
-        </record>
+        </record> -->
     </data>
 </openerp>

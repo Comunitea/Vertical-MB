@@ -20,266 +20,14 @@
 ##############################################################################
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
-# from openerp.osv import fields as fields2, osv
 
-
-# class sale_order_line2(osv.osv):
-#     _inherit = "sale.order.line"
-
-#     def _amount_line(self, cr, uid, ids, field_name, arg, context=None):
-#         """
-#         We must only do sale orders in units or boxes. Same products are only
-#         in units or only boxes, or maybe we can sale it in boxes and units.
-#         Field do_onchange is a workarround in order to control
-#         product_uos_qty
-#         and product_uom_qty onchange.
-#         """
-#         tax_obj = self.pool.get('account.tax')
-#         cur_obj = self.pool.get('res.currency')
-#         res = {}
-#         if context is None:
-#             context = {}
-#         for line in self.browse(cr, uid, ids, context=context):
-#             if line.choose_unit == 'box':
-#                 unit_of_measure_qty = line.product_uos_qty
-#             else:
-#                 unit_of_measure_qty = line.product_uom_qty
-#             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
-#             taxes = tax_obj.compute_all(cr, uid, line.tax_id, price,
-#                                         unit_of_measure_qty, line.product_id,
-#                                         line.order_id.partner_id)
-#             cur = line.order_id.pricelist_id.currency_id
-#             res[line.id] = cur_obj.round(cr, uid, cur, taxes['total'])
-#         return res
-
-#     _columns = {
-#         'price_subtotal': fields2.function(_amount_line, string='Subtotal',
-#                                            digits_compute=dp.get_precision
-#                                            ('Account')),
-#     }
-
-
-# class sale_order_line(models.Model):
-#     """
-#     We must only do sale orders in units or boxes. Same products are only
-#     in units or only boxes, or maybe we can sale it in boxes and units.
-#     Field do_onchange is a workarround in order to control product_uos_qty and
-#     product_uom_qty onchange.
-#     """
-#     _inherit = "sale.order.line"
-
-#     # @api.one
-#     # def _amount_line(self, field_name, arg):
-#     #     """
-#     #     When we sale in boxes we want to do product_uos_qty * price unit
-#     #     instead the default product_uom_qty * price_unit
-#     #     Need call super???
-#     #     """
-#     #     self.price_subtotal = 0.0
-#     #     if self.choose_unit == 'box':  # product_uos_qty instead uom
-#     #         unit_of_measure_qty = self.product_uos_qty
-#     #     else:  # choose_unit == unit
-#     #         unit_of_measure_qty = self.product_uom_qty
-#     #     price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
-#     #     taxes = self.tax_id.compute_all(price, unit_of_measure_qty,
-#     #                                     self.product_id,
-#     #                                     self.order_id.partner_id)
-#     #     cur = self.order_id.pricelist_id.currency_id
-#     #     self.price_subtotal = cur.round(taxes['total'])
-
-#     min_unit = fields.Selection('Min Unit', related="product_id.min_unit",
-#                                 readonly=True)
-#     choose_unit = fields.Selection([('unit', 'Unit'),
-#                                     ('box', 'Box')], 'Selected Unit',
-#                                    default='unit')
-#     # price_subtotal = fields.Float('Subtotal', compute=_amount_line,
-#     #                               digits_compute=dp.get_precision
-#     #                               ('Product Price'))
-
-#     @api.onchange('product_uos_qty')
-#     def product_uos_qty_onchange(self):
-#         """
-#         We change the uos of product
-#         """
-#         if self.min_unit == 'box' or \
-#                 (self.min_unit == 'both' and self.choose_unit == 'box'):
-#             self.product_uom_qty = self.product_uos_qty * self.product_id.un_ca
-#         return
-
-# def product_id_change_with_wh2(self, cr, uid, ids, pricelist, product,
-#                                qty=0,
-#                                uom=False, qty_uos=0, uos=False, name='',
-#                                partner_id=False, lang=False,
-#                                update_tax=True,
-#                                date_order=False,
-#                                packaging=False,
-#                                fiscal_position=False, flag=False,
-#                                warehouse_id=False,
-#                                choose_unit='unit', context=None):
-#     """
-#     We overwrite with this name because of midban_depot_stock dependency.
-#     If we have seted minumum unit of sale, we will call product_id_change
-#     of price_system_variable module with a 'sale_in_boxes' context in order
-#     to apply the box_discount field of product to the pricelist price.
-#     """
-#     if context is None:
-#         context = {}
-#     else:
-#         context2 = {}
-#         t_data = self.pool.get('ir.model.data')
-#         xml_id_name = 'midban_depot_stock.product_uom_box'
-#         box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
-#         unit_id = t_data.xmlid_to_res_id(cr, uid,
-#                                          'product.product_uom_unit')
-#         prod = self.pool.get("product.product").browse(cr, uid, product)
-#         min_unit = prod.min_unit
-#         choose_unit = 'box' if min_unit == 'box' else choose_unit
-#         if min_unit == 'box' or \
-#                 (min_unit == 'both' and choose_unit == 'box'):
-#             for key in context:  # frozen context, we need a no frozen copy
-#                 context2[key] = context[key]
-#             context2.update({'sale_in_boxes': True})
-#         my_context = context2 and context2 or context
-#         # sup = super(sale_order_line, self)
-#         fiscal_pos = fiscal_position
-#         res = self.product_id_change_with_wh(cr, uid, ids, pricelist,
-#                                              product, qty=qty, uom=uom,
-#                                              qty_uos=qty_uos, uos=uos,
-#                                              name=name,
-#                                              partner_id=partner_id,
-#                                              lang=lang,
-#                                              update_tax=update_tax,
-#                                              date_order=date_order,
-#                                              packaging=packaging,
-#                                              fiscal_position=fiscal_pos,
-#                                              flag=flag,
-#                                              warehouse_id=warehouse_id,
-#                                              context=my_context)
-#         if min_unit == 'unit' or \
-#                 (min_unit == 'both' and choose_unit == 'unit'):
-#             res['value']['product_uos_qty'] = qty
-#             # como uom acaba siendo False en el onchange se calculaa partir
-#             # del uos y no nos combiene, lo volvemos a setear
-#             res['value']['product_uom_qty'] = qty
-#         if min_unit in ['both', 'box']:
-#             if choose_unit == 'unit':
-#                 res['value']['product_uom'] = unit_id
-#                 res['value']['product_uos'] = unit_id
-#             else:
-#                 res['value']['product_uom'] = unit_id
-#                 res['value']['product_uos'] = box_id
-#                 res['value']['product_uom_qty'] = qty
-#     return res
-
-    # @api.one
-    # def write(self, vals):
-    #     """
-    #     Overwrite to recalculate the product_uom_qty and product_uos_qty
-    #     because of sometimes thei are readonly in the view and the onchange
-    #     value is not in the vals dict
-    #     """
-    #     t_data = self.env['ir.model.data']
-    #     if not vals.get('state', False) or vals['state'] not in ['confirmed']:
-    #         if vals.get('product_id', False):
-    #             prod = self.env['product.product'].browse(vals['product_id'])
-    #         else:
-    #             prod = self.product_id
-    #         xml_id_name = 'midban_depot_stock.product_uom_box'
-    #         box_id = t_data.xmlid_to_res_id(xml_id_name)
-    #         unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
-    #         min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
-    #             prod.min_unit
-    #         choose = vals.get('choose_unit', False) and vals['choose_unit'] \
-    #             or self.choose_unit
-    #         if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
-    #             qty = vals.get('product_uom_qty', 0.0) and \
-    #                 vals['product_uom_qty'] or self.product_uom_qty
-    #             vals['product_uos_qty'] = qty
-    #             vals['product_uos'] = unit_id
-    #             vals['product_uom'] = unit_id
-    #             vals['choose_unit'] = 'unit'
-    #         elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
-    #             uos_coeff = prod.uos_coeff
-    #             uos_qty = vals.get('product_uos_qty', 0.0) and \
-    #                 vals['product_uos_qty'] or self.product_uos_qty
-    #             qty = uos_coeff and uos_qty / uos_coeff or 0.0
-    #             vals['product_uom_qty'] = qty
-    #             vals['product_uos'] = box_id
-    #             vals['product_uom'] = unit_id
-    #             vals['choose_unit'] = 'box'
-    #     res = super(sale_order_line, self).write(vals)
-    #     return res
-
-    # @api.model
-    # def create(self, vals):
-    #     """
-    #     Overwrite to recalculate the product_uom_qty and product_uos_qty
-    #     because of sometimes they are readonly in the view and the onchange
-    #     value is not in the vals dict
-    #     """
-    #     t_data = self.env['ir.model.data']
-    #     if vals.get('product_id', False):
-    #         prod = self.env['product.product'].browse(vals['product_id'])
-    #         xml_id_name = 'midban_depot_stock.product_uom_box'
-    #         box_id = t_data.xmlid_to_res_id(xml_id_name)
-    #         unit_id = t_data.xmlid_to_res_id('product.product_uom_unit')
-    #         min_unit = vals.get('min_unit', False) and vals['min_unit'] or \
-    #             prod.min_unit
-    #         choose2 = min_unit in ['unit', 'both'] and 'unit' or 'box'
-    #         choose = vals.get('choose_unit', False) and vals['choose_unit'] \
-    #             or choose2
-    #         if min_unit == 'unit' or (min_unit == 'both' and choose == 'unit'):
-    #             qty = vals.get('product_uom_qty', 0.0)
-    #             vals['product_uos_qty'] = vals.get('product_uom_qty', 0.0)
-    #             vals['product_uos'] = unit_id
-    #             vals['product_uom'] = unit_id
-    #             vals['choose_unit'] = 'unit'
-    #         elif min_unit == 'box' or (min_unit == 'both' and choose == 'box'):
-    #             uos_coeff = prod.uos_coeff
-    #             uos_qty = vals.get('product_uos_qty', 0.0)
-    #             qty = uos_coeff and uos_qty / uos_coeff or 0.0
-    #             vals['product_uom_qty'] = qty
-    #             vals['product_uos'] = box_id
-    #             vals['product_uom'] = unit_id
-    #             vals['choose_unit'] = 'box'
-    #     vals['type'] = 'pff'  # Set any value to avoid the onchange in super
-    #     res = super(sale_order_line, self).create(vals)
-
-    #     return res
-
-
-# class sale_order(models.Model):
-#     """
-#     """
-#     _inherit = "sale.order"
-
-#     def _amount_line_tax(self, cr, uid, line, context=None):
-#         """
-#         Overwrite to get a correct amount_tax value when we sale in boxes with
-#         the box discount value applied.
-#         """
-#         t_tax = self.pool.get('account.tax')
-#         val = super(sale_order, self)._amount_line_tax(cr, uid, line,
-#                                                        context=context)
-#         if line.choose_unit == 'box':
-#             val = 0.0
-#             desc = (1 - (line.discount or 0.0) / 100.0)
-#             for c in t_tax.compute_all(cr, uid, line.tax_id,
-#                                        line.price_unit * desc,
-#                                        line.product_uos_qty, line.product_id,
-#                                        line.order_id.partner_id)['taxes']:
-#                 val += c.get('amount', 0.0)
-#         return val
 
 class sale_order_line(models.Model):
     _inherit = "sale.order.line"
 
-    # product_udv_qty = fields.Float('Quantity (UdV)',
-    #                                digits_compute=dp.get_precision
-    #                                ('Product UoS'))
-    # product_udv = fields.Many2one('product.uom', 'UdV')
     price_udv = fields.Float('Price UdV',
                              digits_compute=dp.get_precision('Product Price'))
+    do_onchange = fields.Boolean('Do onchange', default=True)
 
     def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
                                   qty=0, uom=False, qty_uos=0, uos=False,
@@ -324,24 +72,47 @@ class sale_order_line(models.Model):
         res['value']['product_uos_qty'] = 1.0
         return res
 
-    @api.onchange('product_uos_qty', 'product_uos')
+    @api.onchange('product_uos_qty')
     def product_uos_qty_onchange(self):
         """
         We change the product_uom_qty
         """
+        # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
-            qty = self.product_uos_qty
-            uos_id = self.product_uos.id
+            if self.do_onchange:
+                qty = self.product_uos_qty
+                uos_id = self.product_uos.id
 
-            conv = product.get_unit_conversions(qty, uos_id)
-            log_unit = product.get_uom_logistic_unit()  # base, unit, or box
+                conv = product.get_unit_conversions(qty, uos_id)
+                # base, unit, or box
+                log_unit = product.get_uom_logistic_unit()
+                self.product_uom_qty = conv[log_unit]
+            else:
+                self.do_onchange = True
+
+    @api.onchange('product_uos')
+    def product_uos_onchange(self):
+        """
+        We change the product_uom_qty
+        """
+        # import ipdb; ipdb.set_trace()
+        product = self.product_id
+        if product:
+            # Change Uom Qty
+            uos_id = self.product_uos.id
+            uos_qty = self.product_uos_qty
+            conv = product.get_unit_conversions(uos_qty, uos_id)
+            log_unit = product.get_uom_logistic_unit()
             self.product_uom_qty = conv[log_unit]
 
             # Calculate prices
             uom_pu, uos_pu = product.get_uom_uos_prices(uos_id)
-            self.price_unit = uom_pu
+            self.do_onchange = False
+            # self.price_unit = uom_pu
             self.price_udv = uos_pu
+            self.do_onchange = False  # Avoid onchange_price_udv
+
 
     @api.model
     def write(self, vals):
@@ -350,7 +121,6 @@ class sale_order_line(models.Model):
         because they are readonly in the view and the onchange
         value is not in the vals dict
         """
-        # if not vals.get('state', False) or vals['state'] not in ['confirmed']:
         if vals.get('product_id', False):
             prod = self.env['product.product'].browse(vals['product_id'])
         else:
@@ -410,38 +180,63 @@ class sale_order_line(models.Model):
         # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
-            uos_id = self.product_uos.id
-            # Calculate prices
-            uom_pu, uos_pu = \
-                product.get_uom_uos_prices(uos_id,
-                                           custom_price_udv=self.price_udv)
-            self.price_udv = uos_pu
-            self.price_unit = uom_pu
+            if self.do_onchange:
+                uos_id = self.product_uos.id
+                # Calculate prices
+                uom_pu, uos_pu = \
+                    product.get_uom_uos_prices(uos_id,
+                                               custom_price_udv=self.price_udv)
+                self.do_onchange = False
+                self.price_unit = uom_pu
+            else:
+                self.do_onchange = True
 
-    @api.multi
-    def onchange_price_unit(self, product_id, price_unit, pricelist_id,
-                            product_uos):
+    # @api.multi
+    # def onchange_price_unit(self, product_id, price_unit, pricelist_id,
+    #                         product_uos):
+    #     """
+    #     Raises a warning if price unit lower than minimum price defined in
+    #     change_product_pvp for the current product.
+    #     """
+    #     import ipdb; ipdb.set_trace()
+    #     res = super(sale_order_line, self).onchange_price_unit(product_id,
+    #                                                            price_unit,
+    #                                                            pricelist_id,
+    #                                                            product_uos)
+
+    #     t_product = self.env["product.product"]
+    #     # t_pricelist = self.env["product.pricelist"]
+    #     t_uom = self.env["product.uom"]
+    #     if product_id and pricelist_id and product_uos:
+    #         if self.do_onchange:
+    #             product = t_product.browse(product_id)
+    #             uos = t_uom.browse(product_uos)
+    #             uos_id = uos.id
+    #             uom_pu, uos_pu = \
+    #                 product.get_uom_uos_prices(uos_id,
+    #                                            custom_price_unit=price_unit)
+    #             self.do_onchange = False
+    #             res['value']['price_udv'] = uos_pu
+    #             res['value']['price_unit'] = price_unit
+    #         else:
+    #             self.do_onchange = True
+        # return res
+
+    @api.onchange('price_unit')
+    def onchange_price_unit(self):
         """
-        Raises a warning if price unit lower than minimum price defined in
-        change_product_pvp for the current product.
+        We change the product_uom_qty
         """
         # import ipdb; ipdb.set_trace()
-        res = super(sale_order_line, self).onchange_price_unit(product_id,
-                                                               price_unit,
-                                                               pricelist_id,
-                                                               product_uos)
-
-        res = {'value': {}}
-        t_product = self.env["product.product"]
-        # t_pricelist = self.env["product.pricelist"]
-        t_uom = self.env["product.uom"]
-        if product_id and pricelist_id and product_uos:
-            product = t_product.browse(product_id)
-            uos = t_uom.browse(product_uos)
-            uos_id = uos.id
-            uom_pu, uos_pu = \
-                product.get_uom_uos_prices(uos_id,
-                                           custom_price_unit=price_unit)
-            res['value']['price_udv'] = uos_pu
-            res['value']['price_unit'] = price_unit
-        return res
+        product = self.product_id
+        if product:
+            if self.do_onchange:
+                uos = self.product_uos
+                uos_id = uos.id
+                uom_pu, uos_pu = \
+                    product.get_uom_uos_prices(uos_id,
+                                               custom_price_unit=self.price_unit)
+                self.do_onchange = False
+                self.price_udv = uos_pu
+            else:
+                self.do_onchange = True

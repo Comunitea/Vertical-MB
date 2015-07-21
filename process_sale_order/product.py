@@ -33,20 +33,6 @@ class product_template(models.Model):
     """
     _inherit = "product.template"
 
-    # @api.model
-    # def _get_default_uos(self):
-    #     un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
-    #     return un_uom and un_uom.id or False
-
-    # min_unit = fields.Selection([('box', 'Only Boxes'),
-    #                             ('unit', 'Only Unit'),
-    #                             ('both', 'Both, units and boxes')],
-    #                             string='Minimum Sale Unit',
-    #                             required=True,
-    #                             default='unit',
-    #                             help="Selecting both Units and boxes \
-    #                             will add functionality to Telesale and \
-    #                             Mobile App Sales (Android)")
     box_discount = fields.Float('Box Unit Discount',
                                 help="When you sale this product in boxes"
                                 "This will be the % discounted over the price"
@@ -65,55 +51,11 @@ class product_template(models.Model):
     #                          inventory. Keep empty to use the default unit of \
     #                          measure.')
 
-    # @api.onchange('min_unit')
-    # def onchange_min_unit(self):
-    #     box_uom = self.env['product.uom'].search([('like_type', '=', 'boxes')])
-    #     un_uom = self.env['product.uom'].search([('like_type', '=', 'units')])
-    #     res = {}
-    #     # if self.min_unit == 'box' or self.min_unit == 'both':
-    #     if self.min_unit == 'box':
-    #         if not len(box_uom):
-    #             res['warning'] = {'title': _('Warning'),
-    #                               'message': _('Box unit does not exist.\
-    #             You must configured one unit like boxes')}
-    #         else:
-    #             self.uos_id = box_uom.id
-
-    #     else:  # Units
-    #         if not len(un_uom):
-    #             res['warning'] = {'title': _('Warning'),
-    #                               'message': _('Units unit does not exist.\
-    #             You must configured one unit like units')}
-    #         else:
-    #             self.uos_id = un_uom.id
-    #     return res
-
-    # @api.onchange('un_ca')
-    # def onchange_un_ca(self):
-    #     """ Change uos_coeff acordely to product.un_ca"""
-    #     self.uos_coeff = self.un_ca and float_round(1 / self.un_ca, 4) or 0.0
-
-    # @api.onchange('uos_coeff')
-    # def onchange_uos_coeff(self):
-
-    #     """ Change un_ca acordely to product.uos_coeff"""
-    #     self.un_ca = self.uos_coeff and float_round(1 / self.uos_coeff, 2) \
-    #         or 0.0
 
 
 class product_product(models.Model):
 
     _inherit = "product.product"
-
-#     @api.onchange('un_ca')
-#     def onchange_un_ca(self):
-#         """ Change uos_coeff acordely to product.un_ca"""
-#         self.uos_coeff = self.un_ca and 1 / self.un_ca or 0.0
-
-#     @api.onchange('uos_coeff')
-#     def onchange_uos_coeff(self):
-#         """ Change un_ca acordely to product.uos_coeff"""
-#         self.un_ca = self.uos_coeff and 1 / self.uos_coeff or 0.0
 
     @api.model
     def get_sale_unit_ids(self):
@@ -162,42 +104,12 @@ class product_product(models.Model):
     def get_uom_uos_prices(self, uos_id, custom_price_unit=0.0,
                            custom_price_udv=0.0):
         # import ipdb; ipdb.set_trace()
-        if custom_price_unit:
-            price_unit = custom_price_unit
-            price_udv = 0.0
+        if custom_price_udv:
+            price_udv = custom_price_udv
             log_unit = self.get_uom_logistic_unit()
             if uos_id == self.log_base_id.id:
                 if log_unit == 'base':
-                    price_udv = custom_price_unit
-                if log_unit == 'unit':
-                    price_udv = price_unit * self.kg_un
-                if log_unit == 'box':
-                    price_udv = price_unit * self.kg_un * self.un_ca
-
-            elif uos_id == self.log_unit_id.id:
-                if log_unit == 'base':
-                    price_udv = float_round(custom_price_unit / self.kg_un, 2)
-                if log_unit == 'unit':
-                    price_udv = price_unit
-                if log_unit == 'box':
-                    price_udv = price_unit * self.un_ca
-
-            elif uos_id == self.log_box_id.id:
-                if log_unit == 'base':
-                    price_udv = \
-                        float_round(
-                            custom_price_unit / (self.kg_un * self.un_ca), 2)
-                if log_unit == 'unit':
-                    price_udv = float_round(custom_price_unit / self.un_ca, 2)
-                if log_unit == 'box':
-                    price_udv = price_unit
-
-        else:
-            price_udv = custom_price_udv or self.lst_price
-            log_unit = self.get_uom_logistic_unit()
-            if uos_id == self.log_base_id.id:
-                if log_unit == 'base':
-                    price_unit = custom_price_udv
+                    price_unit = price_udv
                 if log_unit == 'unit':
                     price_unit = price_udv * self.kg_un
                 if log_unit == 'box':
@@ -205,7 +117,7 @@ class product_product(models.Model):
                 price_unit = price_unit
             elif uos_id == self.log_unit_id.id:
                 if log_unit == 'base':
-                    price_unit = float_round(custom_price_unit / self.kg_un, 2)
+                    price_unit = float_round(price_udv / self.kg_un, 2)
                 if log_unit == 'unit':
                     price_unit = price_udv
                 if log_unit == 'box':
@@ -214,15 +126,44 @@ class product_product(models.Model):
                 if log_unit == 'base':
                     price_unit = \
                         float_round(
-                            custom_price_unit / (self.kg_un * self.un_ca), 2)
+                            price_udv / (self.kg_un * self.un_ca), 2)
                 if log_unit == 'unit':
-                    price_unit = float_round(custom_price_unit / self.un_ca, 2)
+                    price_unit = float_round(price_udv / self.un_ca, 2)
                 if log_unit == 'box':
                     price_unit = price_udv
 
-            if self.lst_price and not price_udv:
-                raise except_orm(_('Error'), _('The product unit of measure %s is \
-                                 not related with any logistic unit' % uos_id))
+        else:
+            price_unit = custom_price_unit or self.lst_price
+            price_udv = 0.0
+            log_unit = self.get_uom_logistic_unit()
+            if uos_id == self.log_base_id.id:
+                if log_unit == 'base':
+                    price_udv = price_unit
+                if log_unit == 'unit':
+                    price_udv = price_unit * self.kg_un
+                if log_unit == 'box':
+                    price_udv = price_unit * self.kg_un * self.un_ca
+
+            elif uos_id == self.log_unit_id.id:
+                if log_unit == 'base':
+                    price_udv = float_round(price_unit * self.kg_un, 2)
+                if log_unit == 'unit':
+                    price_udv = price_unit
+                if log_unit == 'box':
+                    price_udv = price_unit / self.un_ca
+
+            elif uos_id == self.log_box_id.id:
+                if log_unit == 'base':
+                    price_udv = \
+                        float_round(price_unit * self.kg_un * self.un_ca, 2)
+                if log_unit == 'unit':
+                    price_udv = float_round(price_unit * self.un_ca, 2)
+                if log_unit == 'box':
+                    price_udv = price_unit
+# 
+            # if self.lst_price and not price_udv:
+            #     raise except_orm(_('Error'), _('The product unit of measure %s is \
+            #                      not related with any logistic unit' % uos_id))
         # import ipdb; ipdb.set_trace()
         return price_unit, price_udv
 
