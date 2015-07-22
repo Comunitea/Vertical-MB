@@ -110,10 +110,13 @@ class sale_order_line(models.Model):
             uom_pu, uos_pu = product.get_uom_uos_prices(uos_id,
                                                         custom_price_unit=self.
                                                         price_unit)
-            self.do_onchange = False
-            # self.price_unit = uom_pu
+            # Avoid trigger onchange_price_udv, because is already calculed
+            if uos_pu != self.price_udv:
+                self.do_onchange = False
+
             self.price_udv = uos_pu
-            self.do_onchange = False  # Avoid onchange_price_udv
+            # self.price_unit = uom_pu
+            # self.do_onchange = False
 
     @api.model
     def write(self, vals):
@@ -174,7 +177,9 @@ class sale_order_line(models.Model):
                     product.get_uom_uos_prices(uos_id,
                                                custom_price_unit=self.
                                                price_unit)
-                self.do_onchange = False
+                # Avoid trigger onchange_price_udv, because is already calculed
+                if uos_pu != self.price_udv:
+                    self.do_onchange = False
                 self.price_udv = uos_pu
             else:
                 self.do_onchange = True
@@ -193,7 +198,9 @@ class sale_order_line(models.Model):
                 uom_pu, uos_pu = \
                     product.get_uom_uos_prices(uos_id,
                                                custom_price_udv=self.price_udv)
-                self.do_onchange = False
-                self.price_unit = uom_pu
+                # Avoid trigger onchange_price_unit, already calculed
+                if uom_pu != self.price_unit:
+                    self.do_onchange = False
+                    self.price_unit = uom_pu
             else:
                 self.do_onchange = True

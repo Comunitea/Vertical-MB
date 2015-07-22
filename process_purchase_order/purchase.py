@@ -31,7 +31,7 @@ class purchase_order_line(models.Model):
                                    digits_compute=dp.
                                    get_precision('Product Unit of Measure'))
     product_uoc = fields.Many2one('product.uom', 'Unit of Buy')
-    price_uoc = fields.Float('Price UdC',
+    price_udc = fields.Float('Price UdC',
                              digits_compute=dp.get_precision('Product Price'))
     do_onchange = fields.Boolean('Do onchange', default=True)
 
@@ -80,7 +80,7 @@ class purchase_order_line(models.Model):
                 res['value']['taxes_id'] = False
                 res['value']['product_uoc'] = False
                 res['value']['product_uoc_qty'] = 0.0
-                res['value']['price_uoc'] = 0.0
+                res['value']['price_udc'] = 0.0
 
                 res['warning'] = {'title': _('Warning!'),
                                   'message': _('Supplier %s not founded in \
@@ -119,7 +119,6 @@ class purchase_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
             supplier_id = self.order_id.partner_id.id
@@ -135,10 +134,11 @@ class purchase_order_line(models.Model):
             uom_pu, uoc_pu = product.get_uom_uoc_prices(uoc_id, supplier_id,
                                                         custom_price_unit=self.
                                                         price_unit)
-            self.do_onchange = False
+            # Avoid trigger onchange_price_udv, because is already calculed
+            if uoc_pu != self.price_udc:
+                self.do_onchange = False
             # self.price_unit = uom_pu
             self.price_udc = uoc_pu
-            self.do_onchange = False  # Avoid onchange_price_udc
 
     @api.multi
     def write(self, vals):
@@ -195,7 +195,6 @@ class purchase_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         supplier_id = self.order_id.partner_id.id
         if product:
@@ -206,7 +205,9 @@ class purchase_order_line(models.Model):
                     product.get_uom_uoc_prices(uoc_id, supplier_id,
                                                custom_price_unit=self.
                                                price_unit)
-                self.do_onchange = False
+                # Avoid trigger onchange_price_udv, because is already calculed
+                if uoc_pu != self.price_udc:
+                    self.do_onchange = False
                 self.price_udc = uoc_pu
             else:
                 self.do_onchange = True
@@ -216,7 +217,6 @@ class purchase_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         supplier_id = self.order_id.partner_id.id
         if product:
@@ -226,7 +226,9 @@ class purchase_order_line(models.Model):
                 uom_pu, uoc_pu = \
                     product.get_uom_uoc_prices(uoc_id, supplier_id,
                                                custom_price_udc=self.price_udc)
-                self.do_onchange = False
+                # Avoid trigger onchange_price_unit,lready calculed
+                if uom_pu != self.price_unit:
+                    self.do_onchange = False
                 self.price_unit = uom_pu
             else:
                 self.do_onchange = True
