@@ -39,7 +39,7 @@
                 <!-- ####################################TREE VIEW MODIFICATIONS#################################### -->
                 <!-- To control bidireccional onchanges -->
                  <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="before">
-                        <field name="do_onchange" invisible="1"/>   
+                        <field name="do_onchange" invisible="0"/>   
                  </xpath>
 
                  <!-- Replace it in order to move product it after name field, because they are invisible in default view -->

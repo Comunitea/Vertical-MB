@@ -52,7 +52,6 @@ class product_template(models.Model):
     #                          measure.')
 
 
-
 class product_product(models.Model):
 
     _inherit = "product.product"
@@ -174,15 +173,16 @@ class ProductUom(models.Model):
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None,
                context=None, count=False):
-        """ Overwrite in order to search only allowed products for a partner
-            if partner_id is in context."""
+        """ Overwrite in order to search only allowed products for a product
+            if product_id is in context."""
         if context is None:
             context = {}
         if context.get('product_id', False):
             t_prod = self.pool.get('product.product')
             prod = t_prod.browse(cr, uid, context['product_id'], context)
             product_udv_ids = prod.get_sale_unit_ids()
-            args.append(['id', 'in', product_udv_ids])
+            # Because sometimes args = [category = False]
+            args = [['id', 'in', product_udv_ids]]
         return super(ProductUom, self).search(cr, uid, args,
                                               offset=offset,
                                               limit=limit,
@@ -195,9 +195,11 @@ class ProductUom(models.Model):
         res = super(ProductUom, self).name_search(name, args=args,
                                                   operator=operator,
                                                   limit=limit)
+        # import ipdb; ipdb.set_trace()
         if self._context.get('product_id', False):
             args = args or []
             recs = self.browse()
             recs = self.search(args)
+            # import ipdb; ipdb.set_trace()
             res = recs.name_get()
         return res

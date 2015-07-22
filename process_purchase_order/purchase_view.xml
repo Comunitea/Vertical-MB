@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- Overwrite to add ultrafresh check and display correctly the name of picking type id-->
+        <record id="purchase_order_form_custom_midban" model="ir.ui.view">
+            <field name="name">purchase_order_form_custom_midban</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Avoid default view onchanges and make product_qty readonly. Also adds new fields before it -->
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_qty']" position="replace">
+                    <field name="product_uoc_qty" required="1"/>
+                    <field name="product_uoc" required="1" context="{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"/>
+                    <field name="price_uoc" required="1"/>
+                    <field name="do_onchange" invisible="0"/>
+                    <field name="product_qty" readonly="1"/>
+                </xpath>
+
+                 <!-- Avoid default view onchanges and make product_uom readonly -->
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom']" position="replace">
+                    <field name="product_uom" groups="product.group_uom" readonly="1"/>
+                </xpath>
+
+                 <!-- Avoid onchange -->
+                <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="replace">
+                    <field name="price_unit"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

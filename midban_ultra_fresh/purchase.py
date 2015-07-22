@@ -72,5 +72,5 @@ class purchase_order_line(models.Model):
                                    related='order_id.ultrafresh_purchase')
     price_subtotal = fields.Float('Subtotal', compute=_amount_line,
                                   required=True, readonly=True,
-                                  digits_compute=
-                                  dp.get_precision('Account'))
+                                  digits_compute=dp.
+                                  get_precision('Account'))
