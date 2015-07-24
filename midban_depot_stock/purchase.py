@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import time
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp import models, api
 
 
 class purchase_order(osv.Model):
@@ -78,4 +79,20 @@ class purchase_order_line(osv.Model):
                     delta += 1
                     week_day = 1 if week_day == 7 else week_day + 1
                 res = supp_res + timedelta(days=delta or 0.0)
+        return res
+
+
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    @api.model
+    def _prepare_order_line_move(self, order, order_line, picking_id,
+                                 group_id):
+        res = super(purchase_order, self)._prepare_order_line_move(order,
+                                                                   order_line,
+                                                                   picking_id,
+                                                                   group_id)
+        for dic in res:
+            dic['product_uos_qty'] = order_line.product_uoc_qty
+            dic['product_uos'] = order_line.product_uoc.id
         return res

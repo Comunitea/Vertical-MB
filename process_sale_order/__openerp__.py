@@ -38,8 +38,7 @@
                 "midban_product",  # log_base_id, base_use_field... fields
                 "sale",
                 "sale_stock",
-                "price_system_variable",  # because of geting pricelist prices
-                "midban_depot_stock"],
+                ],
     "data": [
         'product_view.xml',
         'sale_view.xml',

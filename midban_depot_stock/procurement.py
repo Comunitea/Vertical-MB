@@ -25,8 +25,6 @@ class procurement_order(osv.osv):
     _inherit = "procurement.order"
 
     _columns = {
-        # 'trans_route_id': fields.many2one('route', 'Transport Route',
-        #                                   domain=[('state', '=', 'active')]),
         'route_detail_id': fields.many2one('route.detail', 'Detail Route',
                                            domain=[('state', '=', 'active')]),
         'trans_route_id': fields.related('route_detail_id', 'route_id',
@@ -35,7 +33,6 @@ class procurement_order(osv.osv):
                                          relation="route",
                                          store=True,
                                          readonly=True),
-        # 'drop_code': fields.integer('Drop code', readonly=True),
     }
 
     def _run_move_create(self, cr, uid, procurement, context=None):

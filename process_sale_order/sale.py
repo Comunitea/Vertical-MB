@@ -116,7 +116,6 @@ class sale_order_line(models.Model):
 
             self.price_udv = uos_pu
             # self.price_unit = uom_pu
-            # self.do_onchange = False
 
     @api.model
     def write(self, vals):

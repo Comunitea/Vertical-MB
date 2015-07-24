@@ -46,6 +46,8 @@
         "l10n_es_toponyms",
         "report",
         "stock_valued_picking",
+        "process_sale_order",  # Because of management of variable weigth
+        "process_purchase_order",  # Because of management of variable weigth
     ],
     "data": [
         'res_users_view.xml',

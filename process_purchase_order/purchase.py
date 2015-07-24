@@ -41,7 +41,6 @@ class purchase_order_line(models.Model):
                             name=False, price_unit=False, state='draft',
                             context=None):
         """
-
         """
         if context is None:
             context = {}
