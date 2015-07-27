@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-16 17:14+0000\n"
-"PO-Revision-Date: 2015-07-16 17:14+0000\n"
+"POT-Creation-Date: 2015-07-27 14:50+0000\n"
+"PO-Revision-Date: 2015-07-27 14:50+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -391,7 +391,7 @@ msgstr "Glaseado"
 #. module: midban_product
 #: field:product.template,hidde_variant_page:0
 msgid "Hidde variant page"
-msgstr "Hidde variant page"
+msgstr "Esconder pestaña variantes"
 
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form
@@ -408,6 +408,16 @@ msgstr "Historial"
 #: field:unregister.product.reason,id:0
 msgid "ID"
 msgstr "ID"
+
+#. module: midban_product
+#: help:product.supplierinfo,is_var_coeff:0
+msgid "If any conversion is checked, the                                    product will be processed as a variable                                    weight product in purchases process"
+msgstr "Si algún coeficiente de conversión está marcado como variable, el producto se tratará como un producto de peso variable en el proceso de compras"
+
+#. module: midban_product
+#: help:product.template,is_var_coeff:0
+msgid "If any conversion is checked, the                                    product will be processed as a variable                                    weight product in sales process"
+msgstr "Si algún coeficiente de conversión está marcado como variable, el producto se tratará como un producto de peso variable en el proceso de ventas"
 
 #. module: midban_product
 #: help:product.supplierinfo,var_coeff_un:0
@@ -433,7 +443,7 @@ msgstr "Información de un proveedor de producto"
 #. module: midban_product
 #: help:product.template,temp_type:0
 msgid "Informative field thatshould be the same as the pickinglocation temperature type"
-msgstr "Informative field thatshould be the same as the pickinglocation temperature type"
+msgstr "Campo informativo que debe ser igual a la temperatura definida en la ubicación de`picking"
 
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form
@@ -650,7 +660,7 @@ msgstr "Plantilla de producto"
 #: model:ir.ui.menu,name:midban_product.menu_product_variant_config_stock2
 #: model:ir.ui.menu,name:midban_product.menu_products2
 msgid "Product Variants"
-msgstr "Variantes del producto"
+msgstr "Variantes de Producto"
 
 #. module: midban_product
 #: view:unregister.product.reason:midban_product.midban_product_allergen_view_form
@@ -974,6 +984,8 @@ msgid "Variable coefficient"
 msgstr "Coeficiente variable"
 
 #. module: midban_product
+#: field:product.supplierinfo,is_var_coeff:0
+#: field:product.template,is_var_coeff:0
 #: field:product.template,var_weight:0
 msgid "Variable weight"
 msgstr "Peso variable"
@@ -1009,3 +1021,23 @@ msgstr "Motivos baja de producto"
 msgid "{'invisible': [('hidde_variant_page', '=', True)]}"
 msgstr "{'invisible': [('hidde_variant_page', '=', True)]}"
 
+#. module: product
+#: view:product.supplierinfo:product.product_supplierinfo_form_view
+#: view:product.template:product.product_template_form_view
+msgid "Information"
+msgstr "Información"
+
+#. module: product
+#: view:product.supplierinfo:product.product_supplierinfo_form_view
+msgid "Logistic Information"
+msgstr "Información logística"
+
+#. module: product
+#: view:product.supplierinfo:product.product_supplierinfo_form_view
+msgid "Relations units - logistic"
+msgstr "Relación unidades - logística"
+
+#. module: product
+#: view:product.supplierinfo:product.product_supplierinfo_form_view
+msgid "Coefficients and sizes of logistic units"
+msgstr "Coeficientes y tamaños de unidades logísticas"

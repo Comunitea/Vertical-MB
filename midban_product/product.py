@@ -23,7 +23,7 @@ import openerp.addons.decimal_precision as dp
 import time
 from openerp.tools.translate import _
 from openerp import netsvc
-from openerp import models
+from openerp import models, api
 from openerp import fields as fields2
 
 
@@ -463,6 +463,20 @@ class ProductTemplate(models.Model):
     box_use_sale = fields2.Boolean('Can be used on sales',
                                    help='Allows you to sale in the defined'
                                    ' logistic box')
+    is_var_coeff = fields2.Boolean("Variable weight", readonly=True,
+                                   compute='_get_is_var_coeff',
+                                   store=True,
+                                   help="If any conversion is checked, the \
+                                   product will be processed as a variable \
+                                   weight product in sales process")
+
+    @api.model
+    @api.depends('var_coeff_un', 'var_coeff_ca')
+    def _get_is_var_coeff(self):
+        """
+        Calc name str
+        """
+        self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
 
 
 class ProductSupplierinfo(models.Model):
@@ -511,3 +525,19 @@ class ProductSupplierinfo(models.Model):
     supp_ca_width = fields2.Float("CA Width Supplier", digits=(4, 2))
     supp_ca_height = fields2.Float("CA Height Supplier", digits=(4, 2))
     supp_ca_length = fields2.Float("CA Length Supplier", digits=(4, 2))
+
+    is_var_coeff = fields2.Boolean("Variable weight", readonly=True,
+                                   compute='_get_is_var_coeff',
+                                   store=True,
+                                   help="If any conversion is checked, the \
+                                   product will be processed as a variable \
+                                   weight product in purchases process")
+
+    @api.multi
+    @api.depends('var_coeff_un', 'var_coeff_ca')
+    def _get_is_var_coeff(self):
+        """
+        Calc name str
+        """
+        for supp_prod in self:
+            supp_prod.is_var_coeff = self.var_coeff_un or self.var_coeff_ca

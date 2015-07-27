@@ -100,6 +100,7 @@
                         <group col="2">
                             <field name="var_coeff_un"/>
                             <field name="var_coeff_ca"/>
+                            <field name="is_var_coeff"/>
                         </group>
                         <group col="2">
                             <field name="kg_un" required="1"/>
@@ -487,6 +488,7 @@
                                 <group col="2">
                                     <field name="var_coeff_un"/>
                                     <field name="var_coeff_ca"/>
+                                    <field name="is_var_coeff"/>
                                 </group>
                                 <group col="2">
                                     <field name="supp_kg_un" required="1"/>
