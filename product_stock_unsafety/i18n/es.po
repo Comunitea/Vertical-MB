@@ -283,13 +283,8 @@ msgid "Reason"
 msgstr "Motivo"
 
 #. module: product_stock_unsafety
-#: field:product.template,remaining_days_sale:0
-msgid "Remaining                                                        Days of Sale"
-msgstr "Remaining                                                        Days of Sale"
-
-#. module: product_stock_unsafety
 #: field:product.stock.unsafety,remaining_days_sale:0
-msgid "Remaining                                                       Days of Sale"
+msgid "Remaining Days of Sale"
 msgstr "Días de venta restantes"
 
 #. module: product_stock_unsafety
