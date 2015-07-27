@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-15 15:25+0000\n"
-"PO-Revision-Date: 2015-07-15 15:25+0000\n"
+"POT-Creation-Date: 2015-07-27 17:35+0000\n"
+"PO-Revision-Date: 2015-07-27 17:35+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -182,7 +182,7 @@ msgid "Anathing pending of picking"
 msgstr "Nada pendiente de picking."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:610
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:625
 #, python-format
 msgid "Anything pending of                                                  picking"
 msgstr "Nada pendiente de picking"
@@ -878,7 +878,7 @@ msgstr "Actuando como"
 #: code:addons/midban_depot_stock/sale.py:158
 #: code:addons/midban_depot_stock/sale.py:164
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:416
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:541
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:548
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:123
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:126
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:136
@@ -897,8 +897,8 @@ msgid "Error"
 msgstr "Error"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:111
-#: code:addons/midban_depot_stock/product.py:113
+#: code:addons/midban_depot_stock/product.py:116
+#: code:addons/midban_depot_stock/product.py:118
 #: code:addons/midban_depot_stock/route.py:151
 #: code:addons/midban_depot_stock/stock.py:924
 #: code:addons/midban_depot_stock/stock.py:947
@@ -923,10 +923,10 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:386
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:395
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:462
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:599
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:604
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:610
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:661
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:614
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:619
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:625
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:676
 #: code:addons/midban_depot_stock/wizard/create_tag_wizard.py:133
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:129
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:230
@@ -956,7 +956,7 @@ msgid "Expiry Date"
 msgstr "Fecha caducidad"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:96
+#: code:addons/midban_depot_stock/product.py:101
 #: sql_constraint:product.template:0
 #, python-format
 msgid "Field Location picking is already setted"
@@ -1111,8 +1111,7 @@ msgstr "Si es verdadero podremos hacer picking de esta ubicación y sus hijos"
 #. module: midban_depot_stock
 #: help:stock.config.settings,pick_by_volume:0
 msgid "If checked when we get a picking        task, from all moves of a kind of product we only put in the task         moves until reach the max volume. If max volume is reached it will be        ignored all product moves and continues with other product moves        If not checked all moves of a route and a concret date will be        considered in a unique task without limit."
-msgstr "Si está activado, cuando obtenemos una tarea de picking, de todos los movimientos de un producto (y de una ruta y día concretos) solo se pondrán en la tarea aquellos movimientos que no superen el máximo volumen de llenado definido en la ficha del almacén, a no ser que la oleada de picking este vacía y no haya mas movimientos para otros productos en este caso aunque lo supere se fuerza.
-Si no está activado se considerarán todos los movimientos de una ruta y un día concretos para cada producto, sin límite."
+msgstr "Si está activado, cuando obtenemos una tarea de picking, de todos los movimientos de un producto (y de una ruta y día concretos) solo se pondrán en la tarea aquellos movimientos que no superen el máximo volumen de llenado definido en la ficha del almacén, a no ser que la oleada de picking este vacía y no haya mas movimientos para otros productos en este caso aunque lo supere se fuerzai no está activado se considerarán todos los movimientos de una ruta y un día concretos para cada producto, sin límite."
 
 #. module: midban_depot_stock
 #: help:assign.task.wzd,mandatory_camera:0
@@ -1318,7 +1317,7 @@ msgid "Location where the products will be pushed to a specific location"
 msgstr "Ubicación donde los productos serán puestos en una ubicación específica"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:604
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:619
 #, python-format
 msgid "Locations are required to                                                  do a picking task"
 msgstr "Elegir cámara es obligatorio para hacer una tarea de picking"
@@ -1377,7 +1376,7 @@ msgid "Machines to move palets between locations"
 msgstr "Máquinas para mover palets entre ubicaciones"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:599
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:614
 #, python-format
 msgid "Machines type %s not valid                                 You must select a machine transpalet or order                                 prepare"
 msgstr "Máquinas de tipo %s no validas. Debes seleccionar una máquina transpalet o preparadora de pedidos"
@@ -1470,8 +1469,8 @@ msgstr "Min. nº de ubicaciones a reponer"
 
 #. module: midban_depot_stock
 #: help:product.template,limit_time:0
-msgid "Minimum days of expiration. If you enter a product in stock with lower incidence expiration is created."
-msgstr "Días mínimos de caducidad. Si entra un producto en el almacén con caducidad inferior se crea una incidencia."
+msgid "Minimum days of expiration.                                      If you enter a product in stock with                                      lower incidence expiration is created."
+msgstr "Minimum days of expiration.                                      If you enter a product in stock with                                      lower incidence expiration is created."
 
 #. module: midban_depot_stock
 #: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
@@ -1566,10 +1565,10 @@ msgid "No locations will be created"
 msgstr "No se crearán ubicaciones"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:541
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:548
 #, python-format
-msgid "No max volume defined in                                                 warehouse"
-msgstr "No hay volumen máximo definido en el almacén"
+msgid "No max volume defined in                                                     warehouse"
+msgstr "No max volume defined in                                                     warehouse"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:352
@@ -1578,7 +1577,7 @@ msgid "No picking location matching with                                     spe
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:661
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:676
 #, python-format
 msgid "No pickings to put in a                                                  wave"
 msgstr "No hay albaranes que poner en la ola"
@@ -1683,7 +1682,7 @@ msgid "Not picking location for product                              %s."
 msgstr "No hay ubicación de picking para el producto                              %s."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:111
+#: code:addons/midban_depot_stock/product.py:116
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:129
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:285
 #, python-format
@@ -2066,6 +2065,7 @@ msgid "Procurement Group"
 msgstr "Grupo de abastecimiento"
 
 #. module: midban_depot_stock
+#: model:ir.model,name:midban_depot_stock.model_product_product
 #: field:out.picking.report,product_id:0
 #: field:stock.location,current_product_id:0
 #: field:stock.pack.operation,operation_product_id:0
@@ -3224,7 +3224,7 @@ msgid "Zone %s not exist."
 msgstr "Zona %s no existe."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:113
+#: code:addons/midban_depot_stock/product.py:118
 #: code:addons/midban_depot_stock/stock.py:924
 #, python-format
 msgid "Zone not exist."
@@ -3253,7 +3253,7 @@ msgstr "Marcar para evitar advertencia de stock virtual conservativo"
 #. module: midban_depot_stock
 #: field:product.template,limit_time:0
 msgid "min useful time"
-msgstr "Vida útil mínima de entrada"
+msgstr "vida útil mínima de entrada"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_form_depot

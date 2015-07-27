@@ -453,13 +453,13 @@ msgstr "Categoría interna"
 #. module: midban_product
 #: field:product.template,kg_un:0
 msgid "KG/UN"
-msgstr "KG/UN"
+msgstr "BASE/UN"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_kg_un:0
 #: field:product.template,supplier_kg_un:0
 msgid "KG/UN Supplier"
-msgstr "KG/UN Proveedor"
+msgstr "BASE/UN Proveedor"
 
 #. module: midban_product
 #: field:deny.product.reason,write_uid:0

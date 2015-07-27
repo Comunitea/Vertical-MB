@@ -436,6 +436,10 @@ class product_history(osv.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    @api.model
+    def _get_kg_unit(self):
+        return self.env.ref('product.product_uom_kgm').id
+
     var_coeff_un = fields2.Boolean('Variable coefficient',
                                    help='If checked we can manage'
                                    ' products of variable weight.\n'
@@ -446,7 +450,8 @@ class ProductTemplate(models.Model):
                                    'System will not convert between units.')
     log_base_id = fields2.Many2one('product.uom', 'Base',
                                    help='The defined unit of measure will be'
-                                   ' related with the logistic base')
+                                   ' related with the logistic base',
+                                   default=_get_kg_unit)
     log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic box')
@@ -482,6 +487,9 @@ class ProductTemplate(models.Model):
 class ProductSupplierinfo(models.Model):
     _inherit = 'product.supplierinfo'
 
+    def _get_kg_unit(self):
+        return self.env.ref('product.product_uom_kgm').id
+
     var_coeff_un = fields2.Boolean('Variable coefficient',
                                    help='If checked we can manage'
                                    ' products of variable weight.\n'
@@ -492,7 +500,8 @@ class ProductSupplierinfo(models.Model):
                                    'System will not convert between units.')
     log_base_id = fields2.Many2one('product.uom', 'Base',
                                    help='The defined unit of measure will be'
-                                   ' related with the logistic base')
+                                   ' related with the logistic base',
+                                   default=_get_kg_unit)
     log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic unit')

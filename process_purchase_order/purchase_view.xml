@@ -13,7 +13,7 @@
                     <field name="product_uoc_qty" required="1"/>
                     <field name="product_uoc" required="1" context="{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"/>
                     <field name="price_udc" required="1"/>
-                    <field name="do_onchange" invisible=""/>
+                    <field name="do_onchange" invisible="1"/>
                     <field name="product_qty" readonly="1"/>
                 </xpath>
 

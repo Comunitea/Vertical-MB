@@ -21,6 +21,8 @@
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+from openerp import models, api
+from openerp import fields as fields2
 
 
 class product_template(osv.Model):
@@ -88,7 +90,10 @@ class product_template(osv.Model):
                                          string='Cros Dock \
                                          Product',
                                          readonly=True),
-        'limit_time': fields.integer('min useful time', help='Minimum days of expiration. If you enter a product in stock with lower incidence expiration is created.'),
+        'limit_time': fields.integer('min useful time',
+                                     help='Minimum days of expiration. \
+                                     If you enter a product in stock with \
+                                     lower incidence expiration is created.'),
 
     }
     _sql_constraints = [
@@ -136,3 +141,30 @@ class product_uom(osv.Model):
     _defaults = {
         'like_type': '',
     }
+
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    log_units_available = fields2.Float("Logistic units quantity",
+                                        readonly=True,
+                                        compute='_get_log_units_available',
+                                        help="Shows stock in the logistic \
+                                              unit defined as units aprox.")
+
+    @api.model
+    @api.depends('var_coeff_un', 'var_coeff_ca', 'kg_un')
+    def _get_log_units_available(self):
+        """
+        Calc stock in logistic units defined as units
+        """
+        self.log_units_available = 0.0
+        if self.var_coeff_un or self.var_coeff_ca:
+            prod_ids = self.env['product.product'].search([('product_tmpl_id',
+                                                            '=',
+                                                            self.id)])
+            if prod_ids:
+                prod = prod_ids[0]
+                conv = prod.get_unit_conversions(self.virtual_available,
+                                                 self.uom_id.id)
+                self.log_units_available = conv['unit']
