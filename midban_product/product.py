@@ -549,4 +549,4 @@ class ProductSupplierinfo(models.Model):
         Calc name str
         """
         for supp_prod in self:
-            supp_prod.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
+            supp_prod.is_var_coeff = supp_prod.var_coeff_un or supp_prod.var_coeff_ca
