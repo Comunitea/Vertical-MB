@@ -350,7 +350,7 @@ class stock_transfer_details(models.TransientModel):
                                             multipack=item.result_package_id)
         return
 
-    @api.one
+    @api.multi
     def prepare_package_type_operations(self):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
@@ -400,7 +400,18 @@ class stock_transfer_details(models.TransientModel):
                 self.picking_id.write({'midban_operations': True})
             else:
                 raise except_orm(_('Error!'), _('Not enought free space.'))
-        return True
+
+        if sucess:
+            # return self.picking_id.do_enter_transfer_details()
+            ctx = {
+                'active_model': 'stock.picking',
+                'active_ids': [self.picking_id.id],
+                'active_id': self.picking_id and self.picking_id.id or False
+            }
+            vals = {'picking_id': self.picking_id.id}
+            wzd_obj = self.with_context(ctx).create(vals)
+            return wzd_obj.wizard_view()
+        return False
 
     @api.one
     def do_detailed_transfer(self):
@@ -410,6 +421,29 @@ class stock_transfer_details(models.TransientModel):
             related_pick = self.move_lines[0].move_dest_id.picking_id
             related_pick.do_prepare_partial()
             related_pick.write({'midban_operations': True})
+        return res
+
+    @api.multi
+    def wizard_view(self):
+        res = super(stock_transfer_details, self).wizard_view()
+
+        if self.picking_id.picking_type_code == 'incoming' and \
+                not self.picking_id.midban_operations:
+            ref = 'midban_depot_stock.custom_view_transfer_details'
+            view = self.env.ref(ref)
+
+            return {
+                'name': _('Enter transfer details'),
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'stock.transfer_details',
+                'views': [(view.id, 'form')],
+                'view_id': view.id,
+                'target': 'new',
+                'res_id': self.ids[0],
+                'context': self.env.context,
+            }
         return res
 
 

@@ -21,7 +21,7 @@
 
                 <!-- Show only when no custom operations" -->
                 <button name="do_enter_transfer_details" position="replace">
-                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('midban_operations', '=', True)]}"/>
+                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                 </button>
 
                 <!-- New Buttons to manage pack operations" -->
