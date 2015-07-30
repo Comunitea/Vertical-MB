@@ -445,6 +445,23 @@ class stock_transfer_details(models.TransientModel):
                 'res_id': self.ids[0],
                 'context': self.env.context,
             }
+        elif self.picking_id.picking_type_code == 'incoming' and \
+                self.picking_id.midban_operations:
+            ref = 'midban_depot_stock.custom_view_transfer_details_2'
+            view = self.env.ref(ref)
+
+            return {
+                'name': _('Enter transfer details'),
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'stock.transfer_details',
+                'views': [(view.id, 'form')],
+                'view_id': view.id,
+                'target': 'new',
+                'res_id': self.ids[0],
+                'context': self.env.context,
+            }
         return res
 
     @api.model
@@ -516,7 +533,7 @@ class stock_transfer_details_items(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
     life_date = fields.Datetime('Life date')
-    uos_qty = fields.Float('Quantity (UoS)',
+    uos_qty = fields.Float('Quantity (S.U.)',
                            digits_compute=dp.
                            get_precision('Product Unit of Measure'))
     uos_id = fields.Many2one('product.uom', 'Second Unit')
