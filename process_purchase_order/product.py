@@ -76,6 +76,22 @@ class product_product(models.Model):
         return res
 
     @api.model
+    def uom_qty_to_uoc_qty(self, uom_qty, uoc_id, supplier_id):
+        """
+        Convert product quantity from his default stock unit to the specified
+        uoc_id, consulting the conversions in the supplier model.
+        """
+        supp = self.get_product_supp_record(supplier_id)
+        conv = self.get_purchase_unit_conversions(uom_qty, self.uom_po_id.id,
+                                                  supplier_id)
+        if uoc_id == supp.log_base_id.id:
+            return conv['base']
+        elif uoc_id == supp.log_unit_id.id:
+            return conv['unit']
+        elif uoc_id == supp.log_box_id.id:
+            return conv['box']
+
+    @api.model
     def get_uom_po_logistic_unit(self, supplier_id):
         supp = self.get_product_supp_record(supplier_id)
         if self.uom_po_id.id == supp.log_base_id.id:
@@ -151,11 +167,6 @@ class product_product(models.Model):
                     price_udc = float_round(price_unit * supp.supp_un_ca, 2)
                 if log_unit == 'box':
                     price_udc = price_unit
-#
-            # if self.lst_price and not price_udc:
-            #     raise except_orm(_('Error'), _('The product unit of measure %s is \
-            #                      not related with any logistic unit' % uoc_id))
-        # import ipdb; ipdb.set_trace()
         return price_unit, price_udc
 
 

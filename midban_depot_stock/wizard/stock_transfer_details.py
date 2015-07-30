@@ -25,6 +25,7 @@ from openerp.tools.translate import _
 from datetime import datetime, timedelta
 import math
 from openerp.addons.midban_issue.issue_generator import issue_generator
+import openerp.addons.decimal_precision as dp
 
 
 issue_gen = issue_generator()
@@ -446,11 +447,84 @@ class stock_transfer_details(models.TransientModel):
             }
         return res
 
+    @api.model
+    def default_get(self, fields):
+        """
+        Overwrited to get the secondary unit to the item line.
+        We get conversions of product model if we are in a outgoing picking
+        else we use supplier products model conversions.
+        We check if product is variable weight or not
+        """
+        res = super(stock_transfer_details, self).default_get(fields)
+
+        picking_ids = self._context.get('active_ids', [])
+        if not picking_ids or len(picking_ids) != 1:
+            # Partial Picking Processing only be done for one picking at a time
+            return res
+
+        res['item_ids'] = []    # We calc again the item ids
+        picking = self.env['stock.picking'].browse(picking_ids[0])
+        supplier_id = picking.partner_id.id
+
+        if not picking.pack_operation_ids:
+            picking.do_prepare_partial()
+
+        items = []
+        for op in picking.pack_operation_ids:
+            prod = op.product_id
+            uos_id = op.product_uom_id.id
+            uos_qty = op.product_qty
+            var_weight = False
+
+            if op.linked_move_operation_ids:
+                move = op.linked_move_operation_ids[0].move_id
+                uos_id = move.product_uos and move.product_uos.id or uos_id
+                if picking.picking_type_code == 'incoming':
+
+                    uos_qty = prod.uom_qty_to_uoc_qty(op.product_qty, uos_id,
+                                                      supplier_id)
+                    supp = prod.get_product_supp_record(supplier_id)
+                    if supp.is_var_coeff:
+                        var_weight = True
+                elif picking.picking_type_code == 'outgoing':
+                    uos_qty = prod.uom_qty_to_uos_qty(op.product_qty, uos_id)
+                    if prod.is_var_coeff:
+                        var_weight = True
+            item = {
+                'packop_id': op.id,
+                'product_id': op.product_id.id,
+                'product_uom_id': op.product_uom_id.id,
+                'quantity': op.product_qty,
+                'package_id': op.package_id.id,
+                'lot_id': op.lot_id.id,
+                'sourceloc_id': op.location_id.id,
+                'destinationloc_id': op.location_dest_id.id,
+                'result_package_id': op.result_package_id.id,
+                'date': op.date,
+                'owner_id': op.owner_id.id,
+                'uos_qty': uos_qty,  # Calculed and added
+                'uos_id': uos_id,     # Calculed and added
+                'var_weight': var_weight,     # Calculed and added
+            }
+            if op.product_id:
+                items.append(item)
+        res.update(item_ids=items, picking_id=picking.id)
+        return res
+
 
 class stock_transfer_details_items(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
     life_date = fields.Datetime('Life date')
+    uos_qty = fields.Float('Quantity (UoS)',
+                           digits_compute=dp.
+                           get_precision('Product Unit of Measure'))
+    uos_id = fields.Many2one('product.uom', 'Second Unit')
+    var_weight = fields.Boolean('Variable weight', readonly=True,
+                                help='If checked, system will not convert \
+                                quantitys beetwen units')
+    do_onchange = fields.Boolean('Contros onchange', default=True,
+                                 readonly=False)
 
     @api.multi
     def write(self, vals):
@@ -506,3 +580,59 @@ class stock_transfer_details_items(models.TransientModel):
     @api.onchange('lot_id')
     def onchange_lot_id(self):
         self.life_date = self.lot_id.life_date
+
+    @api.onchange('uos_qty')
+    def product_uos_qty_onchange(self):
+        """
+        We change the quantity field
+        """
+        variable = self.var_weight
+        product = self.product_id
+        if product and variable and self.product_uom_id.id == self.uos_id.id:
+            self.do_onchange = False
+            self.quantity = self.uos_qty
+
+        if product and not variable:
+            picking_id = self._context.get('picking_id', [])
+            picking = self.env['stock.picking'].browse(picking_id)
+            if self.do_onchange:
+                supplier_id = picking.partner_id.id
+                qty = self.uos_qty
+                uoc_id = self.uos_id.id
+
+                conv = product.get_purchase_unit_conversions(qty, uoc_id,
+                                                             supplier_id)
+                # base, unit, or box
+                log_unit = product.get_uom_po_logistic_unit(supplier_id)
+                new_quantity = conv[log_unit]
+                if new_quantity != self.quantity:
+                    self.do_onchange = False
+                    self.quantity = conv[log_unit]
+            else:
+                self.do_onchange = True
+
+    @api.onchange('quantity')
+    def product_uos_id_onchange(self):
+        """
+        We change uos_qty field
+        """
+        variable = self.var_weight
+        product = self.product_id
+        if product and variable and self.product_uom_id.id == self.uos_id.id:
+            self.do_onchange = False
+            self.uos_qty = self.quantiry
+
+        if product and not variable:
+            picking_id = self._context.get('picking_id', [])
+            picking = self.env['stock.picking'].browse(picking_id)
+            if self.do_onchange:
+                supplier_id = picking.partner_id.id
+                qty = self.quantity
+                new_uos_qty = product.uom_qty_to_uoc_qty(qty, self.uos_id.id,
+                                                         supplier_id)
+
+                if new_uos_qty != self.uos_qty:
+                    self.do_onchange = False
+                    self.uos_qty = new_uos_qty
+            else:
+                self.do_onchange = True

@@ -39,17 +39,6 @@ class product_template(models.Model):
                                 "unit. If a box have 10 units and discount is"
                                 "20%, the new box price will be 80 intead of"
                                 "100, imaging price unit equals to 1.")
-    # Overwrite in order to add 4 decimals
-    # uos_coeff = fields.Float('Unit of Measure -> UOS Coeff',
-    #                          digits=(16, 4),
-    #                          help='Coefficient to convert default Unit of \
-    #                          Measure to Unit of Sale\n'' uos = uom * coeff')
-    # uos_id = fields.Many2one('product.uom', 'Unit of Sale',
-    #                          default=_get_default_uos,
-    #                          help='Specify a unit of measure here if invoicing\
-    #                          is made in another unit of measure than\
-    #                          inventory. Keep empty to use the default unit of \
-    #                          measure.')
 
 
 class product_product(models.Model):
@@ -85,6 +74,20 @@ class product_product(models.Model):
             res['unit'] = float_round(res['box'] * self.un_ca, 2)
             res['base'] = float_round(res['unit'] * self.kg_un, 2)
         return res
+
+    @api.model
+    def uom_qty_to_uos_qty(self, uom_qty, uos_id):
+        """
+        Convert product quantity from his default stock unit to the specified
+        uos_id
+        """
+        conv = self.get_unit_conversions(uom_qty, self.uom_id.id)
+        if uos_id == self.log_base_id.id:
+            return conv['base']
+        elif uos_id == self.log_unit_id.id:
+            return conv['unit']
+        elif uos_id == self.log_box_id.id:
+            return conv['box']
 
     @api.model
     def get_uom_logistic_unit(self):
@@ -159,11 +162,6 @@ class product_product(models.Model):
                     price_udv = float_round(price_unit * self.un_ca, 2)
                 if log_unit == 'box':
                     price_udv = price_unit
-# 
-            # if self.lst_price and not price_udv:
-            #     raise except_orm(_('Error'), _('The product unit of measure %s is \
-            #                      not related with any logistic unit' % uos_id))
-        # import ipdb; ipdb.set_trace()
         return price_unit, price_udv
 
 
