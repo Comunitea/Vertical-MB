@@ -153,7 +153,6 @@ class purchase_order_line(models.Model):
         because they are readonly in the view and the onchange
         value is not in the vals dict
         """
-        # import ipdb; ipdb.set_trace()
         for po_line in self:
             if vals.get('product_id', False):
                 prod = self.env['product.product'].browse(vals['product_id'])
