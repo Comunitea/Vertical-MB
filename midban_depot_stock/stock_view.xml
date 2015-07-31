@@ -21,14 +21,14 @@
 
                 <!-- Show only when no custom operations" -->
                 <button name="do_enter_transfer_details" position="replace">
-                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('midban_operations', '=', True)]}"/>
+                    <button name="do_enter_transfer_details" states="assigned,partially_available" string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
                 </button>
 
                 <!-- New Buttons to manage pack operations" -->
                 <button name="do_enter_transfer_details" position="after">
                     <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
 
-                    <button name="delete_picking_package_operations" string="Delete operations" groups="stock.group_stock_user" type="object"/>
+                    <button name="delete_picking_package_operations" string="Delete operations" groups="stock.group_stock_user" type="object" attrs="{'invisible': [('state','not in',('assigned', 'partially_available'))]}"/>
 
                     <button name="%(action_create_tag_wizard)d" string="Print Tags" type="action" attrs="{'invisible': ['|', '|', ('picking_type_code', '!=', 'incoming'), ('pack_operation_exist', '=', False), ('state','!=', 'done')]}"/>
                 </button>

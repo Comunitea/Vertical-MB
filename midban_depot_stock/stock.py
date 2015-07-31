@@ -354,7 +354,7 @@ class stock_package(osv.osv):
         return res
 
     _columns = {
-        'pack_type': fields.selection([('box', 'Box'),
+        'pack_type': fields.selection([('box', 'Box'),  # PARA QUITAR
                                        ('palet', 'Palet')],
                                       # ('var_palet', 'Var Palet')],
                                       'Pack Type'),
@@ -1133,6 +1133,21 @@ class stock_move(osv.osv):
         ctx['do_not_propagate'] = True
         res = super(stock_move, self).action_done(cr, uid, ids, context=ctx)
         return res
+
+    # def _check_uom(self, cr, uid, ids, context=None):
+    #     """
+    #     Avoid to check categorys when the move is created in a _contraint.
+    #     Always True, we convert between units using the logistic information
+    #     MAYBE RESPECT THE LIMITATION AND CONFIGURE WELL
+    #     """
+    #     res = super(stock_move, self)._check_uom(cr, uid, ids,context=context)
+    #     return True
+
+    # _constraints = [
+    #     (_check_uom,
+    #         'You try to move a product using a UoM that is not compatible with the UoM of the product moved. Please use an UoM in the same UoM category.',
+    #         ['product_uom']),
+    # ]
 
 
 class stock_inventory(osv.osv):

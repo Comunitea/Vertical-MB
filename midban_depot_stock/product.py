@@ -142,6 +142,22 @@ class product_uom(osv.Model):
         'like_type': '',
     }
 
+    # def _compute_qty_obj(self, cr, uid, from_unit, qty, to_unit, round=True,
+    #                      rounding_method='UP', context=None):
+    #     if context is None:
+    #         context = {}
+    #     # Avoid category exception between units, MAYBE best by configuration
+    #     # making a common category
+    #     ctx = context.copy()
+    #     ctx['raise-exception'] = False
+    #     res = super(product_uom, self)._compute_qty_obj(cr, uid,
+    #                                                     from_unit, qty,
+    #                                                     to_unit,
+    #                                                     round=True,
+    #                                                     rounding_method='UP',
+    #                                                     context=None)
+    #     return res
+
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
