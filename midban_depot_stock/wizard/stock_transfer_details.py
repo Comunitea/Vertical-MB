@@ -128,6 +128,34 @@ class stock_transfer_details(models.TransientModel):
         free_loc_ids.remove(prod_obj.picking_location_id.id)
         return sorted_locs[new_index]
 
+    # def get_max_qty_to_process(self, r_qty, product):
+    #     """
+    #     Obtain the max qty to put in a pack, first palet units, else the
+    #     maximun number of mantle units, else boxe units, else the r_qty units
+    #     """
+    #     un_ca = product.un_ca
+    #     ca_ma = product.ca_ma
+    #     ma_pa = product.ma_pa
+
+    #     box_units = un_ca
+    #     mantle_units = un_ca * ca_ma
+    #     palet_units = un_ca * ca_ma * ma_pa
+    #     prop_qty = r_qty  # Proposed qty to ubicate
+    #     pack = 'units'
+    #     if r_qty >= palet_units:
+    #         prop_qty = palet_units
+    #         pack = 'palet'
+    #     elif r_qty >= mantle_units:
+    #         num_mantles = 0
+    #         num_mantles = r_qty // mantle_units  # Maximum entire mantles
+    #         prop_qty = num_mantles * mantle_units
+    #         pack = 'palet'
+    #     elif r_qty >= box_units:
+    #         prop_qty = box_units
+    #         pack = 'box'
+    #     return [prop_qty, pack]
+    # MODIFICADO: LA NUEVA FUNCION DA UNIDADES DE COMO MUCHO O UN PALET
+
     def get_max_qty_to_process(self, r_qty, product):
         """
         Obtain the max qty to put in a pack, first palet units, else the
@@ -137,23 +165,16 @@ class stock_transfer_details(models.TransientModel):
         ca_ma = product.ca_ma
         ma_pa = product.ma_pa
 
-        box_units = un_ca
-        mantle_units = un_ca * ca_ma
+        # box_units = un_ca
+        # mantle_units = un_ca * ca_ma
         palet_units = un_ca * ca_ma * ma_pa
         prop_qty = r_qty  # Proposed qty to ubicate
-        pack = 'units'
         if r_qty >= palet_units:
             prop_qty = palet_units
-            pack = 'palet'
-        elif r_qty >= mantle_units:
-            num_mantles = 0
-            num_mantles = r_qty // mantle_units  # Maximum entire mantles
-            prop_qty = num_mantles * mantle_units
-            pack = 'palet'
-        elif r_qty >= box_units:
-            prop_qty = box_units
-            pack = 'box'
-        return [prop_qty, pack]
+        else:
+            prop_qty = r_qty
+        return prop_qty
+
 
     def _get_loc_and_qty(self, r_qty, product, multipack=False):
         """
@@ -180,7 +201,14 @@ class stock_transfer_details(models.TransientModel):
                                              cross dock order'))
         pick_loc = product.picking_location_id
         loc_obj = False
-        prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
+
+        # prop_qty, pack = self.get_max_qty_to_process(r_qty, product)
+
+        # MODIFICADO: No se usara el pack (se creará con tipo palet para
+        prop_qty = self.get_max_qty_to_process(r_qty, product)
+
+        # para mantener, el campo pack_type se usa en volumetría
+        pack = 'palet'
         stop = False
         if multipack:
             if prop_qty < r_qty:
@@ -271,10 +299,10 @@ class stock_transfer_details(models.TransientModel):
                 op_vals['result_package_id'] = multipack.id
             else:
                 pack_obj = t_pack.create({'pack_type': pack})
-                pack_name = pack == 'palet' and 'PALET' or 'CAJA'
-                new_name = pack_obj.name.replace("PACK", pack_name)
+                # pack_name = pack == 'palet' and 'PALET' or 'CAJA'
+                # new_name = pack_obj.name.replace("PACK", pack_name)
                 op_vals['result_package_id'] = pack_obj.id
-                pack_obj.write({'name': new_name})
+                # pack_obj.write({'name': new_name})
         t_ope.create(op_vals)
         return True
 
@@ -495,6 +523,7 @@ class stock_transfer_details(models.TransientModel):
 
             if op.linked_move_operation_ids:
                 move = op.linked_move_operation_ids[0].move_id
+                
                 uos_id = move.product_uos and move.product_uos.id or uos_id
                 if picking.picking_type_code == 'incoming':
 

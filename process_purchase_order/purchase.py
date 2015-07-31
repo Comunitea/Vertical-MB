@@ -57,10 +57,17 @@ class purchase_order_line(models.Model):
                                       state=state)
         if not product_id:
             return res
+
+        # Get description of line
+        t_product = self.pool.get('product.product')
+        prod_obj = t_product.browse(cr, uid, product_id)
+        dumy_id, name = prod_obj.name_get()[0]
+        if prod_obj.description_purchase:
+            name += '\n' + prod_obj.description_purchase
+        res['value'].update({'name': name})
+
         if partner_id:
-            t_product = self.pool.get('product.product')
             t_partner = self.pool.get('res.partner')
-            prod_obj = t_product.browse(cr, uid, product_id)
             part_obj = t_partner.browse(cr, uid, partner_id)
 
             # Check partner_id in product's suppliers list, if founded
