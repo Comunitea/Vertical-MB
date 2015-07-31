@@ -153,6 +153,7 @@ class purchase_order_line(models.Model):
         because they are readonly in the view and the onchange
         value is not in the vals dict
         """
+        # import ipdb; ipdb.set_trace()
         for po_line in self:
             if vals.get('product_id', False):
                 prod = self.env['product.product'].browse(vals['product_id'])
@@ -167,8 +168,8 @@ class purchase_order_line(models.Model):
             conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id, supplier_id)
             log_unit = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, box
             vals['product_qty'] = conv[log_unit]
-            vals['product_uom'] = prod.uom_po_id.id
-        res = super(purchase_order_line, self).write(vals)
+            vals['product_uom'] = prod.uom_po_id.id  # Deafult stock unit?
+            res = super(purchase_order_line, po_line).write(vals)
         return res
 
     @api.model
@@ -191,7 +192,7 @@ class purchase_order_line(models.Model):
                                                       supplier_id)
             log_unit = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, or box
             vals['product_qty'] = conv[log_unit]
-            vals['product_uom'] = prod.uom_po_id.id
+            vals['product_uom'] = prod.uom_po_id.id  # Deafult stock unit?
         res = super(purchase_order_line, self).create(vals)
 
         return res

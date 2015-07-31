@@ -121,26 +121,27 @@ class sale_order_line(models.Model):
             self.price_udv = uos_pu
             # self.price_unit = uom_pu
 
-    @api.model
+    @api.multi
     def write(self, vals):
         """
         Overwrite to recalculate the product_uom_qty and product_uom
         because they are readonly in the view and the onchange
         value is not in the vals dict
         """
-        if vals.get('product_id', False):
-            prod = self.env['product.product'].browse(vals['product_id'])
-        else:
-            prod = self.product_id
-        uos_qty = vals.get('product_uos_qty', False) and \
-            vals['product_uos_qty'] or self.product_uos_qty
-        uos_id = vals.get('product_uos', False) and \
-            vals['product_uos'] or self.product_uos.id
-        conv = prod.get_unit_conversions(uos_qty, uos_id)
-        log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
-        vals['product_uom_qty'] = conv[log_unit]
-        vals['product_uom'] = prod.uom_id.id
-        res = super(sale_order_line, self).write(vals)
+        for line in self:
+            if vals.get('product_id', False):
+                prod = self.env['product.product'].browse(vals['product_id'])
+            else:
+                prod = line.product_id
+            uos_qty = vals.get('product_uos_qty', False) and \
+                vals['product_uos_qty'] or line.product_uos_qty
+            uos_id = vals.get('product_uos', False) and \
+                vals['product_uos'] or line.product_uos.id
+            conv = prod.get_unit_conversions(uos_qty, uos_id)
+            log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
+            vals['product_uom_qty'] = conv[log_unit]
+            vals['product_uom'] = prod.uom_id.id
+            res = super(sale_order_line, line).write(vals)
         return res
 
     @api.model

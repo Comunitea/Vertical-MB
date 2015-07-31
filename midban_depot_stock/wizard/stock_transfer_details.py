@@ -561,7 +561,7 @@ class stock_transfer_details(models.TransientModel):
 class stock_transfer_details_items(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
-    life_date = fields.Datetime('Life date')
+    life_date = fields.Datetime('Caducity date')
     uos_qty = fields.Float('Quantity (S.U.)',
                            digits_compute=dp.
                            get_precision('Product Unit of Measure'))
