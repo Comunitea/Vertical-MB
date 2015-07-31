@@ -30,37 +30,29 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
         template: 'TsWidget',
         init: function() {
             this._super(arguments[0],{});
-/*            instance.web.blockUI(); 
-*/          this.ts_model = new module.TsModel(this.session,{ts_widget:this});
+            this.ts_model = new module.TsModel(this.session,{ts_widget:this});
             this.ts_widget = this; //So that Tswidget's childs have ts_widget set automatically
         },
 
         start: function() {
             var self = this;
             return self.ts_model.ready.done(function(){
-                // self.build_currency_template(); // LLamada no implementasda en el widget base
                 self.renderElement();  //Contruye la plantilla????
 
-                
-                self.build_widgets(); // BUILD ALL WIDGETS AND CREENS WIDGETS
-                // console.log("WIDGETS CARGADOS")
 
-                // self.button_block_selector.set_default_block(); // set principal block of widgets
+                self.build_widgets(); // BUILD ALL WIDGETS AND CREENS WIDGETS
                 self.screen_selector.set_default_screen(); // set principal screen
-/*                instance.web.unblockUI();
-*/                self.$('.loader').animate({opacity:0},1500,'swing',function(){self.$('.loader').hide();});
+                self.$('.loader').animate({opacity:0},1500,'swing',function(){self.$('.loader').hide();});
                 self.add_shortkey_events();
                 self.ts_model.get_calls_by_date_state(self.ts_model.getCurrentDateStr()); // get call list for current date
-                // self.ts_model.get('selectedOrder').bind('change', self.$("#partner").focus(), self)
-/*                self.$('.loader').animate({opacity:0},1500,'swing',function(){self.$('.loader').addClass('oe_hidden');});
-*/                self.$("#partner").focus();
+                self.$("#partner").focus();
 
 
             }).fail(function(){   // error when loading models data from the backend
                 self.try_close();
             });
         },
-        
+
         build_widgets: function() {
             var self = this;
             // --------  WIDGETS ---------
@@ -110,16 +102,16 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             //Product Catalog Data Analysis Screen
             this.product_catalog_screen = new module.ProductCatalogScreenWidget(this, {});
             this.product_catalog_screen.appendTo(this.$('#content'));
-            //Product PopUp 
+            //Product PopUp
             this.product_sust_popup = new module.SustPopupWidget(this, {});
             this.product_sust_popup.appendTo(this.$('#content'));
-            //Add Create Call PopUp 
+            //Add Create Call PopUp
             this.add_call_popup = new module.AddCallPopupWidget(this, {});
             this.add_call_popup.appendTo(this.$('#content'));
-            //Add Finish Call PopUp 
+            //Add Finish Call PopUp
             this.finish_call_popup = new module.FinishCallPopupWidget(this, {});
             this.finish_call_popup.appendTo(this.$('#content'));
-            //Add Create Reserve PopUp 
+            //Add Create Reserve PopUp
             this.create_reserve_popup = new module.CreateReservePopupWidget(this, {});
             this.create_reserve_popup.appendTo(this.$('#content'));
 
@@ -184,7 +176,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
                 self.$('#button_no').click();  //new order screen
-                self.$("#partner").focus(); 
+                self.$("#partner").focus();
 
             });
             Mousetrap.bind('alt+w', function(e){
@@ -306,14 +298,14 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                     var cur_line = order_lines_wgts[index-1]
                     if (index == order_lines_wgts.length)
                         index = 0;
-                    
+
                     var line_wgt = order_lines_wgts[index];
                     // if (!line_wgt.model.is_selected()){
                         // if (cur_line) cur_line.$('.mandatory').blur();
                         line_wgt.$el.click();
                         line_wgt.$('.col-code').focus();
                     // }
-                }  
+                }
             });
             Mousetrap.bind('ctrl+up', function(e){
                 $( document.activeElement ).blur();
@@ -337,9 +329,9 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                         line_wgt.$el.click();
                         line_wgt.$('.col-code').focus();
                     }
-                }  
+                }
             });
-            
+
             Mousetrap.bind('alt+p', function(e){
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();

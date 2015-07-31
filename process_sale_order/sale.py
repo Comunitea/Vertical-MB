@@ -109,6 +109,10 @@ class sale_order_line(models.Model):
             conv = product.get_unit_conversions(uos_qty, uos_id)
             log_unit = product.get_uom_logistic_unit()
             self.product_uom_qty = conv[log_unit]
+            if log_unit == 'box' and product.box_discount:
+                self.discount = product.box_discount
+            else:
+                self.discount = 0
 
             # Calculate prices
             uom_pu, uos_pu = product.get_uom_uos_prices(uos_id,

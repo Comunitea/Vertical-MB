@@ -45,8 +45,6 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
         renderElement: function() {
             var self=this;
             this._super();
-            console.log("render line")
-            // this.$el.click(function(){self.show_product_info();});
             this.$('.show-product').click(_.bind(this.show_product_info, this));
             this.$('.add-product').click(_.bind(this.add_product_to_order, this));
         },
@@ -69,12 +67,10 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             this.bind_order_events(); // SET this.order_model = this.ts_model.get('selectedOrder') and his widgets
         },
         bind_order_events: function(){
-            console.log("bind_order_events")
-
             this.order_model.bind('change:partner', this.search_products_to_sell, this);
         },
         search_products_to_sell: function(){
-            
+
             var self = this;
             var search_string = ""
             var customer_name = this.order_model.get('partner');
@@ -82,39 +78,30 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             var partner_id = this.ts_model.db.partner_name_id[customer_name];
             if (partner_id) {
                 var model = new instance.web.Model('res.partner');
-                console.log("SEARCH PRODUCTS TO SHELL")
                 model.call("search_products_to_sell",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
                 .then(function(result){
-                    console.log("PROCESANDO")
                     self.ts_model.set('products_names', [])
                     self.ts_model.set('products_codes', [])
                     for (key in result){
-                        console.log("catalogo para ")
                         var product_obj = self.ts_model.db.get_product_by_id(result[key])
                         if (product_obj){
                             products_list.push(product_obj);
                             search_string += self.ts_model.db._product_search_string(product_obj)
                             self.ts_model.get('products_names').push(product_obj.name);
                             self.ts_model.get('products_codes').push(product_obj.default_code);
-                            // console.log("product_obj", product_obj)
-                            // var product_line = new module.ProductLineWidget(self, {product: product_obj})
-                            // product_line.appendTo(self.$('.productlines'))
                         }
-                   
+
                     }
-                     console.log("PROCESADO")
                     self.ts_model.set('product_search_string', search_string)
                     self.ts_model.get('products').reset(products_list)
                 });
-             }
+            }
         },
         change_selected_order: function() {
-            console.log("change_selected_order")
 
             this.order_model.unbind('change:partner');
             this.order_model = this.ts_model.get('selectedOrder');
             this.bind_order_events();
-            // this.renderElement();
             this.search_products_to_sell();
         },
         renderElement: function () {
@@ -124,10 +111,9 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             for(var i = 0, len = this.line_widgets.length; i < len; i++){
                 this.line_widgets[i].destroy();
             }
-            this.line_widgets = []; 
+            this.line_widgets = [];
             var products = this.ts_model.get("products").models || [];
             my_len = products.length;
-            console.log("render catalog")
             if (my_len > 20){
                 my_len = 20
             }

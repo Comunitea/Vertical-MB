@@ -1,4 +1,4 @@
-function openerp_ts_db(instance, module){ 
+function openerp_ts_db(instance, module){
     _t = instance.web._t;
     module.TS_LS = instance.web.Class.extend({
         name: 'openerp_ts_ls', //the prefix of the localstorage data
@@ -30,7 +30,7 @@ function openerp_ts_db(instance, module){
             this.qnote_name_id = {};
             this.all_qnotes = {};
         },
-        
+
         /* loads a record store from the database. returns default if nothing is found */
         load: function(store,deft){
             if(this.cache[store] !== undefined){
@@ -72,7 +72,6 @@ function openerp_ts_db(instance, module){
             for(var i = 0, len = products.length; i < len; i++){
                 var product = products[i];
                 // var search_string = this._product_search_string(product);
-
                 this.product_by_id[product.id] = product;
                 this.product_name_id[product.name] = product.id;
                 if(product.default_code){
@@ -196,11 +195,6 @@ function openerp_ts_db(instance, module){
         get_partner_contact: function(partner_id){
             var partner_obj = this.get_partner_by_id(partner_id);
             var res = partner_obj;
-            // if (partner_obj.contact_id)
-            //     res = this.get_partner_by_id(partner_obj.contact_id[0]);
-            // else 
-            //     res = partner_obj;
-            /*console.log(partner_obj.child_ids)*/
             for(var i = 0, len = partner_obj.child_ids.length; i < len; i++){
                 var contact = this.get_partner_by_id(partner_obj.child_ids[i]);
                 if (contact.type == 'contact'){

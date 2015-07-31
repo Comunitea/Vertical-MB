@@ -14,14 +14,14 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
 // **************************************************************************************************************************
 // ********************************************ORDER HISTORY WIDGETS*********************************************************
 // **************************************************************************************************************************
-    
+
    module.SummarylineWidget = module.TsBaseWidget.extend({
         template:'Summary-Line-Widget',
         init: function(parent, options){
             this._super(parent,options);
             this.order = options.order;
-            this.open_order = undefined;    
-            this.order_fetch = undefined;    
+            this.open_order = undefined;
+            this.order_fetch = undefined;
         },
         load_order_from_server: function(order_id, flag){
             var self=this;
@@ -41,7 +41,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                     return self.ts_model.fetch('sale.order.line',
                                                 ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp','q_note', 'detail_note'],
                                                 [
-                                                    ['order_id', '=', order_id],  
+                                                    ['order_id', '=', order_id],
                                                  ]);
                 }).then(function(order_lines){
                      if (flag =='add_lines'){
@@ -56,16 +56,12 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                 })
         },
         click_handler: function() {
-            // this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model, contact_name: 'aaa' }));
             var self=this;
             $.when(self.load_order_from_server(self.order.id))
                 .done(function(){
-                    // console.log('done');
-                    // self.ts_widget.screen_selector.set_current_screen('new_order');
                     $('button#button_no').click();
                 }).fail(function(){
-                    // console.log('fail');
-                });    
+                });
         },
         click_handler2: function() {
             var self=this;
@@ -76,13 +72,9 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             }else{
             $.when(self.load_order_from_server(self.order.id, 'add_lines'))
                 .done(function(){
-                    // console.log('done');
-                    /*self.ts_widget.screen_selector.set_current_screen('new_order');*/
                     $('button#button_no').click();
-                }).fail(function(){
-                    // console.log('fail');
                 });
-            }    
+            }
         },
         renderElement: function() {
             var self=this;
@@ -98,7 +90,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
         init: function(parent, options) {
             this._super(parent,options);
             this.partner_orders = [];
-            
+
         },
         renderElement: function () {
             var self = this;
@@ -122,7 +114,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             }
             if (date_end != ""){
                 domain.push(['date_order', '<=', date_end])
-            }                       
+            }
             var loaded = self.ts_model.fetch('sale.order',
                                             ['name', 'partner_id','date_order','date_planned','state','amount_total',],  //faltan los impuestos etc
                                             domain)
@@ -137,13 +129,13 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             // var partner_name = this.$('#input-customer2').val();
             var date_start = this.$('#input-date_start2').val();
             var date_end = this.$('#input-date_end2').val();
-    
+
                 $.when(this.load_partner_orders(date_start,date_end))
                 .done(function(){
                     self.renderElement();
                 }).fail(function(){
                     //?????
-                });    
+                });
             // };
         },
          searchCustomerOrdersBy: function (period){
@@ -163,7 +155,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                     self.renderElement();
                 }).fail(function(){
                     //?????
-                });    
+                });
 
         },
     });

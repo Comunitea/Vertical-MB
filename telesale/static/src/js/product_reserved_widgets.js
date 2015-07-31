@@ -14,12 +14,12 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
 // **************************************************************************************************************************
 // ********************************************PRODUCT RESERVED WIDGETS*********************************************************
 // **************************************************************************************************************************
-    
+
     module.ReservedlineWidget = module.TsBaseWidget.extend({
         template:'Reserved-Line-Widget',
         init: function(parent, options){
             this._super(parent,options);
-            this.reserve = options.reserve;   
+            this.reserve = options.reserve;
         },
         renderElement: function() {
             var self=this;
@@ -29,8 +29,8 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
         },
         open_popup: function(parent, options){
             var self=this;
-            self.ts_widget.screen_selector.show_popup('create_reserve_popup', self.reserve);  
-        },        
+            self.ts_widget.screen_selector.show_popup('create_reserve_popup', self.reserve);
+        },
     });
 
 
@@ -39,7 +39,7 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
         init: function(parent, options) {
             this._super(parent,options);
             this.product_reserves = [];
-            
+
         },
         renderElement: function () {
             var self = this;
@@ -51,7 +51,7 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
                 source: this.ts_model.get('products_names'),
             });
             this.$('#search-reserved').click(function (){ self.searchReserved() });
-            
+
             var $reserved_lines = this.$('.reservedlines');
             for (key in this.product_reserves){
                 var product_reserved = this.product_reserves[key];
@@ -77,7 +77,7 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
                 self.$('#input-customer').val(partner_name);
             }).fail(function(){
                 //?????
-            });    
+            });
         },
         load_reserves: function(partner_id,product_id){
             var self=this;
@@ -87,7 +87,7 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
             }
             if (product_id){
                 domain.push(['product_id', '=', product_id])
-            }                             
+            }
             var loaded = self.ts_model.fetch('stock.reservation',
                                             ['partner_id2','product_id','product_uom_qty','product_uos_qty','served_Qty',
                                              'pending_qty', 'served_qty', 'state', 'invoice_state', 'min_unit'],
@@ -118,7 +118,7 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
                 }
             })
             this.$('#close-reserve-popup').off('click').click(function(){
-              
+
                 self.ts_widget.screen_selector.close_popup('create_reserve_popup');
             })
         },
@@ -142,7 +142,6 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
         },
         create_reserve: function(){
             var self=this;
-            console.log(this.reserve)
             var model = new instance.web.Model("stock.reservation");
             var ordered_qty = this.$('#ordered-qty').val()*1
             model.call("create_reserve_from_ui",[this.reserve.id, ordered_qty],{context:new instance.web.CompoundContext()})

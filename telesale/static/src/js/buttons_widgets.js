@@ -11,9 +11,9 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
         return n.toFixed(decimals) * 1
     };
 
-// ***********************************************************************************************************************************    
-// ***********************************************************************************************************************************  
-    
+// ***********************************************************************************************************************************
+// ***********************************************************************************************************************************
+
     module.SynchIconWidget = module.TsBaseWidget.extend({
         template: "Synch-Notification-Widget",
         init: function(parent, options){
@@ -119,7 +119,6 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
         renderElement: function(){
             var self = this;
             this._super();
-            // console.log("ScreenButtons Inicializado")
             this.$el.find('button#button_no').click(function(){ self.select_screen('new_order');
                                                               // self.select_button_block('order_buttons');
                                                               self.setButtonSelected('button#button_no');
@@ -150,7 +149,7 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
             this.$el.find('button#button_ks').click(function(){ self.select_screen('key_shorts');
                                                                self.setButtonSelected('button#button_ks');
                                                              });
-           
+
 
         },
         setButtonSelected: function(button_selector) {

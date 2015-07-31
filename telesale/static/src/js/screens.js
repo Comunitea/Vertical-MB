@@ -1,24 +1,24 @@
 
 // this file contains the screens definitions. Screens are the
-// content of the right pane of the telesale system, containing the main functionalities. 
+// content of the right pane of the telesale system, containing the main functionalities.
 // screens are contained in the TsWidget, in widgets.js
 // all screens are present in the dom at all time, but only one is shown at the
-// same time. 
+// same time.
 //
 // transition between screens is made possible by the use of the screen_selector,
 // which is responsible of hiding and showing the screens, as well as maintaining
 // the state of the screens between different orders.
 //
 // all screens inherit from ScreenWidget. the only addition from the base widgets
-// are show() and hide() which shows and hides the screen but are also used to 
+// are show() and hide() which shows and hides the screen but are also used to
 // bind and unbind actions on widgets and devices. The screen_selector guarantees
 // that only one screen is shown at the same time and that show() is called after all
 // hide()s
 
-function openerp_ts_screens(instance, module) { //module is instance.point_of_sale 
+function openerp_ts_screens(instance, module) { //module is instance.point_of_sale
     var QWeb = instance.web.qweb,
     _t = instance.web._t;
-    
+
     module.ScreenSelector = instance.web.Class.extend({
         init: function(options){
             // options is a dict with screens instances passed in build_widgets in TsWidget
@@ -115,7 +115,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         /* called before hide, when a popup is closed */
         close: function(){
         },
-        /* hides the popup. keep in mind that this is called in the initialization pass of the 
+        /* hides the popup. keep in mind that this is called in the initialization pass of the
          * pos instantiation, so you don't want to do anything fancy in here */
         hide: function(){
             if(this.$el){
@@ -123,7 +123,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             }
         },
     });
-    
+
 
     module.OrderScreenWidget = module.ScreenWidget.extend({
         template: 'Order-Screen-Widget',
@@ -144,7 +144,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                 // self.ts_model.get('orders').remove(self.ts_model.get('selectedOrder'));
             });
 
-            //when a new order is created, add an order button widget. 
+            //when a new order is created, add an order button widget.
             this.ts_model.get('orders').bind('add', function(new_order){
                 var new_order_button = new module.OrderButtonWidget(null, {
                     order: new_order,
@@ -185,9 +185,6 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         template: 'Tele-Analysis-Screen-Widget',
         init: function(parent,options){
             this._super(parent,options)
-        },
-        start: function(){
-            // console.log("Tele Analysis Screen Inicializado")
         }
     });
 
@@ -222,7 +219,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         start: function(){
             this.order_history_widget = new module.OrderHistoryWidget(this, {});
             this.order_history_widget.replace($('#placeholder-order-history-widget'));
-            
+
         },
     });
 
@@ -274,7 +271,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                     // var products = self.ts_model.db.get_product_by_category(self.category.id);
                     // self.ts_model.get('products').reset(products);
                     // self.$('.search-clear').fadeOut();
-                }   
+                }
             });
         }
     });
@@ -285,7 +282,6 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             this._super(parent,options)
         },
         start: function(){
-            // console.log("Call List Screen Inicializado");
             var self = this;
             this.call_list_widget = new module.CallListWidget(this, {});
             this.call_list_widget.replace($('#placeholder-call-list-widget'));
@@ -314,7 +310,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
         },
         start: function(){
             var self = this;
-            
+
         },
         show: function(){
             var self = this;
@@ -330,4 +326,4 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             })
         },
     });
-} 
+}

@@ -15,13 +15,13 @@ function openerp_ts_models(instance, module){
     // var round_di = instance.web.round_decimals;
     // var round_pr = instance.web.round_precision;
 
-    // The TsModel contains the Telesale suystem representation of the backend.
-    // Since the TS must work in standalone ( Without connection to the server ) 
-    // it must contains a representation of the server's TS backend. 
+    // The TsModel contains the Telesale system representation of the backend.
+    // Since the TS must work in standalone ( Without connection to the server )
+    // it must contains a representation of the server's TS backend.
     // (taxes, product list, configuration options, etc.)  this representation
-    // is fetched and stored by the TsModel at the initialisation. 
-    // this is done asynchronously, a ready deferred alows the GUI to wait interactively 
-    // for the loading to be completed 
+    // is fetched and stored by the TsModel at the initialisation.
+    // this is done asynchronously, a ready deferred alows the GUI to wait interactively
+    // for the loading to be completed
     // There is a single instance of the PosModel for each Front-End instance, it is usually called
     // 'pos' and is available to all widgets extending PosWidget.
 
@@ -34,7 +34,6 @@ function openerp_ts_models(instance, module){
             // this.flush_mutex = new $.Mutex();  // used to make sure the orders are sent to the server once at time
             this.db = new module.TS_LS();                       // a database used to store the products and categories
             this.db.clear('products','partners');
-            // this.debug = jQuery.deparam(jQuery.param.querystring()).debug !== undefined;
             this.ts_widget = attributes.ts_widget;
             this.set({
                 'currency': {symbol: $, position: 'after'},
@@ -68,14 +67,12 @@ function openerp_ts_models(instance, module){
             this.get('orders').bind('remove', function(){ self.on_removed_order(); });
 
             // We fetch the backend data on the server asynchronously. this is done only when the TS user interface is launched,
-            // Any change on this data made on the server is thus not reflected on the telesale system until it is relaunched. 
-            // when all the data has loaded, we compute some stuff, and declare the Ts ready to be used. 
+            // Any change on this data made on the server is thus not reflected on the telesale system until it is relaunched.
+            // when all the data has loaded, we compute some stuff, and declare the Ts ready to be used.
             $.when(this.load_server_data())
                 .done(function(){
-                   /* self.get_products_by_partner();*/
-                    self.log_loaded_data(); //Uncomment if you want to log the data to the console for easier debugging
                     self.check_dates();
-                    
+
                 }).fail(function(){
                     //we failed to load some backend data, or the backend was badly configured.
                     //the error messages will be displayed in PosWidget
@@ -92,39 +89,9 @@ function openerp_ts_models(instance, module){
                 self.ready.resolve();
             }
         },
-        get_products_by_partner: function(){
-            var self = this;
-            /*for (key in this.db.partner_name_id){
-                var partner_id = this.db.partner_name_id[key];
-                var model = new instance.web.Model('res.partner');
-                model.call("get_visibele_products_names",[partner_id],{context:new instance.web.CompoundContext()})
-                    .then(function (result){
-                        for (key in result){
-                            self.get('visible_products')[key] = result[key]
-
-                        }
-
-                        
-                    });
-                
-            }*/
-            /*var partner_id = this.db.partner_name_id[key];
-            var model = new instance.web.Model('res.partner');
-            console.log("OBTENIENDO CATALOGO POR CLIENTE")
-            partner_ids_list = []
-            model.call("search_prod2shell_by_partner",[partner_ids_list],{context:new instance.web.CompoundContext()})
-                .then(function (result){
-                    console.log("EO cargaaaando")
-                    for (key in result){
-                        console.log("PARTNERID, PRODUCT_IDS", key, result)
-                        self.get('visible_products')[key] = result[key]
-                    }
-                    console.log("Ya estac cargaaaaao")
-                });*/
-        },
         // helper function to load data from the server
         fetch: function(model, fields, domain, ctx){
-            this._load_progress = (this._load_progress || 0) + 0.05; 
+            this._load_progress = (this._load_progress || 0) + 0.05;
             this.ts_widget.loading_message(_t('Loading')+' '+model,this._load_progress);
             return new instance.web.Model(model).query(fields).filter(domain).context(ctx).all()
         },
@@ -133,7 +100,7 @@ function openerp_ts_models(instance, module){
             return new instance.web.Model(model).query(fields).filter(domain).limit(limit).order_by(orderby).context(ctx).first()
         },
 
-        // loads all the needed data on the sever. returns a deferred indicating when all the data has loaded. 
+        // loads all the needed data on the sever. returns a deferred indicating when all the data has loaded.
         load_server_data: function(){
             var self=this;
 
@@ -158,39 +125,28 @@ function openerp_ts_models(instance, module){
                 }).then(function(companies){
                     self.set('company',companies[0]);
 
-                    return self.fetch('product.uom', ['name', 'like_type'], [['like_type', 'in', ['units','boxes']]]);
-                    // return self.fetch('product.uom', ['name', 'like_type'], null);
+                    return self.fetch('product.uom', ['name', 'like_type'], []);
                 }).then(function(units){
-                    // self.set('units',units);
                     for (key in units){
                         self.get('units_names').push(units[key].name)
                     }
-                    
+
                     self.db.add_units(units);
-                    console.log("0 CARGANDO PRODUCTOS") 
                     return self.fetch(
-                        'product.product', 
-                        ['name','product_class','list_price','cmc','default_code','uom_id','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
+                        'product.product',
+                        ['name','product_class','list_price','cmc','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
                         [['sale_ok','=',true]]
-                        // {pricelist: self.get('shop').pricelist_id[0]} // context for price
                     );
                 }).then(function(products){
-                    /*for (key in products){
-                        self.get('products_names').push(products[key].name);
-                        self.get('products_codes').push(products[key].default_code);
-                    }*/
-                    console.log("1 PRODUCTOS CARGADOS")
                     self.db.add_products(products);
 
                     return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
-                    console.log("2 CLIENTES CARGADOS")
                     for (key in customers){
                         self.get('customer_names').push(customers[key].name);
                         self.get('customer_codes').push(customers[key].ref);
                     }
                     self.db.add_partners(customers);
-                    console.log("2 Nombres y códifos clientes cargados")
 
                     return self.fetch('account.tax', ['amount', 'price_include', 'type'], [['type_tax_use','=','sale']]);
                 }).then(function(taxes) {
@@ -198,9 +154,9 @@ function openerp_ts_models(instance, module){
                     self.db.add_taxes(taxes);
                     return self.fetch('account.fiscal.position.tax', ['position_id', 'tax_src_id', 'tax_dest_id']);
 
-                    
+
                 }).then(function(fposition_map) {
-                    
+
                     self.db.add_taxes_map(fposition_map);
                     return self.fetch('account.fiscal.position', ['name', 'tax_ids']);
                 }).then(function(fposition) {
@@ -214,20 +170,6 @@ function openerp_ts_models(instance, module){
                 })
 
             return loaded;
-        },
-        // logs the usefull posmodel data to the console for debug purposes
-        log_loaded_data: function(){
-            // console.log('TsModel data has been loaded:');
-            // // console.log('TsModel: units:',this.get('units'));
-            // console.log('TsModel: taxes:',this.get('taxes'));
-            // console.log('TsModel: Dbproducts:',this.db.product_by_id);
-            // // console.log('TsModel: shop:',this.get('shop'));
-            // console.log('TsModel: company:',this.get('company'));
-            // // console.log('TsModel: currency:',this.get('currency'));
-            // // console.log('TsModel: user_list:',this.get('user_list'));
-            // console.log('TsModel: user:',this.get('user'));
-            // // console.log('TsModel.session:',this.session);
-            // console.log('TsModel end of data log.');
         },
 
         add_new_order: function(){
@@ -251,8 +193,7 @@ function openerp_ts_models(instance, module){
             // (new instance.web.Model('sale.order')).call('cancel_order_from_ui',,undefined,{shadow:true})
             (new instance.web.Model('sale.order')).call('cancel_order_from_ui', [[erp_id]], {context:new instance.web.CompoundContext()})
                 .fail(function(unused, event){
-                    //don't show error popup if it fails 
-                    // event.preventDefault();
+                    //don't show error popup if it fails
                     console.error('Failed to cancel order:',erp_id);
                 })
                 .done(function(){
@@ -275,11 +216,9 @@ function openerp_ts_models(instance, module){
             }
             //try to push an order to the server
             // shadow : true is to prevent a spinner to appear in case of timeout
-            // (new instance.web.Model('sale.order')).call('create_order_from_ui',[[order]],undefined,{shadow:true})
             (new instance.web.Model('sale.order')).call('create_order_from_ui',[[order]],{context:new instance.web.CompoundContext()})
                 .fail(function(unused, event){
-                    //don't show error popup if it fails 
-                    // event.preventDefault();
+                    //don't show error popup if it fails
                     console.error('Failed to send order:',order);
                     self._flush(index+1);
                 })
@@ -290,40 +229,8 @@ function openerp_ts_models(instance, module){
                     self.get('selectedOrder').destroy(); // remove order from UI
                 });
         },
-        convert_units_to_boxes: function(uom_obj, product_obj, qty){
-            var unit = uom_obj.like_type;
-            var result = 0;
-            switch (unit) {
-                case "kg":
-                    if (product_obj.kg_un != 0 && product_obj.kg_un != 0){
-                        result = Math.ceil((qty / product_obj.kg_un) / (product_obj.un_ca));
-                    }
-                    
-                    //# TO DO round result up.
-                    break;
-                case "units":
-                    if (product_obj.un_ca != 0){
-                        result = Math.ceil(qty / product_obj.un_ca);
-                    }
-                    //# TO DO round result up.
-                    break;
-                case "boxes":
-                    result = Math.ceil(qty);
-                    break;
-                case "mantles":
-                    result =Math.ceil( qty * product_obj.ca_ma);
-                    break;
-                case "palets":
-                    result = Math.ceil( qty * product_obj.ma_pa * product_obj.ca_ma);
-                    break;
-            }
-            // console.log("RESULT BOXES = ",result);
-            return result;
-        },
         // build a order loaded from the server as order_obj the selected order_model
         build_order: function(order_obj, order_model, order_lines){
-            // var self=this;
-            // console.log(order_obj, order_model, order_lines);
             var partner_obj = this.db.get_partner_by_id(order_obj.partner_id[0]);
             order_model.set('partner', partner_obj.name);
             order_model.set('partner_code', partner_obj.ref || "");
@@ -351,7 +258,6 @@ function openerp_ts_models(instance, module){
                                  margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class == "normal") ? ( (line.price_unit - prod_obj.cmc) / line.price_unit) : 0 ), 2),
                                  taxes_ids: line.tax_id || prod_obj.taxes_id || [],
                                  pvp_ref: line.pvp_ref,
-                                 boxes: this.convert_units_to_boxes(this.db.get_unit_by_id(line.product_uom[0]),prod_obj,line.product_uom_qty),
                                  qnote: line.q_note[1] || "",
                                  detail: line.detail_note || "",
                                 }
@@ -374,25 +280,23 @@ function openerp_ts_models(instance, module){
         get_calls_by_date_state: function(date, state){
             var self=this;
             if (!state){state = $('#state-select').val()}
-            if (!date){date = $('#date-call-search').val()}        
+            if (!date){date = $('#date-call-search').val()}
             var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
             if (state){
                 if (state != "any")
                     domain.push(['state','=',state])
             }
-            // console.log('domain', domain);
             var context = new instance.web.CompoundContext()
             self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration'],domain,context)
             .then(function(calls){
                 if (!$.isEmptyObject(calls)){
-                    
+
                     for (key in calls){
                         calls[key].date = self.parse_utc_to_str_date(calls[key].date); //set dates in browser timezone
                         calls[key].duration = self.parse_duration_watch_format(calls[key].duration); //set dates in browser timezone
                         calls[key].partner_phone = self.db.get_partner_contact(calls[key].partner_id[0]).phone|| "-" //set phone of contact
                         calls[key].contact_name = self.db.get_partner_contact(calls[key].partner_id[0]).name //add contact name to phone
                     }
-                    // console.log("EEEEEEEEEEEE CAAAAAAAAAAAAAAAAAALLLS ", calls)
                 }
                 self.get('calls').reset(calls);
             });
@@ -413,7 +317,7 @@ function openerp_ts_models(instance, module){
             if (seconds < 10) seconds = "0" + seconds;
 
             var today = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-            return today;  
+            return today;
         },
         datetimeToStr: function(date) {
             var day = date.getDate();
@@ -429,7 +333,7 @@ function openerp_ts_models(instance, module){
             if (seconds < 10) seconds = "0" + seconds;
 
             var today = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-            return today;  
+            return today;
         },
         getCurrentDateStr: function() {
             var date = new Date();
@@ -440,7 +344,7 @@ function openerp_ts_models(instance, module){
             if (day < 10) day = "0" + day;
 
             var today = year + "-" + month + "-" + day;
-            return today;  
+            return today;
         },
         getCurrentDatePlannedStr: function() {
             var date = new Date();
@@ -456,10 +360,10 @@ function openerp_ts_models(instance, module){
             if (day < 10) day = "0" + day;
 
             var today = year + "-" + month + "-" + day;
-            return today;  
+            return today;
         },
         parse_str_date_to_utc: function(str_date){
-            
+
             // Todo esto porque lo de abajo cambia el mes por el día, le cambiamos la fecha antes para obtener el resultado correcto
             str_date2 = instance.web.datetime_to_str(Date.parse(str_date));
             str_year = str_date2.split(" ")[0].split("-")[0]
@@ -497,7 +401,7 @@ function openerp_ts_models(instance, module){
 //**************************** PRODUCTS AND PRODUCT COLLECTION****************************************************
     module.Product = Backbone.Model.extend({
     });
-    
+
     module.ProductCollection = Backbone.Collection.extend({
         model: module.Product,
     });
@@ -519,19 +423,18 @@ function openerp_ts_models(instance, module){
             //to calc totals
             discount: 0,
             weight: 0,
-            boxes: 0,
             margin: 0,
             taxes_ids: [],
-            temperature: 0,   
-            fresh_price: 0,      
+            temperature: 0,
+            fresh_price: 0,
         },
         initialize: function(options){
             this.ts_model = options.ts_model;
             this.order = options.order;
-            
+
             this.selected = false;
         },
-        
+
         set_selected: function(selected){
             this.selected = selected;
             this.trigger('change_line');
@@ -559,8 +462,6 @@ function openerp_ts_models(instance, module){
             var product_id = this.ts_model.db.product_name_id[this.get('product')];
             var unit_id = this.ts_model.db.unit_name_id[this.get('unit')];
             var qnote_id = this.ts_model.db.qnote_name_id[this.get('qnote')];
-            /*var product_obj = this.ts_model.db.product_by_id[product_id];
-            var uom_obj = this.ts_model.db.unit_by_id[unit_id];*/
             return {
                 qty: this.get('qty'),
                 price_unit: this.get('pvp'),
@@ -583,17 +484,14 @@ function openerp_ts_models(instance, module){
         },
         get_all_prices: function(){
             var self = this;
-            // var currency_rounding = this.pos.get('currency').rounding;
-            // var currency_rounding = 0.01;
             var base = round_dc(this.get('qty') * this.get('pvp'), 2);
             var totalTax = base;
             var totalNoTax = base;
             var taxtotal = 0;
-            // var product_list = this.pos.get('product_list');
             var product =  this.get_product();
 
-            if (product){ 
-                
+            if (product){
+
                 var taxes_ids = self.get('taxes_ids')
                 var taxes =  self.ts_model.get('taxes');
                 var tmp;
@@ -601,10 +499,10 @@ function openerp_ts_models(instance, module){
                     var totalTax;
                 _.each(taxes_ids, function(el) {
                     var tax = _.detect(taxes, function(t) {return t.id === el;});
-                    
+
                     if (tax.price_include) {
                         if (tax.type === "percent") {
-                            tmp =  base - round_dc(base / (1 + tax.amount),2); 
+                            tmp =  base - round_dc(base / (1 + tax.amount),2);
                         } else if (tax.type === "fixed") {
                             tmp = round_dc(tax.amount * self.get('qty'),2);
                         } else {
@@ -647,7 +545,7 @@ function openerp_ts_models(instance, module){
             })
             return loaded;
         }
-        
+
     });
     module.OrderlineCollection = Backbone.Collection.extend({
         model: module.Orderline,
@@ -694,8 +592,8 @@ function openerp_ts_models(instance, module){
                 comercial: '',
                 coment: '',
             });
-            
-            this.ts_model =     attributes.ts_model; 
+
+            this.ts_model =     attributes.ts_model;
             this.selected_orderline = undefined;
             this.screen_data = {};  // see ScreenSelector
             return this;
@@ -714,7 +612,7 @@ function openerp_ts_models(instance, module){
             if (day < 10) day = "0" + day;
 
             var today = year + "-" + month + "-" + day;
-            return today;  
+            return today;
         },
          getStrDatePlanned: function() {
             var date = new Date();
@@ -725,7 +623,7 @@ function openerp_ts_models(instance, module){
             if (day < 10) day = "0" + day;
 
             var today = year + "-" + month + "-" + day;
-            return today;  
+            return today;
         },
         dateToStr: function(date) {
             var day = date.getDate();
@@ -769,13 +667,13 @@ function openerp_ts_models(instance, module){
                 var new_line = this.get('orderLines').models[index]
                 this.selectLine(new_line);
             }
-           
+
         },
         selectLine: function(line){
             if(line){
                 if (line !== this.selected_orderline){
                     if(this.selected_orderline) {
-                        this.selected_orderline.set_selected(false);    
+                        this.selected_orderline.set_selected(false);
                     }
                     this.selected_orderline = line;
                     this.set('selected_line',   this.selected_orderline );
@@ -783,7 +681,7 @@ function openerp_ts_models(instance, module){
                 }
             }
             else{
-              this.selected_orderline = undefined;  
+              this.selected_orderline = undefined;
             }
         },
         get_client_name: function(){
@@ -837,11 +735,10 @@ function openerp_ts_models(instance, module){
             if (period == "month") {
                 date.setDate(date.getDate() - 30);
                 date_str = this.dateToStr(date);
-            }else{ //period = year
+            }else{
                 var year = date.getFullYear()
                 date_str = year + "-" + "01" + "-" + "01";
             }
-            // console.log(date_str);
             var self=this;
             var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done']]]
             var loaded = self.ts_model.fetch('sale.order.line',
@@ -849,8 +746,6 @@ function openerp_ts_models(instance, module){
                                             domain
                                             )
                 .then(function(order_lines){
-                    // console.log(order_lines);
-                    console.log("CCCCCCCCC")
                     self.add_lines_to_current_order(order_lines);
                 })
             return loaded
@@ -877,13 +772,11 @@ function openerp_ts_models(instance, module){
                                      qty:line.product_uom_qty, //order line qty
                                      pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
                                      total: my_round(line.current_pvp ? line.product_uom_qty * line.current_pvp : 0 ,2),
-                                     // discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
                                      discount: my_round( 0, 2 ),
                                      weight: my_round(line.product_uom_qty * prod_obj.weight,2),
                                      margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.cmc) / line.current_pvp)  : 0 ), 2),
                                      taxes_ids: line.tax_id || product_obj.taxes_id || [],
                                      pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
-                                     boxes: this.ts_model.convert_units_to_boxes(this.ts_model.db.get_unit_by_id(prod_obj.uom_id[0]),prod_obj,line.product_uom_qty),
                                      qnote: line['q_note'][1] || "",
                                      detail: line["detail_note"] || "",
                                     }
@@ -899,14 +792,12 @@ function openerp_ts_models(instance, module){
             var loaded = self.ts_model.fetch_limited_ordered('sale.order',['id','name','order_line'], //name y order line no necesarias
                                                 domain,1,['-id'])
                 .then(function(order){
-                    // console.log(order)
                     return self.ts_model.fetch('sale.order.line',
                                                 ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
                                                 [
-                                                    ['order_id', '=', order.id],  
+                                                    ['order_id', '=', order.id],
                                                  ]);
                 }).then(function(order_lines){
-                    // console.log(order_lines);
                     self.add_lines_to_current_order(order_lines);
                 })
             return loaded
@@ -935,7 +826,6 @@ function openerp_ts_models(instance, module){
                              margin: my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2),
                              taxes_ids: result.value.tax_id || [],
                              pvp_ref: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
-                             //TODO boxes
                             }
                         var line = new module.Orderline(line_vals);
                         self.get('orderLines').add(line);
@@ -944,7 +834,7 @@ function openerp_ts_models(instance, module){
             else{
                 alert(_t("No Customer defined in current order"));
             }
-            
+
             var pricelist_id = (this.ts_model.db.get_partner_by_id(partner_id)).property_product_pricelist;
         },
 
@@ -957,7 +847,7 @@ function openerp_ts_models(instance, module){
     //**************************** CALLS AND CALLS COLLECTION****************************************************
     module.Calls = Backbone.Model.extend({
     });
-    
+
     module.CallsCollection = Backbone.Collection.extend({
         model: module.Calls,
     });

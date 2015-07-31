@@ -20,7 +20,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </t>
 
@@ -60,7 +60,7 @@
                 <li class="screen-selector-button">
                     <!-- Key Shorts -->
                     <button id="button_ks" class="select-screen"><t t-esc="widget.button_ks"/></button>
-                </li>                 
+                </li>
             </ol>
         </div>
     </t>
@@ -77,22 +77,31 @@
              <td class="cell-product">
                 <input type="search" class='col-product mandatory' t-att-value="widget.model.get('product')"/>
             </td>
-             <td class="cell-unit">
-                <input type="text" class='col-unit mandatory' t-att-value="widget.model.get('unit')"/>
+            <td class="cell-qty">
+                <input type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty')"/>
+            </td>
+            <td class="cell-unit">
+                <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/>
+            </td>
+            <td class="cell-pvp">
+                <input type="text" class='col-price_udv mandatory' t-att-value="widget.model.get('price_udv')" />
             </td>
              <td class="cell-qty">
-                <input type="text" class='col-qty mandatory' t-att-value="widget.model.get('qty').toFixed(2)"/>
+                <input type="text" class='col-qty' t-att-value="widget.model.get('qty').toFixed(2)" readonly="readonly"/>
+            </td>
+             <td class="cell-unit">
+                <input type="text" class='col-unit' t-att-value="widget.model.get('unit')" readonly="readonly"/>
             </td>
             <td class="cell-pvp">
                 <input type="text" class='col-pvp mandatory' t-att-value="widget.model.get('pvp').toFixed(2)"/>
             </td>
-             <td class="cell-disc">
-                <input type="text" class='col-disc mandatory' t-att-value="0.0"/>
+             <td class="cell-discount">
+                <input type="text" class='col-discount mandatory' t-att-value="widget.model.get('discount').toFixed(2)"/>
             </td>
              <td class="cell-total">
                 <input type="text" class='col-total' t-att-value="widget.model.get('total').toFixed(2)" readonly="readonly" tabIndex="-1"/>
             </td>
-            <td class="cell-temp">
+            <!--td class="cell-temp">
                 <input type="text" class='col-temp' t-att-value="widget.model.get('temperature')" readonly="readonly" tabIndex="-1"/>
             </td>
             <td class="cell-qnote">
@@ -100,7 +109,7 @@
             </td>
             <td class="cell-deta">
                 <input type="text" class='col-detail' t-att-value="widget.model.get('detail')"/>
-            </td>
+            </td-->
 
         </tr>
     </t>
@@ -123,7 +132,7 @@
 <!--             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'new'">
                 New
             </t> -->
-            
+
             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'sent'">
                 Draft
             </t>
@@ -163,14 +172,17 @@
                     <th class="header-nline">Nº</th>
                     <th class="header-code">Code</th>
                     <th class="header-product">Product</th>
-                    <th class="header-unit">Unit</th>
+                    <th class="header-qty">UoS Qty</th>
+                    <th class="header-unit">UoS</th>
+                    <th class="header-pvp">UoS Price</th>
                     <th class="header-qty">Qty</th>
+                    <th class="header-unit">Unit</th>
                     <th class="header-pvp">PVP</th>
                     <th class="header-pvp">Disc.</th>
                     <th class="header-total">Total</th>
-                    <th class="header-temp">Tmp ºC</th>
+                    <!--th class="header-temp">Tmp ºC</th>
                     <th class="header-qnote">Qnote</th>
-                    <th class="header-deta">Detail</th>
+                    <th class="header-deta">Detail</th-->
                 </thead>
                 <tbody class="orderlines">
 
@@ -238,60 +250,60 @@
         <div id="bottompart">
             <div class="bottompart-form">
                 <div class="form-col">
-                    
+
                         <label for="total_boxes">Total Boxes:</label>
                         <input type="text" id='total_boxes' name="total_boxes"
                             t-att-value="widget.order_model.get('total_boxes').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                         <br/>
                         <br/>
-                    
+
                         <label for="total_weight">Total Weight:</label>
                         <input type="numeric" id='total_weight' name="total_weight"
                             t-att-value="widget.order_model.get('total_weight').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                         <br/>
                         <br/>
-                    
+
                         <label for="total_base">Total Base:</label>
-                        <input type="text" id='total_base' name="total_base" 
+                        <input type="text" id='total_base' name="total_base"
                             t-att-value="widget.order_model.get('total_base').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                 </div>
                 <div class="form-col">
-                        
+
                         <label for="total_discount">Discount:</label>
-                        <input type="numeric" id='total_discount' name="total_discount" 
+                        <input type="numeric" id='total_discount' name="total_discount"
                             t-att-value="widget.order_model.get('total_discount').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                         <br/>
                         <br/>
-                    
+
                         <label for="total_margin">Total Margin:</label>
                         <input type="numeric" t-att-value="widget.order_model.get('total_margin').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                         <br/>
                         <br/>
                         <label for="total_iva">Total Iva:</label>
-                        <input type="numeric" id='total_iva' name="total_discount" 
+                        <input type="numeric" id='total_iva' name="total_discount"
                             t-att-value="widget.order_model.get('total_iva').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                 </div>
                 <div class="form-col">
-                        
+
                         <label for="total">Discount (%):</label>
-                        <input type="text" class='total' name="discount_total" 
+                        <input type="text" class='total' name="discount_total"
                             t-att-value="widget.order_model.get('total_discount').toFixed(2)" readonly="readonly" tabIndex="-1"/>
-                    
+
                         <br/>
                         <br/>
                         <label for="total">Margin (%):</label>
-                        <input type="text" class='total' id='total_margin' 
+                        <input type="text" class='total' id='total_margin'
                             t-att-value="widget.order_model.get('total_margin').toFixed(2)" readonly="readonly" tabIndex="-1"/>
-                        
+
                         <br/>
                         <br/>
                         <label for="total">Total Order:</label>
-                        <input type="text" class='total' id="total_order" 
+                        <input type="text" class='total' id="total_order"
                             t-att-value="widget.order_model.get('total').toFixed(2)" tabIndex="-1" readonly="readonly"/>
                         <label for="total">Total Fresh:</label>
-                        <input type="text" class='total' id="total_fresh" 
+                        <input type="text" class='total' id="total_fresh"
                             t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/>
-                        
+
                 </div>
                 <div class="form-col">
                     <t t-if="widget.order_model.get('state') == 'draft'">
@@ -404,7 +416,7 @@
 
 
 <!-- ********************************************** BUTTONS ***************************************************************** -->
-   
+
 
 
     <t t-name="Order-Button-Widget">
@@ -429,10 +441,10 @@
 
 
 
-<!-- ************************************************************************************************************************ --> 
+<!-- ************************************************************************************************************************ -->
 <!-- ************************************************* CUSTOMER DATA WIDGETS ************************************************ -->
 <!-- ************************************************************************************************************************ -->
-    
+
     <t t-name="Customer-Data-Widget">
         <div class="customer-data">
              <t   t-esc="widget.partner_name"/>
@@ -441,7 +453,7 @@
     </t>
 
     <t t-name="Sust-Pop-Up-Screen-Widget">
-        
+
         <div class="product-sust-pop-up">
             <div id="placeholder-sust-widget">
             </div>
@@ -486,6 +498,6 @@
         </div>
     </t>
 
-    
 
-</templates> 
+
+</templates>
