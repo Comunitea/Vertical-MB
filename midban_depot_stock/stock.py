@@ -24,6 +24,7 @@ from openerp import fields as fields2
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 import math
+from lxml import etree
 
 
 class stock_picking(osv.osv):
@@ -75,7 +76,29 @@ class stock_picking(osv.osv):
                                      type="char", string="Order Note"),
     }
 
-    def _change_operation_dest_loc(self, cr, uid, ids, context=None):
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
+                        submenu=False):
+        result = super(stock_picking, self).fields_view_get(
+            view_id, view_type, toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            active_model = self.env.context.get('active_model', False)
+            active_id = self.env.context.get('active_id', False)
+            location_type = self.env.ref(
+                'midban_depot_stock.picking_type_ubication_task')
+            if active_model == 'stock.picking.type' and \
+                    active_id != location_type.id:
+                act_ref = str(self.env.ref(
+                    'midban_depot_stock.create_multipack_wizard_action').id)
+                doc = etree.XML(result['arch'])
+                button = doc.xpath("//button[@name='%s']" % act_ref)
+                if button:
+                    button = button[0]
+                    button.getparent().remove(button)
+                result['arch'] = etree.tostring(doc)
+        return result
+
+    '''def _change_operation_dest_loc(self, cr, uid, ids, context=None):
         """
         If picking is inncoming. for each operation in the pickings,
         get the location from the package
@@ -98,7 +121,7 @@ class stock_picking(osv.osv):
                             break
                 self.write(cr, uid, [related_pick_id],
                            {'midban_operations': True}, context=context)
-        return True
+        return True'''
 
     @api.cr_uid_ids_context
     def approve_pack_operations(self, cr, uid, ids, context=None):
@@ -260,7 +283,7 @@ class stock_package(osv.osv):
     def _get_packed_qty(self, cr, uid, ids, name, args, context=None):
         """
         Returns units qty inside the QUANTS of the pack.
-        We not check childrens packages. # TODO??
+        We check childrens packages.
         We assume no exist pack of diferents lots, in that case return False.
         """
         if context is None:
@@ -268,6 +291,12 @@ class stock_package(osv.osv):
         res = {}
         for pack in self.browse(cr, uid, ids, context=context):
             qty = 0.0
+            if pack.children_ids:
+                child_res = self._get_packed_qty(cr, uid,
+                                                 [x.id for x in
+                                                  pack.children_ids], name,
+                                                 args, context)
+                qty += sum(child_res.values())
             for quant in pack.quant_ids:
                 qty += quant.qty
             res[pack.id] = qty
@@ -283,59 +312,45 @@ class stock_package(osv.osv):
         res = {}
         for pack in self.browse(cr, uid, ids, context=context):
             mantles = 0
-            if pack.pack_type:
-                if pack.pack_type == 'palet' and pack.product_id:
-                    units_in_mantle = pack.product_id.un_ca * \
-                        pack.product_id.ca_ma
-                    if units_in_mantle:
-                        mantles = math.ceil(pack.packed_qty / units_in_mantle)
-                        mantles = int(mantles)
+            if pack.children_ids:
+                child_res = self._get_pack_mantles(
+                    cr, uid, [x.id for x in pack.children_ids], name, args,
+                    context)
+                mantles += sum(child_res.values())
+            if pack.product_id:
+                units_in_mantle = pack.product_id.un_ca * \
+                    pack.product_id.ca_ma
+                if units_in_mantle:
+                    mantles += int(math.ceil(pack.packed_qty /
+                                             units_in_mantle))
             res[pack.id] = mantles
         return res
 
     def _get_pack_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
-        no_wood = context.get('no_wood', False)
         res = {}
         t_loc = self.pool.get('stock.location')
         for pack in self.browse(cr, uid, ids, context=context):
             volume = 0.0
             loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
                                         context=context)
-            if pack.pack_type == 'box':  # No multiproduct
-                prod = pack.product_id
-                volume = prod.ca_width * prod.ca_height * prod.ca_length
-            elif pack.pack_type == 'palet':  # Maybe multiproduct
-                quants_by_prod = {}
-                # Group quants inside the package by product
-                quants_by_prod = pack.get_products_quants()
-                width_wood = 0
-                length_wood = 0
-                sum_heights = 0
-                wood_height = 0
-                for product in quants_by_prod:
-                    # Get product with maximun base by the width
-                    if product.pa_width > width_wood:
-                        width_wood = product.pa_width
-                        length_wood = product.pa_length
-                        wood_height = product.palet_wood_height
-                    quant_lst = quants_by_prod[product]
-                    qty = 0
-                    for quant in quant_lst:
-                        qty += quant.qty
 
-                    mantle_units = product.un_ca * product.ca_ma
-                    num_mantles = int(math.ceil(qty / mantle_units))
-                    mantle_height = product.ma_height
-                    sum_heights += num_mantles * mantle_height
+            quants_by_prod = {}
+            # Group quants inside the package by product
+            quants_by_prod = pack.get_products_quants()
+            sum_heights = 0
+            for product in quants_by_prod:
+                quant_lst = quants_by_prod[product]
+                qty = 0
+                for quant in quant_lst:
+                    qty += quant.qty
 
-                # No wood in picking location, it will be added later
-                if loc_dest_obj.zone == 'picking' or no_wood:
-                    wood_height = 0
-                sum_heights += wood_height  # Add wood height
-                volume = width_wood * length_wood * sum_heights
-            res[pack.id] = volume
+                mantle_units = product.un_ca * product.ca_ma
+                num_mantles = int(math.ceil(qty / mantle_units))
+                mantle_height = product.ma_height
+                sum_heights += num_mantles * mantle_height
+            res[pack.id] = sum_heights
         return res
 
     def _is_multiproduct_pack(self, cr, uid, ids, name, args, context=None):
@@ -343,21 +358,10 @@ class stock_package(osv.osv):
             context = {}
         res = {}
         for pack in self.browse(cr, uid, ids, context=context):
-            product_id = False
-            is_multiproduct = False
-            for quant in pack.quant_ids:
-                product_id = quant.product_id.id
-                if product_id != quant.lot_id.id:  # Founded diferents products
-                    is_multiproduct = True
-                    break
-            res[pack.id] = is_multiproduct
+            res[pack.id] = len(pack.get_products_quants().keys()) > 1 or False
         return res
 
     _columns = {
-        'pack_type': fields.selection([('box', 'Box'),  # PARA QUITAR
-                                       ('palet', 'Palet')],
-                                      # ('var_palet', 'Var Palet')],
-                                      'Pack Type'),
         'product_id': fields.related('quant_ids', 'product_id', readonly=True,
                                      type="many2one", string="Product",
                                      relation="product.product"),
@@ -401,6 +405,9 @@ class stock_package(osv.osv):
                     res[product] = [quant]
                 else:
                     res[product].append(quant)
+            if pack.children_ids:
+                res.update(self.get_products_quants(
+                    cr, uid, [x.id for x in pack.children_ids], context))
         return res
 
     def get_products_qtys(self, cr, uid, ids, context=None):
@@ -419,21 +426,6 @@ class stock_package(osv.osv):
 
 class stock_pack_operation(osv.osv):
     _inherit = "stock.pack.operation"
-
-    def _get_pack_type(self, cr, uid, ids, name, args, context=None):
-        if context is None:
-            context = {}
-        res = {}
-        for ops in self.browse(cr, uid, ids, context=context):
-            res[ops.id] = False
-            pack_type = False
-            if ops.package_id:
-                pack_type = ops.package_id.pack_type
-            elif ops.result_package_id:
-                pack_type = ops.result_package_id.pack_type
-            if pack_type:
-                res[ops.id] = pack_type
-        return res
 
     def _get_real_product(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -467,8 +459,7 @@ class stock_pack_operation(osv.osv):
         for ope in self.browse(cr, uid, ids, context=context):
             res[ope.id] = 0
             if ope.package_id:
-                if ope.package_id.pack_type == 'palet':
-                    res[ope.id] = ope.package_id.num_mantles
+                res[ope.id] = ope.package_id.num_mantles
                 # If quit from a pack and put in other pack return the
                 # operation num_mantles instead of the volume
                 if ope.result_package_id and ope.product_qty:
@@ -479,8 +470,7 @@ class stock_pack_operation(osv.osv):
                         mantles = int(mantles)
                         res[ope.id] = mantles
             elif ope.product_id and ope.product_qty \
-                    and ope.result_package_id \
-                    and ope.result_package_id.pack_type == 'palet':
+                    and ope.result_package_id:
                 un_ca = ope.product_id.un_ca
                 ca_ma = ope.product_id.ca_ma
                 mant_units = un_ca * ca_ma
@@ -504,8 +494,6 @@ class stock_pack_operation(osv.osv):
         return res
 
     _columns = {
-        'pack_type': fields.function(_get_pack_type, type='char',
-                                     string='Pack Type', readonly=True),
         'operation_product_id': fields.function(_get_real_product,
                                                 type="many2one",
                                                 relation="product.product",
@@ -523,11 +511,6 @@ class stock_pack_operation(osv.osv):
                                        type='integer',
                                        string='Nº Mantles',
                                        readonly=True),
-        'chained_loc_id': fields.many2one('stock.location',
-                                          'Next Chained Location',
-                                          help="Location where the products "
-                                          "will be pushed to a specific "
-                                          "location"),
         'task_id': fields.many2one('stock.task', 'In task', readonly=True),
         'to_process': fields.boolean('To process',
                                      help="When checked the operation will be\
@@ -542,6 +525,126 @@ class stock_pack_operation(osv.osv):
     _defaults = {
         'to_process': True,
     }
+
+    def _search_closest_pick_location(self, prod_obj, free_loc_ids):
+        loc_t = self.env['stock.location']
+        if not free_loc_ids:
+            raise except_orm(_('Error!'), _('No empty locations.'))
+        if prod_obj.picking_location_id.volume_by_parent:
+            free_loc_ids.append(prod_obj.picking_location_id.location_id.id)
+        else:
+            free_loc_ids.append(prod_obj.picking_location_id.id)
+        locs = loc_t.browse(free_loc_ids)
+        sorted_locs = sorted(locs, key=lambda l: l.name)
+        try:
+            index = sorted_locs.index(prod_obj.picking_location_id)
+        except ValueError:
+            index = sorted_locs.index(prod_obj.picking_location_id.location_id)
+        if index == (len(sorted_locs) - 1):
+            new_index = index - 1
+        else:
+            new_index = index + 1
+        try:
+            free_loc_ids.remove(prod_obj.picking_location_id.id)
+        except ValueError:
+            free_loc_ids.remove(prod_obj.picking_location_id.location_id.id)
+        return sorted_locs[new_index]
+
+    def _get_volume_for(self, prop_qty, product, picking_zone=False):
+        volume = 0.0
+        un_ca = product.un_ca
+        ca_ma = product.ca_ma
+        mantle_units = un_ca * ca_ma
+        num_mant = math.ceil(prop_qty / mantle_units)
+        height_mant = product.ma_height
+        height_var_pal = (num_mant * height_mant)
+        volume = height_var_pal
+        return volume
+
+    def _older_refernce_in_storage(self, product):
+        """
+        Search for quants of param product in his storage locations
+        """
+        res = False
+        t_quant = self.env['stock.quant']
+        pick_loc = product.picking_location_id
+        storage_loc_ids = pick_loc.get_locations_by_zone('storage')
+        domain = [
+            ('product_id', '=', product.id),
+            ('location_id', 'in', storage_loc_ids),
+        ]
+        quant_objs = t_quant.search(domain)
+        net_qty = 0.0
+        for quant in quant_objs:
+            net_qty += quant.qty
+        if quant_objs and net_qty:
+            res = True
+        return res
+
+    def _is_picking_loc_available(self, product, prop_qty):
+        """
+        Return True whe picking is available and no older reference in storage
+        """
+        res = False
+        if not product.picking_location_id:
+            raise except_orm(_('Error!'), _('Not picking location for product \
+                             %s.' % product.name))
+
+        pick_loc = product.picking_location_id
+        volume = self._get_volume_for(prop_qty, product, picking_zone=True)
+        if not pick_loc.filled_percent:  # If empty add wood volume
+            width_wood = product.pa_width
+            length_wood = product.pa_length
+            height_wood = product.palet_wood_height
+            wood_volume = width_wood * length_wood * height_wood
+            vol_aval = pick_loc.available_volume - wood_volume
+        else:
+            vol_aval = pick_loc.available_volume
+
+        old_ref = self._older_refernce_in_storage(product)
+        if (not old_ref and volume <= vol_aval):
+            res = True
+        return res
+
+    @api.one
+    def assign_location(self):
+        if self.package_id.is_multiproduct:
+            multipack_location = self.env['stock.location'].search(
+                [('multipack_location', '=', True)])
+            if not multipack_location:
+                raise except_orm(_('Location not found'),
+                                 _('Impossible found the multipack'
+                                   ' location'))
+            self.location_dest_id = multipack_location
+        if self.operation_product_id:
+            product = self.operation_product_id
+            if self._is_picking_loc_available(product, self.packed_qty):
+                self.location_dest_id = product.picking_location_id.id
+            else:
+                locations = product.picking_location_id.get_locations_by_zone(
+                    'storage')
+                found = False
+                while not found and locations:
+                    location = self._search_closest_pick_location(product,
+                                                                  locations)
+                    if location and location.available_volume > \
+                            self._get_volume_for(self.packed_qty, product,
+                                                 picking_zone=False):
+                        found = True
+                    else:
+                        locations.remove(location.id)
+                if found:
+                    print 'a'
+                    self.location_dest_id = location
+                else:
+                    print 'b'
+                    special_location = self.env['stock.location'].search(
+                        [('special_location', '=', True)])
+                    if not special_location:
+                        raise except_orm(_('Location not found'),
+                                         _('Impossible found an special'
+                                           ' location'))
+                    self.location_dest_id = special_location
 
 
 class stock_warehouse(osv.osv):
@@ -565,6 +668,11 @@ class stock_location(osv.Model):
             context = {}
         res = {}
         for loc in self.browse(cr, uid, ids, context=context):
+            if loc.volume_by_parent:
+                par_loc = loc.location_id
+                res[loc.id] = (par_loc.width * par_loc.height *
+                               par_loc.length) / len(par_loc.child_ids)
+                continue
             res[loc.id] = loc.width * loc.height * loc.length
         return res
 
@@ -584,7 +692,7 @@ class stock_location(osv.Model):
         pack_ids = set()
 
         for quant in t_quant.browse(cr, uid, quant_ids, context=context):
-            if quant.package_id and quant.package_id.pack_type:
+            if quant.package_id:
                 pack_ids.add(quant.package_id.id)
             else:
                 volume += quant.product_id.un_width * \
@@ -600,28 +708,21 @@ class stock_location(osv.Model):
                 volume += pack.volume
         return volume
 
-    def _get_volume_for(self, pack, prop_qty, product, picking_zone=False):
+    def _get_volume_for(self, prop_qty, product, picking_zone=False):
         volume = 0.0
         un_ca = product.un_ca
         ca_ma = product.ca_ma
         mantle_units = un_ca * ca_ma
-        if pack == 'palet':
-            # num_mant = prop_qty // mantle_units
-            num_mant = math.ceil(prop_qty / mantle_units)
-            width_wood = product.pa_width
-            length_wood = product.pa_length
-            height_mant = product.ma_height
-            wood_height = product.palet_wood_height
-            if picking_zone:
-                wood_height = 0  # No wood in picking location
-            height_var_pal = (num_mant * height_mant) + wood_height
-            volume = width_wood * length_wood * height_var_pal
-
-        elif pack == "box":
-            volume = product.ca_width * product.ca_height * product.ca_length
-        elif pack == "units":
-            volume = product.un_width * product.un_height * product.un_length \
-                * prop_qty
+        # num_mant = prop_qty // mantle_units
+        num_mant = math.ceil(prop_qty / mantle_units)
+        width_wood = product.pa_width
+        length_wood = product.pa_length
+        height_mant = product.ma_height
+        wood_height = product.palet_wood_height
+        if picking_zone:
+            wood_height = 0  # No wood in picking location
+        height_var_pal = (num_mant * height_mant) + wood_height
+        volume = width_wood * length_wood * height_var_pal
         return volume
 
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
@@ -634,21 +735,28 @@ class stock_location(osv.Model):
         ope_obj = self.pool.get('stock.pack.operation')
         t_prod = self.pool.get('product.product')
         for loc in self.browse(cr, uid, ids, context=context):
+            if loc.volume_by_parent:
+                loc_qty = len(loc.location_id.child_ids)
+                parent_volume = self._get_available_volume(
+                    cr, uid, [loc.location_id.id], name, args,
+                    context)[loc.location_id.id]['available_volume']
+                res[loc.id]['available_volume'] = parent_volume / loc_qty
+                res[loc.id]['filled_percent'] = \
+                    (loc.volume - res[loc.id]['available_volume']) * 100 / \
+                    loc.volume
+                continue
             volume = 0.0
-            quant_ids = quant_obj.search(cr, uid, [('location_id', '=',
+            quant_ids = quant_obj.search(cr, uid, [('location_id', 'child_of',
                                                     loc.id)],
                                          context=context)
             volume = self._get_quants_volume(cr, uid, quant_ids,
                                              context=context)
             domain = [
-                '|',
-                ('location_dest_id', '=', loc.id),
-                ('chained_loc_id', '=', loc.id),
+                ('location_dest_id', 'child_of', loc.id),
                 ('processed', '=', 'false'),
                 ('picking_id.state', 'in', ['assigned'])
             ]
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
-
             ops_by_pack = {}
             is_pick_zone = loc.zone == 'picking'
             for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
@@ -668,8 +776,7 @@ class stock_location(osv.Model):
                 # Reposition operations
                 elif ope.package_id and ope.result_package_id:
                     volume += \
-                        self._get_volume_for(ope.result_package_id.pack_type,
-                                             ope.product_qty,
+                        self._get_volume_for(ope.product_qty,
                                              ope.product_id,
                                              picking_zone=True)
                 # Units operations, no packages
@@ -842,22 +949,31 @@ class stock_location(osv.Model):
 
     _order = 'sequence'
     _columns = {
-        'width': fields.
-        float('Width', digits_compute=dp.get_precision('Product Price')),
-        'height': fields.
-        float('Height', digits_compute=dp.get_precision('Product Price')),
-        'length': fields.
-        float('Lenght', digits_compute=dp.get_precision('Product Price')),
-        'volume': fields.
-        function(_get_location_volume, readonly=True, string='Volume',
-                 type="float",
-                 digits_compute=dp.get_precision('Product Volume')),
-        'available_volume': fields.
-        function(_get_available_volume, readonly=True, type="float",
-                 string="Available volume",
-                 digits_compute=dp.get_precision('Product Volume'),
-                 fnct_search=_search_available_volume,
-                 multi='mult'),
+        'width': fields.float('Width',
+                              digits_compute=dp.get_precision('Product Price')
+                              ),
+        'height': fields.float('Height',
+                               digits_compute=dp.get_precision('Product Price')
+                               ),
+        'length': fields.float('Lenght',
+                               digits_compute=dp.get_precision('Product Price')
+                               ),
+        'volume_by_parent': fields.boolean('Calculate volume by parent'
+                                           ' location'),
+        'multipack_location': fields.boolean(
+            'Is a multipack location?',
+            hepl='location used to locate multipacks'),
+        'special_location': fields.boolean(
+            'Is a special location?',
+            help='location used when other locations are full'),
+        'volume': fields.function(
+            _get_location_volume, readonly=True, string='Volume', type="float",
+            digits_compute=dp.get_precision('Product Volume')),
+        'available_volume': fields.function(
+            _get_available_volume, readonly=True, type="float",
+            string="Available volume",
+            digits_compute=dp.get_precision('Product Volume'),
+            fnct_search=_search_available_volume, multi='mult'),
         'filter_available': fields.function(_get_filter_available,
                                             type="char",
                                             string="Available Between X-Y",
@@ -1133,21 +1249,6 @@ class stock_move(osv.osv):
         ctx['do_not_propagate'] = True
         res = super(stock_move, self).action_done(cr, uid, ids, context=ctx)
         return res
-
-    # def _check_uom(self, cr, uid, ids, context=None):
-    #     """
-    #     Avoid to check categorys when the move is created in a _contraint.
-    #     Always True, we convert between units using the logistic information
-    #     MAYBE RESPECT THE LIMITATION AND CONFIGURE WELL
-    #     """
-    #     res = super(stock_move, self)._check_uom(cr, uid, ids,context=context)
-    #     return True
-
-    # _constraints = [
-    #     (_check_uom,
-    #         'You try to move a product using a UoM that is not compatible with the UoM of the product moved. Please use an UoM in the same UoM category.',
-    #         ['product_uom']),
-    # ]
 
 
 class stock_inventory(osv.osv):

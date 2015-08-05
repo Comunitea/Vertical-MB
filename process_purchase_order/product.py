@@ -108,7 +108,6 @@ class product_product(models.Model):
     @api.model
     def get_uom_uoc_prices(self, uoc_id, supplier_id, custom_price_unit=0.0,
                            custom_price_udc=0.0):
-        # import ipdb; ipdb.set_trace()
         supp = self.get_product_supp_record(supplier_id)
         if custom_price_udc:
             price_udc = custom_price_udc
@@ -196,7 +195,6 @@ class ProductUom(models.Model):
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
-        # import ipdb; ipdb.set_trace()
         res = super(ProductUom, self).name_search(name, args=args,
                                                   operator=operator,
                                                   limit=limit)
@@ -205,7 +203,6 @@ class ProductUom(models.Model):
             args = args or []
             recs = self.browse()
             recs = self.search(args)
-            # import ipdb; ipdb.set_trace()
             res = recs.name_get()
 
         return res

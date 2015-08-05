@@ -81,7 +81,6 @@ class sale_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
             if self.do_onchange:
@@ -100,7 +99,6 @@ class sale_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
             # Change Uom Qty
@@ -175,7 +173,6 @@ class sale_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
             if self.do_onchange:
@@ -197,7 +194,6 @@ class sale_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-        # import ipdb; ipdb.set_trace()
         product = self.product_id
         if product:
             if self.do_onchange:

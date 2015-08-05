@@ -220,7 +220,7 @@ class transfer_lines(models.TransientModel):
         # Create a pack of do_pack type if do_pack is box or palet
         result_pack_id = False
         if line.do_pack != 'no_pack':
-            vals = {'pack_type': line.do_pack}
+            vals = {}
             result_pack_id = self.env['stock.quant.package'].create(vals).id
 
         return {

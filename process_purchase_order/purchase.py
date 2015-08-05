@@ -45,7 +45,6 @@ class purchase_order_line(models.Model):
         if context is None:
             context = {}
         sup = super(purchase_order_line, self)
-        # import ipdb; ipdb.set_trace()
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
                                       context=context,
@@ -73,7 +72,6 @@ class purchase_order_line(models.Model):
             # Check partner_id in product's suppliers list, if founded
             # all logistic information is setted, because it has been checked
             # in midban product module when logistic validated
-            # import ipdb; ipdb.set_trace()
             supplier_ids = [x.name.id for x in prod_obj.seller_ids]
             if partner_id not in supplier_ids:
                 res['value']['product_id'] = False
@@ -153,7 +151,6 @@ class purchase_order_line(models.Model):
         because they are readonly in the view and the onchange
         value is not in the vals dict
         """
-        # import ipdb; ipdb.set_trace()
         for po_line in self:
             if vals.get('product_id', False):
                 prod = self.env['product.product'].browse(vals['product_id'])
