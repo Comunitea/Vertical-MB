@@ -132,8 +132,7 @@ class account_invoice(models.Model):
     _inherit = 'account.invoice'
 
     @api.one
-    @api.depends('invoice_line.price_subtotal', 'tax_line.amount',
-                 'amount_discount')
+    @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
     def _compute_amount(self):
         """
         Overwrited to get the total with the discounts applied
