@@ -9,31 +9,11 @@
                             <div class="oe_structure"/>
 
                             <h1 align="center">Stock Tags</h1>
-                            <div t-if="o.type == 'box'">
-                                 <h5><strong>TYPE:  </strong><span t-field="o.type"/></h5>
-                                 <h5><strong>PRODUCT:  </strong><span t-field="o.product_id"/></h5>
-                                 <h5><strong>REFERENCE:  </strong> <span t-field="o.default_code"/></h5>
-                                 <h5><strong>EAN 13: </strong>  <span t-field="o.ean13"/></h5>
-                                 <h5><strong>ORDER:  </strong><span t-field="o.purchase_id"/></h5>
-                                 <h5><strong>DATE ORDER: </strong> <span t-field="o.date_order"/></h5>
-                                 <h5><strong>UNITS:  </strong><span t-field="o.num_units"/></h5>
-                                 <h5><strong>BOXES:  </strong><span t-field="o.num_boxes"/></h5>
-                                 <h5><strong>WEIGHT:  </strong><span t-field="o.weight"/></h5>
-                                 <h5><strong>LOT:  </strong><span t-field="o.lot_id"/></h5>
-                                 <h5><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></h5>
-                                 <h5><strong>BAR CODE: </strong> </h5>
-                                    <div class="col-xs-12 mt32 text-center">
-                                        <table class="table table-condensed" style="border-bottom: 3px solid black !important;"><thead><th> </th></thead></table>
-                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', (o.ean13 and o.ean13 or '') + '##' + (o.lot_id and o.lot_id.name or ''), 600, 100)" style="width:600px;height:100px"/>
-                                        <p t-esc="(o.ean13 and o.ean13 or '') + '##' + (o.lot_id and o.lot_id.name or '')"></p>
-                                    </div>
-                             </div>
-
-                             <div t-if="o.type == 'palet'">
-                                 <h3><strong>TYPE:  </strong><span t-field="o.type"/></h3>
+                             <div>
                                  <h3><strong>PRODUCT:  </strong><span t-field="o.product_id"/></h3>
                                  <h3><strong>REFERENCE:  </strong><span t-field="o.default_code"/></h3>
                                  <h3><strong>EAN 13: </strong><span t-field="o.ean13"/></h3>
+                                 <h3><strong>PACKAGE: </strong><span t-field="o.package_id"/></h3>
                                  <h3><strong>ORDER:  </strong><span t-field="o.purchase_id"/></h3>
                                  <h3><strong>DATE ORDER: </strong> <span t-field="o.date_order"/></h3>
                                  <h3><strong>UNITS:  </strong><span t-field="o.num_units"/></h3>
@@ -44,8 +24,8 @@
                                  <h3><strong>BAR CODE: </strong> </h3>
                                     <div class="col-xs-12 mt32 text-center">
                                         <table class="table table-condensed" style="border-bottom: 3px solid black !important;"><thead><th> </th></thead></table>
-                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', (o.ean13 and o.ean13 or '') + '##' + (o.lot_id and o.lot_id.name or ''), 600, 100)" style="width:600px;height:100px"/>
-                                        <p t-esc="(o.ean13 and o.ean13 or '') + '##' + (o.lot_id and o.lot_id.name or '')"></p>
+                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', (o.ean13 and o.ean13 or '') + ';' + (o.lot_id and o.lot_id.name or '') + ';' + (o.package_id and o.package_id.name or ''), 600, 100)" style="width:600px;height:100px"/>
+                                        <p t-esc="(o.ean13 and o.ean13 or '') + ';' + (o.lot_id and o.lot_id.name or '') + ';' + (o.package_id and o.package_id.name or '')"></p>
                                     </div>
                              </div>
                         </div>

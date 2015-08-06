@@ -163,7 +163,8 @@ class stock_picking(osv.osv):
                 for vals in final_move_vals:
                     vals['product_uos_qty'] = round(vals['product_uos_qty'], 2)
                     vals['product_uom_qty'] = round(vals['product_uom_qty'], 2)
-                    if vals['product_uom_qty'] == 0.0:
+                    if vals['product_uom_qty'] == 0.0 or \
+                            vals['product_uos_qty'] == 0.0:
                         continue
                     moves += moves.create(vals)
                 if backorder:
