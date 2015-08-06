@@ -84,10 +84,13 @@ class stock_picking(osv.osv):
         if view_type == 'form':
             active_model = self.env.context.get('active_model', False)
             active_id = self.env.context.get('active_id', False)
+            active_record = self.env[active_model].browse(active_id)
             location_type = self.env.ref(
                 'midban_depot_stock.picking_type_ubication_task')
             if active_model == 'stock.picking.type' and \
-                    active_id != location_type.id:
+                    active_id != location_type.id or \
+                    active_model == 'stock.picking' and \
+                    active_record.picking_type_id.id != location_type.id:
                 act_ref = str(self.env.ref(
                     'midban_depot_stock.create_multipack_wizard_action').id)
                 doc = etree.XML(result['arch'])
@@ -98,30 +101,83 @@ class stock_picking(osv.osv):
                 result['arch'] = etree.tostring(doc)
         return result
 
-    '''def _change_operation_dest_loc(self, cr, uid, ids, context=None):
-        """
-        If picking is inncoming. for each operation in the pickings,
-        get the location from the package
-        """
-        # t_operation = self.pool.get('stock.pack.operation')
-        if context is None:
-            context = {}
-        for pick in self.browse(cr, uid, ids, context=context):
-            if pick.picking_type_code == 'incoming' and \
-                    pick.move_lines and pick.move_lines[0].move_dest_id:
-                related_pick_id = pick.move_lines[0].move_dest_id.picking_id.id
-                related_pick = pick.move_lines[0].move_dest_id.picking_id
-                related_pick.do_prepare_partial()
-                for op in related_pick.pack_operation_ids:
-                    pack_id = op.package_id.id
-                    for op2 in pick.pack_operation_ids:
-                        if op2.result_package_id.id == pack_id:
-                            op.write({'location_dest_id':
-                                      op2.chained_loc_id.id})
+    @api.model
+    def _prepare_pack_ops(self, picking, quants, forced_qties):
+        res = super(stock_picking, self)._prepare_pack_ops(picking, quants,
+                                                           forced_qties)
+        if picking.backorder_id:
+            for op in res:
+                move = picking.move_lines.filtered(
+                    lambda record: record.product_id.id == op['product_id'])
+                if move.uos_coeff:
+                    op['uos_coeff'] = move.uos_coeff
+        return res
+
+    @api.multi
+    def do_transfer(self):
+        res = super(stock_picking, self).do_transfer()
+        for picking in self:
+            if picking.picking_type_code == 'incoming':
+                moves = self.env['stock.move']
+                moves_vals = []
+                final_move_vals = []
+                operations = picking.pack_operation_ids
+                backorder = self.search([('backorder_id', '=', picking.id)])
+                if backorder:
+                    operations = operations not in \
+                        backorder.mapped('move_lines.orig_op')
+                for operation in operations:
+                    if operation.original_uos_coeff != operation.uos_coeff:
+                        remaining_qty = operation.product_qty / \
+                            operation.original_uos_coeff - \
+                            operation.product_qty / operation.uos_coeff
+                        remaining_qty = remaining_qty * operation.uos_coeff
+                        move_vals = self._prepare_values_extra_move(
+                            operation, operation.product_id, remaining_qty)
+                        move_vals['group_id'] = picking.group_id.id
+                        move = picking.move_lines.filtered(
+                            lambda record: record.product_id ==
+                            operation.product_id)
+                        if move:
+                            move_vals['purchase_line_id'] = \
+                                move.purchase_line_id.id
+                        # moves += moves.create(move_vals)
+                        moves_vals.append(move_vals)
+                for vals in moves_vals:
+                    finded = False
+                    for final_vals in final_move_vals:
+                        if vals['product_id'] == final_vals['product_id'] and \
+                                vals['product_uom'] == \
+                                final_vals['product_uom'] and \
+                                vals['product_uos'] == \
+                                final_vals['product_uos'] and \
+                                vals['product_uom_qty'] != 0.0:
+                            final_vals['product_uos_qty'] += \
+                                vals['product_uos_qty']
+                            final_vals['product_uom_qty'] += \
+                                vals['product_uom_qty']
+                            finded = True
                             break
-                self.write(cr, uid, [related_pick_id],
-                           {'midban_operations': True}, context=context)
-        return True'''
+                    if not finded:
+                        final_move_vals.append(vals)
+                for vals in final_move_vals:
+                    vals['product_uos_qty'] = round(vals['product_uos_qty'], 2)
+                    vals['product_uom_qty'] = round(vals['product_uom_qty'], 2)
+                    if vals['product_uom_qty'] == 0.0:
+                        continue
+                    moves += moves.create(vals)
+                if backorder:
+                    backorder.write({'move_lines':
+                                     [(4, x) for x in moves._ids]})
+                else:
+                    backorder = picking.copy(
+                        {'name': '/',
+                         'move_lines': [(4, x) for x in moves._ids],
+                         'pack_operation_ids': [],
+                         'backorder_id': picking.id
+                         })
+                    backorder.action_confirm()
+        return res
 
     @api.cr_uid_ids_context
     def approve_pack_operations(self, cr, uid, ids, context=None):
@@ -142,6 +198,18 @@ class stock_picking(osv.osv):
         # Prepare operations for the next chained picking if it exist
         self._change_operation_dest_loc(cr, uid, ids, context=context)
         return True
+
+    @api.model
+    def _prepare_values_extra_move(self, op, product, remaining_qty):
+        res = super(stock_picking, self)._prepare_values_extra_move(
+            op, product, remaining_qty)
+        res['product_uos_qty'] = res['product_uom_qty'] / op.uos_coeff
+        res['product_uos'] = \
+            op.linked_move_operation_ids[0].move_id.product_uos.id
+        res['orig_op'] = op.id
+        if op.uos_coeff:
+            res['uos_coeff'] = op.uos_coeff
+        return res
 
     @api.one
     def delete_picking_package_operations(self):
@@ -519,7 +587,9 @@ class stock_pack_operation(osv.osv):
         # Used when aprovepackoperation2 on stock.picking, because this method
         # unlink the original operation and wee ned to remember it
         # In the scan_gun_warehouse module
-        'old_id': fields.integer('Old id', readonly=True)
+        'old_id': fields.integer('Old id', readonly=True),
+        'uos_coeff': fields.float('UoS coeff'),
+        'original_uos_coeff': fields.float('Original UoS coeff'),
 
     }
     _defaults = {
@@ -1145,6 +1215,8 @@ class stock_move(osv.osv):
         #                             type='integer', readonly=True),
         'real_weight': fields.float('Real weight'),
         'price_kg': fields.float('Price Kg'),
+        'orig_op': fields.many2one('stock.pack.operation', 'op'),
+        'uos_coeff': fields.float('UoS coeff'),
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):

@@ -60,7 +60,8 @@ class stock_transfer_details(models.TransientModel):
             prop_qty = r_qty
         return prop_qty
 
-    def _create_pack_operation(self, item, located_qty):
+    def _create_pack_operation(self, item, located_qty, uos_coeff=0.0,
+                               orig_uos=0.0):
         t_pack = self.env['stock.quant.package']
         t_ope = self.env['stock.pack.operation']
         op_vals = {
@@ -75,6 +76,10 @@ class stock_transfer_details(models.TransientModel):
             'owner_id': item.owner_id.id,
             'date': item.date if item.date else datetime.now(),
         }
+        if uos_coeff:
+            op_vals['uos_coeff'] = uos_coeff
+        if orig_uos:
+            op_vals['original_uos_coeff'] = orig_uos
         pack_obj = t_pack.create({})
         op_vals['result_package_id'] = pack_obj.id
         t_ope.create(op_vals)
@@ -89,11 +94,19 @@ class stock_transfer_details(models.TransientModel):
         If not space for a mantle, location cant be founded and return False
         """
         remaining_qty = item.quantity
+        uos_coeff = remaining_qty / item.uos_qty
+        if item.transfer_id.picking_id.backorder_id:
+            orig_uos = uos_coeff
+        else:
+            orig_uos = remaining_qty / item.product_id.uom_qty_to_uoc_qty(
+                remaining_qty, item.uos_id.id,
+                item.transfer_id.picking_id.partner_id.id)
         product = item.product_id
         while remaining_qty > 0.0:
             located_qty = self.get_max_qty_to_process(remaining_qty, product)
             if located_qty:
-                self._create_pack_operation(item, located_qty)
+                self._create_pack_operation(item, located_qty, uos_coeff,
+                                            orig_uos)
                 remaining_qty -= located_qty
             else:
                 remaining_qty = -1
@@ -126,6 +139,9 @@ class stock_transfer_details(models.TransientModel):
 
     @api.one
     def do_detailed_transfer(self):
+        # Se recalcula el uos_coeff de las operaciones.
+        for item in self.item_ids:
+            item.packop_id.uos_coeff = item.quantity / item.uos_qty
         res = super(stock_transfer_details, self).do_detailed_transfer()
         '''if self.picking_id.cross_dock and self.move_lines and \
                 self.move_lines[0].move_dest_id:'''
@@ -208,9 +224,11 @@ class stock_transfer_details(models.TransientModel):
 
                 uos_id = move.product_uos and move.product_uos.id or uos_id
                 if picking.picking_type_code == 'incoming':
-
-                    uos_qty = prod.uom_qty_to_uoc_qty(op.product_qty, uos_id,
-                                                      supplier_id)
+                    if op.uos_coeff:
+                        uos_qty = op.product_qty / op.uos_coeff
+                    else:
+                        uos_qty = prod.uom_qty_to_uoc_qty(op.product_qty,
+                                                          uos_id, supplier_id)
                     supp = prod.get_product_supp_record(supplier_id)
                     if supp.is_var_coeff:
                         var_weight = True
@@ -247,6 +265,7 @@ class stock_transfer_details_items(models.TransientModel):
     uos_qty = fields.Float('Quantity (S.U.)',
                            digits_compute=dp.
                            get_precision('Product Unit of Measure'))
+
     uos_id = fields.Many2one('product.uom', 'Second Unit')
     var_weight = fields.Boolean('Variable weight', readonly=True,
                                 help='If checked, system will not convert \
