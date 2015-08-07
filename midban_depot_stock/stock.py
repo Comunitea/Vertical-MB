@@ -84,6 +84,16 @@ class stock_picking(osv.osv):
         if view_type == 'form':
             active_model = self.env.context.get('active_model', False)
             active_id = self.env.context.get('active_id', False)
+            if not active_model or not active_id or active_model not in ['stock.picking.type', 'stock.picking']:
+                act_ref = str(self.env.ref(
+                    'midban_depot_stock.create_multipack_wizard_action').id)
+                doc = etree.XML(result['arch'])
+                button = doc.xpath("//button[@name='%s']" % act_ref)
+                if button:
+                    button = button[0]
+                    button.getparent().remove(button)
+                result['arch'] = etree.tostring(doc)
+                return result
             active_record = self.env[active_model].browse(active_id)
             location_type = self.env.ref(
                 'midban_depot_stock.picking_type_ubication_task')
