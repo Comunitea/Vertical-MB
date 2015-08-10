@@ -502,7 +502,7 @@ class purchase_preorder(osv.Model):
                     'company_id': company,
                     'fiscal_position': fiscal_posion,
                     'payment_term_id': payment,
-                    'state': 'sent',
+                    'state': 'draft',
                     'preorder_id': pre.id}
             valspartner = purchase.onchange_partner_id(cr,
                                                        uid,

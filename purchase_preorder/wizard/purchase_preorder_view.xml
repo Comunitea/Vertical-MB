@@ -114,7 +114,7 @@
                     <field name="incoming_qty" readonly="1" invisible ="1"/>
                     <field name="date_delivery" readonly="1" invisible ="1"/>
                     <field name="product_id" readonly="1"/>
-                    <field name="price_purchase" readonly="1"/>
+                    <field name="price_purchase"/>
                     <field name="supplier_id" invisible="1" readonly="1"/>
                     <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
                     <field name="product_uoc" context="{'change': 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>

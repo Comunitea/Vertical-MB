@@ -33,34 +33,36 @@ class product_product(models.Model):
     @api.model
     def get_purchase_price_conversions(self, qty_uoc, uoc_id, supplier_id):
 
-        #import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
         #por si hace falta precio de manteles o palets
-
+        #import pdb; pdb.set_trace()
 
         res = {'base': 0.0,
                'unit': 0.0,
                'box': 0.0,
                'prov': 0.0,
                'mantles' : 0.0,
-               'palets' : 0.0 }
+               'palets' : 0.0,
+               'stock' : 0.0}
 
         supp = self.get_product_supp_record(supplier_id)
         #uom = self.env['product.uom'].browse ([(uoc_id)])
         product_uom_id = self.env['product.template'].browse([(self.id)]).uom_id.id
+        uom_id = product_uom_id
         product_uom_po_id = self.env['product.template'].browse([(self.id)]).uom_po_id.id
-        if uoc_id == supp.log_base_id.id:
+        if uom_id == supp.log_base_id.id:
             res['base'] = qty_uoc
             res['unit'] = float_round(res['base'] * supp.supp_kg_un, 2)
             res['box'] = float_round(res['unit'] * supp.supp_un_ca, 2)
             res['mantles'] =  float_round(res['box'] * supp.supp_ca_ma, 2)
             res['palets'] =  float_round(res['mantles'] * supp.supp_ca_ma, 2)
-        elif uoc_id == supp.log_unit_id.id:
+        elif uom_id == supp.log_unit_id.id:
             res['unit'] = qty_uoc
             res['box'] = float_round(res['unit'] * supp.supp_un_ca, 2)
             res['base'] = float_round(res['unit'] / supp.supp_kg_un, 2)
             res['mantles'] =  float_round(res['box'] * supp.supp_ca_ma, 2)
             res['palets'] =  float_round(res['mantles'] * supp.supp_ca_ma, 2)
-        elif uoc_id == supp.log_box_id.id:
+        elif uom_id == supp.log_box_id.id:
             res['box'] = qty_uoc
             res['unit'] = float_round(res['box'] / supp.supp_un_ca, 2)
             res['base'] = float_round(res['unit'] / supp.supp_kg_un, 2)
@@ -87,7 +89,17 @@ class product_product(models.Model):
             res['stock']=res['box']
         else:
             raise except_orm(_('Error'), _('Product uom not defined in %s') % self.name)
+
+        if uoc_id== supp.log_base_id.id:
+            res['udc']=res['base']
+        elif uoc_id == supp.log_unit_id.id:
+            res['udc']=res['unit']
+        elif uoc_id == supp.log_box_id.id:
+            res['udc']=res['box']
+        else:
+            raise except_orm(_('Error'), _('Product uom not defined in %s') % self.name)
         return res
+
 
     @api.model
     def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
@@ -165,13 +177,14 @@ class product_product(models.Model):
         else:
             raise except_orm(_('Error'), _('Product uom not defined in %s') % self.name)
 
+
         return res
 
 
     @api.model
     def get_uom_uoc_prices(self, uoc_id, supplier_id, custom_price_unit=0.0,
                            custom_price_udc=0.0):
-        #import pdb; pdb.set_trace()#
+        import pdb; pdb.set_trace()#
         supp = self.get_product_supp_record(supplier_id)
         if custom_price_udc:
             price_udc = custom_price_udc
@@ -231,3 +244,18 @@ class product_product(models.Model):
                 if log_unit == 'box':
                     price_udc = price_unit
         return price_unit, price_udc
+
+
+    @api.model
+    def get_uom_po_logistic_unit(self, supplier_id):
+        supp = self.get_product_supp_record(supplier_id)
+        if self.uom_id.id == supp.log_base_id.id:
+            return 'base'
+        elif self.uom_id.id == supp.log_unit_id.id:
+            return 'unit'
+        elif self.uom_id.id == supp.log_box_id.id:
+            return 'box'
+        else:
+            raise except_orm(_('Error'), _('The product unit of measure %s is \
+                             not related with any logistic \
+                             unit' % self.uom_po_id.name))
