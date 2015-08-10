@@ -81,120 +81,259 @@ class sale_report(osv.osv):
                                    readonly=True),
         'camera_id': fields.function(_get_camera_from_loc, type='many2one',
                                      relation='stock.location',
-                                     string='Camera', readonly=True)
+                                     string='Camera', readonly=True),
+        'group': fields.integer('group',readonly=True),
     }
 
-    def _select1(self):
-        select_str = """
-            SELECT min(OP.id) as id,
-                   Q.product_id as product_id,
-                   Q.lot_id as lot_id,
-                   OP.location_id ,
-                   sum(Q.qty) as product_qty,
-                   W.id as wave_id,
-                   L.sequence as sequence
-        """
+    def _sub_select_0(self):
+        select_str = """Min(operation.id) AS id,
+                  quant.product_id  AS product_id,
+                  quant.lot_id      AS lot_id,
+                  operation.location_id,
+                  SUM(quant.qty)    AS product_qty,
+                  wave.id           AS wave_id,
+                  location.SEQUENCE AS SEQUENCE"""
         return select_str
 
-    def _from1(self):
-        from_str = """
-            stock_quant Q
-                INNER JOIN stock_quant_package PA on PA.id = Q.package_id
-                INNER JOIN stock_pack_operation OP on OP.package_id = PA.id
-                INNER JOIN stock_picking P on P.id = OP.picking_id
-                INNER JOIN stock_picking_wave W on W.id = P.wave_id
-                INNER JOIN stock_location L on L.id = OP.location_id
-            WHERE OP.product_id is null
-        """
+    def _sub_from_0(self):
+        from_str = """stock_quant quant
+                  inner join stock_quant_package PACKAGE
+                          ON PACKAGE.id = quant.package_id
+                  inner join stock_pack_operation operation
+                          ON operation.package_id = PACKAGE.id
+                  inner join stock_picking picking
+                          ON picking.id = operation.picking_id
+                  inner join stock_picking_wave wave
+                          ON wave.id = picking.wave_id
+                  inner join stock_location location
+                          ON location.id = operation.location_id"""
         return from_str
 
-    def _group_by1(self):
-        group_by_str = """
-            GROUP BY
-                Q.product_id,
-                Q.lot_id,
-                OP.location_id,
-                W.id,
-                L.sequence
-        """
-        return group_by_str
+    def _sub_where_0(self):
+        where_str = """operation.product_id IS NULL"""
+        return where_str
 
-    def _select2(self):
-        select_str = """
-            SELECT min(OP.id) as id,
-                   OP.product_id as product_id,
-                   OP.lot_id as lot_id,
-                   OP.location_id ,
-                   sum(OP.product_qty) as product_qty,
-                   W.id as wave_id,
-                   L.sequence as sequence
-        """
+    def _sub_group_by_0(self):
+        group_str = """quant.product_id,
+                     quant.lot_id,
+                     operation.location_id,
+                     wave.id,
+                     location.SEQUENCE"""
+        return group_str
+
+    def _sub_select_1(self):
+        select_str = """Min(operation.id)          AS id,
+                  operation.product_id       AS product_id,
+                  operation.lot_id           AS lot_id,
+                  operation.location_id,
+                  SUM(operation.product_qty) AS product_qty,
+                  wave.id                       AS wave_id,
+                  location.SEQUENCE                 AS SEQUENCE"""
         return select_str
 
-    def _from2(self):
-        from_str = """
-            stock_pack_operation OP
-                INNER JOIN stock_picking P on P.id = OP.picking_id
-                INNER JOIN stock_picking_wave W on W.id = P.wave_id
-                INNER JOIN stock_location L on L.id = OP.location_id
-            WHERE OP.product_id is not null
-        """
+    def _sub_from_1(self):
+        from_str = """stock_pack_operation operation
+                  inner join stock_picking picking
+                          ON picking.id = operation.picking_id
+                  inner join stock_picking_wave wave
+                          ON wave.id = picking.wave_id
+                  inner join stock_location location
+                          ON location.id = operation.location_id"""
         return from_str
 
-    def _group_by2(self):
-        group_by_str = """
-            GROUP BY
-                OP.product_id,
-                OP.lot_id,
-                OP.location_id,
-                W.id,
-                L.sequence
-        """
-        return group_by_str
+    def _sub_where_1(self):
+        where_str = """operation.product_id IS NOT NULL"""
+        return where_str
 
-    def _select0(self):
-        select_str = """
-            SELECT min(SQ.id) as id,
-                   SQ.product_id as product_id,
-                   SQ.lot_id as lot_id,
-                   SQ.location_id as location_id,
-                   sum(SQ.product_qty) as product_qty,
-                   SQ.wave_id as wave_id,
-                   SQ.sequence as sequence
-        """
+    def _sub_group_by_1(self):
+        group_str = """operation.product_id,
+                     operation.lot_id,
+                     operation.location_id,
+                     wave.id,
+                     location.SEQUENCE"""
+        return group_str
+
+    def _get_subquery_grouped(self):
+        subquery = """SELECT %s
+                FROM %s
+                WHERE %s
+                GROUP BY %s""" % (self._sub_select_0(),
+                    self._sub_from_0(), self._sub_where_0(),
+                    self._sub_group_by_0())
+        return subquery
+
+    def _get_subquery_ungruped(self):
+        subquery = """SELECT %s
+                FROM %s
+                WHERE %s
+                GROUP BY %s""" % (self._sub_select_1(),
+                    self._sub_from_1(), self._sub_where_1(),
+                    self._sub_group_by_1())
+        return subquery
+
+    def _select(self):
+        select_str = """Min(SQ.id)          AS id,
+          SQ.product_id       AS product_id,
+          SQ.lot_id           AS lot_id,
+          SQ.location_id      AS location_id,
+          SUM(SQ.product_qty) AS product_qty,
+          SQ.wave_id          AS wave_id,
+          SQ.SEQUENCE         AS SEQUENCE,
+          SQ.group_id         AS group"""
         return select_str
 
-    def _group_by0(self):
-        group_by_str = """
-            GROUP BY
-                SQ.product_id,
-                SQ.lot_id,
-                SQ.location_id,
-                SQ.wave_id,
-                SQ.sequence
-        """
-        return group_by_str
+
+    def _group_by(self):
+        group_str = """SQ.product_id,
+             SQ.lot_id,
+             SQ.location_id,
+             SQ.wave_id,
+             SQ.SEQUENCE,
+             SQ.group_id"""
+        return group_str
 
     def init(self, cr):
-        # self._table = sale_report
+        """
+            Falla porque algunas operaciones nunca tienen producto, y es imposible cumplir
+            WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
+        """
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
-            %s
-            FROM (
-                %s
-                FROM %s
-                %s
+            SELECT Min(SQ.id)          AS id,
+          SQ.product_id       AS product_id,
+          SQ.lot_id           AS lot_id,
+          SQ.location_id      AS location_id,
+          SUM(SQ.product_qty) AS product_qty,
+          SQ.wave_id          AS wave_id,
+          SQ.SEQUENCE         AS SEQUENCE,
+          SQ.group_id         AS group
+   FROM   ((SELECT Min(operation.id) AS id,
+                  quant.product_id  AS product_id,
+                  quant.lot_id      AS lot_id,
+                  operation.location_id,
+                  SUM(quant.qty)    AS product_qty,
+                  wave.id           AS wave_id,
+                  location.SEQUENCE AS SEQUENCE,
+                  0 as group_id
 
-                UNION
+           FROM   stock_quant quant
+                  inner join stock_quant_package PACKAGE
+                          ON PACKAGE.id = quant.package_id
+                  inner join stock_pack_operation operation
+                          ON operation.package_id = PACKAGE.id
+                  inner join stock_picking picking
+                          ON picking.id = operation.picking_id
+                  inner join stock_picking_wave wave
+                          ON wave.id = picking.wave_id
+                  inner join stock_location location
+                          ON location.id = operation.location_id
+                  inner join product_product product
+                          ON product.id = quant.product_id
+                  inner join product_template product_template
+                          ON product_template.id = product.product_tmpl_id
+           WHERE  (operation.product_id IS NULL AND product_template.is_var_coeff = false) or (operation.product_id IS NULL AND product_template.is_var_coeff is null)
+           GROUP  BY quant.product_id,
+                     quant.lot_id,
+                     operation.location_id,
+                     wave.id,
+                     group_id,
+                     location.SEQUENCE
+           UNION
+           SELECT Min(operation.id)          AS id,
+                  operation.product_id       AS product_id,
+                  operation.lot_id           AS lot_id,
+                  operation.location_id,
+                  SUM(operation.product_qty) AS product_qty,
+                  wave.id                       AS wave_id,
+                  location.SEQUENCE                 AS SEQUENCE,
+                  0 as group_id
+           FROM   stock_pack_operation operation
+                  inner join stock_picking picking
+                          ON picking.id = operation.picking_id
+                  inner join stock_picking_wave wave
+                          ON wave.id = picking.wave_id
+                  inner join stock_location location
+                          ON location.id = operation.location_id
+                  inner join product_product product
+                          ON product.id = operation.product_id
+                  inner join product_template product_template
+                          ON product_template.id = product.product_tmpl_id
+           WHERE  (operation.product_id IS NOT NULL AND product_template.is_var_coeff = false) or (operation.product_id IS NOT NULL AND product_template.is_var_coeff is null)
+           GROUP  BY operation.product_id,
+                     operation.lot_id,
+                     operation.location_id,
+                     wave.id,
+                     group_id,
+                     location.SEQUENCE)
+            UNION
 
-                %s
-                FROM %s
-                %s ) SQ
-            % s
-            )""" % (self._table, self._select0(), self._select1(),
-                    self._from1(), self._group_by1(),
-                    self._select2(), self._from2(), self._group_by2(),
-                    self._group_by0()
+            (SELECT Min(operation.id) AS id,
+                  quant.product_id  AS product_id,
+                  quant.lot_id      AS lot_id,
+                  operation.location_id,
+                  SUM(quant.qty)    AS product_qty,
+                  wave.id           AS wave_id,
+                  location.SEQUENCE AS SEQUENCE,
+                  quant.package_id as group_id
+
+           FROM   stock_quant quant
+                  inner join stock_quant_package PACKAGE
+                          ON PACKAGE.id = quant.package_id
+                  inner join stock_pack_operation operation
+                          ON operation.package_id = PACKAGE.id
+                  inner join stock_picking picking
+                          ON picking.id = operation.picking_id
+                  inner join stock_picking_wave wave
+                          ON wave.id = picking.wave_id
+                  inner join stock_location location
+                          ON location.id = operation.location_id
+                  inner join product_product product
+                          ON product.id = quant.product_id
+                  inner join product_template product_template
+                          ON product_template.id = product.product_tmpl_id
+           WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
+           GROUP  BY quant.product_id,
+                     quant.lot_id,
+                     operation.location_id,
+                     wave.id,
+                     quant.package_id,
+                     location.SEQUENCE
+           UNION
+           SELECT Min(operation.id)          AS id,
+                  operation.product_id       AS product_id,
+                  operation.lot_id           AS lot_id,
+                  operation.location_id,
+                  SUM(operation.product_qty) AS product_qty,
+                  wave.id                       AS wave_id,
+                  location.SEQUENCE                 AS SEQUENCE,
+                  operation.package_id as group_id
+           FROM   stock_pack_operation operation
+                  inner join stock_picking picking
+                          ON picking.id = operation.picking_id
+                  inner join stock_picking_wave wave
+                          ON wave.id = picking.wave_id
+                  inner join stock_location location
+                          ON location.id = operation.location_id
+                  inner join product_product product
+                          ON product.id = operation.product_id
+                  inner join product_template product_template
+                          ON product_template.id = product.product_tmpl_id
+           WHERE  operation.product_id IS NOT NULL AND product_template.is_var_coeff = true
+           GROUP  BY operation.product_id,
+                     operation.lot_id,
+                     operation.location_id,
+                     wave.id,
+                     operation.package_id,
+                     location.SEQUENCE)
+
+                     )SQ
+   GROUP  BY SQ.product_id,
+             SQ.lot_id,
+             SQ.location_id,
+             SQ.wave_id,
+             SQ.SEQUENCE,
+             SQ.group_id
+            )""" % (self._table
                     ))
 
 
