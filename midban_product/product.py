@@ -25,6 +25,8 @@ from openerp.tools.translate import _
 from openerp import netsvc
 from openerp import models, api
 from openerp import fields as fields2
+from openerp.exceptions import except_orm
+from openerp.tools.float_utils import float_round
 
 
 class temp_type(osv.Model):
@@ -482,6 +484,131 @@ class ProductTemplate(models.Model):
         Calc name str
         """
         self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
+
+
+class product_product(models.Model):
+
+    _inherit = "product.product"
+
+    @api.model
+    def get_sale_unit_ids(self):
+        res = []
+        if self.base_use_sale and self.log_base_id:
+            res.append(self.log_base_id.id)
+        if self.unit_use_sale and self.log_unit_id:
+            res.append(self.log_unit_id.id)
+        if self.box_use_sale and self.log_box_id:
+            res.append(self.log_box_id.id)
+        return res
+
+    @api.model
+    def get_unit_conversions(self, qty_uos, uos_id):
+        res = {'base': 0.0,
+               'unit': 0.0,
+               'box': 0.0}
+        if uos_id == self.log_base_id.id:
+            res['base'] = qty_uos
+            res['unit'] = float_round(res['base'] / self.kg_un, 2)
+            res['box'] = float_round(res['unit'] / self.un_ca, 2)
+        elif uos_id == self.log_unit_id.id:
+            res['unit'] = qty_uos
+            res['box'] = float_round(res['unit'] / self.un_ca, 2)
+            res['base'] = float_round(res['unit'] * self.kg_un, 2)
+        elif uos_id == self.log_box_id.id:
+            res['box'] = qty_uos
+            res['unit'] = float_round(res['box'] * self.un_ca, 2)
+            res['base'] = float_round(res['unit'] * self.kg_un, 2)
+        return res
+
+    @api.model
+    def uom_qty_to_uos_qty(self, uom_qty, uos_id):
+        """
+        Convert product quantity from his default stock unit to the specified
+        uos_id
+        """
+        conv = self.get_unit_conversions(uom_qty, self.uom_id.id)
+        if uos_id == self.log_base_id.id:
+            return conv['base']
+        elif uos_id == self.log_unit_id.id:
+            return conv['unit']
+        elif uos_id == self.log_box_id.id:
+            return conv['box']
+
+    @api.model
+    def get_uom_logistic_unit(self):
+        if self.uom_id.id == self.log_base_id.id:
+            return 'base'
+        elif self.uom_id.id == self.log_unit_id.id:
+            return 'unit'
+        elif self.uom_id.id == self.log_box_id.id:
+            return 'box'
+        else:
+            raise except_orm(_('Error'), _('The product unit of measure %s is \
+                             not related with any logistic \
+                             unit' % self.uom_id.name))
+
+    @api.model
+    def get_uom_uos_prices(self, uos_id, custom_price_unit=0.0,
+                           custom_price_udv=0.0):
+        if custom_price_udv:
+            price_udv = custom_price_udv
+            log_unit = self.get_uom_logistic_unit()
+            if uos_id == self.log_base_id.id:
+                if log_unit == 'base':
+                    price_unit = price_udv
+                if log_unit == 'unit':
+                    price_unit = price_udv * self.kg_un
+                if log_unit == 'box':
+                    price_unit = price_udv * self.kg_un * self.un_ca
+                price_unit = price_unit
+            elif uos_id == self.log_unit_id.id:
+                if log_unit == 'base':
+                    price_unit = float_round(price_udv / self.kg_un, 2)
+                if log_unit == 'unit':
+                    price_unit = price_udv
+                if log_unit == 'box':
+                    price_unit = price_udv * self.un_ca
+            elif uos_id == self.log_box_id.id:
+                if log_unit == 'base':
+                    price_unit = \
+                        float_round(
+                            price_udv / (self.kg_un * self.un_ca), 2)
+                if log_unit == 'unit':
+                    price_unit = float_round(price_udv / self.un_ca, 2)
+                if log_unit == 'box':
+                    price_unit = price_udv
+
+        else:
+            price_unit = custom_price_unit or self.lst_price
+            price_udv = 0.0
+            log_unit = self.get_uom_logistic_unit()
+            if uos_id == self.log_base_id.id:
+                if log_unit == 'base':
+                    price_udv = price_unit
+                if log_unit == 'unit':
+                    price_udv = price_unit * self.kg_un
+                if log_unit == 'box':
+                    price_udv = price_unit * self.kg_un * self.un_ca
+
+            elif uos_id == self.log_unit_id.id:
+                if log_unit == 'base':
+                    price_udv = float_round(price_unit * self.kg_un, 2)
+                if log_unit == 'unit':
+                    price_udv = price_unit
+                if log_unit == 'box':
+                    price_udv = price_unit / self.un_ca
+
+            elif uos_id == self.log_box_id.id:
+                if log_unit == 'base':
+                    price_udv = \
+                        float_round(price_unit * self.kg_un * self.un_ca, 2)
+                if log_unit == 'unit':
+                    price_udv = float_round(price_unit * self.un_ca, 2)
+                if log_unit == 'box':
+                    price_udv = price_unit
+        return price_unit, price_udv
+
+
 
 
 class ProductSupplierinfo(models.Model):
