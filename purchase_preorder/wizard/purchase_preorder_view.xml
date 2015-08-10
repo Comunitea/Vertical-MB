@@ -51,6 +51,7 @@
                                     <button name="button_dummy" string="(update)" type="object" class="oe_edit_only oe_link" />
                                 </div>
                                 <field name="total" readonly="1" nolabel="1" widget="monetary" />
+                                <button name="open_in_tree" string="Full Product List" type="object" class="oe_highlight" />
                             </group>
                             <group string="Quantities">
                                 <field name="palets" readonly="1" />
@@ -60,7 +61,26 @@
                         </group>
                         <notebook colspan="6">
                             <page string="Products Supplier">
-                                <field name="product_supplier_ids"/>
+                                <field name="product_supplier_ids">
+                                    <field name="tm" invisible="1"/>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="incoming_qty" readonly="1" invisible ="1"/>
+                                    <field name="date_delivery" readonly="1" invisible ="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="price_purchase" />
+                                    <field name="supplier_id" invisible="1" readonly="1"/>
+                                    <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'tm' : tm}"/>
+                                    <field name="product_uoc" context="{'change': 'product_uoc', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
+                                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}"/>
+                                    <field name="mantles"  context="{'change' : 'mantles', 'tm' : tm}"/>
+                                    <field name="palets" context="{'change' : 'palets', 'tm' : tm}"/>
+                                    <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
+                                    <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
+                                    <field name="unitskg" string="Units Ordered" readonly="0" invisible="1"/>
+                                    <field name="min_fixed" readonly="1" invisible ="0"/>
+                                    <field name="real_stock" readonly="1" invisible ="0"/>
+                                    <field name="virtual_stock" readonly="1" invisible ="0"/>
+                                </field>
                             </page>
                             <page string="State Supplier">
                                 <group>
@@ -84,6 +104,34 @@
             </field>
         </record>
 
+        <record id="product_supplier_preorder_tree_full" model="ir.ui.view">
+            <field name="name">products.supplier.tree.full</field>
+            <field name="model">products.supplier</field>
+            <field name="arch" type="xml">
+                <tree string="Preorder Products Supplier" editable="top">
+                    <field name="tm" invisible="1"/>
+                    <field name="sequence" invisible="1"/>
+                    <field name="incoming_qty" readonly="1" invisible ="1"/>
+                    <field name="date_delivery" readonly="1" invisible ="1"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="price_purchase" readonly="1"/>
+                    <field name="supplier_id" invisible="1" readonly="1"/>
+                    <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
+                    <field name="product_uoc" context="{'change': 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
+                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}"/>
+                    <field name="mantles"  context="{'change' : 'mantles', 'tm' : tm}"/>
+                    <field name="palets" context="{'change' : 'palets', 'tm' : tm}"/>
+                    <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
+                    <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
+                    <field name="unitskg" string="Units Ordered" readonly="0" invisible="1"/>
+                    <field name="min_fixed" readonly="1" invisible ="1"/>
+                    <field name="real_stock" readonly="1" invisible ="1"/>
+                    <field name="virtual_stock" readonly="1" invisible ="1"/>
+                </tree>
+            </field>
+        </record>
+
+
         <record id="purchase_preorder_supplier_form" model="ir.ui.view">
             <field name="name">purchase.preorder.supplier.form</field>
             <field name="model">purchase.preorder</field>
@@ -106,18 +154,21 @@
             <field name="model">products.supplier</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Products Supplier" editable="top">
+                <tree string="Products Supplier" >
                     <button name="open_in_form" string="Show form" type="object" icon="terp-gtk-jump-to-ltr"/>
                     <field name="sequence" invisible="1"/>
+                    <field name="do_onchange" invisible ="1"/>
                     <field name="incoming_qty" readonly="1"/>
                     <field name="date_delivery" readonly="1"/>
                     <field name="product_id" readonly="1"/>
                     <field name="price_purchase"/>
+                     <field name="product_uoc"/>
+                    <field name="product_uoc_qty"/>
                     <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
-                    <field name="unitskg" string="Units Ordered" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg')"/>
-                    <field name="boxes" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')"/>
-                    <field name="mantles" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')"/>
-                    <field name="palets" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')"/>
+                    <field name="unitskg" string="Units Ordered"/>
+                    <field name="boxes"/>
+                    <field name="mantles"/>
+                    <field name="palets"/>
                     <field name="min_fixed" readonly="1"/>
                     <field name="real_stock" readonly="1"/>
                     <field name="virtual_stock" readonly="1"/>
@@ -254,6 +305,19 @@
                 </form>
             </field>
         </record>
+
+        <!-- Este botón debe de abrir el listado de productos-->
+          <record id="action_preorder_tree_full" model="ir.actions.act_window">
+            <field name="name">Preorder Full Tree</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">products.supplier</field>
+            <field name="view_id" ref="purchase_preorder.product_supplier_preorder_tree_full"/>
+            <field name="view_type">tree</field>
+            <field name='views_mode'>tree, form</field>
+            <field name="target">new</field>
+
+        </record>
+
 
         <record id="action_preorder_suppliers" model="ir.actions.act_window">
             <field name="name">Create Purchase PreOrder</field>

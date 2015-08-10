@@ -24,7 +24,7 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from openerp import api
+
 
 PRODUCT_STATE_SELECTION = [('val_pending', 'Validate pending'),
                            ('logic_pending', 'Logistic validation pending'),
@@ -122,19 +122,15 @@ class purchase_preorder(osv.Model):
                        relation='product.pricelist',
                        string="Purchase pricelist"),
 
-        # 'rappel_ids': fields.related('supplier_id',
-        #                              'rappel_ids',
-        #                              type='one2many',
-        #                              relation="rappel",
-        #                              string="Rappels"),
+
     }
     _defaults = {
         'name': lambda obj, cr, uid, context: '/',
     }
 
     def create(self, cr, uid, vals, context=None):
-        seq_facade = self.pool.get('ir.sequence')
 
+        seq_facade = self.pool.get('ir.sequence')
         if vals.get('name', '/') == '/':
             vals['name'] = seq_facade.get(cr,
                                           uid,
@@ -329,6 +325,7 @@ class purchase_preorder(osv.Model):
         Function to create the pre-order.
         Returns the view of pre-order filled with all possible data.
         """
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         preord_fac = self.pool.get('purchase.preorder')
@@ -339,14 +336,14 @@ class purchase_preorder(osv.Model):
             if data.supplier_id:
                 sup_id = data.supplier_id
                 # Creating the pre-order
-                preorder = preord_fac.create(cr,
-                                             uid,
-                                             self._prepare_preorder(cr,
-                                                                    uid,
-                                                                    ids,
-                                                                    sup_id,
-                                                                    context),
-                                             context=context)
+                #preorder = preord_fac.create(cr,
+                #                             uid,
+                #                             self._prepare_preorder(cr,
+                #                                                    uid,
+                #                                                    ids,
+                #                                                    sup_id,
+                #                                                    context),
+                #                             context=context)
                 # Look for the supplier's products
                 product_ids = self._get_products_supplier(cr,
                                                           uid,
@@ -354,6 +351,7 @@ class purchase_preorder(osv.Model):
                                                           sup_id.id,
                                                           context)
                 # If we find producs, create product lines
+
                 if product_ids:
                     seq = 1
                     for sup in prosuppinfo.browse(cr, uid, product_ids):
@@ -363,7 +361,9 @@ class purchase_preorder(osv.Model):
                                                       sup.product_tmpl_id,
                                                       sup.name,
                                                       context=context)
+                        supp_prod_uom = sup.product_uom.id
                         if vals:
+
                             prods_supp = prodsupp.create(cr,
                                                          uid,
                                                          vals,
@@ -374,11 +374,24 @@ class purchase_preorder(osv.Model):
                                                              ids,
                                                              tmp_id,
                                                              context)
+
+                            #rellenamos product_uoc
+                            product_uoc_vals = []
+                            if sup.base_use_purchase and sup.log_base_id:
+                                product_uoc_vals.append(sup.log_base_id.id)
+                            if sup.unit_use_purchase and sup.log_unit_id:
+                                product_uoc_vals.append(sup.log_unit_id.id)
+                            if sup.box_use_purchase and sup.log_box_id:
+                                product_uoc_vals.append(sup.log_box_id.id)
+
+                            #Hasta aquí
+
                             prodsupp.write(cr,
                                            uid,
                                            prods_supp,
-                                           {'preorder_id': preorder,
+                                           {'preorder_id': data.id,
                                             'sequence': seq,
+                                            #'product_uoc' : product_uoc_vals,
                                             'jan_consu_cur': consums[1][0],
                                             'jan_consu_last': consums[1][1],
                                             'feb_consu_cur': consums[2][0],
@@ -402,14 +415,16 @@ class purchase_preorder(osv.Model):
                                             'nov_consu_cur': consums[11][0],
                                             'nov_consu_last': consums[11][1],
                                             'dec_consu_cur': consums[12][0],
-                                            'dec_consu_last': consums[12][1]
+                                            'dec_consu_last': consums[12][1],
+                                            'product_uoc_qty' : 0.0,
+                                            'product_uoc' : supp_prod_uom
                                             },
                                            context=context)
                             seq += 1
                 if product_id and product_qty:
                     l = prodsupp.search(cr,
                                         uid,
-                                        [('preorder_id', '=', preorder),
+                                        [('preorder_id', '=', data),
                                          ('product_id', '=', product_id)])
                     if l:
                         qtys = prodsupp.onchange_uoms(cr, uid, l[0],
@@ -429,6 +444,8 @@ class purchase_preorder(osv.Model):
                                                 'purchase_preorder',
                                                 'view_purchase_preorder_tree')
         tree_id = tree_res and tree_res[1] or False
+
+        #'view_id ="purchase_preorder.product_supplier_preorder_tree"
         value = {
             'name': 'Pre Order',
             'view_type': 'form',
@@ -436,7 +453,7 @@ class purchase_preorder(osv.Model):
             'view_id': False,
             'res_model': 'purchase.preorder',
             'type': 'ir.actions.act_window',
-            'res_id': preorder,
+            'res_id': data.id,
             'views': [(form_id, 'form'), (tree_id, 'tree')]}
         return value
 
@@ -444,6 +461,7 @@ class purchase_preorder(osv.Model):
         """
         Generate a purchase order from the data pre-order.
         """
+        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         vals = {}
@@ -517,19 +535,27 @@ class purchase_preorder(osv.Model):
                         format = DEFAULT_SERVER_DATETIME_FORMAT
                         dateo = datetime.strptime(date_order, format)
                         ldate = dateo + relativedelta(days=seller_delay)
-                        pline.create(cr,
-                                     uid,
-                                     {'product_id': line.product_id.id,
+                        #
+                        import pdb; pdb.set_trace()
+                        values_line = {'product_id': line.product_id.id,
                                       'name': lname,
-                                      'product_qty': line.unitskg,
+                                      #'product_qty': line.unitskg, Creo que es product_qty
+                                      'product_qty' : line.product_qty,
+                                      'product_uoc_qty' :line.product_uoc_qty,
                                       # 'boxes': line.boxes,
                                       # 'mantles': line.mantles,
                                       # 'palets': line.palets,
                                       'product_uom': line.product_id.uom_id.id,
-                                      'price_unit': line.price_purchase,
+                                      'product_uoc': line.product_uoc.id,
+                                      'price_unit' : line.product_id.standard_price,
+                                      'price_udc': line.price_purchase,
                                       'order_id': new_id,
                                       'date_planned': ldate,
-                                      'taxes_id': [(6, 0, taxes)]})
+                                      'taxes_id': [(6, 0, taxes)]}
+
+                        pline.create(cr, uid, values_line)
+
+
         value = {'domain': str([('id', 'in', [new_id])]),
                  'view_type': 'form',
                  'view_mode': 'tree,form',
@@ -539,10 +565,41 @@ class purchase_preorder(osv.Model):
                  'res_id': new_id}
         return value
 
+    def open_in_tree(self, cr, uid, ids, context=None):
+
+
+        #import pdb; pdb.set_trace()
+        view_ref = self.pool.get('ir.model.data').get_object_reference(
+            cr, uid, 'purchase_preorder', 'product_supplier_preorder_tree_full')
+
+
+        tree_res = view_ref and view_ref[1] or False,
+
+
+        pool_ids = self.browse (cr, uid,ids, context).product_supplier_ids
+        #'view_id = 'product_supplier_preorder_tree_full'
+        preorder_id = self.browse(cr, uid, ids).id
+        res = {
+            'type': 'ir.actions.act_window',
+            'name': 'Products Supplier',
+            'view_mode': 'form, tree',
+            'view_type': 'form',
+            'view_id': tree_res,
+            'views' :[(tree_res, 'tree'), (False, 'form')],
+            'res_model': 'products.supplier',
+            'context': context,
+            'domain' : [['preorder_id', '=', preorder_id]] #pool_ids[0].preorder_id.id]]
+        }
+
+
+        return res
+
 
 class products_supplier(osv.Model):
     _name = 'products.supplier'
     _description = 'Products Supplier'
+    _order = "id desc"
+
 
     def _amount_subtotal(self, cr, uid, ids, field_names, arg, context=None):
         res = {}
@@ -594,6 +651,7 @@ class products_supplier(osv.Model):
     _columns = {
         'preorder_id': fields.many2one('purchase.preorder',
                                        'Purchase PreOrder'),
+
         'product_id': fields.many2one('product.product',
                                       'Product',
                                       required=True),
@@ -655,10 +713,15 @@ class products_supplier(osv.Model):
                                       type='float', string="Min palets",
                                       multi="min_qty", readonly=True),
         'net_cost': fields.float('Net cost'),
-        'net_net_cost': fields.float('Net net cost'),
-    }
+        'do_onchange' : fields.boolean('Do Onchange'),
+        'net_net_cost': fields.float('Net net cost'),}
+
+
+
 
     def update_price(self, cr, uid, ids, context=None):
+        #No Válido. price_purchase
+        import pdb; pdb.set_trace()
         prod_obj = self.pool.get('product.product')
         for obj in self.browse(cr, uid, ids, context):
             if obj.product_id.standard_price != obj.price_purchase:
@@ -666,20 +729,25 @@ class products_supplier(osv.Model):
                                {'standard_price': obj.price_purchase})
         return True
 
-    def onchange_uoms(self, cr, uid, ids, product_id, unitskg, boxes,
+
+
+
+    def onchange_uoms(self, cr, uid, ids, product_id, supplier_id, unitskg, boxes,
                       mantles, palets, flag):
         """
         Performs conversion through product configuration and fill
         units, boxes, mantles and pallets.
         """
+        import pdb; pdb.set_trace()
         if not product_id:
             return {'value': {'unitskg': 0.0,
                               'boxes': 0.0,
+                              'product_uoc_qty' : 0.0,
                               'mantles': 0.0,
                               'palets': 0.0}}
-        product = self.pool.get('product.product').browse(cr,
+        product = self.pool.get('product.supplier').browse(cr,
                                                           uid,
-                                                          product_id)
+                                                          product_id, supplier_id)
         un_ca = product.supplier_un_ca
         ca_ma = product.supplier_ca_ma
         ma_pa = product.supplier_ma_pa

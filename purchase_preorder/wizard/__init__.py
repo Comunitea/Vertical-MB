@@ -19,3 +19,5 @@
 #
 ##############################################################################
 import purchase_preorder
+import products_supplier
+
