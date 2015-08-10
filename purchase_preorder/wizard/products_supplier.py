@@ -50,7 +50,6 @@ class ProductsSupplier(models.Model):
     last_tm = fields.Float ('Last TM')
 
 
-
     @api.model
     @api.onchange ('product_uoc')
     def _check_product_uoc(self):
@@ -61,12 +60,6 @@ class ProductsSupplier(models.Model):
         uoc_id = self.product_uoc.id
 
         supp = product_id.get_product_supp_record(supplier_id.id)
-        #price_unit, self.price_purchase = product_id.get_uom_uoc_prices(uoc_id, supplier_id.id)
-        #self.with_context(self._context)._check_qtys()
-
-
-        #return
-
         conv = product_id.get_purchase_price_conversions(
                                             product_id.standard_price,
                                             product_id.uom_id.id,
@@ -101,8 +94,6 @@ class ProductsSupplier(models.Model):
             pool_uom =  self.env['product.uom'].search([('like_type','=', flag), ('active', '=', False)])
             if pool_uom:
                 uom_id = pool_uom[0].id
-            #uom_id = self.env['product.uom'].search([('like_type','=', flag), ('active', '=', False)])[0].id
-
 
         product_id = self.product_id
         supplier_id = self.supplier_id

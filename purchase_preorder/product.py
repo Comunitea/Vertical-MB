@@ -43,13 +43,14 @@ class product_product(models.Model):
                'prov': 0.0,
                'mantles' : 0.0,
                'palets' : 0.0,
-               'stock' : 0.0}
+               'stock' : 0.0,
+               'udc': 0.0}
 
         supp = self.get_product_supp_record(supplier_id)
-        #uom = self.env['product.uom'].browse ([(uoc_id)])
         product_uom_id = self.env['product.template'].browse([(self.id)]).uom_id.id
         uom_id = product_uom_id
         product_uom_po_id = self.env['product.template'].browse([(self.id)]).uom_po_id.id
+
         if uom_id == supp.log_base_id.id:
             res['base'] = qty_uoc
             res['unit'] = float_round(res['base'] * supp.supp_kg_un, 2)
@@ -90,6 +91,7 @@ class product_product(models.Model):
         else:
             raise except_orm(_('Error'), _('Product uom not defined in %s') % self.name)
 
+        #res['stock'] es la cantidad en unidaddes de compra
         if uoc_id== supp.log_base_id.id:
             res['udc']=res['base']
         elif uoc_id == supp.log_unit_id.id:
