@@ -55,31 +55,37 @@ class ProductsSupplier(models.Model):
     @api.onchange ('product_uoc')
     def _check_product_uoc(self):
 
-        #import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
         product_id = self.product_id
         supplier_id = self.supplier_id
         uoc_id = self.product_uoc.id
+
         supp = product_id.get_product_supp_record(supplier_id.id)
-        price_unit, self.price_purchase = product_id.get_uom_uoc_prices(uoc_id, supplier_id.id)
-        self.with_context(self._context)._check_qtys()
-
-
-        return
-
-        #conv = product_id.get_purchase_price_conversions(
-        #                                    product_id.standard_price,
-        #                                    supp.product_uom.id,
-        #                                    self.supplier_id.id)
-        #if uoc_id == supp.log_base_id.id:
-        #    self.price_purchase = conv['base']
-        #elif uoc_id == supp.log_unit_id.id:
-        #    self.price_purchase = conv['unit']
-        #elif uoc_id == supp.log_box_id.id:
-        #   self.price_purchase = conv['box']
-
+        #price_unit, self.price_purchase = product_id.get_uom_uoc_prices(uoc_id, supplier_id.id)
         #self.with_context(self._context)._check_qtys()
 
+
         #return
+
+        conv = product_id.get_purchase_price_conversions(
+                                            product_id.standard_price,
+                                            product_id.uom_id.id,
+                                            self.supplier_id.id)
+
+        if uoc_id == supp.log_base_id.id:
+            self.price_purchase = conv['base']
+        elif uoc_id == supp.log_unit_id.id:
+            self.price_purchase = conv['unit']
+        elif uoc_id == supp.log_box_id.id:
+           self.price_purchase = conv['box']
+
+        ctx = dict(self._context)
+        ctx.update({
+           'change': 'product_uoc_qty'
+           })
+        self.with_context(ctx)._check_qtys()
+
+        return
 
 
     @api.model
@@ -88,12 +94,15 @@ class ProductsSupplier(models.Model):
 
         if self.last_tm == self._context['tm']:
             return
-
+        #import pdb; pdb.set_trace()
         flag = self._context['change']
+        uom_id = self.product_uoc.id
         if flag == "palets" or flag == 'mantles' or flag =='boxes':
-            uom_id = self.env['product.uom'].search([('like_type','=', flag)])[0].id
-        else:
-            uom_id = self.product_uoc.id
+            pool_uom =  self.env['product.uom'].search([('like_type','=', flag), ('active', '=', False)])
+            if pool_uom:
+                uom_id = pool_uom[0].id
+            #uom_id = self.env['product.uom'].search([('like_type','=', flag), ('active', '=', False)])[0].id
+
 
         product_id = self.product_id
         supplier_id = self.supplier_id

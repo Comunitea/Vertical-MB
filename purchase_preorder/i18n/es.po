@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * purchase_preorder
+#	* purchase_preorder
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-15 08:05+0000\n"
-"PO-Revision-Date: 2015-06-15 08:05+0000\n"
+"POT-Creation-Date: 2015-08-10 15:06+0000\n"
+"PO-Revision-Date: 2015-08-10 15:06+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -161,6 +161,22 @@ msgid "Denied"
 msgstr "Denegado"
 
 #. module: purchase_preorder
+#: field:products.supplier,do_onchange:0
+msgid "Do Onchange"
+msgstr "Do Onchange"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/product.py:81
+#: code:addons/purchase_preorder/product.py:91
+#: code:addons/purchase_preorder/product.py:100
+#: code:addons/purchase_preorder/product.py:168
+#: code:addons/purchase_preorder/product.py:178
+#: code:addons/purchase_preorder/product.py:259
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: purchase_preorder
 #: field:products.supplier,feb_consu_cur:0
 msgid "Feb Consu Cur"
 msgstr "Febrero Consu Actual"
@@ -174,6 +190,11 @@ msgstr "Febrero Consu ültimo"
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "February"
 msgstr "Febrero"
+
+#. module: purchase_preorder
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Full Product List"
+msgstr "Lista Completa de Productos"
 
 #. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
@@ -240,6 +261,11 @@ msgstr "Junio"
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "Last Purchase"
 msgstr "Última Compra"
+
+#. module: purchase_preorder
+#: field:products.supplier,last_tm:0
+msgid "Last TM"
+msgstr "Last TM"
 
 #. module: purchase_preorder
 #: field:products.supplier,write_uid:0
@@ -383,6 +409,16 @@ msgid "PreOrder"
 msgstr "PrePedido"
 
 #. module: purchase_preorder
+#: model:ir.actions.act_window,name:purchase_preorder.action_preorder_tree_full
+msgid "Preorder Full Tree"
+msgstr "Listado Completo"
+
+#. module: purchase_preorder
+#: view:products.supplier:purchase_preorder.product_supplier_preorder_tree_full
+msgid "Preorder Products Supplier"
+msgstr "Productos en Prepedido"
+
+#. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "Previous"
 msgstr "Previo"
@@ -398,9 +434,25 @@ msgid "Price purchase"
 msgstr "Precio Compra"
 
 #. module: purchase_preorder
+#: model:ir.model,name:purchase_preorder.model_product_product
 #: field:products.supplier,product_id:0
 msgid "Product"
 msgstr "Producto"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/product.py:91
+#: code:addons/purchase_preorder/product.py:100
+#: code:addons/purchase_preorder/product.py:178
+#, python-format
+msgid "Product uom not defined in %s"
+msgstr "Unidad de medida de producto no definida  %s"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/product.py:81
+#: code:addons/purchase_preorder/product.py:168
+#, python-format
+msgid "Product uom_po not defined in %s"
+msgstr "Unidad de medida de producto no definida  %s"
 
 #. module: purchase_preorder
 #: model:ir.model,name:purchase_preorder.model_products_supplier
@@ -414,7 +466,7 @@ msgstr "Productos del Proveedor"
 #. module: purchase_preorder
 #: model:ir.model,name:purchase_preorder.model_purchase_order
 msgid "Purchase Order"
-msgstr "Orden de Compra"
+msgstr "Pedido de compra"
 
 #. module: purchase_preorder
 #: model:ir.model,name:purchase_preorder.model_purchase_order_line
@@ -446,6 +498,12 @@ msgid "Purchase pricelist"
 msgstr "Tarifas de compra"
 
 #. module: purchase_preorder
+#: view:products.supplier:purchase_preorder.product_supplier_preorder_tree_full
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
+msgid "Qty en Supplier UOC"
+msgstr "Qty en UOC"
+
+#. module: purchase_preorder
 #: field:products.supplier,qty_last_purchase:0
 msgid "Qty."
 msgstr "Cant."
@@ -459,6 +517,21 @@ msgstr "Cantidades"
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "Quantities and amounts"
 msgstr "Cantidades e Importes"
+
+#. module: purchase_preorder
+#: field:products.supplier,product_qty:0
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: purchase_preorder
+#: field:products.supplier,product_uoc_qty:0
+msgid "Quantity (UdC)"
+msgstr "Cantidad (UdC)"
+
+#. module: purchase_preorder
+#: field:products.supplier,kgrs:0
+msgid "Quantity Kgrs"
+msgstr "Cantidad (Kgrs/Base)"
 
 #. module: purchase_preorder
 #: field:products.supplier,real_stock:0
@@ -528,6 +601,11 @@ msgid "Supplier Selection"
 msgstr "Selección proveedor"
 
 #. module: purchase_preorder
+#: field:products.supplier,supplier_uoc:0
+msgid "Supplier Unidad de Compra"
+msgstr "UoC (Proveedor)"
+
+#. module: purchase_preorder
 #: field:purchase.preorder,supp_service_days_ids:0
 msgid "Supplier service                                                 days"
 msgstr "Supplier service                                                 days"
@@ -538,9 +616,25 @@ msgid "Supplier transport"
 msgstr "Trasporte proveedor"
 
 #. module: purchase_preorder
+#: field:products.supplier,test:0
+msgid "Test"
+msgstr "Test"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/product.py:259
+#, python-format
+msgid "The product unit of measure %s is                              not related with any logistic                              unit"
+msgstr "La unidad de medida del producto %s no                              está referida a ninguna unidad logística"
+
+#. module: purchase_preorder
 #: selection:products.supplier,product_state:0
 msgid "Unegistered"
 msgstr "Dado de baja"
+
+#. module: purchase_preorder
+#: field:products.supplier,product_uoc:0
+msgid "Unit of Buy"
+msgstr "Unidad de Compra (UoC)"
 
 #. module: purchase_preorder
 #: field:products.supplier,unitskg:0
@@ -549,8 +643,10 @@ msgstr "Unidad o Kg"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_tree
+#: view:products.supplier:purchase_preorder.product_supplier_preorder_tree_full
+#: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 msgid "Units Ordered"
-msgstr "Units Ordered"
+msgstr "Unidad(s)"
 
 #. module: purchase_preorder
 #: selection:products.supplier,product_state:0
