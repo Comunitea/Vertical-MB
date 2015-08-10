@@ -1,2 +1,0 @@
-{'lang': 'es_ES', 'tz': 'Europe/Madrid', 'uid': 1, 'active_model': 'purchase.preorder', 'tm': 1438946428.677682, 'search_disable_custom_filters': True, 'active_ids': [160], 'change': 'palets', 'active_id': 160}
-{'lang': 'es_ES', 'supplier_id': 166, 'tz': 'Europe/Madrid', 'uid': 1, 'supp_product_id': 1282, 'active_model': 'purchase.preorder', 'tm': 1438946650.238086, 'search_disable_custom_filters': True, 'active_ids': [160], 'change': 'product_uoc', 'active_id': 160}
