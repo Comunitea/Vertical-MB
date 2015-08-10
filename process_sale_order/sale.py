@@ -161,13 +161,11 @@ class sale_order_line(models.Model):
                 vals['product_uos_qty'] or 0.0
             uos_id = vals.get('product_uos', False) and \
                 vals['product_uos'] or False
-
             conv = prod.get_unit_conversions(uos_qty, uos_id)
             log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
             vals['product_uom_qty'] = conv[log_unit]
             vals['product_uom'] = prod.uom_id.id
         res = super(sale_order_line, self).create(vals)
-
         return res
 
     @api.onchange('price_unit')

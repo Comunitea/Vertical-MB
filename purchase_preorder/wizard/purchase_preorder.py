@@ -453,6 +453,7 @@ class purchase_preorder(osv.Model):
             'view_id': False,
             'res_model': 'purchase.preorder',
             'type': 'ir.actions.act_window',
+            'create':False,
             'res_id': data.id,
             'views': [(form_id, 'form'), (tree_id, 'tree')]}
         return value
@@ -461,7 +462,7 @@ class purchase_preorder(osv.Model):
         """
         Generate a purchase order from the data pre-order.
         """
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         vals = {}
@@ -536,7 +537,7 @@ class purchase_preorder(osv.Model):
                         dateo = datetime.strptime(date_order, format)
                         ldate = dateo + relativedelta(days=seller_delay)
                         #
-                        import pdb; pdb.set_trace()
+
                         values_line = {'product_id': line.product_id.id,
                                       'name': lname,
                                       #'product_qty': line.unitskg, Creo que es product_qty
@@ -721,7 +722,7 @@ class products_supplier(osv.Model):
 
     def update_price(self, cr, uid, ids, context=None):
         #No Válido. price_purchase
-        import pdb; pdb.set_trace()
+
         prod_obj = self.pool.get('product.product')
         for obj in self.browse(cr, uid, ids, context):
             if obj.product_id.standard_price != obj.price_purchase:
@@ -738,7 +739,7 @@ class products_supplier(osv.Model):
         Performs conversion through product configuration and fill
         units, boxes, mantles and pallets.
         """
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         if not product_id:
             return {'value': {'unitskg': 0.0,
                               'boxes': 0.0,
