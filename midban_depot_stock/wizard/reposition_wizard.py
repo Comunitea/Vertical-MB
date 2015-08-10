@@ -159,7 +159,7 @@ class reposition_wizard(osv.TransientModel):
                     vol_fill = loc.volume - vol_aval
                     filled_per = loc.volume and (vol_fill / loc.volume) or 0.0
                     to_replenish_packs.append(pack_obj)
-                elif pack_obj.pack_type == 'palet':
+                else:
                     packs_to_split.append(pack_obj)
                     idx = limit + 1  # force out of while
             idx += 1
@@ -198,7 +198,7 @@ class reposition_wizard(osv.TransientModel):
                 qtys_by_prod = pack_obj.get_products_qtys()
                 packed_qty = qtys_by_prod[prod]
                 pack_qty = packed_qty if max_units > packed_qty else max_units
-                new_pack_id = t_pack.create(cr, uid, {'pack_type': 'palet'})
+                new_pack_id = t_pack.create(cr, uid, {})
                 new_pack_obj = t_pack.browse(cr, uid, new_pack_id, context)
                 new_name = new_pack_obj.name.replace("PACK", 'PALET')
                 new_pack_obj.write({'name': new_name})
@@ -288,7 +288,6 @@ class reposition_wizard(osv.TransientModel):
             t_quant = self.pool.get('stock.quant')
             domain = [
                 ('location_id', 'child_of', [storage_id]),
-                ('package_id.pack_type', 'in', ['palet', 'box']),
                 ('product_id', '=', product.id),
                 ('qty', '>', 0),
             ]

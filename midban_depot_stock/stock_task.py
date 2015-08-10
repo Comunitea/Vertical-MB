@@ -154,31 +154,31 @@ class stock_task(osv.Model):
 
     #     return self.write(cr, uid, ids, {'state': 'done'}, context=context)
 
-    def cancel_task(self, cr, uid, ids, context=None):
+    @api.multi
+    def cancel_task(self):
         """
         Button method cancel a task
         """
-        t_pick = self.pool.get("stock.picking")
-        if context is None:
-            context = {}
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        for task in self.browse(cr, uid, ids, context=context):
+        for task in self:
             if task.operation_ids:
                 if task.type == 'reposition':
-                    pick_ids = \
-                        list(
-                            set([x.picking_id.id for x in task.operation_ids]))
+                    picks = self.env['stock.picking']
+                    for operation in task.operation_ids:
+                        if operation.picking_id not in picks:
+                            picks += operation.picking_id
                     vals = {
                         'operator_id': False,
                         'machine_id': False,
                         'warehouse_id': False,
-                        # 'task_type': False
                     }
-                    t_pick.write(cr, uid, pick_ids, vals, context=context)
-                ops_ids = [x.id for x in task.operation_ids]
-                self.pool.get('stock.pack.operation').write(cr, uid, ops_ids,
-                                                            {'task_id': False})
+                    picks.write(vals)
+                op_vals = {'task_id': False}
+                if task.type == 'ubication':
+                    op_vals.update(
+                        {'location_dest_id':
+                            self.env.ref('stock.stock_location_stock').id})
+                task.operation_ids.write(op_vals)
+
             elif task.wave_id:
                 for picking in task.wave_id.picking_ids:
                     picking.write({'operator_id': False,
@@ -187,12 +187,11 @@ class stock_task(osv.Model):
                 task.wave_id.refresh()
                 task.wave_id.cancel_picking()
 
-        return self.write(cr, uid, ids, {'state': 'canceled'}, context=context)
+        return self.write({'state': 'canceled'})
 
-    def assign_task(self, cr, uid, ids, context=None):
+    @api.multi
+    def assign_task(self):
         """
         Button method assign a task
         """
-        if context is None:
-            context = {}
-        return self.write(cr, uid, ids, {'state': 'assigned'}, context=context)
+        return self.write({'state': 'assigned'})

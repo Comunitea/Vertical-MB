@@ -31,6 +31,7 @@ class route(osv.Model):
                                       required=True),
         'default_code': fields.char('Reference', size=128),
         'purchase_id': fields.many2one('purchase.order', 'Purchase order'),
+        'package_id': fields.many2one('stock.quant.package', 'Package'),
         'date_order': fields.related('purchase_id', 'date_order',
                                      type="datetime", readonly=True,
                                      string="Date order"),

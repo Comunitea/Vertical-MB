@@ -40,12 +40,10 @@
                                     <field name="packed_lot_id" groups="stock.group_tracking_lot"/>
                                     <field name="packed_qty" groups="stock.group_tracking_lot"/>
                                     <field name="num_mantles" groups="stock.group_tracking_lot"/>
-    <!--                                 <field name="pack_type" groups="stock.group_tracking_lot"/>-->                       
                                     <field name="location_id"/>
                                     <field name="location_dest_id"/>
                                     <field name="result_package_id" groups="stock.group_tracking_lot"/>
-<!--                                     <field name="chained_loc_id" groups="stock.group_tracking_lot"/>
- -->                                    <field name="to_process" groups="stock.group_tracking_lot"/>
+                                    <field name="to_process" groups="stock.group_tracking_lot"/>
                                 </tree>
                             </field>
                         </group>

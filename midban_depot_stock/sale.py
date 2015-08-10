@@ -87,7 +87,6 @@ class sale_order(osv.Model):
                                                           ids,
                                                           part,
                                                           context=context)
-        # import ipdb; ipdb.set_trace()
         partner_t = self.pool.get('res.partner')
         part = partner_t.browse(cr, uid, part, context=context)
         # Get next detail of a delivery route

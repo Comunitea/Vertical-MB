@@ -25,3 +25,4 @@ import create_tag_wizard
 import create_camera_locations
 import get_route_detail_wzd
 import manual_transfer_wzd
+import stock_create_multipack_wizard

@@ -299,6 +299,9 @@ class assign_task_wzd(osv.TransientModel):
                 ('task_id', '=', False),
             ]
             op_ids = t_op.search(cr, uid, domain)
+            if not op_ids:
+                t_pick.do_prepare_partial(cr, uid, [pick_id], context)
+                op_ids = t_op.search(cr, uid, domain)
             if op_ids:
                 pick = t_pick.browse(cr, uid, pick_id, context=context)
                 break
@@ -326,7 +329,7 @@ class assign_task_wzd(osv.TransientModel):
                                             camera' % pick.name))
                 if not (camera_id in camera_ids):
                     continue
-
+            op.assign_location()
             op.write({'task_id': task_id})
             assigned_ops.append(op)
         if not assigned_ops:

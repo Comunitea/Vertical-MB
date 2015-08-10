@@ -56,6 +56,7 @@
         'stock_machine_view.xml',
         'wizard/assign_task_wzd_view.xml',
         'wizard/reposition_wizard_view.xml',
+        'wizard/stock_create_multipack_view.xml',
         "security/midban_depot_stock_security.xml",
         'security/ir.model.access.csv',
         'stock_vehicle_view.xml',

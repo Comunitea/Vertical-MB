@@ -105,7 +105,6 @@ class product_product(models.Model):
     @api.model
     def get_uom_uos_prices(self, uos_id, custom_price_unit=0.0,
                            custom_price_udv=0.0):
-        # import ipdb; ipdb.set_trace()
         if custom_price_udv:
             price_udv = custom_price_udv
             log_unit = self.get_uom_logistic_unit()
@@ -193,11 +192,9 @@ class ProductUom(models.Model):
         res = super(ProductUom, self).name_search(name, args=args,
                                                   operator=operator,
                                                   limit=limit)
-        # import ipdb; ipdb.set_trace()
         if self._context.get('product_id', False):
             args = args or []
             recs = self.browse()
             recs = self.search(args)
-            # import ipdb; ipdb.set_trace()
             res = recs.name_get()
         return res

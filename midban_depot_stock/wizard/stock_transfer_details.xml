@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        
 
-        
+
+
         <record id="custom_view_transfer_details" model="ir.ui.view">
             <field name="name">custom_view_transfer_details</field>
             <field name="model">stock.transfer_details</field>
@@ -40,6 +40,7 @@
                                 <field name="product_uom_id" readonly="True" groups="product.group_uom" string="Stock unit"/>
                                 <field name="uos_qty"  groups="product.group_uom"/>
                                 <field name="uos_id"  groups="product.group_uom" readonly="True" context="{'product_id': product_id}"/>
+                                <field name="destinationloc_id" domain="[('id', 'child_of', parent.picking_destination_location_id)]" invisible="1"/>
                                <!--  <field name="sourceloc_id" domain="[('id', 'child_of', parent.picking_source_location_id)]"/>
                                 <field name="destinationloc_id" domain="[('id', 'child_of', parent.picking_destination_location_id)]"/> -->
                               <!--   <field name="result_package_id" groups="stock.group_tracking_lot" context="{'location_id': destinationloc_id}"/>
@@ -49,7 +50,7 @@
                             </tree>
                         </field>
                     </group>
-                        
+
                     <footer>
                          <button name="prepare_package_type_operations" string="Prepare operations" groups="stock.group_stock_user" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('midban_operations', '=', True), ('picking_type_code', '!=', 'incoming')]}"/>
                         or
@@ -93,6 +94,7 @@
                                 <field name="product_uom_id" readonly="True" groups="product.group_uom" string="Stock unit"/>
                                 <field name="uos_qty"  groups="product.group_uom"/>
                                 <field name="uos_id"  groups="product.group_uom" readonly="True" context="{'product_id': product_id}"/>
+                                <field name="destinationloc_id" domain="[('id', 'child_of', parent.picking_destination_location_id)]" invisible="1"/>
                                <!--  <field name="sourceloc_id" domain="[('id', 'child_of', parent.picking_source_location_id)]"/>
                                 <field name="destinationloc_id" domain="[('id', 'child_of', parent.picking_destination_location_id)]"/> -->
                                 <field name="result_package_id" groups="stock.group_tracking_lot" context="{'location_id': destinationloc_id}"/>

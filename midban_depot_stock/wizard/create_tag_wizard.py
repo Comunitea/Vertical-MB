@@ -47,43 +47,42 @@ class create_tag_wizard(osv.TransientModel):
                 operation_ids = pick_obj.pack_operation_ids
 
             for op in operation_ids:
-                if op.pack_type in ['palet', 'box']:
-                    vals = {}
-                    prod = op.operation_product_id and \
-                        op.operation_product_id or False
-                    purchase_id = op.picking_id.purchase_id and \
-                        op.picking_id.purchase_id.id or False
-                    num_units = 0
-                    num_boxes = 0
-                    vals = {
-                        'product_id': prod.id,
-                        'default_code': prod.default_code,
-                        'ean13': prod.ean13,
-                        'purchase_id': purchase_id,
-                        'type': op.pack_type,
-                        'lot_id': op.lot_id and op.lot_id.id or False,
-                        'removal_date': op.lot_id and op.lot_id.removal_date
-                        or False
-                    }
-                    if prod and op.picking_id.picking_type_code == 'incoming':
+                vals = {}
+                prod = op.operation_product_id and \
+                    op.operation_product_id or False
+                purchase_id = op.picking_id.purchase_id and \
+                    op.picking_id.purchase_id.id or False
+                num_units = 0
+                num_boxes = 0
+                vals = {
+                    'product_id': prod.id,
+                    'default_code': prod.default_code,
+                    'ean13': prod.ean13,
+                    'purchase_id': purchase_id,
+                    'lot_id': op.lot_id and op.lot_id.id or False,
+                    'removal_date': op.lot_id and op.lot_id.removal_date,
+                    'package_id': op.result_package_id.id
+                    or False
+                }
+                if prod and op.picking_id.picking_type_code == 'incoming':
+                    num_units = op.product_qty
+                elif prod and \
+                        op.picking_id.picking_type_code == 'internal':
+                    num_units = op.package_id.packed_qty - op.product_qty
+                    if op.package_id and op.result_package_id:
                         num_units = op.product_qty
-                    elif prod and \
-                            op.picking_id.picking_type_code == 'internal':
-                        num_units = op.package_id.packed_qty - op.product_qty
-                        if op.package_id and op.result_package_id:
-                            num_units = op.product_qty
-                        else:
-                            num_units = op.packed_qty
-                        vals['lot_id'] = op.package_id and \
-                            (op.package_id.packed_lot_id and
-                             op.package_id.packed_lot_id.id or False) or False
-                    if vals:
-                        num_boxes = prod.un_ca and \
-                            num_units / prod.un_ca or 0
-                        vals['num_units'] = num_units
-                        vals['num_boxes'] = num_boxes
-                        vals['weight'] = num_units * prod.kg_un
-                        item_ids.append(t_item.create(cr, uid, vals, context))
+                    else:
+                        num_units = op.packed_qty
+                    vals['lot_id'] = op.package_id and \
+                        (op.package_id.packed_lot_id and
+                         op.package_id.packed_lot_id.id or False) or False
+                if vals:
+                    num_boxes = prod.un_ca and \
+                        num_units / prod.un_ca or 0
+                    vals['num_units'] = num_units
+                    vals['num_boxes'] = num_boxes
+                    vals['weight'] = num_units * prod.kg_un
+                    item_ids.append(t_item.create(cr, uid, vals, context))
         res.update({'tag_ids': item_ids})
         if context.get('show_print_report', False):
             res.update({'show_print_report': True})
@@ -108,8 +107,8 @@ class create_tag_wizard(osv.TransientModel):
                 'ean13': item.ean13,
                 'purchase_id': item.purchase_id and item.purchase_id.id
                 or False,
-                'type': item.type,
                 'weight': item.weight,
+                'package_id': item.package_id.id,
                 'num_units': item.num_units,
                 'num_boxes': item.num_boxes,
                 'lot_id': item.lot_id and item.lot_id.id or False,
@@ -155,18 +154,13 @@ class tag_item(osv.TransientModel):
         'default_code': fields.char('Reference', size=128),
         'ean13': fields.char('EAN13', size=13),
         'purchase_id': fields.many2one('purchase.order', 'Purchase order'),
-        'type': fields.selection([('box', 'Box'), ('palet', 'Palet')],
-                                 string="Type", required=True),
         'num_units': fields.float('Units'),
         'num_boxes': fields.float('Boxes'),
         'weight': fields.float('Weight'),
         'lot_id': fields.many2one('stock.production.lot', 'Lot'),
-        'removal_date': fields.date('Expiry Date')
+        'removal_date': fields.date('Expiry Date'),
+        'package_id': fields.many2one('stock.quant.package', 'Package')
 
-    }
-
-    _defauls = {
-        'type': 'palet',
     }
 
     @api.onchange('product_id')
