@@ -136,7 +136,7 @@ class purchase_order_line(models.Model):
             self.product_qty = conv[log_unit]
 
             # Calculate prices
-            uom_pu, uoc_pu = product.get_uom_uoc_prices(uoc_id, supplier_id,
+            uom_pu, uoc_pu = product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
                                                         )
             # Avoid trigger onchange_price_udv, because is already calculed
             if uoc_pu != self.price_udc:
@@ -165,7 +165,7 @@ class purchase_order_line(models.Model):
             conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id, supplier_id)
             log_unit = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, box
             vals['product_qty'] = conv[log_unit]
-            vals['product_uom'] = prod.uom_po_id.id  # Deafult stock unit?
+            vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
             res = super(purchase_order_line, po_line).write(vals)
         return res
 
@@ -189,7 +189,7 @@ class purchase_order_line(models.Model):
                                                       supplier_id)
             log_unit = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, or box
             vals['product_qty'] = conv[log_unit]
-            vals['product_uom'] = prod.uom_po_id.id  # Deafult stock unit?
+            vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
         res = super(purchase_order_line, self).create(vals)
 
         return res
@@ -206,7 +206,7 @@ class purchase_order_line(models.Model):
                 uoc = self.product_uoc
                 uoc_id = uoc.id
                 uom_pu, uoc_pu = \
-                    product.get_uom_uoc_prices(uoc_id, supplier_id,
+                    product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
                                                custom_price_unit=self.
                                                price_unit)
                 # Avoid trigger onchange_price_udv, because is already calculed
@@ -228,7 +228,7 @@ class purchase_order_line(models.Model):
                 uoc_id = self.product_uoc.id
                 # Calculate prices
                 uom_pu, uoc_pu = \
-                    product.get_uom_uoc_prices(uoc_id, supplier_id,
+                    product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
                                                custom_price_udc=self.price_udc)
                 # Avoid trigger onchange_price_unit,lready calculed
                 if uom_pu != self.price_unit:
