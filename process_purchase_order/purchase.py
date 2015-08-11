@@ -136,7 +136,7 @@ class purchase_order_line(models.Model):
             self.product_qty = conv[log_unit]
 
             # Calculate prices
-            uom_pu, uoc_pu = product.get_uom_uoc_prices(uoc_id, supplier_id,
+            uom_pu, uoc_pu = product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
                                                         )
             # Avoid trigger onchange_price_udv, because is already calculed
             if uoc_pu != self.price_udc:
@@ -206,7 +206,7 @@ class purchase_order_line(models.Model):
                 uoc = self.product_uoc
                 uoc_id = uoc.id
                 uom_pu, uoc_pu = \
-                    product.get_uom_uoc_prices(uoc_id, supplier_id,
+                    product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
                                                custom_price_unit=self.
                                                price_unit)
                 # Avoid trigger onchange_price_udv, because is already calculed
@@ -228,7 +228,7 @@ class purchase_order_line(models.Model):
                 uoc_id = self.product_uoc.id
                 # Calculate prices
                 uom_pu, uoc_pu = \
-                    product.get_uom_uoc_prices(uoc_id, supplier_id,
+                    product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
                                                custom_price_udc=self.price_udc)
                 # Avoid trigger onchange_price_unit,lready calculed
                 if uom_pu != self.price_unit:

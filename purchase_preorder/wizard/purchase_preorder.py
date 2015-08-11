@@ -521,7 +521,7 @@ class purchase_preorder(osv.Model):
             new_id = purchase.create(cr, uid, vals)
             if pre.product_supplier_ids:
                 for line in pre.product_supplier_ids:
-                    if line.unitskg:
+                    if line.product_uoc_qty:
                         taxes_ids = line.product_id.supplier_taxes_id
                         acc_posi = pre.supplier_id.property_account_position
                         taxes = acc_pos_obj.map_tax(cr,
@@ -606,8 +606,8 @@ class products_supplier(osv.Model):
         res = {}
         for prod in self.browse(cr, uid, ids, context=context):
             res[prod.id] = 0.0
-            if prod.price_purchase and prod.unitskg:
-                res[prod.id] = prod.price_purchase * prod.unitskg
+            if prod.price_purchase and prod.product_uoc_qty:
+                res[prod.id] = prod.price_purchase * prod.product_uoc_qty
         return res
 
     def _get_min_qty_supplier(self, cr, uid, ids, fields_name, args,
