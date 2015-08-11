@@ -25,6 +25,7 @@ from openerp.tools.translate import _
 
 
 class purchase_order_line(models.Model):
+
     _inherit = 'purchase.order.line'
 
     product_uoc_qty = fields.Float('Quantity (UdC)',
@@ -103,6 +104,7 @@ class purchase_order_line(models.Model):
         """
         We change the product_uom_qty
         """
+
         product = self.product_id
         if product:
             if self.do_onchange:
@@ -110,8 +112,7 @@ class purchase_order_line(models.Model):
                 qty = self.product_uoc_qty
                 uoc_id = self.product_uoc.id
 
-                conv = product.get_purchase_unit_conversions(qty, uoc_id,
-                                                             supplier_id)
+                conv = product.get_purchase_unit_conversions(qty, uoc_id,supplier_id)
                 # base, unit, or box
                 log_unit = product.get_uom_po_logistic_unit(supplier_id)
                 self.product_qty = conv[log_unit]
@@ -136,12 +137,11 @@ class purchase_order_line(models.Model):
 
             # Calculate prices
             uom_pu, uoc_pu = product.get_uom_uoc_prices(uoc_id, supplier_id,
-                                                        custom_price_unit=self.
-                                                        price_unit)
+                                                        )
             # Avoid trigger onchange_price_udv, because is already calculed
             if uoc_pu != self.price_udc:
                 self.do_onchange = False
-            # self.price_unit = uom_pu
+            self.price_unit = uom_pu
             self.price_udc = uoc_pu
 
     @api.multi
