@@ -168,7 +168,7 @@ class ProductTemplate(models.Model):
                                         help="Shows stock in the logistic \
                                               unit defined as units aprox.")
 
-    @api.model
+    @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca', 'kg_un')
     def _get_log_units_available(self):
         """
@@ -187,4 +187,4 @@ class ProductTemplate(models.Model):
 
                 #NOTA. No tendrái porqueñ ser a este unidad ,Creo que trelametne deberáismo poder ver si queremos ver
                 #segunda unidad el stock, cual es esta unidad en al que queremos verlo....
-                self.uom_qty_to_uos_qty(self.virtual_available, self.log_unit_id.id)
+                self.log_units_available = prod.uom_qty_to_uos_qty(prod.virtual_available, self.log_unit_id.id)

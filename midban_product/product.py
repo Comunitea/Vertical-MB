@@ -477,7 +477,7 @@ class ProductTemplate(models.Model):
                                    product will be processed as a variable \
                                    weight product in sales process")
 
-    @api.model
+    @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca')
     def _get_is_var_coeff(self):
         """
