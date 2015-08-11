@@ -30,60 +30,55 @@ class product_product(models.Model):
 
 
 
-    @api.model
-    def get_ratios(self, unit, supplier_id):
-        if supplier_id:
-            supp = self.get_product_supp_record(supplier_id)
-            kg_un = supp.supp_kg_un or 1.0
-            un_ca = supp.supp_un_ca or 1.0
-            ca_ma = supp.supp_ca_ma or 1.0
-            ma_pa = supp.supp_ma_pa or 1.0
-        else:
-            supp = self
-            kg_un = self.supplier_kg_un or 1.0
-            un_ca = self.supplier_un_ca or 1.0
-            ca_ma = self.supplier_ca_ma or 1.0
-            ma_pa = self.supplier_ma_pa or 1.0
+    # @api.model
+    # def get_ratios(self, unit, supplier_id):
+    #     if supplier_id:
+    #         supp = self.get_product_supp_record(supplier_id)
+    #         kg_un = supp.supp_kg_un or 1.0
+    #         un_ca = supp.supp_un_ca or 1.0
+    #         ca_ma = supp.supp_ca_ma or 1.0
+    #         ma_pa = supp.supp_ma_pa or 1.0
+    #     else:
+    #         supp = self
+    #         kg_un = self.supplier_kg_un or 1.0
+    #         un_ca = self.supplier_un_ca or 1.0
+    #         ca_ma = self.supplier_ca_ma or 1.0
+    #         ma_pa = self.supplier_ma_pa or 1.0
+    #
+    #
+    #     uom = self.env['product.uom'].browse ([(unit)])
+    #     res = 1.0
+    #     if uom.like_type == 'palets' or uom.like_type == 'mantles':
+    #         res = self.get_ratio_logis_to_box(uom.like_type, supplier_id)
+    #
+    #     res = float_round(res * self._get_unit_ratios(unit, supplier_id),2)
+    #     return res
 
 
-        uom = self.env['product.uom'].browse ([(unit)])
-        res = 1.0
-        if uom.like_type == 'palets' or uom.like_type == 'mantles':
-            res = self.get_ratio_logis_to_box(uom.like_type, supplier_id)
-
-        res = float_round(res * self._get_unit_ratios(unit, supplier_id),2)
-        return res
-
-
-    @api.model
-    def get_ratio_logis_to_box(self, logis_id, supplier_id):
-
-        if supplier_id:
-            supp = self.get_product_supp_record(supplier_id)
-            kg_un = supp.supp_kg_un or 1.0
-            un_ca = supp.supp_un_ca or 1.0
-            ca_ma = supp.supp_ca_ma or 1.0
-            ma_pa = supp.supp_ma_pa or 1.0
-        else:
-            supp = self
-            kg_un = self.supplier_kg_un or 1.0
-            un_ca = self.supplier_un_ca or 1.0
-            ca_ma = self.supplier_ca_ma or 1.0
-            ma_pa = self.supplier_ma_pa or 1.0
-
-
-        if logis_id == 'palets':
-            unit_logis = ca_ma * ma_pa
-
-        if logis_id == 'mantles':
-            unit_logis = ca_ma
-
-        return unit_logis
-
-        # supp = self.get_product_supp_record(supplier_id)
-        # box_id = supp.log_box_id.id or supp.log_unit_id.id or supp.log_base_id.id
-        # unit_ratio = self._get_unit_ratios(self, box_id, supplier_id)
-
+    # @api.model
+    # def get_ratio_logis_to_box(self, logis_id, supplier_id):
+    #
+    #     if supplier_id:
+    #         supp = self.get_product_supp_record(supplier_id)
+    #         kg_un = supp.supp_kg_un or 1.0
+    #         un_ca = supp.supp_un_ca or 1.0
+    #         ca_ma = supp.supp_ca_ma or 1.0
+    #         ma_pa = supp.supp_ma_pa or 1.0
+    #     else:
+    #         supp = self
+    #         kg_un = self.supplier_kg_un or 1.0
+    #         un_ca = self.supplier_un_ca or 1.0
+    #         ca_ma = self.supplier_ca_ma or 1.0
+    #         ma_pa = self.supplier_ma_pa or 1.0
+    #
+    #
+    #     if logis_id == 'palets':
+    #         unit_logis = ca_ma * ma_pa
+    #
+    #     if logis_id == 'mantles':
+    #         unit_logis = ca_ma
+    #
+    #     return unit_logis
 
 
 
