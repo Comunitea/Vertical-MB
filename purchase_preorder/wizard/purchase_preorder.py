@@ -721,7 +721,6 @@ class products_supplier(osv.Model):
 
 
     def update_price(self, cr, uid, ids, context=None):
-        #No Válido. price_purchase
 
         prod_obj = self.pool.get('product.product')
         for obj in self.browse(cr, uid, ids, context):
