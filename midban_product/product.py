@@ -26,10 +26,8 @@ from openerp import netsvc
 from openerp import models, api
 from openerp import fields as fields2
 from openerp.exceptions import except_orm
-from openerp.tools.float_utils import float_round
 import operator
 import functools
-
 
 
 class temp_type(osv.Model):
@@ -178,36 +176,6 @@ class product_template(osv.Model):
         'ca_length': fields.float("CA Length", digits=(4, 2)),
         'ma_length': fields.float("MA Length", digits=(4, 2)),
         'pa_length': fields.float("PA Length", digits=(4, 2)),
-        'supplier_kg_un': fields.float("KG/UN Supplier", digits=(4, 2)),
-        'supplier_un_width': fields.float("UN Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_un_height': fields.float("UN Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_un_length': fields.float("UN Length Supplier",
-                                           digits=(4, 2)),
-        'supplier_ca_ma': fields.float("CA/MA Supplier", digits=(4, 2)),
-        'supplier_ma_width': fields.float("MA Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_ma_height': fields.float("MA Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_ma_length': fields.float("MA Length Supplier",
-                                           digits=(4, 2)),
-        'supplier_ma_pa': fields.float("MA/PA Supplier",
-                                       digits=(4, 2)),
-        'supplier_pa_width': fields.float("PA Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_pa_height': fields.float("PA Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_pa_length': fields.float("PA Length Supplier",
-                                           digits=(4, 2)),
-        'supplier_un_ca': fields.float("UN/CA Supplier",
-                                       digits=(4, 2)),
-        'supplier_ca_width': fields.float("CA Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_ca_height': fields.float("CA Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_ca_length': fields.float("CA Length Supplier",
-                                           digits=(4, 2)),
         'palet_wood_height': fields.float("Palet Wood Height", digits=(5, 3),
                                           help='Size wood pallet, affects the \
 calculation of the volume'),
@@ -246,13 +214,8 @@ products do not require units for validation'),
         'palet_wood_height': 0.145,
         'active': False,  # Product desuctived until register state is reached
         'product_class': 'normal',
-        'supplier_pa_width': 0.8,
-        'supplier_pa_length': 1.2,
         'pa_width': 0.8,
         'pa_length': 1.2,
-        'supplier_ma_length': 1.2,
-        'supplier_un_ca': 1.0,
-
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -317,29 +280,36 @@ products do not require units for validation'),
         return True
 
     def _check_units_values(self, cr, uid, ids, context=None):
-        res = True
         p = self.browse(cr, uid, ids[0], context=context)
+        for s in p.seller_ids:
+            if p.product_class not in ['fresh', 'ultrafresh'] \
+                and not p.is_cross_dock and p.type == "product" and \
+                not (s.supp_kg_un and s.supp_un_width and
+                     s.supp_un_height and s.supp_un_length and
+                     s.supp_ca_ma and s.supp_ma_width and
+                     s.supp_ma_height and s.supp_ma_length and
+                     s.supp_ma_pa and s.supp_pa_width and
+                     s.supp_pa_height and s.supp_pa_length and
+                     s.supp_un_ca and s.supp_ca_width and
+                     s.supp_ca_height and s.supp_ca_length):
+                raise osv.except_osv(_('Error'),
+                                     _('Some unit dimension is '
+                                       'equals to zero. Please '
+                                       'check it in supplier %s') %
+                                     (s.name.name))
         if p.product_class not in ['fresh', 'ultrafresh'] \
-            and not p.is_cross_dock and p.type == "product" and \
-            not (p.supplier_kg_un and p.supplier_un_width and
-                 p.supplier_un_height and p.supplier_un_length and
-                 p.supplier_ca_ma and p.supplier_ma_width and
-                 p.supplier_ma_height and p.supplier_ma_length and
-                 p.supplier_ma_pa and p.supplier_pa_width and
-                 p.supplier_pa_height and p.supplier_pa_length and
-                 p.supplier_un_ca and p.supplier_ca_width and
-                 p.supplier_ca_height and p.supplier_ca_length and
-                 p.palet_wood_height and
-                 p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
-                 p.un_width and p.ca_width and p.ma_width and p.pa_width and
-                 p.un_height and p.ca_height and p.ma_height and p.pa_height
-                 and p.un_length and p.ca_length and p.ma_length
-                 and p.pa_length):
-            res = False
-        if not res:
-            raise osv.except_osv(_('Error'), _('Some unit dimension is equals \
-                                               to zero. Please check it'))
-        return res
+                and not p.is_cross_dock and p.type == "product" and \
+                not (p.palet_wood_height and p.kg_un and p.un_ca
+                     and p.ca_ma and p.ma_pa and
+                     p.un_width and p.ca_width and p.ma_width and
+                     p.pa_width and p.un_height and p.ca_height
+                     and p.ma_height and p.pa_height and p.un_length
+                     and p.ca_length and p.ma_length and p.pa_length):
+            raise osv.except_osv(_('Error'),
+                                 _('Some unit dimension is '
+                                   'equals to zero. Please '
+                                   'check it.'))
+        return True
 
     def act_comercial_pending(self, cr, uid, ids, context=None):
         """ Fix state in commercial pending, product no active,
