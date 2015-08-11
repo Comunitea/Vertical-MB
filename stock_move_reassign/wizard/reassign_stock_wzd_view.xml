@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="stock_reassign_stock_moves_form" model="ir.ui.view">
+            <field name="name">reassign.stock.wzd.form</field>
+            <field name="model">reassign.stock.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Reassign stock">
+                    <field name="line_ids" colspan="4" nolabel="1">
+                        <tree>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="uom_id"/>
+                            <field name="location_id"/>
+                            <field name="state"/>
+                        </tree>
+                    </field>
+                    <button  name="unreserve" type="object" string="Unreserve" icon="gtk-execute"/>
+                    <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Reassign stock"
+            res_model="reassign.stock.wzd"
+            src_model="stock.move"
+            view_id="stock_reassign_stock_moves_form"
+            view_mode="form"
+            target="new"
+            id="stock_reassign_action"/>
+
+    </data>
+</openerp>
