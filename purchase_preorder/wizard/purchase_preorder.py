@@ -606,8 +606,8 @@ class products_supplier(osv.Model):
         res = {}
         for prod in self.browse(cr, uid, ids, context=context):
             res[prod.id] = 0.0
-            if prod.price_purchase and prod.unitskg:
-                res[prod.id] = prod.price_purchase * prod.unitskg
+            if prod.price_purchase and prod.product_uoc_qty:
+                res[prod.id] = prod.price_purchase * prod.product_uoc_qty
         return res
 
     def _get_min_qty_supplier(self, cr, uid, ids, fields_name, args,
