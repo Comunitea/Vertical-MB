@@ -861,3 +861,4 @@ class ProductUom(models.Model):
             res = recs.name_get()
 
         return res
+

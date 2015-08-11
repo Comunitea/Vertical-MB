@@ -421,19 +421,23 @@ class purchase_preorder(osv.Model):
                                             },
                                            context=context)
                             seq += 1
+                import pdb; pdb.set_trace()
                 if product_id and product_qty:
                     l = prodsupp.search(cr,
                                         uid,
-                                        [('preorder_id', '=', data),
+                                        [('preorder_id', '=', data.id),
                                          ('product_id', '=', product_id)])
                     if l:
-                        qtys = prodsupp.onchange_uoms(cr, uid, l[0],
-                                                      product_id, product_qty,
-                                                      0, 0, 'unitskg', 0)
-                        prodsupp.write(cr,
-                                       uid,
-                                       l[0],
-                                       qtys['value'])
+                        line= prodsupp.browse(cr, uid, l[0], context = {'tm' : True})
+                        line.write({'product_uoc_qty' : product_qty })
+                        line._check_uoc_qty()
+                        # qtys = prodsupp.onchange_uoms(cr, uid, l[0],
+                        #                               product_id, product_qty,
+                        #                               0, 0, 'unitskg', 0)
+                        # prodsupp.write(cr,
+                        #                uid,
+                        #                l[0],
+                        #                qtys['value'])
         form_res = mod_obj.get_object_reference(cr,
                                                 uid,
                                                 'purchase_preorder',
@@ -633,9 +637,9 @@ class products_supplier(osv.Model):
                                                 context)
                 prod_qty = info_obj.min_qty
                 res[obj.id]['min_qty'] = prod_qty
-                un_ca = obj.product_id.supplier_un_ca
-                ca_ma = obj.product_id.supplier_ca_ma
-                ma_pa = obj.product_id.supplier_ma_pa
+                un_ca = supp_info_ids.supp_un_ca
+                ca_ma = supp_info_ids.supp_ca_ma
+                ma_pa = supp_info_ids.supp_ma_pa
                 unit_uom = mod_obj.get_object_reference(cr,
                                                         uid,
                                                         'product',
@@ -730,55 +734,6 @@ class products_supplier(osv.Model):
         return True
 
 
-
-
-    def onchange_uoms(self, cr, uid, ids, product_id, supplier_id, unitskg, boxes,
-                      mantles, palets, flag):
-        """
-        Performs conversion through product configuration and fill
-        units, boxes, mantles and pallets.
-        """
-        #import pdb; pdb.set_trace()
-        if not product_id:
-            return {'value': {'unitskg': 0.0,
-                              'boxes': 0.0,
-                              'product_uoc_qty' : 0.0,
-                              'mantles': 0.0,
-                              'palets': 0.0}}
-        product = self.pool.get('product.supplier').browse(cr,
-                                                          uid,
-                                                          product_id, supplier_id)
-        un_ca = product.supplier_un_ca
-        ca_ma = product.supplier_ca_ma
-        ma_pa = product.supplier_ma_pa
-        box = 0.0
-        man = 0.0
-        pal = 0.0
-        uni = 0.0
-        if flag == 'unitskg':
-            uni = unitskg
-            box = un_ca and (uni / un_ca) or 0.0
-            man = ca_ma and (box / ca_ma) or 0.0
-            pal = ma_pa and (man / ma_pa) or 0.0
-        if flag == 'boxes':
-            box = boxes
-            uni = box * un_ca
-            man = ca_ma and (box / ca_ma) or 0.0
-            pal = ma_pa and (man / ma_pa) or 0.0
-        if flag == 'mantles':
-            man = mantles
-            box = man * ca_ma
-            uni = box * un_ca
-            pal = ma_pa and (man / ma_pa) or 0.0
-        if flag == 'palets':
-            pal = palets
-            man = pal * ma_pa
-            box = man * ca_ma
-            uni = box * un_ca
-        return {'value': {'unitskg': round(uni, 2),
-                          'boxes': round(box, 2),
-                          'mantles': round(man, 2),
-                          'palets': round(pal, 2)}}
 
     def open_in_form(self, cr, uid, ids, context=None):
         view_ref = self.pool.get('ir.model.data').get_object_reference(
