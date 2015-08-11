@@ -1210,6 +1210,7 @@ class stock_move(models.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+        # TODO: se hace asi?
         res = super(stock_move, self).write(cr, uid, ids, vals,
                                             context=context)
         # para arrastrar la ruta al albaran desde la venta
@@ -1306,8 +1307,11 @@ class stock_move(models.Model):
         if total_uos_same_product_moves > total_operations['uos']:
             self.wait_receipt_qty = total_uos_same_product_moves - \
                 total_operations['uos']
-        self.product_uom_qty = total_operations['uom'] / moves_len
-        self.product_uos_qty = total_operations['uos'] / moves_len
+        self.move_dest_id.product_uom_qty = self.product_uom_qty = \
+            total_operations['uom'] / moves_len
+
+        self.move_dest_id.product_uos_qty = self.product_uos_qty = \
+            total_operations['uos'] / moves_len
 
     @api.multi
     def get_backorder_moves(self):
