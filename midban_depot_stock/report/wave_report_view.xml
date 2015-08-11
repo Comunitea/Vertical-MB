@@ -16,7 +16,6 @@
                  <field name="product_qty"/>
                  <field name="boxes"/>
                  <field name="units"/>
-                 <field name="group"/>
              </tree>
          </field>
     </record>

@@ -85,94 +85,9 @@ class sale_report(osv.osv):
         'group': fields.integer('group',readonly=True),
     }
 
-    def _sub_select_0(self):
-        select_str = """Min(operation.id) AS id,
-                  quant.product_id  AS product_id,
-                  quant.lot_id      AS lot_id,
-                  operation.location_id,
-                  SUM(quant.qty)    AS product_qty,
-                  wave.id           AS wave_id,
-                  location.SEQUENCE AS SEQUENCE"""
-        return select_str
-
-    def _sub_from_0(self):
-        from_str = """stock_quant quant
-                  inner join stock_quant_package PACKAGE
-                          ON PACKAGE.id = quant.package_id
-                  inner join stock_pack_operation operation
-                          ON operation.package_id = PACKAGE.id
-                  inner join stock_picking picking
-                          ON picking.id = operation.picking_id
-                  inner join stock_picking_wave wave
-                          ON wave.id = picking.wave_id
-                  inner join stock_location location
-                          ON location.id = operation.location_id"""
-        return from_str
-
-    def _sub_where_0(self):
-        where_str = """operation.product_id IS NULL"""
-        return where_str
-
-    def _sub_group_by_0(self):
-        group_str = """quant.product_id,
-                     quant.lot_id,
-                     operation.location_id,
-                     wave.id,
-                     location.SEQUENCE"""
-        return group_str
-
-    def _sub_select_1(self):
-        select_str = """Min(operation.id)          AS id,
-                  operation.product_id       AS product_id,
-                  operation.lot_id           AS lot_id,
-                  operation.location_id,
-                  SUM(operation.product_qty) AS product_qty,
-                  wave.id                       AS wave_id,
-                  location.SEQUENCE                 AS SEQUENCE"""
-        return select_str
-
-    def _sub_from_1(self):
-        from_str = """stock_pack_operation operation
-                  inner join stock_picking picking
-                          ON picking.id = operation.picking_id
-                  inner join stock_picking_wave wave
-                          ON wave.id = picking.wave_id
-                  inner join stock_location location
-                          ON location.id = operation.location_id"""
-        return from_str
-
-    def _sub_where_1(self):
-        where_str = """operation.product_id IS NOT NULL"""
-        return where_str
-
-    def _sub_group_by_1(self):
-        group_str = """operation.product_id,
-                     operation.lot_id,
-                     operation.location_id,
-                     wave.id,
-                     location.SEQUENCE"""
-        return group_str
-
-    def _get_subquery_grouped(self):
-        subquery = """SELECT %s
-                FROM %s
-                WHERE %s
-                GROUP BY %s""" % (self._sub_select_0(),
-                    self._sub_from_0(), self._sub_where_0(),
-                    self._sub_group_by_0())
-        return subquery
-
-    def _get_subquery_ungruped(self):
-        subquery = """SELECT %s
-                FROM %s
-                WHERE %s
-                GROUP BY %s""" % (self._sub_select_1(),
-                    self._sub_from_1(), self._sub_where_1(),
-                    self._sub_group_by_1())
-        return subquery
-
     def _select(self):
-        select_str = """Min(SQ.id)          AS id,
+        return """
+          Min(SQ.id)          AS id,
           SQ.product_id       AS product_id,
           SQ.lot_id           AS lot_id,
           SQ.location_id      AS location_id,
@@ -180,34 +95,9 @@ class sale_report(osv.osv):
           SQ.wave_id          AS wave_id,
           SQ.SEQUENCE         AS SEQUENCE,
           SQ.group_id         AS group"""
-        return select_str
 
-
-    def _group_by(self):
-        group_str = """SQ.product_id,
-             SQ.lot_id,
-             SQ.location_id,
-             SQ.wave_id,
-             SQ.SEQUENCE,
-             SQ.group_id"""
-        return group_str
-
-    def init(self, cr):
-        """
-            Falla porque algunas operaciones nunca tienen producto, y es imposible cumplir
-            WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
-        """
-        tools.drop_view_if_exists(cr, self._table)
-        cr.execute("""CREATE or REPLACE VIEW %s as (
-            SELECT Min(SQ.id)          AS id,
-          SQ.product_id       AS product_id,
-          SQ.lot_id           AS lot_id,
-          SQ.location_id      AS location_id,
-          SUM(SQ.product_qty) AS product_qty,
-          SQ.wave_id          AS wave_id,
-          SQ.SEQUENCE         AS SEQUENCE,
-          SQ.group_id         AS group
-   FROM   ((SELECT Min(operation.id) AS id,
+    def _subquery_grouped_op(self):
+        return """SELECT Min(operation.id) AS id,
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
                   operation.location_id,
@@ -264,10 +154,10 @@ class sale_report(osv.osv):
                      operation.location_id,
                      wave.id,
                      group_id,
-                     location.SEQUENCE)
-            UNION
+                     location.SEQUENCE"""
 
-            (SELECT Min(operation.id) AS id,
+    def _subquery_no_grouped_op(self):
+        return """SELECT Min(operation.id) AS id,
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
                   operation.location_id,
@@ -324,17 +214,32 @@ class sale_report(osv.osv):
                      operation.location_id,
                      wave.id,
                      operation.package_id,
-                     location.SEQUENCE)
+                     location.SEQUENCE"""
 
-                     )SQ
-   GROUP  BY SQ.product_id,
+    def _group_by(self):
+        return """SQ.product_id,
              SQ.lot_id,
              SQ.location_id,
              SQ.wave_id,
              SQ.SEQUENCE,
-             SQ.group_id
-            )""" % (self._table
-                    ))
+             SQ.group_id"""
+    def init(self, cr):
+        """
+            Falla porque algunas operaciones nunca tienen producto, y es imposible cumplir
+            WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
+        """
+        tools.drop_view_if_exists(cr, self._table)
+        cr.execute("""CREATE or REPLACE VIEW %s as (
+            SELECT %s
+   FROM   ((%s)
+            UNION
+
+            (%s)
+
+                     )SQ
+   GROUP  BY %s
+            )""" % (self._table, self._select(), self._subquery_grouped_op(),
+                    self._subquery_no_grouped_op(), self._group_by()))
 
 
 class wave_report_parser(models.AbstractModel):
