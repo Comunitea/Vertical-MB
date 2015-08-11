@@ -120,7 +120,7 @@ class product_product(models.Model):
         #import pdb; pdb.set_trace()
         res = self._get_unit_ratios(uom_origen, supplier_id) / \
               self._get_unit_ratios(uom_destino, supplier_id)
-        res = float_round(res,2)
+        #res = float_round(res,2)
         return res
 
     @api.model
@@ -161,7 +161,7 @@ class product_product(models.Model):
         if uom_id == supp.log_box_id.id:
             res = res / (kg_un * un_ca)
 
-        res = float_round(res,2)
+        #res = float_round(res,2)
         return res
 
     @api.model

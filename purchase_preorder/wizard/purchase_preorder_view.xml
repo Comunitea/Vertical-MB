@@ -124,9 +124,9 @@
                     <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
                     <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
                     <field name="unitskg" string="Units Ordered" readonly="0" invisible="1"/>
-                    <field name="min_fixed" readonly="1" invisible ="1"/>
-                    <field name="real_stock" readonly="1" invisible ="1"/>
-                    <field name="virtual_stock" readonly="1" invisible ="1"/>
+                    <field name="min_fixed" readonly="1" invisible ="0"/>
+                    <field name="real_stock" readonly="1" invisible ="0"/>
+                    <field name="virtual_stock" readonly="1" invisible ="0"/>
                 </tree>
             </field>
         </record>
