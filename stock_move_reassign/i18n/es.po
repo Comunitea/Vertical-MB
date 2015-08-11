@@ -1,0 +1,139 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#       * stock_move_reassign
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-11 17:00+0000\n"
+"PO-Revision-Date: 2015-08-11 17:00+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_move_reassign
+#: selection:reassign.stock.line.wzd,state:0
+msgid "Available"
+msgstr "Reservado"
+
+#. module: stock_move_reassign
+#: view:reassign.stock.wzd:stock_move_reassign.stock_reassign_stock_moves_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: stock_move_reassign
+#: selection:reassign.stock.line.wzd,state:0
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,create_uid:0
+#: field:reassign.stock.wzd,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,create_date:0
+#: field:reassign.stock.wzd,create_date:0
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: stock_move_reassign
+#: selection:reassign.stock.line.wzd,state:0
+msgid "Done"
+msgstr "Realizado"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,id:0
+#: field:reassign.stock.wzd,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,write_uid:0
+#: field:reassign.stock.wzd,write_uid:0
+msgid "Last Updated by"
+msgstr "Últ. actualización por"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,write_date:0
+#: field:reassign.stock.wzd,write_date:0
+msgid "Last Updated on"
+msgstr "Últ. actualización el"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.wzd,line_ids:0
+msgid "Lines"
+msgstr "Líneas"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,location_id:0
+msgid "Location"
+msgstr "Ubicación"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,move_id:0
+msgid "Move"
+msgstr "Movimiento"
+
+#. module: stock_move_reassign
+#: selection:reassign.stock.line.wzd,state:0
+msgid "New"
+msgstr "Nuevo"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,partner_id:0
+msgid "Partner"
+msgstr "Empresa"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,product_id:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,product_qty:0
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: stock_move_reassign
+#: model:ir.actions.act_window,name:stock_move_reassign.stock_reassign_action
+#: view:reassign.stock.wzd:stock_move_reassign.stock_reassign_stock_moves_form
+#: view:stock.move:stock_move_reassign.view_move_picking_form_add_reassign_btn
+#: view:stock.move:stock_move_reassign.view_move_picking_tree_add_reassign_btn
+msgid "Reassign stock"
+msgstr "Reasignar stock"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,state:0
+msgid "State"
+msgstr "Estado"
+
+#. module: stock_move_reassign
+#: view:reassign.stock.wzd:stock_move_reassign.stock_reassign_stock_moves_form
+msgid "Unreserve"
+msgstr "Anular reserva"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,uom_id:0
+msgid "Uom"
+msgstr "Udm"
+
+#. module: stock_move_reassign
+#: selection:reassign.stock.line.wzd,state:0
+msgid "Waiting Another Move"
+msgstr "Esperando otra operación"
+
+#. module: stock_move_reassign
+#: selection:reassign.stock.line.wzd,state:0
+msgid "Waiting Availability"
+msgstr "Esperando disponibilidad"
+
+#. module: stock_move_reassign
+#: field:reassign.stock.line.wzd,wzd_id:0
+msgid "Wzd"
+msgstr "Wzd"

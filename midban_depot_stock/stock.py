@@ -1320,12 +1320,14 @@ class stock_move(models.Model):
             if move.wait_receipt_qty:
                 uom_qty = move.product_id.uos_qty_to_uom_qty(
                     move.wait_receipt_qty, move.product_uos.id)
-                backorder_moves += move.copy({
+                new_move= move.copy({
                     'product_uom_qty': uom_qty,
                     'product_uos_qty': move.wait_receipt_qty,
                     'wait_receipt_qty': 0,
                     'picking_id': False,
                 })
+                new_move.purchase_line_id = move.purchase_line_id
+                backorder_moves += new_move
         return backorder_moves
 
 
