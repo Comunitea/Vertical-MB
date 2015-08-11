@@ -87,10 +87,11 @@ class sale_order_line(models.Model):
                 qty = self.product_uos_qty
                 uos_id = self.product_uos.id
 
-                conv = product.get_unit_conversions(qty, uos_id)
+                #conv = product.get_unit_conversions(qty, uos_id)
                 # base, unit, or box
-                log_unit = product.get_uom_logistic_unit()
-                self.product_uom_qty = conv[log_unit]
+                #log_unit = product.get_uom_logistic_unit()
+                #self.product_uom_qty = conv[log_unit]
+                self.product_uom_qty = product.uos_qty_to_uom_qty(qty, uos_id)
             else:
                 self.do_onchange = True
 
@@ -104,9 +105,10 @@ class sale_order_line(models.Model):
             # Change Uom Qty
             uos_id = self.product_uos.id
             uos_qty = self.product_uos_qty
-            conv = product.get_unit_conversions(uos_qty, uos_id)
-            log_unit = product.get_uom_logistic_unit()
-            self.product_uom_qty = conv[log_unit]
+            #conv = product.get_unit_conversions(uos_qty, uos_id)
+            log_unit = product.get_uos_logistic_unit(uos_id)
+            #self.product_uom_qty = conv[log_unit]
+            self.product_uom_qty = product.uos_qty_to_uom_qty(uos_qty, uos_id)
             if log_unit == 'box' and product.box_discount:
                 self.discount = product.box_discount
             else:
@@ -139,9 +141,10 @@ class sale_order_line(models.Model):
                 vals['product_uos_qty'] or line.product_uos_qty
             uos_id = vals.get('product_uos', False) and \
                 vals['product_uos'] or line.product_uos.id
-            conv = prod.get_unit_conversions(uos_qty, uos_id)
-            log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
-            vals['product_uom_qty'] = conv[log_unit]
+            #conv = prod.get_unit_conversions(uos_qty, uos_id)
+            #log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
+            #vals['product_uom_qty'] = conv[log_unit]
+            vals['product_uom_qty'] = uos_qty * prod._get_factor(uos_id)
             vals['product_uom'] = prod.uom_id.id
             res = super(sale_order_line, line).write(vals)
         return res
@@ -159,9 +162,10 @@ class sale_order_line(models.Model):
                 vals['product_uos_qty'] or 0.0
             uos_id = vals.get('product_uos', False) and \
                 vals['product_uos'] or False
-            conv = prod.get_unit_conversions(uos_qty, uos_id)
-            log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
-            vals['product_uom_qty'] = conv[log_unit]
+            #conv = prod.get_unit_conversions(uos_qty, uos_id)
+            #log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
+            #vals['product_uom_qty'] = conv[log_unit]
+            vals['product_uom_qty'] = uos_qty * prod._get_factor(uos_id)
             vals['product_uom'] = prod.uom_id.id
         res = super(sale_order_line, self).create(vals)
         return res

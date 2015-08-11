@@ -474,6 +474,7 @@ class assign_task_wzd(osv.TransientModel):
         and picking location child of wizard.location_ids
         If not trans_route_id in wizard we get a random pending route
         """
+        import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')
@@ -544,7 +545,7 @@ class assign_task_wzd(osv.TransientModel):
         t_config = self.pool.get('ir.config_parameter')
         param_value = t_config.get_param(cr, uid, 'pick.by.volume',
                                          default='False')
-        by_volume = True if param_value == 'True' else False
+        by_volume = param_value == 'True'
         if by_volume:
             max_volume = wzd_obj.warehouse_id.max_volume
             if not max_volume:

@@ -18,10 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, api, fields
-from openerp.exceptions import except_orm
-from openerp import exceptions
-from openerp.tools.translate import _
+from openerp import models, api, fields, exceptions, _
 from datetime import datetime, timedelta
 import math
 from openerp.addons.midban_issue.issue_generator import issue_generator
@@ -41,110 +38,28 @@ class stock_transfer_details(models.TransientModel):
     picking_type_code = fields.Char('Picking code',
                                     related='picking_id.picking_type_code')
 
-    def get_max_qty_to_process(self, r_qty, product):
-        """
-        Obtain the max qty to put in a pack, first palet units, else the
-        maximun number of mantle units, else boxe units, else the r_qty units
-        """
-        un_ca = product.un_ca
-        ca_ma = product.ca_ma
-        ma_pa = product.ma_pa
-
-        # box_units = un_ca
-        # mantle_units = un_ca * ca_ma
-        palet_units = un_ca * ca_ma * ma_pa
-        prop_qty = r_qty  # Proposed qty to ubicate
-        if r_qty >= palet_units:
-            prop_qty = palet_units
-        else:
-            prop_qty = r_qty
-        return prop_qty
-
-    def _create_pack_operation(self, item, located_qty, uos_coeff=0.0,
-                               orig_uos=0.0):
-        t_pack = self.env['stock.quant.package']
-        t_ope = self.env['stock.pack.operation']
-        op_vals = {
-            'location_id': item.sourceloc_id.id,
-            'product_id': item.product_id.id,
-            'product_qty': located_qty,
-            'product_uom_id': item.product_uom_id.id,
-            'location_dest_id': item.destinationloc_id.id,
-            'picking_id': self.picking_id.id,
-            'lot_id': item.lot_id.id,
-            'result_package_id': False,
-            'owner_id': item.owner_id.id,
-            'date': item.date if item.date else datetime.now(),
-        }
-        if uos_coeff:
-            op_vals['uos_coeff'] = uos_coeff
-        if orig_uos:
-            op_vals['original_uos_coeff'] = orig_uos
-        pack_obj = t_pack.create({})
-        op_vals['result_package_id'] = pack_obj.id
-        t_ope.create(op_vals)
-        return True
-
-    def _propose_pack_operations(self, item):
-        """
-        This method try to get a maximum pack logisic unit and a location for
-        it.
-        If not space for maximum pack logistic unit we get another lower,
-        removing mantle by mantle and trying to find available space.
-        If not space for a mantle, location cant be founded and return False
-        """
-        remaining_qty = item.quantity
-        uos_coeff = remaining_qty / item.uos_qty
-        if item.transfer_id.picking_id.backorder_id:
-            orig_uos = uos_coeff
-        else:
-            orig_uos = remaining_qty / item.product_id.uom_qty_to_uoc_qty(
-                remaining_qty, item.uos_id.id,
-                item.transfer_id.picking_id.partner_id.id)
-        product = item.product_id
-        while remaining_qty > 0.0:
-            located_qty = self.get_max_qty_to_process(remaining_qty, product)
-            if located_qty:
-                self._create_pack_operation(item, located_qty, uos_coeff,
-                                            orig_uos)
-                remaining_qty -= located_qty
-            else:
-                remaining_qty = -1
-        return remaining_qty == 0.0 and True or False
-
     @api.multi
     def prepare_package_type_operations(self):
         for op in self.picking_id.pack_operation_ids:
             op.unlink()
 
-        # Get operations for monoproduct packs
-        for item in self.item_ids:
-            sucess = self._propose_pack_operations(item)
-            if sucess:
-                self.picking_id.write({'midban_operations': True})
-            else:
-                raise except_orm(_('Error!'), _('Not enought free space.'))
-
-        if sucess:
-            # return self.picking_id.do_enter_transfer_details()
-            ctx = {
-                'active_model': 'stock.picking',
-                'active_ids': [self.picking_id.id],
-                'active_id': self.picking_id and self.picking_id.id or False
-            }
-            vals = {'picking_id': self.picking_id.id}
-            wzd_obj = self.with_context(ctx).create(vals)
-            return wzd_obj.wizard_view()
-        return False
+        self.item_ids.split_in_packs()
+        self.picking_id.write({'midban_operations': True})
+        ctx = {
+            'active_model': 'stock.picking',
+            'active_ids': [self.picking_id.id],
+            'active_id': self.picking_id and self.picking_id.id or False
+        }
+        vals = {'picking_id': self.picking_id.id}
+        wzd_obj = self.with_context(ctx).create(vals)
+        return wzd_obj.wizard_view()
 
     @api.one
     def do_detailed_transfer(self):
-        # Se recalcula el uos_coeff de las operaciones.
         for item in self.item_ids:
-            item.packop_id.uos_coeff = item.quantity / item.uos_qty
+            if not item.packop_id:
+                item.create_packop()
         res = super(stock_transfer_details, self).do_detailed_transfer()
-        '''if self.picking_id.cross_dock and self.move_lines and \
-                self.move_lines[0].move_dest_id:'''
         related_pick = self.picking_id.move_lines[0].move_dest_id.picking_id
         related_pick.do_prepare_partial()
         related_pick.write({'midban_operations': True})
@@ -201,8 +116,7 @@ class stock_transfer_details(models.TransientModel):
         res = super(stock_transfer_details, self).default_get(fields)
 
         picking_ids = self._context.get('active_ids', [])
-        if not picking_ids or len(picking_ids) != 1:
-            # Partial Picking Processing only be done for one picking at a time
+        if len(picking_ids) != 1:
             return res
 
         res['item_ids'] = []    # We calc again the item ids
@@ -223,19 +137,21 @@ class stock_transfer_details(models.TransientModel):
                 move = op.linked_move_operation_ids[0].move_id
 
                 uos_id = move.product_uos and move.product_uos.id or uos_id
-                if picking.picking_type_code == 'incoming':
-                    if op.uos_coeff:
-                        uos_qty = op.product_qty / op.uos_coeff
-                    else:
-                        uos_qty = prod.uom_qty_to_uoc_qty(op.product_qty,
-                                                          uos_id, supplier_id)
-                    supp = prod.get_product_supp_record(supplier_id)
-                    if supp.is_var_coeff:
-                        var_weight = True
-                elif picking.picking_type_code == 'outgoing':
-                    uos_qty = prod.uom_qty_to_uos_qty(op.product_qty, uos_id)
-                    if prod.is_var_coeff:
-                        var_weight = True
+            if picking.picking_type_code == 'incoming':
+                if op.uos_id:
+                    uos_id = op.uos_id.id
+                if op.uos_qty:
+                    uos_qty = op.uos_qty
+                else:
+                    uos_qty = prod.uom_qty_to_uoc_qty(op.product_qty,
+                                                      uos_id, supplier_id)
+                supp = prod.get_product_supp_record(supplier_id)
+                if supp.is_var_coeff:
+                    var_weight = True
+            elif picking.picking_type_code == 'outgoing':
+                uos_qty = prod.uom_qty_to_uos_qty(op.product_qty, uos_id)
+                if prod.is_var_coeff:
+                    var_weight = True
             item = {
                 'packop_id': op.id,
                 'product_id': op.product_id.id,
@@ -265,13 +181,62 @@ class stock_transfer_details_items(models.TransientModel):
     uos_qty = fields.Float('Quantity (S.U.)',
                            digits_compute=dp.
                            get_precision('Product Unit of Measure'))
-
     uos_id = fields.Many2one('product.uom', 'Second Unit')
     var_weight = fields.Boolean('Variable weight', readonly=True,
                                 help='If checked, system will not convert \
                                 quantitys beetwen units')
     do_onchange = fields.Boolean('Contros onchange', default=True,
                                  readonly=False)
+
+    @api.one
+    def split_in_packs(self):
+        """
+            Create the packs with a maximun size of a pallet.
+        """
+        remaining_qty = self.uos_qty
+        while remaining_qty > 0.0:
+            located_qty = self._get_max_pack_quantity(remaining_qty)
+            if located_qty:
+                self.create_pack_operation(located_qty)
+                remaining_qty -= located_qty
+
+    @api.multi
+    def _get_max_pack_quantity(self, remaining_qty):
+        """
+            Se calcula la cantidad maxima por paquete en la unidad base,
+            y se reajusta en base a la segunda unidad.
+        """
+        self.ensure_one()
+
+        palet_units = self.product_id.get_palet_size(self.uos_id)
+        maximum_quantity = remaining_qty < palet_units and remaining_qty or \
+            palet_units
+        return math.floor(maximum_quantity)
+
+    @api.one
+    def create_pack_operation(self, pack_uos_quantity):
+        op_vals = {
+            'location_id': self.sourceloc_id.id,
+            'product_id': self.product_id.id,
+            'product_qty': self.product_id.uos_qty_to_uom_qty(
+                pack_uos_quantity, self.uos_id.id),
+            'product_uom_id': self.product_uom_id.id,
+            'uos_qty': pack_uos_quantity,
+            'uos_id': self.uos_id.id,
+            'location_dest_id': self.destinationloc_id.id,
+            'picking_id': self.transfer_id.picking_id.id,
+            'lot_id': self.lot_id.id,
+            'result_package_id': False,
+            'owner_id': self.owner_id.id,
+            'date': self.date if self.date else datetime.now(),
+        }
+        pack = self.env['stock.quant.package'].create(
+            {
+                'uos_qty': pack_uos_quantity,
+                'uos_id': self.uos_id.id
+            })
+        op_vals['result_package_id'] = pack.id
+        self.env['stock.pack.operation'].create(op_vals)
 
     @api.multi
     def write(self, vals):
@@ -335,11 +300,13 @@ class stock_transfer_details_items(models.TransientModel):
         """
         variable = self.var_weight
         product = self.product_id
-        if product and variable and self.product_uom_id.id == self.uos_id.id:
+        if not product:
+            return
+        if variable and self.product_uom_id == self.uos_id:
             self.do_onchange = False
             self.quantity = self.uos_qty
 
-        if product and not variable:
+        if not variable:
             picking_id = self._context.get('picking_id', [])
             picking = self.env['stock.picking'].browse(picking_id)
             if self.do_onchange:
@@ -358,6 +325,26 @@ class stock_transfer_details_items(models.TransientModel):
             else:
                 self.do_onchange = True
 
+    @api.multi
+    def create_packop(self):
+        # TODO: Intentar unificar funcion con create_pack_operation
+        op_vals = {
+            'product_id': self.product_id.id,
+            'product_uom_id': self.product_uom_id.id,
+            'product_qty': self.quantity,
+            'uos_qty': self.uos_qty,
+            'uos_id': self.uos_id.id,
+            'package_id': self.package_id.id,
+            'lot_id': self.lot_id.id,
+            'location_id': self.sourceloc_id.id,
+            'location_dest_id': self.destinationloc_id.id,
+            'result_package_id': self.result_package_id.id,
+            'date': self.date if self.date else datetime.now(),
+            'owner_id': self.owner_id.id,
+            'picking_id': self.transfer_id.picking_id.id,
+        }
+        self.packop_id = self.env['stock.pack.operation'].create(op_vals)
+
     @api.onchange('quantity')
     def product_uos_id_onchange(self):
         """
@@ -367,7 +354,7 @@ class stock_transfer_details_items(models.TransientModel):
         product = self.product_id
         if product and variable and self.product_uom_id.id == self.uos_id.id:
             self.do_onchange = False
-            self.uos_qty = self.quantiry
+            self.uos_qty = self.quantity
 
         if product and not variable:
             picking_id = self._context.get('picking_id', [])
