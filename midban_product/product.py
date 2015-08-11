@@ -27,6 +27,9 @@ from openerp import models, api
 from openerp import fields as fields2
 from openerp.exceptions import except_orm
 from openerp.tools.float_utils import float_round
+import operator
+import functools
+
 
 
 class temp_type(osv.Model):
@@ -574,6 +577,23 @@ class product_product(models.Model):
             price_unit = custom_price_unit or self.lst_price
             price_udv = price_unit * self._get_factor(uos_id)
         return price_unit, price_udv
+
+    @api.multi
+    def get_palet_size(self, from_unit):
+        """
+
+        :param from_unit: Unidad desde la que se convertira a palet
+        """
+        self.ensure_one()
+        conversion_fields = ['ca_ma', 'ma_pa']
+        conversions = {
+            self.log_base_id.id: ['kg_un', 'un_ca'],
+            self.log_unit_id.id: ['un_ca'],
+            self.log_box_id.id: [],
+
+        }
+        conversion_fields += conversions[from_unit.id]
+        return functools.reduce(operator.mul, [self[x] for x in conversion_fields])
 
 
 

@@ -18,16 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv, fields
-from openerp import api, models
+from openerp.osv import fields
+from openerp import api, models, _
 from openerp import fields as fields2
-from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 import math
 from lxml import etree
 
 
-class stock_picking(osv.osv):
+class stock_picking(models.Model):
     _inherit = "stock.picking"
     _order = "name desc"
     _columns = {
@@ -42,8 +41,6 @@ class stock_picking(osv.osv):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        # 'trans_route_id': fields.many2one('route', 'Transport Route',
-        #                                   readonly=True),
         'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
         'trans_route_id': fields.related('route_detail_id', 'route_id',
                                          string='Transport Route',
@@ -84,7 +81,8 @@ class stock_picking(osv.osv):
         if view_type == 'form':
             active_model = self.env.context.get('active_model', False)
             active_id = self.env.context.get('active_id', False)
-            if not active_model or not active_id or active_model not in ['stock.picking.type', 'stock.picking']:
+            if not active_model or not active_id or active_model not in \
+                    ['stock.picking.type', 'stock.picking']:
                 act_ref = str(self.env.ref(
                     'midban_depot_stock.create_multipack_wizard_action').id)
                 doc = etree.XML(result['arch'])
@@ -111,84 +109,57 @@ class stock_picking(osv.osv):
                 result['arch'] = etree.tostring(doc)
         return result
 
-    @api.model
-    def _prepare_pack_ops(self, picking, quants, forced_qties):
-        res = super(stock_picking, self)._prepare_pack_ops(picking, quants,
-                                                           forced_qties)
-        if picking.backorder_id:
-            for op in res:
-                move = picking.move_lines.filtered(
-                    lambda record: record.product_id.id == op['product_id'])
-                if move.uos_coeff:
-                    op['uos_coeff'] = move.uos_coeff
-        return res
-
     @api.multi
     def do_transfer(self):
+        self._regularize_move_quantities()
         res = super(stock_picking, self).do_transfer()
-        for picking in self:
-            if picking.picking_type_code == 'incoming':
-                moves = self.env['stock.move']
-                moves_vals = []
-                final_move_vals = []
-                operations = picking.pack_operation_ids
-                backorder = self.search([('backorder_id', '=', picking.id)])
-                if backorder:
-                    operations = operations not in \
-                        backorder.mapped('move_lines.orig_op')
-                for operation in operations:
-                    if operation.original_uos_coeff != operation.uos_coeff:
-                        remaining_qty = operation.product_qty / \
-                            operation.original_uos_coeff - \
-                            operation.product_qty / operation.uos_coeff
-                        remaining_qty = remaining_qty * operation.uos_coeff
-                        move_vals = self._prepare_values_extra_move(
-                            operation, operation.product_id, remaining_qty)
-                        move_vals['group_id'] = picking.group_id.id
-                        move = picking.move_lines.filtered(
-                            lambda record: record.product_id ==
-                            operation.product_id)
-                        if move:
-                            move_vals['purchase_line_id'] = \
-                                move.purchase_line_id.id
-                        # moves += moves.create(move_vals)
-                        moves_vals.append(move_vals)
-                for vals in moves_vals:
-                    finded = False
-                    for final_vals in final_move_vals:
-                        if vals['product_id'] == final_vals['product_id'] and \
-                                vals['product_uom'] == \
-                                final_vals['product_uom'] and \
-                                vals['product_uos'] == \
-                                final_vals['product_uos'] and \
-                                vals['product_uom_qty'] != 0.0:
-                            final_vals['product_uos_qty'] += \
-                                vals['product_uos_qty']
-                            final_vals['product_uom_qty'] += \
-                                vals['product_uom_qty']
-                            finded = True
-                            break
-                    if not finded:
-                        final_move_vals.append(vals)
-                for vals in final_move_vals:
-                    vals['product_uos_qty'] = round(vals['product_uos_qty'], 2)
-                    vals['product_uom_qty'] = round(vals['product_uom_qty'], 2)
-                    if vals['product_uom_qty'] == 0.0 or \
-                            vals['product_uos_qty'] == 0.0:
-                        continue
-                    moves += moves.create(vals)
-                if backorder:
-                    backorder.write({'move_lines':
-                                     [(4, x) for x in moves._ids]})
-                else:
-                    backorder = picking.copy(
-                        {'name': '/',
-                         'move_lines': [(4, x) for x in moves._ids],
-                         'pack_operation_ids': [],
-                         'backorder_id': picking.id
-                         })
-                    backorder.action_confirm()
+        self._create_backorder_by_uos()
         return res
+
+    @api.one
+    def _regularize_move_quantities(self):
+        if self.picking_type_code != 'incoming':
+            return
+        total_operations = self._get_total_operation_quantities()
+        for move in self.move_lines:
+            move.update_receipt_quantity(total_operations[move.product_id.id])
+
+    @api.multi
+    def _get_total_operation_quantities(self):
+        self.ensure_one()
+        total_operations = {}
+        for operation in self.pack_operation_ids:
+                product_id = operation.product_id.id
+                if product_id not in total_operations.keys():
+                    total_operations[product_id] = {'uom': 0.0, 'uos': 0.0}
+                total_operations[product_id]['uom'] += operation.product_qty
+                total_operations[product_id]['uos'] += operation.uos_qty
+        return total_operations
+
+    @api.one
+    def _create_backorder_by_uos(self):
+        if self.picking_type_code != 'incoming':
+            return
+        backorder_moves = self.move_lines.get_backorder_moves()
+        if not backorder_moves:
+            return
+        backorder_picking = self._get_backorder_picking()
+        backorder_picking.write(
+            {'move_lines': [(4, x) for x in backorder_moves._ids]})
+        backorder_picking.action_confirm()
+
+    @api.multi
+    def _get_backorder_picking(self):
+        self.ensure_one()
+        backorder = self.search([('backorder_id', '=', self.id)])
+        if not backorder:
+            backorder = self.copy(
+                {'name': '/',
+                    'move_lines': [],
+                    'pack_operation_ids': [],
+                    'backorder_id': self.id
+                 })
+        return backorder
 
     @api.cr_uid_ids_context
     def approve_pack_operations(self, cr, uid, ids, context=None):
@@ -206,21 +177,7 @@ class stock_picking(osv.osv):
                     'processed': 'true'
                 })
         self.do_transfer(cr, uid, ids, context=context)
-        # Prepare operations for the next chained picking if it exist
-        self._change_operation_dest_loc(cr, uid, ids, context=context)
         return True
-
-    @api.model
-    def _prepare_values_extra_move(self, op, product, remaining_qty):
-        res = super(stock_picking, self)._prepare_values_extra_move(
-            op, product, remaining_qty)
-        res['product_uos_qty'] = res['product_uom_qty'] / op.uos_coeff
-        res['product_uos'] = \
-            op.linked_move_operation_ids[0].move_id.product_uos.id
-        res['orig_op'] = op.id
-        if op.uos_coeff:
-            res['uos_coeff'] = op.uos_coeff
-        return res
 
     @api.one
     def delete_picking_package_operations(self):
@@ -338,7 +295,7 @@ class stock_picking(osv.osv):
             self.min_date = self.route_detail_id.date + " 19:00:00"
 
 
-class stock_package(osv.osv):
+class stock_package(models.Model):
     _inherit = "stock.quant.package"
 
     def _get_package_lot_id(self, cr, uid, ids, name, args, context=None):
@@ -467,7 +424,9 @@ class stock_package(osv.osv):
         'is_multiproduct': fields.function(_is_multiproduct_pack,
                                            readonly=True,
                                            type="boolean",
-                                           string="Is multiproduct")
+                                           string="Is multiproduct"),
+        'uos_qty': fields.float('UoS quantity'),
+        'uos_id': fields.many2one('product.uom', 'Secondary unit'),
     }
 
     def get_products_quants(self, cr, uid, ids, context=None):
@@ -503,7 +462,7 @@ class stock_package(osv.osv):
         return res
 
 
-class stock_pack_operation(osv.osv):
+class stock_pack_operation(models.Model):
     _inherit = "stock.pack.operation"
 
     def _get_real_product(self, cr, uid, ids, name, args, context=None):
@@ -599,8 +558,8 @@ class stock_pack_operation(osv.osv):
         # unlink the original operation and wee ned to remember it
         # In the scan_gun_warehouse module
         'old_id': fields.integer('Old id', readonly=True),
-        'uos_coeff': fields.float('UoS coeff'),
-        'original_uos_coeff': fields.float('Original UoS coeff'),
+        'uos_qty': fields.float('UoS quantity'),
+        'uos_id': fields.many2one('product.uom', 'Secondary unit'),
 
     }
     _defaults = {
@@ -728,7 +687,7 @@ class stock_pack_operation(osv.osv):
                     self.location_dest_id = special_location
 
 
-class stock_warehouse(osv.osv):
+class stock_warehouse(models.Model):
     _inherit = "stock.warehouse"
     _columns = {
         'ubication_type_id': fields.many2one('stock.picking.type',
@@ -741,7 +700,7 @@ class stock_warehouse(osv.osv):
     }
 
 
-class stock_location(osv.Model):
+class stock_location(models.Model):
     _inherit = 'stock.location'
 
     def _get_location_volume(self, cr, uid, ids, name, args, context=None):
@@ -794,7 +753,6 @@ class stock_location(osv.Model):
         un_ca = product.un_ca
         ca_ma = product.ca_ma
         mantle_units = un_ca * ca_ma
-        # num_mant = prop_qty // mantle_units
         num_mant = math.ceil(prop_qty / mantle_units)
         width_wood = product.pa_width
         length_wood = product.pa_length
@@ -1207,7 +1165,7 @@ class stock_location(osv.Model):
         return res
 
 
-class stock_move(osv.osv):
+class stock_move(models.Model):
     _inherit = "stock.move"
 
     _columns = {
@@ -1221,13 +1179,10 @@ class stock_move(osv.osv):
                                           string='Detail Route',
                                           relation="route.detail",
                                           type="many2one"),
-        # 'drop_code': fields.related('procurement_id', 'drop_code',
-        #                             string="Drop Code",
-        #                             type='integer', readonly=True),
         'real_weight': fields.float('Real weight'),
         'price_kg': fields.float('Price Kg'),
         'orig_op': fields.many2one('stock.pack.operation', 'op'),
-        'uos_coeff': fields.float('UoS coeff'),
+        'wait_receipt_qty': fields.float('Quantity pending receipt')
     }
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
@@ -1236,7 +1191,6 @@ class stock_move(osv.osv):
         route_detail_id = move.route_detail_id and move.route_detail_id.id or \
             False
         res['route_detail_id'] = route_detail_id
-        # res['drop_code'] = move.drop_code
         return res
 
     def onchange_product_id(self, cr, uid, ids, prod_id=False, loc_id=False,
@@ -1333,8 +1287,45 @@ class stock_move(osv.osv):
         res = super(stock_move, self).action_done(cr, uid, ids, context=ctx)
         return res
 
+    @api.one
+    def update_receipt_quantity(self, total_operations):
+        """
+            Updates product_uom_qty and product_uos_qty with operation
+            quantities.
+            Sets the quantity pending of receipt.
+            :param total_operations: dict with total quantity of
+                operations in uom and uos
+            :returns: None
 
-class stock_inventory(osv.osv):
+        """
+        same_product_moves = self.picking_id.move_lines.filtered(
+            lambda record: record.product_id == self.product_id)
+        moves_len = len(same_product_moves)
+        total_uos_same_product_moves = sum([x.product_uos_qty for x in
+                                            same_product_moves])
+        if total_uos_same_product_moves > total_operations['uos']:
+            self.wait_receipt_qty = total_uos_same_product_moves - \
+                total_operations['uos']
+        self.product_uom_qty = total_operations['uom'] / moves_len
+        self.product_uos_qty = total_operations['uos'] / moves_len
+
+    @api.multi
+    def get_backorder_moves(self):
+        backorder_moves = self.env['stock.move']
+        for move in self:
+            if move.wait_receipt_qty:
+                uom_qty = move.product_id.uos_qty_to_uom_qty(
+                    move.wait_receipt_qty, move.product_uos.id)
+                backorder_moves += move.copy({
+                    'product_uom_qty': uom_qty,
+                    'product_uos_qty': move.wait_receipt_qty,
+                    'wait_receipt_qty': 0,
+                    'picking_id': False,
+                })
+        return backorder_moves
+
+
+class stock_inventory(models.Model):
 
     _inherit = "stock.inventory"
 
@@ -1371,7 +1362,7 @@ class stock_inventory(osv.osv):
         return new_vals
 
 
-class stock_picking_wave(osv.osv):
+class stock_picking_wave(models.Model):
     _inherit = "stock.picking.wave"
 
     _columns = {
@@ -1391,7 +1382,7 @@ class stock_picking_wave(osv.osv):
     }
 
 
-class stock_quant(osv.osv):
+class stock_quant(models.Model):
     _inherit = 'stock.quant'
 
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
@@ -1447,9 +1438,6 @@ class stock_quant(osv.osv):
                                               context=context)
             return res
         elif context.get('force_quants_location', False):
-            # domain.append(('location_id', '=', location.id))
-            # res = self._quants_get_order(cr, uid, location, product, qty,
-            #                              domain, context=context)
             res = context['force_quants_location']
             if not res:
                 raise osv.except_osv(_('Error!'), _('No quants to force the \
@@ -1461,7 +1449,7 @@ class stock_quant(osv.osv):
         return sup
 
 
-class stock_location_rule(osv.osv):
+class stock_location_rule(models.Model):
     _inherit = "stock.location.route"
 
     _columns = {
@@ -1471,7 +1459,7 @@ class stock_location_rule(osv.osv):
     }
 
 
-class stock_production_lot(osv.osv):
+class stock_production_lot(models.Model):
     _inherit = 'stock.production.lot'
     _columns = {
         'customer_ids': fields.many2many('res.partner', 'customers_lot_rel',
@@ -1489,7 +1477,6 @@ class stock_production_lot(osv.osv):
 
 
 class stock_config_settings(models.TransientModel):
-    # _name = 'stock.config.settings'
     _inherit = 'stock.config.settings'
 
     check_route_zip = fields2.Boolean('Check zips in routes',
