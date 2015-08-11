@@ -22,7 +22,7 @@
 from openerp import models, api, fields, _
 
 import openerp.addons.decimal_precision as dp
-
+from openerp.tools.float_utils import float_round
 
 import time
 
@@ -50,72 +50,121 @@ class ProductsSupplier(models.Model):
     last_tm = fields.Float ('Last TM')
 
 
+
+
     @api.model
     @api.onchange ('product_uoc')
     def _check_product_uoc(self):
-
         import pdb; pdb.set_trace()
         product_id = self.product_id
         supplier_id = self.supplier_id
+        supp = product_id.get_product_supp_record(supplier_id.id)
         uoc_id = self.product_uoc.id
 
-        supp = product_id.get_product_supp_record(supplier_id.id)
-        conv = product_id.get_purchase_price_conversions(
-                                            product_id.standard_price,
-                                            product_id.uom_id.id,
-                                            self.supplier_id.id)
+        #'primero cantidades'
+        unit_ratios = product_id._get_unit_ratios(self.product_uoc.id, supplier_id.id)
 
-        if uoc_id == supp.log_base_id.id:
-            self.price_purchase = conv['base']
-        elif uoc_id == supp.log_unit_id.id:
-            self.price_purchase = conv['unit']
-        elif uoc_id == supp.log_box_id.id:
-           self.price_purchase = conv['box']
+        self.product_qty = self.product_uoc_qty * unit_ratios
 
-        ctx = dict(self._context)
-        ctx.update({
-           'change': 'product_uoc_qty'
-           })
-        self.with_context(ctx)._check_qtys()
+        # precios
+        self.price_purchase =  product_id.standard_price / unit_ratios
 
-        return
+
+        #mantles
+        pool_uom =  self.env['product.uom'].search([('like_type','=', 'mantles'), ('active', '=', False)])
+        if pool_uom:
+            self.mantles = product_id.get_ratio_logis_to_box( 'mantles', supplier_id.id) / \
+                           product_id._get_unit_ratios( supp.log_box_id.id, supplier_id.id) *\
+                           self.product_qty
+        #palets
+        pool_uom =  self.env['product.uom'].search([('like_type','=', 'plates'), ('active', '=', False)])
+        if pool_uom:
+            self.palets = product_id.get_ratio_logis_to_box('palets', supplier_id.id) / \
+                           product_id._get_unit_ratios(supp.log_box_id.id, supplier_id.id) *\
+                           self.product_qty
+
+
+        # precios
+
+
+
+
+    # @api.model
+    # @api.onchange ('product_uoc')
+    # def _check_product_uoc(self):
+    #
+    #     import pdb; pdb.set_trace()
+    #     product_id = self.product_id
+    #     supplier_id = self.supplier_id
+    #     uoc_id = self.product_uoc.id
+    #
+    #     supp = product_id.get_product_supp_record(supplier_id.id)
+    #     conv = product_id.get_purchase_price_conversions(
+    #                                         product_id.standard_price,
+    #                                         product_id.uom_id.id,
+    #                                         self.supplier_id.id)
+    #
+    #     if uoc_id == supp.log_base_id.id:
+    #         self.price_purchase = conv['base']
+    #     elif uoc_id == supp.log_unit_id.id:
+    #         self.price_purchase = conv['unit']
+    #     elif uoc_id == supp.log_box_id.id:
+    #        self.price_purchase = conv['box']
+    #
+    #     ctx = dict(self._context)
+    #     ctx.update({
+    #        'change': 'product_uoc_qty'
+    #        })
+    #     self.with_context(ctx)._check_qtys()
+    #
+    #     return
 
 
     @api.model
-    @api.onchange ('palets', 'mantles', 'boxes', 'product_uoc_qty')
-    def _check_qtys(self):
-
-        if self.last_tm == self._context['tm']:
-            return
-        #import pdb; pdb.set_trace()
-        flag = self._context['change']
-        uom_id = self.product_uoc.id
-        if flag == "palets" or flag == 'mantles' or flag =='boxes':
-            pool_uom =  self.env['product.uom'].search([('like_type','=', flag), ('active', '=', False)])
-            if pool_uom:
-                uom_id = pool_uom[0].id
-
+    def _conv_boxes_logis (self, flag):
+        # Convierte de product_uoc a mantles o palets
+        import pdb; pdb.set_trace()
         product_id = self.product_id
         supplier_id = self.supplier_id
-        uoc_id = self.product_uoc.id
-        conv = product_id.get_purchase_unit_conversions(self[flag],
-                                                        uom_id,
-                                                        self.supplier_id.id)
-
-        self.kgrs = conv['base']
-        self.unitskg = conv['unit']
-        self.boxes = conv['boxes']
-        self.mantles = conv['mantles']
-        self.palets = conv['palets']
-        self.product_qty = conv['stock']
-
         supp = product_id.get_product_supp_record(supplier_id.id)
-        if uoc_id == supp.log_base_id.id:
-            self.product_uoc_qty = conv['base']
-        elif uoc_id == supp.log_unit_id.id:
-            self.product_uoc_qty = conv['unit']
-        elif uoc_id == supp.log_box_id.id:
-            self.product_uoc_qty = conv['box']
+        res = 1
+        if flag == "mantles":
+            cte = supp.supp_ca_ma or 1.0
+            res = product_id._conv_units( self.product_uoc.id, supp.log_box_id.id, supplier_id.id) / cte
+        if flag == "palets":
+            cte = supp.supp_ca_ma * supp.supp_ma_pa or 1.0
+            res = product_id._conv_units( self.product_uoc.id, supp.log_box_id.id, supplier_id.id) / cte
+        return res
+
+    @api.model
+    @api.onchange ('palets', 'mantles', 'product_uoc_qty')
+    def _check_qtys(self):
+        import pdb; pdb.set_trace()
+        if self.last_tm == self._context['tm']:
+            return
+        self.last_tm = self._context['tm']
+        flag = self._context['change']
+        uom_id = self.product_uoc.id
+        product_id = self.product_id
+        supplier_id = self.supplier_id
+        supp = product_id.get_product_supp_record(supplier_id.id)
+
+        if flag == 'palets':
+            cte_boxes = 1 / self._conv_boxes_logis(flag)
+            cte = 1/product_id._conv_units(supp.log_box_id.id, self.product_uoc.id, supplier_id.id)
+            self.product_uoc_qty = float_round(self.palets * cte_boxes * cte,2)
+            self.mantles = float_round(self.palets * supp.supp_ma_pa,2 )
+
+        if flag == 'mantles':
+            cte_boxes = 1 / self._conv_boxes_logis(flag)
+            cte = 1 / product_id._conv_units(supp.log_box_id.id, self.product_uoc.id, supplier_id.id)
+            self.product_uoc_qty = float_round(self.mantles * cte_boxes * cte,2)
+            self.palets = float_round(self.mantles / supp.supp_ma_pa ,2 )
+
+        if flag == 'product_uoc_qty':
+            cte_boxes = self._conv_boxes_logis('mantles')
+            self.mantles = float_round(self.product_uoc_qty / cte_boxes,2)
+            self.palets = float_round(self.mantles / supp.supp_ma_pa,2 )
 
         self.last_tm = self._context['tm']
 

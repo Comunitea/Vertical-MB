@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, api
+from openerp import models, api, _
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 from openerp.tools.float_utils import float_round
@@ -56,26 +56,6 @@ class product_product(models.Model):
         return res
 
     @api.model
-    def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
-        res = {'base': 0.0,
-               'unit': 0.0,
-               'box': 0.0}
-        supp = self.get_product_supp_record(supplier_id)
-        if uoc_id == supp.log_base_id.id:
-            res['base'] = qty_uoc
-            res['unit'] = float_round(res['base'] / supp.supp_kg_un, 2)
-            res['box'] = float_round(res['unit'] / supp.supp_un_ca, 2)
-        elif uoc_id == supp.log_unit_id.id:
-            res['unit'] = qty_uoc
-            res['box'] = float_round(res['unit'] / supp.supp_un_ca, 2)
-            res['base'] = float_round(res['unit'] * supp.supp_kg_un, 2)
-        elif uoc_id == supp.log_box_id.id:
-            res['box'] = qty_uoc
-            res['unit'] = float_round(res['box'] * supp.supp_un_ca, 2)
-            res['base'] = float_round(res['unit'] * supp.supp_kg_un, 2)
-        return res
-
-    @api.model
     def uom_qty_to_uoc_qty(self, uom_qty, uoc_id, supplier_id):
         """
         Convert product quantity from his default stock unit to the specified
@@ -106,68 +86,111 @@ class product_product(models.Model):
                              unit' % self.uom_po_id.name))
 
     @api.model
-    def get_uom_uoc_prices(self, uoc_id, supplier_id, custom_price_unit=0.0,
-                           custom_price_udc=0.0):
+    def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
+        #import pdb; pdb.set_trace()
+        res = {'base': 0.0,
+               'unit': 0.0,
+               'box': 0.0}
         supp = self.get_product_supp_record(supplier_id)
-        if custom_price_udc:
-            price_udc = custom_price_udc
-            log_unit = self.get_uom_po_logistic_unit(supplier_id)
-            if uoc_id == supp.log_base_id.id:
-                if log_unit == 'base':
-                    price_unit = price_udc
-                if log_unit == 'unit':
-                    price_unit = price_udc * supp.supp_kg_un
-                if log_unit == 'box':
-                    price_unit = price_udc * supp.supp_kg_un * supp.supp_.un_ca
-                price_unit = price_unit
-            elif uoc_id == supp.log_unit_id.id:
-                if log_unit == 'base':
-                    price_unit = float_round(price_udc / supp.supp_kg_un, 2)
-                if log_unit == 'unit':
-                    price_unit = price_udc
-                if log_unit == 'box':
-                    price_unit = price_udc * supp.supp_un_ca
-            elif uoc_id == supp.log_box_id.id:
-                if log_unit == 'base':
-                    price_unit = \
-                        float_round(
-                            price_udc / (supp.supp_kg_un * supp.supp_un_ca), 2)
-                if log_unit == 'unit':
-                    price_unit = float_round(price_udc / supp.supp_un_ca, 2)
-                if log_unit == 'box':
-                    price_unit = price_udc
+
+        cte = self._get_unit_ratios(uoc_id, supplier_id) * qty_uoc
+
+        res['base'] = float_round(cte / self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
+        res['unit'] = float_round(cte / self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
+        res['box'] = float_round(cte / self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        return res
+
+    @api.model
+    def get_price_conversions(self, qty_uoc, uoc_id, supplier_id):
+        #import pdb; pdb.set_trace()
+        res = {'base': 0.0,
+               'unit': 0.0,
+               'box': 0.0}
+        supp = self.get_product_supp_record(supplier_id)
+
+        cte = qty_uoc/self._get_unit_ratios(uoc_id, supplier_id)
+
+        res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
+        res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
+        res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        return res
+
+    @api.model
+    def _conv_units(self, uom_origen, uom_destino, supplier_id):
+        #import pdb; pdb.set_trace()
+        res = self._get_unit_ratios(uom_origen, supplier_id) / \
+              self._get_unit_ratios(uom_destino, supplier_id)
+        res = float_round(res,2)
+        return res
+
+    @api.model
+    def _get_unit_ratios(self, unit, supplier_id):
+        #Es funcion devuelve un ratio a la unidad base del producto o uom_id
+        #import pdb; pdb.set_trace()
+        uom_id = self.uom_id.id
+        res = 1
+
+        if supplier_id:
+            supp = self.get_product_supp_record(supplier_id)
+            kg_un = supp.supp_kg_un or 1.0
+            un_ca = supp.supp_un_ca or 1.0
+            ca_ma = supp.supp_ca_ma or 1.0
+            ma_pa = supp.supp_ma_pa or 1.0
 
         else:
-            price_unit = custom_price_unit or self.lst_price
-            price_udc = 0.0
-            log_unit = self.get_uom_po_logistic_unit(supplier_id)
-            if uoc_id == supp.log_base_id.id:
-                if log_unit == 'base':
-                    price_udc = price_unit
-                if log_unit == 'unit':
-                    price_udc = price_unit * supp.supp_kg_un
-                if log_unit == 'box':
-                    price_udc = price_unit * supp.supp_kg_un * supp.supp_un_ca
+            #Si no hay supplier id, entonces lo pasamos a unidad base, pero de proveedor.
+            supp = self
+            kg_un = self.supplier_kg_un or 1.0
+            un_ca = self.supplier_un_ca or 1.0
+            ca_ma = self.supplier_ca_ma or 1.0
+            ma_pa = self.supplier_ma_pa or 1.0
 
-            elif uoc_id == supp.log_unit_id.id:
-                if log_unit == 'base':
-                    price_udc = float_round(price_unit * supp.supp_kg_un, 2)
-                if log_unit == 'unit':
-                    price_udc = price_unit
-                if log_unit == 'box':
-                    price_udc = price_unit / supp.supp_un_ca
+        #Paso todo a la unidad de base
+        if unit == supp.log_base_id.id:
+            res = 1
+        if unit == supp.log_unit_id.id:
+            res = kg_un
+        if unit == supp.log_box_id.id:
+            res = kg_un * un_ca
 
-            elif uoc_id == supp.log_box_id.id:
-                if log_unit == 'base':
-                    price_udc = \
-                        float_round(price_unit * supp.supp_kg_un *
-                                    supp.supp_un_ca, 2)
-                if log_unit == 'unit':
-                    price_udc = float_round(price_unit * supp.supp_un_ca, 2)
-                if log_unit == 'box':
-                    price_udc = price_unit
+        #Paso la base a la unidad del producto o uom_id
+        if uom_id == supp.log_base_id.id:
+            res = res
+        if uom_id == supp.log_unit_id.id:
+            res = res / kg_un
+        if uom_id == supp.log_box_id.id:
+            res = res / (kg_un * un_ca)
+
+        res = float_round(res,2)
+        return res
+
+    @api.model
+    def get_uom_uoc_prices(self, uoc_id, supplier_id, custom_price_unit=0.0,
+                           custom_price_udc=0.0):
+
+        import pdb; pdb.set_trace()#
+        custom_price_udc_from_unit = 0.0
+        custom_price_unit_from_udc = 0.0
+        supp = self.get_product_supp_record(supplier_id)
+        #Para evitar si hay custom_price_udc, lo pasamos a custom_price_unit
+        if custom_price_udc:
+            #si hay lo pasamos a custom price unit para no andar con if
+            custom_price_unit_from_udc = self._conv_units( self.uom_id.id,uoc_id, supplier_id) * custom_price_udc
+
+        elif custom_price_unit:
+            #si hay lo pasamos a sacamos custom price udc
+            custom_price_udc_from_unit = self._conv_units(uoc_id, self.uom_id.id,  supplier_id) * custom_price_unit
+
+        else:
+            price_unit = self.standard_price
+            price_udc =  self._conv_units(uoc_id, self.uom_id.id, supplier_id) * price_unit
+
+        price_udc = custom_price_udc or custom_price_udc_from_unit or price_udc
+        price_udc = float_round (price_udc,2)
+        price_unit = custom_price_unit or custom_price_unit_from_udc or price_unit
+        price_unit = float_round(price_unit,2)
+
         return price_unit, price_udc
-
 
 class ProductUom(models.Model):
 

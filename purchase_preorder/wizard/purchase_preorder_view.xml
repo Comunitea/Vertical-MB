@@ -71,7 +71,7 @@
                                     <field name="supplier_id" invisible="1" readonly="1"/>
                                     <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'tm' : tm}"/>
                                     <field name="product_uoc" context="{'change': 'product_uoc', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
-                                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}"/>
+                                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}"  invisible = "1"/>
                                     <field name="mantles"  context="{'change' : 'mantles', 'tm' : tm}"/>
                                     <field name="palets" context="{'change' : 'palets', 'tm' : tm}"/>
                                     <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
@@ -118,7 +118,7 @@
                     <field name="supplier_id" invisible="1" readonly="1"/>
                     <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
                     <field name="product_uoc" context="{'change': 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
-                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}"/>
+                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}" invisible="1"/>
                     <field name="mantles"  context="{'change' : 'mantles', 'tm' : tm}"/>
                     <field name="palets" context="{'change' : 'palets', 'tm' : tm}"/>
                     <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
