@@ -79,7 +79,8 @@ class purchase_preorder(osv.Model):
                                        required=True),
         'product_supplier_ids': fields.one2many('products.supplier',
                                                 'preorder_id',
-                                                'Products Supplier'),
+                                                'Products Supplier',
+                                                domain=[('product_uoc_qty','>',0)]),
         'total': fields.function(_get_totals,
                                  type="float",
                                  string='Amount total',
@@ -421,11 +422,11 @@ class purchase_preorder(osv.Model):
                                             },
                                            context=context)
                             seq += 1
-                import pdb; pdb.set_trace()
+                #import pdb; pdb.set_trace()
                 if product_id and product_qty:
                     l = prodsupp.search(cr,
                                         uid,
-                                        [('preorder_id', '=', data.id),
+                                        [('preorder_id', '=', data.id),s
                                          ('product_id', '=', product_id)])
                     if l:
                         line= prodsupp.browse(cr, uid, l[0], context = {'tm' : True})
@@ -610,6 +611,8 @@ class products_supplier(osv.Model):
 
     def _get_min_qty_supplier(self, cr, uid, ids, fields_name, args,
                               context=None):
+
+        #import pdb; pdb.set_trace()
         res = {}
         supp_info_obj = self.pool.get('product.supplierinfo')
         mod_obj = self.pool.get('ir.model.data')
@@ -631,20 +634,36 @@ class products_supplier(osv.Model):
                                                 context)
                 prod_qty = info_obj.min_qty
                 res[obj.id]['min_qty'] = prod_qty
-                un_ca = supp_info_ids.supp_un_ca
-                ca_ma = supp_info_ids.supp_ca_ma
-                ma_pa = supp_info_ids.supp_ma_pa
-                unit_uom = mod_obj.get_object_reference(cr,
-                                                        uid,
-                                                        'product',
-                                                        'product_uom_unit')
-                unit_id = unit_uom and unit_uom[1] or False
-                if info_obj.product_uom.id == unit_id:
-                    boxes = round(un_ca and (prod_qty / un_ca) or 0.0, 2)
-                    mantles = round(ca_ma and (boxes / ca_ma) or 0.0, 2)
-                    palets = round(ma_pa and (mantles / ma_pa) or 0.0, 2)
-                    res[obj.id]['min_mantles'] = mantles
-                    res[obj.id]['min_palets'] = palets
+                un_ca = info_obj.supp_un_ca
+                ca_ma = info_obj.supp_ca_ma
+                ma_pa = info_obj.supp_ma_pa
+
+                # Está mal, Calcula en función del uom_id, pero es de proveedor
+                #
+                # unit_uom = mod_obj.get_object_reference(cr,
+                #                                         uid,
+                #                                         'product',
+                #                                         'product_uom_unit')
+                #unit_id = unit_uom and unit_uom[1] or False
+                #
+                # if info_obj.product_uom.id == unit_id:
+                #     boxes = round(un_ca and (prod_qty / un_ca) or 0.0, 2)
+                #     mantles = round(ca_ma and (boxes / ca_ma) or 0.0, 2)
+                #     palets = round(ma_pa and (mantles / ma_pa) or 0.0, 2)
+                #     res[obj.id]['min_mantles'] = mantles
+                #     res[obj.id]['min_palets'] = palets
+
+
+                uom = info_obj.product_tmpl_id.uom_id
+                product = self.pool.get('product.product')
+                product_id = product.browse(cr, uid, [info_obj.product_tmpl_id.id])
+                prod_qty = (prod_qty * product_id._conv_units( uom.id, info_obj.log_box_id.id, info_obj.name.id)) or 1.0
+                boxes = round(prod_qty or 0.0, 2)
+                mantles = round(ca_ma and (boxes / ca_ma) or 0.0, 2)
+                palets = round(ma_pa and (mantles / ma_pa) or 0.0, 2)
+                res[obj.id]['min_mantles'] = mantles
+                res[obj.id]['min_palets'] = palets
+
         return res
 
     _columns = {

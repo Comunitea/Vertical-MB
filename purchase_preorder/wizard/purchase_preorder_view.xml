@@ -64,8 +64,8 @@
                         </group>
                         <notebook colspan="6">
                             <page string="Products Supplier">
-                                <field name="product_supplier_ids"/>
-                                    <!--field name="tm" invisible="1"/>
+                                <field name="product_supplier_ids">
+                                    <field name="tm" invisible="1"/>
                                     <field name="sequence" invisible="1"/>
                                     <field name="incoming_qty" readonly="1" invisible ="1"/>
                                     <field name="date_delivery" readonly="1" invisible ="1"/>
@@ -83,7 +83,7 @@
                                     <field name="min_fixed" readonly="1" invisible ="0"/>
                                     <field name="real_stock" readonly="1" invisible ="0"/>
                                     <field name="virtual_stock" readonly="1" invisible ="0"/>
-                                </field-->
+                                </field>
                             </page>
                             <page string="State Supplier">
                                 <group>

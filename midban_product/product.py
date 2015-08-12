@@ -28,6 +28,7 @@ from openerp import fields as fields2
 from openerp.exceptions import except_orm
 import operator
 import functools
+from openerp.tools.float_utils import float_round
 
 
 class temp_type(osv.Model):
@@ -599,7 +600,7 @@ class product_product(models.Model):
         uoc_id, consulting the conversions in the supplier model.
         """
         supp = self.get_product_supp_record(supplier_id)
-        conv = self.get_purchase_unit_conversions(uom_qty, self.uom_po_id.id,
+        conv = self.get_purchase_unit_conversions(uom_qty, self.uom_id.id,
                                                   supplier_id)
         if uoc_id == supp.log_base_id.id:
             return conv['base']
@@ -611,16 +612,16 @@ class product_product(models.Model):
     @api.model
     def get_uom_po_logistic_unit(self, supplier_id):
         supp = self.get_product_supp_record(supplier_id)
-        if self.uom_po_id.id == supp.log_base_id.id:
+        if self.uom_id.id == supp.log_base_id.id:
             return 'base'
-        elif self.uom_po_id.id == supp.log_unit_id.id:
+        elif self.uom_id.id == supp.log_unit_id.id:
             return 'unit'
-        elif self.uom_po_id.id == supp.log_box_id.id:
+        elif self.uom_id.id == supp.log_box_id.id:
             return 'box'
         else:
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
-                             unit' % self.uom_po_id.name))
+                             unit' % self.uom_id.name))
 
     @api.model
     def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
