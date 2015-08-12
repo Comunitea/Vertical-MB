@@ -67,7 +67,7 @@ class purchase_order_line(osv.Model):
             res[line.id]['boxes'] = conv['box']
             res[line.id]['mantles'] = round(ca_ma and (conv['box'] / ca_ma) or 0.0, 2)
             res[line.id]['palets'] = round(ma_pa and (conv['box'] / (ca_ma * ma_pa)) or 0.0, 2)
-            import pdb; pdb.set_trace()
+
         return res
 
     _columns = {

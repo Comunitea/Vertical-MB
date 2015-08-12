@@ -421,11 +421,11 @@ class purchase_preorder(osv.Model):
                                             },
                                            context=context)
                             seq += 1
-                import pdb; pdb.set_trace()
+                #import pdb; pdb.set_trace()
                 if product_id and product_qty:
                     l = prodsupp.search(cr,
                                         uid,
-                                        [('preorder_id', '=', data.id),
+                                        [('preorder_id', '=', data.id),s
                                          ('product_id', '=', product_id)])
                     if l:
                         line= prodsupp.browse(cr, uid, l[0], context = {'tm' : True})
@@ -611,7 +611,7 @@ class products_supplier(osv.Model):
     def _get_min_qty_supplier(self, cr, uid, ids, fields_name, args,
                               context=None):
 
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         res = {}
         supp_info_obj = self.pool.get('product.supplierinfo')
         mod_obj = self.pool.get('ir.model.data')
