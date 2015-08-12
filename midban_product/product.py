@@ -28,6 +28,7 @@ from openerp import fields as fields2
 from openerp.exceptions import except_orm
 import operator
 import functools
+from openerp.tools.float_utils import float_round
 
 
 class temp_type(osv.Model):
