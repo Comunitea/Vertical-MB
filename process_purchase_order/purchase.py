@@ -114,6 +114,7 @@ class purchase_order_line(models.Model):
 
                 conv = product.get_purchase_unit_conversions(qty, uoc_id,supplier_id)
                 # base, unit, or box
+                import pdb; pdb.set_trace()
                 log_unit = product.get_uom_po_logistic_unit(supplier_id)
                 self.product_qty = conv[log_unit]
             else:

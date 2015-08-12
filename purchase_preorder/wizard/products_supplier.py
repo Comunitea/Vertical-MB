@@ -98,6 +98,10 @@ class ProductsSupplier(models.Model):
         self.palets = float_round(palets,2)
         product_id = self.product_id
         self.product_qty = product_id._conv_units(self.product_uoc.id, product_id.uom_id.id, self.supplier_id.id)
+        supplier_id = self.supplier_id
+        supp = product_id.get_product_supp_record(supplier_id.id)
+        self.boxes = self.mantles * supp.supp_ca_ma
+        self.unitskg = self.product_uoc_qty
         return
 
 
@@ -127,8 +131,9 @@ class ProductsSupplier(models.Model):
             cte_boxes = 1 / self._conv_boxes_logis(flag)
             self.product_uoc_qty = float_round(self.mantles * cte_boxes ,2)
 
+        self.boxes = self.mantles * supp.supp_ca_ma
         self.product_qty = product_id._conv_units(self.product_uoc.id, product_id.uom_id.id, self.supplier_id.id)
-
+        self.unitskg = self.product_uoc_qty
         return
 
 
