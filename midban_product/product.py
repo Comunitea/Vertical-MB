@@ -121,7 +121,6 @@ class product_template(osv.Model):
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
                                      "location temperature type"),
-        'var_weight': fields.boolean('Variable weight'),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
