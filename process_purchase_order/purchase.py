@@ -45,6 +45,7 @@ class purchase_order_line(models.Model):
         """
         if context is None:
             context = {}
+        #import pdb;pdb.set_trace()
         sup = super(purchase_order_line, self)
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
@@ -114,7 +115,7 @@ class purchase_order_line(models.Model):
 
                 conv = product.get_purchase_unit_conversions(qty, uoc_id,supplier_id)
                 # base, unit, or box
-                import pdb; pdb.set_trace()
+                #import pdb; pdb.set_trace()
                 log_unit = product.get_uom_po_logistic_unit(supplier_id)
                 self.product_qty = conv[log_unit]
             else:

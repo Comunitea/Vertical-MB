@@ -461,7 +461,7 @@ msgstr "Unidad de medida de producto no definida  %s"
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 #: field:purchase.preorder,product_supplier_ids:0
 msgid "Products Supplier"
-msgstr "Productos del Proveedor"
+msgstr "Productos Solicitados al Proveedor"
 
 #. module: purchase_preorder
 #: model:ir.model,name:purchase_preorder.model_purchase_order

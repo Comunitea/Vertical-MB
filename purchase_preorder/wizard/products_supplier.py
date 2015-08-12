@@ -38,7 +38,8 @@ class ProductsSupplier(models.Model):
     supplier_id = fields.Many2one(related = "preorder_id.supplier_id")
     product_uoc_qty = fields.Float('Quantity (UdC)',
                                digits_compute=dp.
-                               get_precision('Product Unit of Measure'))
+                               get_precision('Product Unit of Measure'),
+                               )
     product_qty = fields.Float('Quantity',
                                digits_compute=dp.
                                get_precision('Product Unit of Measure'))

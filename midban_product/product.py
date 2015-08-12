@@ -612,7 +612,6 @@ class product_product(models.Model):
 
     @api.model
     def get_uom_po_logistic_unit(self, supplier_id):
-        import pdb; pdb.set_trace()
         supp = self.get_product_supp_record(supplier_id)
         if self.uom_id.id == supp.log_base_id.id:
             return 'base'
