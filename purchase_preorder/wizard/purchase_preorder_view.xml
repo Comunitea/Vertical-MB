@@ -221,12 +221,12 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="palets" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')" />
-                                    <field name="mantles" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')" />
+                                    <field name="palets" readonly="1"/>
+                                    <field name="mantles" readonly="1"/>
                                 </group>
                                 <group>
-                                    <field name="boxes" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')" />
-                                    <field name="unitskg" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg'd)" />
+                                    <field name="boxes" readonly="1" />
+                                    <field name="unitskg" readonly="1"/>
                                 </group>
                             </group>
                         </group>

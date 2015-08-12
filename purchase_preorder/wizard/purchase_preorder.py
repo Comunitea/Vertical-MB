@@ -431,13 +431,7 @@ class purchase_preorder(osv.Model):
                         line= prodsupp.browse(cr, uid, l[0], context = {'tm' : True})
                         line.write({'product_uoc_qty' : product_qty })
                         line._check_uoc_qty()
-                        # qtys = prodsupp.onchange_uoms(cr, uid, l[0],
-                        #                               product_id, product_qty,
-                        #                               0, 0, 'unitskg', 0)
-                        # prodsupp.write(cr,
-                        #                uid,
-                        #                l[0],
-                        #                qtys['value'])
+
         form_res = mod_obj.get_object_reference(cr,
                                                 uid,
                                                 'purchase_preorder',
