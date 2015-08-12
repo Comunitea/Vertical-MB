@@ -474,7 +474,6 @@ class assign_task_wzd(osv.TransientModel):
         and picking location child of wizard.location_ids
         If not trans_route_id in wizard we get a random pending route
         """
-        import ipdb; ipdb.set_trace()
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')
