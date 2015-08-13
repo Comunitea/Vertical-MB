@@ -1373,7 +1373,7 @@ class stock_picking_wave(models.Model):
 
     _columns = {
         'wave_report_ids': fields.one2many('wave.report', 'wave_id',
-                                           'Picking Report', readonly=True),
+                                           'Picking Report'),
         'camera_ids': fields.many2many('stock.location',
                                        'wave_cameras_rel',
                                        'wave_id',
