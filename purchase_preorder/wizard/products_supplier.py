@@ -56,10 +56,6 @@ class ProductsSupplier(models.Model):
     @api.model
     @api.onchange ('product_uoc')
     def _check_product_uoc(self):
-<<<<<<< HEAD
-=======
-        #import pdb; pdb.set_trace()
->>>>>>> 4b58242c4079c7b5335f916bd87ac637ddd48c1b
         product_id = self.product_id
         supplier_id = self.supplier_id
 
