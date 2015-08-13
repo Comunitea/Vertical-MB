@@ -47,6 +47,8 @@
                                 <field name="package_id" groups="stock.group_tracking_lot"/>
                                 <field name="packed_lot_id" groups="stock.group_tracking_lot"/>
                                 <field name="packed_qty" groups="stock.group_tracking_lot"/>
+                                <field name="uos_id"/>
+                                <field name="uos_qty"/>
                                 <field name="num_mantles" groups="stock.group_tracking_lot"/>
                                 <field name="location_id"/>
                                 <field name="location_dest_id"/>

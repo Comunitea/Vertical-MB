@@ -168,7 +168,6 @@ class product_product(models.Model):
     def get_uom_uoc_prices(self, uoc_id, supplier_id, custom_price_unit=0.0,
                            custom_price_udc=0.0):
 
-        import pdb; pdb.set_trace()#
         custom_price_udc_from_unit = 0.0
         custom_price_unit_from_udc = 0.0
         supp = self.get_product_supp_record(supplier_id)

@@ -294,6 +294,18 @@ class stock_picking(models.Model):
         if self.route_detail_id:
             self.min_date = self.route_detail_id.date + " 19:00:00"
 
+    @api.multi
+    def do_prepare_partial(self):
+        res = super(stock_picking, self).do_prepare_partial()
+        for picking in self:
+            for operation in picking.pack_operation_ids:
+                if not operation.linked_move_operation_ids:
+                    continue
+                move = operation.linked_move_operation_ids[0].move_id
+                operation.uos_id = move.product_uos
+                operation.uos_qty = move.product_id.uom_qty_to_uos_qty(
+                    operation.packed_qty, operation.uos_id.id)
+        return res
 
 class stock_package(models.Model):
     _inherit = "stock.quant.package"
@@ -525,9 +537,9 @@ class stock_pack_operation(models.Model):
         res = {}
         for ope in self.browse(cr, uid, ids, context=context):
             res[ope.id] = 0
-            if ope.package_id:
+            if ope.package_id and not ope.product_id:
                 res[ope.id] = ope.package_id.packed_qty
-            elif ope.result_package_id and ope.product_qty:
+            elif ope.product_id:
                 res[ope.id] = ope.product_qty
         return res
 

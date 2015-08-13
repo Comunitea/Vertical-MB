@@ -39,13 +39,10 @@ class sale_report(osv.osv):
         for item in self.browse(cr, uid, ids, context=context):
             res[item.id] = {}
             qty = item.product_qty
-            un_ca = item.product_id.un_ca
-            num_boxes = 0
-            while qty >= un_ca:
-                qty -= un_ca
-                num_boxes += 1
-            res[item.id]['units'] = qty
-            res[item.id]['boxes'] = num_boxes
+            res[item.id]['units'] = item.product_id.uom_qty_to_uos_qty(
+                qty, item.product_id.log_unit_id.id)
+            res[item.id]['boxes'] = item.product_id.uom_qty_to_uos_qty(
+                qty, item.product_id.log_box_id.id)
         return res
 
     def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
