@@ -686,6 +686,23 @@ class stock_pack_operation(models.Model):
                                            ' location'))
                     self.location_dest_id = special_location
 
+    def onchange_lot_id(self, cr, uid, ids, lot_id, context=None):
+        if lot_id and ids:
+            pack_op = self.browse(cr, uid, ids[0])
+            if pack_op.lot_id and pack_op.lot_id.id != lot_id:
+                return {'warning': {'title': _("Warning"),
+                                    'message': _("Check the available "
+                                                 "quantity of new lot.")}}
+        return {}
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('lot_id', False):
+            for op in self:
+                if op.lot_id.id != vals['lot_id']:
+                    vals['package_id'] = False
+        return super(stock_pack_operation, self).write(vals)
+
 
 class stock_warehouse(models.Model):
     _inherit = "stock.warehouse"
