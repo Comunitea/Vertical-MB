@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Pexego All Rights Reserved
-#    $Jesús Ventosinos Mayor <jesus@pexego.es>$
+#    Copyright (C) 2015 Comunitea Servicos Tecnológicos All Rights Reserved
+#    $Omar Castiñeira Saavedra <omar@comunitea.com>$
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,4 @@
 #
 ##############################################################################
 
-{
-    'name': 'Stock valued picking',
-    'version': '1.0',
-    'category': 'stock',
-    'description': """""",
-    'author': 'Pexego',
-    'website': '',
-    "depends": ['sale', 'stock', 'sale_stock', 'process_sale_order'],
-    "data": [
-        'views/valued_picking_report.xml',
-        # 'stock_report.xml',
-        'partner_view.xml'],
-    "installable": True
-}
+from . import wizard

@@ -57,19 +57,24 @@ class stock_picking(models.Model):
                 and picking.partner_id.property_product_pricelist.currency_id \
                 or False
             for line in picking.move_lines:
-                price_unit = 0.0
+                if line.product_id.is_var_coeff:
+                    price_unit = line.procurement_id.sale_line_id.price_unit
+                    quantity = line.product_uom_qty
+                else:
+                    price_unit = line.procurement_id.sale_line_id.price_udv
+                    quantity = line.product_uos_qty
                 sale_line = line.procurement_id.sale_line_id
                 if sale_line and line.state != 'cancel':
-                    price_unit = sale_line.price_unit * \
+                    price_disc_unit = price_unit * \
                         (1-(sale_line.discount or 0.0)/100.0)
                     for c in sale_line.tax_id.compute_all(
-                            price_unit, line.product_qty,
+                            price_disc_unit, quantity,
                             line.product_id,
                             sale_line.order_id.partner_id)['taxes']:
                         taxes += c.get('amount', 0.0)
-                    amount_gross += (sale_line.price_unit *
-                                     line.product_qty)
-                    amount_untaxed += price_unit * line.product_qty
+
+                    amount_gross += (price_unit * quantity)
+                    amount_untaxed += (price_disc_unit * quantity)
                 else:
                     continue
             if cur:
@@ -92,37 +97,52 @@ class stock_move(models.Model):
 
     price_subtotal = fields.Float(
         compute='_get_subtotal', string="Subtotal",
-        digits_compute=dp.get_precision('Sale Price'), readonly=True,
+        digits=dp.get_precision('Sale Price'), readonly=True,
         store=True)
     order_price_unit = fields.Float(
         compute='_get_subtotal', string="Price unit",
-        digits_compute=dp.get_precision('Sale Price'), readonly=True,
+        digits=dp.get_precision('Sale Price'), readonly=True,
         store=True)
     cost_subtotal = fields.Float(
         compute='_get_subtotal', string="Cost subtotal",
-        digits_compute=dp.get_precision('Sale Price'), readonly=True,
+        digits=dp.get_precision('Sale Price'), readonly=True,
         store=True)
     margin = fields.Float(
         compute='_get_subtotal', string="Margin",
-        digits_compute=dp.get_precision('Sale Price'), readonly=True,
+        digits=dp.get_precision('Sale Price'), readonly=True,
         store=True)
     percent_margin = fields.Float(
         compute='_get_subtotal', string="% margin",
-        digits_compute=dp.get_precision('Sale Price'), readonly=True,
+        digits=dp.get_precision('Sale Price'), readonly=True,
         store=True)
+    discount = fields.Float(compute='_get_subtotal', string="Disc. (%)",
+                            digits=(4, 2), readonly=True, store=True)
 
     @api.multi
-    @api.depends('product_id', 'product_qty', 'procurement_id.sale_line_id')
+    @api.depends('product_id', 'product_uom_qty',
+                 'procurement_id.sale_line_id',
+                 'procurement_id.sale_line_id.discount',
+                 'procurement_id.sale_line_id.price_unit')
     def _get_subtotal(self):
         for move in self:
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
-                price_unit = (move.procurement_id.sale_line_id.price_unit *
-                              (1-(move.procurement_id.sale_line_id.discount or
-                                  0.0)/100.0))
-                move.price_subtotal = price_unit * move.product_qty
+                move.discount = move.procurement_id.sale_line_id.discount or \
+                    0.0
+                if move.product_id.is_var_coeff:
+                    price_unit = move.procurement_id.sale_line_id.price_unit
+                else:
+                    price_unit = move.procurement_id.sale_line_id.price_udv
+                price_disc_unit = (price_unit * (1-(move.discount)/100.0))
+                if move.product_id.is_var_coeff:
+                    move.price_subtotal = price_disc_unit * \
+                        move.product_uom_qty
+                    move.cost_subtotal = cost_price * move.product_uom_qty
+                else:
+                    move.price_subtotal = price_disc_unit * \
+                        move.product_uos_qty
+                    move.cost_subtotal = cost_price * move.product_uos_qty
                 move.order_price_unit = price_unit
-                move.cost_subtotal = cost_price * move.product_qty
                 move.margin = move.price_subtotal - move.cost_subtotal
                 if move.price_subtotal > 0:
                     move.percent_margin = (move.margin/move.price_subtotal)*100

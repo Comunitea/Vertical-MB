@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, api
+from openerp import models, api, exceptions, _
 
 
 class supplier_reception_parser(models.AbstractModel):
@@ -35,10 +35,19 @@ class supplier_reception_parser(models.AbstractModel):
         res = [0, 0, 0, 0]
         prod_obj = move.product_id
         move_qty = move.product_uom_qty
-
-        un_ca = prod_obj.supplier_un_ca
-        ca_ma = prod_obj.supplier_ca_ma
-        ma_pa = prod_obj.supplier_ma_pa
+        partner = False
+        for seller in move.product_id.seller_ids:
+            if seller.name.id == move.picking_id.partner_id.id:
+                partner = seller
+                break
+        if not partner:
+            raise exceptions.Warning(_("Seller %s is not found between "
+                                       "product %s sellers") %
+                                    (move.picking_id.partner_id.name,
+                                     move.product_id.name))
+        un_ca = partner.supp_un_ca
+        ca_ma = partner.supp_ca_ma
+        ma_pa = partner.supp_ma_pa
 
         box_units = un_ca
         mantle_units = un_ca * ca_ma

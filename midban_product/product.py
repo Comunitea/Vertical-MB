@@ -26,10 +26,9 @@ from openerp import netsvc
 from openerp import models, api
 from openerp import fields as fields2
 from openerp.exceptions import except_orm
-from openerp.tools.float_utils import float_round
 import operator
 import functools
-
+from openerp.tools.float_utils import float_round
 
 
 class temp_type(osv.Model):
@@ -123,7 +122,6 @@ class product_template(osv.Model):
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
                                      "location temperature type"),
-        'var_weight': fields.boolean('Variable weight'),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
@@ -178,36 +176,6 @@ class product_template(osv.Model):
         'ca_length': fields.float("CA Length", digits=(4, 2)),
         'ma_length': fields.float("MA Length", digits=(4, 2)),
         'pa_length': fields.float("PA Length", digits=(4, 2)),
-        'supplier_kg_un': fields.float("KG/UN Supplier", digits=(4, 2)),
-        'supplier_un_width': fields.float("UN Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_un_height': fields.float("UN Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_un_length': fields.float("UN Length Supplier",
-                                           digits=(4, 2)),
-        'supplier_ca_ma': fields.float("CA/MA Supplier", digits=(4, 2)),
-        'supplier_ma_width': fields.float("MA Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_ma_height': fields.float("MA Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_ma_length': fields.float("MA Length Supplier",
-                                           digits=(4, 2)),
-        'supplier_ma_pa': fields.float("MA/PA Supplier",
-                                       digits=(4, 2)),
-        'supplier_pa_width': fields.float("PA Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_pa_height': fields.float("PA Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_pa_length': fields.float("PA Length Supplier",
-                                           digits=(4, 2)),
-        'supplier_un_ca': fields.float("UN/CA Supplier",
-                                       digits=(4, 2)),
-        'supplier_ca_width': fields.float("CA Width Supplier",
-                                          digits=(4, 2)),
-        'supplier_ca_height': fields.float("CA Height Supplier",
-                                           digits=(4, 2)),
-        'supplier_ca_length': fields.float("CA Length Supplier",
-                                           digits=(4, 2)),
         'palet_wood_height': fields.float("Palet Wood Height", digits=(5, 3),
                                           help='Size wood pallet, affects the \
 calculation of the volume'),
@@ -246,13 +214,8 @@ products do not require units for validation'),
         'palet_wood_height': 0.145,
         'active': False,  # Product desuctived until register state is reached
         'product_class': 'normal',
-        'supplier_pa_width': 0.8,
-        'supplier_pa_length': 1.2,
         'pa_width': 0.8,
         'pa_length': 1.2,
-        'supplier_ma_length': 1.2,
-        'supplier_un_ca': 1.0,
-
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -317,29 +280,36 @@ products do not require units for validation'),
         return True
 
     def _check_units_values(self, cr, uid, ids, context=None):
-        res = True
         p = self.browse(cr, uid, ids[0], context=context)
+        for s in p.seller_ids:
+            if p.product_class not in ['fresh', 'ultrafresh'] \
+                and not p.is_cross_dock and p.type == "product" and \
+                not (s.supp_kg_un and s.supp_un_width and
+                     s.supp_un_height and s.supp_un_length and
+                     s.supp_ca_ma and s.supp_ma_width and
+                     s.supp_ma_height and s.supp_ma_length and
+                     s.supp_ma_pa and s.supp_pa_width and
+                     s.supp_pa_height and s.supp_pa_length and
+                     s.supp_un_ca and s.supp_ca_width and
+                     s.supp_ca_height and s.supp_ca_length):
+                raise osv.except_osv(_('Error'),
+                                     _('Some unit dimension is '
+                                       'equals to zero. Please '
+                                       'check it in supplier %s') %
+                                     (s.name.name))
         if p.product_class not in ['fresh', 'ultrafresh'] \
-            and not p.is_cross_dock and p.type == "product" and \
-            not (p.supplier_kg_un and p.supplier_un_width and
-                 p.supplier_un_height and p.supplier_un_length and
-                 p.supplier_ca_ma and p.supplier_ma_width and
-                 p.supplier_ma_height and p.supplier_ma_length and
-                 p.supplier_ma_pa and p.supplier_pa_width and
-                 p.supplier_pa_height and p.supplier_pa_length and
-                 p.supplier_un_ca and p.supplier_ca_width and
-                 p.supplier_ca_height and p.supplier_ca_length and
-                 p.palet_wood_height and
-                 p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
-                 p.un_width and p.ca_width and p.ma_width and p.pa_width and
-                 p.un_height and p.ca_height and p.ma_height and p.pa_height
-                 and p.un_length and p.ca_length and p.ma_length
-                 and p.pa_length):
-            res = False
-        if not res:
-            raise osv.except_osv(_('Error'), _('Some unit dimension is equals \
-                                               to zero. Please check it'))
-        return res
+                and not p.is_cross_dock and p.type == "product" and \
+                not (p.palet_wood_height and p.kg_un and p.un_ca
+                     and p.ca_ma and p.ma_pa and
+                     p.un_width and p.ca_width and p.ma_width and
+                     p.pa_width and p.un_height and p.ca_height
+                     and p.ma_height and p.pa_height and p.un_length
+                     and p.ca_length and p.ma_length and p.pa_length):
+            raise osv.except_osv(_('Error'),
+                                 _('Some unit dimension is '
+                                   'equals to zero. Please '
+                                   'check it.'))
+        return True
 
     def act_comercial_pending(self, cr, uid, ids, context=None):
         """ Fix state in commercial pending, product no active,
@@ -542,6 +512,7 @@ class product_product(models.Model):
     def uos_qty_to_uom_qty(self, uos_qty, uos_id):
         return self._get_factor(uos_id) * uos_qty
 
+
     @api.model
     def get_uom_logistic_unit(self):
         if self.uom_id.id == self.log_base_id.id:
@@ -595,6 +566,164 @@ class product_product(models.Model):
         conversion_fields += conversions[from_unit.id]
         return functools.reduce(operator.mul, [self[x] for x in conversion_fields])
 
+    @api.model
+    def get_purchase_unit_ids(self, supplier_id):
+        res = []
+        supp = self.get_product_supp_record(supplier_id)
+
+        res = []
+
+        if supp.base_use_purchase and supp.log_base_id:
+            res.append(supp.log_base_id.id)
+        if supp.unit_use_purchase and supp.log_unit_id:
+            res.append(supp.log_unit_id.id)
+        if supp.box_use_purchase and supp.log_box_id:
+            res.append(supp.log_box_id.id)
+        return res
+
+    @api.model
+    def get_product_supp_record(self, supplier_id):
+        res = False
+        for supp in self.seller_ids:
+            if supp.name.id == supplier_id:
+                res = supp
+        if not res:
+            supp_obj = self.env['res.partner'].browse(supplier_id)
+            raise except_orm(_('Error'), _('Supplier %s not defined in product\
+                                            supplier list') % supp_obj.name)
+        return res
+
+    @api.model
+    def uom_qty_to_uoc_qty(self, uom_qty, uoc_id, supplier_id):
+        """
+        Convert product quantity from his default stock unit to the specified
+        uoc_id, consulting the conversions in the supplier model.
+        """
+        supp = self.get_product_supp_record(supplier_id)
+        conv = self.get_purchase_unit_conversions(uom_qty, self.uom_id.id,
+                                                  supplier_id)
+        if uoc_id == supp.log_base_id.id:
+            return conv['base']
+        elif uoc_id == supp.log_unit_id.id:
+            return conv['unit']
+        elif uoc_id == supp.log_box_id.id:
+            return conv['box']
+
+    @api.model
+    def get_uom_po_logistic_unit(self, supplier_id):
+        supp = self.get_product_supp_record(supplier_id)
+        if self.uom_id.id == supp.log_base_id.id:
+            return 'base'
+        elif self.uom_id.id == supp.log_unit_id.id:
+            return 'unit'
+        elif self.uom_id.id == supp.log_box_id.id:
+            return 'box'
+        else:
+            raise except_orm(_('Error'), _('The product unit of measure %s is \
+                             not related with any logistic \
+                             unit' % self.uom_id.name))
+
+    @api.model
+    def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
+        #import pdb; pdb.set_trace()
+        res = {'base': 0.0,
+               'unit': 0.0,
+               'box': 0.0}
+        supp = self.get_product_supp_record(supplier_id)
+
+        cte = self._get_unit_ratios(uoc_id, supplier_id) * qty_uoc
+
+        res['base'] = float_round(cte / self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
+        res['unit'] = float_round(cte / self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
+        res['box'] = float_round(cte / self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        return res
+
+    @api.model
+    def get_price_conversions(self, qty_uoc, uoc_id, supplier_id):
+        #import pdb; pdb.set_trace()
+        res = {'base': 0.0,
+               'unit': 0.0,
+               'box': 0.0}
+        supp = self.get_product_supp_record(supplier_id)
+
+        cte = qty_uoc/self._get_unit_ratios(uoc_id, supplier_id)
+
+        res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
+        res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
+        res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        return res
+
+    @api.model
+    def _conv_units(self, uom_origen, uom_destino, supplier_id):
+        #import pdb; pdb.set_trace()
+        res = self._get_unit_ratios(uom_origen, supplier_id) / \
+              self._get_unit_ratios(uom_destino, supplier_id)
+        #res = float_round(res,2)
+        return res
+
+    @api.model
+    def _get_unit_ratios(self, unit, supplier_id):
+        #Es funcion devuelve un ratio a la unidad base del producto o uom_id
+        #import pdb; pdb.set_trace()
+        uom_id = self.uom_id.id
+        res = 1
+
+        if supplier_id:
+            supp = self.get_product_supp_record(supplier_id)
+            kg_un = supp.supp_kg_un or 1.0
+            un_ca = supp.supp_un_ca or 1.0
+            ca_ma = supp.supp_ca_ma or 1.0
+            ma_pa = supp.supp_ma_pa or 1.0
+
+        else:
+           raise except_orm(_('Error'), _('Function without supplier_id'))
+
+        #Paso todo a la unidad de base
+        if unit == supp.log_base_id.id:
+            res = 1
+        if unit == supp.log_unit_id.id:
+            res = kg_un
+        if unit == supp.log_box_id.id:
+            res = kg_un * un_ca
+
+        #Paso la base a la unidad del producto o uom_id
+        if uom_id == supp.log_base_id.id:
+            res = res
+        if uom_id == supp.log_unit_id.id:
+            res = res / kg_un
+        if uom_id == supp.log_box_id.id:
+            res = res / (kg_un * un_ca)
+
+        #res = float_round(res,2)
+        return res
+
+    @api.model
+    def get_uom_uoc_prices_purchases(self, uoc_id, supplier_id, custom_price_unit=0.0,
+                           custom_price_udc=0.0):
+
+        #import pdb; pdb.set_trace()#
+        custom_price_udc_from_unit = 0.0
+        custom_price_unit_from_udc = 0.0
+        supp = self.get_product_supp_record(supplier_id)
+        #Para evitar si hay custom_price_udc, lo pasamos a custom_price_unit
+        if custom_price_udc:
+            #si hay lo pasamos a custom price unit para no andar con if
+            custom_price_unit_from_udc = self._conv_units( self.uom_id.id,uoc_id, supplier_id) * custom_price_udc
+
+        elif custom_price_unit:
+            #si hay lo pasamos a sacamos custom price udc
+            custom_price_udc_from_unit = self._conv_units(uoc_id, self.uom_id.id,  supplier_id) * custom_price_unit
+
+        else:
+            price_unit = self.standard_price
+            price_udc =  self._conv_units(uoc_id, self.uom_id.id, supplier_id) * price_unit
+
+        price_udc = custom_price_udc or custom_price_udc_from_unit or price_udc
+        price_udc = float_round (price_udc,2)
+        price_unit = custom_price_unit or custom_price_unit_from_udc or price_unit
+        price_unit = float_round(price_unit,2)
+
+        return price_unit, price_udc
 
 
 class ProductSupplierinfo(models.Model):
@@ -664,3 +793,43 @@ class ProductSupplierinfo(models.Model):
         for supp_prod in self:
             supp_prod.is_var_coeff = supp_prod.var_coeff_un or \
                 supp_prod.var_coeff_ca
+
+
+class ProductUom(models.Model):
+
+    _inherit = 'product.uom'
+
+    def search(self, cr, uid, args, offset=0, limit=None, order=None,
+               context=None, count=False):
+        """ Overwrite in order to search only allowed products for a product
+            if product_id is in context."""
+        if context is None:
+            context = {}
+        if context.get('supp_product_id', False) and context.get('supplier_id',
+                                                                 False):
+            t_prod = self.pool.get('product.product')
+            prod = t_prod.browse(cr, uid, context['supp_product_id'], context)
+            prod_udc_ids = prod.get_purchase_unit_ids(context['supplier_id'])
+            # Because sometimes args = [category = False]
+            args = [['id', 'in', prod_udc_ids]]
+        return super(ProductUom, self).search(cr, uid, args,
+                                              offset=offset,
+                                              limit=limit,
+                                              order=order,
+                                              context=context,
+                                              count=count)
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        res = super(ProductUom, self).name_search(name, args=args,
+                                                  operator=operator,
+                                                  limit=limit)
+        if self._context.get('supp_product_id', False) and \
+                self._context.get('supplier_id', False):
+            args = args or []
+            recs = self.browse()
+            recs = self.search(args)
+            res = recs.name_get()
+
+        return res
+

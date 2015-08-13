@@ -12,6 +12,9 @@
             </field>
         </record>
 
+
+
+
         <record id="view_purchase_preorder_tree" model="ir.ui.view">
             <field name="name">purchase.preorder.tree</field>
             <field name="model">purchase.preorder</field>
@@ -56,7 +59,7 @@
                             <group string="Quantities">
                                 <field name="palets" readonly="1" />
                                 <field name="mantles" readonly="1" />
-                                <field name="boxes" readonly="1" />
+                                <!--field name="boxes" readonly="1" /-->
                             </group>
                         </group>
                         <notebook colspan="6">
@@ -75,7 +78,7 @@
                                     <field name="mantles"  context="{'change' : 'mantles', 'tm' : tm}"/>
                                     <field name="palets" context="{'change' : 'palets', 'tm' : tm}"/>
                                     <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
-                                    <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
+                                    <button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" />
                                     <field name="unitskg" string="Units Ordered" readonly="0" invisible="1"/>
                                     <field name="min_fixed" readonly="1" invisible ="0"/>
                                     <field name="real_stock" readonly="1" invisible ="0"/>
@@ -104,6 +107,24 @@
             </field>
         </record>
 
+
+
+        <record id="product_supplier_preorder_filter" model="ir.ui.view">
+            <field name="name">products.supplier.filter</field>
+            <field name="model">products.supplier</field>
+            <field name="arch" type="xml">
+                <search string="Search Products">
+                    <field name="product_id"/>
+                    <field name="product_uoc"/>
+                    <field name="real_stock"/>
+                    <group expand="1" string="Group by...">
+                        <filter string="Unit of Purchase" context="{'group_by':'product_uoc'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
         <record id="product_supplier_preorder_tree_full" model="ir.ui.view">
             <field name="name">products.supplier.tree.full</field>
             <field name="model">products.supplier</field>
@@ -111,8 +132,8 @@
                 <tree string="Preorder Products Supplier" create="0" delete="0" editable="top">
                     <field name="tm" invisible="1"/>
                     <field name="sequence" invisible="1"/>
-                    <field name="incoming_qty" readonly="1" invisible ="1"/>
-                    <field name="date_delivery" readonly="1" invisible ="1"/>
+                    <field name="incoming_qty" readonly="1" invisible ="0"/>
+                    <field name="date_delivery" readonly="1" invisible ="0"/>
                     <field name="product_id" readonly="1"/>
                     <field name="price_purchase"/>
                     <field name="supplier_id" invisible="1" readonly="1"/>
@@ -124,9 +145,9 @@
                     <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
                     <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
                     <field name="unitskg" string="Units Ordered" readonly="0" invisible="1"/>
-                    <field name="min_fixed" readonly="1" invisible ="1"/>
-                    <field name="real_stock" readonly="1" invisible ="1"/>
-                    <field name="virtual_stock" readonly="1" invisible ="1"/>
+                    <field name="min_fixed" readonly="1" invisible ="0"/>
+                    <field name="real_stock" readonly="1" invisible ="0"/>
+                    <field name="virtual_stock" readonly="1" invisible ="0"/>
                 </tree>
             </field>
         </record>
@@ -162,16 +183,17 @@
                     <field name="date_delivery" readonly="1"/>
                     <field name="product_id" readonly="1"/>
                     <field name="price_purchase"/>
-                     <field name="product_uoc"/>
-                    <field name="product_uoc_qty"/>
+                     <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
+                    <field name="product_uoc" context="{'change': 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
+                    <field name="boxes"  context="{'change' : 'boxes', 'tm' : tm}" invisible="1"/>
+                    <field name="mantles"  context="{'change' : 'mantles', 'tm' : tm}"/>
+                    <field name="palets" context="{'change' : 'palets', 'tm' : tm}"/>
+                    <field name="product_qty" readonly="0" string ="Qty en Supplier UOC" invisible="1"/>
                     <!--button name="update_price" string="(update product price)" type="object" icon="terp-gtk-jump-to-ltr" class="oe_edit_only" /-->
-                    <field name="unitskg" string="Units Ordered"/>
-                    <field name="boxes"/>
-                    <field name="mantles"/>
-                    <field name="palets"/>
-                    <field name="min_fixed" readonly="1"/>
-                    <field name="real_stock" readonly="1"/>
-                    <field name="virtual_stock" readonly="1"/>
+                    <field name="unitskg" string="Units Ordered" readonly="0" invisible="1"/>
+                    <field name="min_fixed" readonly="1" invisible ="0"/>
+                    <field name="real_stock" readonly="1" invisible ="0"/>
+                    <field name="virtual_stock" readonly="1" invisible ="0"/>
                 </tree>
             </field>
         </record>
@@ -199,12 +221,12 @@
                             </group>
                             <group>
                                 <group>
-                                    <field name="palets" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'palets')" />
-                                    <field name="mantles" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'mantles')" />
+                                    <field name="palets" readonly="1"/>
+                                    <field name="mantles" readonly="1"/>
                                 </group>
                                 <group>
-                                    <field name="boxes" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'boxes')" />
-                                    <field name="unitskg" readonly="1" on_change="onchange_uoms(product_id, unitskg, boxes, mantles, palets, 'unitskg'd)" />
+                                    <field name="boxes" readonly="1" />
+                                    <field name="unitskg" readonly="1"/>
                                 </group>
                             </group>
                         </group>

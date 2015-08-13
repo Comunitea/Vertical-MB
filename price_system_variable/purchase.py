@@ -301,7 +301,7 @@ class purchase_order_line(osv.Model):
                                         'partner_id': partner_id})
             product = product_product.browse(cr, uid, product_id,
                                              context=context_partner)
-            product_uom_po_id = product.uom_po_id.id
+            product_uom_po_id = product.uom_id.id
             if not uom_id:
                 uom_id = product_uom_po_id
             if not date_order:

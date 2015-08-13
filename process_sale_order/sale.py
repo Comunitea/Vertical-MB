@@ -26,7 +26,8 @@ class sale_order_line(models.Model):
     _inherit = "sale.order.line"
 
     price_udv = fields.Float('Price UdV',
-                             digits_compute=dp.get_precision('Product Price'))
+                             digits_compute=dp.get_precision('Product Price'),
+                             required=True)
     do_onchange = fields.Boolean('Do onchange', default=True)
 
     def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,

@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_product
+#       * midban_product
 #
 msgid ""
 msgstr ""
@@ -986,7 +986,6 @@ msgstr "Coeficiente variable"
 #. module: midban_product
 #: field:product.supplierinfo,is_var_coeff:0
 #: field:product.template,is_var_coeff:0
-#: field:product.template,var_weight:0
 msgid "Variable weight"
 msgstr "Peso variable"
 

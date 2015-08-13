@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp import tools
+from openerp import tools, exceptions, _
 from openerp.osv import fields, osv
 from openerp import models, api
 
@@ -56,6 +56,41 @@ class sale_report(osv.osv):
                 res[item.id] = item.location_id.get_camera()
         return res
 
+    def _get_operation_ids(self, cr, uid, ids, field_names, args,
+                           context=None):
+        res = {}
+        for item in self.browse(cr, uid, ids, context=context):
+            item_res = []
+            for pick in item.wave_id.picking_ids:
+                for op in pick.pack_operation_ids:
+                    if op.location_id == item.location_id:
+                        for quant in op.package_id.quant_ids:
+                            if quant.product_id == item.product_id and \
+                                    quant.lot_id == item.lot_id:
+                                item_res.append(op.id)
+            res[item.id] = list(set(item_res))
+        return res
+
+    def _set_operation_ids(self, cr, uid, ids, field_name, values, args,
+                           context=None):
+        if values:
+            pack_op_obj = self.pool['stock.pack.operation']
+
+            for value in values:
+                vals_action, vals_id, vals = value
+
+                if vals_action == 0:
+                    raise exceptions.Warning(_("It is not possible create new"
+                                               " records in this field"))
+                elif vals_action == 1:
+                    pack_op_obj.write(cr, uid, [vals_id], vals)
+                elif vals_action == 2:
+                    pack_op_obj.unlink(cr, uid, [vals_id])
+
+        return True
+
+
+
     _columns = {
         'product_id': fields.many2one('product.product', 'Product',
                                       readonly=True),
@@ -80,6 +115,10 @@ class sale_report(osv.osv):
                                      relation='stock.location',
                                      string='Camera', readonly=True),
         'group': fields.integer('group',readonly=True),
+        'operation_ids': fields.function(_get_operation_ids, type="one2many",
+                                         string="Operations",
+                                         relation="stock.pack.operation",
+                                         fnct_inv=_set_operation_ids)
     }
 
     def _select(self):
@@ -221,10 +260,6 @@ class sale_report(osv.osv):
              SQ.SEQUENCE,
              SQ.group_id"""
     def init(self, cr):
-        """
-            Falla porque algunas operaciones nunca tienen producto, y es imposible cumplir
-            WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
-        """
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
             SELECT %s

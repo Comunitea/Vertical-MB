@@ -37,7 +37,6 @@
                         <field name="temperature"/>
                     </group>
                     <group string="Product Information">
-                        <field name="var_weight"/>
                         <field name="consignment" />
                         <field name="bulk"/>
                         <field name="mark"/>
@@ -60,27 +59,6 @@
                     </group>
                 </xpath>
 
-                <field name="description_purchase" position="after">
-                    <group colspan="4" col="8" string="Supplier Units">
-                        <field name="supplier_kg_un" required="1"/>
-                        <field name="supplier_un_width" required="1"/>
-                        <field name="supplier_un_height" required="1"/>
-                        <field name="supplier_un_length" required="1"/>
-                        <field name="supplier_un_ca" required="1"/>
-                        <field name="supplier_ca_width" required="1"/>
-                        <field name="supplier_ca_height" required="1"/>
-                        <field name="supplier_ca_length" required="1"/>
-                        <field name="supplier_ca_ma" required="1"/>
-                        <field name="supplier_ma_width" required="1"/>
-                        <field name="supplier_ma_height" required="1"/>
-                        <field name="supplier_ma_length" required="1"/>
-                        <field name="supplier_ma_pa" required="1"/>
-                        <field name="supplier_pa_width" required="1"/>
-                        <field name="supplier_pa_height" required="1"/>
-                        <field name="supplier_pa_length" required="1"/>
-                    </group>
-                </field>
-
                 <field name="description_sale"  position="after">
 
                     <group colspan="2" col="4" string="Relations units - logistic">
@@ -94,7 +72,7 @@
                             <field name="unit_use_sale"/>
                             <field name="box_use_sale"/>
                         </group>
-                        
+
                     </group>
                     <group colspan="4" col="10" string="Coefficients and sizes of logistic units">
                         <group col="2">
@@ -482,7 +460,7 @@
                                 <field name="unit_use_purchase"/>
                                 <field name="box_use_purchase"/>
                             </group>
-                            
+
                             </group>
                             <group colspan="4" col="10" string="Coefficients and sizes of logistic units">
                                 <group col="2">
