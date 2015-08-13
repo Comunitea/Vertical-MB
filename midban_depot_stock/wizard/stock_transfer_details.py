@@ -136,7 +136,7 @@ class stock_transfer_details(models.TransientModel):
             if op.linked_move_operation_ids:
                 move = op.linked_move_operation_ids[0].move_id
 
-                uos_id = move.product_uos and move.product_uos.id or uos_id
+                uos_id = move.product_uos.id or uos_id
             if picking.picking_type_code == 'incoming':
                 if op.uos_id:
                     uos_id = op.uos_id.id
@@ -149,7 +149,7 @@ class stock_transfer_details(models.TransientModel):
                 if supp.is_var_coeff:
                     var_weight = True
             elif picking.picking_type_code == 'outgoing':
-                uos_qty = prod.uom_qty_to_uos_qty(op.product_qty, uos_id)
+                uos_qty = 0.0 # prod.uom_qty_to_uos_qty(op.product_qty, uos_id)
                 if prod.is_var_coeff:
                     var_weight = True
             item = {

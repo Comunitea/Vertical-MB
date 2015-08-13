@@ -586,10 +586,10 @@ class assign_task_wzd(osv.TransientModel):
             for prod_moves in moves_by_product:
                 product = prod_moves[0]
                 move_ids = prod_moves[1]
-            picking_ids = self._get_pickings(cr, uid, ids, move_ids,
-                                             context=context)
-            if picking_ids:
-                        res.extend(picking_ids)
+                picking_ids = self._get_pickings(cr, uid, ids, move_ids,
+                                                 context=context)
+                if picking_ids:
+                    res.extend(picking_ids)
         res = list(set(res))
         return res
 
