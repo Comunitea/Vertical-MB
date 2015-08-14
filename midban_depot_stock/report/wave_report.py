@@ -83,13 +83,12 @@ class sale_report(osv.osv):
                     raise exceptions.Warning(_("It is not possible create new"
                                                " records in this field"))
                 elif vals_action == 1:
+                    vals['changed'] = True
                     pack_op_obj.write(cr, uid, [vals_id], vals)
                 elif vals_action == 2:
                     pack_op_obj.unlink(cr, uid, [vals_id])
 
         return True
-
-
 
     _columns = {
         'product_id': fields.many2one('product.product', 'Product',
@@ -114,7 +113,7 @@ class sale_report(osv.osv):
         'camera_id': fields.function(_get_camera_from_loc, type='many2one',
                                      relation='stock.location',
                                      string='Camera', readonly=True),
-        'group': fields.integer('group',readonly=True),
+        'group': fields.integer('group', readonly=True),
         'operation_ids': fields.function(_get_operation_ids, type="one2many",
                                          string="Operations",
                                          relation="stock.pack.operation",
@@ -259,6 +258,7 @@ class sale_report(osv.osv):
              SQ.wave_id,
              SQ.SEQUENCE,
              SQ.group_id"""
+
     def init(self, cr):
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
