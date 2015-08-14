@@ -43,10 +43,12 @@ class purchase_order_line(models.Model):
                             context=None):
         """
         """
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
-        #import pdb;pdb.set_trace()
         sup = super(purchase_order_line, self)
+        t_product = self.pool.get('product.product')
+        uom_id = t_product.browse(cr, uid,[product_id]).uom_id.id
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
                                       context=context,
@@ -58,8 +60,8 @@ class purchase_order_line(models.Model):
                                       state=state)
         if not product_id:
             return res
+         # Get description of line
 
-        # Get description of line
         t_product = self.pool.get('product.product')
         prod_obj = t_product.browse(cr, uid, product_id)
         dumy_id, name = prod_obj.name_get()[0]
@@ -98,6 +100,15 @@ class purchase_order_line(models.Model):
                 res['value']['product_uoc'] = \
                     product_udc_ids and product_udc_ids[0] or False
                 res['value']['product_uoc_qty'] = 1.0
+                #supp = self.pool.get('product.supplierinfo')
+                #suppinfo_ids = supp.search(cr, uid, [('product_tmpl_id','=',line.product_id.id),('name','=', line.preorder_id.supplier_id.id)])
+                #suppinfo = supp.browse(cr, uid, suppinfo_ids)
+                #lname = (suppinfo.product_code and ('['+ suppinfo.product_code +'] ') or '') + (suppinfo.product_name or '')
+
+                product_pool = self.pool.get('product.product')
+                lname = product_pool.get_product_supplier_name( cr, uid, partner_id,prod_obj.id)
+                res['value']['name'] = lname
+
         return res
 
     @api.onchange('product_uoc_qty')
@@ -116,8 +127,10 @@ class purchase_order_line(models.Model):
                 conv = product.get_purchase_unit_conversions(qty, uoc_id,supplier_id)
                 # base, unit, or box
                 #import pdb; pdb.set_trace()
-                log_unit = product.get_uom_po_logistic_unit(supplier_id)
+                log_unit, log_unit_id = product.get_uom_po_logistic_unit(supplier_id)
                 self.product_qty = conv[log_unit]
+
+
             else:
                 self.do_onchange = True
 
@@ -134,7 +147,7 @@ class purchase_order_line(models.Model):
             uoc_qty = self.product_uoc_qty
             conv = product.get_purchase_unit_conversions(uoc_qty, uoc_id,
                                                          supplier_id)
-            log_unit = product.get_uom_po_logistic_unit(supplier_id)
+            log_unit, log_unit_id = product.get_uom_po_logistic_unit(supplier_id)
             self.product_qty = conv[log_unit]
 
             # Calculate prices
@@ -165,7 +178,7 @@ class purchase_order_line(models.Model):
             uoc_id = vals.get('product_uoc', False) and \
                 vals['product_uoc'] or po_line.product_uoc.id
             conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id, supplier_id)
-            log_unit = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, box
+            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, box
             vals['product_qty'] = conv[log_unit]
             vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
             res = super(purchase_order_line, po_line).write(vals)
@@ -189,7 +202,7 @@ class purchase_order_line(models.Model):
 
             conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
                                                       supplier_id)
-            log_unit = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, or box
+            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, or box
             vals['product_qty'] = conv[log_unit]
             vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
         res = super(purchase_order_line, self).create(vals)

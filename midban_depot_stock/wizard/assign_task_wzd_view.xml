@@ -11,7 +11,7 @@
                     <group colspan="4" col="2">
                         <group>
                             <field name="warehouse_id"/>
-                            <field name="operator_id"/>
+                            <field name="operator_id" /><!--on_change="operator_id_change(operator_id, context)"/>-->
                             <field name="machine_id"/>
                             <field name="max_loc_ops"/>
                             <field name="mandatory_camera"/>
@@ -21,9 +21,13 @@
                             <field name="trans_route_id" domain="[('type', '=', 'delivery')]"/>
                             <field name="date_planned"/>
                             <field name="min_loc_replenish"/>
+                            <field name="paused" invisible = "1"/>
                         </group>
                     </group>
                     <footer>
+                        <button name="pause_task" string="Pause Task" type="object" context="{'operator_id': operator_id}"/>
+                        <button name="run_task" string="Run Task" type="object" context="{'operator_id': operator_id}"/>
+                        <br/>
                         <button name="get_location_task" string="Get Location Task" type="object"/>
                         <button name="get_reposition_task" string="Get Reposition Task" type="object"/>
                         <button name="get_picking_task" string="Get Picking Task" type="object"/>
