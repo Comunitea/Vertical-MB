@@ -136,20 +136,19 @@ class stock_transfer_details(models.TransientModel):
             if op.linked_move_operation_ids:
                 move = op.linked_move_operation_ids[0].move_id
 
-                uos_id = move.product_uos and move.product_uos.id or uos_id
-            if picking.picking_type_code == 'incoming':
+                uos_id = move.product_uos.id or uos_id
                 if op.uos_id:
                     uos_id = op.uos_id.id
                 if op.uos_qty:
                     uos_qty = op.uos_qty
                 else:
-                    uos_qty = prod.uom_qty_to_uoc_qty(op.product_qty,
-                                                      uos_id, supplier_id)
+                    uos_qty = prod.uom_qty_to_uos_qty(op.product_qty,
+                                                      uos_id)
+            if picking.picking_type_code == 'incoming':
                 supp = prod.get_product_supp_record(supplier_id)
                 if supp.is_var_coeff:
                     var_weight = True
-            elif picking.picking_type_code == 'outgoing':
-                uos_qty = prod.uom_qty_to_uos_qty(op.product_qty, uos_id)
+            else:
                 if prod.is_var_coeff:
                     var_weight = True
             item = {
@@ -199,6 +198,8 @@ class stock_transfer_details_items(models.TransientModel):
             if located_qty:
                 self.create_pack_operation(located_qty)
                 remaining_qty -= located_qty
+            else:
+                break
 
     @api.multi
     def _get_max_pack_quantity(self, remaining_qty):

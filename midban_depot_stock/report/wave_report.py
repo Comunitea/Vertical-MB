@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp import tools
+from openerp import tools, exceptions, _
 from openerp.osv import fields, osv
 from openerp import models, api
 
@@ -39,13 +39,10 @@ class sale_report(osv.osv):
         for item in self.browse(cr, uid, ids, context=context):
             res[item.id] = {}
             qty = item.product_qty
-            un_ca = item.product_id.un_ca
-            num_boxes = 0
-            while qty >= un_ca:
-                qty -= un_ca
-                num_boxes += 1
-            res[item.id]['units'] = qty
-            res[item.id]['boxes'] = num_boxes
+            res[item.id]['units'] = item.product_id.uom_qty_to_uos_qty(
+                qty, item.product_id.log_unit_id.id)
+            res[item.id]['boxes'] = item.product_id.uom_qty_to_uos_qty(
+                qty, item.product_id.log_box_id.id)
         return res
 
     def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
@@ -58,6 +55,40 @@ class sale_report(osv.osv):
             if item.location_id:
                 res[item.id] = item.location_id.get_camera()
         return res
+
+    def _get_operation_ids(self, cr, uid, ids, field_names, args,
+                           context=None):
+        res = {}
+        for item in self.browse(cr, uid, ids, context=context):
+            item_res = []
+            for pick in item.wave_id.picking_ids:
+                for op in pick.pack_operation_ids:
+                    if op.location_id == item.location_id:
+                        for quant in op.package_id.quant_ids:
+                            if quant.product_id == item.product_id and \
+                                    quant.lot_id == item.lot_id:
+                                item_res.append(op.id)
+            res[item.id] = list(set(item_res))
+        return res
+
+    def _set_operation_ids(self, cr, uid, ids, field_name, values, args,
+                           context=None):
+        if values:
+            pack_op_obj = self.pool['stock.pack.operation']
+
+            for value in values:
+                vals_action, vals_id, vals = value
+
+                if vals_action == 0:
+                    raise exceptions.Warning(_("It is not possible create new"
+                                               " records in this field"))
+                elif vals_action == 1:
+                    vals['changed'] = True
+                    pack_op_obj.write(cr, uid, [vals_id], vals)
+                elif vals_action == 2:
+                    pack_op_obj.unlink(cr, uid, [vals_id])
+
+        return True
 
     _columns = {
         'product_id': fields.many2one('product.product', 'Product',
@@ -82,7 +113,11 @@ class sale_report(osv.osv):
         'camera_id': fields.function(_get_camera_from_loc, type='many2one',
                                      relation='stock.location',
                                      string='Camera', readonly=True),
-        'group': fields.integer('group',readonly=True),
+        'group': fields.integer('group', readonly=True),
+        'operation_ids': fields.function(_get_operation_ids, type="one2many",
+                                         string="Operations",
+                                         relation="stock.pack.operation",
+                                         fnct_inv=_set_operation_ids)
     }
 
     def _select(self):
@@ -223,11 +258,8 @@ class sale_report(osv.osv):
              SQ.wave_id,
              SQ.SEQUENCE,
              SQ.group_id"""
+
     def init(self, cr):
-        """
-            Falla porque algunas operaciones nunca tienen producto, y es imposible cumplir
-            WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
-        """
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
             SELECT %s

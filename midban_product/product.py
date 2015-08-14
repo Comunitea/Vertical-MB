@@ -122,7 +122,6 @@ class product_template(osv.Model):
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
                                      "location temperature type"),
-        'var_weight': fields.boolean('Variable weight'),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
@@ -913,6 +912,12 @@ class ProductUom(models.Model):
             prod_udc_ids = prod.get_purchase_unit_ids(context['supplier_id'])
             # Because sometimes args = [category = False]
             args = [['id', 'in', prod_udc_ids]]
+        elif context.get('product_id', False):
+            t_prod = self.pool.get('product.product')
+            prod = t_prod.browse(cr, uid, context['product_id'], context)
+            product_udv_ids = prod.get_sale_unit_ids()
+            # Because sometimes args = [category = False]
+            args = [['id', 'in', product_udv_ids]]
         return super(ProductUom, self).search(cr, uid, args,
                                               offset=offset,
                                               limit=limit,
@@ -927,6 +932,11 @@ class ProductUom(models.Model):
                                                   limit=limit)
         if self._context.get('supp_product_id', False) and \
                 self._context.get('supplier_id', False):
+            args = args or []
+            recs = self.browse()
+            recs = self.search(args)
+            res = recs.name_get()
+        elif self._context.get('product_id', False):
             args = args or []
             recs = self.browse()
             recs = self.search(args)

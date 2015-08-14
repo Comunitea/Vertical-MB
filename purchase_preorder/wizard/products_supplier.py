@@ -60,14 +60,12 @@ class ProductsSupplier(models.Model):
         product_id = self.product_id
         supplier_id = self.supplier_id
         self._check_uoc_qty()
-        self.price_purchase =  product_id.standard_price /\
-                               product_id._get_unit_ratios(self.product_uoc.id, supplier_id.id)
+        self.price_purchase =  product_id.standard_price / product_id._get_unit_ratios(self.product_uoc.id, supplier_id.id)
 
 
     @api.model
     def _conv_boxes_logis (self, flag):
         # Convierte de product_uoc a mantles o palets
-        #import pdb; pdb.set_trace()
         product_id = self.product_id
         supplier_id = self.supplier_id
         supp = product_id.get_product_supp_record(supplier_id.id)
@@ -109,7 +107,6 @@ class ProductsSupplier(models.Model):
     @api.model
     @api.onchange ('palets', 'mantles')
     def _check_qtys(self):
-
         if self.last_tm == self._context['tm']:
             return
         self.last_tm = self._context['tm']
@@ -133,8 +130,3 @@ class ProductsSupplier(models.Model):
         self.product_qty = product_id._conv_units(self.product_uoc.id, product_id.uom_id.id, self.supplier_id.id)
         self.unitskg = self.product_uoc_qty
         return
-
-
-
-
-

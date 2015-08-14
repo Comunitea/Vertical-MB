@@ -18,8 +18,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import fields
-from openerp import api, models, _
+from openerp.osv import osv, fields
+from openerp import api, models, _, exceptions
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 import math
@@ -111,6 +111,11 @@ class stock_picking(models.Model):
 
     @api.multi
     def do_transfer(self):
+        # self.pack_operation_ids.update_product_in_move()
+        self.pack_operation_ids.filtered(lambda r: r.changed).delete_related_quants()
+        packages_to_split = self.pack_operation_ids.filtered(
+            lambda r: not r.product_id and r.changed_packed_qty)
+        packages_to_split.split_packages()
         self._regularize_move_quantities()
         res = super(stock_picking, self).do_transfer()
         self._create_backorder_by_uos()
@@ -118,8 +123,6 @@ class stock_picking(models.Model):
 
     @api.one
     def _regularize_move_quantities(self):
-        if self.picking_type_code != 'incoming':
-            return
         total_operations = self._get_total_operation_quantities()
         for move in self.move_lines:
             move.update_receipt_quantity(total_operations[move.product_id.id])
@@ -129,17 +132,15 @@ class stock_picking(models.Model):
         self.ensure_one()
         total_operations = {}
         for operation in self.pack_operation_ids:
-                product_id = operation.product_id.id
+                product_id = operation.operation_product_id.id
                 if product_id not in total_operations.keys():
                     total_operations[product_id] = {'uom': 0.0, 'uos': 0.0}
-                total_operations[product_id]['uom'] += operation.product_qty
+                total_operations[product_id]['uom'] += operation.packed_qty
                 total_operations[product_id]['uos'] += operation.uos_qty
         return total_operations
 
     @api.one
     def _create_backorder_by_uos(self):
-        if self.picking_type_code != 'incoming':
-            return
         backorder_moves = self.move_lines.get_backorder_moves()
         if not backorder_moves:
             return
@@ -153,13 +154,26 @@ class stock_picking(models.Model):
         self.ensure_one()
         backorder = self.search([('backorder_id', '=', self.id)])
         if not backorder:
-            backorder = self.copy(
-                {'name': '/',
-                    'move_lines': [],
-                    'pack_operation_ids': [],
-                    'backorder_id': self.id
-                 })
+            backorder_vals = self._get_backorder_values()
+            backorder = self.copy(backorder_vals)
         return backorder
+
+    @api.multi
+    def _get_backorder_values(self):
+        self.ensure_one()
+        vals = {'name': '/',
+                'move_lines': [],
+                'pack_operation_ids': [],
+                'backorder_id': self.id,
+                'wave_id': False,
+                'operator_id': False,
+                'machine_id': False,
+                'warehouse_id': False,
+                'task_type': False,
+                'camera_ids': False,
+                '': False,
+                }
+        return vals
 
     @api.cr_uid_ids_context
     def approve_pack_operations(self, cr, uid, ids, context=None):
@@ -293,6 +307,19 @@ class stock_picking(models.Model):
         """
         if self.route_detail_id:
             self.min_date = self.route_detail_id.date + " 19:00:00"
+
+    @api.multi
+    def do_prepare_partial(self):
+        res = super(stock_picking, self).do_prepare_partial()
+        for picking in self:
+            for operation in picking.pack_operation_ids:
+                if not operation.linked_move_operation_ids:
+                    continue
+                move = operation.linked_move_operation_ids[0].move_id
+                operation.uos_id = move.product_uos
+                operation.uos_qty = move.product_id.uom_qty_to_uos_qty(
+                    operation.packed_qty, operation.uos_id.id)
+        return res
 
 
 class stock_package(models.Model):
@@ -516,6 +543,14 @@ class stock_pack_operation(models.Model):
                     res[ope.id] = int(math.ceil(ope.product_qty / mant_units))
         return res
 
+    @api.multi
+    def _set_packed_qty(self, field_name, value, args):
+        for operation in self:
+            if operation.product_id:
+                operation.product_qty = value
+            elif operation.package_id:
+                operation.changed_packed_qty = value
+
     def _get_qty_package(self, cr, uid, ids, name, args, context=None):
         """
         Get the qty inside the package or the qty going to a new package
@@ -525,10 +560,13 @@ class stock_pack_operation(models.Model):
         res = {}
         for ope in self.browse(cr, uid, ids, context=context):
             res[ope.id] = 0
-            if ope.package_id:
-                res[ope.id] = ope.package_id.packed_qty
-            elif ope.result_package_id and ope.product_qty:
-                res[ope.id] = ope.product_qty
+            if ope.changed_packed_qty:
+                res[ope.id] = ope.changed_packed_qty
+            else:
+                if ope.package_id and not ope.product_id:
+                    res[ope.id] = ope.package_id.packed_qty
+                elif ope.product_id:
+                    res[ope.id] = ope.product_qty
         return res
 
     _columns = {
@@ -544,7 +582,7 @@ class stock_pack_operation(models.Model):
                                         readonly=True),
         'packed_qty': fields.function(_get_qty_package, type='float',
                                       string='Packed qty',
-                                      readonly=True),
+                                      fnct_inv=_set_packed_qty),
         'num_mantles': fields.function(_get_num_mantles,
                                        type='integer',
                                        string='Nº Mantles',
@@ -560,6 +598,8 @@ class stock_pack_operation(models.Model):
         'old_id': fields.integer('Old id', readonly=True),
         'uos_qty': fields.float('UoS quantity'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
+        'changed_packed_qty': fields.float('Changed packed qty'),
+        'changed': fields.boolean('Record changed')
 
     }
     _defaults = {
@@ -569,7 +609,7 @@ class stock_pack_operation(models.Model):
     def _search_closest_pick_location(self, prod_obj, free_loc_ids):
         loc_t = self.env['stock.location']
         if not free_loc_ids:
-            raise except_orm(_('Error!'), _('No empty locations.'))
+            raise exceptions.Warning(_('Error!'), _('No empty locations.'))
         if prod_obj.picking_location_id.volume_by_parent:
             free_loc_ids.append(prod_obj.picking_location_id.location_id.id)
         else:
@@ -627,7 +667,7 @@ class stock_pack_operation(models.Model):
         """
         res = False
         if not product.picking_location_id:
-            raise except_orm(_('Error!'), _('Not picking location for product \
+            raise exceptions.Warning(_('Error!'), _('Not picking location for product \
                              %s.' % product.name))
 
         pick_loc = product.picking_location_id
@@ -652,7 +692,7 @@ class stock_pack_operation(models.Model):
             multipack_location = self.env['stock.location'].search(
                 [('multipack_location', '=', True)])
             if not multipack_location:
-                raise except_orm(_('Location not found'),
+                raise exceptions.Warning(_('Location not found'),
                                  _('Impossible found the multipack'
                                    ' location'))
             self.location_dest_id = multipack_location
@@ -674,17 +714,59 @@ class stock_pack_operation(models.Model):
                     else:
                         locations.remove(location.id)
                 if found:
-                    print 'a'
                     self.location_dest_id = location
                 else:
-                    print 'b'
                     special_location = self.env['stock.location'].search(
                         [('special_location', '=', True)])
                     if not special_location:
-                        raise except_orm(_('Location not found'),
+                        raise exceptions.Warning(_('Location not found'),
                                          _('Impossible found an special'
                                            ' location'))
                     self.location_dest_id = special_location
+
+    @api.one
+    def split_packages(self):
+        """
+            Se reciben operaciones que contienen 1 paquete entero y a las que
+            se les ha modificado la cantidad, se debe modificar la operacion
+            añadiendo producto, lote, cantidad y unidad de medida.
+        """
+        self.write({
+            'product_id': self.operation_product_id.id,
+            'lot_id': self.packed_lot_id.id,
+            'product_uom_id': self.operation_product_id.uom_id.id,
+            'product_qty': self.changed_packed_qty,
+        })
+
+    @api.one
+    def update_product_in_move(self):
+        if self.product_id:
+            for link_move in self.linked_move_operation_ids:
+                if link_move.move_id.product_id != self.product_id:
+                    link_move.move_id.product_id = self.product_id
+                    self.changed = True
+
+    @api.one
+    def delete_related_quants(self):
+        for link_move in self.linked_move_operation_ids:
+            link_move.move_id.do_unreserve()
+
+    def onchange_lot_id(self, cr, uid, ids, lot_id, context=None):
+        if lot_id and ids:
+            pack_op = self.browse(cr, uid, ids[0])
+            if pack_op.lot_id and pack_op.lot_id.id != lot_id:
+                return {'warning': {'title': _("Warning"),
+                                    'message': _("Check the available "
+                                                 "quantity of new lot.")}}
+        return {}
+
+    @api.multi
+    def write(self, vals):
+        if vals.get('lot_id', False):
+            for op in self:
+                if op.lot_id.id != vals['lot_id']:
+                    vals['package_id'] = False
+        return super(stock_pack_operation, self).write(vals)
 
 
 class stock_warehouse(models.Model):
@@ -1095,7 +1177,7 @@ class stock_location(models.Model):
             context = {'operation': 'greater'}
         ctx = context.copy()
         if zone not in ['picking', 'storage']:
-            raise osv.except_osv(_('Error!'), _('Zone not exist.'))
+            raise exceptions.Warning(_('Error!'), _('Zone not exist.'))
 
         loc_camera_id = self.get_camera(cr, uid, [loc_id], context=context)
         if loc_camera_id:
@@ -1118,7 +1200,7 @@ class stock_location(models.Model):
         if context is None:
             context = {}
         if zone not in ['picking', 'storage']:
-            raise osv.except_osv(_('Error!'), _('Zone %s not exist.') % zone)
+            raise exceptions.Warning(_('Error!'), _('Zone %s not exist.') % zone)
         loc_camera_id = self.get_camera(cr, uid, [loc_id], context=context)
         if loc_camera_id:
             domain = [('location_id', '=', loc_camera_id),
@@ -1127,7 +1209,7 @@ class stock_location(models.Model):
             loc_id = locations and locations[0] or False
         if not loc_id:
             cam = self.browse(cr, uid, loc_camera_id, context).name
-            raise osv.except_osv(_('Error!'), _('No general %s location \
+            raise exceptions.Warning(_('Error!'), _('No general %s location \
                                                  founded in camera %s.') %
                                  (zone, cam))
 
@@ -1326,11 +1408,12 @@ class stock_move(models.Model):
         if total_uos_same_product_moves > total_operations['uos']:
             self.wait_receipt_qty = total_uos_same_product_moves - \
                 total_operations['uos']
-        self.move_dest_id.product_uom_qty = self.product_uom_qty = \
-            total_operations['uom'] / moves_len
+        self.product_uom_qty = total_operations['uom'] / moves_len
 
-        self.move_dest_id.product_uos_qty = self.product_uos_qty = \
-            total_operations['uos'] / moves_len
+        self.product_uos_qty = total_operations['uos'] / moves_len
+        if self.move_dest_id:
+            self.move_dest_id.product_uom_qty = self.product_uom_qty
+            self.move_dest_id.product_uos_qty = self.product_uos_qty
 
     @api.multi
     def get_backorder_moves(self):
@@ -1339,7 +1422,7 @@ class stock_move(models.Model):
             if move.wait_receipt_qty:
                 uom_qty = move.product_id.uos_qty_to_uom_qty(
                     move.wait_receipt_qty, move.product_uos.id)
-                new_move= move.copy({
+                new_move = move.copy({
                     'product_uom_qty': uom_qty,
                     'product_uos_qty': move.wait_receipt_qty,
                     'wait_receipt_qty': 0,
@@ -1392,7 +1475,7 @@ class stock_picking_wave(models.Model):
 
     _columns = {
         'wave_report_ids': fields.one2many('wave.report', 'wave_id',
-                                           'Picking Report', readonly=True),
+                                           'Picking Report'),
         'camera_ids': fields.many2many('stock.location',
                                        'wave_cameras_rel',
                                        'wave_id',
@@ -1431,7 +1514,7 @@ class stock_quant(models.Model):
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
             if not pick_loc_obj:
-                raise osv.except_osv(_('Error!'), _('Not picking location\
+                raise exceptions.Warning(_('Error!'), _('Not picking location\
                                         defined for product %s') %
                                      product.name)
             order = 'removal_date, in_date, id'
@@ -1465,7 +1548,7 @@ class stock_quant(models.Model):
         elif context.get('force_quants_location', False):
             res = context['force_quants_location']
             if not res:
-                raise osv.except_osv(_('Error!'), _('No quants to force the \
+                raise exceptions.Warning(_('Error!'), _('No quants to force the \
                                                     assignament'))
             return res
         sup = super(stock_quant, self).\

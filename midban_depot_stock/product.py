@@ -123,6 +123,14 @@ class product_template(osv.Model):
                                                           context=context)
         return storage_loc_ids
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = {} if default is None else default.copy()
+        default.update({
+            'picking_location_id': False
+        })
+        return super(product_template, self).copy(cr, uid, id, default=default,
+                                                  context=context)
+
 
 class product_uom(osv.Model):
     """

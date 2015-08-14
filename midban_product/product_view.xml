@@ -37,7 +37,6 @@
                         <field name="temperature"/>
                     </group>
                     <group string="Product Information">
-                        <field name="var_weight"/>
                         <field name="consignment" />
                         <field name="bulk"/>
                         <field name="mark"/>

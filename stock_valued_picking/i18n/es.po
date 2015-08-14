@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* stock_valued_picking
+#       * stock_valued_picking
 #
 msgid ""
 msgstr ""
@@ -95,3 +95,37 @@ msgstr "Valor sin impuestos"
 msgid "amount gross"
 msgstr "Importe bruto"
 
+#. module: stock
+#: view:website:stock.report_picking
+msgid "Discount"
+msgstr "Descuento"
+
+#. module: stock
+#: view:website:stock.report_picking
+msgid "Total Without Taxes"
+msgstr "Total sin impuestos"
+
+#. module: stock
+#: view:website:stock.report_picking
+msgid "Total"
+msgstr "Total"
+
+#. module: stock
+#: view:website:stock.report_picking
+msgid "Delivery Address:"
+msgstr "Dirección de envío:"
+
+#. module: stock
+#: view:website:stock.report_picking
+msgid "Price unit"
+msgstr "Precio unitario"
+
+#. module: stock
+#: view:website:stock.report_picking
+msgid "Taxes"
+msgstr "Impuestos"
+
+#. module: stock_valued_picking
+#: field:stock.move,discount:0
+msgid "Disc. (%)"
+msgstr "Desc. (%)"
