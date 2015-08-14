@@ -84,6 +84,9 @@
                  <field name="min_date" position="attributes">
                         <attribute name="attrs">{'readonly': [('route_detail_id', '!=', False)]}</attribute>
                 </field>
+                <xpath expr="//field[@name='pack_operation_ids']/tree/field[@name='lot_id']" position="attributes">
+                    <attribute name="on_change">onchange_lot_id(lot_id)</attribute>
+                </xpath>
             </field>
         </record>
 
