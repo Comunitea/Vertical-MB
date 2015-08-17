@@ -691,7 +691,6 @@ class assign_task_wzd(osv.TransientModel):
         Assign picking task to operator. The task will be linked to a
         wave of picks.
         """
-        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')
