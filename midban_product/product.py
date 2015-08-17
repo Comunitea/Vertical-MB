@@ -707,7 +707,6 @@ class product_product(models.Model):
     @api.model
     def _get_unit_ratios(self, unit, supplier_id):
 
-        #import pdb; pdb.set_trace()
         uom_id = self.uom_id.id
         res = 1
 
@@ -747,6 +746,7 @@ class product_product(models.Model):
             res_uom = 1 * (kg_un * (un_ca or 1.0))
 
         if res == 0 or res_uom == 0:
+
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
                              unit' % self.uom_id.name))
@@ -757,6 +757,7 @@ class product_product(models.Model):
     #proveedor
     @api.model
     def _conv_units(self, uom_origen, uom_destino, supplier_id):
+        #import pdb; pdb.set_trace()
         res = self._get_unit_ratios(uom_destino, supplier_id) / \
               self._get_unit_ratios(uom_origen, supplier_id)
         return res
@@ -773,8 +774,8 @@ class product_product(models.Model):
 
         if not supplier_id:
             raise except_orm(_('Error'), _('The product %s is \
-                             not related with any supplier \
-                             ' % self.uom_id.name))
+                             not related with aany supplier \
+                             ' % self.uom_id.nme))
 
         suppinfo = self.env['product.supplierinfo'].\
             search([('product_tmpl_id','=',product_id),('name','=', supplier_id)])
