@@ -706,8 +706,6 @@ class product_product(models.Model):
     #para un proveedor dado
     @api.model
     def _get_unit_ratios(self, unit, supplier_id):
-
-        #import pdb; pdb.set_trace()
         uom_id = self.uom_id.id
         res = 1
 
@@ -745,7 +743,6 @@ class product_product(models.Model):
             res_uom = 1 * (kg_un or 1.0)
         if uom_id == supp.log_box_id.id:
             res_uom = 1 * (kg_un * (un_ca or 1.0))
-
         if res == 0 or res_uom == 0:
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
