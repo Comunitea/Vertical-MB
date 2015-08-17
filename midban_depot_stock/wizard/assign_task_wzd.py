@@ -29,6 +29,7 @@ class assign_task_wzd(osv.TransientModel):
     _name = "assign.task.wzd"
     _rec_name = "operator_id"
 
+
     def _get_next_working_date(self, cr, uid, context=None):
         """
         Returns the next working day date respect today
@@ -68,7 +69,60 @@ class assign_task_wzd(osv.TransientModel):
                                          default='True')
         return True if param_value == 'True' else False
 
-    # def operator_id_change(self, cr, uid, ids, operator_id, context=None):
+    def operator_id_change(self, cr, uid, ids, operator_id = 0, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        if operator_id:
+            import pdb; pdb.set_trace()
+            #self._get_paused_task(cr, uid, ids=ids, operator_id=operator_id)
+            #wzd_obj = self.browse(cr, uid, ids[0], context=context)
+            t_tasks = self.pool.get("stock.task").search(cr, uid,[
+                ('user_id', '=', operator_id),
+                ('state','=', 'assigned')])
+            if len(t_tasks)==0:
+                res['have_task'] = False
+                res['paused'] = False
+                res['not_paused'] = False
+            else:
+                res['have_task'] = True
+                t_tasks = self.pool.get("stock.task").search(cr, uid,[
+                    ('user_id', '=', operator_id),
+                    ('state','=', 'assigned'),
+                    ('paused', '=', True)])
+                if len(t_tasks)>0:
+                    res['paused'] = True
+                else:
+                    res['paused'] = False
+
+                t_tasks = self.pool.get("stock.task").search(cr, uid,[
+                    ('user_id', '=', operator_id),
+                    ('state','=', 'assigned'),
+                    ('paused', '=', False)])
+                if len(t_tasks)>0:
+                    res['not_paused'] = True
+                else:
+                    res['not_paused'] = False
+
+
+
+            return {'value' : res}
+
+    def _get_paused_task(self, cr, uid, ids, operator_id, context=None):
+        import pdb; pdb.set_trace()
+        if context is None:
+            context = {}
+        #'operator_id = self.browse(cr,uid, ids).operator_idid
+        wzd_obj = self.browse(cr, uid, ids[0], context=context)
+        t_tasks = self.pool.get("stock.task").search(cr, uid,[
+            ('user_id', '=', operator_id),
+            ('state','=', 'assigned'),
+            ('paused', '=', True)], limit = 2)
+        if len(t_tasks)>0:
+            wzd_obj.paused = True
+
+                #wzd_obj.paused = True
+   # def operator_id_change
     #     import pdb; pdb.set_trace()
     #     if context is None:
     #         context = {}
@@ -120,7 +174,9 @@ class assign_task_wzd(osv.TransientModel):
                                            muste the cameras to get operations\
                                            if not checked it will assign \
                                            operations of any camera'),
-        'paused' : fields.boolean('Tasks Paused'),
+        'paused' : fields.boolean(string='Tasks Paused'),
+        'not_paused' : fields.boolean(string='Tasks Not Paused'),
+        'have_task' : fields.boolean(string='Operator have task'),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -200,6 +256,8 @@ class assign_task_wzd(osv.TransientModel):
                 raise osv.except_osv(_('Error!'), _('You have the machine\
                                                     currently assigned.'))
         return on_course_tasks
+
+
 
     def pause_run_task(self, cr, uid, ids, vals, context=None):
 
@@ -330,7 +388,7 @@ class assign_task_wzd(osv.TransientModel):
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-
+        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)

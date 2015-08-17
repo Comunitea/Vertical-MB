@@ -56,10 +56,14 @@ class purchase_order_line(osv.Model):
                 ma_pa = supp.supp_ma_pa
 
             #Buscamos cajas
+<<<<<<< HEAD
+            conv = product_id.get_purchase_unit_conversions(line.product_uoc_qty, line.product_uoc.id, supplier_id.id)
+=======
             conv = product_id.\
                 get_purchase_unit_conversions(line.product_uoc_qty,
                                               line.product_uoc.id,
                                               supplier_id.id)
+>>>>>>> 9de8b538b3b9bea9354af27732c490f13e57c603
 
             # unit_id = unit_uom and unit_uom[1] or False
             # if line.product_qty and line.product_uom.id == unit_id:

@@ -190,7 +190,7 @@ class stock_task(osv.Model):
                 task.wave_id.cancel_picking()
 
         return self.write({'state': 'canceled',
-                          'pause': False})
+                          'paused': False})
 
 
     @api.multi
@@ -198,9 +198,9 @@ class stock_task(osv.Model):
         for task in self:
             if task.state=="assigned":
                 if task.pause:
-                    return self.write({'pause': True})
+                    return self.write({'paused': True})
                 else:
-                    return self.write({'pause': False})
+                    return self.write({'paused': False})
 
     @api.multi
     def assign_task(self):
@@ -208,4 +208,4 @@ class stock_task(osv.Model):
         Button method assign a task
         """
         return self.write({'state': 'assigned',
-                          'pause': False})
+                          'paused': False})
