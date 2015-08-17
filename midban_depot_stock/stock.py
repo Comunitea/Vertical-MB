@@ -789,6 +789,13 @@ class stock_pack_operation(models.Model):
             for op in self:
                 if op.lot_id.id != vals['lot_id']:
                     vals['package_id'] = False
+        if vals.get('product_id', False):
+            for op in self:
+                if op.product_id.id != vals['product_id']:
+                    raise exceptions.Warning(_("Cannot change product once "
+                                               "operation is created, delete "
+                                               "this and crate another one in"
+                                               " the picking."))
         return super(stock_pack_operation, self).write(vals)
 
 
