@@ -64,9 +64,14 @@ class sale_report(osv.osv):
             for pick in item.wave_id.picking_ids:
                 for op in pick.pack_operation_ids:
                     if op.location_id == item.location_id:
-                        for quant in op.package_id.quant_ids:
-                            if quant.product_id == item.product_id and \
-                                    quant.lot_id == item.lot_id:
+                        if op.package_id:
+                            for quant in op.package_id.quant_ids:
+                                if quant.product_id == item.product_id and \
+                                        quant.lot_id == item.lot_id:
+                                    item_res.append(op.id)
+                        else:
+                            if op.product_id == item.product_id and \
+                                    op.lot_id == item.lot_id:
                                 item_res.append(op.id)
             res[item.id] = list(set(item_res))
         return res
