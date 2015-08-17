@@ -213,7 +213,10 @@ class assign_task_wzd(osv.TransientModel):
                                                 You haven't a task assigned."))
             context = {}
         operator_id = self.browse(cr,uid, ids).operator_id.id
-        t_tasks = self.pool.get("stock.task").search(cr, uid,[('user_id', '=', operator_id), ('state','=', 'assigned'), ('paused', '!=', filter)], limit = 2)
+        t_tasks = self.pool.get("stock.task").search(cr, uid,[
+            ('user_id', '=', operator_id),
+            ('state','=', 'assigned'),
+            ('paused', '!=', filter)], limit = 2)
 
         values = {'paused' : filter}
 
@@ -594,6 +597,7 @@ class assign_task_wzd(osv.TransientModel):
         For all moves from a same product, get the new pickings, or the
         original picking if it only have one move.
         """
+
         res = set()
         if context is None:
             context = {}
@@ -687,7 +691,7 @@ class assign_task_wzd(osv.TransientModel):
         Assign picking task to operator. The task will be linked to a
         wave of picks.
         """
-
+        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')
