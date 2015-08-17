@@ -14,15 +14,18 @@
                             <field name="operator_id" /><!--on_change="operator_id_change(operator_id, context)"/>-->
                             <field name="machine_id"/>
                             <field name="max_loc_ops"/>
-                            <field name="mandatory_camera"/>
+
                         </group>
                         <group>
-                            <field name="location_ids" domain="[('camera', '=', True)]" widget="many2many_tags"/>
                             <field name="trans_route_id" domain="[('type', '=', 'delivery')]"/>
                             <field name="date_planned"/>
                             <field name="min_loc_replenish"/>
+                            <field name="mandatory_camera"/>
                             <field name="paused" invisible = "1"/>
                         </group>
+                    </group>
+                    <group colspan="4" col="4">
+                        <field name="location_ids" domain="[('camera', '=', True)]" widget="many2many_tags"/>
                     </group>
                     <footer>
                         <button name="pause_task" string="Pause Task" type="object" context="{'operator_id': operator_id}"/>
