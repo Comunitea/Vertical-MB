@@ -53,13 +53,15 @@ class stock_task(osv.Model):
                                       readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
+        'paused': fields.boolean('Paused'),
         'operation_ids': fields.one2many('stock.pack.operation', 'task_id',
                                          'Operations', readonly=True,
                                          states={'assigned': [('readonly',
-                                                               False)]})
+                                                               False)]}),
     }
     _defaults = {
         'state': 'assigned',
+        'paused': False
     }
 
     @api.one
@@ -187,11 +189,23 @@ class stock_task(osv.Model):
                 task.wave_id.refresh()
                 task.wave_id.cancel_picking()
 
-        return self.write({'state': 'canceled'})
+        return self.write({'state': 'canceled',
+                          'pause': False})
+
+
+    @api.multi
+    def pause_task(self):
+        for task in self:
+            if task.state=="assigned":
+                if task.pause:
+                    return self.write({'pause': True})
+                else:
+                    return self.write({'pause': False})
 
     @api.multi
     def assign_task(self):
         """
         Button method assign a task
         """
-        return self.write({'state': 'assigned'})
+        return self.write({'state': 'assigned',
+                          'pause': False})

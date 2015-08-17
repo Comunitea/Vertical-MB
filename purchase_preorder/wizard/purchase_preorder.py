@@ -527,16 +527,24 @@ class purchase_preorder(osv.Model):
                                                     uid,
                                                     acc_posi,
                                                     taxes_ids)
+
+
                         lname = line.product_id.partner_ref
                         if line.product_id.description_purchase:
                             lname += '\n' + \
                                 line.product_id.description_purchase
+                        #import pdb; pdb.set_trace()
                         seller_delay = int(line.product_id.seller_delay)
                         format = DEFAULT_SERVER_DATETIME_FORMAT
                         dateo = datetime.strptime(date_order, format)
                         ldate = dateo + relativedelta(days=seller_delay)
-                        #
 
+                        #supp = self.pool.get('product.supplierinfo')
+                        #suppinfo_ids = supp.search(cr, uid, [('product_tmpl_id','=',line.product_id.id),('name','=', line.preorder_id.supplier_id.id)])
+                        #suppinfo = supp.browse(cr, uid, suppinfo_ids)
+                        #lname = (suppinfo.product_code and ('['+ suppinfo.product_code +'] ') or '') + (suppinfo.product_name or '')
+                        product_pool = self.pool.get('product.product')
+                        lname = product_pool.get_product_supplier_name(cr, uid, line.preorder_id.supplier_id.id,line.product_id.id)
                         values_line = {'product_id': line.product_id.id,
                                       'name': lname,
                                       #'product_qty': line.unitskg, Creo que es product_qty

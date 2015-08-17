@@ -1131,6 +1131,25 @@ class stock_location(models.Model):
         'storage_type': 'standard',
         'sequence': 0
     }
+        #
+        # def get_camera_sequence(self, cr, uid, ids, context=None):
+        #     import ipdb; ipdb.set.trace()
+        #     camera_sequence = 0 # = False
+        #     loc_id = ids[0]
+        #     loc = self.browse(cr, uid, loc_id, context=context)
+        #     while not camera_sequence and loc.location_id:
+        #         if loc.location_id.camera:
+        #             camera_sequence = loc.location_id.sequence or 0.0
+        #         else:
+        #             loc = loc.location_id
+        #     return camera_sequence
+
+
+        # camera_id = self.get_camera(cr, uid, ids, context=context)
+        # if camera_id:
+        #     loc = self.browse(cr, uid, ids[0], context=context)
+        #     camera_seq = loc.location_id.sequence
+        # return camera_seq
 
     def get_camera(self, cr, uid, ids, context=None):
         """

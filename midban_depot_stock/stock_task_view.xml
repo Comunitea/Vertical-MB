@@ -23,10 +23,11 @@
                                 <field name="wave_id" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
                             </group>
                             <group>
-                                 <field name="machine_id"/>
+                                <field name="machine_id"/>
                                 <field name="date_start"/>
                                 <field name="date_end"/>
                                 <field name="duration" widget="float_time"/>
+                                <field name="paused" attrs="{'invisible': [('state', '!=', 'assigned')]}"/>
                             </group>
                         </group>
                         <group string="Assigned Operations" attrs="{'invisible': [('type', '=', 'picking')]}">
@@ -63,9 +64,28 @@
                     <field name="type"/>
                     <field name="date_start"/>
                     <field name="date_end"/>
-                    <field name="state"/>
                     <field name="picking_id"/>
                     <field name="wave_id"/>
+                    <field name="state"/>
+                    <field name="paused"/>
+
+                </tree>
+            </field>
+        </record>
+        <record id="stock_task_view_tree_resumed" model="ir.ui.view">
+            <field name="name">stock.task.view.tree.resumed</field>
+            <field name="model">stock.task</field>
+            <field name="arch" type="xml">
+                <tree string="Warehouse Tasks" editable="bottom">
+                    <field name="user_id" invisible = "1"/>
+                    <field name="paused"/>
+                    <field name="machine_id" readonly="1"/>
+                    <field name="type" readonly="1"/>
+                    <field name="date_start" readonly="1"/>
+                    <field name="date_end" invisible = "1"/>
+                    <field name="state" invisible = "1"/>
+                    <field name="picking_id" readonly="1"/>
+                    <field name="wave_id" readonly="1"/>
                 </tree>
             </field>
         </record>
@@ -83,9 +103,11 @@
                     <field name="date_end" string="Date End"/>
                     <field name="date_end" string="picking_id"/>
                     <field name="state" string="State"/>
+                    <field name="paused" string="Paused"/>
                     <filter string="Assigned" domain="[('state', '=', 'assigned')]"/>
                     <filter string="Finished" domain="[('state', '=', 'done')]"/>
                     <filter string="Finished" domain="[('state', '=', 'canceled')]"/>
+                    <filter string="Paused" domain="[('paused', '=', True)])"/>
                     <group expand="1" string="Group By...">
                         <filter string="User" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by': 'state'}"/>

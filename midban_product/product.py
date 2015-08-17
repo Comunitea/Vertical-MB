@@ -463,6 +463,8 @@ class product_product(models.Model):
 
     _inherit = "product.product"
 
+
+    #Saca la los ids de las unidades disponibles para venta
     @api.model
     def get_sale_unit_ids(self):
         res = []
@@ -473,7 +475,25 @@ class product_product(models.Model):
         if self.box_use_sale and self.log_box_id:
             res.append(self.log_box_id.id)
         return res
+    # y para compras ....
+    @api.model
+    def get_purchase_unit_ids(self, supplier_id):
+        res = []
+        supp = self.get_product_supp_record(supplier_id)
 
+        res = []
+
+        if supp.base_use_purchase and supp.log_base_id:
+            res.append(supp.log_base_id.id)
+        if supp.unit_use_purchase and supp.log_unit_id:
+            res.append(supp.log_unit_id.id)
+        if supp.box_use_purchase and supp.log_box_id:
+            res.append(supp.log_box_id.id)
+        return res
+
+    #devuelve un factor de conversión a la unidad de stock del producto
+    #desde otra unidad (uos_id)
+    #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
     @api.model
     def _get_factor(self, uos_id):
         uom_id = self.uom_id.id
@@ -504,13 +524,14 @@ class product_product(models.Model):
                              not related with any logistic \
                              unit' % self.uom_id.name))
 
+
     @api.model
     def uom_qty_to_uos_qty(self, uom_qty, uos_id):
-        return uom_qty / self._get_factor(uos_id)
+        return uom_qty * self._get_factor(uos_id)
 
     @api.model
     def uos_qty_to_uom_qty(self, uos_qty, uos_id):
-        return self._get_factor(uos_id) * uos_qty
+        return uos_qty / self._get_factor(uos_id)
 
 
     @api.model
@@ -543,10 +564,10 @@ class product_product(models.Model):
                            custom_price_udv=0.0):
         if custom_price_udv:
             price_udv = custom_price_udv
-            price_unit = price_udv / self._get_factor(uos_id)
+            price_unit = price_udv * self._get_factor(uos_id)
         else:
             price_unit = custom_price_unit or self.lst_price
-            price_udv = price_unit * self._get_factor(uos_id)
+            price_udv = price_unit / self._get_factor(uos_id)
         return price_unit, price_udv
 
     @api.multi
@@ -566,20 +587,7 @@ class product_product(models.Model):
         conversion_fields += conversions[from_unit.id]
         return functools.reduce(operator.mul, [self[x] for x in conversion_fields])
 
-    @api.model
-    def get_purchase_unit_ids(self, supplier_id):
-        res = []
-        supp = self.get_product_supp_record(supplier_id)
 
-        res = []
-
-        if supp.base_use_purchase and supp.log_base_id:
-            res.append(supp.log_base_id.id)
-        if supp.unit_use_purchase and supp.log_unit_id:
-            res.append(supp.log_unit_id.id)
-        if supp.box_use_purchase and supp.log_box_id:
-            res.append(supp.log_box_id.id)
-        return res
 
     @api.model
     def get_product_supp_record(self, supplier_id):
@@ -613,16 +621,19 @@ class product_product(models.Model):
     def get_uom_po_logistic_unit(self, supplier_id):
         supp = self.get_product_supp_record(supplier_id)
         if self.uom_id.id == supp.log_base_id.id:
-            return 'base'
+            return 'base', supp.log_base_id.id
         elif self.uom_id.id == supp.log_unit_id.id:
-            return 'unit'
+            return 'unit', supp.log_unit_id.id
         elif self.uom_id.id == supp.log_box_id.id:
-            return 'box'
+            return 'box', supp.log_box_id.id
         else:
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
                              unit' % self.uom_id.name))
 
+
+
+    #calcula para una cantidad dada, las cantidades en las distintas unidades
     @api.model
     def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
         #import pdb; pdb.set_trace()
@@ -631,13 +642,14 @@ class product_product(models.Model):
                'box': 0.0}
         supp = self.get_product_supp_record(supplier_id)
 
-        cte = self._get_unit_ratios(uoc_id, supplier_id) * qty_uoc
+        cte =  qty_uoc / self._get_unit_ratios(uoc_id, supplier_id)
 
-        res['base'] = float_round(cte / self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
-        res['unit'] = float_round(cte / self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
-        res['box'] = float_round(cte / self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
+        res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
+        res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
         return res
 
+    #calcula para un precio dado, los precios en las udistintas unidades
     @api.model
     def get_price_conversions(self, qty_uoc, uoc_id, supplier_id):
         #import pdb; pdb.set_trace()
@@ -646,57 +658,145 @@ class product_product(models.Model):
                'box': 0.0}
         supp = self.get_product_supp_record(supplier_id)
 
-        cte = qty_uoc/self._get_unit_ratios(uoc_id, supplier_id)
+        cte = qty_uoc * self._get_unit_ratios(uoc_id, supplier_id)
 
-        res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
-        res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
-        res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        res['base'] = float_round(cte / self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
+        res['unit'] = float_round(cte / self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
+        res['box'] = float_round(cte / self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
         return res
 
+
+    #devuelve un factor de conversión a la unidad de stock del producto
+    #desde otra unidad (uos_id)
+    #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
     @api.model
-    def _conv_units(self, uom_origen, uom_destino, supplier_id):
-        #import pdb; pdb.set_trace()
-        res = self._get_unit_ratios(uom_origen, supplier_id) / \
-              self._get_unit_ratios(uom_destino, supplier_id)
-        #res = float_round(res,2)
-        return res
+    def _get_factor(self, uos_id):
 
+        return self._get_unit_ratios(uos_id, 0)
+        # uom_id = self.uom_id.id
+        # if uos_id == self.log_base_id.id:
+        #     if uom_id == self.log_base_id.id:
+        #         return 1
+        #     if uom_id == self.log_unit_id.id:
+        #         return 1/self.kg_un
+        #     if uom_id == self.log_box_id.id:
+        #         return 1 / (self.kg_un * self.un_ca)
+        #
+        # if uos_id == self.log_unit_id.id:
+        #     if uom_id == self.log_base_id.id:
+        #         return self.kg_un
+        #     if uom_id == self.log_unit_id.id:
+        #         return 1
+        #     if uom_id == self.log_box_id.id:
+        #         return 1 / self.un_ca * self.un_ca
+        #
+        # if uos_id == self.log_box_id.id:
+        #     if uom_id == self.log_base_id.id:
+        #         return self.kg_un * self.un_ca
+        #     if uom_id == self.log_unit_id.id:
+        #         return self.un_ca
+        #     if uom_id == self.log_box_id.id:
+        #         return 1
+        # raise except_orm(_('Error'), _('The product unit of measure %s is \
+        #                      not related with any logistic \
+        #                      unit' % self.uom_id.name))
+
+
+    #Es funcion devuelve un ratio a la unidad base del producto o uom_id
+    #para un proveedor dado
     @api.model
     def _get_unit_ratios(self, unit, supplier_id):
-        #Es funcion devuelve un ratio a la unidad base del producto o uom_id
+
         #import pdb; pdb.set_trace()
         uom_id = self.uom_id.id
         res = 1
 
-        if supplier_id:
-            supp = self.get_product_supp_record(supplier_id)
-            kg_un = supp.supp_kg_un or 1.0
-            un_ca = supp.supp_un_ca or 1.0
-            ca_ma = supp.supp_ca_ma or 1.0
-            ma_pa = supp.supp_ma_pa or 1.0
-
+        if supplier_id == 0 :
+            supp = self
+            kg_un = supp.kg_un or 1.0
+            un_ca = supp.un_ca or 1.0
+            ca_ma = supp.ca_ma or 1.0
+            ma_pa = supp.ma_pa or 1.0
         else:
-           raise except_orm(_('Error'), _('Function without supplier_id'))
+            supp = self.get_product_supp_record(supplier_id)
+            if supp:
+                kg_un = supp.supp_kg_un or 1.0
+                un_ca = supp.supp_un_ca or 1.0
+                ca_ma = supp.supp_ca_ma or 1.0
+                ma_pa = supp.supp_ma_pa or 1.0
 
+            else:
+                raise except_orm(_('Error'), _('Supplier_id not in supplier_ids'))
+
+        res = res_uom = 0
         #Paso todo a la unidad de base
         if unit == supp.log_base_id.id:
             res = 1
         if unit == supp.log_unit_id.id:
-            res = kg_un
+            res = 1 / (kg_un or 1.0)
         if unit == supp.log_box_id.id:
-            res = kg_un * un_ca
+            res = 1 / (kg_un * (un_ca or 1.0))
+
 
         #Paso la base a la unidad del producto o uom_id
         if uom_id == supp.log_base_id.id:
-            res = res
+            res_uom = 1
         if uom_id == supp.log_unit_id.id:
-            res = res / kg_un
+            res_uom = 1 * (kg_un or 1.0)
         if uom_id == supp.log_box_id.id:
-            res = res / (kg_un * un_ca)
+            res_uom = 1 * (kg_un * (un_ca or 1.0))
 
-        #res = float_round(res,2)
+        if res == 0 or res_uom == 0:
+            raise except_orm(_('Error'), _('The product unit of measure %s is \
+                             not related with any logistic \
+                             unit' % self.uom_id.name))
+
+        return res * res_uom
+
+    #Da el factor de conversión entre dos unidades para un determinado
+    #proveedor
+    @api.model
+    def _conv_units(self, uom_origen, uom_destino, supplier_id):
+        res = self._get_unit_ratios(uom_destino, supplier_id) / \
+              self._get_unit_ratios(uom_origen, supplier_id)
         return res
 
+
+    #Sacamos el nombre del codigo/nombre de producto por proveedor
+    # si no hay coge producto y le pone un asterisco
+    @api.model
+    def get_product_supplier_name(self, supplier_id, product_id):
+
+        #import pdb; pdb.set_trace()
+        if not product_id:
+            product_id = self.id
+
+        if not supplier_id:
+            raise except_orm(_('Error'), _('The product %s is \
+                             not related with any supplier \
+                             ' % self.uom_id.name))
+
+        suppinfo = self.env['product.supplierinfo'].\
+            search([('product_tmpl_id','=',product_id),('name','=', supplier_id)])
+        supprod = self.env['product.product'].\
+            search([('id','=',product_id)])
+
+        if suppinfo.product_code:
+            res_code = suppinfo.product_code and ('['+ suppinfo.product_code +'] ') or ''
+        else:
+            res_code = supprod.default_code and ('['+ supprod.default_code +']*') or ''
+
+        if suppinfo.product_name:
+            res_name = suppinfo.product_name or ''
+        else:
+            res_name = (supprod.name_template + '*') or ''
+
+        return res_code + res_name
+
+
+    #sacamos las conversiones de precios,podemos darle un precio
+    #para sobreescribir los precios a partir del standar_price
+    #habrá que revisarlo en función delos precios y tarifas por proveedor
     @api.model
     def get_uom_uoc_prices_purchases(self, uoc_id, supplier_id, custom_price_unit=0.0,
                            custom_price_udc=0.0):

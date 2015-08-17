@@ -269,6 +269,7 @@ class purchase_order_line(osv.Model):
         purchase pricelist rule is based on change_supplier_costs (base = -4)
         or raise a warning if anyone was found.
         """
+
         if context is None:
             context = {}
         sup = super(purchase_order_line, self)

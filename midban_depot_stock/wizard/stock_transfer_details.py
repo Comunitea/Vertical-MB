@@ -318,7 +318,7 @@ class stock_transfer_details_items(models.TransientModel):
                 conv = product.get_purchase_unit_conversions(qty, uoc_id,
                                                              supplier_id)
                 # base, unit, or box
-                log_unit = product.get_uom_po_logistic_unit(supplier_id)
+                log_unit, log_unit_id = product.get_uom_po_logistic_unit(supplier_id)
                 new_quantity = conv[log_unit]
                 if new_quantity != self.quantity:
                     self.do_onchange = False

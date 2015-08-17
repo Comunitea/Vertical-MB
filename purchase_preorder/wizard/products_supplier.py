@@ -56,14 +56,11 @@ class ProductsSupplier(models.Model):
     @api.model
     @api.onchange ('product_uoc')
     def _check_product_uoc(self):
+
         product_id = self.product_id
         supplier_id = self.supplier_id
-
-        #'primero cantidades'
         self._check_uoc_qty()
-        #luego los precios
-        unit_ratios = product_id._get_unit_ratios(self.product_uoc.id, supplier_id.id)
-        self.price_purchase =  product_id.standard_price * unit_ratios
+        self.price_purchase =  product_id.standard_price / product_id._get_unit_ratios(self.product_uoc.id, supplier_id.id)
 
 
     @api.model
