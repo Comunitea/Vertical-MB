@@ -41,7 +41,7 @@ class TestProduct(openerp.tests.TransactionCase):
                                                     "customer": False})
         self.supplier = self.partner.browse(cr, uid, supplier_id)
 
-    def test_procut_case_1(self):
+    def test_product_case_1(self):
         """Caja de 10 magnums (unidad es caja de 10)"""
         cr, uid = self.cr, self.uid
         unit_id = self.imd.get_object_reference(cr, uid, 'product',
@@ -111,7 +111,7 @@ class TestProduct(openerp.tests.TransactionCase):
                                                    "Caja de 10 magnums "
                                                    "are 60 units uom.")
 
-    def test_procut_case_2(self):
+    def test_product_case_2(self):
         """Lomo de ternera 5-6Kg"""
         cr, uid = self.cr, self.uid
         unit_id = self.imd.get_object_reference(cr, uid, 'product',
@@ -239,4 +239,122 @@ class TestProduct(openerp.tests.TransactionCase):
         self.assertEquals(conv[supp_log_unit], 55, "10 units in purchase of "
                                                     "Lomo de ternera 5-6Kg "
                                                     "are 55 kg uom.")
+
+    def test_product_case_3(self):
+        """Filete por piezas - 6 o 7 Uds x Caja"""
+        cr, uid = self.cr, self.uid
+        unit_id = self.imd.get_object_reference(cr, uid, 'product',
+                                                'product_uom_unit')[1]
+        box_id = self.imd.get_object_reference(cr, uid, 'midban_depot_stock',
+                                               'product_uom_box')[1]
+        kg_id = self.imd.get_object_reference(cr, uid, 'product',
+                                              'product_uom_kgm')[1]
+        prod_id = self.product.create(cr, uid, {"name":
+                                                "Filete por piezas - 6 o 7 "
+                                                "Uds x Caja",
+                                                "uom_id": unit_id,
+                                                "list_price": 2.0,
+                                                "log_base_id": kg_id,
+                                                "base_use_sale": True,
+                                                "log_unit_id": unit_id,
+                                                "unit_use_sale": True,
+                                                "log_box_id": box_id,
+                                                "box_use_sale": True,
+                                                "kg_un": 0.5,
+                                                "var_coeff_un": True,
+                                                "un_ca": 6.5,
+                                                "var_coeff_ca": True,
+                                                "uom_po_id": unit_id,
+                                                "standard_price": 0.2,
+                                                "active": True})
+        prod = self.product.browse(cr, uid, prod_id)
+        self.supp_info.create(cr, uid, {"name": self.supplier.id,
+                                        "product_tmpl_id": prod.
+                                        product_tmpl_id.id,
+                                        "log_unit_id": unit_id,
+                                        "unit_use_purchase": True,
+                                        "log_box_id": box_id,
+                                        "box_use_purchase": False,
+                                        "log_base_id": kg_id,
+                                        "base_use_purchase": False,
+                                        "supp_kg_un": 0.5,
+                                        "var_coeff_un": True,
+                                        "supp_un_ca": 6.5,
+                                        "var_coeff_ca": True})
+        self.assertEquals(prod.is_var_coeff, True,
+                          "Filete por piezas - 6 o 7 Uds x Caja is variable.")
+
+        sale_unit_ids = self.uom.search(cr, uid, [],
+                                        context={'product_id': prod_id})
+        self.assertEquals(set(sale_unit_ids), set([unit_id, box_id, kg_id]),
+                          "Filete por piezas - 6 o 7 Uds x Caja is saleable "
+                          "in units, boxes and kg.")
+
+        purchase_unit_ids = self.uom.\
+            search(cr, uid, [], context={'supp_product_id': prod_id,
+                                         'supplier_id': self.supplier.id})
+        self.assertEquals(set(purchase_unit_ids), set([unit_id]),
+                          "Filete por piezas - 6 o 7 Uds x Caja purchaseable "
+                          "in units.")
+        # Sales
+        res = prod.uom_qty_to_uos_qty(10, kg_id)
+        self.assertEquals(res, 5, "10 units of Filete por piezas - 6 o 7 Uds "
+                                   "x Caja are 5 kg. approx. in sale.")
+        res = prod.uom_qty_to_uos_qty(10, unit_id)
+        self.assertEquals(res, 10, "10 units of Filete por piezas - 6 o 7 Uds "
+                                   "x Caja are 10 units in sale.")
+        res = prod.uom_qty_to_uos_qty(13, box_id)
+        self.assertEquals(res, 2, "13 units of Filete por piezas - 6 o 7 Uds "
+                                  "x Caja are approx. 2 boxes in sale.")
+
+        res = prod.uos_qty_to_uom_qty(5, kg_id)
+        self.assertEquals(res, 10, "5 kg in sale of Filete por piezas - 6 o 7 "
+                                   "Uds x Caja are 10 units uom.")
+        res = prod.uos_qty_to_uom_qty(10, unit_id)
+        self.assertEquals(res, 10, "10 units in sale of Filete por piezas - 6 "
+                                   "o 7 Uds x Caja are 10 units uom.")
+        res = prod.uos_qty_to_uom_qty(2, box_id)
+        self.assertEquals(res, 13, "2 boxes in sale of Filete por piezas - 6 "
+                                   "o 7 Uds x Caja are approx. 13 units uom.")
+
+        prices = prod.get_uom_uos_prices(kg_id, custom_price_unit=3)
+        self.assertEquals(prices, (3, 6), "3 as unit price for Filete por "
+                                          "piezas - 6 o 7 Uds x Caja in sale "
+                                          "are 0.5 in uos (kg) price.")
+        prices = prod.get_uom_uos_prices(unit_id, custom_price_unit=3)
+        self.assertEquals(prices, (3, 3), "3 as unit price for Filete por "
+                                          "piezas - 6 o 7 Uds x Caja in sale "
+                                          "are 3 in uos (unit) price.")
+        prices = prod.get_uom_uos_prices(unit_id, custom_price_udv=4)
+        self.assertEquals(prices, (4, 4), "4 as uos (unit) price for Filete "
+                                          "por piezas - 6 o 7 Uds x Caja in "
+                                          "sale are 4 in price unit.")
+
+        prices = prod.get_uom_uos_prices(kg_id, custom_price_udv=6)
+        self.assertEquals(prices, (3, 6), "0.5 as uos (kg) price for Filete "
+                                          "por piezas - 6 o 7 Uds x Caja in "
+                                          "sale are 3 in price unit.")
+        prices = prod.get_uom_uos_prices(box_id, custom_price_unit=3)
+        self.assertEquals(prices, (3, 19.5), "3 as unit price for Filete por "
+                                             "piezas - 6 o 7 Uds x Caja in "
+                                             "sale are 19,5 in uos (box) "
+                                             "price.")
+        prices = prod.get_uom_uos_prices(box_id, custom_price_udv=19.5)
+        self.assertEquals(prices, (3, 19.5), "19,5 as uos (box) price for "
+                                             "Filete por piezas - 6 o 7 Uds x "
+                                             "Caja in sale are 3 in price "
+                                             "unit.")
+
+        #Purchases
+        res = prod.uom_qty_to_uoc_qty(5, unit_id, self.supplier.id)
+        self.assertEquals(res, 5, "5 units of Filete por piezas - 6 o 7 Uds "
+                                   "x Caja are 5 units in purchase.")
+        supp_log_unit = prod.get_uom_po_logistic_unit(self.supplier.id)
+        self.assertEquals(supp_log_unit, "unit", "The uom in purchase must "
+                                                  "be unit.")
+        conv = prod.get_purchase_unit_conversions(10, unit_id, self.supplier.id)
+        self.assertEquals(conv[supp_log_unit], 10, "10 units in purchase of "
+                                                   "Filete por piezas - 6 o 7 "
+                                                   "Uds x Caja are 10 units "
+                                                   "uom.")
 
