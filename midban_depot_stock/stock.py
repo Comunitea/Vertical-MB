@@ -24,6 +24,7 @@ from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 import math
 from lxml import etree
+import math
 
 
 class stock_picking(models.Model):
@@ -312,13 +313,35 @@ class stock_picking(models.Model):
     def do_prepare_partial(self):
         res = super(stock_picking, self).do_prepare_partial()
         for picking in self:
-            for operation in picking.pack_operation_ids:
-                if not operation.linked_move_operation_ids:
-                    continue
-                move = operation.linked_move_operation_ids[0].move_id
-                operation.uos_id = move.product_uos
-                operation.uos_qty = move.product_id.uom_qty_to_uos_qty(
-                    operation.packed_qty, operation.uos_id.id)
+            for move in picking.move_lines:
+                if move.product_uos_qty and move.product_uos:
+                    uos_qty = move.product_uos_qty
+                    op_coeff = move.product_uom_qty / move.product_uos_qty
+                    operations = [x.operation_id for x \
+                        in move.linked_move_operation_ids]
+                    operations = list(set(operations))
+                    no_operations = len(operations)
+                    for operation in operations:
+                        if not operation:
+                            continue
+                        no_operations -= 1
+                        operation.uos_id = move.product_uos.id
+                        estimated_uos_qty = operation.packed_qty / op_coeff
+
+                        decimal_part = estimated_uos_qty - \
+                            int(estimated_uos_qty)
+                        if decimal_part > 0.85:
+                            estimated_uos_qty = \
+                                int(math.ceil(estimated_uos_qty))
+                        else:
+                            estimated_uos_qty = int(estimated_uos_qty)
+
+                        if estimated_uos_qty <= uos_qty:
+                            uos_qty -= estimated_uos_qty
+                            operation.uos_qty += estimated_uos_qty
+                        else:
+                             operation.uos_qty += uos_qty
+                             break
         return res
 
 
@@ -1419,7 +1442,7 @@ class stock_move(models.Model):
     def get_backorder_moves(self):
         backorder_moves = self.env['stock.move']
         for move in self:
-            if move.wait_receipt_qty:
+            if move.wait_receipt_qty and move.product_uos:
                 uom_qty = move.product_id.uos_qty_to_uom_qty(
                     move.wait_receipt_qty, move.product_uos.id)
                 new_move = move.copy({
