@@ -74,7 +74,6 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         res = {}
         if operator_id:
-            import pdb; pdb.set_trace()
             #self._get_paused_task(cr, uid, ids=ids, operator_id=operator_id)
             #wzd_obj = self.browse(cr, uid, ids[0], context=context)
             t_tasks = self.pool.get("stock.task").search(cr, uid,[
@@ -104,39 +103,11 @@ class assign_task_wzd(osv.TransientModel):
                 else:
                     res['not_paused'] = False
 
-
-
+            if res['have_task'] and not res['not_paused']:
+                res['give_me'] = False
+            else:
+                res['give_me'] = True
             return {'value' : res}
-
-    def _get_paused_task(self, cr, uid, ids, operator_id, context=None):
-        import pdb; pdb.set_trace()
-        if context is None:
-            context = {}
-        #'operator_id = self.browse(cr,uid, ids).operator_idid
-        wzd_obj = self.browse(cr, uid, ids[0], context=context)
-        t_tasks = self.pool.get("stock.task").search(cr, uid,[
-            ('user_id', '=', operator_id),
-            ('state','=', 'assigned'),
-            ('paused', '=', True)], limit = 2)
-        if len(t_tasks)>0:
-            wzd_obj.paused = True
-
-                #wzd_obj.paused = True
-   # def operator_id_change
-    #     import pdb; pdb.set_trace()
-    #     if context is None:
-    #         context = {}
-    #     #wzd_obj = self.browse(cr, uid, ids[0], context=context)
-    #     if not operator_id:
-    #         return
-    #     t_tasks = self.pool.get("stock.task").search(cr, uid,[('user_id', '=', operator_id), ('state','=','assigned'), ('paused', '=', True)])
-    #
-    #     values = {'paused':False}
-    #     if len(t_tasks)>0:
-    #             values['paused'] = True
-    #             self.write(cr, uid, ids, values)
-    #     #return {'value': values},
-    #     #'domain' : {'stock_tasks':[('id','in', t_tasks)]}
 
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
@@ -177,6 +148,7 @@ class assign_task_wzd(osv.TransientModel):
         'paused' : fields.boolean(string='Tasks Paused'),
         'not_paused' : fields.boolean(string='Tasks Not Paused'),
         'have_task' : fields.boolean(string='Operator have task'),
+        'give_me' : fields.boolean(string='Give me ?'),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -185,6 +157,7 @@ class assign_task_wzd(osv.TransientModel):
         'max_loc_ops': _get_max_loc_ops,
         'min_loc_replenish': _get_min_loc_replenish,
         'mandatory_camera': _get_mandatory_camera,
+        'give_me' : False,
     }
 
     def _print_report(self, cr, uid, ids, task_id=False, wave_id=False,
@@ -416,6 +389,7 @@ class assign_task_wzd(osv.TransientModel):
         location_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
         # Search withid desc because of complete the partial picking picks
         # first.
+        import pdb; pdb.set_trace()
         pick_ids = t_pick.search(cr, uid, [('state', '=', 'assigned'),
                                            ('picking_type_id',
                                             '=',
@@ -442,7 +416,6 @@ class assign_task_wzd(osv.TransientModel):
             ]
             op_ids = t_op.search(cr, uid, domain)
             if not op_ids:
-                t_pick.do_prepare_partial(cr, uid, [pick_id], context)
                 op_ids = t_op.search(cr, uid, domain)
             if op_ids:
                 pick = t_pick.browse(cr, uid, pick_id, context=context)
@@ -458,6 +431,7 @@ class assign_task_wzd(osv.TransientModel):
         task_id = t_task.create(cr, uid, vals, context=context)
 
         assigned_ops = []
+        import pdb; pdb.set_trace()
         for op in t_op.browse(cr, uid, op_ids, context=context):
             if len(assigned_ops) == max_ops:
                 break
@@ -474,6 +448,7 @@ class assign_task_wzd(osv.TransientModel):
             op.assign_location()
             op.write({'task_id': task_id})
             assigned_ops.append(op)
+        pick.write ({'task_id': task_id})
         if not assigned_ops:
             raise osv.except_osv(_('Error!'),
                                  _('Not found operations of the selected\
