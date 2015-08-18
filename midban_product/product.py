@@ -496,6 +496,7 @@ class product_product(models.Model):
     #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
     @api.model
     def _get_factor(self, uos_id):
+
         uom_id = self.uom_id.id
         if uos_id == self.log_base_id.id:
             if uom_id == self.log_base_id.id:
@@ -706,7 +707,7 @@ class product_product(models.Model):
     @api.model
     def _get_unit_ratios(self, unit, supplier_id):
 
-        #import pdb; pdb.set_trace()
+
         uom_id = self.uom_id.id
         res = 1
 
