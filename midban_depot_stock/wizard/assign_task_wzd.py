@@ -157,7 +157,7 @@ class assign_task_wzd(osv.TransientModel):
         'max_loc_ops': _get_max_loc_ops,
         'min_loc_replenish': _get_min_loc_replenish,
         'mandatory_camera': _get_mandatory_camera,
-        'give_me' : False,
+        'give_me' : True,
     }
 
     def _print_report(self, cr, uid, ids, task_id=False, wave_id=False,
@@ -361,7 +361,7 @@ class assign_task_wzd(osv.TransientModel):
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
@@ -389,7 +389,6 @@ class assign_task_wzd(osv.TransientModel):
         location_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
         # Search withid desc because of complete the partial picking picks
         # first.
-        import pdb; pdb.set_trace()
         pick_ids = t_pick.search(cr, uid, [('state', '=', 'assigned'),
                                            ('picking_type_id',
                                             '=',
@@ -431,7 +430,6 @@ class assign_task_wzd(osv.TransientModel):
         task_id = t_task.create(cr, uid, vals, context=context)
 
         assigned_ops = []
-        import pdb; pdb.set_trace()
         for op in t_op.browse(cr, uid, op_ids, context=context):
             if len(assigned_ops) == max_ops:
                 break

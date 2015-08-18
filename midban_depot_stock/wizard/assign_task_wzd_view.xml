@@ -24,7 +24,7 @@
                             <field name="paused" invisible = "1"/>
                             <field name="not_paused" invisible = "1"/>
                             <field name="have_task" invisible = "1"/>
-                            <field name="give_me" invisible = "1s"/>
+                            <field name="give_me" invisible = "1"/>
                         </group>
                     </group>
                     <group colspan="4" col="4">

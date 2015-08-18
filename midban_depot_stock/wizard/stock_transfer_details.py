@@ -127,7 +127,6 @@ class stock_transfer_details(models.TransientModel):
             picking.do_prepare_partial()
 
         items = []
-        import pdb; pdb.set_trace()
         for op in picking.pack_operation_ids:
             prod = op.product_id
             uos_id = op.product_uom_id.id
