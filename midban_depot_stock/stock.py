@@ -113,33 +113,43 @@ class stock_picking(models.Model):
     @api.multi
     def do_transfer(self):
         # self.pack_operation_ids.update_product_in_move()
-        self.pack_operation_ids.filtered(lambda r: r.changed).delete_related_quants()
-        packages_to_split = self.pack_operation_ids.filtered(
-            lambda r: not r.product_id and r.changed_packed_qty)
-        packages_to_split.split_packages()
+        #self.pack_operation_ids.filtered(lambda r: r.changed).delete_related_quants()
+       #packages_to_split = self.pack_operation_ids.filtered(
+       #     lambda r: not r.product_id and r.changed_packed_qty)
+        #packages_to_split.split_packages()
         self._regularize_move_quantities()
         res = super(stock_picking, self).do_transfer()
-        self._create_backorder_by_uos()
+        #self._create_backorder_by_uos()
         return res
 
 
     @api.one
     def _regularize_move_quantities(self):
+        self.recompute_remaining_qty(self)
         total_operations = self._get_total_operation_quantities()
         for move in self.move_lines:
-            move.update_receipt_quantity(total_operations[move.product_id.id])
+            if move.product_id.is_var_coeff:
+                #move.update_receipt_quantity(total_operations[move.product_id.id])
+                total_operations = {'product_uom_qty': 0.0, 'product_uos_qty': 0.0}
+                for link in move.linked_move_operation_ids:
+                    total_operations['product_uom_qty'] += link.operation_id.packed_qty
+                    total_operations['product_uos_qty'] += link.operation_id.uos_qty
+                if move.product_uom_qty < total_operations['product_uom_qty']:
+                    move.product_uom_qty = total_operations['product_uom_qty']
+                    move.product_uos_qty = total_operations['product_uos_qty']
+
 
     @api.multi
     def _get_total_operation_quantities(self):
-        self.ensure_one()
-        total_operations = {}
-        for operation in self.pack_operation_ids:
-                product_id = operation.operation_product_id.id
-                if product_id not in total_operations.keys():
-                    total_operations[product_id] = {'uom': 0.0, 'uos': 0.0}
-                total_operations[product_id]['uom'] += operation.packed_qty
-                total_operations[product_id]['uos'] += operation.uos_qty
-        return total_operations
+         self.ensure_one()
+         total_operations = {}
+         for operation in self.pack_operation_ids:
+                 product_id = operation.operation_product_id.id
+                 if product_id not in total_operations.keys():
+                     total_operations[product_id] = {'uom': 0.0, 'uos': 0.0}
+                 total_operations[product_id]['uom'] += operation.packed_qty
+                 total_operations[product_id]['uos'] += operation.uos_qty
+         return total_operations
 
     @api.one
     def _create_backorder_by_uos(self):
