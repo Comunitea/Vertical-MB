@@ -122,6 +122,7 @@ class stock_picking(models.Model):
         self._create_backorder_by_uos()
         return res
 
+
     @api.one
     def _regularize_move_quantities(self):
         total_operations = self._get_total_operation_quantities()
@@ -309,6 +310,7 @@ class stock_picking(models.Model):
         if self.route_detail_id:
             self.min_date = self.route_detail_id.date + " 19:00:00"
 
+
     @api.multi
     def do_prepare_partial(self):
         res = super(stock_picking, self).do_prepare_partial()
@@ -316,7 +318,7 @@ class stock_picking(models.Model):
             for move in picking.move_lines:
                 if move.product_uos_qty and move.product_uos:
                     uos_qty = move.product_uos_qty
-                    op_coeff = move.product_uom_qty / move.product_uos_qty
+
                     operations = [x.operation_id for x \
                         in move.linked_move_operation_ids]
                     operations = list(set(operations))
@@ -326,22 +328,8 @@ class stock_picking(models.Model):
                             continue
                         no_operations -= 1
                         operation.uos_id = move.product_uos.id
-                        estimated_uos_qty = operation.packed_qty / op_coeff
-
-                        decimal_part = estimated_uos_qty - \
-                            int(estimated_uos_qty)
-                        if decimal_part > 0.85:
-                            estimated_uos_qty = \
-                                int(math.ceil(estimated_uos_qty))
-                        else:
-                            estimated_uos_qty = int(estimated_uos_qty)
-
-                        if estimated_uos_qty <= uos_qty:
-                            uos_qty -= estimated_uos_qty
-                            operation.uos_qty += estimated_uos_qty
-                        else:
-                             operation.uos_qty += uos_qty
-                             break
+                        estimated_uos_qty = move.product_id.uom_qty_to_uos_qty(operation.packed_qty, move.product_uos.id)
+                        operation.uos_qty += estimated_uos_qty
         return res
 
 
