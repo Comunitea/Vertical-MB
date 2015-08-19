@@ -103,7 +103,7 @@ class assign_task_wzd(osv.TransientModel):
                 else:
                     res['not_paused'] = False
 
-            if res['have_task'] and not res['not_paused']:
+            if (res['have_task'] and not res['not_paused']) or not res['have_task']:
                 res['give_me'] = False
             else:
                 res['give_me'] = True
@@ -350,18 +350,13 @@ class assign_task_wzd(osv.TransientModel):
 
 
     def get_location_task(self, cr, uid, ids, context=None):
-        #comprobamos si el usuario tiene tarea asignada
-        # if self.get_run_tasks ():
-        #     raise osv.except_osv(_('Error!'),
-        #          _('User %s have an assigned task' % self.operator.id))
-
 
         """
         Search pickings wich picking type equals to location task, and create
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-        #import pdb; pdb.set_trace()
+        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
@@ -418,8 +413,13 @@ class assign_task_wzd(osv.TransientModel):
                 op_ids = t_op.search(cr, uid, domain)
             if op_ids:
                 pick = t_pick.browse(cr, uid, pick_id, context=context)
+
                 break
 
+        if not op_ids:
+            raise osv.except_osv(_('Error!'),
+                                 _('Not found operations for picking \
+                                    %s' % pick_ids))
         vals = {
             'user_id': wzd_obj.operator_id.id,
             'type': 'ubication',
@@ -446,7 +446,8 @@ class assign_task_wzd(osv.TransientModel):
             op.assign_location()
             op.write({'task_id': task_id})
             assigned_ops.append(op)
-        pick.write ({'task_id': task_id})
+        if pick:
+            pick.write ({'task_id': task_id})
         if not assigned_ops:
             raise osv.except_osv(_('Error!'),
                                  _('Not found operations of the selected\
