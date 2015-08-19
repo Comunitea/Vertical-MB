@@ -29,6 +29,7 @@ class assign_task_wzd(osv.TransientModel):
     _name = "assign.task.wzd"
     _rec_name = "operator_id"
 
+
     def _get_next_working_date(self, cr, uid, context=None):
         """
         Returns the next working day date respect today
@@ -68,21 +69,45 @@ class assign_task_wzd(osv.TransientModel):
                                          default='True')
         return True if param_value == 'True' else False
 
-    # def operator_id_change(self, cr, uid, ids, operator_id, context=None):
-    #     import pdb; pdb.set_trace()
-    #     if context is None:
-    #         context = {}
-    #     #wzd_obj = self.browse(cr, uid, ids[0], context=context)
-    #     if not operator_id:
-    #         return
-    #     t_tasks = self.pool.get("stock.task").search(cr, uid,[('user_id', '=', operator_id), ('state','=','assigned'), ('paused', '=', True)])
-    #
-    #     values = {'paused':False}
-    #     if len(t_tasks)>0:
-    #             values['paused'] = True
-    #             self.write(cr, uid, ids, values)
-    #     #return {'value': values},
-    #     #'domain' : {'stock_tasks':[('id','in', t_tasks)]}
+    def operator_id_change(self, cr, uid, ids, operator_id = 0, context=None):
+        if context is None:
+            context = {}
+        res = {}
+        if operator_id:
+            #self._get_paused_task(cr, uid, ids=ids, operator_id=operator_id)
+            #wzd_obj = self.browse(cr, uid, ids[0], context=context)
+            t_tasks = self.pool.get("stock.task").search(cr, uid,[
+                ('user_id', '=', operator_id),
+                ('state','=', 'assigned')])
+            if len(t_tasks)==0:
+                res['have_task'] = False
+                res['paused'] = False
+                res['not_paused'] = False
+            else:
+                res['have_task'] = True
+                t_tasks = self.pool.get("stock.task").search(cr, uid,[
+                    ('user_id', '=', operator_id),
+                    ('state','=', 'assigned'),
+                    ('paused', '=', True)])
+                if len(t_tasks)>0:
+                    res['paused'] = True
+                else:
+                    res['paused'] = False
+
+                t_tasks = self.pool.get("stock.task").search(cr, uid,[
+                    ('user_id', '=', operator_id),
+                    ('state','=', 'assigned'),
+                    ('paused', '=', False)])
+                if len(t_tasks)>0:
+                    res['not_paused'] = True
+                else:
+                    res['not_paused'] = False
+
+            if res['have_task'] and not res['not_paused']:
+                res['give_me'] = False
+            else:
+                res['give_me'] = True
+            return {'value' : res}
 
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
@@ -120,7 +145,10 @@ class assign_task_wzd(osv.TransientModel):
                                            muste the cameras to get operations\
                                            if not checked it will assign \
                                            operations of any camera'),
-        'paused' : fields.boolean('Tasks Paused'),
+        'paused' : fields.boolean(string='Tasks Paused'),
+        'not_paused' : fields.boolean(string='Tasks Not Paused'),
+        'have_task' : fields.boolean(string='Operator have task'),
+        'give_me' : fields.boolean(string='Give me ?'),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -129,6 +157,7 @@ class assign_task_wzd(osv.TransientModel):
         'max_loc_ops': _get_max_loc_ops,
         'min_loc_replenish': _get_min_loc_replenish,
         'mandatory_camera': _get_mandatory_camera,
+        'give_me' : True,
     }
 
     def _print_report(self, cr, uid, ids, task_id=False, wave_id=False,
@@ -200,6 +229,8 @@ class assign_task_wzd(osv.TransientModel):
                 raise osv.except_osv(_('Error!'), _('You have the machine\
                                                     currently assigned.'))
         return on_course_tasks
+
+
 
     def pause_run_task(self, cr, uid, ids, vals, context=None):
 
@@ -330,7 +361,7 @@ class assign_task_wzd(osv.TransientModel):
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
@@ -384,7 +415,6 @@ class assign_task_wzd(osv.TransientModel):
             ]
             op_ids = t_op.search(cr, uid, domain)
             if not op_ids:
-                t_pick.do_prepare_partial(cr, uid, [pick_id], context)
                 op_ids = t_op.search(cr, uid, domain)
             if op_ids:
                 pick = t_pick.browse(cr, uid, pick_id, context=context)
@@ -416,6 +446,7 @@ class assign_task_wzd(osv.TransientModel):
             op.assign_location()
             op.write({'task_id': task_id})
             assigned_ops.append(op)
+        pick.write ({'task_id': task_id})
         if not assigned_ops:
             raise osv.except_osv(_('Error!'),
                                  _('Not found operations of the selected\
@@ -691,7 +722,7 @@ class assign_task_wzd(osv.TransientModel):
         Assign picking task to operator. The task will be linked to a
         wave of picks.
         """
-#        import pdb; pdb.set_trace()
+
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')

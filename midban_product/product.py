@@ -451,12 +451,31 @@ class ProductTemplate(models.Model):
                                    weight product in sales process")
 
     @api.one
+    @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
+    def check_supplier_uoms(self):
+
+        product_uom= self.uom_id
+        if not ((product_uom == self.log_base_id) or \
+            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+            raise Warning(_('Product uom not in logistic units \
+                             ' % product_uom))
+
+        product_uom= self.uos_id
+        if not((product_uom == self.log_base_id) or \
+            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+            raise Warning (_('Product uos not in logistic units \
+                             ' % product_uom))
+
+    @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca')
     def _get_is_var_coeff(self):
         """
         Calc name str
         """
         self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
+
+
+
 
 
 class product_product(models.Model):
@@ -496,6 +515,7 @@ class product_product(models.Model):
     #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
     @api.model
     def _get_factor(self, uos_id):
+
         uom_id = self.uom_id.id
         if uos_id == self.log_base_id.id:
             if uom_id == self.log_base_id.id:
@@ -573,7 +593,6 @@ class product_product(models.Model):
     @api.multi
     def get_palet_size(self, from_unit):
         """
-
         :param from_unit: Unidad desde la que se convertira a palet
         """
         self.ensure_one()
@@ -706,6 +725,8 @@ class product_product(models.Model):
     #para un proveedor dado
     @api.model
     def _get_unit_ratios(self, unit, supplier_id):
+
+
         uom_id = self.uom_id.id
         res = 1
 
@@ -743,6 +764,7 @@ class product_product(models.Model):
             res_uom = 1 * (kg_un or 1.0)
         if uom_id == supp.log_box_id.id:
             res_uom = 1 * (kg_un * (un_ca or 1.0))
+
         if res == 0 or res_uom == 0:
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
@@ -881,6 +903,29 @@ class ProductSupplierinfo(models.Model):
                                    product will be processed as a variable \
                                    weight product in purchases process")
 
+
+    @api.one
+    @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'product_uom')
+    def check_supplier_uoms(self):
+
+        product_uom= self.product_tmpl_id.uom_id
+        if not ((product_uom == self.log_base_id) or \
+            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+            raise Warning(_('The supplit uoms are \
+                             not related to product uom\
+                             ' % product_uom))
+
+        product_uom= self.product_uom
+        if not((product_uom == self.log_base_id) or \
+            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+            raise Warning (_('The supplit uom are \
+                             not related to suppplier uoms\
+                             ' % product_uom))
+
+
+
+
+
     @api.multi
     @api.depends('var_coeff_un', 'var_coeff_ca')
     def _get_is_var_coeff(self):
@@ -940,4 +985,3 @@ class ProductUom(models.Model):
             res = recs.name_get()
 
         return res
-

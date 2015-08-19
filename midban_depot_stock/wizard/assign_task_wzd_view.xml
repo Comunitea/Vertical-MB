@@ -11,10 +11,10 @@
                     <group colspan="4" col="2">
                         <group>
                             <field name="warehouse_id"/>
-                            <field name="operator_id" /><!--on_change="operator_id_change(operator_id, context)"/>-->
+                            <field name="operator_id" on_change="operator_id_change(operator_id)"/>
                             <field name="machine_id"/>
                             <field name="max_loc_ops"/>
-
+                            <field name="id" />
                         </group>
                         <group>
                             <field name="trans_route_id" domain="[('type', '=', 'delivery')]"/>
@@ -22,21 +22,27 @@
                             <field name="min_loc_replenish"/>
                             <field name="mandatory_camera"/>
                             <field name="paused" invisible = "1"/>
+                            <field name="not_paused" invisible = "1"/>
+                            <field name="have_task" invisible = "1"/>
+                            <field name="give_me" invisible = "1"/>
                         </group>
                     </group>
                     <group colspan="4" col="4">
                         <field name="location_ids" domain="[('camera', '=', True)]" widget="many2many_tags"/>
                     </group>
                     <footer>
-                        <button name="pause_task" string="Pause Task" type="object" context="{'operator_id': operator_id}"/>
-                        <button name="run_task" string="Run Task" type="object" context="{'operator_id': operator_id}"/>
+                        <button name="get_location_task" string="Get Location Task" type="object" attrs="{'invisible': [('give_me', '=', True)]}"/>
+                        <button name="get_reposition_task" string="Get Reposition Task" type="object" attrs="{'invisible': [('give_me', '=', True)]}"/>
+                        <button name="get_picking_task" string="Get Picking Task" type="object" attrs="{'invisible': [('give_me', '=', True)]}"/>
                         <br/>
-                        <button name="get_location_task" string="Get Location Task" type="object"/>
-                        <button name="get_reposition_task" string="Get Reposition Task" type="object"/>
-                        <button name="get_picking_task" string="Get Picking Task" type="object"/>
-                        <button name="finish_task" string="Finish Task" type="object"/>
-                        <button name="cancel_task" string="Cancel Task" type="object"/>
-                        <button name="reprint_task" string="Reprint Task" type="object"/>
+                        <button name="finish_task" string="Finish Task" type="object" attrs="{'invisible': [('have_task', '=', False)]}"/>
+                        <button name="cancel_task" string="Cancel Task" type="object" attrs="{'invisible': [('have_task', '=', False)]}"/>
+                        <button name="reprint_task" string="Reprint Task" type="object" attrs="{'invisible': [('have_task', '=', False)]}"/>
+                        <button name="pause_task" string="Pause Task" type="object" context="{'operator_id': operator_id}" attrs="{'invisible': [('not_paused', '!=', True)]}"/>
+                        <button name="run_task" string="Run Task" type="object" context="{'operator_id': operator_id}" attrs="{'invisible': [('paused', '!=', True)]}"/>
+
+
+
                     </footer>
                  </form>
             </field>
