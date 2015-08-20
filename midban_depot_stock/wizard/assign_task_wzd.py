@@ -356,7 +356,6 @@ class assign_task_wzd(osv.TransientModel):
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-        import pdb; pdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
