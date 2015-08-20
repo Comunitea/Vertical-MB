@@ -553,11 +553,11 @@ class stock_pack_operation(models.Model):
             product_id = ope.product_id
             uom_in_mantles = 1
             if product_id.uom_id == product_id.log_base_id:
-                uom_in_mantles = uom_in_mantles * product_id.kg_un * product_id.ca_ma * product_id.un_ca
+                uom_in_mantles = product_id.kg_un * product_id.ca_ma * product_id.un_ca
             if product_id.uom_id == product_id.log_unit_id:
-                uom_in_mantles = uom_in_mantles * product_id.un_ca * product_id.ca_ma
+                uom_in_mantles = product_id.un_ca * product_id.ca_ma
             if product_id.uom_id == product_id.log_box_id:
-                uom_in_mantles = uom_in_mantles * product_id.ca_ma
+                uom_in_mantles = product_id.ca_ma
 
             if ope.package_id:
                 res[ope.id] = ope.package_id.num_mantles
