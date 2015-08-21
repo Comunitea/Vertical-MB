@@ -216,6 +216,10 @@ products do not require units for validation'),
         'product_class': 'normal',
         'pa_width': 0.8,
         'pa_length': 1.2,
+        'kg_un': 1.0,
+        'un_ca': 1.0,
+        'ca_ma': 1.0,
+        'ma_pa': 1.0
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -451,6 +455,12 @@ class ProductTemplate(models.Model):
                                    weight product in sales process")
 
     @api.one
+    @api.constrains('base_use_sale', 'unit_use_sale', 'box_use_sale')
+    def check_use_sale_checked(self):
+        if not ( self.base_use_sale or self.unit_use_sale or self.box_use_sale):
+            raise Warning (_('Need a logistic unit in sales'))
+
+    @api.one
     @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
     def check_supplier_uoms(self):
 
@@ -466,6 +476,23 @@ class ProductTemplate(models.Model):
             raise Warning (_('Product uos not in logistic units \
                              ' % product_uom))
 
+        unit_error = False
+        if self.log_base_id:
+            if (self.log_base_id == self.log_unit_id) or \
+                (self.log_base_id == self.log_box_id):
+                unit_error = True
+        if self.log_unit_id:
+            if (self.log_unit_id == self.log_base_id) or \
+                (self.log_unit_id == self.log_box_id):
+                unit_error = True
+        if self.log_box_id:
+            if (self.log_box_id == self.log_base_id) or \
+                (self.log_box_id == self.log_unit_id):
+                unit_error = True
+
+        if unit_error:
+            raise Warning (_('Product logistic units are wrong'))
+
     @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca')
     def _get_is_var_coeff(self):
@@ -473,10 +500,6 @@ class ProductTemplate(models.Model):
         Calc name str
         """
         self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
-
-
-
-
 
 class product_product(models.Model):
 
@@ -514,7 +537,7 @@ class product_product(models.Model):
     #desde otra unidad (uos_id)
     #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
     @api.model
-    def _get_factor(self, uos_id):
+    def _get_factor_no_se_usa(self, uos_id):
 
         uom_id = self.uom_id.id
         if uos_id == self.log_base_id.id:
@@ -546,12 +569,12 @@ class product_product(models.Model):
 
 
     @api.model
-    def uom_qty_to_uos_qty(self, uom_qty, uos_id):
-        return uom_qty * self._get_factor(uos_id)
+    def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id = 0):
+        return uom_qty * self._get_factor(uos_id, supplier_id)
 
     @api.model
-    def uos_qty_to_uom_qty(self, uos_qty, uos_id):
-        return uos_qty / self._get_factor(uos_id)
+    def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id = 0):
+        return uos_qty / self._get_factor(uos_id, supplier_id)
 
 
     @api.model
@@ -621,7 +644,7 @@ class product_product(models.Model):
         return res
 
     @api.model
-    def uom_qty_to_uoc_qty(self, uom_qty, uoc_id, supplier_id):
+    def uom_qty_to_uoc_qty(self, uom_qty, uoc_id, supplier_id = 0):
         """
         Convert product quantity from his default stock unit to the specified
         uoc_id, consulting the conversions in the supplier model.
@@ -689,47 +712,16 @@ class product_product(models.Model):
     #desde otra unidad (uos_id)
     #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
     @api.model
-    def _get_factor(self, uos_id):
+    def _get_factor(self, uos_id, supplier_id = 0):
 
-        return self._get_unit_ratios(uos_id, 0)
-        # uom_id = self.uom_id.id
-        # if uos_id == self.log_base_id.id:
-        #     if uom_id == self.log_base_id.id:
-        #         return 1
-        #     if uom_id == self.log_unit_id.id:
-        #         return 1/self.kg_un
-        #     if uom_id == self.log_box_id.id:
-        #         return 1 / (self.kg_un * self.un_ca)
-        #
-        # if uos_id == self.log_unit_id.id:
-        #     if uom_id == self.log_base_id.id:
-        #         return self.kg_un
-        #     if uom_id == self.log_unit_id.id:
-        #         return 1
-        #     if uom_id == self.log_box_id.id:
-        #         return 1 / self.un_ca * self.un_ca
-        #
-        # if uos_id == self.log_box_id.id:
-        #     if uom_id == self.log_base_id.id:
-        #         return self.kg_un * self.un_ca
-        #     if uom_id == self.log_unit_id.id:
-        #         return self.un_ca
-        #     if uom_id == self.log_box_id.id:
-        #         return 1
-        # raise except_orm(_('Error'), _('The product unit of measure %s is \
-        #                      not related with any logistic \
-        #                      unit' % self.uom_id.name))
-
+        return self._get_unit_ratios(uos_id, supplier_id)
 
     #Es funcion devuelve un ratio a la unidad base del producto o uom_id
     #para un proveedor dado
     @api.model
     def _get_unit_ratios(self, unit, supplier_id):
-
-
         uom_id = self.uom_id.id
         res = 1
-
         if supplier_id == 0 :
             supp = self
             kg_un = supp.kg_un or 1.0
@@ -754,7 +746,7 @@ class product_product(models.Model):
         if unit == supp.log_unit_id.id:
             res = 1 / (kg_un or 1.0)
         if unit == supp.log_box_id.id:
-            res = 1 / (kg_un * (un_ca or 1.0))
+            res = 1 / ((kg_un or 1.0) * (un_ca or 1.0))
 
 
         #Paso la base a la unidad del producto o uom_id
@@ -879,19 +871,19 @@ class ProductSupplierinfo(models.Model):
     box_use_purchase = fields2.Boolean('Can be used on purchases',
                                        help='Allows you to buy in the defined'
                                        ' logistic box')
-    supp_kg_un = fields2.Float("KG/UN Supplier", digits=(4, 2))
+    supp_kg_un = fields2.Float("KG/UN Supplier", digits=(4, 2), default = 1.0)
     supp_un_width = fields2.Float("UN Width Supplier", digits=(4, 2))
     supp_un_height = fields2.Float("UN Height Supplier", digits=(4, 2))
     supp_un_length = fields2.Float("UN Length Supplier", digits=(4, 2))
-    supp_ca_ma = fields2.Float("CA/MA Supplier", digits=(4, 2))
+    supp_ca_ma = fields2.Float("CA/MA Supplier", digits=(4, 2), default = 1.0)
     supp_ma_width = fields2.Float("MA Width Supplier", digits=(4, 2))
     supp_ma_height = fields2.Float("MA Height Supplier", digits=(4, 2))
     supp_ma_length = fields2.Float("MA Length Supplier", digits=(4, 2))
-    supp_ma_pa = fields2.Float("MA/PA Supplier", digits=(4, 2))
-    supp_pa_width = fields2.Float("PA Width Supplier", digits=(4, 2))
+    supp_ma_pa = fields2.Float("MA/PA Supplier", digits=(4, 2), default = 1.0)
+    supp_pa_width = fields2.Float("PA Width Supplier", digits=(4, 2), default = 0.8)
     supp_pa_height = fields2.Float("PA Height Supplier", digits=(4, 2))
-    supp_pa_length = fields2.Float("PA Length Supplier", digits=(4, 2))
-    supp_un_ca = fields2.Float("UN/CA Supplier", digits=(4, 2))
+    supp_pa_length = fields2.Float("PA Length Supplier", digits=(4, 2), default = 1.2)
+    supp_un_ca = fields2.Float("UN/CA Supplier", digits=(4, 2), default = 1.0)
     supp_ca_width = fields2.Float("CA Width Supplier", digits=(4, 2))
     supp_ca_height = fields2.Float("CA Height Supplier", digits=(4, 2))
     supp_ca_length = fields2.Float("CA Length Supplier", digits=(4, 2))
@@ -902,7 +894,6 @@ class ProductSupplierinfo(models.Model):
                                    help="If any conversion is checked, the \
                                    product will be processed as a variable \
                                    weight product in purchases process")
-
 
     @api.one
     @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'product_uom')
