@@ -356,7 +356,7 @@ class assign_task_wzd(osv.TransientModel):
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
@@ -384,7 +384,7 @@ class assign_task_wzd(osv.TransientModel):
         location_task_type_id = wzd_obj.warehouse_id.ubication_type_id.id
         # Search withid desc because of complete the partial picking picks
         # first.
-        pick_ids = t_pick.search(cr, uid, [('state', '=', 'assigned'),
+        pick_ids = t_pick.search(cr, uid, [('state', 'in', ['assigned', 'partially_available']),
                                            ('picking_type_id',
                                             '=',
                                             location_task_type_id)],

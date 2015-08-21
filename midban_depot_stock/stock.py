@@ -25,6 +25,7 @@ import openerp.addons.decimal_precision as dp
 import math
 from lxml import etree
 import math
+from openerp.tools import float_compare
 
 
 class stock_picking(models.Model):
@@ -126,17 +127,23 @@ class stock_picking(models.Model):
     @api.one
     def _regularize_move_quantities(self):
         self.recompute_remaining_qty(self)
-        total_operations = self._get_total_operation_quantities()
+        #total_operations = self._get_total_operation_quantities()
+        operations = []
         for move in self.move_lines:
             if move.product_id.is_var_coeff:
                 #move.update_receipt_quantity(total_operations[move.product_id.id])
                 total_operations = {'product_uom_qty': 0.0, 'product_uos_qty': 0.0}
                 for link in move.linked_move_operation_ids:
-                    total_operations['product_uom_qty'] += link.operation_id.packed_qty
-                    total_operations['product_uos_qty'] += link.operation_id.uos_qty
+                    if link.operation_id.id not in operations:
+                        operations.append(link.operation_id.id)
+                        total_operations['product_uom_qty'] += link.operation_id.packed_qty
+                        total_operations['product_uos_qty'] += link.operation_id.uos_qty
                 if move.product_uom_qty < total_operations['product_uom_qty']:
                     move.product_uom_qty = total_operations['product_uom_qty']
                     move.product_uos_qty = total_operations['product_uos_qty']
+                if move.product_uos_qty >= total_operations['product_uos_qty']:
+                    #si tengo menos cantidad uos que la esperada.Almacena la cantidad (en Uos) que queda pendiente
+                    move.wait_receipt_qty = move.product_uos_qty - total_operations['product_uos_qty']
 
 
     @api.multi
@@ -337,9 +344,10 @@ class stock_picking(models.Model):
                         if not operation:
                             continue
                         no_operations -= 1
-                        operation.uos_id = move.product_uos.id
-                        estimated_uos_qty = move.product_id.uom_qty_to_uos_qty(operation.packed_qty, move.product_uos.id)
-                        operation.uos_qty += estimated_uos_qty
+                        if not operation.product_id.is_var_coeff or operation.uos_qty == 0:
+                            operation.uos_id = move.product_uos.id
+                            estimated_uos_qty = move.product_id.uom_qty_to_uos_qty(operation.packed_qty, move.product_uos.id)
+                            operation.uos_qty += estimated_uos_qty
         return res
 
 
@@ -1373,7 +1381,34 @@ class stock_move(models.Model):
                         'product_uos_qty': real_weight
                     }
                     self.write(cr, uid, ids, vals, context=context)
+
+
+        #Propagar las unidades de venta...
+        for move in self.browse(cr, uid, ids, context=context):
+            propagated_changes_dict = {}
+            #propagation of quantity sale change
+            if vals.get('product_uos_qty'):
+                propagated_changes_dict['product_uos_qty'] = vals['product_uos_qty']
+            if vals.get('product_uos_id'):
+                propagated_changes_dict['product_uos_id'] = vals['product_uos_id']
+            if not context.get('do_not_propagate', False) and propagated_changes_dict:
+                self.write(cr, uid, [move.move_dest_id.id], propagated_changes_dict, context=context)
+
         return res
+
+    def split(self, cr, uid, move, qty, restrict_lot_id=False, restrict_partner_id=False, context=None):
+        """
+        Cambiar la cantidad de uos al realizar movimientos de Backorder para producto con coeff variable
+        """
+        uos_qty = move.product_uos_qty
+        if move.move_dest_id and move.propagate and move.move_dest_id.state not in ('done', 'cancel'):
+              self.write(cr, uid, move.move_dest_id.id, {'wait_receipt_qty':move.wait_receipt_qty})
+        res = super(stock_move, self).split(cr, uid, move, qty, restrict_lot_id, restrict_partner_id,
+                                            context=context)
+        if move.product_id.is_var_coeff:
+            self.write(cr, uid, move.id, {'product_uos_qty':uos_qty - move.wait_receipt_qty})
+            split_ids = self.search(cr,uid, [('split_from', '=', move.id)])
+            self.write(cr, uid, split_ids, {'product_uos_qty':move.wait_receipt_qty})
 
     def create(self, cr, uid, vals, context=None):
         if vals.get('real_weight', False):
