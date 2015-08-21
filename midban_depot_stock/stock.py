@@ -529,29 +529,35 @@ class stock_pack_operation(models.Model):
         We suppose to return a integer number, so we round up the number of
         mantles.
         """
+        #se supone que se pasa desde log_unit a mantos, pero no vale
+        #hay que cambiar para tener en cuenta desde cualquiera
+        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         res = {}
         for ope in self.browse(cr, uid, ids, context=context):
             res[ope.id] = 0
+
+            product_id = ope.product_id
+            uom_in_mantles = 1
+            if product_id.uom_id == product_id.log_base_id:
+                uom_in_mantles = product_id.kg_un * product_id.ca_ma * product_id.un_ca
+            if product_id.uom_id == product_id.log_unit_id:
+                uom_in_mantles = product_id.un_ca * product_id.ca_ma
+            if product_id.uom_id == product_id.log_box_id:
+                uom_in_mantles = product_id.ca_ma
+
             if ope.package_id:
                 res[ope.id] = ope.package_id.num_mantles
                 # If quit from a pack and put in other pack return the
                 # operation num_mantles instead of the volume
                 if ope.result_package_id and ope.product_qty:
-                    units_in_mantle = ope.product_id.un_ca * \
-                        ope.product_id.ca_ma
-                    if units_in_mantle:
-                        mantles = math.ceil(ope.product_qty / units_in_mantle)
-                        mantles = int(mantles)
-                        res[ope.id] = mantles
+                    if uom_in_mantles:
+                        res[ope.id] = int(math.ceil(ope.product_qty / uom_in_mantles))
             elif ope.product_id and ope.product_qty \
                     and ope.result_package_id:
-                un_ca = ope.product_id.un_ca
-                ca_ma = ope.product_id.ca_ma
-                mant_units = un_ca * ca_ma
-                if mant_units:
-                    res[ope.id] = int(math.ceil(ope.product_qty / mant_units))
+                if uom_in_mantles:
+                    res[ope.id] = int(math.ceil(ope.product_qty / uom_in_mantles))
         return res
 
     @api.multi
@@ -1149,25 +1155,6 @@ class stock_location(models.Model):
         'storage_type': 'standard',
         'sequence': 0
     }
-        #
-        # def get_camera_sequence(self, cr, uid, ids, context=None):
-        #     import ipdb; ipdb.set.trace()
-        #     camera_sequence = 0 # = False
-        #     loc_id = ids[0]
-        #     loc = self.browse(cr, uid, loc_id, context=context)
-        #     while not camera_sequence and loc.location_id:
-        #         if loc.location_id.camera:
-        #             camera_sequence = loc.location_id.sequence or 0.0
-        #         else:
-        #             loc = loc.location_id
-        #     return camera_sequence
-
-
-        # camera_id = self.get_camera(cr, uid, ids, context=context)
-        # if camera_id:
-        #     loc = self.browse(cr, uid, ids[0], context=context)
-        #     camera_seq = loc.location_id.sequence
-        # return camera_seq
 
     def get_camera(self, cr, uid, ids, context=None):
         """
