@@ -455,6 +455,12 @@ class ProductTemplate(models.Model):
                                    weight product in sales process")
 
     @api.one
+    @api.constrains('base_use_sale', 'unit_use_sale', 'box_use_sale')
+    def check_use_sale_checked(self):
+        if not ( self.base_use_sale or self.unit_use_sale or self.box_use_sale):
+            raise Warning (_('Need a logistic unit in sales'))
+
+    @api.one
     @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
     def check_supplier_uoms(self):
 
@@ -470,6 +476,23 @@ class ProductTemplate(models.Model):
             raise Warning (_('Product uos not in logistic units \
                              ' % product_uom))
 
+        unit_error = False
+        if self.log_base_id:
+            if (self.log_base_id == self.log_unit_id) or \
+                (self.log_base_id == self.log_box_id):
+                unit_error = True
+        if self.log_unit_id:
+            if (self.log_unit_id == self.log_base_id) or \
+                (self.log_unit_id == self.log_box_id):
+                unit_error = True
+        if self.log_box_id:
+            if (self.log_box_id == self.log_base_id) or \
+                (self.log_box_id == self.log_unit_id):
+                unit_error = True
+
+        if unit_error:
+            raise Warning (_('Product logistic units are wrong'))
+
     @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca')
     def _get_is_var_coeff(self):
@@ -477,10 +500,6 @@ class ProductTemplate(models.Model):
         Calc name str
         """
         self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
-
-
-
-
 
 class product_product(models.Model):
 
@@ -600,8 +619,6 @@ class product_product(models.Model):
         :param from_unit: Unidad desde la que se convertira a palet
         """
         self.ensure_one()
-
-
         conversion_fields = ['ca_ma', 'ma_pa']
         conversions = {
             self.log_base_id.id: ['kg_un', 'un_ca'],
