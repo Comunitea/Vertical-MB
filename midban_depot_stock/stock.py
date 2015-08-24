@@ -18,14 +18,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv, fields
+from openerp import fields
 from openerp import api, models, _, exceptions
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 import math
 from lxml import etree
-import math
-from openerp.tools import float_compare
+# from openerp.tools import float_compare
 
 
 class stock_picking(models.Model):
@@ -113,50 +112,47 @@ class stock_picking(models.Model):
 
     @api.multi
     def do_transfer(self):
-        # self.pack_operation_ids.update_product_in_move()
-        #self.pack_operation_ids.filtered(lambda r: r.changed).delete_related_quants()
-       #packages_to_split = self.pack_operation_ids.filtered(
-       #     lambda r: not r.product_id and r.changed_packed_qty)
-        #packages_to_split.split_packages()
         self._regularize_move_quantities()
         res = super(stock_picking, self).do_transfer()
-        #self._create_backorder_by_uos()
         return res
-
 
     @api.one
     def _regularize_move_quantities(self):
         self.recompute_remaining_qty(self)
-        #total_operations = self._get_total_operation_quantities()
+        # total_operations = self._get_total_operation_quantities()
         operations = []
         for move in self.move_lines:
             if move.product_id.is_var_coeff:
-                #move.update_receipt_quantity(total_operations[move.product_id.id])
-                total_operations = {'product_uom_qty': 0.0, 'product_uos_qty': 0.0}
+                # move.update_receipt_quantity(total_operations[move.product_id.id])
+                total_operations = {'product_uom_qty': 0.0,
+                                    'product_uos_qty': 0.0}
                 for link in move.linked_move_operation_ids:
                     if link.operation_id.id not in operations:
                         operations.append(link.operation_id.id)
-                        total_operations['product_uom_qty'] += link.operation_id.packed_qty
-                        total_operations['product_uos_qty'] += link.operation_id.uos_qty
+                        total_operations['product_uom_qty'] += \
+                            link.operation_id.packed_qty
+                        total_operations['product_uos_qty'] += \
+                            link.operation_id.uos_qty
                 if move.product_uom_qty < total_operations['product_uom_qty']:
                     move.product_uom_qty = total_operations['product_uom_qty']
                     move.product_uos_qty = total_operations['product_uos_qty']
                 if move.product_uos_qty >= total_operations['product_uos_qty']:
-                    #si tengo menos cantidad uos que la esperada.Almacena la cantidad (en Uos) que queda pendiente
-                    move.wait_receipt_qty = move.product_uos_qty - total_operations['product_uos_qty']
-
+                    # si tengo menos cantidad uos que la esperada.Almacena la
+                    # cantidad (en Uos) que queda pendiente
+                    move.wait_receipt_qty = move.product_uos_qty - \
+                        total_operations['product_uos_qty']
 
     @api.multi
     def _get_total_operation_quantities(self):
-         self.ensure_one()
-         total_operations = {}
-         for operation in self.pack_operation_ids:
-                 product_id = operation.operation_product_id.id
-                 if product_id not in total_operations.keys():
-                     total_operations[product_id] = {'uom': 0.0, 'uos': 0.0}
-                 total_operations[product_id]['uom'] += operation.packed_qty
-                 total_operations[product_id]['uos'] += operation.uos_qty
-         return total_operations
+        self.ensure_one()
+        total_operations = {}
+        for operation in self.pack_operation_ids:
+            product_id = operation.operation_product_id.id
+            if product_id not in total_operations.keys():
+                total_operations[product_id] = {'uom': 0.0, 'uos': 0.0}
+            total_operations[product_id]['uom'] += operation.packed_qty
+            total_operations[product_id]['uos'] += operation.uos_qty
+        return total_operations
 
     @api.one
     def _create_backorder_by_uos(self):
@@ -209,6 +205,19 @@ class stock_picking(models.Model):
                     'qty_done': op.product_qty,
                     'processed': 'true'
                 })
+                # Calculate the uos_qty of package when remove qty from it
+                if op.package_id and op.product_id and op.uos_qty:
+                    pack_uos_qty = 0
+                    if op.uos_id.id == op.package_id.uos_id.id:
+                        pack_uos_qty = op.uos_qty
+                    else:  # Convert between operation unit to pack unit
+                        pack_log_unit = op.product_id.\
+                            get_uos_logistic_unit(op.package_id.uos_id.id)
+                        conv_dic = op.product_id.\
+                            get_sale_unit_conversions(op.uos_qty, op.uos_id)
+                        pack_uos_qty = conv_dic[pack_log_unit]
+                    op.package_id.uos_qty -= pack_uos_qty
+
         self.do_transfer(cr, uid, ids, context=context)
         return True
 
@@ -327,26 +336,30 @@ class stock_picking(models.Model):
         if self.route_detail_id:
             self.min_date = self.route_detail_id.date + " 19:00:00"
 
-
     @api.multi
     def do_prepare_partial(self):
         res = super(stock_picking, self).do_prepare_partial()
         for picking in self:
             for move in picking.move_lines:
                 if move.product_uos_qty and move.product_uos:
-                    uos_qty = move.product_uos_qty
+                    # uos_qty = move.product_uos_qty
 
-                    operations = [x.operation_id for x \
-                        in move.linked_move_operation_ids]
+                    operations = [x.operation_id for x in
+                                  move.linked_move_operation_ids]
                     operations = list(set(operations))
                     no_operations = len(operations)
                     for operation in operations:
                         if not operation:
                             continue
                         no_operations -= 1
-                        if not operation.product_id.is_var_coeff or operation.uos_qty == 0:
+                        if not operation.product_id.is_var_coeff or \
+                                operation.uos_qty == 0:
                             operation.uos_id = move.product_uos.id
-                            estimated_uos_qty = move.product_id.uom_qty_to_uos_qty(operation.packed_qty, move.product_uos.id)
+                            estimated_uos_qty = \
+                                move.\
+                                product_id.\
+                                uom_qty_to_uos_qty(operation.packed_qty,
+                                                   move.product_uos.id)
                             operation.uos_qty += estimated_uos_qty
         return res
 
@@ -422,11 +435,11 @@ class stock_package(models.Model):
         if context is None:
             context = {}
         res = {}
-        t_loc = self.pool.get('stock.location')
+        # t_loc = self.pool.get('stock.location')
         for pack in self.browse(cr, uid, ids, context=context):
-            volume = 0.0
-            loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
-                                        context=context)
+            # volume = 0.0
+            # loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
+            #                             context=context)
 
             quants_by_prod = {}
             # Group quants inside the package by product
@@ -547,9 +560,9 @@ class stock_pack_operation(models.Model):
         We suppose to return a integer number, so we round up the number of
         mantles.
         """
-        #se supone que se pasa desde log_unit a mantos, pero no vale
-        #hay que cambiar para tener en cuenta desde cualquiera
-        #import pdb; pdb.set_trace()
+        # se supone que se pasa desde log_unit a mantos, pero no vale
+        # hay que cambiar para tener en cuenta desde cualquiera
+        # import pdb; pdb.set_trace()
         if context is None:
             context = {}
         res = {}
@@ -559,7 +572,8 @@ class stock_pack_operation(models.Model):
             product_id = ope.product_id
             uom_in_mantles = 1
             if product_id.uom_id == product_id.log_base_id:
-                uom_in_mantles = product_id.kg_un * product_id.ca_ma * product_id.un_ca
+                uom_in_mantles = product_id.kg_un * product_id.ca_ma * \
+                    product_id.un_ca
             if product_id.uom_id == product_id.log_unit_id:
                 uom_in_mantles = product_id.un_ca * product_id.ca_ma
             if product_id.uom_id == product_id.log_box_id:
@@ -571,11 +585,13 @@ class stock_pack_operation(models.Model):
                 # operation num_mantles instead of the volume
                 if ope.result_package_id and ope.product_qty:
                     if uom_in_mantles:
-                        res[ope.id] = int(math.ceil(ope.product_qty / uom_in_mantles))
+                        res[ope.id] = \
+                            int(math.ceil(ope.product_qty / uom_in_mantles))
             elif ope.product_id and ope.product_qty \
                     and ope.result_package_id:
                 if uom_in_mantles:
-                    res[ope.id] = int(math.ceil(ope.product_qty / uom_in_mantles))
+                    res[ope.id] = \
+                        int(math.ceil(ope.product_qty / uom_in_mantles))
         return res
 
     @api.multi
@@ -728,8 +744,8 @@ class stock_pack_operation(models.Model):
                 [('multipack_location', '=', True)])
             if not multipack_location:
                 raise exceptions.Warning(_('Location not found'),
-                                 _('Impossible found the multipack'
-                                   ' location'))
+                                         _('Impossible found the multipack'
+                                           ' location'))
             self.location_dest_id = multipack_location
         if self.operation_product_id:
             product = self.operation_product_id
@@ -755,8 +771,8 @@ class stock_pack_operation(models.Model):
                         [('special_location', '=', True)])
                     if not special_location:
                         raise exceptions.Warning(_('Location not found'),
-                                         _('Impossible found an special'
-                                           ' location'))
+                                                 _('Impossible found an'
+                                                   ' special location'))
                     self.location_dest_id = special_location
 
     @api.one
@@ -1223,7 +1239,8 @@ class stock_location(models.Model):
         if context is None:
             context = {}
         if zone not in ['picking', 'storage']:
-            raise exceptions.Warning(_('Error!'), _('Zone %s not exist.') % zone)
+            raise exceptions.Warning(_('Error!'),
+                                     _('Zone %s not exist.') % zone)
         loc_camera_id = self.get_camera(cr, uid, [loc_id], context=context)
         if loc_camera_id:
             domain = [('location_id', '=', loc_camera_id),
@@ -1234,7 +1251,7 @@ class stock_location(models.Model):
             cam = self.browse(cr, uid, loc_camera_id, context).name
             raise exceptions.Warning(_('Error!'), _('No general %s location \
                                                  founded in camera %s.') %
-                                 (zone, cam))
+                                     (zone, cam))
 
         return loc_id
 
@@ -1369,33 +1386,46 @@ class stock_move(models.Model):
                     }
                     self.write(cr, uid, ids, vals, context=context)
 
-
-        #Propagar las unidades de venta...
+        # Propagar las unidades de venta...
         for move in self.browse(cr, uid, ids, context=context):
             propagated_changes_dict = {}
-            #propagation of quantity sale change
+            # propagation of quantity sale change
             if vals.get('product_uos_qty'):
-                propagated_changes_dict['product_uos_qty'] = vals['product_uos_qty']
+                propagated_changes_dict['product_uos_qty'] = \
+                    vals['product_uos_qty']
             if vals.get('product_uos_id'):
-                propagated_changes_dict['product_uos_id'] = vals['product_uos_id']
-            if not context.get('do_not_propagate', False) and propagated_changes_dict:
-                self.write(cr, uid, [move.move_dest_id.id], propagated_changes_dict, context=context)
+                propagated_changes_dict['product_uos_id'] = \
+                    vals['product_uos_id']
+            if not context.get('do_not_propagate', False) and \
+                    propagated_changes_dict:
+                self.write(cr, uid, [move.move_dest_id.id],
+                           propagated_changes_dict,
+                           context=context)
 
         return res
 
-    def split(self, cr, uid, move, qty, restrict_lot_id=False, restrict_partner_id=False, context=None):
+    def split(self, cr, uid, move, qty, restrict_lot_id=False,
+              restrict_partner_id=False, context=None):
         """
-        Cambiar la cantidad de uos al realizar movimientos de Backorder para producto con coeff variable
+        Cambiar la cantidad de uos al realizar movimientos de Backorder para
+        producto con coeff variable
         """
         uos_qty = move.product_uos_qty
-        if move.move_dest_id and move.propagate and move.move_dest_id.state not in ('done', 'cancel'):
-              self.write(cr, uid, move.move_dest_id.id, {'wait_receipt_qty':move.wait_receipt_qty})
-        res = super(stock_move, self).split(cr, uid, move, qty, restrict_lot_id, restrict_partner_id,
+        if move.move_dest_id and move.propagate and move.move_dest_id.state \
+                not in ('done', 'cancel'):
+            self.write(cr, uid, move.move_dest_id.id,
+                       {'wait_receipt_qty': move.wait_receipt_qty})
+        res = super(stock_move, self).split(cr, uid, move, qty,
+                                            restrict_lot_id,
+                                            restrict_partner_id,
                                             context=context)
         if move.product_id.is_var_coeff:
-            self.write(cr, uid, move.id, {'product_uos_qty':uos_qty - move.wait_receipt_qty})
-            split_ids = self.search(cr,uid, [('split_from', '=', move.id)])
-            self.write(cr, uid, split_ids, {'product_uos_qty':move.wait_receipt_qty})
+            self.write(cr, uid, move.id,
+                       {'product_uos_qty': uos_qty - move.wait_receipt_qty})
+            split_ids = self.search(cr, uid, [('split_from', '=', move.id)])
+            self.write(cr, uid, split_ids,
+                       {'product_uos_qty': move.wait_receipt_qty})
+        return res
 
     def create(self, cr, uid, vals, context=None):
         if vals.get('real_weight', False):
@@ -1566,7 +1596,7 @@ class stock_quant(models.Model):
             if not pick_loc_obj:
                 raise exceptions.Warning(_('Error!'), _('Not picking location\
                                         defined for product %s') %
-                                     product.name)
+                                         product.name)
             order = 'removal_date, in_date, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location

@@ -611,7 +611,6 @@ class assign_task_wzd(osv.TransientModel):
         end_date = date_planned + " 23:59:59"
         loc_ids = [x.id for x in obj.location_ids]
 
-
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.picking_location_id', 'child_of', loc_ids),

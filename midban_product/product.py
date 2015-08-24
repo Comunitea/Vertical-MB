@@ -457,22 +457,22 @@ class ProductTemplate(models.Model):
     @api.one
     @api.constrains('base_use_sale', 'unit_use_sale', 'box_use_sale')
     def check_use_sale_checked(self):
-        if not ( self.base_use_sale or self.unit_use_sale or self.box_use_sale):
-            raise Warning (_('Need a logistic unit in sales'))
+        if not (self.base_use_sale or self.unit_use_sale or self.box_use_sale):
+            raise Warning(_('Need a logistic unit in sales'))
 
     @api.one
     @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
     def check_supplier_uoms(self):
 
-        product_uom= self.uom_id
+        product_uom = self.uom_id
         if not ((product_uom == self.log_base_id) or \
-            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+                (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
             raise Warning(_('Product uom not in logistic units \
                              ' % product_uom))
 
-        product_uom= self.uos_id
+        product_uom = self.uos_id
         if not((product_uom == self.log_base_id) or \
-            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+                (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
             raise Warning (_('Product uos not in logistic units \
                              ' % product_uom))
 
@@ -627,9 +627,8 @@ class product_product(models.Model):
 
         }
         conversion_fields += conversions[from_unit.id]
-        return functools.reduce(operator.mul, [self[x] for x in conversion_fields])
-
-
+        return functools.reduce(operator.mul,
+                                [self[x] for x in conversion_fields])
 
     @api.model
     def get_product_supp_record(self, supplier_id):
@@ -689,6 +688,20 @@ class product_product(models.Model):
         res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
         res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
         res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        return res
+
+    #calcula para una cantidad dada, las cantidades en las distintas unidades
+    @api.model
+    def get_sale_unit_conversions(self, qty_uoc, uoc_id):
+        #import pdb; pdb.set_trace()
+        res = {'base': 0.0,
+               'unit': 0.0,
+               'box': 0.0}
+        cte =  qty_uoc / self._get_unit_ratios(uoc_id, 0)
+
+        res['base'] = float_round(cte * self._get_unit_ratios(self.log_base_id.id, 0), 2)
+        res['unit'] = float_round(cte * self._get_unit_ratios(self.log_unit_id.id, 0), 2)
+        res['box'] = float_round(cte * self._get_unit_ratios(self.log_box_id.id, 0), 2)
         return res
 
     #calcula para un precio dado, los precios en las udistintas unidades
@@ -899,17 +912,19 @@ class ProductSupplierinfo(models.Model):
     @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'product_uom')
     def check_supplier_uoms(self):
 
-        product_uom= self.product_tmpl_id.uom_id
-        if not ((product_uom == self.log_base_id) or \
-            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+        product_uom = self.product_tmpl_id.uom_id
+        if not ((product_uom == self.log_base_id) or
+                (product_uom == self.log_unit_id) or
+                (product_uom == self.log_box_id)):
             raise Warning(_('The supplit uoms are \
                              not related to product uom\
                              ' % product_uom))
 
-        product_uom= self.product_uom
-        if not((product_uom == self.log_base_id) or \
-            (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
-            raise Warning (_('The supplit uom are \
+        product_uom = self.product_uom
+        if not((product_uom == self.log_base_id) or
+                (product_uom == self.log_unit_id) or
+                (product_uom == self.log_box_id)):
+            raise Warning(_('The supplit uom are \
                              not related to suppplier uoms\
                              ' % product_uom))
 
