@@ -103,6 +103,8 @@
                     <field name="packed_qty"/>
                     <field name="num_mantles"/>
                     <field name="volume"/>
+                    <field name="uos_id"/>
+                    <field name="uos_qty"/>
                 </field>
             </field>
         </record>
