@@ -85,8 +85,9 @@ class sale_report(osv.osv):
                 vals_action, vals_id, vals = value
 
                 if vals_action == 0:
-                    raise exceptions.Warning(_("It is not possible create new"
-                                               " records in this field"))
+                    #raise exceptions.Warning(_("It is not possible create new"
+                    #                           " records in this field"))
+                    pack_op_obj.create(cr, uid, vals)
                 elif vals_action == 1:
                     vals['changed'] = True
                     pack_op_obj.write(cr, uid, [vals_id], vals)
