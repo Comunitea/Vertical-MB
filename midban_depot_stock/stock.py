@@ -1456,9 +1456,16 @@ class stock_move(models.Model):
         res = super(stock_move, self)._get_invoice_line_vals(cr, uid, move,
                                                              partner, inv_type,
                                                              context=context)
-        if move.real_weight:
-            res['price_unit'] = move.price_kg
-        res.update({'stock_move_id': move.id})
+        sale_line = move.procurement_id.sale_line_id
+        res["uos_id"] = move.product_uom.id
+        if move.product_uos and move.product_uos != move.product_uom and \
+                move.product_uos_qty:
+            res["second_uom_id"] = move.product_uos.id
+            res["quantity_second_uom"] = move.product_uos_qty
+        res["quantity"] = move.product_uom_qty
+        res['stock_move_id'] = move.id
+        if sale_line:
+            res["price_unit"] = sale_line.price_unit
         return res
 
     def action_done(self, cr, uid, ids, context=None):

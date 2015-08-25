@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#       * midban_depot_stock
 #
 msgid ""
 msgstr ""
@@ -2293,6 +2293,12 @@ msgid "Qty"
 msgstr "Ctdad"
 
 #. module: midban_depot_stock
+#: field:account.invoice.line,quantity_second_uom:0
+msgid "Qty Second Uom"
+msgstr "Cant. 2ªudm"
+
+
+#. module: midban_depot_stock
 #: field:out.picking.report,product_qty:0
 #: field:stock.picking.create.multipack.line,qty:0
 #: field:transfer.line,quantity:0
@@ -2660,6 +2666,11 @@ msgstr "Buscar vehículos"
 #: field:stock.transfer_details_items,uos_id:0
 msgid "Second Unit"
 msgstr "Segunda unidad"
+
+#. module: midban_depot_stock
+#: field:account.invoice.line,second_uom_id:0
+msgid "Second Uom"
+msgstr "2ª Udm"
 
 #. module: midban_depot_stock
 #: field:stock.pack.operation,uos_id:0

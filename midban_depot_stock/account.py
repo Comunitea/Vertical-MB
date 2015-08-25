@@ -18,14 +18,49 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 from openerp.osv import osv, fields
+import openerp.addons.decimal_precision as dp
 
 
 class account_invoice_line(osv.osv):
     _inherit = "account.invoice.line"
     _columns = {
         'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
+        'second_uom_id': fields.many2one("product.uom", "Second Uom",
+                                         readonly=True),
+        'quantity_second_uom': fields.\
+            float("Qty Second Uom", readonly=True,
+                  digits_compute=dp.get_precision('Product Unit of Measure'))
     }
+
+    def product_id_change(self, product, uom_id, qty=0, name='',
+                          type='out_invoice', partner_id=False,
+                          fposition_id=False, price_unit=False,
+                          currency_id=False, company_id=None):
+        res = super(account_invoice_line, self).\
+            product_id_change(product, uom_id, qty=qty, name=name, type=type,
+                              partner_id=partner_id, fposition_id=fposition_id,
+                              price_unit=price_unit, currency_id=currency_id,
+                              company_id=company_id)
+
+        if res.get('value', False):
+            res['value']['second_uom_id'] = False
+            res['value']['quantity_second_uom'] = 0.0
+        return res
+
+    def uos_id_change(self, product, uom, qty=0, name='', type='out_invoice',
+                      partner_id=False, fposition_id=False, price_unit=False,
+                      currency_id=False, company_id=None):
+        res = super(account_invoice_line, self).\
+            uos_id_change(product, uom, qty=qty, name=name, type=type,
+                          partner_id=partner_id, fposition_id=fposition_id,
+                          price_unit=price_unit, currency_id=currency_id,
+                          company_id=company_id)
+        if res.get('value', False):
+            res['value']['second_uom_id'] = False
+            res['value']['quantity_second_uom'] = 0.0
+        return res
 
 
 class account_invoice(osv.osv):
@@ -73,7 +108,7 @@ class account_invoice(osv.osv):
                                         multi="orders_picks",
                                         relation='purchase.order',
                                         string="Related Sales",
-                                        readonly=True),
+                                        readonly=True)
     }
 
     def action_view_sales(self, cr, uid, ids, context=None):
