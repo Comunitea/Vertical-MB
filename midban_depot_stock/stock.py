@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import fields
+from openerp.osv import fields, osv
 from openerp import api, models, _, exceptions
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
@@ -27,7 +27,7 @@ from lxml import etree
 # from openerp.tools import float_compare
 
 
-class stock_picking(models.Model):
+class stock_picking(osv.Model):
     _inherit = "stock.picking"
     _order = "name desc"
     _columns = {
@@ -114,6 +114,20 @@ class stock_picking(models.Model):
     def do_transfer(self):
         self._regularize_move_quantities()
         res = super(stock_picking, self).do_transfer()
+        # Calculate the uos_qty of package when remove qty from it
+        for pick in self:
+            for op in pick.pack_operation_ids:
+                if op.package_id and op.product_id and op.uos_qty:
+                    pack_uos_qty = 0
+                    if op.uos_id.id == op.package_id.uos_id.id:
+                        pack_uos_qty = op.uos_qty
+                    else:  # Convert between operation unit to pack unit
+                        pack_log_unit = op.product_id.\
+                            get_uos_logistic_unit(op.package_id.uos_id.id)
+                        conv_dic = op.product_id.\
+                            get_sale_unit_conversions(op.uos_qty, op.uos_id)
+                        pack_uos_qty = conv_dic[pack_log_unit]
+                    op.package_id.uos_qty -= pack_uos_qty
         return res
 
     @api.one
@@ -205,19 +219,6 @@ class stock_picking(models.Model):
                     'qty_done': op.product_qty,
                     'processed': 'true'
                 })
-                # Calculate the uos_qty of package when remove qty from it
-                if op.package_id and op.product_id and op.uos_qty:
-                    pack_uos_qty = 0
-                    if op.uos_id.id == op.package_id.uos_id.id:
-                        pack_uos_qty = op.uos_qty
-                    else:  # Convert between operation unit to pack unit
-                        pack_log_unit = op.product_id.\
-                            get_uos_logistic_unit(op.package_id.uos_id.id)
-                        conv_dic = op.product_id.\
-                            get_sale_unit_conversions(op.uos_qty, op.uos_id)
-                        pack_uos_qty = conv_dic[pack_log_unit]
-                    op.package_id.uos_qty -= pack_uos_qty
-
         self.do_transfer(cr, uid, ids, context=context)
         return True
 
