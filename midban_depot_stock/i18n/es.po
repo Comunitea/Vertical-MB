@@ -2182,16 +2182,6 @@ msgid "Prepare operations"
 msgstr "Preparar Operaciones"
 
 #. module: midban_depot_stock
-#: field:stock.move,price_kg:0
-msgid "Price Kg"
-msgstr "Prrecio Kg"
-
-#. module: midban_depot_stock
-#: field:product.template,price_kg:0
-msgid "Price kg"
-msgstr "Precio kg"
-
-#. module: midban_depot_stock
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
 msgid "Print Reposition"
 msgstr "Imprimir Reposición"
@@ -2328,11 +2318,6 @@ msgstr "Quants"
 #: view:website:midban_depot_stock.report_stock_tag
 msgid "REFERENCE:"
 msgstr "REFERENCIA:"
-
-#. module: midban_depot_stock
-#: field:stock.move,real_weight:0
-msgid "Real weight"
-msgstr "Peso real"
 
 #. module: midban_depot_stock
 #: field:stock.pack.operation,changed:0

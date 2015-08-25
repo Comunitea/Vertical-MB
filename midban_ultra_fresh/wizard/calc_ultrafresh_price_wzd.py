@@ -111,11 +111,10 @@ class calc_ultrafresh_price_wzd(models.TransientModel):
             if move.procurement_id and move.procurement_id.sale_line_id:
                 product = move.product_id
                 new_price = product_prices[product.id]
-                product.write({'lst_price': new_price, 'price_kg': new_price})
+                product.write({'lst_price': new_price})
                 sale_line = move.procurement_id.sale_line_id
                 sale_line.write({'price_unit': new_price})
                                 # 'min_unit': 'box'})
-                move.write({'price_kg': new_price})
         return
 
 

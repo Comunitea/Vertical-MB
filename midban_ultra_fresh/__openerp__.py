@@ -35,7 +35,7 @@
         "purchase",
         "stock",
         "midban_product",  # Beacause of field product_class (for ultrafresh)
-        "midban_depot_stock",  # Beacause of field real_weight
+        "midban_depot_stock",
         # "process_sale_order",  # Beacause of _amount_line and choose_unit
     ],
     "data": [

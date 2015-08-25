@@ -31,31 +31,3 @@ class stock_move(models.Model):
                              related="procurement_id.sale_line_id.q_note")
     det_note = fields.Char('Details', size=256,
                            related="procurement_id.sale_line_id.detail_note")
-
-    @api.one
-    def write(self, vals):
-        """
-        Overwrite in order to add  kg to the sale order line related when
-        the sale type of product is ultrafresh
-        """
-        real_weight = vals.get('real_weight', False)
-        # para arrastrar la ruta al albaran desde la venta
-        if real_weight:
-            t_uom = self.env['product.uom']
-            real_weight = vals['real_weight']
-            if real_weight and self.procurement_id and \
-                    self.procurement_id.sale_line_id:
-                if self.product_id.product_class == 'ultrafresh':
-                    uom_obj = t_uom.search([('like_type', '=', 'kg')])
-                    if uom_obj:
-                        vals.update({
-                            'product_uos': uom_obj[0].id,
-                            'product_uos_qty': real_weight
-                        })
-                    else:
-                        raise except_orm(_('Error'),
-                                         _('Not founded kg uom, set the like \
-                                            type field'))
-                    self.procurement_id.sale_line_id.write(vals)
-        res = super(stock_move, self).write(vals)
-        return res

@@ -34,13 +34,3 @@ class procurement_order(osv.osv):
                                          store=True,
                                          readonly=True),
     }
-
-    def _run_move_create(self, cr, uid, procurement, context=None):
-        """
-        Overwrited to pass the product price kg to the move.
-        """
-        res = super(procurement_order, self)._run_move_create(cr, uid,
-                                                              procurement,
-                                                              context=context)
-        res.update({'price_kg': procurement.product_id.price_kg})
-        return res

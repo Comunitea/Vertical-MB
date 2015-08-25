@@ -1325,8 +1325,6 @@ class stock_move(models.Model):
                                           string='Detail Route',
                                           relation="route.detail",
                                           type="many2one"),
-        'real_weight': fields.float('Real weight'),
-        'price_kg': fields.float('Price Kg'),
         'orig_op': fields.many2one('stock.pack.operation', 'op'),
         'wait_receipt_qty': fields.float('Quantity pending receipt')
     }
@@ -1337,22 +1335,6 @@ class stock_move(models.Model):
         route_detail_id = move.route_detail_id and move.route_detail_id.id or \
             False
         res['route_detail_id'] = route_detail_id
-        return res
-
-    def onchange_product_id(self, cr, uid, ids, prod_id=False, loc_id=False,
-                            loc_dest_id=False, partner_id=False):
-        """
-        Get the price_kg of the product
-        """
-        res = super(stock_move, self)\
-            .onchange_product_id(cr, uid, ids, prod_id=prod_id, loc_id=loc_id,
-                                 loc_dest_id=loc_dest_id,
-                                 partner_id=partner_id)
-        if not prod_id:
-            return {}
-        product = self.pool.get('product.product').browse(cr, uid,
-                                                          [prod_id])[0]
-        res['value']['price_kg'] = product.price_kg
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -1379,17 +1361,6 @@ class stock_move(models.Model):
                                procurement.route_detail_id.id}
                         pick_obj.write(cr, uid, vals['picking_id'], vls,
                                        context=context)
-        if vals.get('real_weight', False):
-            t_uom = self.pool.get('product.uom')
-            real_weight = vals['real_weight']
-            if real_weight:
-                uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
-                if uom_ids:
-                    vals = {
-                        'product_uos': uom_ids[0],
-                        'product_uos_qty': real_weight
-                    }
-                    self.write(cr, uid, ids, vals, context=context)
 
         # Propagar las unidades de venta...
         for move in self.browse(cr, uid, ids, context=context):
@@ -1432,27 +1403,8 @@ class stock_move(models.Model):
                        {'product_uos_qty': move.wait_receipt_qty})
         return res
 
-    def create(self, cr, uid, vals, context=None):
-        if vals.get('real_weight', False):
-            t_uom = self.pool.get('product.uom')
-            real_weight = vals['real_weight']
-            if real_weight:
-                uom_ids = t_uom.search(cr, uid, [('like_type', '=', 'kg')])
-                if uom_ids:
-                    vals2 = {
-                        'product_uos': uom_ids[0],
-                        'product_uos_qty': real_weight
-                    }
-                    vals.update(vals2)
-        res = super(stock_move, self).create(cr, uid, vals, context=context)
-        return res
-
     def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
                                context=None):
-        """
-        Add to invoice the price_kg of product and a link to the move in order
-        to know the sale_orders and pickings from invoice.
-        """
         res = super(stock_move, self)._get_invoice_line_vals(cr, uid, move,
                                                              partner, inv_type,
                                                              context=context)

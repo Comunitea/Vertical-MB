@@ -260,35 +260,6 @@
             </field>
         </record>
 
-        <record id="view_move_picking_form_add_route" model="ir.ui.view">
-            <field name="name">stock.move.form.add_route</field>
-            <field name="model">stock.move</field>
-            <field name="inherit_id" ref="stock.view_move_picking_form"/>
-            <field name="arch" type="xml">
-                <field name="product_id" position="after">
-<!--                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"/>
-                    <field name="trans_route_id"/> -->
-                    <!-- <field name="real_weight" on_change="onchange_real_weight(product_id, real_weight)"/> -->
-                    <field name="real_weight"/>
-                    <field name="price_kg"/>
-                </field>
-            </field>
-        </record>
-
-        <record id="view_move_picking_tree_add_route" model="ir.ui.view">
-            <field name="name">stock.move.tree.add_route</field>
-            <field name="model">stock.move</field>
-            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
-            <field name="arch" type="xml">
-                <field name="string_availability_info" position="after">
-<!--                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"/>
-                    <field name="trans_route_id"/> -->
-                    <!-- <field name="real_weight" on_change="onchange_real_weight(product_id, real_weight)"/> -->
-                    <field name="real_weight"/>
-                </field>
-            </field>
-        </record>
-
         <record id="view_picking_internal_search_add_route" model="ir.ui.view">
             <field name="name">stock.picking.internal.search.add_route</field>
             <field name="model">stock.picking</field>

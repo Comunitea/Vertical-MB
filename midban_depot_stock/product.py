@@ -78,7 +78,6 @@ class product_template(osv.Model):
         'volume': fields.float('Volume', help="The volume in m3.",
                                digits_compute=dp.get_precision
                                ('Product Volume')),
-        'price_kg': fields.float('Price kg'),
         'virtual_stock_conservative': fields.function(_stock_conservative,
                                                       type='float',
                                                       string='Virtual \
