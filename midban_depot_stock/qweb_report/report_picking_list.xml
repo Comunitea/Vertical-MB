@@ -49,8 +49,8 @@
                                             <th class="text-center col-xs-2">Description</th>
                                             <th class="text-center col-xs-1">Lot</th>
                                             <th class="text-center col-xs-1">Location</th>
-                                            <th class="text-center col-xs-1">Units</th>
-                                            <th class="text-center col-xs-1">Boxes</th>
+                                            <th class="text-center col-xs-1">Stock Unit</th>
+                                            <th class="text-center col-xs-1">S.U. qty</th>
                                             <th class="text-center col-xs-1">Var Weight</th>
                                             <th class="text-center col-xs-2">Notes</th>
                                         </tr>
@@ -73,10 +73,12 @@
                                                 <span t-field="line.location_id.name"/>
                                             </td>
                                             <td class="text-center col-xs-1">
-                                                <span t-field="line.units"/>
+                                                <span t-field="line.product_qty"/>
+                                                <span t-field="line.uom_id"/>
                                             </td>
                                             <td class="text-center col-xs-1">
-                                                <span t-field="line.boxes"/>
+                                                <span t-field="line.uos_qty"/>
+                                                <span t-field="line.uos_id"/>
                                             </td>
                                             <td class="text-center col-xs-1">
                                             </td>

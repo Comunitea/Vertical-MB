@@ -19,7 +19,7 @@
 #
 ##############################################################################
 
-from openerp import tools, exceptions, _
+from openerp import tools
 from openerp.osv import fields, osv
 from openerp import models, api
 
@@ -31,19 +31,19 @@ class sale_report(osv.osv):
     _rec_name = 'product_id'
     _order = 'sequence'
 
-    def _get_units_and_boxes(self, cr, uid, ids, field_names, args,
-                             context=None):
-        if context is None:
-            context = {}
-        res = {}
-        for item in self.browse(cr, uid, ids, context=context):
-            res[item.id] = {}
-            qty = item.product_qty
-            res[item.id]['units'] = item.product_id.uom_qty_to_uos_qty(
-                qty, item.product_id.log_unit_id.id)
-            res[item.id]['boxes'] = item.product_id.uom_qty_to_uos_qty(
-                qty, item.product_id.log_box_id.id)
-        return res
+    # def _get_units_and_boxes(self, cr, uid, ids, field_names, args,
+    #                          context=None):
+    #     if context is None:
+    #         context = {}
+    #     res = {}
+    #     for item in self.browse(cr, uid, ids, context=context):
+    #         res[item.id] = {}
+    #         qty = item.product_qty
+    #         res[item.id]['units'] = item.product_id.uom_qty_to_uos_qty(
+    #             qty, item.product_id.log_unit_id.id)
+    #         res[item.id]['boxes'] = item.product_id.uom_qty_to_uos_qty(
+    #             qty, item.product_id.log_box_id.id)
+    #     return res
 
     def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
                              context=None):
@@ -85,7 +85,8 @@ class sale_report(osv.osv):
                 vals_action, vals_id, vals = value
 
                 if vals_action == 0:
-                    #raise exceptions.Warning(_("It is not possible create new"
+                    # raise exceptions.Warning(_("It is not possible
+                    # create new"
                     #                           " records in this field"))
                     pack_op_obj.create(cr, uid, vals)
                 elif vals_action == 1:
@@ -107,10 +108,10 @@ class sale_report(osv.osv):
         'location_id': fields.many2one('stock.location', 'Location',
                                        readonly=True),
         'product_qty': fields.float('Quantity', readonly=True),
-        'units': fields.function(_get_units_and_boxes, type='integer',
-                                 multi='mult', string='Units', readonly=True),
-        'boxes': fields.function(_get_units_and_boxes, type='integer',
-                                 multi='mult', string='Boxes', readonly=True),
+        # 'units': fields.function(_get_units_and_boxes, type='integer',
+        #                          multi='mult', string='Units', readonly=True),
+        # 'boxes': fields.function(_get_units_and_boxes, type='integer',
+                                 # multi='mult', string='Boxes', readonly=True),
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
         'sequence': fields.integer('Sequence', readonly=True),
@@ -123,7 +124,13 @@ class sale_report(osv.osv):
         'operation_ids': fields.function(_get_operation_ids, type="one2many",
                                          string="Operations",
                                          relation="stock.pack.operation",
-                                         fnct_inv=_set_operation_ids)
+                                         fnct_inv=_set_operation_ids),
+        'uom_id': fields.related('product_id', 'uom_id', type='many2one',
+                                 relation='product.uom', string='Stock unit',
+                                 readonly=True),
+        'uos_qty': fields.float('UoS quantity', readonly=True),
+        'uos_id': fields.many2one('product.uom', 'Secondary unit',
+                                  readonly=True),
     }
 
     def _select(self):
@@ -135,6 +142,8 @@ class sale_report(osv.osv):
           SUM(SQ.product_qty) AS product_qty,
           SQ.wave_id          AS wave_id,
           SQ.SEQUENCE         AS SEQUENCE,
+          SUM(SQ.uos_qty)         AS uos_qty,
+          SQ.uos_id          AS uos_id,
           SQ.group_id         AS group"""
 
     def _subquery_grouped_op(self):
@@ -142,6 +151,8 @@ class sale_report(osv.osv):
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
                   operation.location_id,
+                  SUM(operation.uos_qty) AS uos_qty,
+                  operation.uos_id AS uos_id,
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.SEQUENCE AS SEQUENCE,
@@ -162,10 +173,13 @@ class sale_report(osv.osv):
                           ON product.id = quant.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  (operation.product_id IS NULL AND product_template.is_var_coeff = false) or (operation.product_id IS NULL AND product_template.is_var_coeff is null)
+           WHERE  (operation.product_id IS NULL AND
+            product_template.is_var_coeff = false) or (operation.product_id IS
+            NULL AND product_template.is_var_coeff is null)
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
+                     operation.uos_id,
                      wave.id,
                      group_id,
                      location.SEQUENCE
@@ -174,6 +188,8 @@ class sale_report(osv.osv):
                   operation.product_id       AS product_id,
                   operation.lot_id           AS lot_id,
                   operation.location_id,
+                  SUM(operation.uos_qty) AS uos_qty,
+                  operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
                   location.SEQUENCE                 AS SEQUENCE,
@@ -189,10 +205,13 @@ class sale_report(osv.osv):
                           ON product.id = operation.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  (operation.product_id IS NOT NULL AND product_template.is_var_coeff = false) or (operation.product_id IS NOT NULL AND product_template.is_var_coeff is null)
+           WHERE  (operation.product_id IS NOT NULL AND
+           product_template.is_var_coeff = false) or (operation.product_id
+           IS NOT NULL AND product_template.is_var_coeff is null)
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,
+                     operation.uos_id,
                      wave.id,
                      group_id,
                      location.SEQUENCE"""
@@ -202,6 +221,8 @@ class sale_report(osv.osv):
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
                   operation.location_id,
+                  SUM(operation.uos_qty) AS uos_qty,
+                  operation.uos_id AS uos_id,
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.SEQUENCE AS SEQUENCE,
@@ -222,10 +243,12 @@ class sale_report(osv.osv):
                           ON product.id = quant.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  operation.product_id IS NULL AND product_template.is_var_coeff = true
+           WHERE  operation.product_id IS NULL
+           AND product_template.is_var_coeff = true
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
+                     operation.uos_id,
                      wave.id,
                      quant.package_id,
                      location.SEQUENCE
@@ -234,6 +257,8 @@ class sale_report(osv.osv):
                   operation.product_id       AS product_id,
                   operation.lot_id           AS lot_id,
                   operation.location_id,
+                  SUM(operation.uos_qty) AS uos_qty,
+                  operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
                   location.SEQUENCE                 AS SEQUENCE,
@@ -249,10 +274,12 @@ class sale_report(osv.osv):
                           ON product.id = operation.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  operation.product_id IS NOT NULL AND product_template.is_var_coeff = true
+           WHERE  operation.product_id IS NOT NULL
+           AND product_template.is_var_coeff = true
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,
+                     operation.uos_id,
                      wave.id,
                      operation.package_id,
                      location.SEQUENCE"""
@@ -263,6 +290,7 @@ class sale_report(osv.osv):
              SQ.location_id,
              SQ.wave_id,
              SQ.SEQUENCE,
+             SQ.uos_id,
              SQ.group_id"""
 
     def init(self, cr):

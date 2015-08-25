@@ -125,7 +125,7 @@ class stock_picking(osv.Model):
                         pack_log_unit = op.product_id.\
                             get_uos_logistic_unit(op.package_id.uos_id.id)
                         conv_dic = op.product_id.\
-                            get_sale_unit_conversions(op.uos_qty, op.uos_id)
+                            get_sale_unit_conversions(op.uos_qty, op.uos_id.id)
                         pack_uos_qty = conv_dic[pack_log_unit]
                     op.package_id.uos_qty -= pack_uos_qty
         return res
