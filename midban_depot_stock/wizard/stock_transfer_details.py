@@ -189,13 +189,28 @@ class stock_transfer_details_items(models.TransientModel):
                                 quantitys beetwen units')
     do_onchange = fields.Boolean('Contros onchange', default=True,
                                  readonly=False)
+    pack_product_id = fields.Many2one('product.product', 'Pack product',
+                                      related='package_id.product_id',
+                                      readonly=True)
+    pack_uom_qty = fields.Float('Pack qty',
+                                related='package_id.packed_qty',
+                                readonly=True)
+    pack_uom_id = fields.Many2one('product.uom', 'Stock unit',
+                                  related='package_id.uom_id',
+                                  readonly=True)
+    pack_uos_qty = fields.Float('Qty (S.U.)',
+                                related='package_id.uos_qty',
+                                readonly=True)
+    pack_uos_id = fields.Many2one('product.uom', 'Secondary unit',
+                                  related='package_id.uos_id',
+                                  readonly=True)
 
     @api.one
     def split_in_packs(self):
         """
             Create the packs with a maximun size of a pallet.
         """
-        #remaining_qty = self.uos_qty
+        # remaining_qty = self.uos_qty
         remaining_qty = self.quantity
         while remaining_qty > 0.0:
             located_qty = self._get_max_pack_quantity(remaining_qty)

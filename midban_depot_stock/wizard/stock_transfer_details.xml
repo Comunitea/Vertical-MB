@@ -118,6 +118,13 @@
         <field name="model">stock.transfer_details</field>
         <field name="inherit_id" ref="stock.view_stock_enter_transfer_details"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='packop_ids']/tree/field[@name='package_id']" position="after">
+                <field name="pack_product_id"/>
+                <field name="pack_uom_qty"/>
+                <field name="pack_uom_id"/>
+                <field name="pack_uos_qty"/>
+                <field name="pack_uos_id"/>
+            </xpath>
             <field name="product_uom_id" position="after">
                 <field name="uos_qty"  groups="product.group_uom"/>
                 <field name="uos_id"  groups="product.group_uom" readonly="True" context="{'product_id': product_id}"/>
