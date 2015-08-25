@@ -299,6 +299,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                     self.model.set('qty', new_qty);
                                     self.refresh();
                                 }
+
+                                self.inicialize_unit_values()
                                 self.refresh();
                                 self.$('.col-unit').focus()
                             });
@@ -306,6 +308,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         .fail(function(){
                             alert(_t("NOT WORKING"));
                         })
+        },
+        inicialize_unit_values: function(){
+            var prod_name = this.model.get('product')
+            var uos_name = this.model.get('product_uos')
+            this.model.set('product_uos_qty', 1)
+            var uos_qty = 1
+            var price_unit = this.model.get('pvp')
+            conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
+            log_unit = this.getUomLogisticUnit(prod_name)
+            this.model.set('qty', my_round(conv[log_unit], 2));
+            var product_id = this.ts_model.db.product_name_id[prod_name];
+            var product_obj = this.ts_model.db.get_product_by_id(product_id);
+            if(uos_name == product_obj.log_box_id[1]){
+                this.model.set('discount', my_round(product_obj.box_discount, 2))
+            }
+            else{
+                this.model.set('discount', my_round(0.00, 2))
+            }
+            uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
+            this.model.set('price_udv', my_round(uos_pu, 2))
         },
         // Funciones relacionadas con el producto necesarias para los calculos de unidades
         getUnitConversions: function(product_name, qty_uos, uos_name){
