@@ -20,6 +20,7 @@
                                     <th><strong>Lot</strong></th>
                                     <th><strong>Pack</strong></th>
                                     <th class="text-right"><strong>Quantity</strong></th>
+                                    <th class="text-right"><strong>Quantity (S.U.)</strong></th>
                                     <th class="text-right"><strong>Mantles</strong></th>
                                     <th><strong>Source</strong></th>
                                     <th><strong>Destination</strong></th>
@@ -47,14 +48,27 @@
 
                                     <!-- Quantity -->
                                     <td class="text-right">
-                                        <!-- <span t-field="pack_operation.product_qty"/>
-                                        <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/> -->
                                         <t t-if="pack_operation.package_id ">
-                                            <span t-field="pack_operation.package_id.packed_qty"/>
+                                            <span t-field="pack_operation.package_id.packed_qty"/><br/>
+                                            <span t-field="pack_operation.package_id.uom_id"/>
                                         </t>
                                         
                                         <t t-if="not pack_operation.package_id ">
-                                            <span t-field="pack_operation.product_qty"/>
+                                            <span t-field="pack_operation.product_qty"/><br/>
+                                            <span t-field="pack_operation.product.uom_id"/>
+                                        </t>
+                                    </td>
+
+                                    <!-- Quantity (S.U) -->
+                                    <td class="text-right">
+                                        <t t-if="pack_operation.package_id ">
+                                            <span t-field="pack_operation.package_id.uos_qty"/><br/>
+                                            <span t-field="pack_operation.package_id.uos_id"/>
+                                        </t>
+                                        
+                                        <t t-if="not pack_operation.package_id ">
+                                            <span t-field="pack_operation.uos_qty"/><br/>
+                                            <span t-field="pack_operation.uos_id"/>
                                         </t>
                                     </td>
 

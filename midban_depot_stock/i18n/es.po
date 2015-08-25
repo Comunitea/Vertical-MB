@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-25 11:58+0000\n"
-"PO-Revision-Date: 2015-08-25 11:58+0000\n"
+"POT-Creation-Date: 2015-08-25 12:13+0000\n"
+"PO-Revision-Date: 2015-08-25 12:13+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2005,7 +2005,7 @@ msgstr "Cantidades Paquete"
 #: field:tag,package_id:0
 #: field:tag.item,package_id:0
 msgid "Package"
-msgstr "Paquete"
+msgstr "Package"
 
 #. module: midban_depot_stock
 #: field:stock.pack.operation,packed_lot_id:0
@@ -2053,13 +2053,13 @@ msgstr "Empresa"
 #. module: midban_depot_stock
 #: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
 msgid "Pause Task"
-msgstr "Pausar Tarea"
+msgstr "Pause Task"
 
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_search
 #: field:stock.task,paused:0
 msgid "Paused"
-msgstr "Pausada"
+msgstr "Paused"
 
 #. module: midban_depot_stock
 #: selection:customer.list,result:0
@@ -2184,7 +2184,7 @@ msgstr "Preparar Operaciones"
 #. module: midban_depot_stock
 #: field:stock.move,price_kg:0
 msgid "Price Kg"
-msgstr "Precio Kg"
+msgstr "Prrecio Kg"
 
 #. module: midban_depot_stock
 #: field:product.template,price_kg:0
@@ -2304,6 +2304,7 @@ msgstr "Cantidad"
 
 #. module: midban_depot_stock
 #: field:stock.transfer_details_items,uos_qty:0
+#: view:website:midban_depot_stock.report_operations_list
 msgid "Quantity (S.U.)"
 msgstr "Cantidad (S.U.)"
 
@@ -2330,7 +2331,7 @@ msgstr "Peso real"
 #. module: midban_depot_stock
 #: field:stock.pack.operation,changed:0
 msgid "Record changed"
-msgstr "Record changed"
+msgstr "Registro cambiado"
 
 #. module: midban_depot_stock
 #: field:out.picking.report,reference:0
