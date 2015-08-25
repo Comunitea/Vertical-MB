@@ -367,6 +367,7 @@ class stock_picking(osv.Model):
 
 class stock_package(models.Model):
     _inherit = "stock.quant.package"
+    _order = "id desc"
 
     def _get_package_lot_id(self, cr, uid, ids, name, args, context=None):
         """
@@ -495,8 +496,11 @@ class stock_package(models.Model):
                                            readonly=True,
                                            type="boolean",
                                            string="Is multiproduct"),
-        'uos_qty': fields.float('UoS quantity'),
+        'uos_qty': fields.float('S.U. qty'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
+        'uom_id': fields.related('product_id', 'uom_id', type="many2one",
+                                 relation="product.uom",
+                                 string="Stock unit", readonly=True),
     }
 
     def get_products_quants(self, cr, uid, ids, context=None):

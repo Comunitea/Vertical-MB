@@ -96,16 +96,51 @@
             <field name="model">stock.quant.package</field>
             <field name="inherit_id" ref="stock.view_quant_package_form"/>
             <field name="arch" type="xml">
-                <field name="ul_id" position="before">
+<!--                 <field name="parent_id" position="after">
                     <field name="is_multiproduct"/>
                     <field name="product_id"/>
                     <field name="packed_lot_id"/>
                     <field name="packed_qty"/>
+                    <field name="uom_id" class="oe_inline"/>
                     <field name="num_mantles"/>
                     <field name="volume"/>
+                    <field name="uos_qty" class="oe_inline"/>
                     <field name="uos_id"/>
+                </field> -->
+
+                <xpath expr="/form/sheet/group/group[2]" position="after">
+                    <group string="Pack Information">
+                        <field name="is_multiproduct"/>
+                        <field name="product_id"/>
+                        <field name="packed_lot_id"/>
+                        <field name="volume"/>
+                    </group>
+                    <group string="Pack Quantities">
+                        <field name="packed_qty"/>
+                        <field name="uom_id"/>
+                        <field name="uos_qty"/>
+                        <field name="uos_id"/>
+                        <field name="num_mantles"/>
+                    </group>
+
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_quant_package_tree_add_fields">
+            <field name="name">stock.quant.package.tree.add.fields</field>
+            <field name="model">stock.quant.package</field>
+            <field name="inherit_id" ref="stock.view_quant_package_tree"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="packed_qty"/>
+                    <field name="uom_id"/>
                     <field name="uos_qty"/>
+                    <field name="uos_id"/>
+                    <field name="num_mantles"/>
+                    <field name="volume"/>
                 </field>
+
             </field>
         </record>
 
