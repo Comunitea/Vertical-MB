@@ -608,14 +608,6 @@ class stock_pack_operation(models.Model):
                         int(math.ceil(ope.product_qty / uom_in_mantles))
         return res
 
-    @api.multi
-    def _set_packed_qty(self, field_name, value, args):
-        for operation in self:
-            if operation.product_id:
-                operation.product_qty = value
-            elif operation.package_id:
-                operation.changed_packed_qty = value
-
     def _get_qty_package(self, cr, uid, ids, name, args, context=None):
         """
         Get the qty inside the package or the qty going to a new package
@@ -625,13 +617,10 @@ class stock_pack_operation(models.Model):
         res = {}
         for ope in self.browse(cr, uid, ids, context=context):
             res[ope.id] = 0
-            if ope.changed_packed_qty:
-                res[ope.id] = ope.changed_packed_qty
-            else:
-                if ope.package_id and not ope.product_id:
-                    res[ope.id] = ope.package_id.packed_qty
-                elif ope.product_id:
-                    res[ope.id] = ope.product_qty
+            if ope.package_id and not ope.product_id:
+                res[ope.id] = ope.package_id.packed_qty
+            elif ope.product_id:
+                res[ope.id] = ope.product_qty
         return res
 
     _columns = {
@@ -647,7 +636,7 @@ class stock_pack_operation(models.Model):
                                         readonly=True),
         'packed_qty': fields.function(_get_qty_package, type='float',
                                       string='Packed qty',
-                                      fnct_inv=_set_packed_qty),
+                                      readonly=True),
         'num_mantles': fields.function(_get_num_mantles,
                                        type='integer',
                                        string='Nº Mantles',
@@ -663,7 +652,6 @@ class stock_pack_operation(models.Model):
         'old_id': fields.integer('Old id', readonly=True),
         'uos_qty': fields.float('UoS quantity'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
-        'changed_packed_qty': fields.float('Changed packed qty'),
         'changed': fields.boolean('Record changed')
 
     }
@@ -788,20 +776,6 @@ class stock_pack_operation(models.Model):
                                                  _('Impossible found an'
                                                    ' special location'))
                     self.location_dest_id = special_location
-
-    @api.one
-    def split_packages(self):
-        """
-            Se reciben operaciones que contienen 1 paquete entero y a las que
-            se les ha modificado la cantidad, se debe modificar la operacion
-            añadiendo producto, lote, cantidad y unidad de medida.
-        """
-        self.write({
-            'product_id': self.operation_product_id.id,
-            'lot_id': self.packed_lot_id.id,
-            'product_uom_id': self.operation_product_id.uom_id.id,
-            'product_qty': self.changed_packed_qty,
-        })
 
     @api.one
     def update_product_in_move(self):

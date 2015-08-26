@@ -53,7 +53,6 @@
                             <field name="picking_id" />
                             <field name="owner_id" groups="stock.group_tracking_owner"/>
                             <field name="product_qty" attrs="{'required': [('product_id', '!=', False)]}"/>
-                            <field name="packed_qty"/>
                             <field name="uos_qty"/>
                             <field name="uos_id" readonly="1"/>
                             <field name="location_id"/>
