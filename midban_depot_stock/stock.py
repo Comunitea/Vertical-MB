@@ -1338,6 +1338,7 @@ class stock_move(models.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
+        if context is None: context = {}
         # TODO: se hace asi?
         res = super(stock_move, self).write(cr, uid, ids, vals,
                                             context=context)
