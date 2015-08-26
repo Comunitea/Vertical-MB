@@ -32,7 +32,7 @@ class stock_picking(osv.Model):
     _order = "name desc"
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
-                                       readonly=True,
+                                       readonly=True, copy=False,
                                        domain=[('operator', '=', 'True')]),
         'machine_id': fields.many2one('stock.machine', 'Machine',
                                       readonly=True),
@@ -72,6 +72,11 @@ class stock_picking(osv.Model):
         to get a reposition task of the selected cameras in the task wizard'),
         'order_note': fields.related('sale_id', 'note', readonly=True,
                                      type="char", string="Order Note"),
+        'wave_id': fields.many2one('stock.picking.wave', 'Picking Wave',
+                                   states={'done': [('readonly', True)],
+                                           'cancel': [('readonly', True)]},
+                                   help='Picking wave associated to this '
+                                        'picking', copy=False),
     }
 
     @api.model
@@ -258,6 +263,8 @@ class stock_picking(osv.Model):
                     'date': op.date,
                     'owner_id': op.owner_id.id,
                     'transfer_id': transfer_obj.id,
+                    'uos_id': op.uos_id.id,
+                    'uos_qty': op.uos_qty
                 }
                 t_item.create(item)
                 something_done = True
@@ -279,6 +286,8 @@ class stock_picking(osv.Model):
                     'task_id': assigned_task_id,
                     'to_process': True,
                     'old_id': op.id,
+                    'uos_id': op.uos_id.id,
+                    'uos_qty': op.uos_qty
                     # To remember the original operation when we scan a barcode
                     # in warehouse_scan_gun_module, because maybe the assigned
                     # operation were deleted by doinf a partial picking.

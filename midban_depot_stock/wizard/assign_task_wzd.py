@@ -575,13 +575,14 @@ class assign_task_wzd(osv.TransientModel):
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.picking_location_id', 'child_of', loc_ids),
-            ('state', '=', 'confirmed'),
+            ('state', 'in', ['confirmed', 'assigned']),
+            ('picking_id.wave_id', '=', False),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '!=', False)
         ]
         move_ids = move_obj.search(cr, uid, domain, context=context)
         if not move_ids:
-            raise osv.except_osv(_('Error!'), _('Anathing pending of picking'))
+            raise osv.except_osv(_('Error!'), _('Anything pending of picking'))
         move_objs = move_obj.browse(cr, uid, move_ids, context=context)
         routes_set = {m.picking_id.trans_route_id.id for m in move_objs}
         res = random.choice(tuple(routes_set))
@@ -614,7 +615,7 @@ class assign_task_wzd(osv.TransientModel):
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('product_id.picking_location_id', 'child_of', loc_ids),
-            ('state', '=', 'confirmed'),
+            ('state', 'in', ['confirmed', 'assigned']),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '=', selected_route),
             ('picking_id.min_date', '>=', start_date),
@@ -798,7 +799,10 @@ class assign_task_wzd(osv.TransientModel):
                 'state': 'assigned',
                 'machine_id': machine_id,
             }
-            task_obj.create(cr, uid, vals, context=context)
+            task_id = task_obj.create(cr, uid, vals, context=context)
+            for pick in pick_obj.browse(cr, uid, pickings_to_wave):
+                for op in pick.pack_operation_ids:
+                    op.write({'task_id': task_id})
             return self._print_report(cr, uid, ids, wave_id=wave_id,
                                       context=context)
         else:

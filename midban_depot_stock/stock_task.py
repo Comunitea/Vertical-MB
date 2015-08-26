@@ -73,7 +73,7 @@ class stock_task(osv.Model):
         else:
             for picking in self.wave_id.picking_ids:
                 if picking.state not in ['done', 'draft', 'cancel']:
-                    picking.approve_pack_operations()
+                    picking.approve_pack_operations2(self.id)
             self.wave_id.done()
 
         duration = datetime.now() - \
