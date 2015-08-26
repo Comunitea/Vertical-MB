@@ -843,9 +843,9 @@ class product_product(models.Model):
             price_udc =  self._conv_units(uoc_id, self.uom_id.id, supplier_id) * price_unit
 
         price_udc = custom_price_udc or custom_price_udc_from_unit or price_udc
-        price_udc = float_round (price_udc,2)
+        price_udc = price_udc
         price_unit = custom_price_unit or custom_price_unit_from_udc or price_unit
-        price_unit = float_round(price_unit,2)
+        price_unit = price_unit
 
         return price_unit, price_udc
 

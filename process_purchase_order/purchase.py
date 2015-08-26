@@ -48,7 +48,7 @@ class purchase_order_line(models.Model):
             context = {}
         sup = super(purchase_order_line, self)
         t_product = self.pool.get('product.product')
-        uom_id = t_product.browse(cr, uid,[product_id]).uom_id.id
+        uom_id = t_product.browse(cr, uid, [product_id]).uom_id.id
         res = sup.onchange_product_id(cr, uid, ids, pricelist_id, product_id,
                                       qty, uom_id, partner_id,
                                       context=context,
@@ -97,16 +97,14 @@ class purchase_order_line(models.Model):
                                   }
             else:
                 product_udc_ids = prod_obj.get_purchase_unit_ids(partner_id)
+                res['value']['product_uoc_qty'] = 1.0
                 res['value']['product_uoc'] = \
                     product_udc_ids and product_udc_ids[0] or False
-                res['value']['product_uoc_qty'] = 1.0
-                #supp = self.pool.get('product.supplierinfo')
-                #suppinfo_ids = supp.search(cr, uid, [('product_tmpl_id','=',line.product_id.id),('name','=', line.preorder_id.supplier_id.id)])
-                #suppinfo = supp.browse(cr, uid, suppinfo_ids)
-                #lname = (suppinfo.product_code and ('['+ suppinfo.product_code +'] ') or '') + (suppinfo.product_name or '')
 
                 product_pool = self.pool.get('product.product')
-                lname = product_pool.get_product_supplier_name( cr, uid, partner_id,prod_obj.id)
+                lname = product_pool.get_product_supplier_name(cr, uid,
+                                                               partner_id,
+                                                               prod_obj.id)
                 res['value']['name'] = lname
 
         return res
@@ -116,7 +114,6 @@ class purchase_order_line(models.Model):
         """
         We change the product_uom_qty
         """
-
         product = self.product_id
         if product:
             if self.do_onchange:
@@ -124,12 +121,12 @@ class purchase_order_line(models.Model):
                 qty = self.product_uoc_qty
                 uoc_id = self.product_uoc.id
 
-                conv = product.get_purchase_unit_conversions(qty, uoc_id,supplier_id)
+                conv = product.get_purchase_unit_conversions(qty, uoc_id,
+                                                             supplier_id)
                 # base, unit, or box
-                #import pdb; pdb.set_trace()
-                log_unit, log_unit_id = product.get_uom_po_logistic_unit(supplier_id)
+                log_unit, log_unit_id = product.\
+                    get_uom_po_logistic_unit(supplier_id)
                 self.product_qty = conv[log_unit]
-
 
             else:
                 self.do_onchange = True
@@ -147,14 +144,16 @@ class purchase_order_line(models.Model):
             uoc_qty = self.product_uoc_qty
             conv = product.get_purchase_unit_conversions(uoc_qty, uoc_id,
                                                          supplier_id)
-            log_unit, log_unit_id = product.get_uom_po_logistic_unit(supplier_id)
+            log_unit, log_unit_id = product.\
+                get_uom_po_logistic_unit(supplier_id)
             self.product_qty = conv[log_unit]
 
             # Calculate prices
-            uom_pu, uoc_pu = product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
-                                                        )
+            uom_pu, uoc_pu = product.\
+                get_uom_uoc_prices_purchases(uoc_id, supplier_id,
+                                             custom_price_unit=self.price_unit)
             # Avoid trigger onchange_price_udv, because is already calculed
-            if uoc_pu != self.price_udc:
+            if round(uoc_pu, 2) != round(self.price_udc, 2):
                 self.do_onchange = False
             self.price_unit = uom_pu
             self.price_udc = uoc_pu
@@ -177,8 +176,10 @@ class purchase_order_line(models.Model):
                 vals['product_uoc_qty'] or po_line.product_uoc_qty
             uoc_id = vals.get('product_uoc', False) and \
                 vals['product_uoc'] or po_line.product_uoc.id
-            conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id, supplier_id)
-            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, box
+            conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
+                                                      supplier_id)
+            # base, unit, box
+            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)
             vals['product_qty'] = conv[log_unit]
             vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
             res = super(purchase_order_line, po_line).write(vals)
@@ -202,7 +203,8 @@ class purchase_order_line(models.Model):
 
             conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
                                                       supplier_id)
-            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)  # base, unit, or box
+            # base, unit, or box
+            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)
             vals['product_qty'] = conv[log_unit]
             vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
         res = super(purchase_order_line, self).create(vals)
@@ -222,8 +224,8 @@ class purchase_order_line(models.Model):
                 uoc_id = uoc.id
                 uom_pu, uoc_pu = \
                     product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
-                                               custom_price_unit=self.
-                                               price_unit)
+                                                         custom_price_unit=
+                                                         self.price_unit)
                 # Avoid trigger onchange_price_udv, because is already calculed
                 if uoc_pu != self.price_udc:
                     self.do_onchange = False
@@ -244,10 +246,11 @@ class purchase_order_line(models.Model):
                 # Calculate prices
                 uom_pu, uoc_pu = \
                     product.get_uom_uoc_prices_purchases(uoc_id, supplier_id,
-                                               custom_price_udc=self.price_udc)
+                                                         custom_price_udc=
+                                                         self.price_udc)
                 # Avoid trigger onchange_price_unit,lready calculed
-                if uom_pu != self.price_unit:
+                if round(uom_pu, 2) != round(self.price_unit, 2):
                     self.do_onchange = False
-                self.price_unit = uom_pu
+                    self.price_unit = uom_pu
             else:
                 self.do_onchange = True
