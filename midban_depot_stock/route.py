@@ -81,8 +81,10 @@ class route(models.Model):
             bzip_codes = [x.name for x in self.bzip_ids]
             domain = [('day_id', '=', self.day_id.id),
                       ('type', '=', self.type),
-                      ('id', '!=', self.id),
-                      ('state', '=', 'active')]
+                      ('state', '=', 'active'),
+                      ('name', '!=', self.name)]
+            if self.id:
+                domain.append(('id', '!=', self.id))
             route_objs = self.search(domain)
             if route_objs:
                 not_check_more = False
