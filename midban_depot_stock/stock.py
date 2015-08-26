@@ -1321,7 +1321,8 @@ class stock_move(models.Model):
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        if context is None: context = {}
+        if context is None:
+            context = {}
         # TODO: se hace asi?
         res = super(stock_move, self).write(cr, uid, ids, vals,
                                             context=context)
@@ -1357,7 +1358,7 @@ class stock_move(models.Model):
                 propagated_changes_dict['product_uos_id'] = \
                     vals['product_uos_id']
             if not context.get('do_not_propagate', False) and \
-                    propagated_changes_dict:
+                    propagated_changes_dict and move.move_dest_id.id:
                 self.write(cr, uid, [move.move_dest_id.id],
                            propagated_changes_dict,
                            context=context)
