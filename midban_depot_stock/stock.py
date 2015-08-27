@@ -615,32 +615,18 @@ class stock_pack_operation(models.Model):
         if context is None:
             context = {}
         res = {}
-        for ope in self.browse(cr, uid, ids, context=context):
-            res[ope.id] = 0
+        for op in self.browse(cr, uid, ids, context=context):
+            res[op.id] = 0
 
-            product_id = ope.product_id
-            uom_in_mantles = 1
-            if product_id.uom_id == product_id.log_base_id:
-                uom_in_mantles = product_id.kg_un * product_id.ca_ma * \
-                    product_id.un_ca
-            if product_id.uom_id == product_id.log_unit_id:
-                uom_in_mantles = product_id.un_ca * product_id.ca_ma
-            if product_id.uom_id == product_id.log_box_id:
-                uom_in_mantles = product_id.ca_ma
-
-            if ope.package_id:
-                res[ope.id] = ope.package_id.num_mantles
+            if op.package_id:
+                res[op.id] = op.package_id.num_mantles
                 # If quit from a pack and put in other pack return the
                 # operation num_mantles instead of the volume
-                if ope.result_package_id and ope.product_qty:
-                    if uom_in_mantles:
-                        res[ope.id] = \
-                            int(math.ceil(ope.product_qty / uom_in_mantles))
-            elif ope.product_id and ope.product_qty \
-                    and ope.result_package_id:
-                if uom_in_mantles:
-                    res[ope.id] = \
-                        int(math.ceil(ope.product_qty / uom_in_mantles))
+                if op.result_package_id and op.product_id and op.product_qty:
+                    res[op.id] = op.product_id.get_num_mantles(op.product_qty)
+            else:
+                res[op.id] = op.product_id.get_num_mantles(op.product_qty)
+
         return res
 
     def _get_qty_package(self, cr, uid, ids, name, args, context=None):
