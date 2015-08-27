@@ -29,6 +29,7 @@ from openerp.exceptions import except_orm
 import operator
 import functools
 from openerp.tools.float_utils import float_round
+import math
 
 
 class temp_type(osv.Model):
@@ -819,37 +820,73 @@ class product_product(models.Model):
 
         return res_code + res_name
 
-
-    #sacamos las conversiones de precios,podemos darle un precio
-    #para sobreescribir los precios a partir del standar_price
-    #habrá que revisarlo en función delos precios y tarifas por proveedor
+    # sacamos las conversiones de precios,podemos darle un precio
+    # para sobreescribir los precios a partir del standar_price
+    # habrá que revisarlo en función delos precios y tarifas por proveedor
     @api.model
-    def get_uom_uoc_prices_purchases(self, uoc_id, supplier_id, custom_price_unit=0.0,
-                           custom_price_udc=0.0):
+    def get_uom_uoc_prices_purchases(self, uoc_id, supplier_id,
+                                     custom_price_unit=0.0,
+                                     custom_price_udc=0.0):
 
-        #import pdb; pdb.set_trace()#
         custom_price_udc_from_unit = 0.0
         custom_price_unit_from_udc = 0.0
-        supp = self.get_product_supp_record(supplier_id)
-        #Para evitar si hay custom_price_udc, lo pasamos a custom_price_unit
+        # Para evitar si hay custom_price_udc, lo pasamos a custom_price_unit
         if custom_price_udc:
-            #si hay lo pasamos a custom price unit para no andar con if
-            custom_price_unit_from_udc = self._conv_units( self.uom_id.id,uoc_id, supplier_id) * custom_price_udc
+            # Si hay lo pasamos a custom price unit para no andar con if
+            custom_price_unit_from_udc = \
+                self._conv_units(self.uom_id.id, uoc_id, supplier_id) * \
+                custom_price_udc
 
         elif custom_price_unit:
-            #si hay lo pasamos a sacamos custom price udc
-            custom_price_udc_from_unit = self._conv_units(uoc_id, self.uom_id.id,  supplier_id) * custom_price_unit
+            # Si hay lo pasamos a sacamos custom price udc
+            custom_price_udc_from_unit = \
+                self._conv_units(uoc_id, self.uom_id.id, supplier_id) * \
+                custom_price_unit
 
         else:
             price_unit = self.standard_price
-            price_udc =  self._conv_units(uoc_id, self.uom_id.id, supplier_id) * price_unit
+            price_udc = self._conv_units(uoc_id, self.uom_id.id, supplier_id) \
+                * price_unit
 
         price_udc = custom_price_udc or custom_price_udc_from_unit or price_udc
         price_udc = price_udc
-        price_unit = custom_price_unit or custom_price_unit_from_udc or price_unit
+        price_unit = custom_price_unit or custom_price_unit_from_udc or \
+            price_unit
         price_unit = price_unit
 
         return price_unit, price_udc
+
+    def get_num_mantles(self, uom_qty):
+        """
+        For a uom_qty get the equivalent number of mantles using the logistic
+        info, we use the product uom_id because is the default stock unit
+        """
+        mantles = 0
+        uom_in_mantles = 0
+        if self.uom_id == self.log_base_id:
+            uom_in_mantles = self.kg_un * self.ca_ma * self.un_ca
+        elif self.uom_id == self.log_unit_id:
+            uom_in_mantles = self.un_ca * self.ca_ma
+        elif self.uom_id == self.log_box_id:
+            uom_in_mantles = self.ca_ma
+
+        if uom_in_mantles:
+            mantles = int(math.ceil(uom_qty / uom_in_mantles))
+        return mantles
+
+    def get_volume_for(self, uom_qty, add_wood_height=False):
+        """
+        Get the volume for a uom_qty in default product uom_id.
+        If add_qood_height True we add this height to the mantle height
+        """
+        volume = 0.0
+        wood_height = 0.0
+        num_mantles = self.get_num_mantles(uom_qty)
+        if add_wood_height:
+            wood_height = self.palet_wood_height
+        height_mantles = (self.ma_height * num_mantles) + wood_height
+        volume = self.pa_width * self.pa_length * height_mantles
+        return volume
 
 
 class ProductSupplierinfo(models.Model):
@@ -929,10 +966,6 @@ class ProductSupplierinfo(models.Model):
             raise Warning(_('The supplit uom are \
                              not related to suppplier uoms\
                              ' % product_uom))
-
-
-
-
 
     @api.multi
     @api.depends('var_coeff_un', 'var_coeff_ca')
