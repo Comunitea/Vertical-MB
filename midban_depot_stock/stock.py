@@ -476,30 +476,32 @@ class stock_package(models.Model):
         return res
 
     def _get_pack_volume(self, cr, uid, ids, name, args, context=None):
+        """
+        If package is in storage zone we need to calcule the pack volume
+        with the wood height, in other case we get the volume by calculing
+        the number of mantles in the pack ang geting the mantles height.
+        """
         if context is None:
             context = {}
         res = {}
-        # t_loc = self.pool.get('stock.location')
         for pack in self.browse(cr, uid, ids, context=context):
-            # volume = 0.0
-            # loc_dest_obj = t_loc.browse(cr, uid, pack.location_id.id,
-            #                             context=context)
-
             quants_by_prod = {}
             # Group quants inside the package by product
             quants_by_prod = pack.get_products_quants()
-            sum_heights = 0
+            volume = 0
+            add_wood_height = \
+                True if pack.location_id.zone == 'storage' else False
             for product in quants_by_prod:
                 quant_lst = quants_by_prod[product]
                 qty = 0
                 for quant in quant_lst:
                     qty += quant.qty
 
-                mantle_units = product.un_ca * product.ca_ma
-                num_mantles = int(math.ceil(qty / mantle_units))
-                mantle_height = product.ma_height
-                sum_heights += num_mantles * mantle_height
-            res[pack.id] = sum_heights
+                if pack.location_id.zone == 'storage':
+                    add_wood_height = True
+                volume += product.get_volume_for(qty, add_wood_height)
+
+            res[pack.id] = volume
         return res
 
     def _is_multiproduct_pack(self, cr, uid, ids, name, args, context=None):
@@ -716,16 +718,16 @@ class stock_pack_operation(models.Model):
             free_loc_ids.remove(prod_obj.picking_location_id.location_id.id)
         return sorted_locs[new_index]
 
-    def _get_volume_for(self, prop_qty, product, picking_zone=False):
-        volume = 0.0
-        un_ca = product.un_ca
-        ca_ma = product.ca_ma
-        mantle_units = un_ca * ca_ma
-        num_mant = math.ceil(prop_qty / mantle_units)
-        height_mant = product.ma_height
-        height_var_pal = (num_mant * height_mant)
-        volume = height_var_pal
-        return volume
+    # def _get_volume_for(self, prop_qty, product, picking_zone=False):
+    #     volume = 0.0
+    #     un_ca = product.un_ca
+    #     ca_ma = product.ca_ma
+    #     mantle_units = un_ca * ca_ma
+    #     num_mant = math.ceil(prop_qty / mantle_units)
+    #     height_mant = product.ma_height
+    #     height_var_pal = (num_mant * height_mant)
+    #     volume = height_var_pal
+    #     return volume
 
     def _older_refernce_in_storage(self, product):
         """
@@ -753,11 +755,13 @@ class stock_pack_operation(models.Model):
         """
         res = False
         if not product.picking_location_id:
-            raise exceptions.Warning(_('Error!'), _('Not picking location for product \
-                             %s.' % product.name))
+            raise exceptions.Warning(_('Error!'),
+                                     _('Not picking location for product \
+                                     %s.' % product.name))
 
         pick_loc = product.picking_location_id
-        volume = self._get_volume_for(prop_qty, product, picking_zone=True)
+        # volume = self._get_volume_for(prop_qty, product, picking_zone=True)
+        volume = product.get_volume_for(prop_qty)
         if not pick_loc.filled_percent:  # If empty add wood volume
             width_wood = product.pa_width
             length_wood = product.pa_length
@@ -793,9 +797,11 @@ class stock_pack_operation(models.Model):
                 while not found and locations:
                     location = self._search_closest_pick_location(product,
                                                                   locations)
-                    if location and location.available_volume > \
-                            self._get_volume_for(self.packed_qty, product,
-                                                 picking_zone=False):
+                    # if location and location.available_volume > \
+                    #         self._get_volume_for(self.packed_qty, product,
+                    #                              picking_zone=False):
+                    my_volume = product.get_volume_for(self.packed_qty)
+                    if location and location.available_volume > my_volume:
                         found = True
                     else:
                         locations.remove(location.id)
@@ -909,21 +915,21 @@ class stock_location(models.Model):
                 volume += pack.volume
         return volume
 
-    def _get_volume_for(self, prop_qty, product, picking_zone=False):
-        volume = 0.0
-        un_ca = product.un_ca
-        ca_ma = product.ca_ma
-        mantle_units = un_ca * ca_ma
-        num_mant = math.ceil(prop_qty / mantle_units)
-        width_wood = product.pa_width
-        length_wood = product.pa_length
-        height_mant = product.ma_height
-        wood_height = product.palet_wood_height
-        if picking_zone:
-            wood_height = 0  # No wood in picking location
-        height_var_pal = (num_mant * height_mant) + wood_height
-        volume = width_wood * length_wood * height_var_pal
-        return volume
+    # def _get_volume_for(self, prop_qty, product, picking_zone=False):
+    #     volume = 0.0
+    #     un_ca = product.un_ca
+    #     ca_ma = product.ca_ma
+    #     mantle_units = un_ca * ca_ma
+    #     num_mant = math.ceil(prop_qty / mantle_units)
+    #     width_wood = product.pa_width
+    #     length_wood = product.pa_length
+    #     height_mant = product.ma_height
+    #     wood_height = product.palet_wood_height
+    #     if picking_zone:
+    #         wood_height = 0  # No wood in picking location
+    #     height_var_pal = (num_mant * height_mant) + wood_height
+    #     volume = width_wood * length_wood * height_var_pal
+    #     return volume
 
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -975,10 +981,11 @@ class stock_location(models.Model):
                     volume += pack_obj.volume
                 # Reposition operations
                 elif ope.package_id and ope.result_package_id:
-                    volume += \
-                        self._get_volume_for(ope.product_qty,
-                                             ope.product_id,
-                                             picking_zone=True)
+                    # volume += \
+                    #     self._get_volume_for(ope.product_qty,
+                    #                          ope.product_id,
+                    #                          picking_zone=True)
+                    volume += ope.product_id.get_volume_for(ope.product_qty)
                 # Units operations, no packages
                 else:
                     volume += ope.operation_product_id.un_width * \

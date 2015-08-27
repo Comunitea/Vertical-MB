@@ -347,8 +347,6 @@ class assign_task_wzd(osv.TransientModel):
             res = True
         return res
 
-
-
     def get_location_task(self, cr, uid, ids, context=None):
 
         """
