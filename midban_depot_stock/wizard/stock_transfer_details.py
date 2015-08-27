@@ -23,7 +23,6 @@ from datetime import datetime, timedelta
 import math
 from openerp.addons.midban_issue.issue_generator import issue_generator
 import openerp.addons.decimal_precision as dp
-from openerp.tools import float_compare
 
 
 issue_gen = issue_generator()
@@ -60,11 +59,9 @@ class stock_transfer_details(models.TransientModel):
         # Revisamos para apuntar en todas las operaciones las Uos
         for item in self.item_ids:
             item.review_packop()
-                #item.create_packop()
         res = super(stock_transfer_details, self).do_detailed_transfer()
 
-         #TODO Es necesaria esta propagación en este punto y calcular ya el relacionado siempre?.
-                #No sobrecargamos demasiado
+        # Calculate the operations for the next chained picking
         related_pick = self.picking_id.move_lines[0].move_dest_id.picking_id
         related_pick.do_prepare_partial()
         related_pick.write({'midban_operations': True})
@@ -227,8 +224,6 @@ class stock_transfer_details_items(models.TransientModel):
             y se reajusta en base a la segunda unidad.
         """
         self.ensure_one()
-        #palet_units = self.product_id.get_palet_size(self.uos_id)
-        #Lo cambio por product_uom_id
         palet_units = self.product_id.get_palet_size(self.product_uom_id)
         maximum_quantity = remaining_qty < palet_units and remaining_qty or \
             palet_units
@@ -237,16 +232,19 @@ class stock_transfer_details_items(models.TransientModel):
     @api.one
     def create_pack_operation(self, pack_uom_quantity):
         supplier_id = self.transfer_id.picking_id.partner_id.id
-        pack_uos_qty = self.product_id.uom_qty_to_uos_qty(pack_uom_quantity, self.uos_id.id, supplier_id)
+        if self.quantity == pack_uom_quantity:
+            pack_uos_qty = self.uos_qty
+        else:
+            pack_uos_qty = \
+                self.product_id.uom_qty_to_uos_qty(pack_uom_quantity,
+                                                   self.uos_id.id,
+                                                   supplier_id)
         op_vals = {
             'location_id': self.sourceloc_id.id,
             'product_id': self.product_id.id,
-            #'product_qty': self.product_id.uos_qty_to_uom_qty(
-            #    pack_uos_quantity, self.uos_id.id),
             'product_uom_id': self.product_uom_id.id,
-            #'uos_qty': pack_uos_quantity,
-            'product_qty' : pack_uom_quantity,
-            'uos_qty' : pack_uos_qty,
+            'product_qty': pack_uom_quantity,
+            'uos_qty': pack_uos_qty,
             'uos_id': self.uos_id.id,
             'location_dest_id': self.destinationloc_id.id,
             'picking_id': self.transfer_id.picking_id.id,
@@ -342,33 +340,14 @@ class stock_transfer_details_items(models.TransientModel):
                 conv = product.get_purchase_unit_conversions(qty, uoc_id,
                                                              supplier_id)
                 # base, unit, or box
-                log_unit, log_unit_id = product.get_uom_po_logistic_unit(supplier_id)
+                log_unit, log_unit_id = \
+                    product.get_uom_po_logistic_unit(supplier_id)
                 new_quantity = conv[log_unit]
                 if new_quantity != self.quantity:
                     self.do_onchange = False
                     self.quantity = conv[log_unit]
             else:
                 self.do_onchange = True
-
-    # @api.multi
-    # def create_packop(self):
-    #     # TODO: Intentar unificar funcion con create_pack_operation
-    #     op_vals = {
-    #         'product_id': self.product_id.id,
-    #         'product_uom_id': self.product_uom_id.id,
-    #         'product_qty': self.quantity,
-    #         'uos_qty': self.uos_qty,
-    #         'uos_id': self.uos_id.id,
-    #         'package_id': self.package_id.id,
-    #         'lot_id': self.lot_id.id,
-    #         'location_id': self.sourceloc_id.id,
-    #         'location_dest_id': self.destinationloc_id.id,
-    #         'result_package_id': self.result_package_id.id,
-    #         'date': self.date if self.date else datetime.now(),
-    #         'owner_id': self.owner_id.id,
-    #         'picking_id': self.transfer_id.picking_id.id,
-    #     }
-    #     self.packop_id = self.env['stock.pack.operation'].create(op_vals)
 
     @api.multi
     def review_packop(self):

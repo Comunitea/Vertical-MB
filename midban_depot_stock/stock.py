@@ -348,29 +348,57 @@ class stock_picking(osv.Model):
 
     @api.multi
     def do_prepare_partial(self):
+        """
+        Overwrited in order to calculate the correct uos_qty in the operation.
+        """
         res = super(stock_picking, self).do_prepare_partial()
         for picking in self:
             for move in picking.move_lines:
                 if move.product_uos_qty and move.product_uos:
-                    # uos_qty = move.product_uos_qty
-
+                    move_uos_qty = move.product_uos_qty
+                    move_uos_id = move.product_uos.id
                     operations = [x.operation_id for x in
                                   move.linked_move_operation_ids]
                     operations = list(set(operations))
-                    no_operations = len(operations)
-                    for operation in operations:
-                        if not operation:
-                            continue
-                        no_operations -= 1
-                        if not operation.product_id.is_var_coeff or \
-                                operation.uos_qty == 0:
-                            operation.uos_id = move.product_uos.id
-                            estimated_uos_qty = \
-                                move.\
-                                product_id.\
-                                uom_qty_to_uos_qty(operation.packed_qty,
-                                                   move.product_uos.id)
-                            operation.uos_qty += estimated_uos_qty
+                    for op in operations:
+                        prod = op.operation_product_id
+                        op_uom_qty = op.packed_qty
+                        op_uos_qty = 0
+                        if op.package_id and not op.product_id:
+                            op_uos_qty = op.package_id.uos_qty
+                        # Variable coeff products
+                        elif op.product_id and prod.is_var_coeff:
+                            moves = list(set([x.move_id for x in
+                                              op.linked_move_operation_ids]))
+                            if len(operations) == 1 and len(moves) == 1:
+                                    op_uos_qty = move_uos_qty
+                            else:
+                                op_coeff = 0
+                                for mv in moves:
+                                    op_coeff = \
+                                        mv.product_uom_qty / mv.product_uos_qty
+                                    apr_uos_qty = op_uom_qty / op_coeff
+
+                                    dec_part = apr_uos_qty - int(apr_uos_qty)
+                                    if dec_part > 0.95:
+                                        apr_uos_qty = \
+                                            int(math.ceil(apr_uos_qty))
+                                    else:
+                                        apr_uos_qty = int(apr_uos_qty)
+
+                                    if apr_uos_qty <= move_uos_qty:
+                                        op_uos_qty += apr_uos_qty
+                                        move_uos_qty -= apr_uos_qty
+                                    else:
+                                        op_uos_qty += move_uos_qty
+                                        break
+                        # Fixed coeff product
+                        elif op.product_id and not prod.is_var_coeff:
+                            op_uos_qty = prod.uom_qty_to_uos_qty(op.uom_qty,
+                                                                 move_uos_id)
+                        # Write the calculed uos qty in operation
+                        op.uos_qty = op_uos_qty
+                        op.uos_id = move_uos_id
         return res
 
 
