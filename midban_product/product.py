@@ -470,28 +470,30 @@ class ProductTemplate(models.Model):
             raise Warning(_('Product uom not in logistic units \
                              ' % product_uom))
 
-        product_uom = self.uos_id
-        if not((product_uom == self.log_base_id) or \
-                (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
-            raise Warning (_('Product uos not in logistic units \
-                             ' % product_uom))
+        if self.uos_id:
+            product_uom = self.uos_id
+            if not((product_uom == self.log_base_id) or \
+                    (product_uom == self.log_unit_id) or \
+                    (product_uom == self.log_box_id)):
+                raise Warning(_('Product uos not in logistic units \
+                                 ' % product_uom))
 
         unit_error = False
         if self.log_base_id:
             if (self.log_base_id == self.log_unit_id) or \
-                (self.log_base_id == self.log_box_id):
+               (self.log_base_id == self.log_box_id):
                 unit_error = True
         if self.log_unit_id:
             if (self.log_unit_id == self.log_base_id) or \
-                (self.log_unit_id == self.log_box_id):
+               (self.log_unit_id == self.log_box_id):
                 unit_error = True
         if self.log_box_id:
             if (self.log_box_id == self.log_base_id) or \
-                (self.log_box_id == self.log_unit_id):
+               (self.log_box_id == self.log_unit_id):
                 unit_error = True
 
         if unit_error:
-            raise Warning (_('Product logistic units are wrong'))
+            raise Warning(_('Product logistic units are wrong'))
 
     @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca')

@@ -379,12 +379,12 @@ class stock_picking(osv.Model):
                                         mv.product_uom_qty / mv.product_uos_qty
                                     apr_uos_qty = op_uom_qty / op_coeff
 
-                                    dec_part = apr_uos_qty - int(apr_uos_qty)
-                                    if dec_part > 0.95:
-                                        apr_uos_qty = \
-                                            int(math.ceil(apr_uos_qty))
-                                    else:
-                                        apr_uos_qty = int(apr_uos_qty)
+                                    # dec_part = apr_uos_qty - int(apr_uos_qty)
+                                    # if dec_part > 0.95:
+                                    #     apr_uos_qty = \
+                                    #         int(math.ceil(apr_uos_qty))
+                                    # else:
+                                    #     apr_uos_qty = int(apr_uos_qty)
 
                                     if apr_uos_qty <= move_uos_qty:
                                         op_uos_qty += apr_uos_qty
@@ -394,8 +394,9 @@ class stock_picking(osv.Model):
                                         break
                         # Fixed coeff product
                         elif op.product_id and not prod.is_var_coeff:
-                            op_uos_qty = prod.uom_qty_to_uos_qty(op.uom_qty,
-                                                                 move_uos_id)
+                            op_uos_qty = \
+                                prod.uom_qty_to_uos_qty(op.product_qty,
+                                                        move_uos_id)
                         # Write the calculed uos qty in operation
                         op.uos_qty = op_uos_qty
                         op.uos_id = move_uos_id
@@ -462,11 +463,15 @@ class stock_package(models.Model):
                     context)
                 mantles += sum(child_res.values())
             if pack.product_id:
-                units_in_mantle = pack.product_id.un_ca * \
-                    pack.product_id.ca_ma
-                if units_in_mantle:
-                    mantles += int(math.ceil(pack.packed_qty /
-                                             units_in_mantle))
+                prod = pack.product_id
+                uom_in_mantles = 1
+                if prod.uom_id == prod.log_base_id:
+                    uom_in_mantles = prod.kg_un * prod.ca_ma * prod.un_ca
+                elif prod.uom_id == prod.log_unit_id:
+                    uom_in_mantles = prod.un_ca * prod.ca_ma
+                elif prod.uom_id == prod.log_box_id:
+                    uom_in_mantles = prod.ca_ma
+                mantles = int(math.ceil(pack.packed_qty / uom_in_mantles))
             res[pack.id] = mantles
         return res
 
