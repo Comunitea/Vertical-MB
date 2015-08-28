@@ -22,7 +22,6 @@ from openerp.osv import fields, osv
 from openerp import api, models, _, exceptions
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
-import math
 from lxml import etree
 # from openerp.tools import float_compare
 

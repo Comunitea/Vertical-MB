@@ -158,6 +158,7 @@ class stock_transfer_details(models.TransientModel):
                 'quantity': op.product_qty,
                 'package_id': op.package_id.id,
                 'lot_id': op.lot_id.id,
+                'life_date': op.lot_id and op.lot_id.life_date or False,
                 'sourceloc_id': op.location_id.id,
                 'destinationloc_id': op.location_dest_id.id,
                 'result_package_id': op.result_package_id.id,
