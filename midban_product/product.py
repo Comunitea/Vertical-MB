@@ -520,6 +520,7 @@ class product_product(models.Model):
         if self.box_use_sale and self.log_box_id:
             res.append(self.log_box_id.id)
         return res
+
     # y para compras ....
     @api.model
     def get_purchase_unit_ids(self, supplier_id):
@@ -535,41 +536,6 @@ class product_product(models.Model):
         if supp.box_use_purchase and supp.log_box_id:
             res.append(supp.log_box_id.id)
         return res
-
-    #devuelve un factor de conversión a la unidad de stock del producto
-    #desde otra unidad (uos_id)
-    #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
-    @api.model
-    def _get_factor_no_se_usa(self, uos_id):
-
-        uom_id = self.uom_id.id
-        if uos_id == self.log_base_id.id:
-            if uom_id == self.log_base_id.id:
-                return 1
-            if uom_id == self.log_unit_id.id:
-                return 1/self.kg_un
-            if uom_id == self.log_box_id.id:
-                return 1 / (self.kg_un * self.un_ca)
-
-        if uos_id == self.log_unit_id.id:
-            if uom_id == self.log_base_id.id:
-                return self.kg_un
-            if uom_id == self.log_unit_id.id:
-                return 1
-            if uom_id == self.log_box_id.id:
-                return 1 / self.un_ca * self.un_ca
-
-        if uos_id == self.log_box_id.id:
-            if uom_id == self.log_base_id.id:
-                return self.kg_un * self.un_ca
-            if uom_id == self.log_unit_id.id:
-                return self.un_ca
-            if uom_id == self.log_box_id.id:
-                return 1
-        raise except_orm(_('Error'), _('The product unit of measure %s is \
-                             not related with any logistic \
-                             unit' % self.uom_id.name))
-
 
     @api.model
     def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id = 0):
@@ -856,10 +822,12 @@ class product_product(models.Model):
 
         return price_unit, price_udc
 
-    def get_num_mantles(self, uom_qty):
+    def get_num_mantles(self, uom_qty, total_uom_mantles=False):
         """
         For a uom_qty get the equivalent number of mantles using the logistic
-        info, we use the product uom_id because is the default stock unit
+        info, we use the product uom_id because is the default stock unit.
+        If uom_mantles is True we return directly the number
+        of uom units inside a mantle
         """
         mantles = 0
         uom_in_mantles = 0
@@ -870,14 +838,16 @@ class product_product(models.Model):
         elif self.uom_id == self.log_box_id:
             uom_in_mantles = self.ca_ma
 
-        if uom_in_mantles:
+        if total_uom_mantles:
+            mantles = uom_in_mantles
+        elif uom_in_mantles:
             mantles = int(math.ceil(uom_qty / uom_in_mantles))
         return mantles
 
     def get_volume_for(self, uom_qty, add_wood_height=False):
         """
         Get the volume for a uom_qty in default product uom_id.
-        If add_qood_height True we add this height to the mantle height
+        If add_wood_height True we add this height to the mantle height
         """
         volume = 0.0
         wood_height = 0.0

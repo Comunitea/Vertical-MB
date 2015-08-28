@@ -460,14 +460,7 @@ class stock_package(models.Model):
                 mantles += sum(child_res.values())
             if pack.product_id:
                 prod = pack.product_id
-                uom_in_mantles = 1
-                if prod.uom_id == prod.log_base_id:
-                    uom_in_mantles = prod.kg_un * prod.ca_ma * prod.un_ca
-                elif prod.uom_id == prod.log_unit_id:
-                    uom_in_mantles = prod.un_ca * prod.ca_ma
-                elif prod.uom_id == prod.log_box_id:
-                    uom_in_mantles = prod.ca_ma
-                mantles = int(math.ceil(pack.packed_qty / uom_in_mantles))
+                mantles = prod.get_num_mantles(pack.packed_qty)
             res[pack.id] = mantles
         return res
 
@@ -886,27 +879,12 @@ class stock_location(models.Model):
         pack_ids = list(pack_ids)
         for pack in t_pack.browse(cr, uid, pack_ids, context=context):
             net_qty = 0
+            # Avoid negative quants
             for quant in pack.quant_ids:
                 net_qty += quant.qty
             if net_qty:
                 volume += pack.volume
         return volume
-
-    # def _get_volume_for(self, prop_qty, product, picking_zone=False):
-    #     volume = 0.0
-    #     un_ca = product.un_ca
-    #     ca_ma = product.ca_ma
-    #     mantle_units = un_ca * ca_ma
-    #     num_mant = math.ceil(prop_qty / mantle_units)
-    #     width_wood = product.pa_width
-    #     length_wood = product.pa_length
-    #     height_mant = product.ma_height
-    #     wood_height = product.palet_wood_height
-    #     if picking_zone:
-    #         wood_height = 0  # No wood in picking location
-    #     height_var_pal = (num_mant * height_mant) + wood_height
-    #     volume = width_wood * length_wood * height_var_pal
-    #     return volume
 
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
@@ -953,14 +931,10 @@ class stock_location(models.Model):
                 elif ope.package_id and not ope.result_package_id:
                     pack_obj = ope.package_id
                     if is_pick_zone:
-                        pack_obj = ope.package_id.with_context(no_wood=True)
+                        pack_obj = ope.package_id
                     volume += pack_obj.volume
                 # Reposition operations
                 elif ope.package_id and ope.result_package_id:
-                    # volume += \
-                    #     self._get_volume_for(ope.product_qty,
-                    #                          ope.product_id,
-                    #                          picking_zone=True)
                     volume += ope.product_id.get_volume_for(ope.product_qty)
                 # Units operations, no packages
                 else:
@@ -982,8 +956,7 @@ class stock_location(models.Model):
                         length_wood = product.pa_length
                         wood_height = product.palet_wood_height
                     qty = ope.product_qty
-                    mantle_units = product.un_ca * product.ca_ma
-                    num_mantles = int(math.ceil(qty / mantle_units))
+                    num_mantles = product.get_num_mantles(qty)
                     mantle_height = product.ma_height
                     sum_heights += num_mantles * mantle_height
                 # If storage location add volume of wood

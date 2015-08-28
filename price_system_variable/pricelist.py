@@ -348,13 +348,9 @@ class product_pricelist(osv.Model):
             if price and not custom_way:
                 if 'uom' in context and not uom_price_already_computed:
                     uom = product.uos_id or product.uom_id
-                    price = product_uom_obj._compute_price(cr, uid, uom.id,
-                                                           price, context['uom'])
-
-            # if context.get('sale_in_boxes', False) and rule.base == -5:
-            #     if type(price[0]) == float:
-            #         dsc_price = (price[0] * (1 - product.box_discount / 100.0))
-            #         price[0] = product.un_ca * dsc_price
+                    price = \
+                        product_uom_obj._compute_price(cr, uid, uom.id,
+                                                       price, context['uom'])
             results[product.id] = price
         return results
 

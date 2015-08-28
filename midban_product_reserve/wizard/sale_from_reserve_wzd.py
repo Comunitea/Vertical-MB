@@ -74,8 +74,6 @@ class sale_from_reserve_wzd(models.TransientModel):
         fpos = reserve.partner_id2.property_account_position
         tax_id = fpos and fpos.map_tax(taxes_ids) or [x.id for x in taxes_ids]
         uom_qty = uos_qty = self.qty
-        # if reserve.choose_unit == 'box':
-        #     uom_qty = reserve.product_id.un_ca * uos_qty
         if uom_qty > reserve.pending_qty:
                 raise except_orm(_('Error!'),
                                  _('Only %s %s pending in the reserve') %
@@ -109,8 +107,6 @@ class sale_from_reserve_wzd(models.TransientModel):
                              _('Imposible create reserved sale'))
         reserve = self.env[active_model].browse(active_ids[0])
         wzd_qty = self.qty
-        # if reserve.choose_unit == 'box':
-        #     wzd_qty = reserve.product_id.un_ca * self.qty
         new_served_qty = reserve.served_qty + wzd_qty
         vals = self._prepare_order_vals(reserve, chanel)
         so = t_order.create(vals)

@@ -178,8 +178,7 @@ class reposition_wizard(osv.TransientModel):
                     'location_dest_id': dest_id,
                     'result_package_id': False,
                     'lot_id': pack.packed_lot_id and
-                    pack.packed_lot_id.id or False,
-                }
+                    pack.packed_lot_id.id or False}
                 for q in pack.quant_ids:
                     force_quants_assign.append((q, q.qty))
                 operation_dics.append(op_vals)
@@ -189,7 +188,7 @@ class reposition_wizard(osv.TransientModel):
             packs_to_split = sorted(packs_to_split, key=lambda p: p.volume)
             vol_mant = prod.pa_width * prod.pa_length * \
                 prod.ma_height
-            mant_units = prod.un_ca * prod.ca_ma
+            mant_units = prod.get_num_mantles(1, total_uom_mantles=True)
             num_mantles = vol_mant and math.floor(vol_aval / vol_mant) or 0.0
             max_units = num_mantles * mant_units
             if num_mantles:
@@ -212,8 +211,7 @@ class reposition_wizard(osv.TransientModel):
                     'location_dest_id': dest_id,
                     'result_package_id': new_pack_id,
                     'lot_id': pack_obj.packed_lot_id and
-                    pack_obj.packed_lot_id.id or False,
-                }
+                    pack_obj.packed_lot_id.id or False}
                 assigned = 0
                 for q in pack_obj.quant_ids:
                     if q.product_id.id == prod.id and assigned < pack_qty:
