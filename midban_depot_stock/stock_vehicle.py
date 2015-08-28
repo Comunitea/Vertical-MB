@@ -29,5 +29,4 @@ class stock_vehicle(osv.Model):
     _columns = {
         'name': fields.char('Name', required=True, size=128),
         'code': fields.char('Code', required=True, size=128),
-        'number': fields.char('Vehicle Number', required=True, size=128),
-    }
+        'number': fields.char('Vehicle Number', required=True, size=128)}

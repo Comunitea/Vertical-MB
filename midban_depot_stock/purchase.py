@@ -40,16 +40,14 @@ class purchase_order(osv.Model):
                 'partner_id': order.partner_id.id,
                 # 'date': max([l.date_planned for l in order.order_line]),
                 'date': time.strftime("%Y-%m-%d %H:%M:%S"),
-                'origin': order.name
-            }
+                'origin': order.name}
             picking_id = self.pool.get('stock.picking').create(cr, uid,
                                                                picking_vals,
                                                                context=context)
             self._create_stock_moves(cr, uid, order, order.order_line,
                                      picking_id, context=context)
     _defaults = {
-        'invoice_method': 'picking',
-    }
+        'invoice_method': 'picking'}
 
 
 class purchase_order_line(osv.Model):

@@ -76,8 +76,7 @@ class stock_picking(osv.Model):
                                    states={'done': [('readonly', True)],
                                            'cancel': [('readonly', True)]},
                                    help='Picking wave associated to this '
-                                        'picking', copy=False),
-    }
+                                        'picking', copy=False)}
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
@@ -222,8 +221,7 @@ class stock_picking(osv.Model):
             for op in pick.pack_operation_ids:
                 op.write({
                     'qty_done': op.product_qty,
-                    'processed': 'true'
-                })
+                    'processed': 'true'})
         self.do_transfer(cr, uid, ids, context=context)
         return True
 
@@ -264,8 +262,7 @@ class stock_picking(osv.Model):
                     'owner_id': op.owner_id.id,
                     'transfer_id': transfer_obj.id,
                     'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty
-                }
+                    'uos_qty': op.uos_qty}
                 t_item.create(item)
                 something_done = True
             else:
@@ -287,11 +284,10 @@ class stock_picking(osv.Model):
                     'to_process': True,
                     'old_id': op.id,
                     'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty
-                    # To remember the original operation when we scan a barcode
-                    # in warehouse_scan_gun_module, because maybe the assigned
-                    # operation were deleted by doinf a partial picking.
-                }
+                    'uos_qty': op.uos_qty}
+                # To remember the original operation when we scan a barcode
+                # in warehouse_scan_gun_module, because maybe the assigned
+                # operation were deleted by doinf a partial picking.
                 pending_ops_vals.append(new_ops_vals)
 
         if something_done:
@@ -544,8 +540,7 @@ class stock_package(models.Model):
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
         'uom_id': fields.related('product_id', 'uom_id', type="many2one",
                                  relation="product.uom",
-                                 string="Stock unit", readonly=True),
-    }
+                                 string="Stock unit", readonly=True)}
 
     def get_products_quants(self, cr, uid, ids, context=None):
         """
@@ -673,12 +668,10 @@ class stock_pack_operation(models.Model):
         'old_id': fields.integer('Old id', readonly=True),
         'uos_qty': fields.float('UoS quantity'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
-        'changed': fields.boolean('Record changed')
+        'changed': fields.boolean('Record changed')}
 
-    }
     _defaults = {
-        'to_process': True,
-    }
+        'to_process': True}
 
     def _search_closest_pick_location(self, prod_obj, free_loc_ids):
         loc_t = self.env['stock.location']
@@ -725,8 +718,7 @@ class stock_pack_operation(models.Model):
         storage_loc_ids = pick_loc.get_locations_by_zone('storage')
         domain = [
             ('product_id', '=', product.id),
-            ('location_id', 'in', storage_loc_ids),
-        ]
+            ('location_id', 'in', storage_loc_ids)]
         quant_objs = t_quant.search(domain)
         net_qty = 0.0
         for quant in quant_objs:
@@ -849,8 +841,7 @@ class stock_warehouse(models.Model):
                                               'Reposition Task Type'),
         'max_volume': fields.float('Max. volume to move in picking',
                                    digits_compute=dp.get_precision
-                                   ('Product Volume')),
-    }
+                                   ('Product Volume'))}
 
 
 class stock_location(models.Model):
@@ -946,8 +937,7 @@ class stock_location(models.Model):
             domain = [
                 ('location_dest_id', 'child_of', loc.id),
                 ('processed', '=', 'false'),
-                ('picking_id.state', 'in', ['assigned'])
-            ]
+                ('picking_id.state', 'in', ['assigned'])]
             operation_ids = ope_obj.search(cr, uid, domain, context=context)
             ops_by_pack = {}
             is_pick_zone = loc.zone == 'picking'
@@ -1130,8 +1120,7 @@ class stock_location(models.Model):
                 domain = [
                     ('location_dest_id', '=', loc.id),
                     ('processed', '=', 'false'),
-                    ('picking_id.state', 'in', ['assigned'])
-                ]
+                    ('picking_id.state', 'in', ['assigned'])]
                 operation_ids = ope_obj.search(cr, uid, domain, limit=1,
                                                context=context)
                 if operation_ids:
@@ -1196,13 +1185,11 @@ class stock_location(models.Model):
                                  "this location and childrens"),
         'zone': fields.selection([('storage', 'Storage Zone'),
                                   ('picking', 'Picking Zone')],
-                                 'Location Zone'),
-    }
+                                 'Location Zone')}
 
     _defaults = {
         'storage_type': 'standard',
-        'sequence': 0
-    }
+        'sequence': 0}
 
     def get_camera(self, cr, uid, ids, context=None):
         """
@@ -1335,8 +1322,7 @@ class stock_move(models.Model):
                                           relation="route.detail",
                                           type="many2one"),
         'orig_op': fields.many2one('stock.pack.operation', 'op'),
-        'wait_receipt_qty': fields.float('Quantity pending receipt')
-    }
+        'wait_receipt_qty': fields.float('Quantity pending receipt')}
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
         res = super(stock_move, self).\
@@ -1481,8 +1467,7 @@ class stock_move(models.Model):
                     'product_uom_qty': uom_qty,
                     'product_uos_qty': move.wait_receipt_qty,
                     'wait_receipt_qty': 0,
-                    'picking_id': False,
-                })
+                    'picking_id': False})
                 new_move.purchase_line_id = move.purchase_line_id
                 backorder_moves += new_move
         return backorder_moves
@@ -1504,8 +1489,7 @@ class stock_inventory(models.Model):
                                          'inventory_id', 'categ_id',
                                          string="Categories"),
         'filter': fields.selection(_get_available_filters, 'Selection Filter',
-                                   required=True),
-    }
+                                   required=True)}
 
     def _get_inventory_lines(self, cr, uid, inventory, context=None):
         vals = super(stock_inventory, self).\
@@ -1541,8 +1525,7 @@ class stock_picking_wave(models.Model):
                                           domain=[('state', '=', 'active')]),
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse'),
         'machine_id': fields.many2one('stock.machine', 'Machine',
-                                      readonly=True),
-    }
+                                      readonly=True)}
 
 
 class stock_quant(models.Model):
@@ -1618,8 +1601,7 @@ class stock_location_rule(models.Model):
     _columns = {
         'cross_dock': fields.boolean('Cross Dock Route',
                                      help="mark to avoid stock virtual"
-                                     "conservative warning"),
-    }
+                                     "conservative warning")}
 
 
 class stock_production_lot(models.Model):
@@ -1632,8 +1614,7 @@ class stock_production_lot(models.Model):
         'supplier_ids': fields.many2many('res.partner', 'supplier_lot_rel',
                                          'lot_id', 'partner_id',
                                          'Related suppliers',
-                                         domain=[('supplier', '=', True)])
-    }
+                                         domain=[('supplier', '=', True)])}
 
 ###############################################################################
 ###############################################################################
