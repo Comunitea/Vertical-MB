@@ -37,6 +37,10 @@ class stock_transfer_details(models.TransientModel):
 
     picking_type_code = fields.Char('Picking code',
                                     related='picking_id.picking_type_code')
+    task_type = fields.Selection([('ubication', 'Ubication',),
+                                  ('reposition', 'Reposition'),
+                                  ('picking', 'Picking')],
+                                 related='picking_id.task_type')
 
     @api.multi
     def prepare_package_type_operations(self):
@@ -66,6 +70,22 @@ class stock_transfer_details(models.TransientModel):
         related_pick.do_prepare_partial()
         related_pick.write({'midban_operations': True})
         return res
+
+    @api.multi
+    def calculate_dest_location(self):
+        for op in self.picking_id.pack_operation_ids:
+            op.unlink()
+        self.picking_id.do_prepare_partial()
+        for op in self.picking_id.pack_operation_ids:
+            op.assign_location()
+        ctx = {
+            'active_model': 'stock.picking',
+            'active_ids': [self.picking_id.id],
+            'active_id': self.picking_id and self.picking_id.id or False
+        }
+        vals = {'picking_id': self.picking_id.id}
+        wzd_obj = self.with_context(ctx).create(vals)
+        return wzd_obj.wizard_view()
 
     @api.multi
     def wizard_view(self):
@@ -167,6 +187,7 @@ class stock_transfer_details(models.TransientModel):
                 'uos_qty': uos_qty,  # Calculed and added
                 'uos_id': uos_id,     # Calculed and added
                 'var_weight': var_weight,     # Calculed and added
+                # 'task_type': picking.task_type,
             }
             if op.product_id:
                 items.append(item)

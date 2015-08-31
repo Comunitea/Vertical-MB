@@ -129,6 +129,13 @@
                 <field name="uos_qty"  groups="product.group_uom"/>
                 <field name="uos_id"  groups="product.group_uom" readonly="True" context="{'product_id': product_id}"/>
             </field>
+
+            <field name="packop_ids" position="after">
+              <field name="picking_type_code" invisible="1"/>
+              <field name="task_type" invisible="1"/>
+              <button name="calculate_dest_location" type="object" string="Get destination locations"
+                      attrs="{'invisible': ['|', ('picking_type_code', '!=', 'internal'), ('task_type', 'in', ['reposition', 'picking'])]}"/>
+            </field>
         </field>
     </record>
 

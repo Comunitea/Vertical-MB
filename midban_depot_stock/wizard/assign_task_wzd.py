@@ -447,7 +447,7 @@ class assign_task_wzd(osv.TransientModel):
             op.write({'task_id': task_id})
             assigned_ops.append(op)
         if pick:
-            pick.write({'task_id': task_id})
+            pick.write({'task_id': task_id, 'task_type': 'ubication'})
         if not assigned_ops:
             raise osv.except_osv(_('Error!'),
                                  _('Not found operations of the selected\

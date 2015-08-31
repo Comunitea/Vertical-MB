@@ -26,8 +26,7 @@
 
                 <!-- New Buttons to manage pack operations" -->
                 <button name="do_enter_transfer_details" position="after">
-                    <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/>
-
+                    <!-- <button name="approve_pack_operations" string="Approve operations" groups="stock.group_stock_user" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('pack_operation_exist', '=', False), ('state','not in',('assigned', 'partially_available'))]}"/> -->
                     <button name="delete_picking_package_operations" string="Delete operations" groups="stock.group_stock_user" type="object" attrs="{'invisible': [('state','not in',('assigned', 'partially_available'))]}"/>
 
                     <button name="%(action_create_tag_wizard)d" string="Print Tags" type="action" attrs="{'invisible': ['|', '|', ('picking_type_code', '!=', 'incoming'), ('pack_operation_exist', '=', False), ('state','!=', 'done')]}"/>
@@ -96,18 +95,6 @@
             <field name="model">stock.quant.package</field>
             <field name="inherit_id" ref="stock.view_quant_package_form"/>
             <field name="arch" type="xml">
-<!--                 <field name="parent_id" position="after">
-                    <field name="is_multiproduct"/>
-                    <field name="product_id"/>
-                    <field name="packed_lot_id"/>
-                    <field name="packed_qty"/>
-                    <field name="uom_id" class="oe_inline"/>
-                    <field name="num_mantles"/>
-                    <field name="volume"/>
-                    <field name="uos_qty" class="oe_inline"/>
-                    <field name="uos_id"/>
-                </field> -->
-
                 <xpath expr="/form/sheet/group/group[2]" position="after">
                     <group string="Pack Information">
                         <field name="is_multiproduct"/>
