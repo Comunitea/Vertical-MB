@@ -858,6 +858,15 @@ class product_product(models.Model):
         volume = self.pa_width * self.pa_length * height_mantles
         return volume
 
+    def get_wood_volume(self):
+        """
+        Get the volume of a wood used to put under the palet
+        """
+        width_wood = self.pa_width
+        length_wood = self.pa_length
+        height_wood = self.palet_wood_height
+        return width_wood * length_wood * height_wood
+
 
 class ProductSupplierinfo(models.Model):
     _inherit = 'product.supplierinfo'

@@ -135,10 +135,7 @@ class reposition_wizard(osv.TransientModel):
         loc = loc_obj.browse(cr, uid, dest_id, context=context)
         # Add wood volume if picking location is empty
         if not loc.filled_percent:
-            width_wood = prod.pa_width
-            length_wood = prod.pa_length
-            height_wood = prod.palet_wood_height
-            wood_volume = width_wood * length_wood * height_wood
+            wood_volume = prod.get_wood_volume()
             vol_aval = loc.available_volume - wood_volume
         else:
             vol_aval = loc.available_volume
