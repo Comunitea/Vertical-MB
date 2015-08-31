@@ -193,10 +193,7 @@ class reposition_wizard(osv.TransientModel):
                 packed_qty = qtys_by_prod[prod]
                 pack_qty = packed_qty if max_units > packed_qty else max_units
                 new_pack_id = t_pack.create(cr, uid, {})
-                new_pack_obj = t_pack.browse(cr, uid, new_pack_id, context)
-
                 uos_qty = prod.uom_qty_to_uos_qty(pack_qty, pack_obj.uos_id.id)
-
                 op_vals = {
                     'picking_id': False,  # to set later, when pick created
                     'product_id': prod.id,
