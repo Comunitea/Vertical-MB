@@ -133,12 +133,8 @@ class reposition_wizard(osv.TransientModel):
         picking_loc_id = pick_loc_obj.get_general_zone('picking')
 
         loc = loc_obj.browse(cr, uid, dest_id, context=context)
-        # Add wood volume if picking location is empty
-        if not loc.filled_percent:
-            wood_volume = prod.get_wood_volume()
-            vol_aval = loc.available_volume - wood_volume
-        else:
-            vol_aval = loc.available_volume
+        vol_aval = loc.available_volume
+
         idx = 0
         limit = len(pack_cands) - 1
         operation_dics = []
@@ -175,7 +171,9 @@ class reposition_wizard(osv.TransientModel):
                     'location_dest_id': dest_id,
                     'result_package_id': False,
                     'lot_id': pack.packed_lot_id and
-                    pack.packed_lot_id.id or False}
+                    pack.packed_lot_id.id or False,
+                    'uos_id': pack.uos_id.id,
+                    'uos_qty': pack.uos_qty}
                 for q in pack.quant_ids:
                     force_quants_assign.append((q, q.qty))
                 operation_dics.append(op_vals)
@@ -196,8 +194,9 @@ class reposition_wizard(osv.TransientModel):
                 pack_qty = packed_qty if max_units > packed_qty else max_units
                 new_pack_id = t_pack.create(cr, uid, {})
                 new_pack_obj = t_pack.browse(cr, uid, new_pack_id, context)
-                new_name = new_pack_obj.name.replace("PACK", 'PALET')
-                new_pack_obj.write({'name': new_name})
+
+                uos_qty = prod.uom_qty_to_uos_qty(pack_qty, pack_obj.uos_id.id)
+
                 op_vals = {
                     'picking_id': False,  # to set later, when pick created
                     'product_id': prod.id,
@@ -208,7 +207,9 @@ class reposition_wizard(osv.TransientModel):
                     'location_dest_id': dest_id,
                     'result_package_id': new_pack_id,
                     'lot_id': pack_obj.packed_lot_id and
-                    pack_obj.packed_lot_id.id or False}
+                    pack_obj.packed_lot_id.id or False,
+                    'uos_id': pack.uos_id.id,
+                    'uos_qty': uos_qty}
                 assigned = 0
                 for q in pack_obj.quant_ids:
                     if q.product_id.id == prod.id and assigned < pack_qty:
