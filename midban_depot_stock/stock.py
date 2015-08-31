@@ -131,6 +131,8 @@ class stock_picking(osv.Model):
                             get_sale_unit_conversions(op.uos_qty, op.uos_id.id)
                         pack_uos_qty = conv_dic[pack_log_unit]
                     op.package_id.uos_qty -= pack_uos_qty
+                    if op.result_package_id:
+                        op.result_package_id += pack_uos_qty
         return res
 
     @api.one
