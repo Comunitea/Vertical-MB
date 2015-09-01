@@ -301,7 +301,7 @@ msgstr "Cajas"
 #. module: midban_depot_stock
 #: field:stock.transfer_details_items,life_date:0
 msgid "Caducity date"
-msgstr "Caducity date"
+msgstr "Fecha caducidad"
 
 #. module: midban_depot_stock
 #: field:stock.location,volume_by_parent:0
@@ -411,7 +411,7 @@ msgstr "Cancelado"
 #: code:addons/midban_depot_stock/stock.py:807
 #, python-format
 msgid "Cannot change product once operation is created, delete this and crate another one in the picking."
-msgstr "Cannot change product once operation is created, delete this and crate another one in the picking."
+msgstr "No se puede cambiar el producto una vez la operación está creada. Bórrela y crea otra nueva en el picking."
 
 #. module: midban_depot_stock
 #: field:stock.inventory,category_ids:0
@@ -2744,7 +2744,7 @@ msgstr "Source package"
 #. module: midban_depot_stock
 #: field:reposition.wizard,selected_loc_ids:0
 msgid "Specific locations"
-msgstr "Specific locations"
+msgstr "Ubicaciones específicas"
 
 #. module: midban_depot_stock
 #: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
@@ -2875,12 +2875,12 @@ msgstr "Tareas"
 #. module: midban_depot_stock
 #: field:assign.task.wzd,not_paused:0
 msgid "Tasks Not Paused"
-msgstr "Tasks Not Paused"
+msgstr "Tareas no pausadas"
 
 #. module: midban_depot_stock
 #: field:assign.task.wzd,paused:0
 msgid "Tasks Paused"
-msgstr "Tasks Paused"
+msgstr "Tareas pausadas"
 
 #. module: midban_depot_stock
 #: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
@@ -2959,7 +2959,7 @@ msgstr "EL código postal %s ya está asignado en la ruta %s. Debes cambiarlo pa
 #: code:addons/midban_depot_stock/route.py:188
 #, python-format
 msgid "The zip code %s is already                                                assigned in the                                               route %s. It is no permited                                                routes of same type and same                                                day with the same zip                                                codes"
-msgstr "The zip code %s is already                                                assigned in the                                               route %s. It is no permited                                                routes of same type and same                                                day with the same zip                                                codes"
+msgstr "TEl código postal %s ya está asignado a la ruta %s. No está permitido tener rutas del mismo tipo y del mismo día con los mismos códigos postales"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/route.py:100
@@ -2971,7 +2971,7 @@ msgstr "El código postal %s ya está asignado a la ruta %s. Cambialo o no podra
 #: code:addons/midban_depot_stock/partner.py:107
 #, python-format
 msgid "The zip code %s is not in the route zip                                       codes list"
-msgstr "The zip code %s is not in the route zip                                       codes list"
+msgstr "EL código postal %s no está en el listado de códigos postales"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/partner.py:383
@@ -3048,12 +3048,12 @@ msgstr "Ubicaciones totales"
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_reception
 msgid "Total Qty"
-msgstr "Qty Total"
+msgstr "Cant. Total"
 
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_replanning_route_tree
 msgid "Total Tax Included"
-msgstr "Total Tax Included"
+msgstr "Total impuestos incluidos"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_order
