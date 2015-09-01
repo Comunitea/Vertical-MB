@@ -29,7 +29,7 @@ class reposition_wizard(osv.TransientModel):
     _rec_name = "warehouse_id"
     _columns = {
         'capacity': fields.
-        float("Filled Percentage", required=True,
+        float("Filled Percentage",
               digits_compute=dp.get_precision('Product Price'),
               help="Picking location with less or equal filled percentaje \
               will be proposed to reposition if is possible."),
@@ -40,6 +40,13 @@ class reposition_wizard(osv.TransientModel):
 
         'warehouse_id': fields.many2one('stock.warehouse', 'Warehouse',
                                         required=True),
+        'specific_locations': fields.boolean('Replenish specific locations'),
+        'selected_loc_ids': fields.many2many('stock.location',
+                                             'wzd_locs_rel',
+                                             'wzd_id',
+                                             'location_id',
+                                             'Specific locations',
+                                             help="Locations to replenish"),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -330,15 +337,18 @@ class reposition_wizard(osv.TransientModel):
         # menores que el dado por el asistente
         selected_ids = []
         created_picks = []
-        # get list of locations under wizard capacity filled
-        for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
-            volume = loc.volume
-            if volume:
-                available = loc.available_volume
-                filled = volume - available
-                fill_per = (filled / volume) * 100.0
-                if (fill_per <= wzd_obj.capacity):
-                    selected_ids.append(loc.id)
+        if wzd_obj.selected_loc_ids:
+            selected_ids = [x.id for x in wzd_obj.selected_loc_ids]
+        else:
+            # get list of locations under wizard capacity filled
+            for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
+                volume = loc.volume
+                if volume:
+                    available = loc.available_volume
+                    filled = volume - available
+                    fill_per = (filled / volume) * 100.0
+                    if (fill_per <= wzd_obj.capacity):
+                        selected_ids.append(loc.id)
         if not selected_ids:
             raise osv.except_osv(_('Error!'),
                                  _('No picking location matching with \
@@ -359,4 +369,24 @@ class reposition_wizard(osv.TransientModel):
         if not created_picks:
             raise osv.except_osv(_('Error!'),
                                  _('Nothing to do.'))
+
+        # Display the created pickings
+        mod_obj = self.pool.get('ir.model.data')
+        dummy, action_id = \
+            tuple(mod_obj.get_object_reference(cr, uid, 'stock',
+                                               'action_picking_tree'))
+        action = self.pool.get('ir.actions.act_window').read(cr, uid,
+                                                             action_id,
+                                                             context=context)
+        action['context'] = {}  # override the context to avoid default filters
+        if len(created_picks) > 1:
+            action['domain'] = "[('id', 'in',\
+                               [" + ','.join(map(str, created_picks)) + "])]"
+        else:
+            res = mod_obj.get_object_reference(cr, uid, 'stock',
+                                               'view_picking_form')
+            action['views'] = [(res and res[1] or False, 'form')]
+            action['res_id'] = created_picks[0]
+        return action
+
         return True

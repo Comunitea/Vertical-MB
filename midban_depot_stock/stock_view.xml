@@ -183,6 +183,9 @@
                         <field name="volume"/>
                         <field name="available_volume"/>
                         <field name="filled_percent"/>
+                        <button name="replenish_picking_location" string="Create Reposition"
+                                type="object"
+                                class="oe_link oe_inline" attrs="{'invisible': ['|', ('camera','=', True), ('zone', '!=', 'picking')]}"/>
                     </group>
                 </group>
                 <field name="scrap_location" position="after">

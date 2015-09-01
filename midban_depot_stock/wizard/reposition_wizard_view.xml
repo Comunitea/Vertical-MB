@@ -11,7 +11,11 @@
                     This wizard will replenish all the ubication whitch filled percent less than the givit in the capacity field.
                     </p>
                     <group>
-                        <field name="capacity"/>
+                        <field name="specific_locations"/>
+                        <field name="selected_loc_ids" attrs="{'invisible': [('specific_locations', '=', False)]}" widget="many2many_tags" domain="[('camara', '=', False), ('zone', '=', 'picking')]"/>
+                        <field name="capacity" attrs="{'invisible': [('specific_locations', '=', True)],
+                                                       'required':  [('specific_locations', '=', False)]
+                                                      }"/>
                         <field name="limit"/>
                         <field name="warehouse_id"/>
                     </group>
