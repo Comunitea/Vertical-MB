@@ -115,13 +115,20 @@ class stock_picking(osv.Model):
 
     @api.multi
     def do_transfer(self):
+        """
+        Overwrited to add update the uos_qty of package_id and
+        result_package_id
+        """
         self._regularize_move_quantities()
         res = super(stock_picking, self).do_transfer()
         # Calculate the uos_qty of package when remove qty from it
         for pick in self:
             for op in pick.pack_operation_ids:
-                if op.package_id and op.product_id and op.uos_qty:
+                if (op.package_id and op.product_id and op.uos_id) or \
+                        (op.package_id and not op.product_id and op.uos_id
+                            and op.result_package_id):
                     pack_uos_qty = 0
+                    # Calcular uos_id equivalente
                     if op.uos_id.id == op.package_id.uos_id.id:
                         pack_uos_qty = op.uos_qty
                     else:  # Convert between operation unit to pack unit
@@ -131,8 +138,20 @@ class stock_picking(osv.Model):
                             get_sale_unit_conversions(op.uos_qty, op.uos_id.id)
                         pack_uos_qty = conv_dic[pack_log_unit]
                     op.package_id.uos_qty -= pack_uos_qty
+
                     if op.result_package_id:
-                        op.result_package_id += pack_uos_qty
+                        # Calcular uos_id equivalente
+                        if op.uos_id.id == op.result_package_id.uos_id.id:
+                            pack_uos_qty = op.uos_qty
+                        else:  # Convert between operation unit to pack unit
+                            uos_id = op.result_package_id.uos_id.id
+                            pack_log_unit = op.product_id.\
+                                get_uos_logistic_unit(uos_id)
+                            conv_dic = op.product_id.\
+                                get_sale_unit_conversions(op.uos_qty,
+                                                          op.uos_id.id)
+                            pack_uos_qty = conv_dic[pack_log_unit]
+                        op.result_package_id.uos_qty += pack_uos_qty
         return res
 
     @api.one
@@ -400,27 +419,35 @@ class stock_picking(osv.Model):
         return res
 
 
-class stock_package(models.Model):
+class StockPackage(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"
 
-    def _get_package_lot_id(self, cr, uid, ids, name, args, context=None):
+    @api.depends('quant_ids')
+    @api.one
+    def _get_package_lot_id(self):
         """
         Returns lot of products inside the QUANTS of the pack.
         We not check childrens packages. # TODO??
         We assume no exist pack of diferents lots, in that case return False.
         """
-        if context is None:
-            context = {}
-        res = {}
-        for pack in self.browse(cr, uid, ids, context=context):
-            lot_id = False
-            for quant in pack.quant_ids:
-                lot_id = quant.lot_id and quant.lot_id.id or False
-                if lot_id != quant.lot_id.id:  # Founded diferents lots in pack
-                    lot_id = False
-            res[pack.id] = lot_id
-        return res
+        lot_id = False
+        for quant in self.quant_ids:
+            lot_id = quant.lot_id and quant.lot_id.id or False
+            if lot_id != quant.lot_id.id:  # Founded diferents lots in pack
+                lot_id = False
+        self.packed_lot_id = lot_id
+
+    packed_lot_id = fields2.Many2one('stock.production.lot',
+                                     string="Packed Lot",
+                                     compute=_get_package_lot_id,
+                                     readonly=True,
+                                     store=True)
+
+
+class stock_package(models.Model):
+    _inherit = "stock.quant.package"
+    _order = "id desc"
 
     def _get_packed_qty(self, cr, uid, ids, name, args, context=None):
         """
@@ -509,12 +536,12 @@ class stock_package(models.Model):
         'product_id': fields.related('quant_ids', 'product_id', readonly=True,
                                      type="many2one", string="Product",
                                      relation="product.product"),
-        'packed_lot_id': fields.function(_get_package_lot_id,
-                                         string="Packed Lot",
-                                         readonly=True,
-                                         type="many2one",
-                                         relation="stock.production.lot"),
-
+        # 'packed_lot_id': fields.function(_get_package_lot_id,
+        #                                  string="Packed Lot",
+        #                                  readonly=True,
+        #                                  type="many2one",
+        #                                  store=True,
+        #                                  relation="stock.production.lot"),
         'packed_qty': fields.function(_get_packed_qty, type="float",
                                       string="Packed qty",
                                       readonly=True,
@@ -569,6 +596,26 @@ class stock_package(models.Model):
             quants_by_prod = pack.get_products_quants()
             for prod in quants_by_prod:
                 res[prod] = sum([x.qty for x in quants_by_prod[prod]])
+        return res
+
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrited in order to detect the case of an operation that moves a
+        pack in a result package (action_done of stock.move adds parent_id)
+        Instead of put ne pack_id as child of
+        result_package_id in the operation we move the quants from package_id
+        to result_package_id and the remove package_id.
+        SO we can create a new behaivor in the operation: Move a pack inside
+        other pack will not be possible, we only move the content of the first
+        pack inside the second one and the firsrt is removes because is empty.
+        """
+        res = super(stock_package, self).write(vals)
+        for pack in self:
+            if vals.get('parent_id', False):
+                for q in pack.quant_ids:
+                    q.package_id = vals['parent_id']
+                pack.parent_id = False
         return res
 
 
@@ -797,6 +844,10 @@ class stock_pack_operation(models.Model):
 
     @api.multi
     def write(self, vals):
+        """
+        If we change lot_id or product_id in a create operation, we quit the
+        pack in the first case and a exception will be raised in the second one
+        """
         if vals.get('lot_id', False):
             for op in self:
                 if op.lot_id.id != vals['lot_id']:
@@ -808,7 +859,50 @@ class stock_pack_operation(models.Model):
                                                "operation is created, delete "
                                                "this and crate another one in"
                                                " the picking."))
+        if vals.get('location_dest_id', False):
+            new_loc = self.env['stock.location'].\
+                browse(vals['location_dest_id'])
+            for op in self:
+                lot_id = op.lot_id.id if op.lot_id.id else \
+                    (op.packed_lot_id.id if op.packed_lot_id.id else False)
+                if lot_id:
+                    # Reception operation, Suppliers to input location
+                    if not op.package_id and op.result_package_id:
+                        pass
+                    else:
+                        pack = new_loc.get_package_of_lot(lot_id)
+                        vals['result_package_id'] = pack.id if pack else False
         return super(stock_pack_operation, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        """
+        If there is a pack in the location_dest_id with the same lot of
+        operation lot we add the qty to this pack by setting it in
+        result package id
+        """
+        op = super(stock_pack_operation, self).create(vals)
+        lot_id = op.lot_id.id if op.lot_id.id else \
+            (op.packed_lot_id.id if op.packed_lot_id.id else False)
+        if lot_id:
+            # Reception operation, Suppliers to input location
+            if not op.package_id and op.result_package_id:
+                pass
+            else:
+                pack = op.location_dest_id.get_package_of_lot(lot_id)
+                op.result_package_id = pack.id if pack else False
+        # Operation Beach to input
+        # if not self.package_id and self.result_package_id:
+        #     lot_id = self.lot_id.id
+        # # Location task operations or reposition
+        # elif self.package_id and not self.result_package_id:
+        #
+        # # Reposition operations
+        # elif self.package_id and self.result_package_id:
+        #
+        # # Units operations, no packages
+        # else:
+        return op
 
 
 class stock_warehouse(models.Model):
@@ -917,12 +1011,13 @@ class stock_location(models.Model):
                     else:
                         ops_by_pack[ope.result_package_id].append(ope)
                 # Location task operations or reposition
-                elif ope.package_id and not ope.result_package_id:
+                elif not ope.product_id and ope.package_id:
                     pack_obj = ope.package_id.\
                         with_context(add_wood_height=add_wood_height)
                     volume += pack_obj.volume
-                # Reposition operations
-                elif ope.package_id and ope.result_package_id:
+                # Reposition operations, remove from a pack and put in other
+                elif ope.product_id and ope.package_id \
+                        and ope.result_package_id:
                     volume += ope.product_id.get_volume_for(ope.product_qty)
                 # Units operations, no packages
                 else:
@@ -1265,7 +1360,8 @@ class stock_location(models.Model):
     @api.multi
     def replenish_picking_location(self):
         """
-        Try to get a reposition Picking
+        Try to get a reposition Picking calling the reposition wizard with
+        the unique location passed
         """
         res = {}
         vals = {'capacity': 95.0,
@@ -1276,6 +1372,19 @@ class stock_location(models.Model):
         repo_wzd = self.env['reposition.wizard'].create(vals)
         res = repo_wzd.get_reposition_list()
         return res
+
+    @api.multi
+    def get_package_of_lot(self, lot_id):
+        """
+        Search packs in the location, if there is a pack of a lot_id
+        we returne it
+        """
+        packs = False
+        for loc in self:
+            domain = [('location_id', '=', loc.id),
+                      ('packed_lot_id', '=', lot_id)]
+            packs = self.env['stock.quant.package'].search(domain)
+        return packs and packs[0] or False
 
 
 class stock_move(models.Model):
