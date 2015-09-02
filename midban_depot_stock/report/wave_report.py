@@ -108,10 +108,6 @@ class sale_report(osv.osv):
         'location_id': fields.many2one('stock.location', 'Location',
                                        readonly=True),
         'product_qty': fields.float('Quantity', readonly=True),
-        # 'units': fields.function(_get_units_and_boxes, type='integer',
-        #                          multi='mult', string='Units', readonly=True),
-        # 'boxes': fields.function(_get_units_and_boxes, type='integer',
-                                 # multi='mult', string='Boxes', readonly=True),
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
         'sequence': fields.integer('Sequence', readonly=True),
@@ -120,7 +116,6 @@ class sale_report(osv.osv):
         'camera_id': fields.function(_get_camera_from_loc, type='many2one',
                                      relation='stock.location',
                                      string='Camera', readonly=True),
-        'group': fields.integer('group', readonly=True),
         'operation_ids': fields.function(_get_operation_ids, type="one2many",
                                          string="Operations",
                                          relation="stock.pack.operation",
@@ -131,6 +126,10 @@ class sale_report(osv.osv):
         'uos_qty': fields.float('UoS quantity', readonly=True),
         'uos_id': fields.many2one('product.uom', 'Secondary unit',
                                   readonly=True),
+        'customer_id': fields.many2one('res.partner', 'Customer',
+                                      readonly=True),
+        'pack_id': fields.many2one('stock.quant.package', 'Pack',
+                                      readonly=True)
     }
 
     def _select(self):
@@ -141,10 +140,11 @@ class sale_report(osv.osv):
           SQ.location_id      AS location_id,
           SUM(SQ.product_qty) AS product_qty,
           SQ.wave_id          AS wave_id,
-          SQ.SEQUENCE         AS SEQUENCE,
+          SQ.sequence         AS sequence,
           SUM(SQ.uos_qty)         AS uos_qty,
           SQ.uos_id          AS uos_id,
-          SQ.group_id         AS group"""
+          SQ.customer_id       AS customer_id,
+          SQ.pack_id      as pack_id"""
 
     def _subquery_grouped_op(self):
         return """SELECT Min(operation.id) AS id,
@@ -155,8 +155,9 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
-                  location.SEQUENCE AS SEQUENCE,
-                  0 as group_id
+                  location.sequence AS sequence,
+                  quant.package_id as pack_id,
+                  0 as customer_id
 
            FROM   stock_quant quant
                   inner join stock_quant_package PACKAGE
@@ -181,8 +182,9 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     group_id,
-                     location.SEQUENCE
+                     customer_id,
+                     pack_id,
+                     sequence
            UNION
            SELECT Min(operation.id)          AS id,
                   operation.product_id       AS product_id,
@@ -192,8 +194,10 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
-                  location.SEQUENCE                 AS SEQUENCE,
-                  0 as group_id
+                  location.sequence                 AS sequence,
+                  operation.package_id as pack_id,
+                  0 as customer_id
+
            FROM   stock_pack_operation operation
                   inner join stock_picking picking
                           ON picking.id = operation.picking_id
@@ -213,8 +217,9 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     group_id,
-                     location.SEQUENCE"""
+                     pack_id,
+                     customer_id,
+                     sequence"""
 
     def _subquery_no_grouped_op(self):
         return """SELECT Min(operation.id) AS id,
@@ -226,7 +231,8 @@ class sale_report(osv.osv):
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.SEQUENCE AS SEQUENCE,
-                  quant.package_id as group_id
+                  picking.partner_id as customer_id,
+                  quant.package_id as pack_id
 
            FROM   stock_quant quant
                   inner join stock_quant_package PACKAGE
@@ -250,8 +256,9 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     quant.package_id,
-                     location.SEQUENCE
+                     pack_id,
+                     customer_id,
+                     sequence
            UNION
            SELECT Min(operation.id)          AS id,
                   operation.product_id       AS product_id,
@@ -261,8 +268,9 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
-                  location.SEQUENCE                 AS SEQUENCE,
-                  operation.package_id as group_id
+                  location.sequence                 AS sequence,
+                  picking.partner_id as customer_id,
+                  operation.package_id as pack_id
            FROM   stock_pack_operation operation
                   inner join stock_picking picking
                           ON picking.id = operation.picking_id
@@ -281,17 +289,19 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     operation.package_id,
-                     location.SEQUENCE"""
+                     pack_id,
+                     customer_id,
+                     sequence"""
 
     def _group_by(self):
         return """SQ.product_id,
              SQ.lot_id,
              SQ.location_id,
              SQ.wave_id,
-             SQ.SEQUENCE,
+             SQ.sequence,
              SQ.uos_id,
-             SQ.group_id"""
+             SQ.pack_id,
+             SQ.customer_id"""
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, self._table)
