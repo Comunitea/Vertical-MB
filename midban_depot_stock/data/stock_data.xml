@@ -12,7 +12,7 @@
         <!-- Location Task. Necesary change src location to Input location and Dest location to stock location -->
         <record id="picking_type_ubication_task" model="stock.picking.type">
             <field name="name">Ubication Task</field>
-            
+
             <field name="sequence_id" ref="seq_picking_type_ubication"/>
             <field name="code">internal</field>
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
@@ -29,7 +29,7 @@
         <!-- Reposition Task. Necesary change src location and Dest location to stock location -->
         <record id="picking_type_reposition_task" model="stock.picking.type">
             <field name="name">Reposition Task</field>
-            
+
             <field name="sequence_id" ref="seq_picking_type_reposition"/>
             <field name="code">internal</field>
             <field name="default_location_src_id" ref="stock.stock_location_suppliers"/>
@@ -68,11 +68,10 @@
             <field name="value">False</field>
         </record>
 
-         <record id="pick_by_volume" model="ir.config_parameter">
-            <field name="key">pick.by.volume</field>
-            <field name="value">False</field>
+         <record id="print_report" model="ir.config_parameter">
+            <field name="key">print.report</field>
+            <field name="value">True</field>
         </record>
-
 
     </data>
 </openerp>

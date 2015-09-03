@@ -364,6 +364,10 @@
                                 <field name="pick_by_volume" class="oe_inline"/>
                                 <label for= "pick_by_volume"/>
                             </div>
+                            <div>
+                                <field name="print_report" class="oe_inline"/>
+                                <label for= "print_report"/>
+                            </div>
                         </div>
                     </group>
                 </separator>

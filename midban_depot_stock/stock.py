@@ -263,7 +263,11 @@ class stock_picking(osv.Model):
         """
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
-        transfer_obj = t_transfer.create({'picking_id': self.id})
+        # import ipdb; ipdb.set_trace()
+        ctx = self._context.copy()
+        ctx.update({'active_model': 'stock.picking'})
+        transfer_obj = t_transfer.with_context(ctx).\
+            create({'picking_id': self.id})
         pending_ops_vals = []
         something_done = False
         for op in self.pack_operation_ids:
@@ -1738,6 +1742,9 @@ class stock_config_settings(models.TransientModel):
         ignored all product moves and continues with other product moves\
         If not checked all moves of a route and a concret date will be\
         considered in a unique task without limit.')
+    print_report = fields2.Boolean('Print report task when get a task',
+                                   help='If checked, when you get a \
+        reposition or picking task the report will be printed')
 
     @api.multi
     def get_default_check_route_zip(self, fields):
@@ -1829,3 +1836,16 @@ class stock_config_settings(models.TransientModel):
         domain = [('key', '=', 'pick.by.volume')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = 'True' if self.pick_by_volume else 'False'
+
+    @api.multi
+    def get_print_report(self, fields):
+        domain = [('key', '=', 'print.report')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = True if param_obj.value == 'True' else False
+        return {'print_report': value}
+
+    @api.multi
+    def set_print_report(self):
+        domain = [('key', '=', 'print.report')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = 'True' if self.print_report else 'False'

@@ -85,78 +85,6 @@ class stock_task(osv.Model):
             'paused': False}
         return self.write(vals)
 
-    # def finish_task(self, cr, uid, ids, context=None):
-    #     """
-    #     Button method finish a task
-    #     """
-    #     t_transfer = self.pool.get('stock.transfer_details')
-    #     t_item = self.pool.get('stock.transfer_details_items')
-    #     t_ops = self.pool.get('stock.pack.operation')
-    #     t_pick = self.pool.get('stock.picking')
-    #     if context is None:
-    #         context = {}
-    #     for task in self.browse(cr, uid, ids, context):
-    #         if task.operation_ids and task.type == 'ubication':
-    #             pick_obj = task.operation_ids[0].picking_id
-    #             transfer_id = t_transfer.create(cr, uid,
-    #                                             {'picking_id': pick_obj.id},
-    #                                             context)
-    #             transfer_obj = t_transfer.browse(cr, uid, transfer_id, context)
-    #             for op in task.operation_ids:
-    #                 item = {
-    #                     'packop_id': op.id,
-    #                     'product_id': op.product_id.id,
-    #                     'product_uom_id': op.product_uom_id.id,
-    #                     'quantity': op.product_qty,
-    #                     'package_id': op.package_id.id,
-    #                     'lot_id': op.lot_id.id,
-    #                     'sourceloc_id': op.location_id.id,
-    #                     'destinationloc_id': op.location_dest_id.id,
-    #                     'result_package_id': op.result_package_id.id,
-    #                     'date': op.date,
-    #                     'owner_id': op.owner_id.id,
-    #                     'transfer_id': transfer_id,
-    #                 }
-    #                 t_item.create(cr, uid, item, context)
-    #             domain = [('picking_id', '=', pick_obj.id),
-    #                       ('id', 'not in', [x.id for x in task.operation_ids])]
-    #             np_ops_ids = t_ops.search(cr, uid, domain, context=context)
-    #             np_ops_vals = t_ops.read(cr, uid, np_ops_ids, [],
-    #                                      load='_classic_write',
-    #                                      context=context)
-    #             transfer_obj.do_detailed_transfer()
-    #             new_pick_id = t_pick.search(cr, uid,
-    #                                         [('backorder_id', '=',
-    #                                           pick_obj.id)])
-    #             if new_pick_id:
-    #                 for dic in np_ops_vals:
-    #                     del dic['id']
-    #                     del dic['linked_move_operation_ids']
-    #                     t_pick.write(cr, uid, new_pick_id,
-    #                                  {'pack_operation_ids': [(0, 0, dic)]})
-    #         elif task.operation_ids and task.type == 'reposition':
-    #             pick_objs = \
-    #                 list(set([x.picking_id for x in task.operation_ids]))
-    #             for pick_obj in pick_objs:
-    #                 if pick_obj.state not in ['done', 'draft', 'cancel']:
-    #                     pick_obj.approve_pack_operations()
-    #         else:
-    #             for picking in task.wave_id.picking_ids:
-    #                 if picking.state not in ['done', 'draft', 'cancel']:
-    #                     picking.approve_pack_operations()
-    #             task.wave_id.done()
-    #         # Write duration
-    #         duration = datetime.now() - \
-    #             datetime.strptime(task.date_start,
-    #                               DEFAULT_SERVER_DATETIME_FORMAT)
-    #         vals = {
-    #             'date_end': time.strftime("%Y-%m-%d %H:%M:%S"),
-    #             'duration': duration.seconds / float(60)
-    #         }
-    #         task.write(vals)
-
-    #     return self.write(cr, uid, ids, {'state': 'done'}, context=context)
-
     @api.multi
     def cancel_task(self):
         """
@@ -164,6 +92,7 @@ class stock_task(osv.Model):
         """
         for task in self:
             if task.operation_ids:
+                op_vals = {'task_id': False}
                 if task.type == 'reposition':
                     picks = self.env['stock.picking']
                     for operation in task.operation_ids:
@@ -175,20 +104,20 @@ class stock_task(osv.Model):
                         'warehouse_id': False,
                     }
                     picks.write(vals)
-                op_vals = {'task_id': False}
-                if task.type == 'ubication':
+
+                elif task.type == 'ubication':
                     op_vals.update(
                         {'location_dest_id':
                             self.env.ref('stock.stock_location_stock').id})
-                task.operation_ids.write(op_vals)
 
-            elif task.wave_id:
-                for picking in task.wave_id.picking_ids:
-                    picking.write({'operator_id': False,
-                                   'machine_id': False,
-                                   'wave_id': False})
-                task.wave_id.refresh()
-                task.wave_id.cancel_picking()
+                elif task.type == 'picking' and task.wave_id:
+                    for picking in task.wave_id.picking_ids:
+                        picking.write({'operator_id': False,
+                                       'machine_id': False,
+                                       'wave_id': False})
+                    task.wave_id.refresh()
+                    task.wave_id.cancel_picking()
+                task.operation_ids.write(op_vals)
 
         return self.write({'state': 'canceled',
                           'paused': False})

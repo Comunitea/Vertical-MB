@@ -30,6 +30,7 @@
                         <group>
                             <field name="machine_id"/>
                             <field name="max_loc_ops"/>
+                            <field name="print_report"/>
                         </group>
                         <group>
                             <field name="min_loc_replenish"/>

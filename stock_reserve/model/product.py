@@ -49,8 +49,7 @@ class ProductTemplate(models.Model):
         action_dict['domain'] = [('product_id', 'in', product_ids)]
         action_dict['context'] = {
             'search_default_draft': 1,
-            'search_default_reserved': 1
-            }
+            'search_default_reserved': 1}
         return action_dict
 
 

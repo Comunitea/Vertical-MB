@@ -47,7 +47,6 @@ class sale_report(osv.osv):
         res = {}
         for item in self.browse(cr, uid, ids, context=context):
             item_res = []
-            # import ipdb; ipdb.set_trace()
             for pick in item.wave_id.picking_ids:
                 for op in pick.pack_operation_ids:
                     if op.location_id == item.location_id:

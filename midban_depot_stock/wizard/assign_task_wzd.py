@@ -23,6 +23,7 @@ from openerp.tools.translate import _
 import time
 import random
 from datetime import datetime, timedelta
+from openerp import api
 
 
 class assign_task_wzd(osv.TransientModel):
@@ -65,6 +66,14 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         t_config = self.pool.get('ir.config_parameter')
         param_value = t_config.get_param(cr, uid, 'mandatory.camera',
+                                         default='True')
+        return True if param_value == 'True' else False
+
+    def _get_print_report(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+        t_config = self.pool.get('ir.config_parameter')
+        param_value = t_config.get_param(cr, uid, 'print.report',
                                          default='True')
         return True if param_value == 'True' else False
 
@@ -147,6 +156,8 @@ class assign_task_wzd(osv.TransientModel):
         'not_paused': fields.boolean(string='Tasks Not Paused'),
         'have_task': fields.boolean(string='Operator have task'),
         'give_me': fields.boolean(string='Give me ?'),
+        'print_report': fields.boolean('Print Report', help='If checked, when \
+            you get a reposition or picking task the report will be printed'),
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
@@ -156,6 +167,7 @@ class assign_task_wzd(osv.TransientModel):
         'min_loc_replenish': _get_min_loc_replenish,
         'mandatory_camera': _get_mandatory_camera,
         'give_me': True,
+        'print_report': _get_print_report,
     }
 
     def _print_report(self, cr, uid, ids, task_id=False, wave_id=False,
@@ -336,6 +348,19 @@ class assign_task_wzd(osv.TransientModel):
                                       task_id=task.id,
                                       context=context)
 
+    @api.multi
+    def _get_task_view(self, task_id):
+        self.ensure_one()
+        # Open selected task in form view
+        action_obj = self.env.ref('midban_depot_stock.action_stock_task')
+        action = action_obj.read()[0]
+        name_form = 'midban_depot_stock.stock_task_view_form'
+        view_id = self.env['ir.model.data'].xmlid_to_res_id(name_form)
+        action.update(views=[(view_id, 'form')], res_id=task_id)
+        # import ipdb; ipdb.set_trace()
+        return action
+
+
 # #############################################################################
 # ############################## UBICATION ####################################
 # #############################################################################
@@ -453,9 +478,13 @@ class assign_task_wzd(osv.TransientModel):
                                  _('Not found operations of the selected\
                                     cameras fot the picking \
                                     %s' % pick.name))
-
-        return self._print_report(cr, uid, ids, task_id=task_id,
-                                  context=context)
+        res = {}
+        if wzd_obj.print_report:
+            res = self._print_report(cr, uid, ids, task_id=task_id,
+                                     context=context)
+        else:
+            res = self._get_task_view(cr, uid, ids, task_id, context=context)
+        return res
 
 # #############################################################################
 # ############################## REPOSITION ###################################
@@ -799,8 +828,15 @@ class assign_task_wzd(osv.TransientModel):
             for pick in pick_obj.browse(cr, uid, pickings_to_wave):
                 for op in pick.pack_operation_ids:
                     op.write({'task_id': task_id})
-            return self._print_report(cr, uid, ids, wave_id=wave_id,
-                                      context=context)
+            res = {}
+            if obj.print_report:
+                res = self._print_report(cr, uid, ids, wave_id=wave_id,
+                                         context=context)
+            else:
+                res = self._get_task_view(cr, uid, ids, task_id,
+                                          context=context)
+            return res
+
         else:
             raise osv.except_osv(_('Error!'), _('No pickings to put in a \
                                                  wave'))
