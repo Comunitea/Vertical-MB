@@ -31,20 +31,6 @@ class sale_report(osv.osv):
     _rec_name = 'product_id'
     _order = 'sequence'
 
-    # def _get_units_and_boxes(self, cr, uid, ids, field_names, args,
-    #                          context=None):
-    #     if context is None:
-    #         context = {}
-    #     res = {}
-    #     for item in self.browse(cr, uid, ids, context=context):
-    #         res[item.id] = {}
-    #         qty = item.product_qty
-    #         res[item.id]['units'] = item.product_id.uom_qty_to_uos_qty(
-    #             qty, item.product_id.log_unit_id.id)
-    #         res[item.id]['boxes'] = item.product_id.uom_qty_to_uos_qty(
-    #             qty, item.product_id.log_box_id.id)
-    #     return res
-
     def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
                              context=None):
         if context is None:
@@ -61,14 +47,13 @@ class sale_report(osv.osv):
         res = {}
         for item in self.browse(cr, uid, ids, context=context):
             item_res = []
+            # import ipdb; ipdb.set_trace()
             for pick in item.wave_id.picking_ids:
                 for op in pick.pack_operation_ids:
                     if op.location_id == item.location_id:
                         if op.package_id:
-                            for quant in op.package_id.quant_ids:
-                                if quant.product_id == item.product_id and \
-                                        quant.lot_id == item.lot_id:
-                                    item_res.append(op.id)
+                            if op.package_id.id == item.pack_id.id:
+                                item_res.append(op.id)
                         else:
                             if op.product_id == item.product_id and \
                                     op.lot_id == item.lot_id:

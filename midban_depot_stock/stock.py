@@ -23,7 +23,7 @@ from openerp import api, models, _, exceptions
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 from lxml import etree
-# from openerp.tools import float_compare
+from openerp.exceptions import ValidationError
 
 
 class stock_picking(osv.Model):
@@ -891,18 +891,14 @@ class stock_pack_operation(models.Model):
             else:
                 pack = op.location_dest_id.get_package_of_lot(lot_id)
                 op.result_package_id = pack.id if pack else False
-        # Operation Beach to input
-        # if not self.package_id and self.result_package_id:
-        #     lot_id = self.lot_id.id
-        # # Location task operations or reposition
-        # elif self.package_id and not self.result_package_id:
-        #
-        # # Reposition operations
-        # elif self.package_id and self.result_package_id:
-        #
-        # # Units operations, no packages
-        # else:
         return op
+
+    @api.one
+    @api.constrains('lot_id', 'product_id', 'package_id')
+    def check_valid_operation(self):
+        if not (self.product_id or self.package_id):
+            raise ValidationError("It is not allowed operations whithout pack\
+                and wothout product")
 
 
 class stock_warehouse(models.Model):
