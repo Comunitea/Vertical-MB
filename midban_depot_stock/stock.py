@@ -263,11 +263,7 @@ class stock_picking(osv.Model):
         """
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
-        # import ipdb; ipdb.set_trace()
-        ctx = self._context.copy()
-        ctx.update({'active_model': 'stock.picking'})
-        transfer_obj = t_transfer.with_context(ctx).\
-            create({'picking_id': self.id})
+        transfer_obj = t_transfer.create({'picking_id': self.id})
         pending_ops_vals = []
         something_done = False
         for op in self.pack_operation_ids:

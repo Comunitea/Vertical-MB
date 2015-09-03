@@ -357,7 +357,6 @@ class assign_task_wzd(osv.TransientModel):
         name_form = 'midban_depot_stock.stock_task_view_form'
         view_id = self.env['ir.model.data'].xmlid_to_res_id(name_form)
         action.update(views=[(view_id, 'form')], res_id=task_id)
-        # import ipdb; ipdb.set_trace()
         return action
 
 

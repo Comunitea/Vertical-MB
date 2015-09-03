@@ -67,7 +67,16 @@ class stock_task(osv.Model):
     @api.one
     def finish_partial_task(self):
         if self.type != 'picking':
-            pick_objs = list(set([x.picking_id for x in self.operation_ids]))
+            pick_ids = list(set([x.picking_id.id for x in self.operation_ids]))
+
+            # When we call butom after the returned view of the wizard
+            # 'active_model': 'stock.task' and we get an error with assert
+            # in do_transfer method. Changed it allways to stock.picking
+            ctx = self._context.copy()
+            ctx['active_model'] = 'stock.picking'
+            pick_t = self.env['stock.picking'].with_context(ctx)
+            pick_objs = pick_t.browse(pick_ids)
+
             for pick in pick_objs:
                 pick.approve_pack_operations2(self.id)
         else:
