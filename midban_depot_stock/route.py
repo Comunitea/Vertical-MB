@@ -115,7 +115,8 @@ class route(models.Model):
         and same type.
         """
         for r in self:
-            day_id = vals.get('day_id', False) and vals['day_id'] or r.day_id.id
+            day_id = vals.get('day_id', False) and vals['day_id'] or \
+                r.day_id.id
             type = vals.get('type', False) and vals['type'] or r.type
             bzip_ids = vals.get('bzip_ids', False) and vals['bzip_ids'][0][2] or \
                 [x.id for x in r.bzip_ids]
