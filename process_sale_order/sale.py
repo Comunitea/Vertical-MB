@@ -133,6 +133,7 @@ class sale_order_line(models.Model):
         because they are readonly in the view and the onchange
         value is not in the vals dict
         """
+        res = False
         for line in self:
             if vals.get('product_id', False):
                 prod = self.env['product.product'].browse(vals['product_id'])
@@ -142,9 +143,7 @@ class sale_order_line(models.Model):
                 vals['product_uos_qty'] or line.product_uos_qty
             uos_id = vals.get('product_uos', False) and \
                 vals['product_uos'] or line.product_uos.id
-            #conv = prod.get_unit_conversions(uos_qty, uos_id)
-            #log_unit = prod.get_uom_logistic_unit()  # base, unit, or box
-            #vals['product_uom_qty'] = conv[log_unit]
+
             vals['product_uom_qty'] = uos_qty / prod._get_factor(uos_id)
             vals['product_uom'] = prod.uom_id.id
             res = super(sale_order_line, line).write(vals)
