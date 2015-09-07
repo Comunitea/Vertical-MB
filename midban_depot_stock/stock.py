@@ -988,6 +988,7 @@ class stock_pack_operation(models.Model):
             else:
                 self.do_onchange = True
 
+
 class stock_warehouse(models.Model):
     _inherit = "stock.warehouse"
     _columns = {
@@ -1634,6 +1635,26 @@ class stock_move(models.Model):
                 new_move.purchase_line_id = move.purchase_line_id
                 backorder_moves += new_move
         return backorder_moves
+
+    @api.cr_uid_ids_context
+    def do_unreserve(self, cr, uid, move_ids, context=None):
+        """
+        If outgoing picking and all origin pickings are done we put The
+        move in confirmed state instead of waiting
+        """
+        res = super(stock_move, self).do_unreserve(cr, uid, move_ids,
+                                                   context=context)
+        for move in self.browse(cr, uid, move_ids, context=context):
+            if move.picking_id.picking_type_code == 'outgoing' and \
+                    move.state == 'waiting':
+                change_state = True
+                for mv in move.move_orig_ids:
+                    if mv.state != 'done':
+                        change_state = False
+                        break
+                if change_state:
+                    move.write({'state': 'confirmed'})
+        return res
 
 
 class stock_inventory(models.Model):
