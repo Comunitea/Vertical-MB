@@ -368,7 +368,12 @@ class stock_picking(osv.Model):
         Overwrited in order to calculate the correct uos_qty in the operation.
         """
         res = super(stock_picking, self).do_prepare_partial()
+
         for picking in self:
+            supplier_id = 0
+            if picking.picking_type_code == 'incoming' and picking.purchase_id:
+                supplier_id = picking.partner_id.id
+
             for move in picking.move_lines:
                 if move.product_uos_qty and move.product_uos:
                     move_uos_qty = move.product_uos_qty
@@ -378,12 +383,20 @@ class stock_picking(osv.Model):
                     operations = list(set(operations))
                     for op in operations:
                         prod = op.operation_product_id
+                        var_weight = False
+                        if supplier_id:
+                            supp = prod.get_product_supp_record(supplier_id)
+                            if supp.is_var_coeff:
+                                var_weight = True
+                        else:
+                            if prod.is_var_coeff:
+                                var_weight = True
                         op_uom_qty = op.packed_qty
                         op_uos_qty = 0
                         if op.package_id and not op.product_id:
                             op_uos_qty = op.package_id.uos_qty
                         # Variable coeff products
-                        elif op.product_id and prod.is_var_coeff:
+                        elif op.product_id and var_weight:
                             moves = list(set([x.move_id for x in
                                               op.linked_move_operation_ids]))
                             if len(operations) == 1 and len(moves) == 1:
@@ -409,10 +422,11 @@ class stock_picking(osv.Model):
                                         op_uos_qty += move_uos_qty
                                         break
                         # Fixed coeff product
-                        elif op.product_id and not prod.is_var_coeff:
+                        elif op.product_id and not var_weight:
                             op_uos_qty = \
                                 prod.uom_qty_to_uos_qty(op.product_qty,
-                                                        move_uos_id)
+                                                        move_uos_id,
+                                                        supplier_id)
                         # Write the calculed uos qty in operation
                         op.uos_qty = op_uos_qty
                         op.uos_id = move_uos_id

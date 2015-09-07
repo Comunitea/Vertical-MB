@@ -126,6 +126,7 @@
                 <field name="pack_uos_id"/>
             </xpath>
             <field name="product_uom_id" position="after">
+                <field name="do_onchange" invisible="1"/>
                 <field name="uos_qty"  groups="product.group_uom"/>
                 <field name="uos_id"  groups="product.group_uom" readonly="True" context="{'product_id': product_id}"/>
             </field>

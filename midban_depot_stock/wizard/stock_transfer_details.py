@@ -143,10 +143,13 @@ class stock_transfer_details(models.TransientModel):
 
         res['item_ids'] = []    # We calc again the item ids
         picking = self.env['stock.picking'].browse(picking_ids[0])
-        supplier_id = picking.partner_id.id
 
         if not picking.pack_operation_ids:
             picking.do_prepare_partial()
+
+        supplier_id = 0
+        if picking.picking_type_code == 'incoming' and picking.purchase_id:
+            supplier_id = picking.partner_id.id
 
         items = []
         for op in picking.pack_operation_ids:
@@ -154,6 +157,15 @@ class stock_transfer_details(models.TransientModel):
             uos_id = op.product_uom_id.id
             uos_qty = op.product_qty
             var_weight = False
+
+            if supplier_id:
+                supp = prod.get_product_supp_record(supplier_id)
+                if supp.is_var_coeff:
+                    var_weight = True
+            else:
+                if prod.is_var_coeff:
+                    var_weight = True
+
             if op.linked_move_operation_ids:
                 move = op.linked_move_operation_ids[0].move_id
                 uos_id = move.product_uos.id or uos_id
@@ -163,14 +175,8 @@ class stock_transfer_details(models.TransientModel):
                     uos_qty = op.uos_qty
                 else:
                     uos_qty = prod.uom_qty_to_uos_qty(op.product_qty,
-                                                      uos_id)
-            if picking.picking_type_code == 'incoming':
-                supp = prod.get_product_supp_record(supplier_id)
-                if supp.is_var_coeff:
-                    var_weight = True
-            else:
-                if prod.is_var_coeff:
-                    var_weight = True
+                                                      uos_id, supplier_id)
+
             item = {
                 'packop_id': op.id,
                 'product_id': op.product_id.id,
@@ -186,6 +192,7 @@ class stock_transfer_details(models.TransientModel):
                 'owner_id': op.owner_id.id,
                 'uos_qty': uos_qty,  # Calculed and added
                 'uos_id': uos_id,     # Calculed and added
+                'do_onchange': True,     # Calculed and added
                 'var_weight': var_weight,     # Calculed and added
                 # 'task_type': picking.task_type,
             }
@@ -354,20 +361,26 @@ class stock_transfer_details_items(models.TransientModel):
         if not variable:
             picking_id = self._context.get('picking_id', [])
             picking = self.env['stock.picking'].browse(picking_id)
-            if self.do_onchange:
+            supplier_id = 0
+            if picking.picking_type_code == 'incoming' and picking.purchase_id:
                 supplier_id = picking.partner_id.id
+            if self.do_onchange:
                 qty = self.uos_qty
-                uoc_id = self.uos_id.id
+                # uoc_id = self.uos_id.id
+                uos_id = self.uos_id.id
 
-                conv = product.get_purchase_unit_conversions(qty, uoc_id,
-                                                             supplier_id)
+                # conv = product.get_purchase_unit_conversions(qty, uoc_id,
+                #                                              supplier_id)
                 # base, unit, or box
-                log_unit, log_unit_id = \
-                    product.get_uom_po_logistic_unit(supplier_id)
-                new_quantity = conv[log_unit]
+                # log_unit, log_unit_id = \
+                #     product.get_uom_po_logistic_unit(supplier_id)
+                # new_quantity = conv[log_unit]
+
+                new_quantity = product.uos_qty_to_uom_qty(qty, uos_id,
+                                                          supplier_id)
                 if new_quantity != self.quantity:
                     self.do_onchange = False
-                    self.quantity = conv[log_unit]
+                    self.quantity = new_quantity
             else:
                 self.do_onchange = True
 
@@ -407,10 +420,13 @@ class stock_transfer_details_items(models.TransientModel):
         if product and not variable:
             picking_id = self._context.get('picking_id', [])
             picking = self.env['stock.picking'].browse(picking_id)
+            supplier_id = 0
+            if picking.picking_type_code == 'incoming' and picking.purchase_id:
+                supplier_id = picking.partner_id.id
             if self.do_onchange:
                 supplier_id = picking.partner_id.id
                 qty = self.quantity
-                new_uos_qty = product.uom_qty_to_uoc_qty(qty, self.uos_id.id,
+                new_uos_qty = product.uom_qty_to_uos_qty(qty, self.uos_id.id,
                                                          supplier_id)
 
                 if new_uos_qty != self.uos_qty:

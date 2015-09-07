@@ -538,11 +538,11 @@ class product_product(models.Model):
         return res
 
     @api.model
-    def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id = 0):
+    def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id=0):
         return uom_qty * self._get_factor(uos_id, supplier_id)
 
     @api.model
-    def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id = 0):
+    def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id=0):
         return uos_qty / self._get_factor(uos_id, supplier_id)
 
 
