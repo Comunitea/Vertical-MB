@@ -726,10 +726,12 @@ class stock_pack_operation(models.Model):
         'old_id': fields.integer('Old id', readonly=True),
         'uos_qty': fields.float('UoS quantity'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
+        'do_onchange': fields.boolean('Do onchange'),
         'changed': fields.boolean('Record changed')}
 
     _defaults = {
-        'to_process': True}
+        'to_process': True,
+        'do_onchange': True}
 
     def _search_closest_pick_location(self, prod_obj, free_loc_ids):
         loc_t = self.env['stock.location']
@@ -914,6 +916,77 @@ class stock_pack_operation(models.Model):
             raise ValidationError("It is not allowed operations whithout pack\
                 and wothout product")
 
+    @api.onchange('product_qty')
+    def product_uos_id_onchange(self):
+        """
+        We change uos_qty field
+        """
+        var_weight = False
+        product = self.product_id
+        picking = self.picking_id
+        supplier_id = 0
+        if not product:
+            return
+        if picking.picking_type_code == 'incoming' and picking.purchase_id:
+            supplier_id = picking.partner_id.id
+        if supplier_id:
+            supp = product.get_product_supp_record(supplier_id)
+            if supp.is_var_coeff:
+                    var_weight = True
+        else:
+            if product.is_var_coeff:
+                var_weight = True
+        if product and var_weight and self.product_uom_id.id == self.uos_id.id:
+            self.do_onchange = False
+            self.uos_qty = self.product_qty
+
+        if product and not var_weight:
+            if self.do_onchange:
+                qty = self.product_qty
+                new_uos_qty = product.uom_qty_to_uos_qty(qty, self.uos_id.id,
+                                                         supplier_id)
+
+                if new_uos_qty != self.uos_qty:
+                    self.do_onchange = False
+                    self.uos_qty = new_uos_qty
+            else:
+                self.do_onchange = True
+
+    @api.onchange('uos_qty')
+    def product_uos_qty_onchange(self):
+        """
+        We change the quantity field
+        """
+        var_weight = False
+        product = self.product_id
+        picking = self.picking_id
+        supplier_id = 0
+        if not product:
+            return
+        if picking.picking_type_code == 'incoming' and picking.purchase_id:
+            supplier_id = picking.partner_id.id
+        if supplier_id:
+            supp = product.get_product_supp_record(supplier_id)
+            if supp.is_var_coeff:
+                    var_weight = True
+        else:
+            if product.is_var_coeff:
+                var_weight = True
+        if var_weight and self.product_uom_id == self.uos_id:
+            self.do_onchange = False
+            self.product_qty = self.uos_qty
+
+        if not var_weight:
+            if self.do_onchange:
+                qty = self.uos_qty
+                uos_id = self.uos_id.id
+                new_quantity = product.uos_qty_to_uom_qty(qty, uos_id,
+                                                          supplier_id)
+                if new_quantity != self.product_qty:
+                    self.do_onchange = False
+                    self.product_qty = new_quantity
+            else:
+                self.do_onchange = True
 
 class stock_warehouse(models.Model):
     _inherit = "stock.warehouse"
