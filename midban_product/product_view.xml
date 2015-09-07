@@ -87,22 +87,22 @@
                             <field name="ma_pa" required="1"/>
                         </group>
                         <group col="2">
-                            <field name="un_width" required="1"/>
-                            <field name="ca_width" required="1"/>
-                            <field name="ma_width" required="1"/>
+                            <field name="un_width" required="0"/>
+                            <field name="ca_width" required="0"/>
+                            <field name="ma_width" required="0"/>
                             <field name="pa_width" required="1"/>
                         </group>
                         <group col="2">
-                            <field name="un_height" required="1"/>
-                            <field name="ca_height" required="1"/>
+                            <field name="un_height" required="0"/>
+                            <field name="ca_height" required="0"/>
                             <field name="ma_height" required="1"/>
-                            <field name="pa_height" required="1"/>
+                            <field name="pa_height" required="0"/>
                         </group>
                         <group col="2">
-                            <field name="un_length" required="1"/>
-                            <field name="ca_length" required="1"/>
+                            <field name="un_length" required="0"/>
+                            <field name="ca_length" required="0"/>
                             <field name="ma_length" required="1"/>
-                            <field name="pa_length" required="1"/>
+                            <field name="pa_length" required="0"/>
                         </group>
                     </group>
 
@@ -491,21 +491,21 @@
                                     <field name="supp_ma_pa" required="1"/>
                                 </group>
                                 <group col="2">
-                                    <field name="supp_un_width" required="1"/>
-                                    <field name="supp_ca_width" required="1"/>
-                                    <field name="supp_ma_width" required="1"/>
+                                    <field name="supp_un_width" required="0"/>
+                                    <field name="supp_ca_width" required="0"/>
+                                    <field name="supp_ma_width" required="0"/>
                                     <field name="supp_pa_width" required="1"/>
                                 </group>
                                 <group col="2">
-                                    <field name="supp_un_height" required="1"/>
-                                    <field name="supp_ca_height" required="1"/>
+                                    <field name="supp_un_height" required="0"/>
+                                    <field name="supp_ca_height" required="0"/>
                                     <field name="supp_ma_height" required="1"/>
-                                    <field name="supp_pa_height" required="1"/>
+                                    <field name="supp_pa_height" required="0"/>
                                 </group>
                                 <group col="2">
-                                    <field name="supp_un_length" required="1"/>
-                                    <field name="supp_ca_length" required="1"/>
-                                    <field name="supp_ma_length" required="1"/>
+                                    <field name="supp_un_length" required="0"/>
+                                    <field name="supp_ca_length" required="0"/>
+                                    <field name="supp_ma_length" required="0"/>
                                     <field name="supp_pa_length" required="1"/>
                                 </group>
                             </group>
