@@ -220,7 +220,8 @@ products do not require units for validation'),
         'kg_un': 1.0,
         'un_ca': 1.0,
         'ca_ma': 1.0,
-        'ma_pa': 1.0
+        'ma_pa': 1.0,
+        'type': 'product'
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
