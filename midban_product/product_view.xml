@@ -159,23 +159,6 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="product_template_search_view">
-            <field name="name">product_template_tree_search_view</field>
-            <field name="model">product.template</field>
-            <field eval="3" name="priority"/>
-            <field name="arch" type="xml">
-                <search string="Productos">
-                    <field name="name" string="Nombre"/>
-                    <field name="default_code" string="Referencia"/>
-                    <field name="categ_id" string="Categoria"/>
-                    <group expand="1" string="Group by">
-                        <filter string="Tipo de Temperatura" name="temp_type" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'temp_type'}"/>
-                        <filter string="Categoría" name="categ_id" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'categ_id'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
         <!-- Quit category of accounting page -->
         <record id="product_template_form_view_quit_category" model="ir.ui.view">
             <field name="name">product.template.form.inherit.quit.category</field>
