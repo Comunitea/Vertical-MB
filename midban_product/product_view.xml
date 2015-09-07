@@ -101,8 +101,8 @@
                         <group col="2">
                             <field name="un_length" required="0"/>
                             <field name="ca_length" required="0"/>
-                            <field name="ma_length" required="1"/>
-                            <field name="pa_length" required="0"/>
+                            <field name="ma_length" required="0"/>
+                            <field name="pa_length" required="1"/>
                         </group>
                     </group>
 
