@@ -79,18 +79,6 @@ function openerp_ts_db(instance, module){
                 }
             }
         },
-        get_like_type_unit: function(like_type){
-            var units = this.all_units
-            var res = undefined
-            for(var i = 0, len = units.length; i < len; i++){
-                var unit = units[i];
-                if (unit.like_type == like_type){
-                    res = unit
-                    break;
-                }
-            }
-            return res
-        },
         add_units: function(units){
             if(!units instanceof Array){
                 units = [units];

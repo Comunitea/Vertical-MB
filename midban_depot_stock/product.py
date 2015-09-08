@@ -131,41 +131,6 @@ class product_template(osv.Model):
                                                   context=context)
 
 
-class product_uom(osv.Model):
-    """
-    like_type field let the sistem know wich is the unit type.
-    It defines units, kg, boxes, mantles and palets.
-    """
-    _inherit = "product.uom"
-
-    _columns = {
-        'like_type': fields.selection([('units', 'Units'),
-                                       ('kg', 'Kg'),
-                                       ('boxes', 'Boxes'),
-                                       ('mantles', 'Mantles'),
-                                       ('palets', 'Palets')], 'Equals to'),
-    }
-    _defaults = {
-        'like_type': '',
-    }
-
-    # def _compute_qty_obj(self, cr, uid, from_unit, qty, to_unit, round=True,
-    #                      rounding_method='UP', context=None):
-    #     if context is None:
-    #         context = {}
-    #     # Avoid category exception between units, MAYBE best by configuration
-    #     # making a common category
-    #     ctx = context.copy()
-    #     ctx['raise-exception'] = False
-    #     res = super(product_uom, self)._compute_qty_obj(cr, uid,
-    #                                                     from_unit, qty,
-    #                                                     to_unit,
-    #                                                     round=True,
-    #                                                     rounding_method='UP',
-    #                                                     context=None)
-    #     return res
-
-
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 

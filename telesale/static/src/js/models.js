@@ -125,7 +125,7 @@ function openerp_ts_models(instance, module){
                 }).then(function(companies){
                     self.set('company',companies[0]);
 
-                    return self.fetch('product.uom', ['name', 'like_type'], []);
+                    return self.fetch('product.uom', ['name'], []);
                 }).then(function(units){
                     for (key in units){
                         self.get('units_names').push(units[key].name)

@@ -412,6 +412,14 @@ class ProductTemplate(models.Model):
     def _get_kg_unit(self):
         return self.env.ref('product.product_uom_kgm').id
 
+    @api.model
+    def _get_box_unit(self):
+        return self.env.ref('midban_product.product_uom_box').id
+
+    @api.model
+    def _get_unit_unit(self):
+        return self.env.ref('product.product_uom_unit').id
+
     var_coeff_un = fields2.Boolean('Variable coefficient',
                                    help='If checked we can manage'
                                    ' products of variable weight.\n'
@@ -426,17 +434,19 @@ class ProductTemplate(models.Model):
                                    default=_get_kg_unit)
     log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
-                                  ' related with the logistic box')
+                                  ' related with the logistic box',
+                                  default=_get_box_unit)
     log_unit_id = fields2.Many2one('product.uom', 'Unit',
                                    help='The defined unit of measure will be'
-                                   ' related with the logistic unit')
+                                   ' related with the logistic unit',
+                                   default=_get_unit_unit)
 
     base_use_sale = fields2.Boolean('Can be used on sales',
                                     help='Allows you to sale in the defined'
                                     ' logistic base.')
     unit_use_sale = fields2.Boolean('Can be used on sales',
                                     help='Allows you to sale in the defined'
-                                    ' logistic unit.')
+                                    ' logistic unit.', default=True)
     box_use_sale = fields2.Boolean('Can be used on sales',
                                    help='Allows you to sale in the defined'
                                    ' logistic box')
@@ -863,8 +873,17 @@ class product_product(models.Model):
 class ProductSupplierinfo(models.Model):
     _inherit = 'product.supplierinfo'
 
+    @api.model
     def _get_kg_unit(self):
         return self.env.ref('product.product_uom_kgm').id
+
+    @api.model
+    def _get_box_unit(self):
+        return self.env.ref('midban_product.product_uom_box').id
+
+    @api.model
+    def _get_unit_unit(self):
+        return self.env.ref('product.product_uom_unit').id
 
     var_coeff_un = fields2.Boolean('Variable coefficient',
                                    help='If checked we can manage'
@@ -880,17 +899,19 @@ class ProductSupplierinfo(models.Model):
                                    default=_get_kg_unit)
     log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
-                                  ' related with the logistic unit')
+                                  ' related with the logistic unit',
+                                  default=_get_box_unit)
     log_unit_id = fields2.Many2one('product.uom', 'Unit',
                                    help='The defined unit of measure will be'
-                                   ' related with the logistic box')
+                                   ' related with the logistic box',
+                                   default=_get_unit_unit)
 
     base_use_purchase = fields2.Boolean('Can be used on purchases',
                                         help='Allows you to buy in the defined'
                                         ' logistic base.')
     unit_use_purchase = fields2.Boolean('Can be used on purchases',
                                         help='Allows you to buy in the defined'
-                                        ' logistic unit.')
+                                        ' logistic unit.', default=True)
     box_use_purchase = fields2.Boolean('Can be used on purchases',
                                        help='Allows you to buy in the defined'
                                        ' logistic box')

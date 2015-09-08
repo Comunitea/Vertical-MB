@@ -20,19 +20,6 @@
             </field>
         </record>
 
-        <!-- Product uom form view add like_type field -->
-        <record id="product_uom_like_type_form" model="ir.ui.view">
-            <field name="name">product.uom.like_type.form</field>
-            <field name="model">product.uom</field>
-            <field name="type">form</field>
-            <field name="inherit_id" ref="product.product_uom_form_view" />
-            <field name="arch" type="xml">
-                <field name="rounding" position="after">
-                    <field name="like_type"/>
-                </field>
-            </field>
-        </record>
-
         <!-- Replace digits from volume, to 4 decimals -->
         <record id="product_template_form_view_add_volume_decimals" model="ir.ui.view">
             <field name="name">product_template_form_view_add_volume_decimals</field>

@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#       * midban_product
+#	* midban_product
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-27 14:50+0000\n"
-"PO-Revision-Date: 2015-07-27 14:50+0000\n"
+"POT-Creation-Date: 2015-09-08 11:40+0000\n"
+"PO-Revision-Date: 2015-09-08 11:40+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -136,6 +136,16 @@ msgid "Box"
 msgstr "Caja"
 
 #. module: midban_product
+#: model:product.uom,name:midban_product.product_uom_box
+msgid "Box(es)"
+msgstr "Caja(s)"
+
+#. module: midban_product
+#: model:product.uom,name:midban_product.product_uom_box2
+msgid "Box(es)2"
+msgstr "Box(es)2"
+
+#. module: midban_product
 #: field:product.template,breakfast_snack:0
 msgid "Breakfast/Snack"
 msgstr "Desayuno/merienda"
@@ -152,7 +162,6 @@ msgstr "CA Altura"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ca_height:0
-#: field:product.template,supplier_ca_height:0
 msgid "CA Height Supplier"
 msgstr "CA Altura Proveedor"
 
@@ -163,7 +172,6 @@ msgstr "CA Largo"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ca_length:0
-#: field:product.template,supplier_ca_length:0
 msgid "CA Length Supplier"
 msgstr "CA Largo Proveedor"
 
@@ -174,7 +182,6 @@ msgstr "CA Ancho"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ca_width:0
-#: field:product.template,supplier_ca_width:0
 msgid "CA Width Supplier"
 msgstr "CA Ancho Proveedor"
 
@@ -185,7 +192,6 @@ msgstr "CA/MA"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ca_ma:0
-#: field:product.template,supplier_ca_ma:0
 msgid "CA/MA Supplier"
 msgstr "CA/MA Proveedor"
 
@@ -230,13 +236,13 @@ msgid "Coefficients and sizes of logistic units"
 msgstr "Coeficientes y tamaños de unidades logísticas"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:364
+#: code:addons/midban_product/product.py:336
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:354
+#: code:addons/midban_product/product.py:326
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -335,7 +341,7 @@ msgstr "Motivos denegación de producto"
 #. module: midban_product
 #: help:temp.type,type:0
 msgid "Depending on this temperature, the product will be storedin a different warehouse location."
-msgstr "Depending on this temperature, the product will be storedin a different warehouse location."
+msgstr "Dependiendo de la temperatura, el producto será almacenado en una ubicación diferente."
 
 #. module: midban_product
 #: field:product.template,dessert:0
@@ -353,7 +359,15 @@ msgid "Dry"
 msgstr "Seco"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:335
+#: code:addons/midban_product/product.py:296
+#: code:addons/midban_product/product.py:305
+#: code:addons/midban_product/product.py:560
+#: code:addons/midban_product/product.py:572
+#: code:addons/midban_product/product.py:612
+#: code:addons/midban_product/product.py:642
+#: code:addons/midban_product/product.py:724
+#: code:addons/midban_product/product.py:745
+#: code:addons/midban_product/product.py:770
 #, python-format
 msgid "Error"
 msgstr "Error"
@@ -457,7 +471,6 @@ msgstr "BASE/UN"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_kg_un:0
-#: field:product.template,supplier_kg_un:0
 msgid "KG/UN Supplier"
 msgstr "BASE/UN Proveedor"
 
@@ -494,7 +507,7 @@ msgid "Logistic Validated"
 msgstr "Logística validada"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:344
+#: code:addons/midban_product/product.py:316
 #, python-format
 msgid "Logistic validate done"
 msgstr "Validación logística realizada"
@@ -511,7 +524,6 @@ msgstr "MA Altura"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ma_height:0
-#: field:product.template,supplier_ma_height:0
 msgid "MA Height Supplier"
 msgstr "MA Altura Proveedor"
 
@@ -522,7 +534,6 @@ msgstr "MA Largo"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ma_length:0
-#: field:product.template,supplier_ma_length:0
 msgid "MA Length Supplier"
 msgstr "MA Largo Proveedor"
 
@@ -533,7 +544,6 @@ msgstr "MA Ancho"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ma_width:0
-#: field:product.template,supplier_ma_width:0
 msgid "MA Width Supplier"
 msgstr "MA Ancho Proveedor"
 
@@ -544,9 +554,18 @@ msgstr "MA/PA"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_ma_pa:0
-#: field:product.template,supplier_ma_pa:0
 msgid "MA/PA Supplier"
 msgstr "MA/PA Proveedor"
+
+#. module: midban_product
+#: model:product.uom,name:midban_product.product_uom_mantle
+msgid "Mantle(s)"
+msgstr "Manto(s)"
+
+#. module: midban_product
+#: model:product.uom,name:midban_product.product_uom_mantle2
+msgid "Mantle(s)2"
+msgstr "Mantle(s)2"
 
 #. module: midban_product
 #: field:product.template,margin:0
@@ -562,6 +581,12 @@ msgstr "Margen sobre venta que se utilizará como base al calcular las tarifas d
 #: field:product.template,mark:0
 msgid "Mark"
 msgstr "Marca"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:464
+#, python-format
+msgid "Need a logistic unit in sales"
+msgstr "Se necesita una unidad logistica en ventas"
 
 #. module: midban_product
 #: selection:product.template,product_class:0
@@ -580,7 +605,6 @@ msgstr "PA Altura"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_pa_height:0
-#: field:product.template,supplier_pa_height:0
 msgid "PA Height Supplier"
 msgstr "PA Altura Proveedor"
 
@@ -591,7 +615,6 @@ msgstr "PA Largo"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_pa_length:0
-#: field:product.template,supplier_pa_length:0
 msgid "PA Length Supplier"
 msgstr "PA Largo Proveedor"
 
@@ -602,7 +625,6 @@ msgstr "PA Ancho"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_pa_width:0
-#: field:product.template,supplier_pa_width:0
 msgid "PA Width Supplier"
 msgstr "PA Ancho Proveedor"
 
@@ -612,7 +634,17 @@ msgid "Palet Wood Height"
 msgstr "Altura madera palet"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:310
+#: model:product.uom,name:midban_product.product_uom_palet
+msgid "Palet(s)"
+msgstr "Palet(s)"
+
+#. module: midban_product
+#: model:product.uom,name:midban_product.product_uom_palet2
+msgid "Palet(s)2"
+msgstr "Palet(s)2"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:284
 #, python-format
 msgid "Pending logistic and commercial validate"
 msgstr "Pendiente de validación logística y comercial"
@@ -630,6 +662,7 @@ msgid "Process unregister product"
 msgstr "Procesar baja de producto"
 
 #. module: midban_product
+#: model:ir.model,name:midban_product.model_product_product
 #: field:product.history,product_tmp_id:0
 msgid "Product"
 msgstr "Producto"
@@ -657,10 +690,15 @@ msgid "Product Template"
 msgstr "Plantilla de producto"
 
 #. module: midban_product
+#: model:ir.model,name:midban_product.model_product_uom
+msgid "Product Unit of Measure"
+msgstr "Unidad de medida del producto"
+
+#. module: midban_product
 #: model:ir.ui.menu,name:midban_product.menu_product_variant_config_stock2
 #: model:ir.ui.menu,name:midban_product.menu_products2
 msgid "Product Variants"
-msgstr "Variantes de Producto"
+msgstr "Variantes del producto"
 
 #. module: midban_product
 #: view:unregister.product.reason:midban_product.midban_product_allergen_view_form
@@ -674,7 +712,7 @@ msgid "Product denied"
 msgstr "Producto denegado"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:408
+#: code:addons/midban_product/product.py:380
 #, python-format
 msgid "Product denied in register process again"
 msgstr "Product denegado en proceso de alta de nuevo"
@@ -685,7 +723,7 @@ msgid "Product deny reasons"
 msgstr "Motivos denegación alta producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:387
+#: code:addons/midban_product/product.py:359
 #, python-format
 msgid "Product denyed"
 msgstr "Producto denegado"
@@ -696,13 +734,19 @@ msgid "Product history"
 msgstr "Historial de producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:374
+#: code:addons/midban_product/product.py:499
+#, python-format
+msgid "Product logistic units are wrong"
+msgstr "Las unidades logísticas del producto estan mal"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:346
 #, python-format
 msgid "Product registered"
 msgstr "Producto Dado de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:397
+#: code:addons/midban_product/product.py:369
 #, python-format
 msgid "Product registered again"
 msgstr "Dar de alta de nuevo"
@@ -716,6 +760,18 @@ msgstr "En proceso de alta"
 #: view:product.template:midban_product.midban_product_search_form_view
 msgid "Product unregistered"
 msgstr "Dado de baja"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:473
+#, python-format
+msgid "Product uom not in logistic units                              "
+msgstr "La unidad de medida del producto no se encuentra en la relación con unidades logísticas                              "
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:481
+#, python-format
+msgid "Product uos not in logistic units                                  "
+msgstr "La segunda unidad de medida no se encuentra en las unidades logísticas                                  "
 
 #. module: midban_product
 #: model:ir.ui.menu,name:midban_product.menu_product_allergen_purchase
@@ -781,10 +837,16 @@ msgid "Size wood pallet, affects the calculation of the volume"
 msgstr "Tamaño de la madera del pallet, afecta al cálculo del volumen"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:335
+#: code:addons/midban_product/product.py:297
 #, python-format
-msgid "Some unit dimension is equals                                                to zero. Please check it"
-msgstr "Some unit dimension is equals                                                to zero. Please check it"
+msgid "Some unit dimension is equals to zero. Please check it in supplier %s"
+msgstr "Alguna dimensíon de la logística es cero. Por favor compruébalo para el proveedor %s"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:306
+#, python-format
+msgid "Some unit dimension is equals to zero. Please check it."
+msgstr "Alguna dimensíon de las unidades logísticas es cero. Por favor compruébalo"
 
 #. module: midban_product
 #: field:product.template,state2:0
@@ -792,9 +854,16 @@ msgid "Status"
 msgstr "Estado"
 
 #. module: midban_product
-#: view:product.template:midban_product.midban_view_product_extra_form
-msgid "Supplier Units"
-msgstr "Unidades de Proveedor"
+#: code:addons/midban_product/product.py:612
+#, python-format
+msgid "Supplier %s not defined in product                                            supplier list"
+msgstr "EL proveedor %s no está definido en el listado de proveedores del producto"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:724
+#, python-format
+msgid "Supplier_id not in supplier_ids"
+msgstr "Supplier_idno en supplier_ids"
 
 #. module: midban_product
 #: view:temp.type:midban_product.midban_product_temp_type_view_form
@@ -828,7 +897,7 @@ msgstr "Temperatura"
 #: model:ir.ui.menu,name:midban_product.menu_temp_type_sales
 #: model:ir.ui.menu,name:midban_product.menu_temp_type_stock
 msgid "Temperature type"
-msgstr "Temperature type"
+msgstr "Tipo temperatura"
 
 #. module: midban_product
 #: help:product.supplierinfo,log_base_id:0
@@ -849,6 +918,33 @@ msgid "The defined unit of measure will be related with the logistic unit"
 msgstr "La unidad de medida definida será relacionada con la unidad lógistica unidad"
 
 #. module: midban_product
+#: code:addons/midban_product/product.py:770
+#, python-format
+msgid "The product %s is                              not related with any supplier                              "
+msgstr "EL producto %s no está relacionado con nigún proveedor                              "
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:560
+#: code:addons/midban_product/product.py:572
+#: code:addons/midban_product/product.py:642
+#: code:addons/midban_product/product.py:745
+#, python-format
+msgid "The product unit of measure %s is                              not related with any logistic                              unit"
+msgstr "La unidad del producto %s no está relacionada con ninguna unidad logística"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:958
+#, python-format
+msgid "The supplit uom are                              not related to suppplier uoms                             "
+msgstr "La unidad de medida del proveedor no está relacionada con las unidades del proveedor                             "
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:950
+#, python-format
+msgid "The supplit uoms are                              not related to product uom                             "
+msgstr "La unidad de medida del proveedor no está relacionada con las unidades del proveedor                            "
+
+#. module: midban_product
 #: field:temp.type,type:0
 msgid "Type"
 msgstr "Tipo"
@@ -860,7 +956,6 @@ msgstr "UN Altura"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_un_height:0
-#: field:product.template,supplier_un_height:0
 msgid "UN Height Supplier"
 msgstr "UN Altura Proveedor"
 
@@ -871,7 +966,6 @@ msgstr "UN Largo"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_un_length:0
-#: field:product.template,supplier_un_length:0
 msgid "UN Length Supplier"
 msgstr "UN Largo Proveedor"
 
@@ -882,7 +976,6 @@ msgstr "UN Ancho"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_un_width:0
-#: field:product.template,supplier_un_width:0
 msgid "UN Width Supplier"
 msgstr "UN Ancho Proveedor"
 
@@ -893,14 +986,13 @@ msgstr "UN/CA"
 
 #. module: midban_product
 #: field:product.supplierinfo,supp_un_ca:0
-#: field:product.template,supplier_un_ca:0
 msgid "UN/CA Supplier"
 msgstr "UN/CA Proveedor"
 
 #. module: midban_product
 #: selection:product.template,product_class:0
 msgid "Ultrafresh"
-msgstr "Ultrafresh"
+msgstr "Ultrafresco"
 
 #. module: midban_product
 #: selection:product.template,state2:0
@@ -992,7 +1084,7 @@ msgstr "Peso variable"
 #. module: midban_product
 #: model:res.groups,name:midban_product.group_no_variants
 msgid "View Product Variants"
-msgstr "View Product Variants"
+msgstr "Ver variantes de producto"
 
 #. module: midban_product
 #: field:product.template,web:0
@@ -1019,24 +1111,3 @@ msgstr "Motivos baja de producto"
 #: view:product.template:midban_product.product_template_only_form_view_avoid_variants
 msgid "{'invisible': [('hidde_variant_page', '=', True)]}"
 msgstr "{'invisible': [('hidde_variant_page', '=', True)]}"
-
-#. module: product
-#: view:product.supplierinfo:product.product_supplierinfo_form_view
-#: view:product.template:product.product_template_form_view
-msgid "Information"
-msgstr "Información"
-
-#. module: product
-#: view:product.supplierinfo:product.product_supplierinfo_form_view
-msgid "Logistic Information"
-msgstr "Información logística"
-
-#. module: product
-#: view:product.supplierinfo:product.product_supplierinfo_form_view
-msgid "Relations units - logistic"
-msgstr "Relación unidades - logística"
-
-#. module: product
-#: view:product.supplierinfo:product.product_supplierinfo_form_view
-msgid "Coefficients and sizes of logistic units"
-msgstr "Coeficientes y tamaños de unidades logísticas"
