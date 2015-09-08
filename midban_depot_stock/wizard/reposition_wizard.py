@@ -212,7 +212,7 @@ class reposition_wizard(osv.TransientModel):
                     'result_package_id': new_pack_id,
                     'lot_id': pack_obj.packed_lot_id and
                     pack_obj.packed_lot_id.id or False,
-                    'uos_id': pack.uos_id.id,
+                    'uos_id': pack_obj.uos_id.id,
                     'uos_qty': uos_qty}
                 assigned = 0
                 for q in pack_obj.quant_ids:
