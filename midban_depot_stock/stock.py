@@ -1452,7 +1452,7 @@ class stock_location(models.Model):
                 'limit': 100.0,
                 'warehouse_id': self.get_warehouse(self),
                 'specific_locations': True,
-                'selected_loc_ids': [6, 0, [self.id]]}
+                'selected_loc_ids': [(6, 0, [self.id])]}
         repo_wzd = self.env['reposition.wizard'].create(vals)
         res = repo_wzd.get_reposition_list()
         return res
