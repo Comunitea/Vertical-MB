@@ -48,53 +48,53 @@ class product_template(models.Model):
 
     @api.multi
     def calc_remaining_days(self):
-        period_last_year = self.env['ir.config_parameter'].search(
-            [('key', '=', 'configured.period.last.year')])
-        period_adjustement = self.env['ir.config_parameter'].search(
-            [('key', '=', 'configured.period.adjustement')])
-        if not period_last_year or not period_adjustement:
-            return 0.0
-        period_last_year = int(period_last_year.value)
-        period_adjustement = int(period_adjustement.value)
-        # Se calculan las ventas del periodo:
-        # desde hoy hasta hoy + dias_configurados del año anterior.
-        init_last_year = date.today() + relativedelta(years=-1)
-        end_last_year = date.today() + relativedelta(days=period_last_year) + \
-            relativedelta(years=-1)
-        qty_last_year = self._get_qty(init_last_year, end_last_year)
-        if qty_last_year[0][0] is None:
-            qty_last_year = 0.0
-        else:
-            qty_last_year = qty_last_year[0][0] / period_last_year
-
-        # Se calcula el factor de correccion con las ventas en el periodo
-        # configurado. ventas desde hoy-dias_configurados hasta hoy
-        # y del mismo periodo del año anterior
-        init_adjust_curyear = date.today() + \
-            relativedelta(days=-period_adjustement)
-        end_adjust_curyear = date.today()
-        qty_adjust_curyear = self._get_qty(init_adjust_curyear,
-                                           end_adjust_curyear)
-        if qty_adjust_curyear[0][0] is None:
-            qty_adjust_curyear = 0.0
-        else:
-            qty_adjust_curyear = qty_adjust_curyear[0][0]
-
-        init_adjust_lastyear = date.today() + \
-            relativedelta(days=-period_adjustement) + relativedelta(years=-1)
-        end_adjust_lastyear = date.today() + relativedelta(years=-1)
-        qty_adjust_lastyear = self._get_qty(init_adjust_lastyear,
-                                            end_adjust_lastyear)
-        if qty_adjust_lastyear[0][0] is None:
-            qty_adjust_lastyear = 0.0
-        else:
-            qty_adjust_lastyear = qty_adjust_lastyear[0][0]
-
-        correction = (qty_adjust_lastyear / 100.0 * (qty_adjust_curyear -
-                                                     qty_adjust_lastyear)) / \
-            100.0
-        final_daily_sale = qty_last_year * (1 + correction)
-
+        # period_last_year = self.env['ir.config_parameter'].search(
+        #     [('key', '=', 'configured.period.last.year')])
+        # period_adjustement = self.env['ir.config_parameter'].search(
+        #     [('key', '=', 'configured.period.adjustement')])
+        # if not period_last_year or not period_adjustement:
+        #     return 0.0
+        # period_last_year = int(period_last_year.value)
+        # period_adjustement = int(period_adjustement.value)
+        # # Se calculan las ventas del periodo:
+        # # desde hoy hasta hoy + dias_configurados del año anterior.
+        # init_last_year = date.today() + relativedelta(years=-1)
+        # end_last_year = date.today() + relativedelta(days=period_last_year) + \
+        #     relativedelta(years=-1)
+        # qty_last_year = self._get_qty(init_last_year, end_last_year)
+        # if qty_last_year[0][0] is None:
+        #     qty_last_year = 0.0
+        # else:
+        #     qty_last_year = qty_last_year[0][0] / period_last_year
+        #
+        # # Se calcula el factor de correccion con las ventas en el periodo
+        # # configurado. ventas desde hoy-dias_configurados hasta hoy
+        # # y del mismo periodo del año anterior
+        # init_adjust_curyear = date.today() + \
+        #     relativedelta(days=-period_adjustement)
+        # end_adjust_curyear = date.today()
+        # qty_adjust_curyear = self._get_qty(init_adjust_curyear,
+        #                                    end_adjust_curyear)
+        # if qty_adjust_curyear[0][0] is None:
+        #     qty_adjust_curyear = 0.0
+        # else:
+        #     qty_adjust_curyear = qty_adjust_curyear[0][0]
+        #
+        # init_adjust_lastyear = date.today() + \
+        #     relativedelta(days=-period_adjustement) + relativedelta(years=-1)
+        # end_adjust_lastyear = date.today() + relativedelta(years=-1)
+        # qty_adjust_lastyear = self._get_qty(init_adjust_lastyear,
+        #                                     end_adjust_lastyear)
+        # if qty_adjust_lastyear[0][0] is None:
+        #     qty_adjust_lastyear = 0.0
+        # else:
+        #     qty_adjust_lastyear = qty_adjust_lastyear[0][0]
+        #
+        # correction = (qty_adjust_lastyear / 100.0 * (qty_adjust_curyear -
+        #                                              qty_adjust_lastyear)) / \
+        #     100.0
+        # final_daily_sale = qty_last_year * (1 + correction)
+        final_daily_sale = 0
         return final_daily_sale
 
     @api.one
