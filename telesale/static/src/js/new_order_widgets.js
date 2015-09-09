@@ -3,7 +3,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
     _t = instance.web._t;
     var round_pr = instance.web.round_precision
     var my_round = function(number, decimals){
-        var n = number;
+        var n = number || 0;
         if (typeof n === "string"){
             n = n * 1;
         }
@@ -282,7 +282,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('product', product_obj.name || "");
                                 self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
                                 self.model.set('unit', self.model.ts_model.db.unit_by_id[result.value.product_uom].name);
-                                self.model.set('product_uos', self.model.ts_model.db.unit_by_id[result.value.product_uos].name);
+                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : '');
                                 self.model.set('qty', 0);
                                 self.model.set('discount', 0);
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));

@@ -4,7 +4,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
     _t = instance.web._t;
     var round_pr = instance.web.round_precision
     var my_round = function(number, decimals){
-        var n = number;
+        var n = number || 0;
         if (typeof n === "string"){
             n = n * 1;
         }

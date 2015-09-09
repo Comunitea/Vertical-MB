@@ -3,7 +3,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
     _t = instance.web._t;
     var round_pr = instance.web.round_precision
     var my_round = function(number, decimals){
-        var n = number;
+        var n = number || 0;
         if (typeof n === "string"){
             n = n * 1;
         }

@@ -4,7 +4,7 @@ function openerp_ts_models(instance, module){
     var round_pr = instance.web.round_precision
     var round_dc = instance.web.round_decimals
     var my_round = function(number, decimals){
-        var n = number;
+        var n = number || 0;
         if (typeof n === "string"){
             n = n * 1;
         }
