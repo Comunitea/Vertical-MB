@@ -44,6 +44,8 @@ Module that adds the management to the products under minimal.
              "product_view.xml",
              "product_stock_unsafety_view.xml",
              "stock_warehouse_orderpoint_view.xml",
+             "stock_view.xml",
+             "data/stock_data.xml",
              "security/ir.model.access.csv"],
     "demo": [],
     "test": [],

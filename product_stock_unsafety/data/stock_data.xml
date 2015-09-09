@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="configured_period_last_year" model="ir.config_parameter">
+            <field name="key">configured.period.last.year</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="configured_period_adjustement" model="ir.config_parameter">
+            <field name="key">configured.period.adjustement</field>
+            <field name="value">1</field>
+        </record>
+
+    </data>
+</openerp>

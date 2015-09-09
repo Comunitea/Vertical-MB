@@ -34,14 +34,16 @@ class product_template(models.Model):
         """
         start_str = start.strftime('%Y-%m-%d') + ' 00:00:01'
         stop_str = stop.strftime('%Y-%m-%d') + ' 23:59:59'
-        prod_ids = '(' + ', '.join(map(str,self.product_variant_ids._ids)) + ')'
+        prod_ids = '(' + ', '.join(map(str, self.product_variant_ids._ids)) + \
+            ')'
         self.env.cr.execute("SELECT sum(s.product_qty) \
-FROM stock_move s \
-INNER JOIN stock_picking p on p.id=s.picking_id \
-INNER JOIN stock_picking_type pt on p.picking_type_id=pt.id \
-WHERE s.product_id in " + prod_ids + " AND s.state='done' AND \
-s.date>='" + start_str + "' AND s.date<='" + stop_str + "' \
-AND pt.code='outgoing'")
+                             INNER JOIN stock_picking p on p.id=s.picking_id \
+                             INNER JOIN stock_picking_type pt \
+                                on p.picking_type_id=pt.id \
+                            WHERE s.product_id in " + prod_ids +
+                            " AND s.state='done' AND \
+                            s.date>='" + start_str + "' AND s.date<='"
+                            + stop_str + "' AND pt.code='outgoing'")
         return self.env.cr.fetchall()
 
     @api.multi
