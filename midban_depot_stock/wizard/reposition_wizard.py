@@ -388,5 +388,3 @@ class reposition_wizard(osv.TransientModel):
             action['views'] = [(res and res[1] or False, 'form')]
             action['res_id'] = created_picks[0]
         return action
-
-        return True

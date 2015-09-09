@@ -71,12 +71,14 @@ class stock_task(osv.Model):
 
             # When we call butom after the returned view of the wizard
             # 'active_model': 'stock.task' and we get an error with assert
-            # in do_transfer method. Changed it allways to stock.picking
+            # in do_transfer method.
+            # Changed it allways to stock.picking
             ctx = self._context.copy()
             ctx['active_model'] = 'stock.picking'
+            ctx['active_ids'] = pick_ids
+            ctx['active_id'] = len(pick_ids) == 1 and pick_ids[0] or False
             pick_t = self.env['stock.picking'].with_context(ctx)
             pick_objs = pick_t.browse(pick_ids)
-
             for pick in pick_objs:
                 pick.approve_pack_operations2(self.id)
         else:
