@@ -111,9 +111,9 @@ class sale_report(osv.osv):
         'uos_id': fields.many2one('product.uom', 'Secondary unit',
                                   readonly=True),
         'customer_id': fields.many2one('res.partner', 'Customer',
-                                      readonly=True),
+                                       readonly=True),
         'pack_id': fields.many2one('stock.quant.package', 'Pack',
-                                      readonly=True)
+                                   readonly=True)
     }
 
     def _select(self):
