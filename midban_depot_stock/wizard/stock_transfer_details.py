@@ -260,14 +260,17 @@ class stock_transfer_details_items(models.TransientModel):
 
     @api.one
     def create_pack_operation(self, pack_uom_quantity):
-        supplier_id = self.transfer_id.picking_id.partner_id.id
+        """
+        When creating pack operation we set the uos_qty based on the
+        sale measures
+        """
+        # supplier_id = self.transfer_id.picking_id.partner_id.id
         if self.quantity == pack_uom_quantity:
             pack_uos_qty = self.uos_qty
         else:
             pack_uos_qty = \
                 self.product_id.uom_qty_to_uos_qty(pack_uom_quantity,
-                                                   self.uos_id.id,
-                                                   supplier_id)
+                                                   self.uos_id.id)
         op_vals = {
             'location_id': self.sourceloc_id.id,
             'product_id': self.product_id.id,
