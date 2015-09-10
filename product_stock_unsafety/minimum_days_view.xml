@@ -60,7 +60,7 @@
             action="action_minimum_day_form"
             id="menu_action_minimum_day"
             parent="stock.menu_stock_inventory_control"
-            sequence="50"
+            sequence="1"
             string="Minimun Stock Days"
         />
     </data>

@@ -96,10 +96,10 @@
             action="action_product_stock_unsafety_form"
             id="menu_action_product_stock_unsafety"
             parent="stock.menu_stock_inventory_control"
-            sequence="60"
+            sequence="3"
         />
 
-        <menuitem action="stock.action_orderpoint_form" id="stock.menu_stock_order_points" parent="stock.menu_stock_inventory_control" sequence="55"/>
+        <menuitem action="stock.action_orderpoint_form" id="stock.menu_stock_order_points" parent="stock.menu_stock_inventory_control" sequence="2"/>
 
     </data>
 </openerp>
