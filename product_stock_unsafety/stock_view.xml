@@ -8,16 +8,16 @@
             <field name="arch" type="xml">
                 <separator string="Traceability" position="before">
                     <group string="Stock">
-                        <label for="id" string="Stock Measures"/>
+                        <label for="id" string="Calculation Stock Days"/>
                         <div>
                           <div>
-                              <label for= "configured_period_last_year"/>
-                              <field name="configured_period_last_year" class="oe_inline"/>
+                              <label for= "consult_period"/>
+                              <field name="consult_period" class="oe_inline"/>
 
                           </div>
                           <div>
-                              <label for= "configured_period_adjustement"/>
-                              <field name="configured_period_adjustement" class="oe_inline"/>
+                              <label for= "adjustement_period"/>
+                              <field name="adjustement_period" class="oe_inline"/>
                           </div>
                         </div>
                     </group>

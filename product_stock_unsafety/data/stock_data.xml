@@ -2,13 +2,13 @@
 <openerp>
     <data noupdate="1">
 
-        <record id="configured_period_last_year" model="ir.config_parameter">
-            <field name="key">configured.period.last.year</field>
+        <record id="consult_period" model="ir.config_parameter">
+            <field name="key">configured.consult.period</field>
             <field name="value">1</field>
         </record>
 
-        <record id="configured_period_adjustement" model="ir.config_parameter">
-            <field name="key">configured.period.adjustement</field>
+        <record id="adjustement_period" model="ir.config_parameter">
+            <field name="key">configured.adjustement.period</field>
             <field name="value">1</field>
         </record>
 
