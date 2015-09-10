@@ -126,9 +126,9 @@
                 </page>
             </page>
 
-            <xpath expr="//field[@name='invoice_line']/tree/field[@name='discount']" position="replace">
+            <!--<xpath expr="//field[@name='invoice_line']/tree/field[@name='discount']" position="replace">
                 <field name="discount_ids" widget="many2many_tags" domain="[('invoice_line_id','=',id)]"/>
-            </xpath>
+            </xpath>-->
             <!-- <field name="amount_untaxed" position="before">
                 <field name="amount_discount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
             </field> -->

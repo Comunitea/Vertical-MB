@@ -48,19 +48,3 @@ class ultrafresh_report_parser(models.AbstractModel):
             'products': products,
         }
         return report_obj.render(report_name, docargs)
-
-
-class qualitative_note(models.Model):
-    """ New model to get a qualitative comment un sale order lines"""
-    _name = 'qualitative.note'
-    _rec_name = 'code'
-
-    name = fields.Char('name', required=True)
-    code = fields.Char('code', required=True)
-
-
-class sale_order_line(models.Model):
-    _inherit = 'sale.order.line'
-
-    q_note = fields.Many2one('qualitative.note', 'Qualitative Comment')
-    detail_note = fields.Char('Details', size=256)

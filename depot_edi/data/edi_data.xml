@@ -23,6 +23,11 @@
             <field name="name">Sale Orders</field>
         </record>
 
+        <record id="discount_type_promotions" model="account.discount.type">
+            <field name="code">PROM</field>
+            <field name="name">Promociones</field>
+        </record>
+
     </data>
 </openerp>
 

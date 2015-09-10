@@ -22,6 +22,16 @@ from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
 
 
+class QualitativeNote(models.Model):
+    """ New model to get a qualitative comment un sale order lines"""
+
+    _name = 'qualitative.note'
+    _rec_name = 'code'
+
+    name = fields.Char('Name', required=True)
+    code = fields.Char('Code', required=True)
+
+
 class sale_order_line(models.Model):
     _inherit = "sale.order.line"
 
@@ -29,6 +39,8 @@ class sale_order_line(models.Model):
                              digits_compute=dp.get_precision('Product Price'),
                              required=True)
     do_onchange = fields.Boolean('Do onchange', default=True)
+    q_note = fields.Many2one('qualitative.note', 'Qualitative Comment')
+    detail_note = fields.Char('Details', size=256)
 
     def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
                                   qty=0, uom=False, qty_uos=0, uos=False,

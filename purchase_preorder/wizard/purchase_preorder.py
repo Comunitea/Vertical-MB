@@ -559,6 +559,7 @@ class purchase_preorder(osv.Model):
                                       'price_udc': line.price_purchase,
                                       'order_id': new_id,
                                       'date_planned': ldate,
+                                      'discount': line.precentage_promo,
                                       'taxes_id': [(6, 0, taxes)]}
 
                         pline.create(cr, uid, values_line)
