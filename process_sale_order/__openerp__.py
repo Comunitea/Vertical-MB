@@ -42,6 +42,7 @@
     "data": [
         'product_view.xml',
         'sale_view.xml',
+        'security/ir.model.access.csv'
     ],
     "demo": [],
     "test": [],
