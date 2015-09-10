@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* process_sale_order
+#       * process_sale_order
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-09 12:51+0000\n"
-"PO-Revision-Date: 2015-03-09 12:51+0000\n"
+"POT-Creation-Date: 2015-09-10 19:04+0000\n"
+"PO-Revision-Date: 2015-09-10 19:04+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,14 +16,21 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: process_sale_order
-#: selection:product.template,min_unit:0
-msgid "Both, units and boxes"
-msgstr "Ambas, unidades y cajas"
-
-#. module: process_sale_order
-#: selection:sale.order.line,choose_unit:0
-msgid "Box"
-msgstr "Caja"
+#: model:ir.actions.act_window,help:process_sale_order.action_qualitative_note
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                    Click here to create a new qualitative comment\n"
+"                </p><p>\n"
+"                    We use it to pass information between sales and purchases\n"
+"                </p>\n"
+"\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                    Click para crear un nuevo comentario cualitativo\n"
+"                </p><p>\n"
+"                    Lo usamos para pasar información entre ventas y compras\n"
+"                </p>\n"
+"\n"
+"            "
 
 #. module: process_sale_order
 #: field:product.template,box_discount:0
@@ -34,42 +41,33 @@ msgstr "Descuento unidad caja"
 #: code:addons/process_sale_order/product.py:75
 #, python-format
 msgid "Box unit does not exist.                You must configured one unit like boxes"
-msgstr "La unidad caja no existe.                Debes configurar una unidad actuando como cajas"
+msgstr "La unidad caja no existe. Debes configurar una unidad actuando como cajas"
 
 #. module: process_sale_order
-#: model:ir.model,name:process_sale_order.model_account_invoice
-msgid "Invoice"
-msgstr "Factura"
+#: field:qualitative.note,code:0
+msgid "Code"
+msgstr "Código"
 
 #. module: process_sale_order
-#: model:ir.model,name:process_sale_order.model_account_invoice_line
-msgid "Invoice Line"
-msgstr "Línea de factura"
+#: field:sale.order.line,detail_note:0
+#: field:stock.move,det_note:0
+msgid "Details"
+msgstr "Detalles"
 
 #. module: process_sale_order
-#: model:ir.model,name:process_sale_order.model_account_move_line
-msgid "Journal Items"
-msgstr "Apuntes contables"
+#: field:sale.order.line,do_onchange:0
+msgid "Do onchange"
+msgstr "Do onchange"
 
 #. module: process_sale_order
-#: field:product.template,min_unit:0
-msgid "Minimum Sale Unit"
-msgstr "Mínima unidad de venta"
+#: field:qualitative.note,name:0
+msgid "Name"
+msgstr "Nombre"
 
 #. module: process_sale_order
-#: selection:product.template,min_unit:0
-msgid "Only Boxes"
-msgstr "Solo cajas"
-
-#. module: process_sale_order
-#: selection:product.template,min_unit:0
-msgid "Only Unit"
-msgstr "Solo unidades"
-
-#. module: process_sale_order
-#: model:ir.model,name:process_sale_order.model_stock_picking
-msgid "Picking List"
-msgstr "Albarán"
+#: field:sale.order.line,price_udv:0
+msgid "Price UdV"
+msgstr "Precio UdV"
 
 #. module: process_sale_order
 #: model:ir.model,name:process_sale_order.model_product_product
@@ -82,15 +80,26 @@ msgid "Product Template"
 msgstr "Plantilla de producto"
 
 #. module: process_sale_order
-#: field:account.invoice,pick_ids:0
-#: field:account.invoice,sale_ids:0
-msgid "Related Sales"
-msgstr "Ventas Relacionadas"
+#: model:ir.model,name:process_sale_order.model_product_uom
+msgid "Product Unit of Measure"
+msgstr "Unidad de medida del producto"
 
 #. module: process_sale_order
-#: model:ir.model,name:process_sale_order.model_sale_order
-msgid "Sales Order"
-msgstr "Pedido de venta"
+#: field:sale.order.line,q_note:0
+#: field:stock.move,q_note:0
+msgid "Qualitative Comment"
+msgstr "Comentario cualitativo"
+
+#. module: process_sale_order
+#: model:ir.ui.menu,name:process_sale_order.menu_qualitative_comment
+msgid "Qualitative Comments"
+msgstr "Comentarios cualitativos"
+
+#. module: process_sale_order
+#: view:qualitative.note:process_sale_order.qualitative_note_view_form
+#: view:qualitative.note:process_sale_order.qualitative_note_view_tree
+msgid "Qualitative Note"
+msgstr "Nota cualitativa"
 
 #. module: process_sale_order
 #: model:ir.model,name:process_sale_order.model_sale_order_line
@@ -98,25 +107,9 @@ msgid "Sales Order Line"
 msgstr "Línea pedido de venta"
 
 #. module: process_sale_order
-#: field:sale.order.line,choose_unit:0
-msgid "Selected Unit"
-msgstr "Unidad selecionada"
-
-#. module: process_sale_order
-#: help:product.template,min_unit:0
-msgid "Selecting both Units and boxes                                 will add functionality to Telesale and                                 Mobile App Sales (Android)"
-msgstr "Seleccionando Ambas unidades y cajas añadirá la funcionalidad a televentas y a la aplicación móvil"
-
-#. module: process_sale_order
-#: field:account.invoice.line,stock_move_id:0
 #: model:ir.model,name:process_sale_order.model_stock_move
 msgid "Stock Move"
 msgstr "Movimiento de existencias"
-
-#. module: process_sale_order
-#: selection:sale.order.line,choose_unit:0
-msgid "Unit"
-msgstr "Unidad"
 
 #. module: process_sale_order
 #: code:addons/process_sale_order/product.py:83
@@ -137,7 +130,6 @@ msgid "When you sale this product in boxesThis will be the % discounted over the
 msgstr "Cuando se vende este producto en cajas, este sera el % descontado sobre el precio unitario. Si una caja tiene 10 unidades y su descueento del 20%, el nuevo precio de la caja será 80 en lugar de 100, si consideramos el precio unitario iugual a 1"
 
 #. module: process_sale_order
-#: view:sale.order:process_sale_order.sale_view_order_form_add_do_context
-msgid "{'readonly': ['|', ('min_unit','=','unit'),'&', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"
-msgstr "{'readonly': ['|', ('min_unit','=','unit'),'&', ('min_unit', '=', 'both'), ('choose_unit', '=', 'unit')]}"
-
+#: model:ir.actions.act_window,name:process_sale_order.action_qualitative_note
+msgid "action.qualitative.note"
+msgstr "action.qualitative.note"
