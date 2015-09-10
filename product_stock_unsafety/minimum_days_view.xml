@@ -2,20 +2,11 @@
 
 <openerp>
     <data>
-        <record id="view_minimum_day_filter" model="ir.ui.view">
-            <field name="name">minimum.day.filter</field>
-            <field name="model">minimum.day</field>
-            <field name="arch" type="xml">
-                <search string="Search Minimum day">
-                    <field name="name"/>
-                </search>
-            </field>
-        </record>
         <record id="view_minimum_day_tree" model="ir.ui.view">
             <field name="name">minimum.day.tree</field>
             <field name="model">minimum.day</field>
             <field name="arch" type="xml">
-                <tree string="Minimum day">
+                <tree string="Minimum Stock days">
                     <field name="name"/>
                     <field name="days_sale"/>
                     <field name="default"/>
@@ -26,7 +17,7 @@
             <field name="name">minimum.day.form</field>
             <field name="model">minimum.day</field>
             <field name="arch" type="xml">
-                <form string="Minimum day" version="7.0">
+                <form string="Minimum Stock Days">
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -44,7 +35,7 @@
             </field>
         </record>
         <record id="action_minimum_day_form" model="ir.actions.act_window">
-            <field name="name">Minimun day</field>
+            <field name="name">Minimun Stock Days</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">minimum.day</field>
             <field name="view_type">form</field>
@@ -52,16 +43,25 @@
             <field name="search_view_id" ref="view_minimum_day_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click to start a new Minimum Day
+                Click to start a new Minimum Stock Days model
               </p>
-
+            </field>
+        </record>
+        <record id="view_minimum_day_filter" model="ir.ui.view">
+            <field name="name">minimum.day.filter</field>
+            <field name="model">minimum.day</field>
+            <field name="arch" type="xml">
+                <search string="Search Minimum Stock day">
+                    <field name="name"/>
+                </search>
             </field>
         </record>
         <menuitem
             action="action_minimum_day_form"
             id="menu_action_minimum_day"
-            parent="stock.menu_stock_configuration"
-            sequence="20"
+            parent="stock.menu_stock_inventory_control"
+            sequence="50"
+            string="Minimun Stock Days"
         />
     </data>
 </openerp>

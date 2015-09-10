@@ -54,14 +54,14 @@ class product_template(models.Model):
         and then from configuration parametres
         """
         last_year = adjustement = 0
-        if self.specific_periods and self.specific_consult_period:
+        if self.specific_periods:
             last_year = self.specific_consult_period
         else:
             domain = [('key', '=', 'configured.consult.period')]
             consult_period = self.env['ir.config_parameter'].search(domain)
             last_year = int(consult_period.value)
 
-        if self.specific_periods and self.specific_adjustement_period:
+        if self.specific_periods:
             adjustement = self.specific_adjustement_period
         else:
             domain = [('key', '=', 'configured.adjustement.period')]
@@ -124,22 +124,26 @@ class product_template(models.Model):
     def _calc_remaining_days(self):
         stock_days = 0.00
         if self.virtual_stock_conservative:
+            stock_days = -1.00  # Indicates we dont know stock days
             stock_per_day = self.calc_sale_units_per_day()
             if stock_per_day > 0:
-                days = round(self.virtual_stock_conservative / stock_per_day)
-                if days > 0.0:
-                    stock_days = days
+                stock_days = round(self.virtual_stock_conservative /
+                                   stock_per_day)
+
         self.remaining_days_sale = stock_days
 
     remaining_days_sale = fields.Float('Remaining Stock Days', readonly=True,
-                                       compute='_calc_remaining_days')
+                                       compute='_calc_remaining_days',
+                                       help=" Stock measure in days of sale "
+                                       "calculed consulting configured "
+                                       "periods")
     specific_periods = \
         fields.Boolean('Specific Periods',
                        help='If checked we can specify the periods to '
                        'calculate the remaining stock days else we use the '
                        'general configuration of consult and ajust periods')
     specific_consult_period = \
-        fields.Integer('Historical Perid Stock Days',
+        fields.Integer('Consult Period Stock Days',
                        help='Used to calculate remaining stock days. '
                        'It will check from today '
                        'to X period days of the last year the quantity sold. '

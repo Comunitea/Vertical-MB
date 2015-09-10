@@ -42,7 +42,7 @@ Module that adds the management to the products under minimal.
                 ],
     "data": ["minimum_days_view.xml",
              "product_view.xml",
-             "product_stock_unsafety_view.xml",
+             "under_minimum_view.xml",
              "stock_warehouse_orderpoint_view.xml",
              "stock_view.xml",
              "data/stock_data.xml",

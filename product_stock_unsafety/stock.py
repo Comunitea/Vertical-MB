@@ -25,7 +25,7 @@ class stock_config_settings(models.TransientModel):
     _inherit = 'stock.config.settings'
 
     consult_period = \
-        fields.Integer('Consult Perid Stock Days',
+        fields.Integer('Consult Period Stock Days',
                        help='General hystoric period for calculating '
                        'stock days of a product. It will check from today '
                        'to X period days of the last year the quantity sold. '
