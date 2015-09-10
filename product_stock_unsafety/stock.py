@@ -24,35 +24,42 @@ from openerp import api, models, fields
 class stock_config_settings(models.TransientModel):
     _inherit = 'stock.config.settings'
 
-    configured_period_last_year = \
-        fields.Integer('Stock days period',
-                       help='Stock days period')
-    configured_period_adjustement = \
-        fields.Integer('Stock days adjustement period',
-                       help='Asjustement period')
+    consult_period = \
+        fields.Integer('Consult Period Stock Days',
+                       help='General hystoric period for calculating '
+                       'stock days of a product. It will check from today '
+                       'to X period days of the last year the quantity sold. '
+                       'if not sales in last year we check the period going '
+                       'back since today in the current year')
+    adjustement_period = \
+        fields.Integer('Adjustement Period Stock Days',
+                       help='General Adjustement period to calculate the '
+                       'stock days of a product. It will check a period from '
+                       'today back to this days, of the last and the '
+                       'current year, to get the diferent trend in sales')
 
     @api.multi
-    def get_default_configured_period_last_year(self, fields):
-        domain = [('key', '=', 'configured.period.last.year')]
+    def get_default_consult_period(self, fields):
+        domain = [('key', '=', 'configured.consult.period')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         value = int(param_obj.value)
-        return {'configured_period_last_year': value}
+        return {'consult_period': value}
 
     @api.multi
-    def set_configured_period_last_year(self):
-        domain = [('key', '=', 'configured.period.last.year')]
+    def set_consult_period(self):
+        domain = [('key', '=', 'configured.consult.period')]
         param_obj = self.env['ir.config_parameter'].search(domain)
-        param_obj.value = str(self.configured_period_last_year)
+        param_obj.value = str(self.consult_period)
 
     @api.multi
-    def get_default_configured_period_adjustement(self, fields):
-        domain = [('key', '=', 'configured.period.adjustement')]
+    def get_default_adjustement_period(self, fields):
+        domain = [('key', '=', 'configured.adjustement.period')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         value = int(param_obj.value)
-        return {'configured_period_adjustement': value}
+        return {'adjustement_period': value}
 
     @api.multi
-    def set_configured_period_adjustement(self):
-        domain = [('key', '=', 'configured.period.adjustement')]
+    def set_adjustement_period(self):
+        domain = [('key', '=', 'configured.adjustement.period')]
         param_obj = self.env['ir.config_parameter'].search(domain)
-        param_obj.value = str(self.configured_period_adjustement)
+        param_obj.value = str(self.adjustement_period)

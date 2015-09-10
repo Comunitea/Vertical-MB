@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * product_stock_unsafety
+#	* product_stock_unsafety
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 17:30+0000\n"
-"PO-Revision-Date: 2015-05-14 17:30+0000\n"
+"POT-Creation-Date: 2015-09-10 17:03+0000\n"
+"PO-Revision-Date: 2015-09-10 17:03+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,14 +18,12 @@ msgstr ""
 #. module: product_stock_unsafety
 #: model:ir.actions.act_window,help:product_stock_unsafety.action_minimum_day_form
 msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to start a new Minimum Day\n"
+"                Click to start a new Minimum Stock Days model\n"
 "              </p>\n"
-"\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Pincha para crear un nuevo día mínimo\n"
+"                Click para crear un nuevo modelo de días mínimos de stock\n"
 "              </p>\n"
-"\n"
 "            "
 
 #. module: product_stock_unsafety
@@ -47,9 +45,20 @@ msgid "Additional Information"
 msgstr "Información Adicional"
 
 #. module: product_stock_unsafety
+#: field:product.template,specific_adjustement_period:0
+#: field:stock.config.settings,adjustement_period:0
+msgid "Adjustement Period Stock Days"
+msgstr Período de ajuste días stock"
+
+#. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
 msgid "Amounts Awaiting Come"
 msgstr "Cant. Pendientes de Recibir"
+
+#. module: product_stock_unsafety
+#: view:stock.config.settings:product_stock_unsafety.view_stock_config_settings_custom
+msgid "Calculation Stock Days"
+msgstr "Cálculo de los días de stock"
 
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
@@ -63,16 +72,21 @@ msgid "Cancelled"
 msgstr "Cancelado"
 
 #. module: product_stock_unsafety
+#: field:stock.config.settings,consult_period:0
+msgid "Consult Period Stock Days"
+msgstr "Período consulta stock days"
+
+#. module: product_stock_unsafety
 #: field:minimum.day,create_uid:0
 #: field:product.stock.unsafety,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por
 
 #. module: product_stock_unsafety
 #: field:minimum.day,create_date:0
 #: field:product.stock.unsafety,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado en"
 
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_filter
@@ -81,15 +95,10 @@ msgid "Date"
 msgstr "Fecha"
 
 #. module: product_stock_unsafety
-#: field:minimum.day,days_sale:0
-msgid "Days Sale"
-msgstr "Días de venta"
-
-#. module: product_stock_unsafety
-#: code:addons/product_stock_unsafety/schedulers.py:84
+#: code:addons/product_stock_unsafety/schedulers.py:81
 #, python-format
 msgid "Days sale"
-msgstr "Días de venta"
+msgstr "Días de venta(stock)"
 
 #. module: product_stock_unsafety
 #: field:minimum.day,default:0
@@ -122,10 +131,22 @@ msgid "Finalized"
 msgstr "Finalizado"
 
 #. module: product_stock_unsafety
+#: help:stock.config.settings,adjustement_period:0
+msgid "General Adjustement period to calculate the stock days of a product. It will check a period from today back to this days, of the last and the current year, to get the diferent trend in sales"
+msgstr "Período de ajuste general para calcular los días de stock de un producto. Comprobará un período desde hoy y hacia atrás hasta
+los días indicados, del pasado y del presente año para calcular la diferencia en la tendencia de ventas"
+
+#. module: product_stock_unsafety
 #: view:minimum.day:product_stock_unsafety.view_minimum_day_form
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
 msgid "General Information"
 msgstr "Información General"
+
+#. module: product_stock_unsafety
+#: help:stock.config.settings,consult_period:0
+msgid "General hystoric period for calculating stock days of a product. It will check from today to X period days of the last year the quantity sold. if not sales in last year we check the period going back since today in the current year"
+msgstr "Período general del histórico para calcular los días de stock de un producto. Comprobará desde hoy hasta los X días configurados
+del pasado año la cantidad vendida. Si no hubo ventas en ese período el año anterior se comprueba ese período mirando hacia atrás en el año actual"
 
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_filter
@@ -133,10 +154,20 @@ msgid "Group By"
 msgstr "Agrupar Por"
 
 #. module: product_stock_unsafety
+#: field:product.template,specific_consult_period:0
+msgid "Consult Period Stock Days"
+msgstr "Período consulta días de stock"
+
+#. module: product_stock_unsafety
 #: field:minimum.day,id:0
 #: field:product.stock.unsafety,id:0
 msgid "ID"
 msgstr "ID"
+
+#. module: product_stock_unsafety
+#: help:product.template,specific_periods:0
+msgid "If checked we can specify the periods to calculate the remaining stock days else we use the general configuration of consult and ajust periods"
+msgstr "Si está marcado podremos especificar los períodos para calcular los restantes días de stock, sino usaremos la configuración general para obtener los períodos de consulta y de ajuste"
 
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_filter
@@ -153,13 +184,13 @@ msgstr "Entradas pendientes"
 #: field:minimum.day,write_uid:0
 #: field:product.stock.unsafety,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización por"
 
 #. module: product_stock_unsafety
 #: field:minimum.day,write_date:0
 #: field:product.stock.unsafety,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: product_stock_unsafety
 #: field:product.stock.unsafety,min_fixed:0
@@ -177,16 +208,20 @@ msgid "Minimum Inventory Rule"
 msgstr "Regla de inventario mínimo"
 
 #. module: product_stock_unsafety
-#: code:addons/product_stock_unsafety/schedulers.py:86
+#: code:addons/product_stock_unsafety/schedulers.py:83
 #, python-format
 msgid "Minimum Stock"
 msgstr "Stock Mínimo"
 
 #. module: product_stock_unsafety
 #: view:minimum.day:product_stock_unsafety.view_minimum_day_form
+msgid "Minimum Stock Days"
+msgstr "Días stock mínimos"
+
+#. module: product_stock_unsafety
 #: view:minimum.day:product_stock_unsafety.view_minimum_day_tree
-msgid "Minimum day"
-msgstr "Día Mínimo"
+msgid "Minimum Stock days"
+msgstr "Días stock mínimos"
 
 #. module: product_stock_unsafety
 #: help:product.stock.unsafety,min_fixed:0
@@ -196,8 +231,8 @@ msgstr "Cantidad necesaria para llegar a la mínima del reabastecimiento"
 #. module: product_stock_unsafety
 #: model:ir.actions.act_window,name:product_stock_unsafety.action_minimum_day_form
 #: model:ir.ui.menu,name:product_stock_unsafety.menu_action_minimum_day
-msgid "Minimun day"
-msgstr "Días Mínimos"
+msgid "Minimun Stock Days"
+msgstr "Días stock mínimos"
 
 #. module: product_stock_unsafety
 #: field:minimum.day,name:0
@@ -225,7 +260,7 @@ msgstr "Producto"
 #: model:ir.ui.menu,name:product_stock_unsafety.menu_action_product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
 msgid "Product Stock Unsafety"
-msgstr "Bajo Mínimos"
+msgstr "Alerta bajo mínimos"
 
 #. module: product_stock_unsafety
 #: model:ir.model,name:product_stock_unsafety.model_product_template
@@ -235,7 +270,7 @@ msgstr "Plantilla de producto"
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_tree
 msgid "Product stock unsafety"
-msgstr "Bajo Mínimos"
+msgstr "Alerta bajo mínimos"
 
 #. module: product_stock_unsafety
 #: model:ir.model,name:product_stock_unsafety.model_product_stock_unsafety
@@ -270,7 +305,7 @@ msgstr "Cantidades"
 #. module: product_stock_unsafety
 #: help:product.stock.unsafety,minimum_proposal:0
 msgid "Quantity necessary to reach the minimum days of preorder"
-msgstr "cantidad necesaria para llegar a los días mínimos del reabastecimiento"
+msgstr "Cantidad necesaria para llegar a los días mínimos del reabastecimiento"
 
 #. module: product_stock_unsafety
 #: field:product.stock.unsafety,real_stock:0
@@ -284,7 +319,7 @@ msgstr "Motivo"
 
 #. module: product_stock_unsafety
 #: field:product.stock.unsafety,remaining_days_sale:0
-msgid "Remaining Days of Sale"
+msgid "Remaining                                                       Days of Sale"
 msgstr "Días de venta restantes"
 
 #. module: product_stock_unsafety
@@ -293,14 +328,9 @@ msgid "Responsible"
 msgstr "Responsable"
 
 #. module: product_stock_unsafety
-#: view:product.template:product_stock_unsafety.view_product_form_remaining_days_sale
-msgid "Sale Conditions"
-msgstr "Condiciones de venta"
-
-#. module: product_stock_unsafety
 #: view:minimum.day:product_stock_unsafety.view_minimum_day_filter
-msgid "Search Minimum day"
-msgstr "Buscar día mínimo"
+msgid "Search Minimum Stock day"
+msgstr "Busca días de stock mínimos"
 
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_filter
@@ -310,7 +340,12 @@ msgstr "Buscar Bajo Mínimos"
 #. module: product_stock_unsafety
 #: model:ir.model,name:product_stock_unsafety.model_minimum_day
 msgid "Setting minimum days"
-msgstr "Setting minimum days"
+msgstr "Configurar días stock mínimos"
+
+#. module: product_stock_unsafety
+#: field:product.template,specific_periods:0
+msgid "Specific Periods"
+msgstr "Períodos específicos"
 
 #. module: product_stock_unsafety
 #: field:product.stock.unsafety,state:0
@@ -323,6 +358,16 @@ msgid "Status"
 msgstr "Estado"
 
 #. module: product_stock_unsafety
+#: view:stock.config.settings:product_stock_unsafety.view_stock_config_settings_custom
+msgid "Stock"
+msgstr "Stock"
+
+#. module: product_stock_unsafety
+#: field:minimum.day,days_sale:0
+msgid "Stock Days Security"
+msgstr "Días stock de seguradad"
+
+#. module: product_stock_unsafety
 #: field:stock.warehouse.orderpoint,min_days_id:0
 msgid "Stock Mínimum Days"
 msgstr "Días Mínimos"
@@ -333,6 +378,23 @@ msgid "Supplier"
 msgstr "Proveedor"
 
 #. module: product_stock_unsafety
+#: view:stock.config.settings:product_stock_unsafety.view_stock_config_settings_custom
+msgid "Traceability"
+msgstr "Trazabilidad"
+
+#. module: product_stock_unsafety
+#: help:product.template,specific_adjustement_period:0
+msgid "Used to calculate remaining stock days. It will check a period from today back to this days, of the last and the current year to get the diferent trend in sales"
+msgstr "Usado para calcular los días de stock restantes. Comprobará un período desde hoy y hacia atrás hasta
+los días indicados, del pasado y del presente año para calcular la diferencia en la tendencia de ventas "
+
+#. module: product_stock_unsafety
+#: help:product.template,specific_consult_period:0
+msgid "Used to calculate remaining stock days. It will check from today to X period days of the last year the quantity sold. if not sales in last year we check the period going back this days since today"
+msgstr "Usado para calcular los días de stock restantes. Comprobará desde hoy hasta los X días configurados
+del pasado año la cantidad vendida. Si no hubo ventas en ese período del año anterior se comprueba ese período mirando hacia atrás en el año actual."
+
+#. module: product_stock_unsafety
 #: field:product.stock.unsafety,virtual_stock:0
 msgid "Virtual Stock"
 msgstr "Stock Virtual"
@@ -341,10 +403,9 @@ msgstr "Stock Virtual"
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_tree
 msgid "Virtual Stock Conservative"
-msgstr "Stock Virtual Conservador"
+msgstr "Stock Virtual Conservativo"
 
 #. module: product_stock_unsafety
-#: view:product.template:product_stock_unsafety.view_product_form_remaining_days_sale
+#: view:product.template:product_stock_unsafety.view_product_form_remaining_days
 msgid "days"
 msgstr "días"
-

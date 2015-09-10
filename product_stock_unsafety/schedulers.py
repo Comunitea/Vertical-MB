@@ -19,18 +19,19 @@
 #
 ##############################################################################
 from openerp.osv import osv
-from openerp import pooler
 from openerp.tools.translate import _
 import openerp
+
 
 class procurement_order(osv.Model):
     _inherit = 'procurement.order'
 
-    def _procure_orderpoint_confirm(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
+    def _procure_orderpoint_confirm(self, cr, uid, use_new_cursor=False,
+                                    company_id=False, context=None):
         '''
         Create procurement based on Orderpoint
-
-        :param bool use_new_cursor: if set, use a dedicated cursor and auto-commit after processing each procurement.
+        :param bool use_new_cursor: if set, use a dedicated cursor and
+            auto-commit after processing each procurement.
             This is appropriate for batch jobs only.
         '''
         if context is None:
@@ -38,8 +39,6 @@ class procurement_order(osv.Model):
         if use_new_cursor:
             cr = openerp.registry(cr.dbname).cursor()
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
-
-        procurement_obj = self.pool.get('procurement.order')
         prod = self.pool.get('product.template')
         stock_unsafety = self.pool.get('product.stock.unsafety')
         dom = company_id and [('company_id', '=', company_id)] or []
@@ -53,14 +52,11 @@ class procurement_order(osv.Model):
                 days_sale = op.product_id.remaining_days_sale
                 # If the remaining days of product sales are less than the
                 # minimum selling days configured in the rule of minimum stock
-                # of the product or the virtual stock conservative product is
-                # less than the minimum amount you have configured the rule of
-                # minimum stock of the product; break the stock. So instead of
+                # of the product. So instead of
                 # creating another provision that would create a purchase, as
-                # it would by default, creates a low minimum.
-                if (days_sale < op.min_days_id.days_sale or
-                   virtual_stock < op.product_min_qty) and \
-                   op.product_id.active:
+                # it would by default, creates a under minimum model.
+                if (days_sale < op.min_days_id.days_sale) and \
+                        op.product_id.active:
                     if op.product_id.seller_ids:
                         seller = op.product_id.seller_ids[0].name.id
                         state = 'in_progress'
@@ -73,10 +69,10 @@ class procurement_order(osv.Model):
                             'virtual_stock': virtual_stock,
                             'responsible': uid,
                             'state': state}
-                    daylysales = prod.calc_remaining_days(cr,
-                                                          uid,
-                                                          [op.product_id.id],
-                                                          context=context)
+                    daylysales = \
+                        prod.calc_sale_units_per_day(cr, uid,
+                                                     [op.product_id.id],
+                                                     context=context)
                     if daylysales and op.min_days_id.days_sale:
                         vals['minimum_proposal'] = daylysales * \
                             op.min_days_id.days_sale

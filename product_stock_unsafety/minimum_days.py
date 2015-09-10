@@ -23,10 +23,10 @@ from openerp.osv import osv, fields
 
 class minimum_day(osv.Model):
     _name = 'minimum.day'
-    _description = 'Setting minimum days'
+    _description = 'Setting minimum stock days'
     _columns = {
         'name': fields.char('Name', size=255, required=True),
-        'days_sale': fields.float('Days Sale', required=True),
+        'days_sale': fields.float('Stock Days Security', required=True),
         'default': fields.boolean('Default')
     }
     _defaults = {

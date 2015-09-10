@@ -23,6 +23,9 @@
                 <field name="product_max_qty" position="replace">
                     <field name="product_max_qty" invisible="1"/>
                 </field>
+                <field name="product_min_qty" position="replace">
+                    <field name="product_min_qty" invisible="1"/>
+                </field>
                 <field name="qty_multiple" position="replace">
                     <field name="qty_multiple" invisible="1"/>
                 </field>
