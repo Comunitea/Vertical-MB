@@ -55,7 +55,6 @@ class product_stock_unsafety(osv.Model):
                                                                   uid,
                                                                   dict)],
                                                  obj.product_id.id,
-                                                 obj.product_qty,
                                                  obj.minimum_proposal,
                                                  context=context)
         return value

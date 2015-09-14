@@ -166,14 +166,13 @@ class stock_transfer_details(models.TransientModel):
                 if prod.is_var_coeff:
                     var_weight = True
 
-            if op.linked_move_operation_ids:
-                move = op.linked_move_operation_ids[0].move_id
-                uos_id = move.product_uos.id or uos_id
-                if op.uos_id:
+            if op.linked_move_operation_ids or (op.uos_id and op.uos_qty):
+                if (op.uos_id and op.uos_qty):
                     uos_id = op.uos_id.id
-                if op.uos_qty:
                     uos_qty = op.uos_qty
                 else:
+                    move = op.linked_move_operation_ids[0].move_id
+                    uos_id = move.product_uos.id or uos_id
                     uos_qty = prod.uom_qty_to_uos_qty(op.product_qty,
                                                       uos_id, supplier_id)
 
@@ -236,13 +235,17 @@ class stock_transfer_details_items(models.TransientModel):
         """
             Create the packs with a maximun size of a pallet.
         """
-        # remaining_qty = self.uos_qty
-        remaining_qty = self.quantity
+        remaining_qty = self.quantity if not self.var_weight else self.uos_qty
+        unique_pack = False
+        first_ope = True
         while remaining_qty > 0.0:
             located_qty = self._get_max_pack_quantity(remaining_qty)
+            if self.var_weight and located_qty == remaining_qty and first_ope:
+                unique_pack = True
             if located_qty:
-                self.create_pack_operation(located_qty)
+                self.create_pack_operation(located_qty, one_pack=unique_pack)
                 remaining_qty -= located_qty
+                first_ope= False
             else:
                 break
 
@@ -253,29 +256,43 @@ class stock_transfer_details_items(models.TransientModel):
             y se reajusta en base a la segunda unidad.
         """
         self.ensure_one()
-        palet_units = self.product_id.get_palet_size(self.product_uom_id)
+        uom = self.product_uom_id if not self.var_weight else self.uos_id
+        palet_units = self.product_id.get_palet_size(uom)
         maximum_quantity = remaining_qty < palet_units and remaining_qty or \
             palet_units
-        return math.floor(maximum_quantity)
+        return maximum_quantity
 
     @api.one
-    def create_pack_operation(self, pack_uom_quantity):
+    def create_pack_operation(self, to_pack_qty, one_pack=False):
         """
         When creating pack operation we set the uos_qty based on the
         sale measures
         """
         # supplier_id = self.transfer_id.picking_id.partner_id.id
-        if self.quantity == pack_uom_quantity:
-            pack_uos_qty = self.uos_qty
+        if not self.var_weight:
+            pack_uom_qty = to_pack_qty
+            if self.quantity == to_pack_qty:
+                pack_uos_qty = self.uos_qty
+            else:
+                pack_uos_qty = \
+                    self.product_id.uom_qty_to_uos_qty(to_pack_qty,
+                                                       self.uos_id.id)
         else:
-            pack_uos_qty = \
-                self.product_id.uom_qty_to_uos_qty(pack_uom_quantity,
-                                                   self.uos_id.id)
+            pack_uos_qty = to_pack_qty
+            if one_pack:
+                pack_uom_qty = self.quantity
+            else:
+                # pack_uom_qty = \
+                #     self.product_id.uos_qty_to_uom_qty(to_pack_qty,
+                #                                        self.uos_id.id)
+                fac = self.quantity / self.uos_qty
+                pack_uom_qty = to_pack_qty * fac
+
         op_vals = {
             'location_id': self.sourceloc_id.id,
             'product_id': self.product_id.id,
             'product_uom_id': self.product_uom_id.id,
-            'product_qty': pack_uom_quantity,
+            'product_qty': pack_uom_qty,
             'uos_qty': pack_uos_qty,
             'uos_id': self.uos_id.id,
             'location_dest_id': self.destinationloc_id.id,

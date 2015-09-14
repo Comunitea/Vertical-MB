@@ -33,13 +33,18 @@ class procurement_order(osv.Model):
         :param bool use_new_cursor: if set, use a dedicated cursor and
             auto-commit after processing each procurement.
             This is appropriate for batch jobs only.
+         If the remaining days of product sales are less than the
+         minimum selling days configured in the rule of minimum stock
+         of the product. So instead of creating another provision that would
+         create a purchase, ast would by default,
+         creates a under minimum model.
         '''
         if context is None:
             context = {}
         if use_new_cursor:
             cr = openerp.registry(cr.dbname).cursor()
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
-        prod = self.pool.get('product.template')
+        prod_tmp_obj = self.pool.get('product.template')
         stock_unsafety = self.pool.get('product.stock.unsafety')
         dom = company_id and [('company_id', '=', company_id)] or []
         orderpoint_ids = orderpoint_obj.search(cr, uid, dom)
@@ -48,42 +53,45 @@ class procurement_order(osv.Model):
             ids = orderpoint_ids[:100]
             del orderpoint_ids[:100]
             for op in orderpoint_obj.browse(cr, uid, ids, context=context):
-                virtual_stock = op.product_id.virtual_stock_conservative
-                days_sale = op.product_id.remaining_days_sale
-                # If the remaining days of product sales are less than the
-                # minimum selling days configured in the rule of minimum stock
-                # of the product. So instead of
-                # creating another provision that would create a purchase, as
-                # it would by default, creates a under minimum model.
-                if (days_sale < op.min_days_id.days_sale) and \
-                        op.product_id.active:
-                    if op.product_id.seller_ids:
-                        seller = op.product_id.seller_ids[0].name.id
-                        state = 'in_progress'
-                    else:
-                        state = 'exception'
-                    vals = {'product_id': op.product_id.id,
-                            'supplier_id': seller,
+                prod = op.product_id
+                if prod.seller_ids:
+                    seller = prod.seller_ids[0]
+                    state = 'in_progress'
+                else:
+                    state = 'exception'
+                    seller = False
+                virtual_stock = prod.virtual_stock_conservative
+                days_sale = prod.remaining_days_sale
+                min_days_sale = op.min_days_id.days_sale
+                delay = seller and seller.delay or 0
+                # TODO dias max entre dos días de servicio
+                max_dist_order = seller and 5 or 0
+                real_minimum = min_days_sale + delay + max_dist_order
+                if (days_sale < real_minimum) and \
+                        prod.active:
+                    # if prod.seller_ids:
+                    #     seller = prod.seller_ids[0].name.id
+                    #     state = 'in_progress'
+                    # else:
+                    #     state = 'exception'
+                    vals = {'product_id': prod.id,
+                            'name': _('Minimum Stock Days'),
+                            'supplier_id': seller.name.id,
                             'min_fixed': op.product_min_qty,
-                            'real_stock': op.product_id.qty_available,
+                            'real_stock': prod.qty_available,
                             'virtual_stock': virtual_stock,
                             'responsible': uid,
                             'state': state}
+                    prod_tmpl_id = prod.product_tmpl_id.id
                     daylysales = \
-                        prod.calc_sale_units_per_day(cr, uid,
-                                                     [op.product_id.id],
-                                                     context=context)
-                    if daylysales and op.min_days_id.days_sale:
-                        vals['minimum_proposal'] = daylysales * \
-                            op.min_days_id.days_sale
-                    if days_sale < op.min_days_id.days_sale:
-                        vals['name'] = _('Days sale')
-                    if virtual_stock < op.product_min_qty:
-                        vals['name'] = _('Minimum Stock')
-                    stock_unsafety.create(cr,
-                                          uid,
-                                          vals,
-                                          context=context)
+                        prod_tmp_obj.calc_sale_units_per_day(cr, uid,
+                                                             [prod_tmpl_id],
+                                                             context=context)
+                    remaining_days = real_minimum - days_sale
+                    if daylysales and remaining_days:
+                        vals['minimum_proposal'] = daylysales * remaining_days
+
+                    stock_unsafety.create(cr, uid, vals, context=context)
             if use_new_cursor:
                 cr.commit()
             if prev_ids == ids:

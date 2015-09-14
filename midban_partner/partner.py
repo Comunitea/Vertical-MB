@@ -183,12 +183,17 @@ class res_partner(osv.Model):
                                           'Call Days Time Slot '),
         'ref_history_ids': fields.one2many('res.partner.ref.history',
                                            'partner_id', 'Refs history',
-                                           readonly=True)
+                                           readonly=True),
+        'min_palets': fields.integer('Min Palets',
+                                     help='Minimum quantity, expresed in '
+                                     'palets, needed to the supplier acepts '
+                                     'the order')
     }
     _defaults = {
         'active': False,  # it's fixed true when you register a product
         'state2': 'val_pending',
         'reception_method': 'mail',
+        'min_palets': 0
     }
 
     def create(self, cr, uid, vals, context=None):

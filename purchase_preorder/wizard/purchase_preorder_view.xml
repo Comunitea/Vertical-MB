@@ -194,6 +194,7 @@
                     <field name="min_fixed" readonly="1" invisible ="0"/>
                     <field name="real_stock" readonly="1" invisible ="0"/>
                     <field name="virtual_stock" readonly="1" invisible ="0"/>
+                    <field name="stock_days" readonly="1" invisible ="0"/>
                 </tree>
             </field>
         </record>
@@ -291,9 +292,9 @@
                                 </notebook>
                             </group>
                             <group string="Supplier" >
-                                <field name="min_qty" />
+                                <!-- <field name="min_qty" />
                                 <field name="min_mantles" />
-                                <field name="min_palets" />
+                                <field name="min_palets" /> -->
                                 <newline />
                                 <separator string="Stocks"/>
                                 <newline />
@@ -301,6 +302,7 @@
                                 <field name="real_stock" readonly="1" />
                                 <field name="virtual_stock" readonly="1" />
                                 <field name="product_state" readonly="1" />
+                                <field name="stock_days" readonly="1" />
                                 <separator string="Last Purchase" />
                                 <newline />
                                 <field name="date_last_purchase" readonly="1" />

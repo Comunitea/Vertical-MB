@@ -321,12 +321,11 @@ class purchase_preorder(osv.Model):
         return vals
 
     def create_preorder(self, cr, uid, ids, product_id=False,
-                        product_qty=0.0, min_proposal=0.0, context=None):
+                        min_proposal=0.0, context=None):
         """
         Function to create the pre-order.
         Returns the view of pre-order filled with all possible data.
         """
-        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         preord_fac = self.pool.get('purchase.preorder')
@@ -423,14 +422,14 @@ class purchase_preorder(osv.Model):
                                            context=context)
                             seq += 1
                 #import pdb; pdb.set_trace()
-                if product_id and product_qty:
+                if product_id and min_proposal:
                     l = prodsupp.search(cr,
                                         uid,
-                                        [('preorder_id', '=', data.id),s
+                                        [('preorder_id', '=', data.id),
                                          ('product_id', '=', product_id)])
                     if l:
-                        line= prodsupp.browse(cr, uid, l[0], context = {'tm' : True})
-                        line.write({'product_uoc_qty' : product_qty })
+                        line= prodsupp.browse(cr, uid, l[0], context={'tm':True})
+                        line.write({'product_uoc_qty': min_proposal})
                         line._check_uoc_qty()
 
         form_res = mod_obj.get_object_reference(cr,
@@ -734,11 +733,19 @@ class products_supplier(osv.Model):
                                    type='float', string="Min quantity",
                                    multi="min_qty", readonly=True),
         'min_mantles': fields.function(_get_min_qty_supplier,
-                                       type='float', string="Min mantles",
-                                       multi="min_qty", readonly=True),
+                                           type='float', string="Min mantles",
+                                           readonly=True),
         'min_palets': fields.function(_get_min_qty_supplier,
                                       type='float', string="Min palets",
                                       multi="min_qty", readonly=True),
+        # 'minimum_palets': fields.related('product_id', 'seller_ids',
+        #                                  'min_palets', type='integer',
+        #                                  readonly=True,
+        #                                  string='Min palets'),
+        'stock_days': fields.related('product_id', 'remaining_days_sale',
+                                     type='float',
+                                     readonly=True,
+                                     string='Stock Days'),
         'net_cost': fields.float('Net cost'),
         'do_onchange' : fields.boolean('Do Onchange'),
         'net_net_cost': fields.float('Net net cost'),}
