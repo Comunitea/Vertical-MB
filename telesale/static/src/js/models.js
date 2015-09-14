@@ -420,6 +420,7 @@ function openerp_ts_models(instance, module){
             pvp: 0,
             pvp_ref: 0, //in order to change the discount
             total: 0,
+            price_udv: 0,
             //to calc totals
             discount: 0,
             weight: 0,
@@ -465,6 +466,7 @@ function openerp_ts_models(instance, module){
             return {
                 qty: this.get('qty'),
                 price_unit: this.get('pvp'),
+                price_udv: this.get('price_udv'),
                 product_id:  product_id,
                 product_uom: unit_id,
                 qnote: qnote_id,

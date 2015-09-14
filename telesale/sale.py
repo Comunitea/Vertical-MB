@@ -161,6 +161,7 @@ class sale(osv.osv):
                     'name': product_obj.name,
                     'product_id': product_obj.id,
                     'price_unit': line['price_unit'],
+                    'price_udv': line['price_udv'],
                     'product_uom': product_uom_id,
                     'product_uos': product_uos_id,
                     'product_uom_qty': product_uom_qty,
