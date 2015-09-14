@@ -51,7 +51,9 @@ class purchase_preorder(osv.Model):
                 'total': 0.0,
                 'palets': 0.0,
                 'mantles': 0.0,
-                'boxes': 0.0}
+                'boxes': 0.0,
+                'min_palets': 0.0,
+                'remaining_palets': 0.0}
             subtotal = 0.0
             palets = 0.0
             mantles = 0.0
@@ -70,6 +72,14 @@ class purchase_preorder(osv.Model):
                 res[preorder.id]['palets'] = palets
                 res[preorder.id]['mantles'] = mantles
                 res[preorder.id]['boxes'] = boxes
+                res[preorder.id]['min_palets'] = \
+                    preorder.supplier_id.min_palets
+                if palets < res[preorder.id]['min_palets']:
+                    diff = res[preorder.id]['min_palets'] - \
+                        res[preorder.id]['min_palets']
+                else:
+                    diff = 0
+                res[preorder.id]['remaining_palets'] = diff
         return res
 
     _columns = {
@@ -101,6 +111,16 @@ class purchase_preorder(osv.Model):
                                  string='Boxes',
                                  readonly=True,
                                  multi="totals"),
+        'min_palets': fields.function(_get_totals,
+                                      type="float",
+                                      string='Min. Palets',
+                                      readonly=True,
+                                      multi="totals"),
+        'remaining_palets': fields.function(_get_totals,
+                                             type="float",
+                                             string='Remaining Palets',
+                                             readonly=True,
+                                             multi="totals"),
         'debit': fields.related('supplier_id',
                                 'debit',
                                 type='float',

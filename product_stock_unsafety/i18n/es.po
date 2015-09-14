@@ -48,7 +48,7 @@ msgstr "Información Adicional"
 #: field:product.template,specific_adjustement_period:0
 #: field:stock.config.settings,adjustement_period:0
 msgid "Adjustement Period Stock Days"
-msgstr Período de ajuste días stock"
+msgstr "Período de ajuste días stock"
 
 #. module: product_stock_unsafety
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
