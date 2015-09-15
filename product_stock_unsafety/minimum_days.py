@@ -26,7 +26,7 @@ class minimum_day(osv.Model):
     _description = 'Setting minimum stock days'
     _columns = {
         'name': fields.char('Name', size=255, required=True),
-        'days_sale': fields.float('Stock Days Security', required=True),
+        'days_sale': fields.float('Security Days', required=True),
         'default': fields.boolean('Default')
     }
     _defaults = {

@@ -297,6 +297,8 @@
                                 <!-- <field name="min_qty" />
                                 <field name="min_mantles" />
                                 <field name="min_palets" /> -->
+                                <field name="service_days_ids" widget="many2many_tags"/>
+                                <field name="supplier_delay"/>
                                 <newline />
                                 <separator string="Stocks"/>
                                 <newline />

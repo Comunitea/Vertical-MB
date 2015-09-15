@@ -18,12 +18,11 @@
             <field name="model">product.stock.unsafety</field>
             <field name="inherit_id" ref="product_stock_unsafety.view_product_stock_unsafety_form" />
             <field name="arch" type="xml">
-                <header position="inside">
-                    
+                <button name="cancel" position="before">
                         <button name="generate_preorder" type="object" string="Create PreOrder" states='in_progress' icon="gtk-go-forward" class="oe_highlight"/>
                         <button name="retry" type="object" string="Retry" states='exception' icon="gtk-go-forward" class="oe_highlight"/>
-                    </header>
-                
+                    </button>
+
             </field>
         </record>
     </data>

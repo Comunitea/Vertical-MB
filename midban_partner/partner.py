@@ -22,6 +22,7 @@ from openerp.osv import osv, fields
 import time
 from openerp.tools.translate import _
 from openerp import workflow, exceptions
+from openerp import models, fields as fields2, api
 
 
 class supplier_transport(osv.Model):
@@ -308,6 +309,53 @@ class res_partner(osv.Model):
         })
         return super(res_partner, self).copy(cr, uid, id, default=default,
                                              context=context)
+
+
+class resPartner(models.Model):
+    _inherit = 'res.partner'
+
+    @api.depends('supp_service_days_ids')
+    @api.one
+    def _compute_distance(self):
+        """
+        Get the maximum distance between two service days
+        """
+        def distance(x, y):
+            """
+            Returns distance between 2 week days. Monday = 1 Sunday = 7
+            """
+            return (y - x) % 7
+        res = 0
+        s_days = [x.sequence for x in self.supp_service_days_ids]
+        if s_days:
+            if len(s_days) == 1:
+                res = 7
+            elif len(s_days) == 7:
+                res = 1
+            elif len(s_days) == 6:
+                res = 2
+            else:
+                ctl = True
+                init = 0
+                end = len(s_days) - 1
+                res = 0
+                while ctl:
+                    x1 = s_days[init]
+                    x2 = s_days[init + 1]
+                    if distance(x1, x2) >= res:
+                        res = distance(x1, x2)
+                    if (init + 1) == end:
+                        x1 = s_days[0]
+                        if distance(x2, x1) >= res:
+                            res = distance(x2, x1)
+                        ctl = False
+                    init += 1
+        self.max_distance = res
+
+    max_distance = fields2.Integer(string='Max distance (Days)',
+                                   compute='_compute_distance',
+                                   help='Max distance between 2 service days',
+                                   readonly=True)
 
 
 class partner_history(osv.Model):

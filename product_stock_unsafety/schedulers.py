@@ -60,26 +60,20 @@ class procurement_order(osv.Model):
                 else:
                     state = 'exception'
                     seller = False
-                virtual_stock = prod.virtual_stock_conservative
+                # virtual_stock = prod.virtual_stock_conservative
                 days_sale = prod.remaining_days_sale
                 min_days_sale = op.min_days_id.days_sale
                 delay = seller and seller.delay or 0
-                # TODO dias max entre dos días de servicio
-                max_dist_order = seller and 5 or 0
+                # Obtener dias max entre dos días de servicio
+                max_dist_order = seller and seller.max_distance or 0
                 real_minimum = min_days_sale + delay + max_dist_order
-                if (days_sale < real_minimum) and \
-                        prod.active:
-                    # if prod.seller_ids:
-                    #     seller = prod.seller_ids[0].name.id
-                    #     state = 'in_progress'
-                    # else:
-                    #     state = 'exception'
+                if (days_sale < real_minimum) and prod.active:
                     vals = {'product_id': prod.id,
                             'name': _('Minimum Stock Days'),
                             'supplier_id': seller.name.id,
-                            'min_fixed': op.product_min_qty,
-                            'real_stock': prod.qty_available,
-                            'virtual_stock': virtual_stock,
+                            # 'min_fixed': op.product_min_qty,
+                            # 'real_stock': prod.qty_available,
+                            # 'virtual_stock': virtual_stock,
                             'responsible': uid,
                             'state': state}
                     prod_tmpl_id = prod.product_tmpl_id.id

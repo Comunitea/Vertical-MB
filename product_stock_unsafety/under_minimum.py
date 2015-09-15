@@ -36,16 +36,20 @@ class product_stock_unsafety(osv.Model):
                                       required=True),
         'supplier_id': fields.many2one('res.partner',
                                        'Supplier'),
-        'min_fixed': fields.float('Min. Fixed', required=True,
-                                  help="Minimum quantity fixed by orderpoint"),
         'remaining_days_sale': fields.related('product_id',
                                               'remaining_days_sale',
                                               type='float',
-                                              string='Remaining \
-                                                      Days of Sale',
+                                              string='Remaining Days of Sale',
                                               readonly=True),
-        'real_stock': fields.float('Real Stock', required=True),
-        'virtual_stock': fields.float('Virtual Stock', required=True),
+        'real_stock': fields.related('product_id', 'qty_available',
+                                     type='float',
+                                     string='Real Stock',
+                                     readonly=True),
+        'virtual_stock': fields.related('product_id',
+                                        'virtual_stock_conservative',
+                                        type='float',
+                                        string='Virtual Stock',
+                                        readonly=True),
         'purchase_id': fields.many2one('purchase.order.line',
                                        'Purchase'),
         'product_qty': fields.float('Qty ordered'),
@@ -68,8 +72,8 @@ class product_stock_unsafety(osv.Model):
     }
 
     def create(self, cr, uid, vals, context=None):
-        if vals.get('min_fixed', False):
-            vals['product_qty'] = vals['min_fixed']
+        if vals.get('minimum_proposal', False):
+            vals['product_qty'] = vals['minimum_proposal']
         return super(product_stock_unsafety, self).create(cr, uid, vals,
                                                           context)
 

@@ -29,7 +29,6 @@
                     <field name="date"/>
                     <field name="product_id"/>
                     <field name="incoming_qty" />
-                    <field name="min_fixed"/>
                     <field name="real_stock"/>
                     <field name="virtual_stock" string="Virtual Stock Conservative"/>
                     <button name="cancel" type="object" string="Cancel" states='exception,in_progress' icon="STOCK_CANCEL"/>
@@ -44,6 +43,7 @@
                 <form string="Product Stock Unsafety" version="7.0">
                 <header>
                     <button name="cancel" type="object" string="Cancel" states='exception,in_progress' icon="STOCK_CANCEL"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
@@ -54,11 +54,11 @@
                             <field name="supplier_id" readonly="1"/>
                         </group>
                         <group string="Quantities">
-                            <field name="min_fixed" readonly="1"/>
-                            <field name="minimum_proposal" readonly="1"/>
+                            <!-- <field name="min_fixed" readonly="1"/> -->
                             <field name="real_stock" readonly="1"/>
-                            <field name="virtual_stock" string="Virtual Stock Conservative" readonly="1"/>
                             <field name="incoming_qty" readonly="1"/>
+                            <field name="virtual_stock" string="Virtual Stock Conservative" readonly="1"/>
+                            <field name="minimum_proposal" readonly="1"/>
                         </group>
                         <group string="Amounts Awaiting Come">
                             <field name="product_qty"/>
@@ -69,7 +69,6 @@
                         </group>
                         <group string="Additional Information">
                             <field name="responsible" readonly="1"/>
-                            <field name="state" readonly="1"/>
                         </group>
                     </group>
                 </sheet>

@@ -17,7 +17,7 @@
             <field name="name">minimum.day.form</field>
             <field name="model">minimum.day</field>
             <field name="arch" type="xml">
-                <form string="Minimum Stock Days">
+                <form string="Security Stock Days">
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -35,7 +35,7 @@
             </field>
         </record>
         <record id="action_minimum_day_form" model="ir.actions.act_window">
-            <field name="name">Minimun Stock Days</field>
+            <field name="name">Security Stock Days</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">minimum.day</field>
             <field name="view_type">form</field>
@@ -43,7 +43,7 @@
             <field name="search_view_id" ref="view_minimum_day_filter"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                Click to start a new Minimum Stock Days model
+                Click to start a new Security Stock Days model
               </p>
             </field>
         </record>
@@ -51,7 +51,7 @@
             <field name="name">minimum.day.filter</field>
             <field name="model">minimum.day</field>
             <field name="arch" type="xml">
-                <search string="Search Minimum Stock day">
+                <search string="Search Security Days">
                     <field name="name"/>
                 </search>
             </field>
@@ -61,7 +61,7 @@
             id="menu_action_minimum_day"
             parent="stock.menu_stock_inventory_control"
             sequence="1"
-            string="Minimun Stock Days"
+            string="Security Days"
         />
     </data>
 </openerp>

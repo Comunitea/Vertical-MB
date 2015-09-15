@@ -117,10 +117,10 @@ class purchase_preorder(osv.Model):
                                       readonly=True,
                                       multi="totals"),
         'remaining_palets': fields.function(_get_totals,
-                                             type="float",
-                                             string='Remaining Palets',
-                                             readonly=True,
-                                             multi="totals"),
+                                            type="float",
+                                            string='Remaining Palets',
+                                            readonly=True,
+                                            multi="totals"),
         'debit': fields.related('supplier_id',
                                 'debit',
                                 type='float',
@@ -280,13 +280,14 @@ class purchase_preorder(osv.Model):
             if products:
                 product = prod_fac.browse(cr, uid, products[0])
                 vals = {'product_id': product.id,
-                        'real_stock': product.qty_available,
-                        'virtual_stock': product.virtual_stock_conservative,
-                        'incoming_qty': product.incoming_qty}
+                        # 'real_stock': product.qty_available,
+                        # 'virtual_stock': product.virtual_stock_conservative,
+                        # 'incoming_qty': product.incoming_qty
+                        }
                 # RSM Data
                 if product.orderpoint_ids:
                     opoint = product.orderpoint_ids[0]
-                    vals['min_fixed'] = opoint.product_min_qty
+                    # vals['min_fixed'] = opoint.product_min_qty
                 # Last Data Purchase
                 if supplier:
                     domain = [('order_id.partner_id', '=', supplier.id),
@@ -315,12 +316,6 @@ class purchase_preorder(osv.Model):
                     vals['date_delivery'] = date
                 # Data supplier pricelist
                 prices = {}
-                # prices = prodsupp.price_get(cr,
-                #                             uid,
-                #                             supplier.id,
-                #                             product.id,
-                #                             1,
-                #                             context)
                 t_pricelist = self.pool.get('product.pricelist')
                 pricelist_id = supplier.property_product_pricelist_purchase.id
                 prices = t_pricelist.price_get(cr, uid, [pricelist_id],
@@ -355,23 +350,12 @@ class purchase_preorder(osv.Model):
         for data in self.browse(cr, uid, ids, context=context):
             if data.supplier_id:
                 sup_id = data.supplier_id
-                # Creating the pre-order
-                #preorder = preord_fac.create(cr,
-                #                             uid,
-                #                             self._prepare_preorder(cr,
-                #                                                    uid,
-                #                                                    ids,
-                #                                                    sup_id,
-                #                                                    context),
-                #                             context=context)
-                # Look for the supplier's products
                 product_ids = self._get_products_supplier(cr,
                                                           uid,
                                                           ids,
                                                           sup_id.id,
                                                           context)
                 # If we find producs, create product lines
-
                 if product_ids:
                     seq = 1
                     for sup in prosuppinfo.browse(cr, uid, product_ids):
@@ -395,7 +379,7 @@ class purchase_preorder(osv.Model):
                                                              tmp_id,
                                                              context)
 
-                            #rellenamos product_uoc
+                            # Rellenamos product_uoc
                             product_uoc_vals = []
                             if sup.base_use_purchase and sup.log_base_id:
                                 product_uoc_vals.append(sup.log_base_id.id)
@@ -404,14 +388,12 @@ class purchase_preorder(osv.Model):
                             if sup.box_use_purchase and sup.log_box_id:
                                 product_uoc_vals.append(sup.log_box_id.id)
 
-                            #Hasta aquí
-
                             prodsupp.write(cr,
                                            uid,
                                            prods_supp,
                                            {'preorder_id': data.id,
                                             'sequence': seq,
-                                            #'product_uoc' : product_uoc_vals,
+                                            # 'product_uoc' : product_uoc_vals,
                                             'jan_consu_cur': consums[1][0],
                                             'jan_consu_last': consums[1][1],
                                             'feb_consu_cur': consums[2][0],
@@ -707,10 +689,20 @@ class products_supplier(osv.Model):
                                         selection=PRODUCT_STATE_SELECTION,
                                         string="State"),
         'min_fixed': fields.float('Min. Fixed'),
-        'incoming_qty': fields.float('Incoming Qty.'),
+        'incoming_qty': fields.related('product_id',
+                                       'incoming_qty',
+                                       type='float',
+                                       string='Incoming qty.'),
         'date_delivery': fields.date('Date Delivery'),
-        'real_stock': fields.float('Real Stock'),
-        'virtual_stock': fields.float('Virtual Stock'),
+        'real_stock': fields.related('product_id', 'qty_available',
+                                     type='float',
+                                     string='Real Stock',
+                                     readonly=True),
+        'virtual_stock': fields.related('product_id',
+                                        'virtual_stock_conservative',
+                                        type='float',
+                                        string='Virtual Stock Conservative',
+                                        readonly=True),
         'sequence': fields.integer('Sequence'),
         'date_last_purchase': fields.date('Date'),
         'qty_last_purchase': fields.float('Qty.'),
@@ -753,36 +745,37 @@ class products_supplier(osv.Model):
                                    type='float', string="Min quantity",
                                    multi="min_qty", readonly=True),
         'min_mantles': fields.function(_get_min_qty_supplier,
-                                           type='float', string="Min mantles",
-                                           readonly=True),
+                                       type='float', string="Min mantles",
+                                       readonly=True),
         'min_palets': fields.function(_get_min_qty_supplier,
                                       type='float', string="Min palets",
                                       multi="min_qty", readonly=True),
-        # 'minimum_palets': fields.related('product_id', 'seller_ids',
-        #                                  'min_palets', type='integer',
-        #                                  readonly=True,
-        #                                  string='Min palets'),
         'stock_days': fields.related('product_id', 'remaining_days_sale',
                                      type='float',
                                      readonly=True,
                                      string='Stock Days'),
         'net_cost': fields.float('Net cost'),
-        'do_onchange' : fields.boolean('Do Onchange'),
-        'net_net_cost': fields.float('Net net cost'),}
-
-
-
+        'do_onchange': fields.boolean('Do Onchange'),
+        'net_net_cost': fields.float('Net net cost'),
+        'service_days_ids': fields.related('preorder_id',
+                                           'supp_service_days_ids',
+                                           type='many2many',
+                                           relation='week.days',
+                                           string="Service Days"),
+        'supplier_delay': fields.related('product_id',
+                                         'seller_ids',
+                                         'delay',
+                                         type='integer',
+                                         string="Delivery Time")
+    }
 
     def update_price(self, cr, uid, ids, context=None):
-
         prod_obj = self.pool.get('product.product')
         for obj in self.browse(cr, uid, ids, context):
             if obj.product_id.standard_price != obj.price_purchase:
                 prod_obj.write(cr, uid, obj.product_id.id,
                                {'standard_price': obj.price_purchase})
         return True
-
-
 
     def open_in_form(self, cr, uid, ids, context=None):
         view_ref = self.pool.get('ir.model.data').get_object_reference(
