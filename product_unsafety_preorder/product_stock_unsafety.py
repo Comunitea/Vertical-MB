@@ -19,7 +19,7 @@
 #
 ##############################################################################
 from openerp.osv import osv
-
+from openerp import api
 
 class product_stock_unsafety(osv.Model):
     _inherit = 'product.stock.unsafety'
@@ -38,23 +38,45 @@ class product_stock_unsafety(osv.Model):
                                 'state': 'in_progress'})
         return True
 
-    def generate_preorder(self, cr, uid, ids, context=None):
-        """
-        Call the function that creates the pre-order.
-        """
-        if context is None:
-            context = {}
-        value = {}
-        preorder = self.pool.get('purchase.preorder')
-        for obj in self.browse(cr, uid, ids, context):
-            if obj.supplier_id:
-                dict = {'supplier_id': obj.supplier_id.id}
-                value = preorder.create_preorder(cr,
-                                                 uid,
-                                                 [preorder.create(cr,
-                                                                  uid,
-                                                                  dict)],
-                                                 obj.product_id.id,
-                                                 obj.minimum_proposal,
-                                                 context=context)
-        return value
+    # def generate_preorder(self, cr, uid, ids, context=None):
+    #     """
+    #     Call the function that creates the pre-order.
+    #     Supposing ids is unique because we call from a buttom
+    #     We group by supplier and create a preorder with all products
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     value = {}
+    #     preorder = self.pool.get('purchase.preorder')
+    #     for obj in self.browse(cr, uid, ids, context):  # One iteration
+    #         if obj.supplier_id:
+    #             vals = {'supplier_id': obj.supplier_id.id}
+    #             preorder_id = preorder.create(cr, uid, vals, context=context)
+    #             value = preorder.create_preorder(cr,
+    #                                              uid,
+    #                                              [preorder_id],
+    #                                              obj.product_id.id,
+    #                                              obj.minimum_proposal,
+    #                                              context=context)
+    #     return value
+
+    @api.multi
+    def generate_preorder(self):
+        self.ensure_one()
+        view = {}
+        if self.supplier_id:
+            domain = [
+                ('supplier_id', '=', self.supplier_id.id),
+                ('state', '=', 'in_progress')
+            ]
+            op_objs = self.search(domain)
+            undermin_dic = {}
+            for op in op_objs:
+                undermin_dic[op.product_id.id] = op.minimum_proposal
+            vals = {'supplier_id': self.supplier_id.id}
+            preorder_obj = self.env['purchase.preorder'].create(vals)
+            view = preorder_obj.\
+                create_preorder(undermin_data=undermin_dic)
+            op_objs.write({'preorder_id': preorder_obj.id,
+                           'state': 'in_purchase'})
+        return view

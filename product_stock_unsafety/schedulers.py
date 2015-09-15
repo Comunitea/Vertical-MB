@@ -65,15 +65,13 @@ class procurement_order(osv.Model):
                 min_days_sale = op.min_days_id.days_sale
                 delay = seller and seller.delay or 0
                 # Obtener dias max entre dos días de servicio
-                max_dist_order = seller and seller.max_distance or 0
+                max_dist_order = seller and seller.name.max_distance or 0
                 real_minimum = min_days_sale + delay + max_dist_order
                 if (days_sale < real_minimum) and prod.active:
                     vals = {'product_id': prod.id,
                             'name': _('Minimum Stock Days'),
                             'supplier_id': seller.name.id,
-                            # 'min_fixed': op.product_min_qty,
-                            # 'real_stock': prod.qty_available,
-                            # 'virtual_stock': virtual_stock,
+                            'orderpoint_id': op.id,
                             'responsible': uid,
                             'state': state}
                     prod_tmpl_id = prod.product_tmpl_id.id

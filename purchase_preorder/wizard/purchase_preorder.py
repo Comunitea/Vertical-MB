@@ -335,15 +335,13 @@ class purchase_preorder(osv.Model):
             vals['supplier_id'] = supplier.id
         return vals
 
-    def create_preorder(self, cr, uid, ids, product_id=False,
-                        min_proposal=0.0, context=None):
+    def create_preorder(self, cr, uid, ids, undermin_data={}, context=None):
         """
         Function to create the pre-order.
         Returns the view of pre-order filled with all possible data.
         """
         if context is None:
             context = {}
-        preord_fac = self.pool.get('purchase.preorder')
         prodsupp = self.pool.get('products.supplier')
         prosuppinfo = self.pool.get('product.supplierinfo')
         mod_obj = self.pool.get('ir.model.data')
@@ -418,21 +416,24 @@ class purchase_preorder(osv.Model):
                                             'nov_consu_last': consums[11][1],
                                             'dec_consu_cur': consums[12][0],
                                             'dec_consu_last': consums[12][1],
-                                            'product_uoc_qty' : 0.0,
-                                            'product_uoc' : supp_prod_uom
+                                            'product_uoc_qty': 0.0,
+                                            'product_uoc': supp_prod_uom
                                             },
                                            context=context)
                             seq += 1
-                #import pdb; pdb.set_trace()
-                if product_id and min_proposal:
-                    l = prodsupp.search(cr,
-                                        uid,
-                                        [('preorder_id', '=', data.id),
-                                         ('product_id', '=', product_id)])
-                    if l:
-                        line= prodsupp.browse(cr, uid, l[0], context={'tm':True})
-                        line.write({'product_uoc_qty': min_proposal})
-                        line._check_uoc_qty()
+                # From under minimum model
+                if undermin_data:
+                    for product_id in undermin_data:
+                        min_proposal = undermin_data[product_id]
+                        l = prodsupp.search(cr,
+                                            uid,
+                                            [('preorder_id', '=', data.id),
+                                             ('product_id', '=', product_id)])
+                        if l:
+                            line = prodsupp.browse(cr, uid, l[0],
+                                                   context={'tm': True})
+                            line.write({'product_uoc_qty': min_proposal})
+                            line._check_uoc_qty()
 
         form_res = mod_obj.get_object_reference(cr,
                                                 uid,
@@ -445,7 +446,6 @@ class purchase_preorder(osv.Model):
                                                 'view_purchase_preorder_tree')
         tree_id = tree_res and tree_res[1] or False
 
-        #'view_id ="purchase_preorder.product_supplier_preorder_tree"
         value = {
             'name': 'Pre Order',
             'view_type': 'form',
@@ -453,7 +453,7 @@ class purchase_preorder(osv.Model):
             'view_id': False,
             'res_model': 'purchase.preorder',
             'type': 'ir.actions.act_window',
-            'create':False,
+            'create': False,
             'res_id': data.id,
             'views': [(form_id, 'form'), (tree_id, 'tree')]}
         return value
