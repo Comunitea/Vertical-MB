@@ -72,7 +72,7 @@
                                     <field name="tm" invisible="1"/>
                                     <field name="sequence" invisible="1"/>
                                     <field name="incoming_qty" readonly="1" invisible ="1"/>
-                                    <field name="date_delivery" readonly="1" invisible ="1"/>
+                                    <!-- <field name="date_delivery" readonly="1" invisible ="1"/> -->
                                     <field name="product_id" readonly="1"/>
                                     <field name="price_purchase" />
                                     <field name="supplier_id" invisible="1" readonly="1"/>
@@ -137,7 +137,7 @@
                     <field name="tm" invisible="1"/>
                     <field name="sequence" invisible="1"/>
                     <field name="incoming_qty" readonly="1" invisible ="0"/>
-                    <field name="date_delivery" readonly="1" invisible ="0"/>
+                    <!-- <field name="date_delivery" readonly="1" invisible ="0"/> -->
                     <field name="product_id" readonly="1"/>
                     <field name="price_purchase"/>
                     <field name="supplier_id" invisible="1" readonly="1"/>
@@ -184,7 +184,7 @@
                     <field name="sequence" invisible="1"/>
                     <field name="do_onchange" invisible ="1"/>
                     <field name="incoming_qty" readonly="1"/>
-                    <field name="date_delivery" readonly="1"/>
+                    <!-- <field name="date_delivery" readonly="1"/> -->
                     <field name="product_id" readonly="1"/>
                     <field name="price_purchase"/>
                      <field name="product_uoc_qty" context="{'change' : 'product_uoc_qty', 'supp_product_id': product_id, 'supplier_id': supplier_id, 'tm' : tm}"/>
@@ -322,7 +322,8 @@
                     <group>
                         <group string="Amounts awaiting">
                             <field name="incoming_qty" readonly="1" />
-                            <field name="date_delivery" readonly="1" />
+                            <!-- <field name="date_delivery" readonly="1" /> -->
+                            <field name="delivery_date" readonly="1" />
                         </group>
                         <group string="Amounts">
                             <group>

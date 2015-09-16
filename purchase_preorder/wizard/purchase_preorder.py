@@ -277,7 +277,7 @@ class purchase_preorder(osv.Model):
         """
         vals = {}
         purchase_fac = self.pool.get('purchase.order.line')
-        move_fac = self.pool.get('stock.move')
+        # move_fac = self.pool.get('stock.move')
         prod_fac = self.pool.get('product.product')
         if product:
             # Product Data
@@ -305,17 +305,17 @@ class purchase_preorder(osv.Model):
                         vals['qty_last_purchase'] = pur.product_qty
                         vals['price_last_purchase'] = pur.price_unit
                 # Data of amounts awaiting of come
-                domain = [('product_id', '=', product.id),
-                          ('partner_id', '=', supplier.id),
-                          ('state', '=', 'assigned'),
-                          ('picking_type_id.code', '=', 'internal')]
-                moves = move_fac.search(cr,
-                                        uid,
-                                        domain,
-                                        order='date_expected desc')
-                if moves:
-                    date = move_fac.browse(cr, uid, moves[0]).date_expected
-                    vals['date_delivery'] = date
+                # domain = [('product_id', '=', product.id),
+                #           ('partner_id', '=', supplier.id),
+                #           ('state', '=', 'assigned'),
+                #           ('picking_type_id.code', '=', 'internal')]
+                # moves = move_fac.search(cr,
+                #                         uid,
+                #                         domain,
+                #                         order='date_expected desc')
+                # if moves:
+                #     date = move_fac.browse(cr, uid, moves[0]).date_expected
+                #     vals['date_delivery'] = date
                 # Data supplier pricelist
                 prices = {}
                 t_pricelist = self.pool.get('product.pricelist')
@@ -677,13 +677,13 @@ class products_supplier(osv.Model):
                                         type='selection',
                                         selection=PRODUCT_STATE_SELECTION,
                                         string="State"),
-        'min_fixed': fields.float('Min. Fixed'),
+        'min_fixed': fields.float('Min. Fixed'),  # TODO eliminar, sin función
         'incoming_qty': fields.related('product_id',
                                        'incoming_qty',
                                        type='float',
                                        string='Incoming qty.',
                                        help='Quantity pending to recive'),
-        'date_delivery': fields.date('Date Delivery'),
+        # 'date_delivery': fields.date('Date Delivery'),
         'real_stock': fields.related('product_id', 'qty_available',
                                      type='float',
                                      string='Real Stock',
@@ -810,9 +810,26 @@ class productsSupplier(models.Model):
             security_days = op_objs[0].min_days_id.days_sale
         self.security_days = security_days
 
+    @api.one
+    def _calc_delivery_date(self):
+        """
+        Get delivery date same way that in purchase order line
+        """
+        date = False
+        pol = self.env['purchase.order.line']
+        if self.product_id.seller_ids:
+            today = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            date = pol._get_date_planned(self.product_id.seller_ids[0], today)
+            if date:
+                date = date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        self.delivery_date = date
+
     # En español porque no coje la traducción en otra clase con la nueva api
     security_days = fields2.Float('Días stock seguridad', readonly=True,
                                   compute='_calc_security_days',
                                   help="Días de stock de seguridad del "
                                   "producto configurados en una regla de "
                                   "reabastecimiento")
+    delivery_date = fields2.Date('Fecha de Entrega', readonly=True,
+                                 compute='_calc_delivery_date',
+                                 help="Fecha de entrega estimada")
