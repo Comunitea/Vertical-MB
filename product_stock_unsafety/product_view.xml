@@ -2,28 +2,18 @@
 
 <openerp>
     <data>
-<!--         <record model="ir.ui.view" id="view_product_form_virtual_conservative">
-            <field name="name">product.normalvirtual.conservative.form</field>
-            <field name="model">product.product</field>
+        <record model="ir.ui.view" id="view_product_form_remaining_days">
+            <field name="name">view.product.form.remaining.days</field>
+            <field name="model">product.template</field>
             <field name="inherit_id" ref="stock.view_template_property_form" />
             <field name="arch" type="xml">
-                <group string="Stock and Expected Variations" position="inside">
-                    <field name="virtual_stock_conservative" class="oe_inline"/>
-                </group>
+                <field name="virtual_available" position="after">
+                  <field name="specific_periods"/>
+                  <field name="specific_consult_period" attrs="{'invisible': [('specific_periods','=', False)]}"/>
+                  <field name="specific_adjustement_period" attrs="{'invisible': [('specific_periods','=', False)]}"/>
+                  <field name="remaining_days_sale" class="oe_inline"/> days
+                </field>
             </field>
-        </record> -->
-        <record model="ir.ui.view" id="view_product_form_remaining_days_sale">
-            <field name="name">product.normal.form</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view" />
-            <field name="arch" type="xml">
-                <group string="Sale Conditions" position="inside">
-                    <label for="remaining_days_sale"/>
-                    <div>
-                        <field name="remaining_days_sale" class="oe_inline"/> days
-                    </div>
-                </group>
-           </field>
         </record>
     </data>
 </openerp>

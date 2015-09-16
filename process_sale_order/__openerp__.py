@@ -42,6 +42,8 @@
     "data": [
         'product_view.xml',
         'sale_view.xml',
+        'security/ir.model.access.csv',
+        'stock_view.xml'
     ],
     "demo": [],
     "test": [],

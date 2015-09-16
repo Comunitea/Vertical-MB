@@ -4,7 +4,7 @@ function openerp_ts_models(instance, module){
     var round_pr = instance.web.round_precision
     var round_dc = instance.web.round_decimals
     var my_round = function(number, decimals){
-        var n = number;
+        var n = number || 0;
         if (typeof n === "string"){
             n = n * 1;
         }
@@ -125,7 +125,7 @@ function openerp_ts_models(instance, module){
                 }).then(function(companies){
                     self.set('company',companies[0]);
 
-                    return self.fetch('product.uom', ['name', 'like_type'], []);
+                    return self.fetch('product.uom', ['name'], []);
                 }).then(function(units){
                     for (key in units){
                         self.get('units_names').push(units[key].name)
@@ -420,6 +420,7 @@ function openerp_ts_models(instance, module){
             pvp: 0,
             pvp_ref: 0, //in order to change the discount
             total: 0,
+            price_udv: 0,
             //to calc totals
             discount: 0,
             weight: 0,
@@ -465,6 +466,7 @@ function openerp_ts_models(instance, module){
             return {
                 qty: this.get('qty'),
                 price_unit: this.get('pvp'),
+                price_udv: this.get('price_udv'),
                 product_id:  product_id,
                 product_uom: unit_id,
                 qnote: qnote_id,

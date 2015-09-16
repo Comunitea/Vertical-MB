@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Marta Vázquez Rodríguez$ <marta@pexego.es>
+#    Copyright (C) 2015 Comunitea Servicios TEcnológicos All Rights Reserved
+#    $Omar Castiñeira Saavedra$ <omar@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -27,8 +27,32 @@ class products_supplier(osv.Model):
     def _calculate_percentage_promo(self, cr, uid, ids, field_names, arg,
                                     context=None):
         res = {}
-        for prod in self.browse(cr, uid, ids, context=context):
-            res[prod.id] = 0.0
+        promo_obj = self.pool.get('partner.promotion.rel')
+        ctx = dict(context)
+        ctx.update({'type_promo': 'purchase',
+                    'domain_promotion': 'all'})
+        for obj in self.browse(cr, uid, ids, context=context):
+            price_disc = 100.0
+            applieds = promo_obj.get_applied_promos(cr, uid,
+                                                    obj.product_id.id or
+                                                    False,
+                                                    obj.preorder_id.
+                                                    supplier_id.id,
+                                                    fields.date.today(), ctx)
+            discount = 0.0
+            for applied in promo_obj.browse(cr, uid, applieds['accumulated'],
+                                            ctx):
+                discount += price_disc * (applied.promotion_id.discount /
+                                          100.0)
+            price_disc -= discount
+            for applied in promo_obj.browse(cr, uid, applieds['sequence'],
+                                            ctx):
+                price_disc -= price_disc * (applied.promotion_id.discount /
+                                            100.0)
+            if price_disc != 100.0:
+                res[obj.id] = 100.0 - ((price_disc * 100.0) / 100.0)
+            else:
+                res[obj.id] = 0.0
         return res
 
     def _have_promotion(self, cr, uid, ids, field_names, arg, context=None):
@@ -47,7 +71,9 @@ class products_supplier(osv.Model):
             promos = []
             for promo in obj.preorder_id.supplier_id.promotion_ids:
                 promo = promo.promotion_id
-                if promo.applicable == u'purchase':
+                if promo.applicable == u'purchase' and \
+                        (not promo.final_date
+                         or promo.final_date < fields.date.today()):
                     if promo.type == u'global':
                         promos.append(promo.id)
                     elif promo.type == u'product':
@@ -70,8 +96,8 @@ class products_supplier(osv.Model):
                                           type="char",
                                           string='has promotion',
                                           readonly=True),
-        'product_promotions':
-            fields.function(_get_product_promotions, type='one2many',
-                            relation="partner.promotion", string="Promotions",
-                            readonly=True),
+        'product_promotions': fields.
+        function(_get_product_promotions, type='one2many',
+                 relation="partner.promotion", string="Promotions",
+                 readonly=True),
     }

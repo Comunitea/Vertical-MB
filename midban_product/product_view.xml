@@ -87,21 +87,21 @@
                             <field name="ma_pa" required="1"/>
                         </group>
                         <group col="2">
-                            <field name="un_width" required="1"/>
-                            <field name="ca_width" required="1"/>
-                            <field name="ma_width" required="1"/>
+                            <field name="un_width" required="0"/>
+                            <field name="ca_width" required="0"/>
+                            <field name="ma_width" required="0"/>
                             <field name="pa_width" required="1"/>
                         </group>
                         <group col="2">
-                            <field name="un_height" required="1"/>
-                            <field name="ca_height" required="1"/>
+                            <field name="un_height" required="0"/>
+                            <field name="ca_height" required="0"/>
                             <field name="ma_height" required="1"/>
-                            <field name="pa_height" required="1"/>
+                            <field name="pa_height" required="0"/>
                         </group>
                         <group col="2">
-                            <field name="un_length" required="1"/>
-                            <field name="ca_length" required="1"/>
-                            <field name="ma_length" required="1"/>
+                            <field name="un_length" required="0"/>
+                            <field name="ca_length" required="0"/>
+                            <field name="ma_length" required="0"/>
                             <field name="pa_length" required="1"/>
                         </group>
                     </group>
@@ -156,23 +156,6 @@
                     </group>
                 </div>
 
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="product_template_search_view">
-            <field name="name">product_template_tree_search_view</field>
-            <field name="model">product.template</field>
-            <field eval="3" name="priority"/>
-            <field name="arch" type="xml">
-                <search string="Productos">
-                    <field name="name" string="Nombre"/>
-                    <field name="default_code" string="Referencia"/>
-                    <field name="categ_id" string="Categoria"/>
-                    <group expand="1" string="Group by">
-                        <filter string="Tipo de Temperatura" name="temp_type" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'temp_type'}"/>
-                        <filter string="Categoría" name="categ_id" icon="terp-accessories-archiver" domain="[]"  context="{'group_by':'categ_id'}"/>
-                    </group>
-                </search>
             </field>
         </record>
 
@@ -491,21 +474,21 @@
                                     <field name="supp_ma_pa" required="1"/>
                                 </group>
                                 <group col="2">
-                                    <field name="supp_un_width" required="1"/>
-                                    <field name="supp_ca_width" required="1"/>
-                                    <field name="supp_ma_width" required="1"/>
+                                    <field name="supp_un_width" required="0"/>
+                                    <field name="supp_ca_width" required="0"/>
+                                    <field name="supp_ma_width" required="0"/>
                                     <field name="supp_pa_width" required="1"/>
                                 </group>
                                 <group col="2">
-                                    <field name="supp_un_height" required="1"/>
-                                    <field name="supp_ca_height" required="1"/>
+                                    <field name="supp_un_height" required="0"/>
+                                    <field name="supp_ca_height" required="0"/>
                                     <field name="supp_ma_height" required="1"/>
-                                    <field name="supp_pa_height" required="1"/>
+                                    <field name="supp_pa_height" required="0"/>
                                 </group>
                                 <group col="2">
-                                    <field name="supp_un_length" required="1"/>
-                                    <field name="supp_ca_length" required="1"/>
-                                    <field name="supp_ma_length" required="1"/>
+                                    <field name="supp_un_length" required="0"/>
+                                    <field name="supp_ca_length" required="0"/>
+                                    <field name="supp_ma_length" required="0"/>
                                     <field name="supp_pa_length" required="1"/>
                                 </group>
                             </group>

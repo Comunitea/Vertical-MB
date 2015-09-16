@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="consult_period" model="ir.config_parameter">
+            <field name="key">configured.consult.period</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="adjustement_period" model="ir.config_parameter">
+            <field name="key">configured.adjustement.period</field>
+            <field name="value">1</field>
+        </record>
+
+    </data>
+</openerp>

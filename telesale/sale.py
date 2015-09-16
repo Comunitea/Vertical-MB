@@ -140,7 +140,7 @@ class sale(osv.osv):
 
             order_lines = order['lines']
             t_data = self.pool.get('ir.model.data')
-            xml_id_name = 'midban_depot_stock.product_uom_box'
+            xml_id_name = 'midban_product.product_uom_box'
             box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
             unit_id = t_data.xmlid_to_res_id(cr, uid,
                                              'product.product_uom_unit')
@@ -161,6 +161,7 @@ class sale(osv.osv):
                     'name': product_obj.name,
                     'product_id': product_obj.id,
                     'price_unit': line['price_unit'],
+                    'price_udv': line['price_udv'],
                     'product_uom': product_uom_id,
                     'product_uos': product_uos_id,
                     'product_uom_qty': product_uom_qty,

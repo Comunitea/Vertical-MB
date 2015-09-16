@@ -58,6 +58,8 @@
                             </group>
                             <group string="Quantities">
                                 <field name="palets" readonly="1" />
+                                <field name="min_palets" readonly="1" />
+                                <field name="remaining_palets" readonly="1" />
                                 <field name="mantles" readonly="1" />
                                 <!--field name="boxes" readonly="1" /-->
                             </group>
@@ -194,6 +196,7 @@
                     <field name="min_fixed" readonly="1" invisible ="0"/>
                     <field name="real_stock" readonly="1" invisible ="0"/>
                     <field name="virtual_stock" readonly="1" invisible ="0"/>
+                    <field name="stock_days" readonly="1" invisible ="0"/>
                 </tree>
             </field>
         </record>
@@ -291,9 +294,11 @@
                                 </notebook>
                             </group>
                             <group string="Supplier" >
-                                <field name="min_qty" />
+                                <!-- <field name="min_qty" />
                                 <field name="min_mantles" />
-                                <field name="min_palets" />
+                                <field name="min_palets" /> -->
+                                <field name="service_days_ids" widget="many2many_tags"/>
+                                <field name="supplier_delay"/>
                                 <newline />
                                 <separator string="Stocks"/>
                                 <newline />
@@ -301,6 +306,7 @@
                                 <field name="real_stock" readonly="1" />
                                 <field name="virtual_stock" readonly="1" />
                                 <field name="product_state" readonly="1" />
+                                <field name="stock_days" readonly="1" />
                                 <separator string="Last Purchase" />
                                 <newline />
                                 <field name="date_last_purchase" readonly="1" />

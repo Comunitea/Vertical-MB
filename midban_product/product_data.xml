@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Rellenamos el modelo de alergenos con sus 14 tipos -->
          <record id="t1" model="product.allergen">
             <field name="name">Cereales que contengan gluten</field>
@@ -57,5 +57,27 @@
             <field name="temp_id">3</field>
             <field name="name">Refrigerado</field>
         </record>
+
+        <!--
+            Resource: product.uom
+        -->
+        <record id="product.product_uom_unit" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">Unit(s)</field>
+            <field name="factor" eval="1.0"/>
+            <field name="rounding" eval="1.0"/>
+        </record>
+        <record id="product.product_uom_kgm" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_kgm"/>
+            <field name="name">kg</field>
+            <field name="factor" eval="1"/>
+            <field name="rounding" eval="0.001"/>
+        </record>
+        <record id="product_uom_box" model="product.uom">
+             <field name="category_id" ref="product.product_uom_categ_unit"/>
+             <field name="name">Box(es)</field>
+             <field name="factor" eval="1"/>
+             <field name="uom_type">bigger</field>
+         </record>
     </data>
 </openerp>

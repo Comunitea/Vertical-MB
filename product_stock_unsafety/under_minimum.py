@@ -22,6 +22,7 @@ from openerp.osv import osv, fields
 import time
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 STATES = [('in_progress', 'In Progress'),
+          ('in_purchase', 'In Purchase'),
           ('finalized', 'Finalized'),
           ('exception', 'Exception'),
           ('cancelled', 'Cancelled')]
@@ -33,41 +34,61 @@ class product_stock_unsafety(osv.Model):
     _columns = {
         'product_id': fields.many2one('product.product',
                                       'Product',
+                                      readonly=True,
                                       required=True),
+        'orderpoint_id': fields.many2one('stock.warehouse.orderpoint',
+                                         'Replenishement Rule',
+                                         readonly=True,
+                                         required=True,
+                                         help='The replenishement rule that '
+                                         'launch this under minimum alert.'),
         'supplier_id': fields.many2one('res.partner',
-                                       'Supplier'),
-        'min_fixed': fields.float('Min. Fixed', required=True, help="Minimum quantity fixed by orderpoint"),
+                                       'Supplier',
+                                       readonly=True),
         'remaining_days_sale': fields.related('product_id',
                                               'remaining_days_sale',
                                               type='float',
-                                              string='Remaining \
-                                                      Days of Sale',
+                                              string='Remaining Days of Sale',
                                               readonly=True),
-        'real_stock': fields.float('Real Stock', required=True),
-        'virtual_stock': fields.float('Virtual Stock', required=True),
+        'real_stock': fields.related('product_id', 'qty_available',
+                                     type='float',
+                                     string='Real Stock',
+                                     readonly=True),
+        'virtual_stock': fields.related('product_id',
+                                        'virtual_stock_conservative',
+                                        type='float',
+                                        string='Virtual Stock Conservative',
+                                        readonly=True),
         'purchase_id': fields.many2one('purchase.order.line',
                                        'Purchase'),
+        'preorder_id': fields.many2one('purchase.preorder', 'Preorder',
+                                       readonly=True),
         'product_qty': fields.float('Qty ordered'),
-        'date_delivery': fields.date('Delivery'),
+        'date_delivery': fields.date('Delivery', readonly=True),
         'responsible': fields.many2one('res.users',
-                                       'Responsible'),
+                                       'Responsible', readonly=True),
         'state': fields.selection(STATES, 'State', readonly=True),
-        'date': fields.date('Date'),
-        'name': fields.char('Reason', size=64),
+        'date': fields.date('Date', readonly=True),
+        'name': fields.char('Reason', size=64, readonly=True),
         'incoming_qty': fields.related('product_id',
                                        'incoming_qty',
                                        type='float',
-                                       string='Incoming qty.'),
-        'minimum_proposal': fields.float('Min. Proposal', help="Quantity necessary to reach the minimum days of preorder")
+                                       string='Incoming qty.',
+                                       readonly=True,),
+        'minimum_proposal': fields.float('Min. Proposal',
+                                         readonly=True,
+                                         help='Quantity necessary to reach '
+                                         'the minimum days of preorder')
     }
     _defaults = {
-        'date':  time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
     }
 
     def create(self, cr, uid, vals, context=None):
-        if vals.get('min_fixed', False):
-            vals['product_qty'] = vals['min_fixed']
-        return super(product_stock_unsafety, self).create(cr, uid, vals, context)
+        if vals.get('minimum_proposal', False):
+            vals['product_qty'] = vals['minimum_proposal']
+        return super(product_stock_unsafety, self).create(cr, uid, vals,
+                                                          context)
 
     def cancel(self, cr, uid, ids, context=None):
         if context is None:

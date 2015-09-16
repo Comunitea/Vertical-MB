@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Marta Vázquez Rodríguez$ <marta@pexego.es>
+#    Copyright (C) 2015 Comunitea Servicios TEcnológicos All Rights Reserved
+#    $Omar Castiñeira Saavedra$ <omar@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -30,7 +30,8 @@ class partner_promotion_rel(osv.Model):
         'promotion_id': fields.many2one('partner.promotion', 'Promotion',
                                         required=True),
         'accumulated': fields.related('promotion_id', 'accumulated',
-                                      type='boolean', string='Accumulated')
+                                      type='boolean', string='Accumulated',
+                                      readonly=True)
     }
 
     _defaults = {

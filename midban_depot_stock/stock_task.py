@@ -67,13 +67,24 @@ class stock_task(osv.Model):
     @api.one
     def finish_partial_task(self):
         if self.type != 'picking':
-            pick_objs = list(set([x.picking_id for x in self.operation_ids]))
-            for pick in pick_objs:
-                pick.approve_pack_operations2(self.id)
+            pick_ids = list(set([x.picking_id.id for x in self.operation_ids]))
         else:
-            for picking in self.wave_id.picking_ids:
-                if picking.state not in ['done', 'draft', 'cancel']:
-                    picking.approve_pack_operations2(self.id)
+            pick_ids = list(set([x.id for x in self.wave_id.picking_ids]))
+
+        # When we call butom after the returned view of the wizard
+        # 'active_model': 'stock.task' and we get an error with assert
+        # in do_transfer method.
+        # Changed it allways to stock.picking
+        ctx = self._context.copy()
+        ctx['active_model'] = 'stock.picking'
+        ctx['active_ids'] = pick_ids
+        ctx['active_id'] = len(pick_ids) == 1 and pick_ids[0] or False
+        pick_t = self.env['stock.picking'].with_context(ctx)
+        pick_objs = pick_t.browse(pick_ids)
+        for pick in pick_objs:
+            if pick.state not in ['done', 'draft', 'cancel']:
+                pick.approve_pack_operations2(self.id)
+        if self.type == 'picking':
             self.wave_id.done()
 
         duration = datetime.now() - \
@@ -122,11 +133,10 @@ class stock_task(osv.Model):
         return self.write({'state': 'canceled',
                           'paused': False})
 
-
     @api.multi
     def pause_task(self):
         for task in self:
-            if task.state=="assigned":
+            if task.state == "assigned":
                 if task.pause:
                     return self.write({'paused': True})
                 else:

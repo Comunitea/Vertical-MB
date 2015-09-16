@@ -125,16 +125,9 @@ class sale_report(osv.osv):
         'uos_id': fields.many2one('product.uom', 'Secondary unit',
                                   readonly=True),
         'customer_id': fields.many2one('res.partner', 'Customer',
-                                      readonly=True),
+                                       readonly=True),
         'pack_id': fields.many2one('stock.quant.package', 'Pack',
-                                      readonly=True),
-        'to_process' : fields.function(_get_operation_ids, type ='boolean',
-                                       string='Processed', multi ='multi_',
-                                       readonly = True),
-        'visited' : fields.function(_get_operation_ids, type ='boolean',
-                                       string='Visited', multi ='multi_',
-                                       readonly = True)
-
+                                   readonly=True),
     }
 
     def _select(self):
@@ -222,8 +215,8 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     pack_id,
                      customer_id,
+                     pack_id,
                      sequence"""
 
     def _subquery_no_grouped_op(self):
@@ -236,8 +229,8 @@ class sale_report(osv.osv):
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.SEQUENCE AS SEQUENCE,
-                  picking.partner_id as customer_id,
-                  quant.package_id as pack_id
+                  quant.package_id as pack_id,
+                  picking.partner_id as customer_id
 
            FROM   stock_quant quant
                   inner join stock_quant_package PACKAGE
@@ -261,8 +254,8 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     pack_id,
                      customer_id,
+                     pack_id,
                      sequence
            UNION
            SELECT Min(operation.id)          AS id,
@@ -274,8 +267,8 @@ class sale_report(osv.osv):
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
                   location.sequence                 AS sequence,
-                  picking.partner_id as customer_id,
-                  operation.package_id as pack_id
+                  operation.package_id as pack_id,
+                  picking.partner_id as customer_id
            FROM   stock_pack_operation operation
                   inner join stock_picking picking
                           ON picking.id = operation.picking_id
@@ -294,8 +287,8 @@ class sale_report(osv.osv):
                      operation.location_id,
                      operation.uos_id,
                      wave.id,
-                     pack_id,
                      customer_id,
+                     pack_id,
                      sequence"""
 
     def _group_by(self):

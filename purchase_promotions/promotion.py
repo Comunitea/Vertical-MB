@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Marta Vázquez Rodríguez$ <marta@pexego.es>
+#    Copyright (C) 2015 Comunitea Servicios TEcnológicos All Rights Reserved
+#    $Omar Castiñeira Saavedra$ <omar@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -35,8 +35,7 @@ class partner_promotion(osv.Model):
         'init_date': fields.date('Initial date', required=True),
         'final_date': fields.date('Final date'),
         'accumulated': fields.boolean('Accumulated'),
-        'applicable': fields.selection([('sale', 'Sale'),
-                                        ('purchase', 'Purchase')],
+        'applicable': fields.selection([('purchase', 'Purchase')],
                                        'Applicable', required=True),
         'partner_id': fields.many2one('res.partner', 'Partner'),
 
@@ -44,6 +43,7 @@ class partner_promotion(osv.Model):
 
     _defaults = {
         'type': 'global',
+        'applicable': 'purchase'
     }
 
     def _get_invoice_discounts(self, cr, uid, product_id, partner_id,

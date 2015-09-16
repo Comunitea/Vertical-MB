@@ -9,6 +9,7 @@
                 <search string="Search Product Stock Unsafety">
                     <field name="product_id"/>
                     <field name="supplier_id"/>
+                    <field name="orderpoint_id"/>
                     <field name="state"/>
                     <field name="date"/>
                     <filter icon="terp-emblem-important" string="Exceptions" name="exceptions" domain="[('state','=','exception')]"/>
@@ -29,7 +30,6 @@
                     <field name="date"/>
                     <field name="product_id"/>
                     <field name="incoming_qty" />
-                    <field name="min_fixed"/>
                     <field name="real_stock"/>
                     <field name="virtual_stock" string="Virtual Stock Conservative"/>
                     <button name="cancel" type="object" string="Cancel" states='exception,in_progress' icon="STOCK_CANCEL"/>
@@ -44,32 +44,33 @@
                 <form string="Product Stock Unsafety" version="7.0">
                 <header>
                     <button name="cancel" type="object" string="Cancel" states='exception,in_progress' icon="STOCK_CANCEL"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group string="General Information">
-                            <field name="date" readonly="1"/>
-                            <field name="product_id" readonly="1"/>
-                            <field name="name" readonly="1"/>
-                            <field name="supplier_id" readonly="1"/>
+                            <field name="date"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="supplier_id"/>
+                            <field name="orderpoint_id"/>
                         </group>
                         <group string="Quantities">
-                            <field name="min_fixed" readonly="1"/>
-                            <field name="minimum_proposal" readonly="1"/>
-                            <field name="real_stock" readonly="1"/>
-                            <field name="virtual_stock" string="Virtual Stock Conservative" readonly="1"/>
-                            <field name="incoming_qty" readonly="1"/>
+                            <field name="real_stock"/>
+                            <field name="incoming_qty"/>
+                            <field name="virtual_stock"/>
+                            <field name="minimum_proposal"/>
                         </group>
                         <group string="Amounts Awaiting Come">
                             <field name="product_qty"/>
-                            <field name="date_delivery" readonly="1"/>
+                            <field name="date_delivery"/>
                         </group>
                         <group string="Order">
-                            <field name="purchase_id" readonly="1"/>
+                            <field name="preorder_id"/>
+                            <field name="purchase_id"/>
                         </group>
                         <group string="Additional Information">
-                            <field name="responsible" readonly="1"/>
-                            <field name="state" readonly="1"/>
+                            <field name="responsible"/>
                         </group>
                     </group>
                 </sheet>
@@ -83,9 +84,9 @@
             <field name="view_type">form</field>
             <field name="view_id" ref="view_product_stock_unsafety_tree"/>
             <field name="search_view_id" ref="view_product_stock_unsafety_filter"/>
-            <field name="context">{'search_default_exceptions':1,'search_default_in_progress':1}</field>
+            <!-- <field name="context">{'search_default_exceptions':1,'search_default_in_progress':1}</field> -->
             <field name="help" type="html">
-                
+
               <p class="oe_view_nocontent_create">
                 Click to start a new Product Stock Unsafety.
               </p>
@@ -95,9 +96,11 @@
         <menuitem
             action="action_product_stock_unsafety_form"
             id="menu_action_product_stock_unsafety"
-            parent="stock.menu_stock_sched"
-            sequence="60"
+            parent="stock.menu_stock_inventory_control"
+            sequence="3"
         />
+
+        <menuitem action="stock.action_orderpoint_form" id="stock.menu_stock_order_points" parent="stock.menu_stock_inventory_control" sequence="2"/>
 
     </data>
 </openerp>

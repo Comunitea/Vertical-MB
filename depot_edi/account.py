@@ -49,11 +49,8 @@ class account_invoice_tax(models.Model):
                                                     context_today(invoice))
         company_currency = invoice.company_id.currency_id
         for line in invoice.invoice_line:
-            price_unit = 0
-            if line.quantity:  # Cojemos el precio unitario sin descuentos
-                price_unit = line.price_subtotal_discounted / line.quantity
             taxes = line.invoice_line_tax_id.compute_all(
-                (price_unit * (1 - (line.discount or 0.0) / 100.0)),
+                (line.price_unit * (1 - (line.discount or 0.0) / 100.0)),
                 line.quantity, line.product_id, invoice.partner_id)['taxes']
             for tax in taxes:
 
@@ -131,25 +128,6 @@ class account_invoice_tax(models.Model):
 class account_invoice(models.Model):
     _inherit = 'account.invoice'
 
-    @api.one
-    @api.depends('invoice_line.price_subtotal', 'tax_line.amount')
-    def _compute_amount(self):
-        """
-        Overwrited to get the total with the discounts applied
-        """
-        # Comportamiento original
-        # self.amount_untaxed = \
-        #     sum(line.price_subtotal for line in self.invoice_line)
-        # self.amount_tax = sum(line.amount for line in self.tax_line)
-        # self.amount_total = self.amount_untaxed + self.amount_tax
-
-        self.amount_untaxed = \
-            sum(line.price_subtotal_discounted for line in self.invoice_line)
-        self.amount_tax = sum(line.amount for line in self.tax_line)
-        self.amount_total = self.amount_untaxed + self.amount_tax
-        self.amount_discount = \
-            sum([line.price_unit * line.quantity -
-                line.price_subtotal_discounted for line in self.invoice_line])
     document_id = fields.Many2one('edi.doc', 'EDI Document')
     name_doc = fields.Char('Ref', readonly=True, related='document_id.name')
     file_name_doc = fields.Char('File Name', readonly=True,
@@ -191,94 +169,15 @@ class account_invoice(models.Model):
                                   cancel invoice.")
     discount_ids = fields.One2many('account.discount', 'invoice_id',
                                    'Discounts')
-    # Overwrited totals fields and added amount_discount
-    amount_untaxed = fields.Float(string='Subtotal',
-                                  digits=dp.get_precision('Account'),
-                                  store=True, readonly=True,
-                                  compute='_compute_amount',
-                                  track_visibility='always')
-    amount_tax = fields.Float(string='Tax', digits=dp.get_precision('Account'),
-                              store=True, readonly=True,
-                              compute='_compute_amount')
-    amount_total = fields.Float(string='Total',
-                                digits=dp.get_precision('Account'),
-                                store=True, readonly=True,
-                                compute='_compute_amount')
-    amount_discount = fields.Float(string='Discount/Chargel',
-                                   digits=dp.get_precision('Account'),
-                                   store=True, readonly=True,
-                                   compute='_compute_amount')
 
 
 class account_invoice_line(models.Model):
     _inherit = "account.invoice.line"
 
-    @api.one
-    @api.depends('price_unit', 'discount', 'invoice_line_tax_id', 'quantity',
-                 'product_id', 'invoice_id.partner_id',
-                 'invoice_id.currency_id')
-    def _compute_price(self):
-        price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
-        if self.quantity != 0:
-            if self.discount_ids:
-                price = self.discount_ids.calculate_price(price)
-            tax_line = self.invoice_line_tax_id
-            taxes = tax_line.compute_all(price, self.quantity,
-                                         product=self.product_id,
-                                         partner=self.invoice_id.partner_id)
-            self.price_subtotal = taxes['total']
-            if self.invoice_id:
-                self.price_subtotal = self.invoice_id.currency_id.\
-                    round(self.price_subtotal)
-            self.price_undiscounted = self.price_unit * self.quantity
-
-    @api.one
-    def _price_discounted(self):
-        ctx = self._context.copy()
-        price = self.price_subtotal
-        if self.invoice_id.discount_ids:
-            ctx['globals'] = [x.id for x in self.invoice_id.discount_ids]
-            all_discounts = self.discount_ids + self.invoice_id.discount_ids
-            all_percentage = True
-            for discount in all_discounts:
-                if not discount.percentage:
-                    all_percentage = False
-
-            if all_percentage:
-                price = all_discounts.with_context(ctx)\
-                    .calculate_price(self.price_unit * self.quantity,
-                                     self, None)
-            else:
-                total = 0.0
-                for line in self.invoice_id.invoice_line:
-                    total += self.price_unit * self.quantity
-                price = all_discounts.with_context(ctx)\
-                    .calculate_price(total, self, total)
-        self.price_subtotal_discounted = price
-
     # incluye unicamente descuentos de linea(es el que se muestra en
     # la vista
     discount_ids = fields.One2many('account.discount', 'invoice_line_id',
                                    'Discounts')
-
-    price_subtotal = fields.Float(string='Amount',
-                                  digits=dp.get_precision('Account'),
-                                  store=True, readonly=True,
-                                  compute='_compute_price')
-    # precio sin ningun descuento
-    price_undiscounted = fields.Float(string='Undiscounted',
-                                      digits=dp.get_precision('Account'),
-                                      store=False, readonly=True,
-                                      compute='_compute_price')
-    # precio que incluye los descuentos de linea y de factura
-    price_subtotal_discounted = fields.Float(string='Price',
-                                             digits=dp.get_precision
-                                             ('Account'),
-                                             store=False, readonly=True,
-                                             compute='_price_discounted')
-    # precio que incluye los descuentos de linea y de factura
-    global_discount = fields.Float('Global discount')
-    global_charge = fields.Float('Global charge')
 
 # class payment_type(models.Model):
 #     """

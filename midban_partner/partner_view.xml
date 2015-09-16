@@ -50,6 +50,8 @@
                     <page string="Suplliers Info" attrs="{'invisible': [('supplier','=',False)]}">
                         <group>
                             <field name="reception_method"/>
+                            <field name="min_palets"/>
+                            <field name="max_distance"/>
                             <group string="Service Days">
                                 <field name="supp_service_days_ids" widget="many2many_checkboxes" nolabel="1"/>
                             </group>

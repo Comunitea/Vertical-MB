@@ -220,7 +220,8 @@ products do not require units for validation'),
         'kg_un': 1.0,
         'un_ca': 1.0,
         'ca_ma': 1.0,
-        'ma_pa': 1.0
+        'ma_pa': 1.0,
+        'type': 'product'
     }
 
     def copy(self, cr, uid, id, default=None, context=None):
@@ -289,14 +290,9 @@ products do not require units for validation'),
         for s in p.seller_ids:
             if p.product_class not in ['fresh', 'ultrafresh'] \
                 and not p.is_cross_dock and p.type == "product" and \
-                not (s.supp_kg_un and s.supp_un_width and
-                     s.supp_un_height and s.supp_un_length and
-                     s.supp_ca_ma and s.supp_ma_width and
-                     s.supp_ma_height and s.supp_ma_length and
-                     s.supp_ma_pa and s.supp_pa_width and
-                     s.supp_pa_height and s.supp_pa_length and
-                     s.supp_un_ca and s.supp_ca_width and
-                     s.supp_ca_height and s.supp_ca_length):
+                not (s.supp_kg_un and s.supp_un_ca and s.supp_ca_ma and
+                     s.supp_ma_pa and s.supp_pa_width and s.supp_ma_height
+                     and s.supp_pa_length):
                 raise osv.except_osv(_('Error'),
                                      _('Some unit dimension is '
                                        'equals to zero. Please '
@@ -304,12 +300,8 @@ products do not require units for validation'),
                                      (s.name.name))
         if p.product_class not in ['fresh', 'ultrafresh'] \
                 and not p.is_cross_dock and p.type == "product" and \
-                not (p.palet_wood_height and p.kg_un and p.un_ca
-                     and p.ca_ma and p.ma_pa and
-                     p.un_width and p.ca_width and p.ma_width and
-                     p.pa_width and p.un_height and p.ca_height
-                     and p.ma_height and p.pa_height and p.un_length
-                     and p.ca_length and p.ma_length and p.pa_length):
+                not (p.kg_un and p.un_ca and p.ca_ma and p.ma_pa and
+                     p.pa_width and p.ma_height and p.pa_length):
             raise osv.except_osv(_('Error'),
                                  _('Some unit dimension is '
                                    'equals to zero. Please '
@@ -420,6 +412,14 @@ class ProductTemplate(models.Model):
     def _get_kg_unit(self):
         return self.env.ref('product.product_uom_kgm').id
 
+    @api.model
+    def _get_box_unit(self):
+        return self.env.ref('midban_product.product_uom_box').id
+
+    @api.model
+    def _get_unit_unit(self):
+        return self.env.ref('product.product_uom_unit').id
+
     var_coeff_un = fields2.Boolean('Variable coefficient',
                                    help='If checked we can manage'
                                    ' products of variable weight.\n'
@@ -434,17 +434,19 @@ class ProductTemplate(models.Model):
                                    default=_get_kg_unit)
     log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
-                                  ' related with the logistic box')
+                                  ' related with the logistic box',
+                                  default=_get_box_unit)
     log_unit_id = fields2.Many2one('product.uom', 'Unit',
                                    help='The defined unit of measure will be'
-                                   ' related with the logistic unit')
+                                   ' related with the logistic unit',
+                                   default=_get_unit_unit)
 
     base_use_sale = fields2.Boolean('Can be used on sales',
                                     help='Allows you to sale in the defined'
                                     ' logistic base.')
     unit_use_sale = fields2.Boolean('Can be used on sales',
                                     help='Allows you to sale in the defined'
-                                    ' logistic unit.')
+                                    ' logistic unit.', default=True)
     box_use_sale = fields2.Boolean('Can be used on sales',
                                    help='Allows you to sale in the defined'
                                    ' logistic box')
@@ -538,11 +540,11 @@ class product_product(models.Model):
         return res
 
     @api.model
-    def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id = 0):
+    def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id=0):
         return uom_qty * self._get_factor(uos_id, supplier_id)
 
     @api.model
-    def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id = 0):
+    def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id=0):
         return uos_qty / self._get_factor(uos_id, supplier_id)
 
 
@@ -865,8 +867,17 @@ S    #Sacamos el nombre del codigo/nombre de producto por proveedor
 class ProductSupplierinfo(models.Model):
     _inherit = 'product.supplierinfo'
 
+    @api.model
     def _get_kg_unit(self):
         return self.env.ref('product.product_uom_kgm').id
+
+    @api.model
+    def _get_box_unit(self):
+        return self.env.ref('midban_product.product_uom_box').id
+
+    @api.model
+    def _get_unit_unit(self):
+        return self.env.ref('product.product_uom_unit').id
 
     var_coeff_un = fields2.Boolean('Variable coefficient',
                                    help='If checked we can manage'
@@ -882,17 +893,19 @@ class ProductSupplierinfo(models.Model):
                                    default=_get_kg_unit)
     log_box_id = fields2.Many2one('product.uom', 'Box',
                                   help='The defined unit of measure will be'
-                                  ' related with the logistic unit')
+                                  ' related with the logistic unit',
+                                  default=_get_box_unit)
     log_unit_id = fields2.Many2one('product.uom', 'Unit',
                                    help='The defined unit of measure will be'
-                                   ' related with the logistic box')
+                                   ' related with the logistic box',
+                                   default=_get_unit_unit)
 
     base_use_purchase = fields2.Boolean('Can be used on purchases',
                                         help='Allows you to buy in the defined'
                                         ' logistic base.')
     unit_use_purchase = fields2.Boolean('Can be used on purchases',
                                         help='Allows you to buy in the defined'
-                                        ' logistic unit.')
+                                        ' logistic unit.', default=True)
     box_use_purchase = fields2.Boolean('Can be used on purchases',
                                        help='Allows you to buy in the defined'
                                        ' logistic box')

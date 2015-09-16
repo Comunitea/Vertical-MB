@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 15:21+0000\n"
-"PO-Revision-Date: 2015-07-02 15:21+0000\n"
+"POT-Creation-Date: 2015-09-15 11:36+0000\n"
+"PO-Revision-Date: 2015-09-15 11:36+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,7 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:280
+#: code:addons/midban_partner/partner.py:286
 #, python-format
 msgid "Cannot activate a customer without vat"
 msgstr "No se puede activar un cliente sin nif"
@@ -114,13 +114,13 @@ msgid "Code"
 msgstr "Code"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:268
+#: code:addons/midban_partner/partner.py:274
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial realizada. Pendiente de dar de alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:259
+#: code:addons/midban_partner/partner.py:265
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -283,7 +283,7 @@ msgid "Logistic Validated"
 msgstr "Logistica Validada"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:250
+#: code:addons/midban_partner/partner.py:256
 #, python-format
 msgid "Logistic validate done"
 msgstr "Validación logistica realizada"
@@ -327,7 +327,7 @@ msgid "Partner History"
 msgstr "Historial"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:279
+#: code:addons/midban_partner/partner.py:285
 #, python-format
 msgid "Partner error"
 msgstr "Partner error"
@@ -343,7 +343,7 @@ msgid "Partner unregister reasons"
 msgstr "Motivos de baja"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:242
+#: code:addons/midban_partner/partner.py:248
 #, python-format
 msgid "Pending logistic and commercial validate"
 msgstr "Pendiente de validación logistica y comercial"
@@ -380,14 +380,14 @@ msgid "Register"
 msgstr "Dar de alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:281
+#: code:addons/midban_partner/partner.py:287
 #: selection:res.partner,state2:0
 #, python-format
 msgid "Registered"
 msgstr "Alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:290
+#: code:addons/midban_partner/partner.py:296
 #, python-format
 msgid "Registered again"
 msgstr "Volver a dar de alta"
@@ -550,4 +550,3 @@ msgstr "desconocido2"
 #: selection:res.partner,invoice_method:0
 msgid "unknow3"
 msgstr "desconocido3"
-

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Marta Vázquez Rodríguez$ <marta@pexego.es>
+#    Copyright (C) 2015 Comunitea Servicios TEcnológicos All Rights Reserved
+#    $Omar Castiñeira Saavedra$ <omar@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -20,33 +20,29 @@
 ##############################################################################
 
 {
-    "name": "Promotion",
+    "name": "Purchase promotions",
     "version": "1.0",
-    "author": "Pexego",
-    "category": "Tools",
-    "website": "www.pexego.es",
+    "author": "Comunitea",
+    "category": "Purchase",
+    "website": "www.comunitea.com",
     "description": """
 Promotions
 =====================================================
   """,
     "images": [],
     "depends": ["base",
-                "sale",
                 "purchase",
                 "stock",
                 "stock_account",
                 "purchase_preorder",
-                "depot_edi",
-                "midban_ultra_fresh"
-
-                ],
+                "process_purchase_order",
+                "purchase_discount"],
     "data": [
              "security/ir.model.access.csv",
              "promotion_view.xml",
              "partner_view.xml",
              "purchase_view.xml",
-             "purchase_preorder_view.xml",
-             "data/account_data.xml",
+             "purchase_preorder_view.xml"
              ],
     "demo": [],
     "test": [],

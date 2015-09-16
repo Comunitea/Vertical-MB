@@ -263,10 +263,14 @@ class stock_picking(osv.Model):
         """
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
+<<<<<<< HEAD
         ctx = self._context.copy()
         ctx.update({'active_model': 'stock.picking'})
         transfer_obj = t_transfer.with_context(ctx).\
             create({'picking_id': self.id})
+=======
+        transfer_obj = t_transfer.create({'picking_id': self.id})
+>>>>>>> def6c991e399ed9a9cbd15b8465c005d5c5f103b
         pending_ops_vals = []
         something_done = False
         for op in self.pack_operation_ids:
@@ -371,7 +375,12 @@ class stock_picking(osv.Model):
         Overwrited in order to calculate the correct uos_qty in the operation.
         """
         res = super(stock_picking, self).do_prepare_partial()
+
         for picking in self:
+            supplier_id = 0
+            if picking.picking_type_code == 'incoming' and picking.purchase_id:
+                supplier_id = picking.partner_id.id
+
             for move in picking.move_lines:
                 if move.product_uos_qty and move.product_uos:
                     move_uos_qty = move.product_uos_qty
@@ -381,12 +390,20 @@ class stock_picking(osv.Model):
                     operations = list(set(operations))
                     for op in operations:
                         prod = op.operation_product_id
+                        var_weight = False
+                        if supplier_id:
+                            supp = prod.get_product_supp_record(supplier_id)
+                            if supp.is_var_coeff:
+                                var_weight = True
+                        else:
+                            if prod.is_var_coeff:
+                                var_weight = True
                         op_uom_qty = op.packed_qty
                         op_uos_qty = 0
                         if op.package_id and not op.product_id:
                             op_uos_qty = op.package_id.uos_qty
                         # Variable coeff products
-                        elif op.product_id and prod.is_var_coeff:
+                        elif op.product_id and var_weight:
                             moves = list(set([x.move_id for x in
                                               op.linked_move_operation_ids]))
                             if len(operations) == 1 and len(moves) == 1:
@@ -412,10 +429,11 @@ class stock_picking(osv.Model):
                                         op_uos_qty += move_uos_qty
                                         break
                         # Fixed coeff product
-                        elif op.product_id and not prod.is_var_coeff:
+                        elif op.product_id and not var_weight:
                             op_uos_qty = \
                                 prod.uom_qty_to_uos_qty(op.product_qty,
-                                                        move_uos_id)
+                                                        move_uos_id,
+                                                        supplier_id)
                         # Write the calculed uos qty in operation
                         op.uos_qty = op_uos_qty
                         op.uos_id = move_uos_id
@@ -715,10 +733,12 @@ class stock_pack_operation(models.Model):
         'old_id': fields.integer('Old id', readonly=True),
         'uos_qty': fields.float('UoS quantity'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
+        'do_onchange': fields.boolean('Do onchange'),
         'changed': fields.boolean('Record changed')}
 
     _defaults = {
-        'to_process': True}
+        'to_process': True,
+        'do_onchange': True}
 
     def _search_closest_pick_location(self, prod_obj, free_loc_ids):
         loc_t = self.env['stock.location']
@@ -900,6 +920,78 @@ class stock_pack_operation(models.Model):
         if not (self.product_id or self.package_id):
             raise ValidationError("It is not allowed operations whithout pack\
                 and wothout product")
+
+    @api.onchange('product_qty')
+    def product_uos_id_onchange(self):
+        """
+        We change uos_qty field
+        """
+        var_weight = False
+        product = self.product_id
+        picking = self.picking_id
+        supplier_id = 0
+        if not product:
+            return
+        if picking.picking_type_code == 'incoming' and picking.purchase_id:
+            supplier_id = picking.partner_id.id
+        if supplier_id:
+            supp = product.get_product_supp_record(supplier_id)
+            if supp.is_var_coeff:
+                    var_weight = True
+        else:
+            if product.is_var_coeff:
+                var_weight = True
+        if product and var_weight and self.product_uom_id.id == self.uos_id.id:
+            self.do_onchange = False
+            self.uos_qty = self.product_qty
+
+        if product and not var_weight:
+            if self.do_onchange:
+                qty = self.product_qty
+                new_uos_qty = product.uom_qty_to_uos_qty(qty, self.uos_id.id,
+                                                         supplier_id)
+
+                if new_uos_qty != self.uos_qty:
+                    self.do_onchange = False
+                    self.uos_qty = new_uos_qty
+            else:
+                self.do_onchange = True
+
+    @api.onchange('uos_qty')
+    def product_uos_qty_onchange(self):
+        """
+        We change the quantity field
+        """
+        var_weight = False
+        product = self.product_id
+        picking = self.picking_id
+        supplier_id = 0
+        if not product:
+            return
+        if picking.picking_type_code == 'incoming' and picking.purchase_id:
+            supplier_id = picking.partner_id.id
+        if supplier_id:
+            supp = product.get_product_supp_record(supplier_id)
+            if supp.is_var_coeff:
+                    var_weight = True
+        else:
+            if product.is_var_coeff:
+                var_weight = True
+        if var_weight and self.product_uom_id == self.uos_id:
+            self.do_onchange = False
+            self.product_qty = self.uos_qty
+
+        if not var_weight:
+            if self.do_onchange:
+                qty = self.uos_qty
+                uos_id = self.uos_id.id
+                new_quantity = product.uos_qty_to_uom_qty(qty, uos_id,
+                                                          supplier_id)
+                if new_quantity != self.product_qty:
+                    self.do_onchange = False
+                    self.product_qty = new_quantity
+            else:
+                self.do_onchange = True
 
 
 class stock_warehouse(models.Model):
@@ -1365,7 +1457,7 @@ class stock_location(models.Model):
                 'limit': 100.0,
                 'warehouse_id': self.get_warehouse(self),
                 'specific_locations': True,
-                'selected_loc_ids': [6, 0, [self.id]]}
+                'selected_loc_ids': [(6, 0, [self.id])]}
         repo_wzd = self.env['reposition.wizard'].create(vals)
         res = repo_wzd.get_reposition_list()
         return res
@@ -1548,6 +1640,26 @@ class stock_move(models.Model):
                 new_move.purchase_line_id = move.purchase_line_id
                 backorder_moves += new_move
         return backorder_moves
+
+    @api.cr_uid_ids_context
+    def do_unreserve(self, cr, uid, move_ids, context=None):
+        """
+        If outgoing picking and all origin pickings are done we put The
+        move in confirmed state instead of waiting
+        """
+        res = super(stock_move, self).do_unreserve(cr, uid, move_ids,
+                                                   context=context)
+        for move in self.browse(cr, uid, move_ids, context=context):
+            if move.picking_id.picking_type_code == 'outgoing' and \
+                    move.state == 'waiting':
+                change_state = True
+                for mv in move.move_orig_ids:
+                    if mv.state != 'done':
+                        change_state = False
+                        break
+                if change_state:
+                    move.write({'state': 'confirmed'})
+        return res
 
 
 class stock_inventory(models.Model):

@@ -4,7 +4,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
     _t = instance.web._t;
     var round_pr = instance.web.round_precision
     var my_round = function(number, decimals){
-        var n = number;
+        var n = number || 0;
         if (typeof n === "string"){
             n = n * 1;
         }
