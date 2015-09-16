@@ -832,4 +832,5 @@ class productsSupplier(models.Model):
                                   "reabastecimiento")
     delivery_date = fields2.Date('Fecha de Entrega', readonly=True,
                                  compute='_calc_delivery_date',
-                                 help="Fecha de entrega estimada")
+                                 help="Fecha de entrega estimada contando "
+                                 "que confirmamos la compra hoy")
