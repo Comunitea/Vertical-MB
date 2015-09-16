@@ -810,6 +810,9 @@ class productsSupplier(models.Model):
             security_days = op_objs[0].min_days_id.days_sale
         self.security_days = security_days
 
-    security_days = fields2.Float('Stock Security Days', readonly=True,
+    # En español porque no coje la traducción en otra clase con la nueva api
+    security_days = fields2.Float('Días stock seguridad', readonly=True,
                                   compute='_calc_security_days',
-                                  help="Configured security days for product")
+                                  help="Días de stock de seguridad del "
+                                  "producto configurados en una regla de "
+                                  "reabastecimiento")

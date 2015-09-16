@@ -31,6 +31,7 @@ STATES = [('in_progress', 'In Progress'),
 class product_stock_unsafety(osv.Model):
     _name = 'product.stock.unsafety'
     _description = 'Products that have stock under minimum'
+    _order = 'id desc'
     _columns = {
         'product_id': fields.many2one('product.product',
                                       'Product',

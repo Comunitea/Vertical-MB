@@ -352,9 +352,11 @@ class resPartner(models.Model):
                     init += 1
         self.max_distance = res
 
-    max_distance = fields2.Integer(string='Max distance (Days)',
+    # En español porque no coge la traducción en otra clase con la nueva api
+    max_distance = fields2.Integer(string='Max. distancia (Días)',
                                    compute='_compute_distance',
-                                   help='Max distance between 2 service days',
+                                   help='Máxima distancia entre dos días de '
+                                   'servicio adyacentes ',
                                    readonly=True)
 
 
