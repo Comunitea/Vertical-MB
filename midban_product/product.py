@@ -722,7 +722,6 @@ class product_product(models.Model):
 
             else:
                 raise except_orm(_('Error'), _('Supplier_id not in supplier_ids'))
-
         res = res_uom = 0
         #Paso todo a la unidad de base
         if unit == supp.log_base_id.id:
@@ -731,8 +730,6 @@ class product_product(models.Model):
             res = 1 / (kg_un or 1.0)
         if unit == supp.log_box_id.id:
             res = 1 / ((kg_un or 1.0) * (un_ca or 1.0))
-
-
         #Paso la base a la unidad del producto o uom_id
         if uom_id == supp.log_base_id.id:
             res_uom = 1
@@ -740,14 +737,12 @@ class product_product(models.Model):
             res_uom = 1 * (kg_un or 1.0)
         if uom_id == supp.log_box_id.id:
             res_uom = 1 * (kg_un * (un_ca or 1.0))
-
         if res == 0 or res_uom == 0:
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
                              unit' % self.uom_id.name))
 
         return res * res_uom
-
     #Da el factor de conversión entre dos unidades para un determinado
     #proveedor
     @api.model
@@ -756,13 +751,11 @@ class product_product(models.Model):
               self._get_unit_ratios(uom_origen, supplier_id)
         return res
 
-
     #Sacamos el nombre del codigo/nombre de producto por proveedor
     # si no hay coge producto y le pone un asterisco
     @api.model
     def get_product_supplier_name(self, supplier_id, product_id):
 
-        #import pdb; pdb.set_trace()
         if not product_id:
             product_id = self.id
 
