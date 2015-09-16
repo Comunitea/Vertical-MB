@@ -120,14 +120,14 @@ class product_template(models.Model):
         return stock_per_day
 
     @api.one
-    @api.depends('virtual_stock_conservative')
+    @api.depends('virtual_available')
     def _calc_remaining_days(self):
         stock_days = 0.00
-        if self.virtual_stock_conservative:
+        if self.virtual_available:
             stock_days = -1.00  # Indicates we dont know stock days
             stock_per_day = self.calc_sale_units_per_day()
             if stock_per_day > 0:
-                stock_days = round(self.virtual_stock_conservative /
+                stock_days = round(self.virtual_available /
                                    stock_per_day)
 
         self.remaining_days_sale = stock_days

@@ -36,7 +36,8 @@
             <field name="arch" type="xml">
                 <form string="Purchase Preorder" version="7.0">
                     <header>
-                        <button name="generate_purchase_order" type="object" string="Create Purchase Order" icon="gtk-go-forward" class="oe_highlight" />
+                        <button name="generate_purchase_order" type="object" states="draft" string="Create Purchase Order" icon="gtk-go-forward" class="oe_highlight" />
+                        <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -54,6 +55,7 @@
                                     <button name="button_dummy" string="(update)" type="object" class="oe_edit_only oe_link" />
                                 </div>
                                 <field name="total" readonly="1" nolabel="1" widget="monetary" />
+                                <field name="purchase_id" states="done"/>
                                 <button name="open_in_tree" string="Full Product List" type="object" class="oe_highlight" />
                             </group>
                             <group string="Quantities">
@@ -304,8 +306,10 @@
                                 <newline />
                                 <field name="min_fixed" readonly="1" />
                                 <field name="real_stock" readonly="1" />
+                                <field name="virtual_available" readonly="1" />
                                 <field name="virtual_stock" readonly="1" />
                                 <field name="product_state" readonly="1" />
+                                <field name="security_days" readonly="1"/>
                                 <field name="stock_days" readonly="1" />
                                 <separator string="Last Purchase" />
                                 <newline />

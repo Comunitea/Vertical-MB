@@ -29,6 +29,9 @@
                 <field name="qty_multiple" position="replace">
                     <field name="qty_multiple" invisible="1"/>
                 </field>
+                <button name="action_view_proc_to_process" position="attributes">
+                  <attribute name="invisible">True</attribute>
+                </button>
             </field>
         </record>
     </data>
