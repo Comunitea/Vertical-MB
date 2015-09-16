@@ -751,12 +751,11 @@ class product_product(models.Model):
               self._get_unit_ratios(uom_origen, supplier_id)
         return res
 
-S    #Sacamos el nombre del codigo/nombre de producto por proveedor
+    #Sacamos el nombre del codigo/nombre de producto por proveedor
     # si no hay coge producto y le pone un asterisco
     @api.model
     def get_product_supplier_name(self, supplier_id, product_id):
 
-        #import pdb; pdb.set_trace()
         if not product_id:
             product_id = self.id
 
