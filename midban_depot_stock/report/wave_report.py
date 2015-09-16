@@ -46,6 +46,8 @@ class sale_report(osv.osv):
                            context=None):
         res = {}
         for item in self.browse(cr, uid, ids, context=context):
+            process = True
+            visited = True
             item_res = []
             for pick in item.wave_id.picking_ids:
                 for op in pick.pack_operation_ids:
@@ -53,12 +55,24 @@ class sale_report(osv.osv):
                         if op.package_id:
                             if op.package_id.id == item.pack_id.id:
                                 item_res.append(op.id)
+                                if not op.to_process:
+                                    process = False
+                                if not op.visited:
+                                    visited = False
                         else:
                             if op.product_id == item.product_id and \
                                     op.lot_id == item.lot_id:
                                 item_res.append(op.id)
-            res[item.id] = list(set(item_res))
+                                if not op.to_process:
+                                    process = False
+                                if not op.visited:
+                                    visited = False
+            res[item.id]={}
+            res[item.id]['operation_ids'] = list(set(item_res))
+            res[item.id]['to_process'] = process
+            res[item.id]['visited']=visited
         return res
+
 
     def _set_operation_ids(self, cr, uid, ids, field_name, values, args,
                            context=None):
@@ -103,7 +117,7 @@ class sale_report(osv.osv):
         'operation_ids': fields.function(_get_operation_ids, type="one2many",
                                          string="Operations",
                                          relation="stock.pack.operation",
-                                         fnct_inv=_set_operation_ids),
+                                         fnct_inv=_set_operation_ids, multi='multi_'),
         'uom_id': fields.related('product_id', 'uom_id', type='many2one',
                                  relation='product.uom', string='Stock unit',
                                  readonly=True),
@@ -113,7 +127,14 @@ class sale_report(osv.osv):
         'customer_id': fields.many2one('res.partner', 'Customer',
                                       readonly=True),
         'pack_id': fields.many2one('stock.quant.package', 'Pack',
-                                      readonly=True)
+                                      readonly=True),
+        'to_process' : fields.function(_get_operation_ids, type ='boolean',
+                                       string='Processed', multi ='multi_',
+                                       readonly = True),
+        'visited' : fields.function(_get_operation_ids, type ='boolean',
+                                       string='Visited', multi ='multi_',
+                                       readonly = True)
+
     }
 
     def _select(self):

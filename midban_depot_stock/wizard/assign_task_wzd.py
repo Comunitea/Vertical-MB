@@ -357,7 +357,6 @@ class assign_task_wzd(osv.TransientModel):
         name_form = 'midban_depot_stock.stock_task_view_form'
         view_id = self.env['ir.model.data'].xmlid_to_res_id(name_form)
         action.update(views=[(view_id, 'form')], res_id=task_id)
-        # import ipdb; ipdb.set_trace()
         return action
 
 
@@ -382,14 +381,12 @@ class assign_task_wzd(osv.TransientModel):
         a task of type ubication is assigned state. It writes the fields
         machine_id and operator_id of wizard in the picking.
         """
-
         if context is None:
             context = {}
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         t_pick = self.pool.get("stock.picking")
         t_task = self.pool.get("stock.task")
         t_op = self.pool.get('stock.pack.operation')
-
         # Check if operator has a task on course
         machine_id = wzd_obj.machine_id and wzd_obj.machine_id.id or False
         if not machine_id:
@@ -453,7 +450,6 @@ class assign_task_wzd(osv.TransientModel):
             'machine_id': machine_id
         }
         task_id = t_task.create(cr, uid, vals, context=context)
-
         assigned_ops = []
         for op in t_op.browse(cr, uid, op_ids, context=context):
             if len(assigned_ops) == max_ops:
@@ -654,7 +650,6 @@ class assign_task_wzd(osv.TransientModel):
         For all moves from a same product, get the new pickings, or the
         original picking if it only have one move.
         """
-
         res = set()
         if context is None:
             context = {}
@@ -689,7 +684,6 @@ class assign_task_wzd(osv.TransientModel):
         move_obj = self.pool.get('stock.move')
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
         res = []
-
         # Check if we get moves in wave by defined maximun volume or not
         t_config = self.pool.get('ir.config_parameter')
         param_value = t_config.get_param(cr, uid, 'pick.by.volume',
@@ -748,7 +742,6 @@ class assign_task_wzd(osv.TransientModel):
         Assign picking task to operator. The task will be linked to a
         wave of picks.
         """
-
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')

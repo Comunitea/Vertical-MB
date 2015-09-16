@@ -23,6 +23,10 @@ from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 import itertools
 
+class StockLocations(models.Model):
+
+    _inherit ="stock.location"
+    barcode_name = fields.Char("CDB Name")
 
 class create_camera_locations(models.TransientModel):
     _name = 'create.camera.locations'
@@ -88,7 +92,9 @@ class create_camera_locations(models.TransientModel):
 
         store_tuples = self._get_my_cartesian_product(r_col, r_store, r_subcol)
         store_names = ['/'.join(x) for x in store_tuples]
+        bcd_name = "*" + str(self.id) + "*" #"BCD_NAME"
         # Create Picking vals
+
         for name in pick_names:
             vals = {
                 'usage': 'internal',
@@ -99,6 +105,7 @@ class create_camera_locations(models.TransientModel):
                 'name': str(item.aisle_num) + '/' + name,
                 'location_id': pick_zone_obj.id,
                 'zone': 'picking',
+                'barcode_name': bcd_name,
             }
             res.append(vals)
         # Create Store vals
@@ -109,9 +116,10 @@ class create_camera_locations(models.TransientModel):
                 'width': item.my_width,
                 'length': item.my_length,
                 'height': item.my_height,
-                'name': str(item.aisle_num) + '/' + name,
+                'name':  str(item.aisle_num) + '/' + name,
                 'location_id': store_zone_obj.id,
                 'zone': 'storage',
+                'barcode_name': bcd_name,
             }
             res.append(vals)
         return res

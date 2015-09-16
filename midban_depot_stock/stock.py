@@ -263,7 +263,6 @@ class stock_picking(osv.Model):
         """
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
-        # import ipdb; ipdb.set_trace()
         ctx = self._context.copy()
         ctx.update({'active_model': 'stock.picking'})
         transfer_obj = t_transfer.with_context(ctx).\
@@ -773,7 +772,6 @@ class stock_pack_operation(models.Model):
             raise exceptions.Warning(_('Error!'),
                                      _('Not picking location for product \
                                      %s.' % product.name))
-
         pick_loc = product.picking_location_id
         volume = product.get_volume_for(prop_qty)
         if not pick_loc.filled_percent:  # If empty add wood volume
@@ -781,7 +779,6 @@ class stock_pack_operation(models.Model):
             vol_aval = pick_loc.available_volume - wood_volume
         else:
             vol_aval = pick_loc.available_volume
-
         old_ref = self._older_refernce_in_storage(product)
         if (not old_ref and volume <= vol_aval):
             res = True
