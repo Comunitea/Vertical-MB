@@ -66,7 +66,7 @@ class stock_picking(models.Model):
                 sale_line = line.procurement_id.sale_line_id
                 if sale_line and line.state != 'cancel':
                     price_disc_unit = price_unit * \
-                        (1-(sale_line.discount or 0.0)/100.0)
+                        (1 - (sale_line.discount or 0.0) / 100.0)
                     for c in sale_line.tax_id.compute_all(
                             price_disc_unit, quantity,
                             line.product_id,
@@ -133,7 +133,7 @@ class stock_move(models.Model):
                     price_unit = move.procurement_id.sale_line_id.price_unit
                 else:
                     price_unit = move.procurement_id.sale_line_id.price_udv
-                price_disc_unit = (price_unit * (1-(move.discount)/100.0))
+                price_disc_unit = (price_unit * (1 - (move.discount) / 100.0))
                 if move.product_id.is_var_coeff:
                     move.price_subtotal = price_disc_unit * \
                         move.product_uom_qty
@@ -145,6 +145,7 @@ class stock_move(models.Model):
                 move.order_price_unit = price_unit
                 move.margin = move.price_subtotal - move.cost_subtotal
                 if move.price_subtotal > 0:
-                    move.percent_margin = (move.margin/move.price_subtotal)*100
+                    move.percent_margin = \
+                        (move.margin / move.price_subtotal) * 100
                 else:
                     move.percent_margin = 0
