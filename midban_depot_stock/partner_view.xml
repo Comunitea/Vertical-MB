@@ -7,9 +7,9 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="midban_partner.midban_view_partner_form"/>
             <field name="arch" type="xml">
-                <field name="invoice_method"  position="before">
+                <!-- <field name="invoice_method"  position="before">
                     <field name="trans_route_id"/>
-                </field>
+                </field> -->
                 <notebook position="inside">
                     <page string="Assigned Routes" attrs="{'invisible': [('customer','=', False)]}">
                         <group string="Assigned Routes">
