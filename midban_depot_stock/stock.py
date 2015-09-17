@@ -37,6 +37,8 @@ class stock_picking(osv.Model):
                                       readonly=True),
         'warehouse_id': fields.many2one('stock.warehouse',
                                         'Moves warehouse', readonly=True),
+        'user_id': fields.many2one('res.users',
+                                   'Comercial', readonly=True),
         'task_type': fields.selection([('ubication', 'Ubication',),
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
@@ -1656,6 +1658,19 @@ class stock_move(models.Model):
                         break
                 if change_state:
                     move.write({'state': 'confirmed'})
+        return res
+
+    def _picking_assign(self, cr, uid, move_ids, procurement_group,
+                        location_from, location_to, context=None):
+        res = super(stock_move, self).\
+            _picking_assign(cr, uid, move_ids, procurement_group,
+                            location_from, location_to, context=context)
+        if move_ids and procurement_group:
+            move = self.browse(cr, uid, move_ids[0], context=context)
+            if move.picking_id:
+                t_group = self.pool.get('procurement.group')
+                pg = t_group.browse(cr, uid, procurement_group, context)
+                move.picking_id.write({'user_id': pg.user_id.id})
         return res
 
 

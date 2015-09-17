@@ -65,6 +65,7 @@
 
                 <!-- Add fields from assign_task_wzd.py -->
                 <field name="partner_id" position="after">
+                    <field name="user_id"/>
                     <field name="operator_id"/>
                     <field name="machine_id"/>
                     <field name="warehouse_id"/>
@@ -393,6 +394,7 @@
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
                     <field name="detail_date" readonly="True" invisible="1"/>
                     <field name="trans_route_id" invisible="1"/>
+                    <field name="user_id" invisible="1"/>
                 </tree>
             </field>
          </record>
@@ -415,7 +417,7 @@
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
                          <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
                          <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
-                         <filter name="groupby_sale_id" string="Comercial" context="{'group_by':'sale_id'}"/>
+                         <filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>
                     </group>
                </search>
             </field>
