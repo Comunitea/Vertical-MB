@@ -306,6 +306,9 @@ products do not require units for validation'),
                                  _('Some unit dimension is '
                                    'equals to zero. Please '
                                    'check it.'))
+        if not p.weight:
+            raise osv.except_osv(_('Error'),
+                                 _('You need to set gross weight'))
         return True
 
     def act_comercial_pending(self, cr, uid, ids, context=None):

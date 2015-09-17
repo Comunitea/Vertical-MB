@@ -439,6 +439,25 @@ class stock_picking(osv.Model):
         return res
 
 
+class StockPicking(models.Model):
+
+    _inherit = "stock.picking"
+
+    total_weight = fields2.Float(
+        compute='_get_weight', digits_compute=dp.get_precision('Sale Price'),
+        string='Total Weight', readonly=True, store=True,
+        help="Calculed as the total of stock qty in moves * "
+        "product gross weight")
+
+    @api.one
+    @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
+    def _get_weight(self):
+        total_weight = 0
+        for move in self.move_lines:
+            total_weight += move.product_id.weight * move.product_uom_qty
+        self.total_weight = total_weight
+
+
 class StockPackage(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"

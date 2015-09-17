@@ -3055,8 +3055,8 @@ msgstr "Hoy"
 
 #. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Today route"
-msgstr "Rutas de Hoy"
+msgid "Tomorrow"
+msgstr "Mañana"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_order

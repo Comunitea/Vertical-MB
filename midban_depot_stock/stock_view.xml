@@ -75,6 +75,7 @@
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
                     <field name="trans_route_id"/>
                     <field name="order_note"/>
+                    <field name="total_weight"/>
                     <field name="camera_ids" widget="many2many_tags" attrs="{'invisible': [('task_type', '!=', 'picking')]}"/>
 
                 </field>
@@ -387,12 +388,13 @@
                     <field name="partner_id" readonly="True"/>
                     <field name="sale_id" readonly="True"/>
                     <field name="order_note" readonly="True" string="Order Notes"/>
-                    <field name="min_date" readonly="True" string="Date order"/>
+                    <field name="min_date" readonly="True" string="Scheduled Date"/>
                     <field name="amount_total" sum="Total Tax Included" readonly="True"/>
-                    <field name="state" readonly="True" invisible="1"/>
+                    <field name="total_weight" sum="Total Weight" readonly="True"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
-                    <field name="detail_date" readonly="True" invisible="1"/>
+                    <field name="state" readonly="True" invisible="1"/>
+                    <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
                     <field name="trans_route_id" invisible="1"/>
                     <field name="user_id" invisible="1"/>
                 </tree>
@@ -404,6 +406,7 @@
             <field name="model">stock.picking</field>
             <field name="arch" type="xml">
                 <search string="Search Pickings">
+                    <!-- <field name="detail_date"/> -->
                     <field name="detail_date"/>
                     <field name="route_detail_id"/>
                     <field name="trans_route_id"/>
@@ -411,7 +414,8 @@
                     <field name="partner_id" operator="child_of"/>
                     <field name="sale_id"/>
                     <separator/>
-                        <filter string="Today route" name="filter_today" domain="[('route_detail_id.date','&lt;=',time.strftime('%%Y-%%m-%%d')),('route_detail_id.date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                        <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                        <filter string="Tomorrow" name="filter_today" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
