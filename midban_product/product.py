@@ -134,7 +134,7 @@ class product_template(osv.Model):
         'no_gluten': fields.boolean("No Gluten"),
         'glazed_percent': fields.float("%", digits=(4, 2)),
         'web': fields.char('Web', size=128),
-        'life': fields.integer('Useful life'),
+        # 'life': fields.integer('Useful life'),
         'first_course': fields.boolean("First Course"),
         'second_course': fields.boolean("Second Course"),
         'dessert': fields.boolean("Dessert"),

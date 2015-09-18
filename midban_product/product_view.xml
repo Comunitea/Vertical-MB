@@ -143,7 +143,7 @@
                 <field name="standard_price" position="after">
                     <field name="margin"/>
                     <field name="last_purchase_price"/>
-                    <field name="life"/>
+                    <!-- <field name="life"/> -->
                 </field>
 
                 <field name="weight_net" position="after">
