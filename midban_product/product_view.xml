@@ -42,6 +42,7 @@
                         <field name="mark"/>
                         <field name="scientific_name"/>
                         <field name="web"/>
+                        <field name="no_gluten"/>
                         <div>
                             <label for="glazed"/>
                             <field name="glazed"/>
@@ -182,6 +183,7 @@
                          <filter string="Product registering process" name="product_registering" domain="[('state2','in',['val_pending','commercial_pending','logic_pending','validated']),('active','=',False)]"/>
                          <filter string="Product unregistered" name="unregistered_product" domain="[('state2','=','unregistered'),('active','=',False)]"/>
                          <filter string="Product denied" name="denied_product" domain="[('state2','=','denied'),('active','=',False)]"/>
+                         <filter string="No gluten" name="no_gluten" domain="[('no_gluten', '=', True)]"/>
                    </filter>
             </field>
         </record>

@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#	* midban_product
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 11:44+0000\n"
-"PO-Revision-Date: 2015-09-17 11:44+0000\n"
+"POT-Creation-Date: 2015-09-18 13:03+0000\n"
+"PO-Revision-Date: 2015-09-18 13:03+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,3603 +15,1091 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "% Filled between x-y"
-msgstr "% Ocupación entre x-y"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "% Filled equals"
-msgstr "% Ocupación igual"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "% Filled greater"
-msgstr "% Ocupación mayor"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "% Filled less"
-msgstr "% Ocupación menor"
-
-#. module: midban_depot_stock
-#: selection:partner.route.info,regularity:0
-msgid "1 Week"
-msgstr "1 Semana"
-
-#. module: midban_depot_stock
-#: selection:partner.route.info,regularity:0
-msgid "2 Weeks"
-msgstr "2 Semanas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:286
-#, python-format
-msgid "2 details of same day for same                                            route"
-msgstr "2 detalles en el mismo día para la misma ruta"
-
-#. module: midban_depot_stock
-#: selection:partner.route.info,regularity:0
-msgid "3 Weeks"
-msgstr "3 Semanas"
-
-#. module: midban_depot_stock
-#: selection:partner.route.info,regularity:0
-msgid "4 Weeks"
-msgstr "4 Semanas"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_stock_machine
+#. module: midban_product
+#: model:ir.actions.act_window,help:midban_product.action_deny_product_reason
 msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add a Machine.\n"
-"                </p><p>\n"
-"                A machine has a unique code.\n"
-"                </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir una máquina.\n"
-"                </p><p>\n"
-"                Una máquina tiene un código único.\n"
-"                </p>\n"
-"            "
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_stock_task
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add a Task.\n"
-"                </p><p>\n"
-"                It should be created by a wizard and not manually.\n"
-"                </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir una tarea.\n"
-"                </p><p>\n"
-"                Deben ser añadidas por un asistente y no manualmentey.\n"
-"                </p>\n"
-"            "
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_stock_vehicle
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to add a vehicle.\n"
-"                </p><p>\n"
-"                It should be created by a wizard and not manually.\n"
-"                </p>\n"
-"            "
-msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                 Click para añadir un vehículo.\n"
-"            "
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_route
-msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to create a new route.\n"
+"                Click to create a new deny reason.\n"
+"              </p><p>\n"
+"                Manage the deny reasons. Reasons defined here can be selected on the\n"
+"                deny wizard,\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para crear una nueva ruta.\n"
+"                Pulsa aquí para crear un nuevo motivo de baja.\n"
+"              </p><p>\n"
+"                Gestiona motivos de denegación del alta de productos. Los motivos pueden ser selecionados en\n"
+"                el asistente de dengación del alta de los productos,\n"
 "              </p>\n"
 "            "
 
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_tag
+#. module: midban_product
+#: model:ir.actions.act_window,help:midban_product.action_temp_type
 msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Click to create a new tag.\n"
+"                Click to create a new temperature type.\n"
+"              </p><p>\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para crear una nueva etiqueta.\n"
+"                Click para crear un nuevo tipo de temperatura.\n"
+"              </p><p>\n"
 "              </p>\n"
 "            "
 
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_detail_route
+#. module: midban_product
+#: model:ir.actions.act_window,help:midban_product.action_product_allergen
 msgid "<p class=\"oe_view_nocontent_create\">\n"
-"                Details should be created only by wizard or recalculation when you change the relationship between customers and routes\n"
+"                Click to create a new type of allergen.\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Los detalles deberían ser solo creados por el asistente o por recálculo cuando se cambia la relacción entre clientes y rutas\n"
+"                Pulsa aquí para crear un nuevo tipo de alérgeno.\n"
 "              </p>\n"
 "            "
 
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-#: field:route,active:0
-#: selection:route,state:0
-#: selection:route.report,route_state:0
-msgid "Active"
-msgstr "Activa"
+#. module: midban_product
+#: model:ir.actions.act_window,help:midban_product.action_unregister_product_reason
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a new unregister reason.\n"
+"              </p><p>\n"
+"                Manage the unregister reasons. Reasons defined here can be selected on the\n"
+"                unregister wizard,\n"
+"              </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Pulsa aquí para crear un motivo de baja.\n"
+"              </p><p>\n"
+"                Gestiona los motivos de Baja. Los motivos de baja pueden verse en el\n"
+"                asistente de bajas de los productos.\n"
+"              </p>\n"
+"            "
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:154
-#, python-format
-msgid "Actives routes can not be                                             deleted. Put it in draft state"
-msgstr "Las rutas activas no pueden ser borradas. Ponla en estado borrador"
+#. module: midban_product
+#: field:product.template,accompaniment:0
+msgid "Accompaniment"
+msgstr "Acompañamiento"
 
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-msgid "Additional Information"
-msgstr "Información adicional"
+#. module: midban_product
+#: field:product.history,activity:0
+msgid "Activity"
+msgstr "Actividad"
 
-#. module: midban_depot_stock
-#: field:stock.picking,camera_id:0
-msgid "Affected camera"
-msgstr "Cámaras afectadas"
+#. module: midban_product
+#: field:product.allergen,name:0
+msgid "Allergen name"
+msgstr "Nombre alérgeno"
 
-#. module: midban_depot_stock
-#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
-msgid "Aisle"
-msgstr "Pasillo"
+#. module: midban_product
+#: help:product.supplierinfo,base_use_purchase:0
+msgid "Allows you to buy in the defined logistic base."
+msgstr "Te permite comprar en la unidad logística base que tengas definida."
 
-#. module: midban_depot_stock
-#: field:aisle.record,aisle_num:0
-msgid "Aisle number"
-msgstr "Nº de pasillo"
+#. module: midban_product
+#: help:product.supplierinfo,box_use_purchase:0
+msgid "Allows you to buy in the defined logistic box"
+msgstr "Te permite comprar en la unidad logística caja que tengas definida."
 
-#. module: midban_depot_stock
-#: field:create.camera.locations,aisle_ids:0
-msgid "Aisles Config"
-msgstr "Conf pasillos"
+#. module: midban_product
+#: help:product.supplierinfo,unit_use_purchase:0
+msgid "Allows you to buy in the defined logistic unit."
+msgstr "Te permite comprar en la unidad logística unidad que tengas definida."
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:772
-#, python-format
-msgid "Anything pending of                                                  picking"
-msgstr "Nada pendiente de picking"
+#. module: midban_product
+#: help:product.template,base_use_sale:0
+msgid "Allows you to sale in the defined logistic base."
+msgstr "Te permite vender en la unidad logística base que tengas definida."
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:609
-#, python-format
-msgid "Anything pending of picking"
-msgstr "Anything pending of picking"
+#. module: midban_product
+#: help:product.template,box_use_sale:0
+msgid "Allows you to sale in the defined logistic box"
+msgstr "Te permite vender en la unidad logística caja que tengas definida."
 
-#. module: midban_depot_stock
-#: view:res.users:midban_depot_stock.view_users_operator_form
-msgid "Asigned Routes"
-msgstr "Rutas asignadas"
+#. module: midban_product
+#: help:product.template,unit_use_sale:0
+msgid "Allows you to sale in the defined logistic unit."
+msgstr "Te permite vender en la unidad logística unidad que tengas definida."
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: selection:stock.task,state:0
-msgid "Assigned"
-msgstr "Asignada"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Back"
+msgstr "Atrás"
 
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Assigned Customers"
-msgstr "Clientes asignados"
+#. module: midban_product
+#: field:product.supplierinfo,log_base_id:0
+#: field:product.template,log_base_id:0
+msgid "Base"
+msgstr "Base"
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_form
-msgid "Assigned Operations"
-msgstr "Assigned Operations"
-
-#. module: midban_depot_stock
-#: view:res.partner:midban_depot_stock.view_partner_form_route
-#: field:res.partner,route_part_ids:0
-msgid "Assigned Routes"
-msgstr "Rutas asignadas"
-
-#. module: midban_depot_stock
-#: field:res.users,route_ids:0
-msgid "Assigned routes"
-msgstr "Assigned routes"
-
-#. module: midban_depot_stock
-#: selection:route,type:0
-#: selection:route.report,route_type:0
-msgid "Auto Sale"
-msgstr "Auto venta"
-
-#. module: midban_depot_stock
-#: field:stock.location,filter_available:0
-msgid "Available Between X-Y"
-msgstr "Disponible entre X-Y"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Available equals"
-msgstr "Disponible igual"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Available greater"
-msgstr "Disponible mayor"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Available less"
-msgstr "Disponible menor"
-
-#. module: midban_depot_stock
-#: field:stock.location,available_volume:0
-msgid "Available volume"
-msgstr "Volumen disponible"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "BAR CODE:"
-msgstr "BAR CODE:"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "BOXES:"
-msgstr "CAJAS:"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Back to Pending"
-msgstr "Volver a pendiente"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "Blue lines indicates thar product is configured as variable weight.\n"
-"                            That means that the system will not convert between quantities if the stock unit and\n"
-"                            purchase unit are not the same."
-msgstr "Las lineas azules indican que el producto está configurado como con peso variable.\n"
-"Eso significa que el sistema no convertirá cantidades entre las distintas unidades"
-
-#. module: midban_depot_stock
-#: selection:transfer.line,do_pack:0
+#. module: midban_product
+#: field:product.supplierinfo,log_box_id:0
+#: field:product.template,log_box_id:0
 msgid "Box"
 msgstr "Caja"
 
-#. module: midban_depot_stock
-#: selection:tag,type:0
-msgid "Box Tag"
-msgstr "Caja"
+#. module: midban_product
+#: model:product.uom,name:midban_product.product_uom_box
+msgid "Box(es)"
+msgstr "Caja(s)"
 
-#. module: midban_depot_stock
-#: selection:stock.location,storage_type:0
-#: field:tag,num_boxes:0
-#: field:tag.item,num_boxes:0
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Boxes"
-msgstr "Cajas"
+#. module: midban_product
+#: field:product.template,breakfast_snack:0
+msgid "Breakfast/Snack"
+msgstr "Desayuno/merienda"
 
-#. module: midban_depot_stock
-#: field:stock.location,barcode_name:0
-msgid "CDB Name"
-msgstr "CDB Name"
+#. module: midban_product
+#: field:product.template,bulk:0
+msgid "Bulk"
+msgstr "Granel"
 
-#. module: midban_depot_stock
-#: field:stock.transfer_details_items,life_date:0
-msgid "Caducity date"
-msgstr "Fecha caducidad"
+#. module: midban_product
+#: field:product.template,ca_height:0
+msgid "CA Height"
+msgstr "CA Altura"
 
-#. module: midban_depot_stock
-#: field:stock.location,volume_by_parent:0
-msgid "Calculate volume by parent location"
-msgstr "Calcular volumen por ubicaciones padre"
+#. module: midban_product
+#: field:product.supplierinfo,supp_ca_height:0
+msgid "CA Height Supplier"
+msgstr "CA Altura Proveedor"
 
-#. module: midban_depot_stock
-#: help:stock.picking,total_weight:0
-msgid "Calculed as the total of stock qty in moves * product gross weight"
-msgstr "Calculado como el el total de los movimientos  de la cantidad de stock por el peso bruto del producto"
+#. module: midban_product
+#: field:product.template,ca_length:0
+msgid "CA Length"
+msgstr "CA Largo"
 
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-#: view:route.detail:midban_depot_stock.route_detail_view_form
-msgid "Call List"
-msgstr "Listado llamadas"
+#. module: midban_product
+#: field:product.supplierinfo,supp_ca_length:0
+msgid "CA Length Supplier"
+msgstr "CA Largo Proveedor"
 
-#. module: midban_depot_stock
-#: field:route.detail,call_ids:0
-msgid "Call list"
-msgstr "Listado llamadas"
+#. module: midban_product
+#: field:product.template,ca_width:0
+msgid "CA Width"
+msgstr "CA Ancho"
 
-#. module: midban_depot_stock
-#: selection:crm.phonecall,result:0
-#: selection:route.report,result:0
-msgid "Call not done"
-msgstr "LLamada no realizada"
+#. module: midban_product
+#: field:product.supplierinfo,supp_ca_width:0
+msgid "CA Width Supplier"
+msgstr "CA Ancho Proveedor"
 
-#. module: midban_depot_stock
-#: selection:route.report,result:0
-msgid "Call other day"
-msgstr "LLamar otro día"
+#. module: midban_product
+#: field:product.template,ca_ma:0
+msgid "CA/MA"
+msgstr "CA/MA"
 
-#. module: midban_depot_stock
-#: selection:crm.phonecall,result:0
-msgid "Call other moment"
-msgstr "LLamar en otro momento"
+#. module: midban_product
+#: field:product.supplierinfo,supp_ca_ma:0
+msgid "CA/MA Supplier"
+msgstr "CA/MA Proveedor"
 
-#. module: midban_depot_stock
-#: field:crm.phonecall,result:0
-msgid "Call result"
-msgstr "Resultado llamada"
+#. module: midban_product
+#: field:product.supplierinfo,base_use_purchase:0
+#: field:product.supplierinfo,box_use_purchase:0
+#: field:product.supplierinfo,unit_use_purchase:0
+msgid "Can be used on purchases"
+msgstr "Se puede usar en compras"
 
-#. module: midban_depot_stock
-#: selection:crm.phonecall,result:0
-#: selection:route.report,result:0
-msgid "Call without order"
-msgstr "LLamada sin pedido"
+#. module: midban_product
+#: field:product.template,base_use_sale:0
+#: field:product.template,box_use_sale:0
+#: field:product.template,unit_use_sale:0
+msgid "Can be used on sales"
+msgstr "Se puede usar en ventas"
 
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Camara"
-msgstr "Cámara"
-
-#. module: midban_depot_stock
-#: field:wave.report,camera_id:0
-msgid "Camera"
-msgstr "Cámara"
-
-#. module: midban_depot_stock
-#: field:create.camera.locations,camera_code:0
-msgid "Camera Code"
-msgstr "Código cámara"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:523
-#, python-format
-msgid "Cameras are required to do a                                  reposition task"
-msgstr "Las cámaras están configuradas como obligatorias para hacer la tarea de reposición"
-
-#. module: midban_depot_stock
-#: field:stock.picking,camera_ids:0
-#: field:stock.picking.wave,camera_ids:0
-msgid "Cameras picked"
-msgstr "Cámaras picked"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:291
-#, python-format
-msgid "Can not re-schedule a route in %s                                            state"
-msgstr "No se puede replanificar una ruta en el estado de %s "
-
-#. module: midban_depot_stock
-#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
-#: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
-#: view:get.route.detail.wzd:midban_depot_stock.get_route_detail_wzd_form_view
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-#: view:reposition.wizard:midban_depot_stock.reposition_wizard_view
-#: view:route:midban_depot_stock.route_view_form
-#: view:stock.picking.create.multipack:midban_depot_stock.stock_create_multipack_wizard_form_view
+#. module: midban_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
 msgid "Cancel"
 msgstr "Cancelar"
 
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-#: view:stock.task:midban_depot_stock.stock_task_view_form
-msgid "Cancel Task"
-msgstr "Cancelar tarea"
+#. module: midban_product
+#: selection:temp.type,type:0
+msgid "Chilled"
+msgstr "Refrigerado"
 
-#. module: midban_depot_stock
-#: selection:stock.task,state:0
-msgid "Canceled"
-msgstr "Cancelada"
+#. module: midban_product
+#: field:product.template,product_class:0
+msgid "Class"
+msgstr "Clase"
 
-#. module: midban_depot_stock
-#: selection:route.detail,state:0
-#: selection:route.report,detail_state:0
-msgid "Cancelled"
-msgstr "Cancelado"
+#. module: midban_product
+#: field:product.template,ean14:0
+msgid "Code EAN14"
+msgstr "Código EAN14"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:897
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Coefficients and sizes of logistic units"
+msgstr "Coeficientes y tamaños de unidades logísticas"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:341
 #, python-format
-msgid "Cannot change product once operation is created, delete this and crate another one in the picking."
-msgstr "No se puede cambiar el producto una vez la operación está creada. Bórrela y crea otra nueva en el picking."
+msgid "Comercial and validate done. Pending to register"
+msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
 
-#. module: midban_depot_stock
-#: field:stock.inventory,category_ids:0
-msgid "Categories"
-msgstr "Categorías"
-
-#. module: midban_depot_stock
-#: field:stock.config.settings,check_customer_comercial:0
-msgid "Check customer in routes"
-msgstr "Comprobar clientes entre rutas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:251
+#. module: midban_product
+#: code:addons/midban_product/product.py:331
 #, python-format
-msgid "Check operator:                                                You haven't a task assigned."
-msgstr "Check operator:                                                You haven't a task assigned."
+msgid "Comercial validate done"
+msgstr "Validación comercial realizada"
 
-#. module: midban_depot_stock
-#: field:stock.config.settings,check_sale_order:0
-msgid "Check route in sale order"
-msgstr "Comprobar ruta en pedidos de venta"
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Comercial validation pending"
+msgstr "Pendiente validación comercial"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:880
-#, python-format
-msgid "Check the available quantity of new lot."
-msgstr "Compruebe la cantidad disponible del nuevo lote."
+#. module: midban_product
+#: field:product.history,comment:0
+msgid "Comment"
+msgstr "Comentario"
 
-#. module: midban_depot_stock
-#: field:stock.config.settings,check_route_zip:0
-msgid "Check zips in routes"
-msgstr "Comprobar códigos postales en rutas"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Commercial Validated"
+msgstr "Commercial Validado"
 
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Close"
-msgstr "Cerrar"
+#. module: midban_product
+#: field:product.template,consignment:0
+msgid "Consignment"
+msgstr "Consigna"
 
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-#: selection:route.detail,state:0
-#: selection:route.report,detail_state:0
-msgid "Closed"
-msgstr "Cerrado"
+#. module: midban_product
+#: view:product.template:midban_product.midban_product_search_form_view
+msgid "Consumable"
+msgstr "Consumible"
 
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.report,result:0
-msgid "Closed Reform"
-msgstr "Cerrado por reforma"
-
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.report,result:0
-msgid "Closed day"
-msgstr "Día de cierre"
-
-#. module: midban_depot_stock
-#: field:route,code:0
-#: field:route.zip,code:0
-#: view:stock.machine:midban_depot_stock.stock_machine_view_search
-#: field:stock.machine,code:0
-#: field:stock.vehicle,code:0
-msgid "Code"
-msgstr "Código"
-
-#. module: midban_depot_stock
-#: sql_constraint:stock.machine:0
-msgid "Code can not be repeated."
-msgstr "El código no puede repetirse."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:325
-#, python-format
-msgid "Code of reason_id does not exist"
-msgstr "Code of reason_id does not exist"
-
-#. module: midban_depot_stock
-#: field:aisle.record,num_cols:0
-msgid "Columns"
-msgstr "Columnas"
-
-#. module: midban_depot_stock
-#: field:procurement.group,user_id:0
-#: view:route:midban_depot_stock.route_view_search
-#: field:route,comercial_id:0
-#: selection:route,type:0
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: field:route.detail,comercial_id:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,comercial_id:0
-#: selection:route.report,route_type:0
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-#: field:stock.picking,user_id:0
-msgid "Comercial"
-msgstr "Comercial"
-
-#. module: midban_depot_stock
-#: selection:crm.phonecall,result:0
-#: selection:route.report,result:0
-msgid "Comunicate"
-msgstr "Comunica"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:278
-#, python-format
-msgid "Configuration Error!"
-msgstr "¡Error de configuración"
-
-#. module: midban_depot_stock
-#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
-msgid "Configuration aisles"
-msgstr "Configuración pasillos"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "Confirm Operations"
-msgstr "Confirmar Operaciones"
-
-#. module: midban_depot_stock
-#: field:stock.transfer_details_items,do_onchange:0
-msgid "Contros onchange"
-msgstr "Contros onchange"
-
-#. module: midban_depot_stock
-#: view:get.route.detail.wzd:midban_depot_stock.get_route_detail_wzd_form_view
-msgid "Create Details"
-msgstr "Crear detalles"
-
-#. module: midban_depot_stock
-#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-msgid "Create Locations"
-msgstr "Crear ubicaciones"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-#: view:stock.picking.create.multipack:midban_depot_stock.stock_create_multipack_wizard_form_view
-msgid "Create Multipack"
-msgstr "Crear Multipack"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-msgid "Create Reposition"
-msgstr "Crear reposición"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_create_camera_locations
-msgid "Create locations for camera"
-msgstr "Crear ubicaciones para cámara"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.create_multipack_wizard_action
-msgid "Create multipack"
-msgstr "Crear multipack"
-
-#. module: midban_depot_stock
-#: field:aisle.record,create_uid:0
-#: field:assign.task.wzd,create_uid:0
-#: field:create.camera.locations,create_uid:0
-#: field:create.tag.wizard,create_uid:0
-#: field:customer.list,create_uid:0
-#: field:get.route.detail.wzd,create_uid:0
-#: field:item.create.route,create_uid:0
-#: field:manual.transfer.wzd,create_uid:0
-#: field:partner.route.info,create_uid:0
-#: field:reposition.wizard,create_uid:0
-#: field:route,create_uid:0
-#: field:route.detail,create_uid:0
-#: field:route.zip,create_uid:0
-#: field:stock.machine,create_uid:0
-#: field:stock.picking.create.multipack,create_uid:0
-#: field:stock.picking.create.multipack.line,create_uid:0
-#: field:stock.task,create_uid:0
-#: field:stock.vehicle,create_uid:0
-#: field:tag,create_uid:0
-#: field:tag.item,create_uid:0
-#: field:transfer.line,create_uid:0
+#. module: midban_product
+#: field:deny.product.reason,create_uid:0
+#: field:process.deny.product,create_uid:0
+#: field:process.unregister.product,create_uid:0
+#: field:product.allergen,create_uid:0
+#: field:product.history,create_uid:0
+#: field:temp.type,create_uid:0
+#: field:unregister.product.reason,create_uid:0
 msgid "Created by"
 msgstr "Creado por"
 
-#. module: midban_depot_stock
-#: field:aisle.record,create_date:0
-#: field:assign.task.wzd,create_date:0
-#: field:create.camera.locations,create_date:0
-#: field:create.tag.wizard,create_date:0
-#: field:customer.list,create_date:0
-#: field:get.route.detail.wzd,create_date:0
-#: field:item.create.route,create_date:0
-#: field:manual.transfer.wzd,create_date:0
-#: field:partner.route.info,create_date:0
-#: field:reposition.wizard,create_date:0
-#: field:route,create_date:0
-#: field:route.detail,create_date:0
-#: field:route.zip,create_date:0
-#: field:stock.machine,create_date:0
-#: field:stock.picking.create.multipack,create_date:0
-#: field:stock.picking.create.multipack.line,create_date:0
-#: field:stock.task,create_date:0
-#: field:stock.vehicle,create_date:0
-#: field:tag,create_date:0
-#: field:tag.item,create_date:0
-#: field:transfer.line,create_date:0
+#. module: midban_product
+#: field:deny.product.reason,create_date:0
+#: field:process.deny.product,create_date:0
+#: field:process.unregister.product,create_date:0
+#: field:product.allergen,create_date:0
+#: field:product.history,create_date:0
+#: field:temp.type,create_date:0
+#: field:unregister.product.reason,create_date:0
 msgid "Created on"
-msgstr "Creado el"
+msgstr "Creado en"
 
-#. module: midban_depot_stock
-#: field:product.template,is_cross_dock:0
-msgid "Cros Dock                                          Product"
-msgstr "Producto Cross Dock"
-
-#. module: midban_depot_stock
-#: field:stock.location.route,cross_dock:0
-msgid "Cross Dock Route"
-msgstr "Ruta Cross Dock"
-
-#. module: midban_depot_stock
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_supplier_order
-msgid "Cross Dock Supplier Report"
-msgstr "Informe Cross-dock a proveedor"
-
-#. module: midban_depot_stock
-#: field:customer.list,customer_id:0
-#: field:partner.route.info,partner_id:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,customer_id:0
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-#: field:wave.report,customer_id:0
-#: view:website:midban_depot_stock.report_delivery_list
-msgid "Customer"
-msgstr "Cliente"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:268
-#, python-format
-msgid "Customer %s is asigned to a route                                             of other                                             comercial"
-msgstr "Customer %s está asignado a otra ruta de diferente comercial"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:125
-#, python-format
-msgid "Customer %s is asigned to a route of                                           other comercial"
-msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:215
-#, python-format
-msgid "Customer %s is asigned to a route of                                     other comercial"
-msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:101
-#, python-format
-msgid "Customer %s must have a zip code.                                      "
-msgstr "El cliente %s debe tener código postal.                                      "
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_delivery_list
-msgid "Customer Address:"
-msgstr "Dirección de cliente:"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-#: view:route.detail:midban_depot_stock.route_detail_view_form
-#: field:route.detail,customer_ids:0
-msgid "Customer List"
-msgstr "Listado Clientes"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-#: field:route,partner_ids:0
-msgid "Customers"
-msgstr "Clientes"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "DATE ORDER:"
-msgstr "FECHA PEDIDO:"
-
-#. module: midban_depot_stock
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: field:route.detail,date:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,date:0
+#. module: midban_product
+#: field:product.history,date:0
 msgid "Date"
 msgstr "Fecha"
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: field:stock.task,date_end:0
-msgid "Date End"
-msgstr "Fecha fin"
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Denied"
+msgstr "Denegado"
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: field:stock.task,date_start:0
-msgid "Date Start"
-msgstr "Fecha inicio"
+#. module: midban_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Deny"
+msgstr "Denegar"
 
-#. module: midban_depot_stock
-#: field:tag,date_order:0
-msgid "Date order"
-msgstr "Fecha pedido"
+#. module: midban_product
+#: field:product.template,deny_reason_id:0
+msgid "Deny Reason"
+msgstr "Motivo denegación"
 
-#. module: midban_depot_stock
-#: help:sale.order,date_planned:0
-msgid "Date propaged to shecduled                                               date of related picking"
-msgstr "Fecha propagada para la fecha programada en el albarán relacionado"
+#. module: midban_product
+#: field:process.deny.product,reason_id:0
+msgid "Deny product Reason"
+msgstr "Motivo denegación"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:235
-#, python-format
-msgid "Date range not valid."
-msgstr "Rango de fechas no válido"
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_process_deny_product
+msgid "Deny product and update the associated reasons"
+msgstr "Denegar alta de producto y registrar los motivos"
 
-#. module: midban_depot_stock
-#: help:assign.task.wzd,date_planned:0
-msgid "Date to search moves for picking"
-msgstr "Fecha para buscar movimientos de picking"
+#. module: midban_product
+#: model:ir.ui.menu,name:midban_product.menu_deny_product_reason_purchases
+#: model:ir.ui.menu,name:midban_product.menu_deny_product_reason_sales
+#: model:ir.ui.menu,name:midban_product.menu_deny_product_reason_stock
+msgid "Deny product reasons"
+msgstr "Motivos denegación de alta"
 
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_search
-msgid "Day"
-msgstr "Día"
+#. module: midban_product
+#: view:deny.product.reason:midban_product.midban_deny_product_reason_view_form
+#: view:deny.product.reason:midban_product.midban_deny_product_reason_view_tree
+msgid "Deny reasons"
+msgstr "Motivos denegación de producto"
 
-#. module: midban_depot_stock
-#: field:get.route.detail.wzd,delete:0
-msgid "Delete Future"
-msgstr "Borrar Futuro"
+#. module: midban_product
+#: help:temp.type,type:0
+msgid "Depending on this temperature, the product will be storedin a different warehouse location."
+msgstr "Depending on this temperature, the product will be storedin a different warehouse location."
 
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-msgid "Delete operations"
-msgstr "Borrar operaciones"
+#. module: midban_product
+#: field:product.template,dessert:0
+msgid "Dessert"
+msgstr "Postre"
 
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.report,result:0
-msgid "Delivered OK"
-msgstr "Entregado OK"
+#. module: midban_product
+#: field:product.template,drained_weight:0
+msgid "Drained net weight"
+msgstr "Peso escurrido"
 
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.report,result:0
-msgid "Delivered with issue"
-msgstr "Entregado con incidencia"
+#. module: midban_product
+#: selection:temp.type,type:0
+msgid "Dry"
+msgstr "Seco"
 
-#. module: midban_depot_stock
-#: selection:route,type:0
-#: selection:route.report,route_type:0
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-msgid "Delivery"
-msgstr "Envío"
-
-#. module: midban_depot_stock
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_delivery_list
-#: field:stock.picking,out_report_ids:0
-msgid "Delivery List"
-msgstr "Informe de envío"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_search
-msgid "Desactived"
-msgstr "Desactivada"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Description"
-msgstr "Descripción"
-
-#. module: midban_depot_stock
-#: field:stock.picking.create.multipack.line,pack_dest_id:0
-msgid "Dest package"
-msgstr "Dest package"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Destination"
-msgstr "Destino"
-
-#. module: midban_depot_stock
-#: field:customer.list,detail_id:0
-msgid "Detail"
-msgstr "Detalle"
-
-#. module: midban_depot_stock
-#: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
-msgid "Detail Date"
-msgstr "Fecha detalle"
-
-#. module: midban_depot_stock
-#: field:procurement.order,route_detail_id:0
-#: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
-#: field:sale.order,route_detail_id:0
-#: field:stock.move,route_detail_id:0
-#: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-#: field:stock.picking,route_detail_id:0
-msgid "Detail Route"
-msgstr "Detalle ruta"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,detail_state:0
-msgid "Detail State"
-msgstr "Estado detalle"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_route_detail
-msgid "Detail for a route of one day"
-msgstr "Detalle para una ruta concreta un día concreto"
-
-#. module: midban_depot_stock
-#: field:route,detail_ids:0
-msgid "Detail ids"
-msgstr "Detalle ids"
-
-#. module: midban_depot_stock
-#: field:route.detail,detail_name_str:0
-msgid "Detail name"
-msgstr "Detail name"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:166
-#, python-format
-msgid "Detail of route must be assigned to                                     confirm the order"
-msgstr "El detalle de la ruta debe estar asignado para confirmar el pedido"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:172
-#, python-format
-msgid "Detail route %s must be of delivery                                         type"
-msgstr "El detalle de la ruta %s debe ser de tipo envío"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:386
-#, python-format
-msgid "Detail route for day %s can not be deleted                              because is a past date"
-msgstr "Detail route for day %s can not be deleted                              because is a past date"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:391
-#, python-format
-msgid "Detail route for day %s with state is %s can not                              be deleted. Only pending routes can be                             deleted"
-msgstr "Detail route for day %s with state is %s can not                              be deleted. Only pending routes can be                             deleted"
-
-#. module: midban_depot_stock
-#: field:transfer.line,do_pack:0
-msgid "Do Pack"
-msgstr "Empaquetar"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,do_onchange:0
-msgid "Do onchange"
-msgstr "Do onchange"
-
-#. module: midban_depot_stock
-#: selection:route,state:0
-#: selection:route.report,route_state:0
-msgid "Draft"
-msgstr "Borrador"
-
-#. module: midban_depot_stock
-#: field:stock.task,duration:0
-msgid "Duration"
-msgstr "Duración"
-
-#. module: midban_depot_stock
-#: help:stock.task,duration:0
-msgid "Duration in Minutes"
-msgstr "Duración en minutos"
-
-#. module: midban_depot_stock
-#: field:out.picking.report,ean13:0
-#: field:wave.report,ean13:0
-msgid "EAN 13"
-msgstr "EAN 13"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "EAN 13:"
-msgstr "EAN 13:"
-
-#. module: midban_depot_stock
-#: field:tag,ean13:0
-#: field:tag.item,ean13:0
-msgid "EAN13"
-msgstr "EAN13"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:392
-#, python-format
-msgid "ERROR"
-msgstr "ERROR"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "EXPIRY DATE:"
-msgstr "FECHA CADUCIDAD:"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Ean13"
-msgstr "Ean13"
-
-#. module: midban_depot_stock
-#: field:get.route.detail.wzd,end_date:0
-#: field:item.create.route,end_date:0
-msgid "End Date"
-msgstr "Fecha fin"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:100
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:117
-#, python-format
-msgid "Enter transfer details"
-msgstr "Enter transfer details"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:194
-#: code:addons/midban_depot_stock/partner.py:196
-#: code:addons/midban_depot_stock/partner.py:214
-#: code:addons/midban_depot_stock/partner.py:244
-#: code:addons/midban_depot_stock/partner.py:247
-#: code:addons/midban_depot_stock/partner.py:267
-#: code:addons/midban_depot_stock/route.py:136
-#: code:addons/midban_depot_stock/route.py:183
-#: code:addons/midban_depot_stock/route.py:234
-#: code:addons/midban_depot_stock/route.py:238
-#: code:addons/midban_depot_stock/route.py:262
-#: code:addons/midban_depot_stock/route.py:285
-#: code:addons/midban_depot_stock/route.py:290
-#: code:addons/midban_depot_stock/sale.py:165
-#: code:addons/midban_depot_stock/sale.py:171
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:560
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:695
-#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:131
-#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:134
-#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:144
-#: code:addons/midban_depot_stock/wizard/get_route_detail_wzd.py:66
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:50
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:95
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:115
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:184
-#: code:addons/midban_depot_stock/wizard/order_camera_locations.py:124
-#: code:addons/midban_depot_stock/wizard/order_camera_locations.py:127
-#: code:addons/midban_depot_stock/wizard/order_camera_locations.py:134
+#. module: midban_product
+#: code:addons/midban_product/product.py:298
+#: code:addons/midban_product/product.py:307
+#: code:addons/midban_product/product.py:312
+#: code:addons/midban_product/product.py:565
+#: code:addons/midban_product/product.py:577
+#: code:addons/midban_product/product.py:617
+#: code:addons/midban_product/product.py:647
+#: code:addons/midban_product/product.py:729
+#: code:addons/midban_product/product.py:746
+#: code:addons/midban_product/product.py:768
 #, python-format
 msgid "Error"
 msgstr "Error"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:115
-#: code:addons/midban_depot_stock/product.py:117
-#: code:addons/midban_depot_stock/route.py:154
-#: code:addons/midban_depot_stock/stock.py:764
-#: code:addons/midban_depot_stock/stock.py:810
-#: code:addons/midban_depot_stock/stock.py:1378
-#: code:addons/midban_depot_stock/stock.py:1401
-#: code:addons/midban_depot_stock/stock.py:1411
-#: code:addons/midban_depot_stock/stock.py:1775
-#: code:addons/midban_depot_stock/stock.py:1809
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:213
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:230
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:239
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:251
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:270
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:310
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:328
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:340
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:398
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:404
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:415
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:419
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:442
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:461
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:473
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:508
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:514
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:523
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:530
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:539
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:609
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:761
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:766
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:772
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:834
-#: code:addons/midban_depot_stock/wizard/create_tag_wizard.py:132
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:136
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:230
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:285
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:333
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:353
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:360
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:370
-#, python-format
-msgid "Error!"
-msgstr "¡Error!"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"
+msgstr "Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"
 
-#. module: midban_depot_stock
-#: field:stock.picking,midban_operations:0
-msgid "Exist midban operation"
-msgstr "Existe operación de midban"
+#. module: midban_product
+#: field:product.template,first_course:0
+msgid "First Course"
+msgstr "Primer Plato"
 
-#. module: midban_depot_stock
-#: field:tag,removal_date:0
-#: field:tag.item,removal_date:0
-msgid "Expiry Date"
-msgstr "Fecha caducidad"
+#. module: midban_product
+#: selection:product.template,product_class:0
+msgid "Fresh"
+msgstr "Fresco"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:100
-#: sql_constraint:product.template:0
-#, python-format
-msgid "Field Location picking is already setted"
-msgstr "Esa ubicación de picking ya está asignada"
+#. module: midban_product
+#: help:product.template,product_class:0
+msgid "Fresh and ultra-fresh products do not require units for validation"
+msgstr "Los productos frescos y ultrafrescos no precisan unidades para la validación"
 
-#. module: midban_depot_stock
-#: field:stock.location,filled_percent:0
-msgid "Filled %"
-msgstr "% Ocupación"
+#. module: midban_product
+#: selection:temp.type,type:0
+msgid "Frozen"
+msgstr "Congelado"
 
-#. module: midban_depot_stock
-#: field:stock.location,filter_percent:0
-msgid "Filled Between X-Y"
-msgstr "Ocupación entre X-Y"
+#. module: midban_product
+#: field:product.template,glazed:0
+msgid "Glazed"
+msgstr "Glaseado"
 
-#. module: midban_depot_stock
-#: field:reposition.wizard,capacity:0
-msgid "Filled Percentage"
-msgstr "Porcentaje mínimo"
+#. module: midban_product
+#: field:product.template,hidde_variant_page:0
+msgid "Hidde variant page"
+msgstr "Esconder pestaña variantes"
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_form
-msgid "Finish Partial Task"
-msgstr "Finalizar procesadas"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "History"
+msgstr "Historial"
 
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Finish Task"
-msgstr "Finalizar tarea"
-
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: selection:stock.task,state:0
-msgid "Finished"
-msgstr "Finalizada"
-
-#. module: midban_depot_stock
-#: field:stock.picking,cross_dock:0
-msgid "From Cross Dock order"
-msgstr "Desde pedido Cross Dock"
-
-#. module: midban_depot_stock
-#: field:transfer.line,src_location_id:0
-msgid "From location"
-msgstr "De ubicación"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "General"
-msgstr "General"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_get_route_details_wizard
-msgid "Generate Deatail Routes"
-msgstr "Generar detalle de las rutas"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Get Location Task"
-msgstr "Dame tarea ubicación"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Get Picking Task"
-msgstr "Dame tarea picking"
-
-#. module: midban_depot_stock
-#: view:reposition.wizard:midban_depot_stock.reposition_wizard_view
-msgid "Get Reposition"
-msgstr "Dame reposición"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Get Reposition Task"
-msgstr "Dame tarea reposición"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.stock_transfer_details_form_in
-msgid "Get destination locations"
-msgstr "Obtener ubicaciones de destino"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,give_me:0
-msgid "Give me ?"
-msgstr "Give me ?"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Group By"
-msgstr "Agrupar por"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_search
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: view:tag:midban_depot_stock.tag_view_search
-msgid "Group By..."
-msgstr "Agrupar por..."
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_wave_report
-msgid "Group picks of waves"
-msgstr "Agrupar albaranes de oleada"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_out_picking_report
-msgid "Group products and lots in outgoing pickings"
-msgstr "Agrupar productos y lotes en alvaranes de salida"
-
-#. module: midban_depot_stock
-#: field:aisle.record,my_height:0
-#: field:stock.location,height:0
-msgid "Height"
-msgstr "Alto"
-
-#. module: midban_depot_stock
-#: field:aisle.record,num_heights:0
-msgid "Heights"
-msgstr "Alturas"
-
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.report,result:0
-msgid "Holidays"
-msgstr "Vacaciones"
-
-#. module: midban_depot_stock
-#: field:aisle.record,id:0
-#: field:assign.task.wzd,id:0
-#: field:create.camera.locations,id:0
-#: field:create.tag.wizard,id:0
-#: field:customer.list,id:0
-#: field:get.route.detail.wzd,id:0
-#: field:item.create.route,id:0
-#: field:manual.transfer.wzd,id:0
-#: field:out.picking.report,id:0
-#: field:partner.route.info,id:0
-#: field:report.midban_depot_stock.report_picking_list,id:0
-#: field:report.midban_depot_stock.report_supplier_reception,id:0
-#: field:reposition.wizard,id:0
-#: field:route,id:0
-#: field:route.detail,id:0
-#: field:route.report,id:0
-#: field:route.zip,id:0
-#: field:stock.machine,id:0
-#: field:stock.picking.create.multipack,id:0
-#: field:stock.picking.create.multipack.line,id:0
-#: field:stock.task,id:0
-#: field:stock.vehicle,id:0
-#: field:tag,id:0
-#: field:tag.item,id:0
-#: field:transfer.line,id:0
-#: field:wave.report,id:0
+#. module: midban_product
+#: field:deny.product.reason,id:0
+#: field:process.deny.product,id:0
+#: field:process.unregister.product,id:0
+#: field:product.allergen,id:0
+#: field:product.history,id:0
+#: field:temp.type,id:0
+#: field:unregister.product.reason,id:0
 msgid "ID"
 msgstr "ID"
 
-#. module: midban_depot_stock
-#: help:stock.location,camera:0
-msgid "If True we can do picking of this location and childrens"
-msgstr "Si es verdadero podremos hacer picking de esta ubicación y sus hijos"
+#. module: midban_product
+#: help:product.supplierinfo,is_var_coeff:0
+msgid "If any conversion is checked, the                                    product will be processed as a variable                                    weight product in purchases process"
+msgstr "Si algún coeficiente de conversión está marcado como variable, el producto se tratará como un producto de peso variable en el proceso de compras"
 
-#. module: midban_depot_stock
-#: help:stock.config.settings,pick_by_volume:0
-msgid "If checked when we get a picking        task, from all moves of a kind of product we only put in the task         moves until reach the max volume. If max volume is reached it will be        ignored all product moves and continues with other product moves        If not checked all moves of a route and a concret date will be        considered in a unique task without limit."
-msgstr "Si está activado, cuando obtenemos una tarea de picking, de todos los movimientos de un producto (y de una ruta y día concretos) solo se pondrán en la tarea aquellos movimientos que no superen el máximo volumen de llenado definido en la ficha del almacén, a no ser que la oleada de picking este vacía y no haya mas movimientos para otros productos en este caso aunque lo supere se fuerzai no está activado se considerarán todos los movimientos de una ruta y un día concretos para cada producto, sin límite."
+#. module: midban_product
+#: help:product.template,is_var_coeff:0
+msgid "If any conversion is checked, the                                    product will be processed as a variable                                    weight product in sales process"
+msgstr "Si algún coeficiente de conversión está marcado como variable, el producto se tratará como un producto de peso variable en el proceso de ventas"
 
-#. module: midban_depot_stock
-#: help:assign.task.wzd,mandatory_camera:0
-msgid "If checked when you ask for a                                           reposition or ubication task you                                            muste the cameras to get operations                                           if not checked it will assign                                            operations of any camera"
-msgstr "Si está activado, cuando se piden tareas de reposición o de ubicación, debes especificar las cámaras para obtener operaciones. Si no está marcado las operaciones que se asignen en la tarea serán de cualquier cámara"
+#. module: midban_product
+#: help:product.supplierinfo,var_coeff_un:0
+#: help:product.template,var_coeff_un:0
+msgid "If checked we can manage products of variable weight.\n"
+"System will not convert between units"
+msgstr "Si está activo podremos manejar productos de peso variable.\n"
+"El sistema no convertirá entre unidades"
 
-#. module: midban_depot_stock
-#: help:stock.config.settings,mandatory_camera:0
-msgid "If checked when you ask for a                                        reposition or ubication task you must                                        set the camera or cameras to get                                        operations"
-msgstr "Si está activado, cuando se piden tareas de reposición o de ubicación, debes especificar las cámaras para obtener operaciones. Si no está marcado las operaciones que se asignen en la tarea serán de cualquier cámara"
+#. module: midban_product
+#: help:product.supplierinfo,var_coeff_ca:0
+#: help:product.template,var_coeff_ca:0
+msgid "If checked we can manage products of variable weight.\n"
+"System will not convert between units."
+msgstr "Si está activo podremos manejar productos de peso variable.\n"
+"El sistema no convertirá entre unidades"
 
-#. module: midban_depot_stock
-#: help:stock.transfer_details_items,var_weight:0
-msgid "If checked, system will not convert                                 quantitys beetwen units"
-msgstr "Si esta activo el sistema no convertirá cantidades entre unidades"
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_supplierinfo
+msgid "Information about a product supplier"
+msgstr "Información de un proveedor de producto"
 
-#. module: midban_depot_stock
-#: help:assign.task.wzd,print_report:0
-msgid "If checked, when             you get a reposition or picking task the report will be printed"
-msgstr "Si esta activo, cuando obtienes una tarea de ubicación o picking se imprimirá un informe"
+#. module: midban_product
+#: help:product.template,temp_type:0
+msgid "Informative field thatshould be the same as the pickinglocation temperature type"
+msgstr "Campo informativo que debe ser igual a la temperatura definida en la ubicación de`picking"
 
-#. module: midban_depot_stock
-#: help:stock.config.settings,print_report:0
-msgid "If checked, when you get a         reposition or picking task the report will be printed"
-msgstr "Si esta activo, cuando obtienes una tarea de ubicación o picking se imprimirá un informe"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Internal Category"
+msgstr "Categoría interna"
 
-#. module: midban_depot_stock
-#: help:stock.config.settings,check_sale_order:0
-msgid "If checked, when you try confirm                                        a sale order you will not be able to do                                       it if there is no a delivery route                                        detail scheduled for the customer"
-msgstr "Si está activado, cuando confirmas un pedido de venta, no serás capaz de hacerlo si no hay un detalle de una ruta de reparto(envío) planificado para el cliente de la venta"
+#. module: midban_product
+#: field:product.template,kg_un:0
+msgid "KG/UN"
+msgstr "BASE/UN"
 
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "If no pack defined to put away he product, the wizard will only search stock for products without package."
-msgstr "Si no hay paquete definido de donde quitar el producto, el asistente buscará solo mercancía que no este dentro de un paquerte"
+#. module: midban_product
+#: field:product.supplierinfo,supp_kg_un:0
+msgid "KG/UN Supplier"
+msgstr "BASE/UN Proveedor"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:96
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:116
-#, python-format
-msgid "Imposible assign the move"
-msgstr "Imposible asignar el movimiento"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:310
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:328
-#, python-format
-msgid "Imposible to cancel the task                                                You haven't a task assigned."
-msgstr "Imposible cancelar la tarea. No tiene una tarea asignada."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:270
-#, python-format
-msgid "Imposible to pause tasks                                                    You haven't a task                                                     assigned/paused."
-msgstr "Imposible pausar tarea, no tienes ninguna tarea asignada/pausada."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:266
-#, python-format
-msgid "Imposible to schedule dates between %s and                                     %s with regularity of %s                                     week(s)"
-msgstr "Imposible planificar fechas entre %s y                                     %s con un intervalo de %s                                     semana(s)"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:858
-#, python-format
-msgid "Impossible found an special location"
-msgstr "Imposible encontrar una ubicación especial"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:832
-#, python-format
-msgid "Impossible found the multipack location"
-msgstr "Imposible encontrar una ubicación para multipacks"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,task_id:0
-msgid "In task"
-msgstr "En tarea"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "In the first part you can Transfer productos from packs, or products without pack"
-msgstr "En la primera parte puedes transferir productos provenientes de un paquete, o mover productos sin paquete"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "In the second part you can move entire packs between locations."
-msgstr "En la segunda parte puedes mover palets enteros entre las ubicaciones."
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_inventory
-msgid "Inventory"
-msgstr "Inventario"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "Inventory Details"
-msgstr "Detalles del inventario"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_location
-msgid "Inventory Locations"
-msgstr "Ubicaciones de inventario"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_location_route
-msgid "Inventory Routes"
-msgstr "Rutas de inventario"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_account_invoice
-msgid "Invoice"
-msgstr "Factura"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_account_invoice_line
-msgid "Invoice Line"
-msgstr "Línea de factura"
-
-#. module: midban_depot_stock
-#: field:stock.location,multipack_location:0
-msgid "Is a multipack location?"
-msgstr "Es una ubicación multipack?"
-
-#. module: midban_depot_stock
-#: field:stock.location,special_location:0
-msgid "Is a special location?"
-msgstr "Es una ubicación especial?"
-
-#. module: midban_depot_stock
-#: field:stock.quant.package,is_multiproduct:0
-msgid "Is multiproduct"
-msgstr "Es multiproducto"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:324
-#, python-format
-msgid "Issue error"
-msgstr "Error incidencia"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "LOT:"
-msgstr "LOTE:"
-
-#. module: midban_depot_stock
-#: field:item.create.route,last_pending_date:0
-msgid "Last Pending Date"
-msgstr "Última fecha pendiente"
-
-#. module: midban_depot_stock
-#: field:aisle.record,write_uid:0
-#: field:assign.task.wzd,write_uid:0
-#: field:create.camera.locations,write_uid:0
-#: field:create.tag.wizard,write_uid:0
-#: field:customer.list,write_uid:0
-#: field:get.route.detail.wzd,write_uid:0
-#: field:item.create.route,write_uid:0
-#: field:manual.transfer.wzd,write_uid:0
-#: field:partner.route.info,write_uid:0
-#: field:reposition.wizard,write_uid:0
-#: field:route,write_uid:0
-#: field:route.detail,write_uid:0
-#: field:route.zip,write_uid:0
-#: field:stock.machine,write_uid:0
-#: field:stock.picking.create.multipack,write_uid:0
-#: field:stock.picking.create.multipack.line,write_uid:0
-#: field:stock.task,write_uid:0
-#: field:stock.vehicle,write_uid:0
-#: field:tag,write_uid:0
-#: field:tag.item,write_uid:0
-#: field:transfer.line,write_uid:0
+#. module: midban_product
+#: field:deny.product.reason,write_uid:0
+#: field:process.deny.product,write_uid:0
+#: field:process.unregister.product,write_uid:0
+#: field:product.allergen,write_uid:0
+#: field:product.history,write_uid:0
+#: field:temp.type,write_uid:0
+#: field:unregister.product.reason,write_uid:0
 msgid "Last Updated by"
 msgstr "Última actualización por"
 
-#. module: midban_depot_stock
-#: field:aisle.record,write_date:0
-#: field:assign.task.wzd,write_date:0
-#: field:create.camera.locations,write_date:0
-#: field:create.tag.wizard,write_date:0
-#: field:customer.list,write_date:0
-#: field:get.route.detail.wzd,write_date:0
-#: field:item.create.route,write_date:0
-#: field:manual.transfer.wzd,write_date:0
-#: field:partner.route.info,write_date:0
-#: field:reposition.wizard,write_date:0
-#: field:route,write_date:0
-#: field:route.detail,write_date:0
-#: field:route.zip,write_date:0
-#: field:stock.machine,write_date:0
-#: field:stock.picking.create.multipack,write_date:0
-#: field:stock.picking.create.multipack.line,write_date:0
-#: field:stock.task,write_date:0
-#: field:stock.vehicle,write_date:0
-#: field:tag,write_date:0
-#: field:tag.item,write_date:0
-#: field:transfer.line,write_date:0
+#. module: midban_product
+#: field:deny.product.reason,write_date:0
+#: field:process.deny.product,write_date:0
+#: field:process.unregister.product,write_date:0
+#: field:product.allergen,write_date:0
+#: field:product.history,write_date:0
+#: field:temp.type,write_date:0
+#: field:unregister.product.reason,write_date:0
 msgid "Last Updated on"
 msgstr "Última actualización en"
 
-#. module: midban_depot_stock
-#: field:stock.location,length:0
-msgid "Lenght"
-msgstr "Largo"
+#. module: midban_product
+#: field:product.template,last_purchase_price:0
+msgid "Last purchase change"
+msgstr "Último precio compra"
 
-#. module: midban_depot_stock
-#: field:aisle.record,my_length:0
-msgid "Length"
-msgstr "Largo"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Logistic Validated"
+msgstr "Logística validada"
 
-#. module: midban_depot_stock
-#: field:stock.picking.create.multipack,line_ids:0
-msgid "Lines"
-msgstr "Líneas"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_route_zip
-msgid "List of Zip codes covered by route"
-msgstr "Listado de códigos postales cubiertos por la ruta"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-msgid "Localization"
-msgstr "Ubicación"
-
-#. module: midban_depot_stock
-#: field:wave.report,location_id:0
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Location"
-msgstr "Ubicación"
-
-#. module: midban_depot_stock
-#: field:res.users,location_mac_id:0
-msgid "Location Machine"
-msgstr "Ubicación máquina"
-
-#. module: midban_depot_stock
-#: field:product.template,picking_location_id:0
-msgid "Location Picking"
-msgstr "Ubicación picking"
-
-#. module: midban_depot_stock
-#: field:stock.location,zone:0
-msgid "Location Zone"
-msgstr "Zona de la ubicación"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:831
-#: code:addons/midban_depot_stock/stock.py:857
+#. module: midban_product
+#: code:addons/midban_product/product.py:321
 #, python-format
-msgid "Location not found"
-msgstr "Ubicación no encontrada"
+msgid "Logistic validate done"
+msgstr "Validación logística realizada"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:766
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Logistic validation pending"
+msgstr "Pendiente validación logística"
+
+#. module: midban_product
+#: field:product.template,ma_height:0
+msgid "MA Height"
+msgstr "MA Altura"
+
+#. module: midban_product
+#: field:product.supplierinfo,supp_ma_height:0
+msgid "MA Height Supplier"
+msgstr "MA Altura Proveedor"
+
+#. module: midban_product
+#: field:product.template,ma_length:0
+msgid "MA Length"
+msgstr "MA Largo"
+
+#. module: midban_product
+#: field:product.supplierinfo,supp_ma_length:0
+msgid "MA Length Supplier"
+msgstr "MA Largo Proveedor"
+
+#. module: midban_product
+#: field:product.template,ma_width:0
+msgid "MA Width"
+msgstr "MA Ancho"
+
+#. module: midban_product
+#: field:product.supplierinfo,supp_ma_width:0
+msgid "MA Width Supplier"
+msgstr "MA Ancho Proveedor"
+
+#. module: midban_product
+#: field:product.template,ma_pa:0
+msgid "MA/PA"
+msgstr "MA/PA"
+
+#. module: midban_product
+#: field:product.supplierinfo,supp_ma_pa:0
+msgid "MA/PA Supplier"
+msgstr "MA/PA Proveedor"
+
+#. module: midban_product
+#: field:product.template,margin:0
+msgid "Margin"
+msgstr "Margen"
+
+#. module: midban_product
+#: help:product.template,margin:0
+msgid "Margin over sale order that will be used                                     like base to calculate the sale                                      pricelist of ultrafresh products"
+msgstr "Margen sobre venta que se utilizará como base al calcular las tarifas de venta de los productos marcados con la opción tipo de venta= Ultrafresco"
+
+#. module: midban_product
+#: field:product.template,mark:0
+msgid "Mark"
+msgstr "Marca"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:469
 #, python-format
-msgid "Locations are required to                                                  do a picking task"
-msgstr "Elegir cámara es obligatorio para hacer una tarea de picking"
+msgid "Need a logistic unit in sales"
+msgstr "Se necesita una unidad logistica en ventas"
 
-#. module: midban_depot_stock
-#: help:reposition.wizard,selected_loc_ids:0
-msgid "Locations to replenish"
-msgstr "Ubicaciones a reposicionar"
+#. module: midban_product
+#: field:product.template,no_gluten:0
+msgid "No Gluten"
+msgstr "Sin gluten"
 
-#. module: midban_depot_stock
-#: field:out.picking.report,lot_id:0
-#: field:stock.picking.create.multipack.line,lot_id:0
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-#: view:tag:midban_depot_stock.tag_view_search
-#: field:tag,lot_id:0
-#: field:tag.item,lot_id:0
-#: field:transfer.line,lot_id:0
-#: field:wave.report,lot_id:0
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Lot"
-msgstr "Lote"
+#. module: midban_product
+#: view:product.template:midban_product.midban_product_search_form_view
+msgid "No gluten"
+msgstr "Sin gluten"
 
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_production_lot
-msgid "Lot/Serial"
-msgstr "Lote/Nº de serie"
+#. module: midban_product
+#: selection:product.template,product_class:0
+msgid "Normal"
+msgstr "Normal"
 
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-msgid "Lots and quantities"
-msgstr "Lotes y cantidades"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Nutritional Information"
+msgstr "Información nutricional"
 
-#. module: midban_depot_stock
-#: field:assign.task.wzd,machine_id:0
-#: model:ir.actions.act_window,name:midban_depot_stock.action_stock_machine
-#: field:stock.picking,machine_id:0
-#: field:stock.picking.wave,machine_id:0
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: field:stock.task,machine_id:0
-msgid "Machine"
-msgstr "Máquina"
+#. module: midban_product
+#: field:product.template,pa_height:0
+msgid "PA Height"
+msgstr "PA Altura"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:213
+#. module: midban_product
+#: field:product.supplierinfo,supp_pa_height:0
+msgid "PA Height Supplier"
+msgstr "PA Altura Proveedor"
+
+#. module: midban_product
+#: field:product.template,pa_length:0
+msgid "PA Length"
+msgstr "PA Largo"
+
+#. module: midban_product
+#: field:product.supplierinfo,supp_pa_length:0
+msgid "PA Length Supplier"
+msgstr "PA Largo Proveedor"
+
+#. module: midban_product
+#: field:product.template,pa_width:0
+msgid "PA Width"
+msgstr "PA Ancho"
+
+#. module: midban_product
+#: field:product.supplierinfo,supp_pa_width:0
+msgid "PA Width Supplier"
+msgstr "PA Ancho Proveedor"
+
+#. module: midban_product
+#: field:product.template,palet_wood_height:0
+msgid "Palet Wood Height"
+msgstr "Altura madera palet"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:286
 #, python-format
-msgid "Machine not defined either                                                 operator sheet or picking                                                  wizard"
-msgstr "Máquina no definida en la ficha de producto o en el asistente"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Machine:"
-msgstr "Máquina:"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.stock_machine_menu
-#: view:stock.machine:midban_depot_stock.stock_machine_view_form
-#: view:stock.machine:midban_depot_stock.stock_machine_view_tree
-msgid "Machines"
-msgstr "Máquinas"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_machine
-msgid "Machines to move palets between locations"
-msgstr "Máquinas para mover palets entre ubicaciones"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:761
-#, python-format
-msgid "Machines type %s not valid                                 You must select a machine transpalet or order                                 prepare"
-msgstr "Máquinas de tipo %s no validas. Debes seleccionar una máquina transpalet o preparadora de pedidos"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:398
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:508
-#, python-format
-msgid "Machines type %s not valid                                 You must select a retractil machine"
-msgstr "Máquinas de tipo %s no validas. Debes seleccionar máquina de tipo retractil"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_vehicle
-msgid "Management of vehicles"
-msgstr "Gestión de vehículos"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,mandatory_camera:0
-#: field:stock.config.settings,mandatory_camera:0
-msgid "Mandarory camera"
-msgstr "Cámara obligatoria"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_task
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Mantles"
-msgstr "Mantos"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_manual_transfer_wzd
-msgid "Manual Transfer"
-msgstr "Transferencia manual"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.manual_transfer_wzd_menu
-msgid "Manual Transfer Wizard"
-msgstr "Asistente transferencia manual"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "Manual transfer stock wizard"
-msgstr "Asistente de transferencia de mercancía"
-
-#. module: midban_depot_stock
-#: field:stock.config.settings,max_loc_ops:0
-msgid "Max. location operations"
-msgstr "Max. operaciones ubicación"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,max_loc_ops:0
-msgid "Max. nº of location operations"
-msgstr "Max. nº de operaciones de ubicació"
-
-#. module: midban_depot_stock
-#: help:stock.config.settings,max_loc_ops:0
-msgid "Max. nº of location operations to assign in a location task. If a location has more than this nº of operation the task wizard will be assign only the max number this will result in a partial transfer."
-msgstr "Máximo número de operaciones de ubicación para asignar en una tarea. Si un albarán de ubicación tienen mas de este nº de operaciones, el planificador de tareas asignará solo el mámimo definido. Esto dará como resultado una transferencia parcial"
-
-#. module: midban_depot_stock
-#: field:stock.warehouse,max_volume:0
-msgid "Max. volume to move in picking"
-msgstr "Máximo volumen al hacer picking"
-
-#. module: midban_depot_stock
-#: field:reposition.wizard,limit:0
-msgid "Maximum Filled Percentage"
-msgstr "Máximo porcentaje de llenado"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Midban Cross Dock Order N°:"
-msgstr "Pedido cross-dock Midban N°:"
-
-#. module: midban_depot_stock
-#: field:stock.config.settings,min_loc_replenish:0
-msgid "Min locations to replenish"
-msgstr "Mínimas ubicaiones a reponer"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,min_loc_replenish:0
-msgid "Min. nº replenish location"
-msgstr "Min. nº de ubicaciones a reponer"
-
-#. module: midban_depot_stock
-#: help:product.template,limit_time:0
-msgid "Minimum days of expiration.                                      If you enter a product in stock with                                      lower incidence expiration is created."
-msgstr "Mínimos días de caducidad. Si entra un producto en stock con menos, una incidencia de cáducidad será creada."
-
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-#: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
-msgid "More Info"
-msgstr "Más información"
-
-#. module: midban_depot_stock
-#: field:stock.picking,warehouse_id:0
-msgid "Moves warehouse"
-msgstr "Almacén movimientos"
-
-#. module: midban_depot_stock
-#: field:route,name:0
-#: field:stock.vehicle,name:0
-msgid "Name"
-msgstr "Nombre"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Name:"
-msgstr "Nombre:"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Net Price"
-msgstr "Precio neto"
-
-#. module: midban_depot_stock
-#: selection:transfer.line,do_pack:0
-msgid "No Pack"
-msgstr "Sin paquete"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:420
-#, python-format
-msgid "No cameras defined. It is configured                                     to get locations operations by camera                                    mandatorily"
-msgstr "No hay cámaras definidas. Está configurado para obtener operaciones de ubicación por cámara obligatoriamente"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:531
-#, python-format
-msgid "No cameras defined. It is configured                                     to get reposition operations by camera                                    mandatorily"
-msgstr "No hay cámaras definidas. Está configurado para obtener operaciones de reposición por cámara obligatoriamente"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:239
-#, python-format
-msgid "No customers assigned to the route"
-msgstr "Npo hay clientes asignados a la ruta"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:119
-#, python-format
-msgid "No delivery routes assigned in                                   the customer. You will not confirm the                                    order"
-msgstr "No hay rutas de reparto asignadas al cliente. No podrás confirmar el pedido"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:764
-#, python-format
-msgid "No empty locations."
-msgstr "No hay ubicaciones libres."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1411
-#, python-format
-msgid "No general %s location                                                  founded in camera %s."
-msgstr "La zona %s de la ubicación                                               no encontrada en la cámara %s."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:415
-#, python-format
-msgid "No internal pickings to                                                 schedule"
-msgstr "Sin albaranes internos que planificar"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:539
-#, python-format
-msgid "No internal reposition                                                  pickings to schedule"
-msgstr "Sin reposiciones internas para planificar"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:144
-#: code:addons/midban_depot_stock/wizard/order_camera_locations.py:134
-#, python-format
-msgid "No locations will be created"
-msgstr "No se crearán ubicaciones"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:695
-#, python-format
-msgid "No max volume defined in                                                     warehouse"
-msgstr "No hay volumen máximo definido en el almacén"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:354
-#, python-format
-msgid "No picking location matching with                                     specified capacity."
-msgstr "Sin ubicaciones válidas para capacidad especificada."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:834
-#, python-format
-msgid "No pickings to put in a                                                  wave"
-msgstr "No hay albaranes que poner en la ola"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1809
-#, python-format
-msgid "No quants to force the                                                     assignament"
-msgstr "No hay quants necesarios para forzar la asignación al movimiento"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:560
-#, python-format
-msgid "No reposition operations to                                                 schedule"
-msgstr "No hay operaciones de reposición para planificar"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:514
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:360
-#, python-format
-msgid "No reposition type founded                                                 You must define the picking                                                 type in the warehouse."
-msgstr "No se ha encontrado el tipo reposición. Debe definirlo en el almacén."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/get_route_detail_wzd.py:66
-#, python-format
-msgid "No routes to shedule."
-msgstr "No hay rutas que planificar."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:340
-#, python-format
-msgid "No tasks to print."
-msgstr "No hay tareas para imprimir."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:404
-#, python-format
-msgid "No ubication type founded                                                 You must define the picking                                                 type in the warehouse."
-msgstr "No se ha encontrado el tipo ubicación. Debe definir el tipo de albarán en el almacén."
-
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.report,result:0
-msgid "No visited"
-msgstr "No visitado"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:134
-#: code:addons/midban_depot_stock/wizard/order_camera_locations.py:127
-#, python-format
-msgid "Not Aisle configuration defined"
-msgstr "No hay configuraciones de pasillos definidas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/create_camera_locations.py:131
-#: code:addons/midban_depot_stock/wizard/order_camera_locations.py:124
-#, python-format
-msgid "Not camera defined in wizard"
-msgstr "No hay camara definida en el asistente"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:273
-#, python-format
-msgid "Not enough stock ! : "
-msgstr "¡No hay suficiente stock ! : "
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:186
-#, python-format
-msgid "Not enought stock available                                 for product %s, and quantity of                                  %s units"
-msgstr "No hay suficiente stock disponible para el producto %s, y cantidad de %s unidad(es)"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:443
-#, python-format
-msgid "Not found operations for picking                                     %s"
-msgstr "No se encontraron operaciones para el albarán                                     %s"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:474
-#, python-format
-msgid "Not found operations of the selected                                    cameras fot the picking                                     %s"
-msgstr "No se encontraron operaciones de las cámaras selecionadas para el albarán %s"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1775
-#, python-format
-msgid "Not picking location                                        defined for product %s"
-msgstr "No hay ubicación de picking definida para el producto %s"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:811
-#, python-format
-msgid "Not picking location for product                                      %s."
-msgstr "No se encontro ubicación de picking para el producto                                      %s."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:115
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:136
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:285
-#, python-format
-msgid "Not picking location."
-msgstr "No hay zona de picking."
-
-#. module: midban_depot_stock
-#: selection:crm.phonecall,result:0
-#: selection:route.report,result:0
-msgid "Not responding"
-msgstr "No responde"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Notes"
-msgstr "Notas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:371
-#, python-format
-msgid "Nothing to do."
-msgstr "Nada que hacer."
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,num_mantles:0
-msgid "Nº Mantles"
-msgstr "Nº Mantos"
-
-#. module: midban_depot_stock
-#: field:route.report,count_visits:0
-msgid "Nº Visits"
-msgstr "Nº Visitas"
-
-#. module: midban_depot_stock
-#: field:stock.quant.package,num_mantles:0
-msgid "Nº mantles"
-msgstr "Nº mantos"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "ORDER:"
-msgstr "PEDIDO:"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,old_id:0
-msgid "Old id"
-msgstr "Viejo id"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-#: selection:route.detail,state:0
-#: selection:route.report,detail_state:0
-msgid "On course"
-msgstr "En curso"
-
-#. module: midban_depot_stock
-#: field:stock.picking.create.multipack.line,operation_id:0
-msgid "Operation"
-msgstr "Operación"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-#: view:stock.picking.create.multipack:midban_depot_stock.stock_create_multipack_wizard_form_view
-#: field:stock.task,operation_ids:0
-#: view:wave.report:midban_depot_stock.view_wave_report_form
-#: field:wave.report,operation_ids:0
-msgid "Operations"
-msgstr "Operaciones"
-
-#. module: midban_depot_stock
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_operations_list
-msgid "Operations List"
-msgstr "Listado de operaciones"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_operations_list
-msgid "Operations List Report"
-msgstr "Operaciones de almacén"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,location_ids:0
-msgid "Operations by cameras"
-msgstr "Operaciones por cámara"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,operator_id:0
-#: field:res.users,operator:0
-#: field:stock.picking,operator_id:0
-msgid "Operator"
-msgstr "Operador"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,have_task:0
-msgid "Operator have task"
-msgstr "Operador tiene tarea"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Operator:"
-msgstr "Operador:"
-
-#. module: midban_depot_stock
-#: field:customer.list,sale_id:0
-#: field:customer.list,sequence:0
-#: field:partner.route.info,sequence:0
-msgid "Order"
-msgstr "Orden"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Order (Origin)"
-msgstr "Pedido (Origen)"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Order Date:"
-msgstr "Fecha de pedido:"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
-msgid "Order Month"
-msgstr "Mes del pedido"
-
-#. module: midban_depot_stock
-#: field:stock.picking,order_note:0
-msgid "Order Note"
-msgstr "Nota pedido"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_tree
-msgid "Order Notes"
-msgstr "Notas pedido"
-
-#. module: midban_depot_stock
-#: selection:stock.machine,type:0
-msgid "Order Prepare"
-msgstr "Preparar pedido"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_customer_list
-msgid "Order of customer to visit"
-msgstr "Orden de visita de los clientes"
-
-#. module: midban_depot_stock
-#: selection:route,type:0
-#: selection:route.report,route_type:0
-msgid "Other"
-msgstr "Otro"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Our Order Reference:"
-msgstr "Nuestra referencia de pedido:"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_tree
-msgid "Outgoing Pickings"
-msgstr "Albaranes de salida"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Outgoing pickings"
-msgstr "Albaranes de salida"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "PACKAGE:"
-msgstr "PAQUETE:"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "PRODUCT:"
-msgstr "PRODUCTO:"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-#: field:transfer.line,package_id:0
-#: field:wave.report,pack_id:0
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Pack"
-msgstr "Paquete"
-
-#. module: midban_depot_stock
-#: view:stock.quant.package:midban_depot_stock.view_quant_package_form_add_type
-msgid "Pack Information"
-msgstr "Información Paquete"
-
-#. module: midban_depot_stock
-#: view:stock.quant.package:midban_depot_stock.view_quant_package_form_add_type
-msgid "Pack Quantities"
-msgstr "Cantidades Paquete"
-
-#. module: midban_depot_stock
-#: field:tag,package_id:0
-#: field:tag.item,package_id:0
-msgid "Package"
-msgstr "Paquete"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,packed_lot_id:0
-#: field:stock.quant.package,packed_lot_id:0
-msgid "Packed Lot"
-msgstr "Lote paquete"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,packed_qty:0
-#: field:stock.quant.package,packed_qty:0
-msgid "Packed qty"
-msgstr "Cantidad paquete"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_pack_operation
-msgid "Packing Operation"
-msgstr "Operación de empaquetado"
-
-#. module: midban_depot_stock
-#: selection:transfer.line,do_pack:0
-msgid "Palet"
-msgstr "Palet"
-
-#. module: midban_depot_stock
-#: selection:tag,type:0
-msgid "Palet Tag"
-msgstr "Palet"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Palets"
-msgstr "Palets"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_res_partner
-msgid "Partner"
-msgstr "Empresa"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Pause Task"
-msgstr "Pausar tarea"
-
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: field:stock.task,paused:0
-msgid "Paused"
-msgstr "Pausada"
-
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: selection:route.detail,state:0
-#: selection:route.report,detail_state:0
-msgid "Pending"
-msgstr "Pendiente"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_crm_phonecall
-msgid "Phonecall"
-msgstr "Llamada telefónica"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_quant_package
-msgid "Physical Packages"
-msgstr "Paquetes físicos"
-
-#. module: midban_depot_stock
-#: field:aisle.record,pick_heights:0
-msgid "Pick heights"
-msgstr "Alturas Picking"
-
-#. module: midban_depot_stock
-#: selection:stock.picking,task_type:0
-#: field:stock.task,picking_id:0
-#: selection:stock.task,type:0
-msgid "Picking"
-msgstr "Albarán"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-#: field:stock.location,camera:0
-msgid "Picking Camera"
-msgstr "Cámara de picking"
-
-#. module: midban_depot_stock
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_picking_list
-#: model:ir.model,name:midban_depot_stock.model_stock_picking
-#: view:out.picking.report:midban_depot_stock.view_out_picking_report_tree
-#: view:wave.report:midban_depot_stock.view_wave_report_form
-#: view:wave.report:midban_depot_stock.view_wave_report_tree
-#: view:website:midban_depot_stock.report_delivery_list
-msgid "Picking List"
-msgstr "Albarán"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Picking List Report"
-msgstr "Informe de Picking"
-
-#. module: midban_depot_stock
-#: field:res.users,picking_mac_id:0
-msgid "Picking Machine"
-msgstr "Máquina de picking"
-
-#. module: midban_depot_stock
-#: view:stock.picking.wave:midban_depot_stock.view_picking_wave_form_add_wave_report_ids
-#: field:stock.picking.wave,wave_report_ids:0
-msgid "Picking Report"
-msgstr "Informe de Picking"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_picking_wave
-msgid "Picking Wave"
-msgstr "Agrupación de albaranes"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-#: selection:stock.location,zone:0
-msgid "Picking Zone"
-msgstr "Zona de picking"
-
-#. module: midban_depot_stock
-#: help:reposition.wizard,capacity:0
-msgid "Picking location with less or equal filled percentaje               will be proposed to reposition if is possible."
-msgstr "Ubicaciones de picking con menor o igual porcentaje de llenado al indicado'serán propuestas para reposicionar si es posible"
-
-#. module: midban_depot_stock
-#: field:aisle.record,total_pick_locs:0
-msgid "Picking locations"
-msgstr "Ubicaciones de piicking"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:334
-#, python-format
-msgid "Picking locations does not exist"
-msgstr "Las ubicaciones de picking no existen"
-
-#. module: midban_depot_stock
-#: field:stock.config.settings,pick_by_volume:0
-msgid "Picking task by volume"
-msgstr "Tareas de picking por volumen"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:50
-#, python-format
-msgid "Picking type internal not found"
-msgstr "Tipo interno de picking no encontrado"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_transfer_details
-msgid "Picking wizard"
-msgstr "Asistente de albarán"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_transfer_details_items
-msgid "Picking wizard items"
-msgstr "Elementos del asistente de albarán"
-
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-#: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
-msgid "Pickings"
-msgstr "Albaranes"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-msgid "Prepare operations"
-msgstr "Preparar Operaciones"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,print_report:0
-msgid "Print Report"
-msgstr "Imprimir informe"
-
-#. module: midban_depot_stock
-#: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
-msgid "Print Reposition"
-msgstr "Imprimir reposición"
-
-#. module: midban_depot_stock
-#: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
-#: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
-#: model:ir.actions.act_window,name:midban_depot_stock.action_create_tag_wizard
-#: model:ir.ui.menu,name:midban_depot_stock.print_tag_menu
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-msgid "Print Tags"
-msgstr "Imprimir etiquetas"
-
-#. module: midban_depot_stock
-#: field:stock.config.settings,print_report:0
-msgid "Print report task when get a task"
-msgstr "Imprimir informe cuando se obtiene una tarea"
-
-#. module: midban_depot_stock
-#: field:create.tag.wizard,printed:0
-msgid "Printed"
-msgstr "Impreso"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_procurement_order
-msgid "Procurement"
-msgstr "Abastecimiento"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
-msgid "Procurement Group"
-msgstr "Grupo de abastecimiento"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_procurement_group
-msgid "Procurement Requisition"
-msgstr "Petición de abastecimiento"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_product_product
-#: field:out.picking.report,product_id:0
-#: field:stock.location,current_product_id:0
-#: field:stock.pack.operation,operation_product_id:0
-#: field:stock.picking.create.multipack.line,product_id:0
-#: field:stock.quant.package,product_id:0
-#: view:tag:midban_depot_stock.tag_view_search
-#: field:tag,product_id:0
-#: field:tag.item,product_id:0
-#: field:transfer.line,product_id:0
-#: field:wave.report,product_id:0
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_task
-#: view:website:midban_depot_stock.report_supplier_reception
+msgid "Pending logistic and commercial validate"
+msgstr "Pendiente de validación logística y comercial"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_process_deny_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+msgid "Process deny product"
+msgstr "Procesar denegación de producto"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_process_unregister_product
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
+msgid "Process unregister product"
+msgstr "Procesar baja de producto"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_product
+#: field:product.history,product_tmp_id:0
 msgid "Product"
 msgstr "Producto"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1703
+#. module: midban_product
+#: code:addons/midban_product/wizard/process_deny_product.py:44
 #, python-format
-msgid "Product Category"
-msgstr "Categoría producto"
+msgid "Product Denied"
+msgstr "Producto denegado"
 
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_product_template
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+#: field:product.template,history_ids:0
+msgid "Product History"
+msgstr "Historial del producto"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Product Information"
+msgstr "Información del producto"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_template
 msgid "Product Template"
 msgstr "Plantilla de producto"
 
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_product_uom
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_uom
 msgid "Product Unit of Measure"
 msgstr "Unidad de medida del producto"
 
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-msgid "Properties"
-msgstr "Propiedades"
+#. module: midban_product
+#: model:ir.ui.menu,name:midban_product.menu_product_variant_config_stock2
+#: model:ir.ui.menu,name:midban_product.menu_products2
+msgid "Product Variants"
+msgstr "Variantes del producto"
 
-#. module: midban_depot_stock
-#: view:tag:midban_depot_stock.tag_view_search
-msgid "Purchase"
-msgstr "Compra"
+#. module: midban_product
+#: view:unregister.product.reason:midban_product.midban_product_allergen_view_form
+#: view:unregister.product.reason:midban_product.midban_product_allergen_view_tree
+msgid "Product allergen"
+msgstr "Alérgeno de producto"
 
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_purchase_order
-msgid "Purchase Order"
-msgstr "Pedido de compra"
+#. module: midban_product
+#: view:product.template:midban_product.midban_product_search_form_view
+msgid "Product denied"
+msgstr "Producto denegado"
 
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_purchase_order_line
+#. module: midban_product
+#: code:addons/midban_product/product.py:385
+#, python-format
+msgid "Product denied in register process again"
+msgstr "Product denegado en proceso de alta de nuevo"
+
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_deny_product_reason
+msgid "Product deny reasons"
+msgstr "Motivos denegación alta producto"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:364
+#, python-format
+msgid "Product denyed"
+msgstr "Producto denegado"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_product_history
+msgid "Product history"
+msgstr "Historial de producto"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:504
+#, python-format
+msgid "Product logistic units are wrong"
+msgstr "Las unidades logísticas del producto estan mal"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:351
+#, python-format
+msgid "Product registered"
+msgstr "Producto Dado de alta"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:374
+#, python-format
+msgid "Product registered again"
+msgstr "Dar de alta de nuevo"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_product_search_form_view
+msgid "Product registering process"
+msgstr "En proceso de alta"
+
+#. module: midban_product
+#: view:product.template:midban_product.midban_product_search_form_view
+msgid "Product unregistered"
+msgstr "Dado de baja"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:478
+#, python-format
+msgid "Product uom not in logistic units                              "
+msgstr "La unidad de medida del producto no se encuentra en la relación con unidades logísticas                              "
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:486
+#, python-format
+msgid "Product uos not in logistic units                                  "
+msgstr "La segunda unidad de medida no se encuentra en las unidades logísticas                                  "
+
+#. module: midban_product
+#: model:ir.ui.menu,name:midban_product.menu_product_allergen_purchase
+#: model:ir.ui.menu,name:midban_product.menu_product_allergen_sale
+#: model:ir.ui.menu,name:midban_product.menu_product_allergen_stock
+#: field:product.template,product_allergen_ids:0
+msgid "Products allergens"
+msgstr "Alérgenos de producto"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_purchase_order_line
 msgid "Purchase Order Line"
 msgstr "Línea pedido de compra"
 
-#. module: midban_depot_stock
-#: field:tag,purchase_id:0
-#: field:tag.item,purchase_id:0
-msgid "Purchase order"
-msgstr "Pedido de compra"
+#. module: midban_product
+#: field:product.history,reason:0
+msgid "Reason"
+msgstr "Motivo"
 
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
-msgid "Purchases"
-msgstr "Compras"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Qty"
-msgstr "Ctdad"
-
-#. module: midban_depot_stock
-#: field:account.invoice.line,quantity_second_uom:0
-msgid "Qty Second Uom"
-msgstr "Cant. 2ªudm"
-
-#. module: midban_depot_stock
-#: field:out.picking.report,product_qty:0
-#: field:stock.picking.create.multipack.line,qty:0
-#: field:transfer.line,quantity:0
-#: field:wave.report,product_qty:0
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Quantity"
-msgstr "Cantidad"
-
-#. module: midban_depot_stock
-#: field:stock.transfer_details_items,uos_qty:0
-#: view:website:midban_depot_stock.report_operations_list
-msgid "Quantity (S.U.)"
-msgstr "Cantidad (S.U.)"
-
-#. module: midban_depot_stock
-#: field:stock.move,wait_receipt_qty:0
-msgid "Quantity pending receipt"
-msgstr "Cant. pend. recibir"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_quant
-msgid "Quants"
-msgstr "Quants"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "REFERENCE:"
-msgstr "REFERENCIA:"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,changed:0
-msgid "Record changed"
-msgstr "Registro cambiado"
-
-#. module: midban_depot_stock
-#: field:out.picking.report,reference:0
-#: field:tag,default_code:0
-#: field:tag.item,default_code:0
-#: field:wave.report,reference:0
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Reference"
+#. module: midban_product
+#: field:product.template,ref:0
+msgid "Referencia"
 msgstr "Referencia"
 
-#. module: midban_depot_stock
-#: field:partner.route.info,regularity:0
-msgid "Regularity"
-msgstr "Periodicidad"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Register"
+msgstr "Dar de alta"
 
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-#: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
-msgid "Related Pickings"
-msgstr "Albaranes relacionados"
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Registered"
+msgstr "Alta"
 
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
-msgid "Related Purchases"
-msgstr "Compras relacionadas"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Relations units - logistic"
+msgstr "Relación unidades - logística"
 
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-#: field:account.invoice,pick_ids:0
-#: field:account.invoice,purchase_ids:0
-#: field:account.invoice,sale_ids:0
-msgid "Related Sales"
-msgstr "Ventas relacionadas"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Return to validate pending"
+msgstr "Volver a pendiente de validar"
 
-#. module: midban_depot_stock
-#: field:stock.production.lot,customer_ids:0
-msgid "Related customers"
-msgstr "Clientes relacionados"
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Sale Type"
+msgstr "Tipo de Venta"
 
-#. module: midban_depot_stock
-#: field:stock.production.lot,supplier_ids:0
-msgid "Related suppliers"
-msgstr "Proveedores relacionados"
+#. module: midban_product
+#: field:product.template,scientific_name:0
+msgid "Scientific name"
+msgstr "Nombre científico"
 
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.menu_replaning_picking_route
-msgid "Replanning Routes"
-msgstr "Replanificador de rutas"
+#. module: midban_product
+#: field:product.template,second_course:0
+msgid "Second Course"
+msgstr "Segundo plato"
 
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_replanning_picking_route
-msgid "Replanning picking in routes"
-msgstr "Replanificador de rutas"
+#. module: midban_product
+#: help:product.template,palet_wood_height:0
+msgid "Size wood pallet, affects the calculation of the volume"
+msgstr "Tamaño de la madera del pallet, afecta al cálculo del volumen"
 
-#. module: midban_depot_stock
-#: field:reposition.wizard,specific_locations:0
-msgid "Replenish specific locations"
-msgstr "Reposicionar ubicaciones específicas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:251
-#: selection:stock.picking,task_type:0
-#: selection:stock.task,type:0
+#. module: midban_product
+#: code:addons/midban_product/product.py:299
 #, python-format
-msgid "Reposition"
-msgstr "Reposición"
+msgid "Some unit dimension is equals to zero. Please check it in supplier %s"
+msgstr "Alguna dimensíon de la logística es cero. Por favor compruébalo para el proveedor %s"
 
-#. module: midban_depot_stock
-#: field:res.users,reposition_mac_id:0
-msgid "Reposition Machine"
-msgstr "Máquina de reposición"
-
-#. module: midban_depot_stock
-#: model:stock.picking.type,name:midban_depot_stock.picking_type_reposition_task
-#: view:website:midban_depot_stock.report_operations_list
-msgid "Reposition Task"
-msgstr "Tarea de Reposición"
-
-#. module: midban_depot_stock
-#: field:stock.warehouse,reposition_type_id:0
-msgid "Reposition Task Type"
-msgstr "Tipo tarea reposición"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_reposition_wizard
-msgid "Reposition Wizard"
-msgstr "Asistente reposición"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.reposition_wizard_menu
-#: view:reposition.wizard:midban_depot_stock.reposition_wizard_view
-msgid "Reposition wizard"
-msgstr "Asistente reposición"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Reprint Task"
-msgstr "Reimprimir tarea"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-msgid "Result Visit"
-msgstr "Resultado visita"
-
-#. module: midban_depot_stock
-#: selection:stock.machine,type:0
-msgid "Retractil"
-msgstr "Retractil"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Return Draft"
-msgstr "Volver a borrador"
-
-#. module: midban_depot_stock
-#: field:route.report,route_type:0
-msgid "Rouet Type"
-msgstr "Tipo ruta"
-
-#. module: midban_depot_stock
-#: field:item.create.route,route_id:0
-#: field:partner.route.info,route_id:0
-#: field:procurement.order,trans_route_id:0
-#: view:route.detail:midban_depot_stock.route_detail_view_form
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: field:route.detail,route_id:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,route_id:0
-#: field:sale.order,trans_route_id:0
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Route"
-msgstr "Ruta"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_route_report
-#: model:ir.ui.menu,name:midban_depot_stock.menu_routes_report
-#: view:route.report:midban_depot_stock.view_route_report_graph
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: view:route.report:midban_depot_stock.view_route_report_tree
-msgid "Route Analysis"
-msgstr "Análisis rutas"
-
-#. module: midban_depot_stock
-#: field:sale.order,detail_date:0
-#: field:stock.picking,detail_date:0
-msgid "Route Date"
-msgstr "Fecha ruta"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Route Detail"
-msgstr "Detalle de ruta"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Route Details"
-msgstr "Detalles de ruta"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Route Info"
-msgstr "Información ruta"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,route_state:0
-msgid "Route State"
-msgstr "Estado Ruta"
-
-#. module: midban_depot_stock
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: view:route.report:midban_depot_stock.view_route_report_search
-msgid "Route Type"
-msgstr "Tipo Ruta"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_route_report
-msgid "Route analysis view"
-msgstr "Vista de análisis rutas"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Route code"
-msgstr "Código ruta"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-msgid "Route day"
-msgstr "Día Ruta"
-
-#. module: midban_depot_stock
-#: field:crm.phonecall,detail_id:0
-#: view:route.detail:midban_depot_stock.route_detail_view_form
-#: view:route.detail:midban_depot_stock.route_detail_view_tree
-msgid "Route detail"
-msgstr "Detalle de ruta"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Route details"
-msgstr "Detalles de ruta"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Route name"
-msgstr "Nombre ruta"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-#: view:website:midban_depot_stock.report_picking_task
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Route:"
-msgstr "Ruta:"
-
-#. module: midban_depot_stock
-#: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
-msgid "Routering configuration"
-msgstr "Configuración del rutero"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_route
-#: view:res.users:midban_depot_stock.view_users_operator_form
-#: view:route:midban_depot_stock.route_view_form
-#: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
-msgid "Routes"
-msgstr "Rutas"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.menu_stock_vehicle_route_mgmt
-msgid "Routes and Vehicles"
-msgstr "Rutas y vehículos"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_detail_route
-#: model:ir.ui.menu,name:midban_depot_stock.menu_details_routes_sales_order
-msgid "Routes details"
-msgstr "Detalles de rutas"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-msgid "Run Task"
-msgstr "Activar tarea"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.menu_routes_sales_order
-msgid "Rutery"
-msgstr "Rutero"
-
-#. module: midban_depot_stock
-#: field:stock.quant.package,uos_qty:0
-#: view:website:midban_depot_stock.report_picking_list
-msgid "S.U. qty"
-msgstr "Cant. S.U."
-
-#. module: midban_depot_stock
-#: selection:crm.phonecall,result:0
-#: selection:customer.list,result:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: selection:route.report,result:0
-msgid "Sale done"
-msgstr "Venta realizada"
-
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-msgid "Sales"
-msgstr "Ventas"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_sale_order
-msgid "Sales Order"
-msgstr "Pedido de venta"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_sale_order_line
-msgid "Sales Order Line"
-msgstr "Línea pedido de venta"
-
-#. module: midban_depot_stock
-#: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
-msgid "Schedule Task Wizard"
-msgstr "Asistente planificador de tareas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:318
+#. module: midban_product
+#: code:addons/midban_product/product.py:308
 #, python-format
-msgid "Scheduled Call from %s"
-msgstr "LLamada planificada a %s"
+msgid "Some unit dimension is equals to zero. Please check it."
+msgstr "Alguna dimensíon de las unidades logísticas es cero. Por favor compruébalo"
 
-#. module: midban_depot_stock
-#: field:assign.task.wzd,date_planned:0
-#: field:sale.order,date_planned:0
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_tree
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Scheduled Date"
-msgstr "Fecha planificada"
-
-#. module: midban_depot_stock
-#: view:stock.machine:midban_depot_stock.stock_machine_view_search
-msgid "Search Machines"
-msgstr "Buscar máquinas"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Search Pickings"
-msgstr "Buscar Albaranes"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_search
-msgid "Search Route"
-msgstr "Buscar ruta"
-
-#. module: midban_depot_stock
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-msgid "Search Route Detail"
-msgstr "Buscar detalle ruta"
-
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: view:tag:midban_depot_stock.tag_view_search
-msgid "Search Tasks"
-msgstr "Buscar tareas"
-
-#. module: midban_depot_stock
-#: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_search
-msgid "Search vehicles"
-msgstr "Buscar vehículos"
-
-#. module: midban_depot_stock
-#: field:stock.transfer_details_items,uos_id:0
-msgid "Second Unit"
-msgstr "Segunda unidad"
-
-#. module: midban_depot_stock
-#: field:account.invoice.line,second_uom_id:0
-msgid "Second Uom"
-msgstr "Segunda Udm"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,uos_id:0
-#: field:stock.quant.package,uos_id:0
-#: field:wave.report,uos_id:0
-msgid "Secondary unit"
-msgstr "Segunda unidad"
-
-#. module: midban_depot_stock
-#: help:assign.task.wzd,location_ids:0
-msgid "Select one or more camera                                          locations to assign operations to                                          task in order to get operations                                          whitch products are child of the                                          selected cameras."
-msgstr "Selecciona una o más ubicaciones de cámara para asignar operaciones a la tarea de los productos cuya ubicación de picking sea hija de las cámaras selecionadas"
-
-#. module: midban_depot_stock
-#: field:get.route.detail.wzd,item_ids:0
-msgid "Selected Routes"
-msgstr "Rutas seleccionada"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:397
-#: code:addons/midban_depot_stock/partner.py:436
-#, python-format
-msgid "Selected delivery days are not in the                                  transport Route!"
-msgstr "Los días de reparto no están en la ruta"
-
-#. module: midban_depot_stock
-#: view:get.route.detail.wzd:midban_depot_stock.get_route_detail_wzd_form_view
-msgid "Selected routes"
-msgstr "Rutas seleccionadas"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/report/supplier_reception_parser.py:44
-#, python-format
-msgid "Seller %s is not found between product %s sellers"
-msgstr "El proveedor %s no se encuentra entre los proveedores del producto %s"
-
-#. module: midban_depot_stock
-#: field:stock.location,sequence:0
-#: field:wave.report,sequence:0
-msgid "Sequence"
-msgstr "Secuencia"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-msgid "Set quantities and lots for each recibed product. When you click in prepare operations button\n"
-"                           the system will propose for each line the operations to get the products in the input location\n"
-"                           based on the supplier logistic information"
-msgstr "Introduzca cantidades y lotes para cada producto recibido. Cuando pulsas el botón de Preparar operaciones,el sistema propondrá, para cada línea definida, las operaciones para llevar los productos a la ubicación de entrada, basados en la información logistica del proveedor configurado en el producto"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Shipping address :"
-msgstr "Dirección de envío :"
-
-#. module: midban_depot_stock
-#: field:create.tag.wizard,show_print_report:0
-msgid "Show"
-msgstr "Mostrar"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:462
-#, python-format
-msgid "Some operation of picking %s                                            have no a scheduled location                                            child of any                                             camera"
-msgstr "Alguna operación del albarán %s no tiene planificada una ubicación que se hija de ninguna cámara"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_operations_list
-#: view:website:midban_depot_stock.report_picking_task
-msgid "Source"
-msgstr "Origen"
-
-#. module: midban_depot_stock
-#: field:stock.picking.create.multipack.line,pack_id:0
-msgid "Source package"
-msgstr "Paquete fuente"
-
-#. module: midban_depot_stock
-#: field:reposition.wizard,selected_loc_ids:0
-msgid "Specific locations"
-msgstr "Ubicaciones específicas"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "Split"
-msgstr "Dividir"
-
-#. module: midban_depot_stock
-#: selection:stock.location,storage_type:0
-msgid "Standard"
-msgstr "Estandard"
-
-#. module: midban_depot_stock
-#: field:get.route.detail.wzd,start_date:0
-#: field:item.create.route,start_date:0
-msgid "Start Date"
-msgstr "Fecha inicio"
-
-#. module: midban_depot_stock
-#: field:route,state:0
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: field:route.detail,state:0
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: field:stock.task,state:0
-msgid "State"
+#. module: midban_product
+#: field:product.template,state2:0
+msgid "Status"
 msgstr "Estado"
 
-#. module: midban_depot_stock
-#: field:account.invoice.line,stock_move_id:0
-#: model:ir.model,name:midban_depot_stock.model_stock_move
-msgid "Stock Move"
-msgstr "Movimiento de existencias"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_tag
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_stock_tag
-#: model:ir.ui.menu,name:midban_depot_stock.stock_tag_menu
-#: view:tag:midban_depot_stock.tag_view_tree
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "Stock Tags"
-msgstr "Etiquetas Almacén"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Stock Unit"
-msgstr "Unidad stock"
-
-#. module: midban_depot_stock
-#: view:tag:midban_depot_stock.tag_view_form
-msgid "Stock tags"
-msgstr "Etiquetas Almacén"
-
-#. module: midban_depot_stock
-#: field:stock.quant.package,uom_id:0
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-#: view:wave.report:midban_depot_stock.view_wave_report_form
-#: field:wave.report,uom_id:0
-msgid "Stock unit"
-msgstr "Unidad stock"
-
-#. module: midban_depot_stock
-#: field:stock.location,storage_type:0
-msgid "Storage Type"
-msgstr "Tipo almacenaje"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-#: selection:stock.location,zone:0
-msgid "Storage Zone"
-msgstr "Zona de almacenaje"
-
-#. module: midban_depot_stock
-#: field:aisle.record,storage_heights:0
-msgid "Storage heights"
-msgstr "Alturas almacenaje"
-
-#. module: midban_depot_stock
-#: field:aisle.record,total_store_locs:0
-msgid "Storage locations"
-msgstr "Ubicaciones Almacenaje"
-
-#. module: midban_depot_stock
-#: field:aisle.record,num_subcols:0
-msgid "Subcolumns"
-msgstr "Subcolumnas"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Supplier"
-msgstr "Proveedor"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Supplier Cross Dock Order N°:"
-msgstr "Pedido a prooveedor Cros Dock Nª: "
-
-#. module: midban_depot_stock
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_supplier_reception
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Supplier Reception Report"
-msgstr "Informe Recepción de proveedor"
-
-#. module: midban_depot_stock
-#: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
-#: field:create.tag.wizard,tag_ids:0
-#: model:ir.model,name:midban_depot_stock.model_tag
-msgid "Tags"
-msgstr "Etiquetas"
-
-#. module: midban_depot_stock
-#: view:assign.task.wzd:midban_depot_stock.assign_task_wzd_view
-#: model:ir.actions.act_window,name:midban_depot_stock.action_assign_task_wzd
-#: model:ir.ui.menu,name:midban_depot_stock.assign_task_wzd_menu
-msgid "Task Schedule"
-msgstr "Planificador tareas"
-
-#. module: midban_depot_stock
-#: field:stock.picking,task_type:0
-#: field:stock.task,type:0
-msgid "Task Type"
-msgstr "Tipo tarea"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_stock_task
-msgid "Tasks"
-msgstr "Tareas"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,not_paused:0
-msgid "Tasks Not Paused"
-msgstr "Tareas no pausadas"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,paused:0
-msgid "Tasks Paused"
-msgstr "Tareas pausadas"
-
-#. module: midban_depot_stock
-#: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
-msgid "Tasks configuration"
-msgstr "Configuración de tareas"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Taxes"
-msgstr "Impuestos"
-
-#. module: midban_depot_stock
-#: selection:route,type:0
-#: selection:route.report,route_type:0
-msgid "Telesale"
-msgstr "Televenta"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:315
+#. module: midban_product
+#: code:addons/midban_product/product.py:617
 #, python-format
-msgid "Telesale Call "
-msgstr "LLamada televenta "
+msgid "Supplier %s not defined in product                                            supplier list"
+msgstr "EL proveedor %s no está definido en el listado de proveedores del producto"
 
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
+#. module: midban_product
+#: code:addons/midban_product/product.py:729
+#, python-format
+msgid "Supplier_id not in supplier_ids"
+msgstr "Supplier_idno en supplier_ids"
+
+#. module: midban_product
+#: view:temp.type:midban_product.midban_product_temp_type_view_form
+#: view:temp.type:midban_product.midban_product_temp_type_view_tree
+msgid "Temp Type"
+msgstr "Tipo temperatura"
+
+#. module: midban_product
+#: field:temp.type,temp_id:0
+msgid "Temp id"
+msgstr "Temp id"
+
+#. module: midban_product
+#: field:temp.type,name:0
+msgid "Temp name"
+msgstr "Nombre temperatura"
+
+#. module: midban_product
+#: field:product.template,temp_type:0
 msgid "Temp type"
 msgstr "Tipo temperatura"
 
-#. module: midban_depot_stock
-#: field:stock.location,temp_type_id:0
-msgid "Temperature Type"
-msgstr "Tipo temperatura"
+#. module: midban_product
+#: field:product.template,temperature:0
+msgid "Temperature"
+msgstr "Temperatura"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:194
-#: code:addons/midban_depot_stock/partner.py:245
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_temp_type
+#: model:ir.ui.menu,name:midban_product.menu_temp_type_purchases
+#: model:ir.ui.menu,name:midban_product.menu_temp_type_sales
+#: model:ir.ui.menu,name:midban_product.menu_temp_type_stock
+msgid "Temperature type"
+msgstr "Temperature type"
+
+#. module: midban_product
+#: help:product.supplierinfo,log_base_id:0
+#: help:product.template,log_base_id:0
+msgid "The defined unit of measure will be related with the logistic base"
+msgstr "La unidad de medida definida será relacionada con la unidad lógistica base"
+
+#. module: midban_product
+#: help:product.supplierinfo,log_unit_id:0
+#: help:product.template,log_box_id:0
+msgid "The defined unit of measure will be related with the logistic box"
+msgstr "La unidad de medida definida será relacionada con la unidad lógistica caja"
+
+#. module: midban_product
+#: help:product.supplierinfo,log_box_id:0
+#: help:product.template,log_unit_id:0
+msgid "The defined unit of measure will be related with the logistic unit"
+msgstr "La unidad de medida definida será relacionada con la unidad lógistica unidad"
+
+#. module: midban_product
+#: code:addons/midban_product/product.py:768
 #, python-format
-msgid "The customer has no zip code"
-msgstr "El cliente no tiene código postal"
+msgid "The product %s is                              not related with any supplier                              "
+msgstr "EL producto %s no está relacionado con nigún proveedor                              "
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:412
-#: code:addons/midban_depot_stock/partner.py:451
+#. module: midban_product
+#: code:addons/midban_product/product.py:565
+#: code:addons/midban_product/product.py:577
+#: code:addons/midban_product/product.py:647
+#: code:addons/midban_product/product.py:746
 #, python-format
-msgid "The days %s are not in the selected                                       transport route"
-msgstr "Los días %s no estan en la ruta selecionada"
+msgid "The product unit of measure %s is                              not related with any logistic                              unit"
+msgstr "La unidad del producto %s no está relacionada con ninguna unidad logística"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/reposition_wizard.py:231
+#. module: midban_product
+#: code:addons/midban_product/product.py:956
 #, python-format
-msgid "The location to replenish %s is not child                                    of a camera location, you must configure                                    it well"
-msgstr "La ubicación a reposicionar %s no es hija de una ubicación tipo cámara, debes configurarla bien"
+msgid "The supplit uom are                              not related to suppplier uoms                             "
+msgstr "La unidad de medida del proveedor no está relacionada con las unidades del proveedor                             "
 
-#. module: midban_depot_stock
-#: help:stock.config.settings,min_loc_replenish:0
-msgid "The task wizard will assign the operations that cover tne indicated nº of locations to replenish. Maybe will be transfer several replenish pickings"
-msgstr "El asistente de tareas asignará el número de operaciones necesario que cubra el nº de ubicaciones a reponer. Quizás se haga una transferencia de varios albaranes de reposición"
-
-#. module: midban_depot_stock
-#: help:assign.task.wzd,max_loc_ops:0
-msgid "The wizard will assign this nº of                                       operations of an unique picking of                                       ubication task type"
-msgstr "El asistente asignará este número de operaciones de un único albarán de tipo tarea de ubicación"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "The wizard will create an internal picking with all to move."
-msgstr "El asistente creará un albarán de tipo interno con todo lo que hay que mover."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:142
+#. module: midban_product
+#: code:addons/midban_product/product.py:948
 #, python-format
-msgid "The zip code %s is already                                                    assigned in the                                                   route %s. Change it or you                                                    can                                                    can not save th                                                    route"
-msgstr "EL código postal %s ya está asignado en la ruta %s. Debes cambiarlo para poder guardar la ruta"
+msgid "The supplit uoms are                              not related to product uom                             "
+msgstr "La unidad de medida del proveedor no está relacionada con las unidades del proveedor                            "
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:189
-#, python-format
-msgid "The zip code %s is already                                                assigned in the                                               route %s. It is no permited                                                routes of same type and same                                                day with the same zip                                                codes"
-msgstr "El código postal %s ya está asignado a la ruta %s. No está permitido tener rutas del mismo tipo y del mismo día con los mismos códigos postales"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:100
-#, python-format
-msgid "The zip code %s is already                                               assigned in the                                              route %s. Change it or you can                                               not save de                                               route"
-msgstr "El código postal %s ya está asignado a la ruta %s. Cambialo o no podras guardar cambios en la ruta"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:107
-#, python-format
-msgid "The zip code %s is not in the route zip                                       codes list"
-msgstr "EL código postal %s no está en el listado de códigos postales"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:383
-#, python-format
-msgid "There is no delivery days in this customer!"
-msgstr "No hay días de entrega en este cliente!"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:388
-#, python-format
-msgid "There is no route days in the selected route!"
-msgstr "No hay días de la ruta en la ruta seleccionada!"
-
-#. module: midban_depot_stock
-#: view:route.report:midban_depot_stock.view_route_report_search
-msgid "This Year"
-msgstr "Este año"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,help:midban_depot_stock.action_route_report
-msgid "This report performs analysis on your routes."
-msgstr "Este informe realiza análisis sobre tus rutas."
-
-#. module: midban_depot_stock
-#: view:get.route.detail.wzd:midban_depot_stock.get_route_detail_wzd_form_view
-msgid "This wizard will generate de detailed routes for the selected routes.\n"
-"                           If no dates in the lines the wizard will use the globals dates"
-msgstr "Este asistente generará los detalles de las rutas para las rutas seleccionadas.\n"
-"       Si no se especifican fechas en las lineas se tomarán las globales del asistente"
-
-#. module: midban_depot_stock
-#: view:reposition.wizard:midban_depot_stock.reposition_wizard_view
-msgid "This wizard will replenish all the ubication whitch filled percent less than the givit in the capacity field."
-msgstr "Este asistente propondrá reoponer todas las ubicaciones cuyo porcentaje de llenado sea menor que el indicado."
-
-#. module: midban_depot_stock
-#: view:crm.phonecall:midban_depot_stock.view_crm_case_phonecalls_filter_custom
-msgid "To Do"
-msgstr "Por hacer"
-
-#. module: midban_depot_stock
-#: field:transfer.line,dest_location_id:0
-msgid "To location"
-msgstr "A ubicación"
-
-#. module: midban_depot_stock
-#: field:stock.pack.operation,to_process:0
-msgid "To process"
-msgstr "A procesar"
-
-#. module: midban_depot_stock
-#: view:crm.phonecall:midban_depot_stock.view_crm_case_phonecalls_filter_custom
-#: view:purchase.order:midban_depot_stock.view_purchase_order_filter_add_today
-#: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
-#: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Today"
-msgstr "Hoy"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Tomorrow"
-msgstr "Mañana"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Total"
-msgstr "Total"
-
-#. module: midban_depot_stock
-#: field:aisle.record,total_locs:0
-msgid "Total Locations"
-msgstr "Ubicaciones totales"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Total Qty"
-msgstr "Cant. Total"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_tree
-msgid "Total Tax Included"
-msgstr "Total impuestos incluidos"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_tree
-#: field:stock.picking,total_weight:0
-msgid "Total Weight"
-msgstr "Peso bruto total"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Total Without Taxes"
-msgstr "Total sin impuestos"
-
-#. module: midban_depot_stock
-#: view:stock.config.settings:midban_depot_stock.view_stock_config_settings_custom
-msgid "Traceability"
-msgstr "Trazabilidad"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-msgid "Transfer"
-msgstr "Transferir"
-
-#. module: midban_depot_stock
-#: field:manual.transfer.wzd,pack_line_ids:0
-msgid "Transfer Packs"
-msgstr "Transferir paquetes"
-
-#. module: midban_depot_stock
-#: field:manual.transfer.wzd,prod_line_ids:0
-msgid "Transfer Products"
-msgstr "Transferir productos"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "Transfer details"
-msgstr "Detalles de la transferencia"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "Transfer packs"
-msgstr "Transferir paquetes"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "Transfer products"
-msgstr "Transferir productos"
-
-#. module: midban_depot_stock
-#: selection:stock.machine,type:0
-msgid "Transpalet"
-msgstr "Transpalet"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,trans_route_id:0
-#: field:res.partner,trans_route_id:0
-#: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
-#: field:stock.move,trans_route_id:0
-#: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-#: field:stock.picking,trans_route_id:0
-#: field:stock.picking.wave,trans_route_id:0
-msgid "Transport Route"
-msgstr "Ruta"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_route
-msgid "Transport Route Model"
-msgstr "Modelo ruta"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_tree
-msgid "Transport Routes"
-msgstr "Rutas"
-
-#. module: midban_depot_stock
-#: model:res.groups,name:midban_depot_stock.transport_routes_manager
-msgid "Transport Routes manager"
-msgstr "Gestor de rutas"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-#: view:stock.transfer_details:midban_depot_stock.stock_transfer_details_form_in
-msgid "True"
-msgstr "Verdadero"
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_search
-#: field:route,type:0
-#: view:stock.machine:midban_depot_stock.stock_machine_view_search
-#: field:tag,type:0
+#. module: midban_product
+#: field:temp.type,type:0
 msgid "Type"
 msgstr "Tipo"
 
-#. module: midban_depot_stock
-#: field:stock.machine,type:0
-msgid "Type Machine"
-msgstr "Tipo Máquina"
+#. module: midban_product
+#: field:product.template,un_height:0
+msgid "UN Height"
+msgstr "UN Altura"
 
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "UNITS:"
-msgstr "UNIDADES:"
+#. module: midban_product
+#: field:product.supplierinfo,supp_un_height:0
+msgid "UN Height Supplier"
+msgstr "UN Altura Proveedor"
 
-#. module: midban_depot_stock
-#: selection:stock.picking,task_type:0
-#: selection:stock.task,type:0
-msgid "Ubication"
-msgstr "Ubicación"
+#. module: midban_product
+#: field:product.template,un_length:0
+msgid "UN Length"
+msgstr "UN Largo"
 
-#. module: midban_depot_stock
-#: model:stock.picking.type,name:midban_depot_stock.picking_type_ubication_task
-#: view:website:midban_depot_stock.report_operations_list
-msgid "Ubication Task"
-msgstr "Tarea de Ubicación"
+#. module: midban_product
+#: field:product.supplierinfo,supp_un_length:0
+msgid "UN Length Supplier"
+msgstr "UN Largo Proveedor"
 
-#. module: midban_depot_stock
-#: field:stock.warehouse,ubication_type_id:0
-msgid "Ubication Task Type"
-msgstr "Tipo tarea ubicación"
+#. module: midban_product
+#: field:product.template,un_width:0
+msgid "UN Width"
+msgstr "UN Ancho"
 
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Unit Price"
-msgstr "Precio unidad"
+#. module: midban_product
+#: field:product.supplierinfo,supp_un_width:0
+msgid "UN Width Supplier"
+msgstr "UN Ancho Proveedor"
 
-#. module: midban_depot_stock
-#: field:tag,num_units:0
-#: field:tag.item,num_units:0
-#: view:website:midban_depot_stock.report_supplier_reception
-msgid "Units"
-msgstr "Unidades"
+#. module: midban_product
+#: field:product.template,un_ca:0
+msgid "UN/CA"
+msgstr "UN/CA"
 
-#. module: midban_depot_stock
-#: field:stock.pack.operation,uos_qty:0
-#: field:wave.report,uos_qty:0
-msgid "UoS quantity"
-msgstr "Cant. UdV"
+#. module: midban_product
+#: field:product.supplierinfo,supp_un_ca:0
+msgid "UN/CA Supplier"
+msgstr "UN/CA Proveedor"
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-#: field:stock.task,user_id:0
+#. module: midban_product
+#: selection:product.template,product_class:0
+msgid "Ultrafresh"
+msgstr "Ultrafresh"
+
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Unegistered"
+msgstr "Dado de baja"
+
+#. module: midban_product
+#: field:product.supplierinfo,log_unit_id:0
+#: field:product.template,log_unit_id:0
+msgid "Unit"
+msgstr "Unidad"
+
+#. module: midban_product
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Unregister"
+msgstr "Dar de baja"
+
+#. module: midban_product
+#: field:process.unregister.product,reason_id:0
+#: field:product.template,unregister_reason_id:0
+msgid "Unregister Reason"
+msgstr "Motivos baja"
+
+#. module: midban_product
+#: model:ir.model,name:midban_product.model_process_unregister_product
+msgid "Unregister product and update the associated reasons"
+msgstr "Dar de baja el producto y actualizar los motivos relacionados"
+
+#. module: midban_product
+#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_purchases
+#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_sales
+#: model:ir.ui.menu,name:midban_product.menu_unregister_product_reason_stock
+msgid "Unregister product reasons"
+msgstr "Motivos baja de producto"
+
+#. module: midban_product
+#: field:deny.product.reason,name:0
+#: field:unregister.product.reason,name:0
+msgid "Unregister reason"
+msgstr "Motivo de baja"
+
+#. module: midban_product
+#: view:unregister.product.reason:midban_product.midban_unregister_product_reason_view_form
+#: view:unregister.product.reason:midban_product.midban_unregister_product_reason_view_tree
+msgid "Unregister reasons"
+msgstr "Motivos de baja"
+
+#. module: midban_product
+#: code:addons/midban_product/wizard/process_unregister_product.py:43
+#, python-format
+msgid "Unregistered"
+msgstr "Baja"
+
+#. module: midban_product
+#: field:product.template,life:0
+msgid "Useful life"
+msgstr "Vida útil"
+
+#. module: midban_product
+#: field:product.history,user_id:0
 msgid "User"
 msgstr "Usuario"
 
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_res_users
-msgid "Users"
-msgstr "Usuarios"
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Validate pending"
+msgstr "Pendiente de validación"
 
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_delivery_list
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "VAT:"
-msgstr "NIF:"
+#. module: midban_product
+#: selection:product.template,state2:0
+msgid "Validated"
+msgstr "Validado"
 
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Validated By:"
-msgstr "Validado por:"
+#. module: midban_product
+#: field:product.supplierinfo,var_coeff_ca:0
+#: field:product.supplierinfo,var_coeff_un:0
+#: field:product.template,var_coeff_ca:0
+#: field:product.template,var_coeff_un:0
+msgid "Variable coefficient"
+msgstr "Coeficiente variable"
 
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Var Weight"
-msgstr "Peso Var."
-
-#. module: midban_depot_stock
-#: field:stock.transfer_details_items,var_weight:0
+#. module: midban_product
+#: field:product.supplierinfo,is_var_coeff:0
+#: field:product.template,is_var_coeff:0
 msgid "Variable weight"
-msgstr "Variable weight"
+msgstr "Peso variable"
 
-#. module: midban_depot_stock
-#: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_search
-msgid "Vehicle Code"
-msgstr "Código vehículo"
+#. module: midban_product
+#: model:res.groups,name:midban_product.group_no_variants
+msgid "View Product Variants"
+msgstr "View Product Variants"
 
-#. module: midban_depot_stock
-#: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_search
-msgid "Vehicle Name"
-msgstr "Nombre vehículo"
+#. module: midban_product
+#: field:product.template,web:0
+msgid "Web"
+msgstr "Web"
 
-#. module: midban_depot_stock
-#: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_search
-#: field:stock.vehicle,number:0
-msgid "Vehicle Number"
-msgstr "Número vehículo"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Views"
-msgstr "Vistas"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Views Locations"
-msgstr "Ubicaciones vista"
-
-#. module: midban_depot_stock
-#: field:product.template,virtual_stock_conservative:0
-msgid "Virtual                                                               Stock                                                               Conservative"
-msgstr "Stock virtual conservativo"
-
-#. module: midban_depot_stock
-#: selection:customer.list,result:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: selection:route.report,result:0
-msgid "Visited without order"
-msgstr "Visitado sin pedido"
-
-#. module: midban_depot_stock
-#: field:stock.location,volume:0
-#: field:stock.quant.package,volume:0
-msgid "Volume"
-msgstr "Volumen"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_stock_tag
-msgid "WEIGHT:"
-msgstr "PESO:"
-
-#. module: midban_depot_stock
-#: field:assign.task.wzd,warehouse_id:0
-#: model:ir.model,name:midban_depot_stock.model_stock_warehouse
-#: field:reposition.wizard,warehouse_id:0
-#: field:stock.picking.wave,warehouse_id:0
-msgid "Warehouse"
-msgstr "Almacén"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.menu_stock_task_mgmt
-msgid "Warehouse Task Management"
-msgstr "Gestión tareas almacén"
-
-#. module: midban_depot_stock
-#: model:ir.actions.report.xml,name:midban_depot_stock.action_report_task_picking
-msgid "Warehouse Task Report"
-msgstr "Informe tareas almacén"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.stock_task_menu
-#: view:stock.task:midban_depot_stock.stock_task_view_form
-#: view:stock.task:midban_depot_stock.stock_task_view_tree
-#: view:stock.task:midban_depot_stock.stock_task_view_tree_resumed
-msgid "Warehouse Tasks"
-msgstr "Tareas almacén"
-
-#. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_stock_task
-msgid "Warehouse task to organice products and locations"
-msgstr "Tareas de almacen para organizar productos y ubicaciones"
-
-#. module: midban_depot_stock
-#: model:ir.ui.menu,name:midban_depot_stock.stock_vehicle_menu
-#: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_form
-#: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_tree
-msgid "Warehouse vehicles"
-msgstr "Vehículos transporte"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_picking_list
-msgid "Warehouse:"
-msgstr "Almacén:"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:879
+#. module: midban_product
+#: code:addons/midban_product/product.py:313
 #, python-format
-msgid "Warning"
-msgstr "Aviso"
+msgid "You need to set gross weight"
+msgstr "You need to set gross weight"
 
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:100
-#: code:addons/midban_depot_stock/partner.py:106
-#: code:addons/midban_depot_stock/partner.py:124
-#: code:addons/midban_depot_stock/partner.py:382
-#: code:addons/midban_depot_stock/partner.py:387
-#: code:addons/midban_depot_stock/partner.py:396
-#: code:addons/midban_depot_stock/partner.py:411
-#: code:addons/midban_depot_stock/partner.py:435
-#: code:addons/midban_depot_stock/partner.py:450
-#: code:addons/midban_depot_stock/route.py:95
-#: code:addons/midban_depot_stock/sale.py:118
-#, python-format
-msgid "Warning!"
-msgstr "Advertencia!"
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_product_allergen
+msgid "action_product_allergen"
+msgstr "action_product_allergen"
 
-#. module: midban_depot_stock
-#: field:out.picking.report,picking_id:0
-#: field:stock.task,wave_id:0
-#: field:wave.report,wave_id:0
-msgid "Wave"
-msgstr "Ola"
-
-#. module: midban_depot_stock
-#: selection:route,type:0
-#: selection:route.report,route_type:0
-msgid "Ways"
-msgstr "Medios"
-
-#. module: midban_depot_stock
-#: field:route.report,route_day_id:0
-msgid "Week day"
-msgstr "Día semana"
-
-#. module: midban_depot_stock
-#: field:route,day_id:0
-msgid "Week_day"
-msgstr "Día"
-
-#. module: midban_depot_stock
-#: field:tag,weight:0
-#: field:tag.item,weight:0
-msgid "Weight"
-msgstr "Peso"
-
-#. module: midban_depot_stock
-#: help:stock.config.settings,check_customer_comercial:0
-msgid "When adding a customer                                                to a route, imposible to save                                                if customer is in other route                                                of diferent comercial if route                                                is not telesale or delivery"
-msgstr "Cuando añades un cliente a una ruta, será imposible guardar la ruta si el cliente está asignado a otra ruta de otro comercial, si la ruta no es de reparto o televenta"
-
-#. module: midban_depot_stock
-#: help:stock.config.settings,check_route_zip:0
-msgid "When adding a customer to a route, imposible to save if customer                                       zip is not in route zips"
-msgstr "Cuando se añade un cliente a una ruta, imposible asignarlo si el código postal del cliente no está en el listado de códigos postales de la ruta"
-
-#. module: midban_depot_stock
-#: help:stock.pack.operation,to_process:0
-msgid "When checked the operation will be                                     process when you finish task, else                                     will be unassigned"
-msgstr "Cuando está activado la operación será procesada al finalizar la tarea, si está desactivado se desasigna la operación de la tarea y quedara pendiente de asignarse a otra"
-
-#. module: midban_depot_stock
-#: help:reposition.wizard,limit:0
-msgid "When is reached stop the reposition"
-msgstr "Cuando es alcanzado se para la reposición"
-
-#. module: midban_depot_stock
-#: field:aisle.record,my_width:0
-#: field:stock.location,width:0
-msgid "Width"
-msgstr "Ancho"
-
-#. module: midban_depot_stock
-#: field:item.create.route,wzd_id:0
-#: field:stock.picking.create.multipack.line,wizard_id:0
-#: field:tag.item,wizard_id:0
-#: field:transfer.line,wzd_id:0
-msgid "Wizard"
-msgstr "Asistente"
-
-#. module: midban_depot_stock
-#: field:aisle.record,wzd_id:0
-msgid "Wizard id"
-msgstr "Wizard id"
-
-#. module: midban_depot_stock
-#: help:stock.picking,camera_id:0
-msgid "Writed only by reposition wizard        to get a reposition task of the selected cameras in the task wizard"
-msgstr "Escrito solo por el asistente de reposición, para obtener tareas de reposición de la cámara selecionada em el planificador de tareas"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "You can modify the proposed operations before to confirm it to the input location"
-msgstr "Puedes modificar las operaciones propuestas antes de llevarlas a la ubicación de entrada"
-
-#. module: midban_depot_stock
-#: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
-msgid "You can put the selected units in a new pack of type box or palet if you want to calc\n"
-"                        the volume moved correctly."
-msgstr "Puedes poner las unidades selecionadas en un nuevo paquete de tipo caja o palet si deseas que se calcule el volumen ocupado correctamente"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:230
-#, python-format
-msgid "You have a task on course."
-msgstr "Tiene una tarea en curso."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:239
-#, python-format
-msgid "You have the machine                                                    currently assigned."
-msgstr "La máquina ya está asignada a otra tarea activa"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/create_tag_wizard.py:132
-#, python-format
-msgid "You must print labels first"
-msgstr "Debes imprimir las etiquetas primero"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:267
-#, python-format
-msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
-"The real stock is                           %.2f %s. (without reservations)"
-msgstr "Planeas vender %.2f %s peso solo tienes %.2f %s                           disponible en conservativo !\n"
-"The stock real                           %.2f %s. (sin reservas)"
-
-#. module: midban_depot_stock
-#: view:website:midban_depot_stock.report_supplier_order
-msgid "Your Order Reference"
-msgstr "Su referencia"
-
-#. module: midban_depot_stock
-#: sql_constraint:route.zip:0
-msgid "Zip Code can not be repeated."
-msgstr "El código postal no puede estar repetido."
-
-#. module: midban_depot_stock
-#: view:route:midban_depot_stock.route_view_form
-msgid "Zip Codes"
-msgstr "Códigos postales"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:250
-#, python-format
-msgid "Zip code %s of customer %s                                      is not included in the route                                      %s"
-msgstr "El código postal %s del cliente %s                                      no está incluido en la ruta                                      %s"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:198
-#, python-format
-msgid "Zip code %s of customer %s                                  is not included in the route                                  %s"
-msgstr "Código postal %s del clienter %s no está incluido en la ruta %s"
-
-#. module: midban_depot_stock
-#: field:route,bzip_ids:0
-msgid "Zip codes"
-msgstr "Códigos Postales"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
-msgid "Zone"
-msgstr "Zona"
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1402
-#, python-format
-msgid "Zone %s not exist."
-msgstr "La zona %s no existe."
-
-#. module: midban_depot_stock
-#: code:addons/midban_depot_stock/product.py:117
-#: code:addons/midban_depot_stock/stock.py:1378
-#, python-format
-msgid "Zone not exist."
-msgstr "La zona no existe."
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "_Apply"
-msgstr "_Aplicar"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
-msgid "_Cancel"
-msgstr "_Cancelar"
-
-#. module: midban_depot_stock
-#: help:get.route.detail.wzd,delete:0
-msgid "if checked will delete all details in thefuture."
-msgstr "Si está marcado borraremos los detalles futoros a  la decha de fin."
-
-#. module: midban_depot_stock
-#: help:customer.list,sale_id:0
-msgid "is linked when confirm a order with this                              detail route"
-msgstr "Es asignado cuando confirmamos un pedido con un detalle de ruta"
-
-#. module: midban_depot_stock
-#: help:stock.location,special_location:0
-msgid "location used when other locations are full"
-msgstr "location used when other locations are full"
-
-#. module: midban_depot_stock
-#: help:stock.location.route,cross_dock:0
-msgid "mark to avoid stock virtualconservative warning"
-msgstr "Marcar para evitar advertencia de stock virtual conservativo"
-
-#. module: midban_depot_stock
-#: field:product.template,limit_time:0
-msgid "min useful time"
-msgstr "vida útil mínima de entrada"
-
-#. module: midban_depot_stock
-#: view:stock.location:midban_depot_stock.view_location_form_depot
-msgid "on_change_parent_location(location_id)"
-msgstr "on_change_parent_location(location_id)"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-msgid "onchange_lot_id(lot_id)"
-msgstr "onchange_lot_id(lot_id)"
-
-#. module: midban_depot_stock
-#: field:stock.move,orig_op:0
-msgid "op"
-msgstr "op"
-
-#. module: midban_depot_stock
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
-#: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
+#. module: midban_product
+#: view:process.deny.product:midban_product.view_process_deny_product_form
+#: view:process.unregister.product:midban_product.view_process_unregister_product_form
 msgid "or"
-msgstr "o"
+msgstr "or"
 
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-msgid "picking_id"
-msgstr "picking_id"
+#. module: midban_product
+#: model:ir.actions.act_window,name:midban_product.action_unregister_product_reason
+msgid "product unregister reasons"
+msgstr "Motivos baja de producto"
 
-#. module: midban_depot_stock
-#: field:customer.list,result:0
-#: field:route.report,result:0
-msgid "result"
-msgstr "Resultado"
-
-#. module: midban_depot_stock
-#: help:assign.task.wzd,min_loc_replenish:0
-msgid "the wizard will assign                                             operations to replenish the                                             defined number of locations"
-msgstr "El asistente asignará operaciones para reponer el nº indicado de operaciones"
-
-#. module: midban_depot_stock
-#: view:stock.task:midban_depot_stock.stock_task_view_search
-msgid "type"
-msgstr "Tipo"
-
-#. module: midban_depot_stock
-#: model:ir.actions.act_window,name:midban_depot_stock.action_stock_vehicle
-msgid "vehicles"
-msgstr "Vehículos"
-
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
-msgid "{'product_id': product_id}"
-msgstr "{'product_id': product_id}"
-
-#. module: midban_depot_stock
-#: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
-msgid "{'readonly': [('route_detail_id', '!=', False)]}"
-msgstr "{'readonly': [('route_detail_id', '!=', False)]}"
-
-#. module: midban_depot_stock
-#: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
-msgid "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
-msgstr "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
+#. module: midban_product
+#: view:product.template:midban_product.product_template_only_form_view_avoid_variants
+msgid "{'invisible': [('hidde_variant_page', '=', True)]}"
+msgstr "{'invisible': [('hidde_variant_page', '=', True)]}"

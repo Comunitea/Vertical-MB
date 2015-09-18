@@ -131,6 +131,7 @@ class product_template(osv.Model):
         'ref': fields.char('Referencia', size=64),
         'scientific_name': fields.char('Scientific name', size=128),
         'glazed': fields.boolean("Glazed"),
+        'no_gluten': fields.boolean("No Gluten"),
         'glazed_percent': fields.float("%", digits=(4, 2)),
         'web': fields.char('Web', size=128),
         'life': fields.integer('Useful life'),
