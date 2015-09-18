@@ -139,7 +139,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             this._super();
 
             var date_str = this.ts_model.getCurrentFullDateStr()
-            var date_str = date_str.replace(" ","T")
+            var date_str = date_str.replace(" ","T")  // T because chrome widget date,
             this.$('#date-call-create').val(date_str) // Set current date and time
             this.$('#customer-create').val("") // Set current date and time
             this.$('#comment-create').val("") // Set current date and time
@@ -184,10 +184,11 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
             partner_id = this.ts_model.db.partner_name_id[customer];
             var comment = this.$('#comment-create').val()
             var model = new instance.web.Model("crm.phonecall");
+            var date_create = self.ts_model.parse_str_date_to_utc(date)  //set dat in UTC from write in correct
             var vals = {
                 'name': comment,
                 'partner_id': partner_id,
-                'date': date,
+                'date': date_create,
             }
             model.call("create",[vals],{context:new instance.web.CompoundContext()})
                 .then(function(){
