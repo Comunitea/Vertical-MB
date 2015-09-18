@@ -122,7 +122,8 @@ class product_template(osv.Model):
         'temp_type': fields.many2one('temp.type',
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
-                                     "location temperature type"),
+                                     "location temperature type",
+                                     required=True),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
