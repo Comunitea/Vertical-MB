@@ -65,6 +65,7 @@
                 "account",
                 "product_unique_default_code",
                 "sale",
+                "stock_account",
                 "stock"],
     "data": ["wizard/process_unregister_product_view.xml",
              "wizard/process_deny_product_view.xml",

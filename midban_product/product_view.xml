@@ -157,6 +157,9 @@
                     </group>
                 </div>
 
+                <group name="procurement_uom" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </group>
             </field>
         </record>
 

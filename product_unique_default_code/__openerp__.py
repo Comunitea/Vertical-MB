@@ -35,7 +35,7 @@
     "website": "",
     "license": "",
     "depends": [
-        "product"
+        "product",
     ],
     "demo": [
         'demo/test_unique_ref_demo.xml',
