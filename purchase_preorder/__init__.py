@@ -18,5 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import wizard
+# import wizard
 import purchase
+import purchase_preorder
+import products_supplier
