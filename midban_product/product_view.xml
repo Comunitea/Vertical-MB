@@ -141,7 +141,7 @@
                 </label>
 
                 <field name="standard_price" position="after">
-                    <field name="margin"/>
+                    <field name="margin" readonly="True"/>
                     <field name="last_purchase_price"/>
                     <!-- <field name="life"/> -->
                 </field>
