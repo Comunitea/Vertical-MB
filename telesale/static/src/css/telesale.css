@@ -121,7 +121,7 @@
 
 /* The notifications indicator */
 .telesale .oe_ts_synch-notification{
-    float:right; 
+    float:right;
     color: rgba(255,255,255,0.4);
     padding-left: 0.5%;
     padding-right: 0.5%;
@@ -192,19 +192,19 @@
 }
 .telesale .mandatory{
     background:rgb(161, 161, 255);
-    
+
 }
 .telesale .warning-red{
     background:#FF3232;
-    
+
 }
-.telesale button:focus { 
+.telesale button:focus {
     outline: none !important;
     border-color: #719ECE;
     box-shadow: 0 0 10px #FF0000;
 }
 
-.telesale input:focus { 
+.telesale input:focus {
     outline: none !important;
     border-color: #000000;
     box-shadow: 0 0 10px #000000;
@@ -256,7 +256,7 @@
   background-clip: padding-box;
   *border-right-width: 2px;
   *border-bottom-width: 2px;
- 
+
   .ui-menu-item > a.ui-corner-all {
     display: block;
     padding: 3px 15px;
@@ -265,7 +265,7 @@
     line-height: 18px;
     color: #555555;
     white-space: nowrap;
- 
+
     &.ui-state-hover, &.ui-state-active {
       color: #ffffff;
       text-decoration: none;
@@ -276,5 +276,3 @@
       background-image: none;
     }
   }
-
- 

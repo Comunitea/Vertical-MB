@@ -50,27 +50,30 @@
                     <group>
                         <group string="General Information">
                             <field name="date"/>
-                            <field name="product_id"/>
                             <field name="name"/>
+                            <field name="product_id"/>
                             <field name="supplier_id"/>
-                            <field name="orderpoint_id"/>
+
                         </group>
                         <group string="Quantities">
                             <field name="real_stock"/>
                             <field name="incoming_qty"/>
+                            <field name="virtual_available"/>
                             <field name="virtual_stock"/>
                             <field name="minimum_proposal"/>
+                            <field name="product_qty"/>
                         </group>
-                        <group string="Amounts Awaiting Come">
+                        <!-- <group string="Amounts Awaiting Come">
                             <field name="product_qty"/>
                             <field name="date_delivery"/>
-                        </group>
+                        </group> -->
                         <group string="Order">
                             <field name="preorder_id"/>
-                            <field name="purchase_id"/>
+                            <!-- <field name="purchase_id"/> -->
                         </group>
                         <group string="Additional Information">
                             <field name="responsible"/>
+                            <field name="orderpoint_id"/>
                         </group>
                     </group>
                 </sheet>
@@ -84,7 +87,7 @@
             <field name="view_type">form</field>
             <field name="view_id" ref="view_product_stock_unsafety_tree"/>
             <field name="search_view_id" ref="view_product_stock_unsafety_filter"/>
-            <!-- <field name="context">{'search_default_exceptions':1,'search_default_in_progress':1}</field> -->
+            <field name="context">{'search_default_exceptions':1,'search_default_in_progress':1}</field>
             <field name="help" type="html">
 
               <p class="oe_view_nocontent_create">

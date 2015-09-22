@@ -302,7 +302,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
                                 self.inicialize_unit_values()
                                 self.refresh();
-                                self.$('.col-unit').focus()
+                                self.$('.col-product_uos_qty').focus()
                             });
                         })
                         .fail(function(){

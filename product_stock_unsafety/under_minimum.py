@@ -31,6 +31,7 @@ STATES = [('in_progress', 'In Progress'),
 class product_stock_unsafety(osv.Model):
     _name = 'product.stock.unsafety'
     _description = 'Products that have stock under minimum'
+    _order = 'id desc'
     _columns = {
         'product_id': fields.many2one('product.product',
                                       'Product',
@@ -40,6 +41,7 @@ class product_stock_unsafety(osv.Model):
                                          'Replenishement Rule',
                                          readonly=True,
                                          required=True,
+                                         ondelete='cascade',
                                          help='The replenishement rule that '
                                          'launch this under minimum alert.'),
         'supplier_id': fields.many2one('res.partner',
@@ -53,18 +55,28 @@ class product_stock_unsafety(osv.Model):
         'real_stock': fields.related('product_id', 'qty_available',
                                      type='float',
                                      string='Real Stock',
-                                     readonly=True),
+                                     readonly=True,
+                                     help='Quantity in stock'),
         'virtual_stock': fields.related('product_id',
                                         'virtual_stock_conservative',
                                         type='float',
                                         string='Virtual Stock Conservative',
-                                        readonly=True),
-        'purchase_id': fields.many2one('purchase.order.line',
-                                       'Purchase'),
+                                        readonly=True,
+                                        help='Real stock - outgoings '),
+        'virtual_available': fields.related('product_id',
+                                            'virtual_available',
+                                            type='float',
+                                            string='Quantity available',
+                                            readonly=True,
+                                            help='Real stock + incomings - '
+                                            'outgongs'),
+        # 'purchase_id': fields.many2one('purchase.order.line',
+        #                                'Purchase'),
         'preorder_id': fields.many2one('purchase.preorder', 'Preorder',
                                        readonly=True),
-        'product_qty': fields.float('Qty ordered'),
-        'date_delivery': fields.date('Delivery', readonly=True),
+        'product_qty': fields.float('Qty ordered',
+                                    help='Quantity ordered in preorder'),
+        # 'date_delivery': fields.date('Delivery', readonly=True),
         'responsible': fields.many2one('res.users',
                                        'Responsible', readonly=True),
         'state': fields.selection(STATES, 'State', readonly=True),
@@ -74,7 +86,8 @@ class product_stock_unsafety(osv.Model):
                                        'incoming_qty',
                                        type='float',
                                        string='Incoming qty.',
-                                       readonly=True,),
+                                       readonly=True,
+                                       help='Quantity pending to recive'),
         'minimum_proposal': fields.float('Min. Proposal',
                                          readonly=True,
                                          help='Quantity necessary to reach '
@@ -96,31 +109,31 @@ class product_stock_unsafety(osv.Model):
         self.write(cr, uid, ids, {'state': 'cancelled'})
         return True
 
-    def write_purchase_id(self, cr, uid, ids, purchase_line_id=False,
-                          product_id=False, context=None):
-        """
-        Function you are looking if exists under minimum for he product
-        received in progress state and has not linked purchase order line.
-        If found, writes it the purchase order line that just created.
-        """
-        if context is None:
-            context = {}
-        mins = []
-        undermin = self.pool.get('product.stock.unsafety')
-        purl = self.pool.get('purchase.order.line')
-        if product_id and purchase_line_id:
-            # Find under minimums that satisfying the conditions
-            # indicated.
-            mins = undermin.search(cr, uid, [('product_id', '=', product_id),
-                                             ('state', '=', 'in_progress'),
-                                             ('purchase_id', '=', False)])
-            if mins:
-                # Writes the first under minimum found the purchase
-                # order line that was just created
-                purline = purl.browse(cr, uid, purchase_line_id)
-                undermin.write(cr,
-                               uid,
-                               mins[0],
-                               {'purchase_id': purchase_line_id,
-                                'product_qty': purline.product_qty})
-        return {}
+    # def write_purchase_id(self, cr, uid, ids, purchase_line_id=False,
+    #                       product_id=False, context=None):
+    #     """
+    #     Function you are looking if exists under minimum for he product
+    #     received in progress state and has not linked purchase order line.
+    #     If found, writes it the purchase order line that just created.
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     mins = []
+    #     undermin = self.pool.get('product.stock.unsafety')
+    #     purl = self.pool.get('purchase.order.line')
+    #     if product_id and purchase_line_id:
+    #         # Find under minimums that satisfying the conditions
+    #         # indicated.
+    #         mins = undermin.search(cr, uid, [('product_id', '=', product_id),
+    #                                          ('state', '=', 'in_progress'),
+    #                                          ('purchase_id', '=', False)])
+    #         if mins:
+    #             # Writes the first under minimum found the purchase
+    #             # order line that was just created
+    #             purline = purl.browse(cr, uid, purchase_line_id)
+    #             undermin.write(cr,
+    #                            uid,
+    #                            mins[0],
+    #                            {'purchase_id': purchase_line_id,
+    #                             'product_qty': purline.product_qty})
+    #     return {}

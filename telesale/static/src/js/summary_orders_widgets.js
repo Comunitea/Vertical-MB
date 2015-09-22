@@ -30,7 +30,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             }
             this.open_order =  this.ts_model.get('selectedOrder')
             var loaded = self.ts_model.fetch('sale.order',
-                                            ['name','partner_id','date_order','state','amount_total','date_invoice'],  //faltan los impuestos etc
+                                            ['name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],  //faltan los impuestos etc
                                             [
                                                 ['id', '=', order_id],
                                                 ['chanel', '=', 'telesale']
@@ -39,7 +39,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                     var order = orders[0];
                     self.order_fetch = order;
                     return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp','q_note', 'detail_note'],
+                                                ['product_id','product_uom','product_uom_qty','price_unit','product_uos', 'product_uos_qty','price_udv','price_subtotal','tax_id','pvp_ref','current_pvp','q_note', 'detail_note'],
                                                 [
                                                     ['order_id', '=', order_id],
                                                  ]);
@@ -116,7 +116,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                 domain.push(['date_order', '<=', date_end])
             }
             var loaded = self.ts_model.fetch('sale.order',
-                                            ['name', 'partner_id','date_order','date_planned','state','amount_total',],  //faltan los impuestos etc
+                                            ['name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],  //faltan los impuestos etc
                                             domain)
                 .then(function(orders){
                 self.partner_orders = orders;

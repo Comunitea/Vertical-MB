@@ -159,4 +159,7 @@ class ProductTemplate(models.Model):
 
                 #NOTA. No tendrái porqueñ ser a este unidad ,Creo que trelametne deberáismo poder ver si queremos ver
                 #segunda unidad el stock, cual es esta unidad en al que queremos verlo....
-                self.log_units_available = prod.uom_qty_to_uos_qty(prod.virtual_available, self.log_unit_id.id)
+                if self.log_unit_id:
+                    self.log_units_available = prod.uom_qty_to_uos_qty(prod.virtual_available, self.log_unit_id.id)
+                else:
+                    self.log_units_available = -1.0

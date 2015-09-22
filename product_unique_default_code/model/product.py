@@ -44,7 +44,29 @@ class product_product(osv.Model):
         return super(product_product, self).copy(cr, uid, id, default=default,
                                                  context=context)
 
-    _sql_constraints = [
-        ('default_code_unique', 'unique (default_code)',
-         'The code of Product must be unique !'),
+    def _check_default_code(self, cr, uid, ids, context=None):
+        """
+        """
+        if context is None:
+            context = {}
+        for prod in self.browse(cr, uid, ids, context):
+            if prod.default_code:
+                domain = [
+                    ('active','=',True),
+                    ('default_code','=',prod.default_code),
+                    ('id', '!=', prod.id)
+                ]
+                prod_ids = self.search(cr, uid, domain, context=context)
+                if prod_ids:
+                    return False
+        return True
+
+    _constraints = [
+        (_check_default_code,
+         'Default code must be unique in active products',
+         ['default_code', 'active'])
     ]
+    # _sql_constraints = [
+    #     ('default_code_unique', 'unique (default_code)',
+    #      'The code of Product must be unique !'),
+    # ]

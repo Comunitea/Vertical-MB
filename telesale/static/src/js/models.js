@@ -260,6 +260,9 @@ function openerp_ts_models(instance, module){
                                  pvp_ref: line.pvp_ref,
                                  qnote: line.q_note[1] || "",
                                  detail: line.detail_note || "",
+                                 product_uos: line['product_uos'][1] || "",
+                                 product_uos_qty: line['product_uos_qty'] || 0.0,
+                                 price_udv: line['price_udv'] || 0.0
                                 }
                 var line = new module.Orderline(line_vals);
                 order_model.get('orderLines').add(line);
@@ -369,7 +372,7 @@ function openerp_ts_models(instance, module){
             str_year = str_date2.split(" ")[0].split("-")[0]
             str_month = str_date2.split(" ")[0].split("-")[1]
             str_day = str_date2.split(" ")[0].split("-")[2]
-            new_str = str_year + "-" + str_day + "-" + str_month + " " + str_date2.split(" ")[1]
+            new_str = str_year + "-" + str_month + "-" + str_day + " " + str_date2.split(" ")[1]
             return new_str
         },
         parse_utc_to_str_date: function(str_date){
@@ -390,10 +393,12 @@ function openerp_ts_models(instance, module){
             return splited[2] + "-" +  splited[1] + "-" + splited[0];
         },
         localFormatDateTime: function(date_time){
-            var splited =  date_time.split(" ");
-            var date_part =  splited[0].split('-');
-            var hour_part =  splited[1];
-            return date_part[2] + "-" +  date_part[1] + "-" + date_part[0] + " " + hour_part;
+            if (date_time){
+              var splited =  date_time.split(" ");
+              var date_part =  splited[0].split('-');
+              var hour_part =  splited[1];
+              return date_part[2] + "-" +  date_part[1] + "-" + date_part[0] + " " + hour_part;
+          }
         }
 
 
@@ -420,6 +425,8 @@ function openerp_ts_models(instance, module){
             pvp: 0,
             pvp_ref: 0, //in order to change the discount
             total: 0,
+            product_uos_id: 0,
+            price_uos_qty: 0,
             price_udv: 0,
             //to calc totals
             discount: 0,
@@ -744,7 +751,7 @@ function openerp_ts_models(instance, module){
             var self=this;
             var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done']]]
             var loaded = self.ts_model.fetch('sale.order.line',
-                                            ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
+                                            ['product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
                                             domain
                                             )
                 .then(function(order_lines){
@@ -753,6 +760,7 @@ function openerp_ts_models(instance, module){
             return loaded
         },
         add_lines_to_current_order: function(order_lines){
+
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
             for (key in order_lines){
                 var line = order_lines[key];
@@ -781,6 +789,9 @@ function openerp_ts_models(instance, module){
                                      pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
                                      qnote: line['q_note'][1] || "",
                                      detail: line["detail_note"] || "",
+                                     product_uos: line['product_uos'][1] || "",
+                                     product_uos_qty: line['product_uos_qty'] || 0.0,
+                                     price_udv: line['price_udv'] || 0.0
                                     }
                     var line = new module.Orderline(line_vals);
                     this.get('orderLines').add(line);
@@ -795,7 +806,7 @@ function openerp_ts_models(instance, module){
                                                 domain,1,['-id'])
                 .then(function(order){
                     return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
+                                                ['product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
                                                 [
                                                     ['order_id', '=', order.id],
                                                  ]);

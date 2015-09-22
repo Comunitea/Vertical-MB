@@ -21,10 +21,37 @@
 from openerp.osv import osv
 from openerp.tools.translate import _
 import openerp
+from openerp import api
 
 
 class procurement_order(osv.Model):
     _inherit = 'procurement.order'
+
+    @api.multi
+    def update_under_minimum(self, vals):
+        """
+        First check if already exists under_minimum in purchase state. If
+        exists we do nothing. If not exist we check if exist under_minimum
+        in progress state, if that case we update it else we create a new one
+        """
+
+        stock_unsafety = self.env['product.stock.unsafety']
+        domain = [
+            ('state', '=', 'in_purchase'),
+            ('product_id', '=', vals['product_id'])
+        ]
+        under_mins = stock_unsafety.search(domain)
+        if not under_mins:
+            domain = [
+                ('state', '=', 'in_progress'),
+                ('product_id', '=', vals['product_id'])
+            ]
+            under_mins = stock_unsafety.search(domain)
+            if under_mins:
+                under_mins.write(vals)
+            else:
+                stock_unsafety.create(vals)
+        return
 
     def _procure_orderpoint_confirm(self, cr, uid, use_new_cursor=False,
                                     company_id=False, context=None):
@@ -45,7 +72,7 @@ class procurement_order(osv.Model):
             cr = openerp.registry(cr.dbname).cursor()
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
         prod_tmp_obj = self.pool.get('product.template')
-        stock_unsafety = self.pool.get('product.stock.unsafety')
+
         dom = company_id and [('company_id', '=', company_id)] or []
         orderpoint_ids = orderpoint_obj.search(cr, uid, dom)
         prev_ids = []
@@ -60,7 +87,6 @@ class procurement_order(osv.Model):
                 else:
                     state = 'exception'
                     seller = False
-                # virtual_stock = prod.virtual_stock_conservative
                 days_sale = prod.remaining_days_sale
                 min_days_sale = op.min_days_id.days_sale
                 delay = seller and seller.delay or 0
@@ -83,7 +109,10 @@ class procurement_order(osv.Model):
                     if daylysales and remaining_days:
                         vals['minimum_proposal'] = daylysales * remaining_days
 
-                    stock_unsafety.create(cr, uid, vals, context=context)
+                    # Creating or updating existing under minimum
+                    self.update_under_minimum(cr, uid, ids, vals,
+                                              context=context)
+
             if use_new_cursor:
                 cr.commit()
             if prev_ids == ids:

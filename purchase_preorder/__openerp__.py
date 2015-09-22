@@ -43,7 +43,7 @@ Module that adds the purchases pre-order.
                 "midban_partner"
                 ],
     "data": ["data/preorder_data.xml",
-             "wizard/purchase_preorder_view.xml",
+             "purchase_preorder_view.xml",
              "security/ir.model.access.csv",
              "purchase_view.xml"],
     "demo": [],

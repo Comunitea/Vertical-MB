@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv, fields
+from openerp.osv import osv, fields, expression
 import time
 from openerp.tools.translate import _
 from openerp import workflow, exceptions
@@ -197,6 +197,23 @@ class res_partner(osv.Model):
         'min_palets': 0
     }
 
+    def name_search(self, cr, uid, name, args=None, operator='ilike',
+                    context=None, limit=100):
+        if not args:
+            args = []
+
+        ids = self.search(cr, uid, [('ref', operator, name)] + args,
+                              limit=limit, context=context)
+
+        if name and len(ids) == 0:
+            partners = super(res_partner, self).name_search(cr, uid, name, args,
+                                                            operator, context,
+                                                            limit)
+            ids = [x[0] for x in partners]
+
+        return self.name_get(cr, uid, ids, context=context)
+
+
     def create(self, cr, uid, vals, context=None):
         """
         When a contact is created from a parent partner, validate it
@@ -352,9 +369,11 @@ class resPartner(models.Model):
                     init += 1
         self.max_distance = res
 
-    max_distance = fields2.Integer(string='Max distance (Days)',
+    # En español porque no coge la traducción en otra clase con la nueva api
+    max_distance = fields2.Integer(string='Max. distancia (Días)',
                                    compute='_compute_distance',
-                                   help='Max distance between 2 service days',
+                                   help='Máxima distancia entre dos días de '
+                                   'servicio adyacentes ',
                                    readonly=True)
 
 

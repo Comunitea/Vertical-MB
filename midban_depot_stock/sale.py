@@ -22,7 +22,15 @@ from openerp.osv import osv, fields
 from openerp.tools import float_compare
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
-from openerp import api
+from openerp import api, models, fields as fields2
+
+
+class procurement_group(osv.Model):
+    _inherit = 'procurement.group'
+
+    # To pass from sale order to picking, we use it in _picking_assign
+    # method of stock.move
+    user_id = fields2.Many2one('res.users', 'Comercial', readonly=True)
 
 
 class sale_order(osv.Model):
@@ -195,6 +203,15 @@ class sale_order(osv.Model):
                 detail_date = detail_obj.date + " 19:00:00"
                 order.date_planned = detail_date
         res = super(sale_order, self).write(vals)
+        return res
+
+    def _prepare_procurement_group(self, cr, uid, order, context=None):
+        """
+        In order to pass the comercial to the picking
+        """
+        sup = super(sale_order, self)
+        res = sup._prepare_procurement_group(cr, uid, order, context=context)
+        res['user_id'] = order.user_id.id
         return res
 
 

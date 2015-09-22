@@ -122,7 +122,8 @@ class product_template(osv.Model):
         'temp_type': fields.many2one('temp.type',
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
-                                     "location temperature type"),
+                                     "location temperature type",
+                                     required=True),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
@@ -130,9 +131,10 @@ class product_template(osv.Model):
         'ref': fields.char('Referencia', size=64),
         'scientific_name': fields.char('Scientific name', size=128),
         'glazed': fields.boolean("Glazed"),
+        'no_gluten': fields.boolean("No Gluten"),
         'glazed_percent': fields.float("%", digits=(4, 2)),
         'web': fields.char('Web', size=128),
-        'life': fields.integer('Useful life'),
+        # 'life': fields.integer('Useful life'),
         'first_course': fields.boolean("First Course"),
         'second_course': fields.boolean("Second Course"),
         'dessert': fields.boolean("Dessert"),
@@ -306,6 +308,9 @@ products do not require units for validation'),
                                  _('Some unit dimension is '
                                    'equals to zero. Please '
                                    'check it.'))
+        if not p.weight:
+            raise osv.except_osv(_('Error'),
+                                 _('You need to set gross weight'))
         return True
 
     def act_comercial_pending(self, cr, uid, ids, context=None):

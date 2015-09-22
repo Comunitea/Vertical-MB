@@ -24,6 +24,7 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp import models, api, fields as fields2
 
 
 PRODUCT_STATE_SELECTION = [('val_pending', 'Validate pending'),
@@ -142,11 +143,17 @@ class purchase_preorder(osv.Model):
                        type='many2one',
                        relation='product.pricelist',
                        string="Purchase pricelist"),
+        'state': fields.selection([('draft', 'Draft'),
+                                   ('done', 'Done')], 'State',
+                                  readonly=True),
+        'purchase_id': fields.many2one('purchase.order', 'Related Purchase',
+                                       readonly=True)
 
 
     }
     _defaults = {
         'name': lambda obj, cr, uid, context: '/',
+        'state': 'draft'
     }
 
     def create(self, cr, uid, vals, context=None):
@@ -270,7 +277,7 @@ class purchase_preorder(osv.Model):
         """
         vals = {}
         purchase_fac = self.pool.get('purchase.order.line')
-        move_fac = self.pool.get('stock.move')
+        # move_fac = self.pool.get('stock.move')
         prod_fac = self.pool.get('product.product')
         if product:
             # Product Data
@@ -279,15 +286,10 @@ class purchase_preorder(osv.Model):
                                        [('product_tmpl_id', '=', product.id)])
             if products:
                 product = prod_fac.browse(cr, uid, products[0])
-                vals = {'product_id': product.id,
-                        # 'real_stock': product.qty_available,
-                        # 'virtual_stock': product.virtual_stock_conservative,
-                        # 'incoming_qty': product.incoming_qty
-                        }
+                vals = {'product_id': product.id}
                 # RSM Data
-                if product.orderpoint_ids:
-                    opoint = product.orderpoint_ids[0]
-                    # vals['min_fixed'] = opoint.product_min_qty
+                # if product.orderpoint_ids:
+                #     opoint = product.orderpoint_ids[0]
                 # Last Data Purchase
                 if supplier:
                     domain = [('order_id.partner_id', '=', supplier.id),
@@ -303,17 +305,17 @@ class purchase_preorder(osv.Model):
                         vals['qty_last_purchase'] = pur.product_qty
                         vals['price_last_purchase'] = pur.price_unit
                 # Data of amounts awaiting of come
-                domain = [('product_id', '=', product.id),
-                          ('partner_id', '=', supplier.id),
-                          ('state', '=', 'assigned'),
-                          ('picking_type_id.code', '=', 'internal')]
-                moves = move_fac.search(cr,
-                                        uid,
-                                        domain,
-                                        order='date_expected desc')
-                if moves:
-                    date = move_fac.browse(cr, uid, moves[0]).date_expected
-                    vals['date_delivery'] = date
+                # domain = [('product_id', '=', product.id),
+                #           ('partner_id', '=', supplier.id),
+                #           ('state', '=', 'assigned'),
+                #           ('picking_type_id.code', '=', 'internal')]
+                # moves = move_fac.search(cr,
+                #                         uid,
+                #                         domain,
+                #                         order='date_expected desc')
+                # if moves:
+                #     date = move_fac.browse(cr, uid, moves[0]).date_expected
+                #     vals['date_delivery'] = date
                 # Data supplier pricelist
                 prices = {}
                 t_pricelist = self.pool.get('product.pricelist')
@@ -462,7 +464,6 @@ class purchase_preorder(osv.Model):
         """
         Generate a purchase order from the data pre-order.
         """
-        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         vals = {}
@@ -519,6 +520,7 @@ class purchase_preorder(osv.Model):
                     pricelist_id = valspartner['value']['pricelist_id']
                     vals['pricelist_id'] = pricelist_id
             new_id = purchase.create(cr, uid, vals)
+            pre.write({'state': 'done', 'purchase_id': new_id})
             if pre.product_supplier_ids:
                 for line in pre.product_supplier_ids:
                     if line.product_uoc_qty:
@@ -622,10 +624,8 @@ class products_supplier(osv.Model):
     def _get_min_qty_supplier(self, cr, uid, ids, fields_name, args,
                               context=None):
 
-        #import pdb; pdb.set_trace()
         res = {}
         supp_info_obj = self.pool.get('product.supplierinfo')
-        mod_obj = self.pool.get('ir.model.data')
         for obj in self.browse(cr, uid, ids, context):
             res[obj.id] = {
                 'min_qty': 0.0,
@@ -648,26 +648,15 @@ class products_supplier(osv.Model):
                 ca_ma = info_obj.supp_ca_ma
                 ma_pa = info_obj.supp_ma_pa
 
-                # Está mal, Calcula en función del uom_id, pero es de proveedor
-                #
-                # unit_uom = mod_obj.get_object_reference(cr,
-                #                                         uid,
-                #                                         'product',
-                #                                         'product_uom_unit')
-                #unit_id = unit_uom and unit_uom[1] or False
-                #
-                # if info_obj.product_uom.id == unit_id:
-                #     boxes = round(un_ca and (prod_qty / un_ca) or 0.0, 2)
-                #     mantles = round(ca_ma and (boxes / ca_ma) or 0.0, 2)
-                #     palets = round(ma_pa and (mantles / ma_pa) or 0.0, 2)
-                #     res[obj.id]['min_mantles'] = mantles
-                #     res[obj.id]['min_palets'] = palets
-
-
                 uom = info_obj.product_tmpl_id.uom_id
                 product = self.pool.get('product.product')
-                product_id = product.browse(cr, uid, [info_obj.product_tmpl_id.id])
-                prod_qty = (prod_qty * product_id._conv_units( uom.id, info_obj.log_box_id.id, info_obj.name.id)) or 1.0
+                product_id = product.browse(cr, uid,
+                                            [info_obj.product_tmpl_id.id])
+                prod_qty = \
+                    (prod_qty *
+                        product_id._conv_units(uom.id,
+                                               info_obj.log_box_id.id,
+                                               info_obj.name.id)) or 1.0
                 boxes = round(prod_qty or 0.0, 2)
                 mantles = round(ca_ma and (boxes / ca_ma) or 0.0, 2)
                 palets = round(ma_pa and (mantles / ma_pa) or 0.0, 2)
@@ -688,21 +677,31 @@ class products_supplier(osv.Model):
                                         type='selection',
                                         selection=PRODUCT_STATE_SELECTION,
                                         string="State"),
-        'min_fixed': fields.float('Min. Fixed'),
+        'min_fixed': fields.float('Min. Fixed'),  # TODO eliminar, sin función
         'incoming_qty': fields.related('product_id',
                                        'incoming_qty',
                                        type='float',
-                                       string='Incoming qty.'),
-        'date_delivery': fields.date('Date Delivery'),
+                                       string='Incoming qty.',
+                                       help='Quantity pending to recive'),
+        # 'date_delivery': fields.date('Date Delivery'),
         'real_stock': fields.related('product_id', 'qty_available',
                                      type='float',
                                      string='Real Stock',
-                                     readonly=True),
+                                     readonly=True,
+                                     help='Quantity in stock'),
         'virtual_stock': fields.related('product_id',
                                         'virtual_stock_conservative',
                                         type='float',
                                         string='Virtual Stock Conservative',
-                                        readonly=True),
+                                        readonly=True,
+                                        help='Real stock - outgoings '),
+        'virtual_available': fields.related('product_id',
+                                            'virtual_available',
+                                            type='float',
+                                            string='Quantity available',
+                                            readonly=True,
+                                            help='Real stock + incomings - '
+                                            'outgongs'),
         'sequence': fields.integer('Sequence'),
         'date_last_purchase': fields.date('Date'),
         'qty_last_purchase': fields.float('Qty.'),
@@ -793,3 +792,45 @@ class products_supplier(osv.Model):
             'target': 'new',
             'context': context,
         }
+
+
+class productsSupplier(models.Model):
+    _inherit = 'products.supplier'
+
+    @api.one
+    def _calc_security_days(self):
+        op_t = self.env['stock.warehouse.orderpoint']
+        security_days = 0.00
+        domain = [
+            ('product_id', '=', self.product_id.id),
+            ('min_days_id', '!=', False)
+        ]
+        op_objs = op_t.search(domain)
+        if op_objs:
+            security_days = op_objs[0].min_days_id.days_sale
+        self.security_days = security_days
+
+    @api.one
+    def _calc_delivery_date(self):
+        """
+        Get delivery date same way that in purchase order line
+        """
+        date = False
+        pol = self.env['purchase.order.line']
+        if self.product_id.seller_ids:
+            today = time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            date = pol._get_date_planned(self.product_id.seller_ids[0], today)
+            if date:
+                date = date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        self.delivery_date = date
+
+    # En español porque no coje la traducción en otra clase con la nueva api
+    security_days = fields2.Float('Días stock seguridad', readonly=True,
+                                  compute='_calc_security_days',
+                                  help="Días de stock de seguridad del "
+                                  "producto configurados en una regla de "
+                                  "reabastecimiento")
+    delivery_date = fields2.Date('Fecha de Entrega', readonly=True,
+                                 compute='_calc_delivery_date',
+                                 help="Fecha de entrega estimada contando "
+                                 "que confirmamos la compra hoy")

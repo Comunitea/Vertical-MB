@@ -111,7 +111,7 @@ class sale(osv.osv):
                 'date_invoice': order['date_invoice'] or False,
                 'date_order': time.strftime("%Y-%m-%d %H:%M:%S"),
                 'date_planned':
-                order['date_planned'] and order['date_planned'] + " 22:59:59"
+                'date_planed' in order and order['date_planned'] + " 22:59:59"
                 or False,
                 'note': order['note'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
