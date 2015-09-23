@@ -627,7 +627,6 @@ class assign_task_wzd(osv.TransientModel):
         selected_route = obj.trans_route_id and obj.trans_route_id.id or False
         if not selected_route:
             selected_route = self._get_random_route(cr, uid, ids, context)
-
         date_planned = obj.date_planned
         start_date = date_planned + " 00:00:00"
         end_date = date_planned + " 23:59:59"

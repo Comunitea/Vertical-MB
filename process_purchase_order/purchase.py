@@ -43,7 +43,6 @@ class purchase_order_line(models.Model):
                             context=None):
         """
         """
-        #import pdb; pdb.set_trace()
         if context is None:
             context = {}
         sup = super(purchase_order_line, self)
@@ -96,6 +95,7 @@ class purchase_order_line(models.Model):
                                                  list') % part_obj.name
                                   }
             else:
+
                 product_udc_ids = prod_obj.get_purchase_unit_ids(partner_id)
                 res['value']['product_uoc_qty'] = 1.0
                 res['value']['product_uoc'] = \

@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv, fields
+from openerp.osv import osv, fields, expression
 import time
 from openerp.tools.translate import _
 from openerp import workflow, exceptions
@@ -196,6 +196,23 @@ class res_partner(osv.Model):
         'reception_method': 'mail',
         'min_palets': 0
     }
+
+    def name_search(self, cr, uid, name, args=None, operator='ilike',
+                    context=None, limit=100):
+        if not args:
+            args = []
+
+        ids = self.search(cr, uid, [('ref', operator, name)] + args,
+                              limit=limit, context=context)
+
+        if name and len(ids) == 0:
+            partners = super(res_partner, self).name_search(cr, uid, name, args,
+                                                            operator, context,
+                                                            limit)
+            ids = [x[0] for x in partners]
+
+        return self.name_get(cr, uid, ids, context=context)
+
 
     def create(self, cr, uid, vals, context=None):
         """
