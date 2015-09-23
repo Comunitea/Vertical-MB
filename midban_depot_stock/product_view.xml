@@ -10,9 +10,9 @@
                 <field name="property_stock_inventory" position="after">
                     <field name="picking_location_id" domain="[('temp_type_id', '=', temp_type), ('usage', '=', 'internal'), ('zone', '=', 'picking')]"/>
                 </field>
-                <field name="loc_case" position="after">
+                <group name="store" position="replace">
                     <field name="palet_wood_height" attrs="{'invisible':[('type','=','service')]}"/>
-                </field>
+                </group>
 
                 <field name="virtual_available" position="after">
                     <field name="log_units_available" attrs="{'invisible':[('is_var_coeff','=' ,False)]}"/>

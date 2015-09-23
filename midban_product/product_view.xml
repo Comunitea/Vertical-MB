@@ -160,6 +160,10 @@
                 <group name="procurement_uom" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </group>
+                <group string="Unit of Measure" position="attributes">
+                    <attribute name="groups"></attribute>
+                    <attribute name="invisible">True</attribute>
+                </group>
             </field>
         </record>
 
