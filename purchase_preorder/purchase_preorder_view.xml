@@ -12,9 +12,6 @@
             </field>
         </record>
 
-
-
-
         <record id="view_purchase_preorder_tree" model="ir.ui.view">
             <field name="name">purchase.preorder.tree</field>
             <field name="model">purchase.preorder</field>

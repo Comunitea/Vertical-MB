@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="replenishement_purchase_order">
+            <t t-call="report.html_container">
+
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="report.external_layout">
+                      <div class="page">
+                            <h1 align="center">Purchase Order Report</h1>
+                            <h2>en desarrollo</h2>
+                        </div>
+                    </t>
+                 </t>
+
+             </t>
+        </template>
+    </data>
+</openerp>

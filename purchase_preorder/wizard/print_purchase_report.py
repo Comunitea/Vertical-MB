@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
+#    Copyright (C) 2015 Comunitea All Rights Reserved
 #    $Carlos Lombardía Rodríguez$ <carlos@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -18,6 +18,23 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# import purchase_preorder
-# import products_supplier
-import print_purchase_report
+from openerp import models, fields, api
+
+class print_purchase_report(models.TransientModel):
+
+    _name = 'print.purchase.report.wzd'
+
+    start_date = fields.Date(string="Start Date")
+    end_date = fields.Date(string="End Date")
+
+    @api.multi
+    def generate_print_purchase_report(self):
+        # import ipdb; ipdb.set_trace()
+        rep_name = 'purchase_preorder.replenishement_purchase_order'
+        a = self.env["report"].get_action(self, rep_name)
+        data_dic = {
+            'start_date': self.start_date,
+            'end_date': self.end_date,
+        }
+        a['data'] = data_dic
+        return a

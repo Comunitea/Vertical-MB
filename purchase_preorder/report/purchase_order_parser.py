@@ -18,6 +18,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-# import purchase_preorder
-# import products_supplier
-import print_purchase_report
+from openerp import models, api, exceptions, _
+
+
+class purchase_order_parser(models.AbstractModel):
+    """
+    """
+
+    _name = 'report.purchase_preorder.replenishement_purchase_order'
+
+    @api.multi
+    def render_html(self, data=None):
+        
+        report_obj = self.env['report']
+        report_name = 'purchase_preorder.replenishement_purchase_order'
+        report = report_obj._get_report_from_name(report_name)
+
+        domain = [('order_id.create_date', '>=', data['start_date']),
+                  ('order_id.create_date', '<=', data['end_date'])]
+        line_objs = self.env['purchase.order.line'].search(domain)
+
+        docargs = {
+            'doc_ids': line_objs._ids,
+            'doc_model': 'purchase_order',
+            'docs': line_objs
+        }
+        return report_obj.render(report_name, docargs)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+      <record id="print_purchase_report_view_form" model="ir.ui.view">
+          <field name="name">print.purchase.report.wzd.view.form</field>
+          <field name="model">print.purchase.report.wzd</field>
+          <field name="type">form</field>
+          <field name="arch" type="xml">
+            <form string="Print Purchase Report" version="7.0">
+                <group colspan="4" col="2">
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+                <footer>
+                  <button string="Generate" name="generate_print_purchase_report"
+                  type="object" icon="gtk-ok"  class="oe_highlight"/>
+                  <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                </footer>
+              </form>
+          </field>
+      </record>
+
+      <act_window name="Print Purchase Report"
+          res_model="print.purchase.report.wzd"
+          view_id="print_purchase_report_view_form"
+          view_mode="form"
+          target="new"
+          id="action_print_purchase_report_wzd"/>
+
+      <menuitem id="print_purchase_report_menu"
+        name="Print Purchase Report"
+        string="Print Purchase Report"
+        action="action_print_purchase_report_wzd"
+        parent="menu_purchase_preorder"
+        sequence="81"/>
+
+    </data>
+</openerp>

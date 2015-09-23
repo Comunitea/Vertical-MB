@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-16 12:11+0000\n"
-"PO-Revision-Date: 2015-09-16 12:11+0000\n"
+"POT-Creation-Date: 2015-09-23 08:34+0000\n"
+"PO-Revision-Date: 2015-09-23 08:34+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,9 +31,14 @@ msgid "Amount"
 msgstr "Subtotal"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Amount Total"
+msgstr "Cantidad total"
+
+#. module: purchase_preorder
 #: field:purchase.preorder,total:0
 msgid "Amount total"
-msgstr "Importe total"
+msgstr "Importe Total"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -43,17 +48,17 @@ msgstr "Precios"
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "Amounts awaiting"
-msgstr "Cant. pendientes"
+msgstr "Cant. Pendientes"
 
 #. module: purchase_preorder
 #: field:products.supplier,apr_consu_cur:0
 msgid "Apr Consu Cur"
-msgstr "Abril consu actual"
+msgstr "Abril Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,apr_consu_last:0
 msgid "Apr Consu Last"
-msgstr "Abril consu última"
+msgstr "Abril Consu Última"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -63,17 +68,17 @@ msgstr "Abril"
 #. module: purchase_preorder
 #: field:products.supplier,aug_consu_cur:0
 msgid "Aug Consu Cur"
-msgstr "Agosto consu actual"
+msgstr "Agosto Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,aug_consu_last:0
 msgid "Aug Consu Last"
-msgstr "Agosto consu última"
+msgstr "Agosto Consu Última"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "August"
-msgstr "Agosto"
+msgstr "Agosot"
 
 #. module: purchase_preorder
 #: field:products.supplier,boxes:0
@@ -83,6 +88,7 @@ msgid "Boxes"
 msgstr "Cajas"
 
 #. module: purchase_preorder
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
 msgid "Cancel"
 msgstr "Cancelar"
@@ -98,28 +104,35 @@ msgid "Consumptions"
 msgstr "Consumos"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Create Date"
+msgstr "Fecha creado"
+
+#. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
 msgid "Create PreOrder"
-msgstr "Crear Pre-pedido"
+msgstr "Crear PrePedido"
 
 #. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 msgid "Create Purchase Order"
-msgstr "Crear pedido de compra"
+msgstr "Crear Pedido de Compra"
 
 #. module: purchase_preorder
 #: model:ir.actions.act_window,name:purchase_preorder.action_preorder_suppliers
 #: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder_suppliers
 msgid "Create Purchase PreOrder"
-msgstr "Crear Pre-pedido de compra"
+msgstr "Crear PrePedido de Compra"
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,create_uid:0
 #: field:products.supplier,create_uid:0
 #: field:purchase.preorder,create_uid:0
 msgid "Created by"
 msgstr "Creado por"
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,create_date:0
 #: field:products.supplier,create_date:0
 #: field:purchase.preorder,create_date:0
 msgid "Created on"
@@ -136,24 +149,24 @@ msgid "Date"
 msgstr "Fecha"
 
 #. module: purchase_preorder
-#: field:products.supplier,date_delivery:0
-msgid "Date Delivery"
-msgstr "Fecha Entrega"
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Date Order"
+msgstr "Fecha pedido"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,debit:0
 msgid "Debit"
-msgstr "Total a pagar"
+msgstr "Total a Pagar"
 
 #. module: purchase_preorder
 #: field:products.supplier,dec_consu_cur:0
 msgid "Dec Consu Cur"
-msgstr "Diciembre consu actual"
+msgstr "Diciembre Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,dec_consu_last:0
 msgid "Dec Consu Last"
-msgstr "Diciembre consu último"
+msgstr "Diciembre Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -173,7 +186,7 @@ msgstr "Denegado"
 #. module: purchase_preorder
 #: field:products.supplier,do_onchange:0
 msgid "Do Onchange"
-msgstr "Hacer onchange"
+msgstr "Do Onchange"
 
 #. module: purchase_preorder
 #: selection:purchase.preorder,state:0
@@ -186,14 +199,19 @@ msgid "Draft"
 msgstr "Borrador"
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,end_date:0
+msgid "End Date"
+msgstr "Fecha fin"
+
+#. module: purchase_preorder
 #: field:products.supplier,feb_consu_cur:0
 msgid "Feb Consu Cur"
-msgstr "Febrero consu actual"
+msgstr "Febrero Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,feb_consu_last:0
 msgid "Feb Consu Last"
-msgstr "Febrero consu último"
+msgstr "Febrero Consu ültimo"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -203,12 +221,17 @@ msgstr "Febrero"
 #. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 msgid "Full Product List"
-msgstr "Lista completa de productos"
+msgstr "Lista Completa de Productos"
 
 #. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 msgid "General Information"
-msgstr "Información general"
+msgstr "Información General"
+
+#. module: purchase_preorder
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
+msgid "Generate"
+msgstr "Generar"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_filter
@@ -216,8 +239,10 @@ msgid "Group by..."
 msgstr "Agrupar por..."
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,id:0
 #: field:products.supplier,id:0
 #: field:purchase.preorder,id:0
+#: field:report.purchase_preorder.replenishement_purchase_order,id:0
 msgid "ID"
 msgstr "ID"
 
@@ -227,19 +252,14 @@ msgid "Incoming qty."
 msgstr "Cant. Entradas."
 
 #. module: purchase_preorder
-#: model:ir.model,name:purchase_preorder.model_product_supplierinfo
-msgid "Information about a product supplier"
-msgstr "Información de un proveedor de producto"
-
-#. module: purchase_preorder
 #: field:products.supplier,jan_consu_cur:0
 msgid "Jan Consu Cur"
-msgstr "Enero consu actual"
+msgstr "Enero Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,jan_consu_last:0
 msgid "Jan Consu Last"
-msgstr "Enero consu último"
+msgstr "Enero Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -249,12 +269,12 @@ msgstr "Enero"
 #. module: purchase_preorder
 #: field:products.supplier,jul_consu_cur:0
 msgid "Jul Consu Cur"
-msgstr "Julio consu actual"
+msgstr "Julio Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,jul_consu_last:0
 msgid "Jul Consu Last"
-msgstr "Julio consu último"
+msgstr "Julio Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -264,12 +284,12 @@ msgstr "Julio"
 #. module: purchase_preorder
 #: field:products.supplier,jun_consu_cur:0
 msgid "Jun Consu Cur"
-msgstr "Junio consu actual"
+msgstr "Junio Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,jun_consu_last:0
 msgid "Jun Consu Last"
-msgstr "Junio consu último"
+msgstr "Junio Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -279,20 +299,22 @@ msgstr "Junio"
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "Last Purchase"
-msgstr "Última compra"
+msgstr "Última Compra"
 
 #. module: purchase_preorder
 #: field:products.supplier,last_tm:0
 msgid "Last TM"
-msgstr "Último TM"
+msgstr "Last TM"
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,write_uid:0
 #: field:products.supplier,write_uid:0
 #: field:purchase.preorder,write_uid:0
 msgid "Last Updated by"
 msgstr "Última actualización por"
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,write_date:0
 #: field:products.supplier,write_date:0
 #: field:purchase.preorder,write_date:0
 msgid "Last Updated on"
@@ -318,12 +340,12 @@ msgstr "Mantos"
 #. module: purchase_preorder
 #: field:products.supplier,mar_consu_cur:0
 msgid "Mar Consu Cur"
-msgstr "Marzo consu actual"
+msgstr "Marzo Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,mar_consu_last:0
 msgid "Mar Consu Last"
-msgstr "Marzo consu último"
+msgstr "Marzo Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -338,12 +360,12 @@ msgstr "Mayo"
 #. module: purchase_preorder
 #: field:products.supplier,may_consu_cur:0
 msgid "May Consu Cur"
-msgstr "Mayo consu actual"
+msgstr "Mayo Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,may_consu_last:0
 msgid "May Consu Last"
-msgstr "Mayo consu último"
+msgstr "Mayo Consu Último"
 
 #. module: purchase_preorder
 #: field:products.supplier,min_mantles:0
@@ -377,6 +399,7 @@ msgstr "Meses"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,name:0
+#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "Name"
 msgstr "Nombre"
 
@@ -393,12 +416,12 @@ msgstr "Coste neto neto"
 #. module: purchase_preorder
 #: field:products.supplier,nov_consu_cur:0
 msgid "Nov Consu Cur"
-msgstr "Noviembre consu actual"
+msgstr "Noviembre Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,nov_consu_last:0
 msgid "Nov Consu Last"
-msgstr "Noviembre consu último"
+msgstr "Noviembre Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -408,12 +431,12 @@ msgstr "Noviembre"
 #. module: purchase_preorder
 #: field:products.supplier,oct_consu_cur:0
 msgid "Oct Consu Cur"
-msgstr "Octubre consu actual"
+msgstr "Octubre Consu Actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,oct_consu_last:0
 msgid "Oct Consu Last"
-msgstr "Octubre consu último"
+msgstr "Octubre Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -430,7 +453,7 @@ msgstr "Palets"
 #. module: purchase_preorder
 #: field:purchase.order,preorder_id:0
 msgid "PreOrder"
-msgstr "Pre-pedido"
+msgstr "PrePedido"
 
 #. module: purchase_preorder
 #: model:ir.actions.act_window,name:purchase_preorder.action_preorder_tree_full
@@ -440,7 +463,7 @@ msgstr "Listado Completo"
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_tree_full
 msgid "Preorder Products Supplier"
-msgstr "Productos en Pre-pedido"
+msgstr "Productos en Prepedido"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -455,7 +478,14 @@ msgstr "Precio"
 #. module: purchase_preorder
 #: field:products.supplier,price_purchase:0
 msgid "Price purchase"
-msgstr "Precio compra"
+msgstr "Precio Compra"
+
+#. module: purchase_preorder
+#: model:ir.actions.act_window,name:purchase_preorder.action_print_purchase_report_wzd
+#: model:ir.ui.menu,name:purchase_preorder.print_purchase_report_menu
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
+msgid "Print Purchase Report"
+msgstr "Imprimir informe de compra"
 
 #. module: purchase_preorder
 #: field:products.supplier,product_id:0
@@ -469,7 +499,7 @@ msgstr "Producto"
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 #: field:purchase.preorder,product_supplier_ids:0
 msgid "Products Supplier"
-msgstr "Productos solicitados al proveedor"
+msgstr "Productos Solicitados al Proveedor"
 
 #. module: purchase_preorder
 #: model:ir.model,name:purchase_preorder.model_purchase_order
@@ -482,18 +512,28 @@ msgid "Purchase Order Line"
 msgstr "Línea pedido de compra"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Purchase Order Report"
+msgstr "Informe de pedido de compra"
+
+#. module: purchase_preorder
 #: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder
 #: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder_tree
 #: field:products.supplier,preorder_id:0
 #: view:purchase.preorder:purchase_preorder.view_purchase_preorder_tree
 msgid "Purchase PreOrder"
-msgstr "Pre-pedido de compra"
+msgstr "PrePedido de Compra"
 
 #. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
 msgid "Purchase Preorder"
-msgstr "Pre-pedido de Compra"
+msgstr "PrePedido de Compra"
+
+#. module: purchase_preorder
+#: model:ir.actions.report.xml,name:purchase_preorder.action_report_replenishement_purchase_order
+msgid "Purchase Report"
+msgstr "Informe de compra"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,property_product_pricelist_purchase:0
@@ -505,7 +545,7 @@ msgstr "Tarifas de compra"
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_tree_full
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
 msgid "Qty en Supplier UOC"
-msgstr "Qty en unidad compra"
+msgstr "Qty en UOC"
 
 #. module: purchase_preorder
 #: field:products.supplier,qty_last_purchase:0
@@ -520,7 +560,7 @@ msgstr "Cantidades"
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "Quantities and amounts"
-msgstr "Cantidades e importes"
+msgstr "Cantidades e Importes"
 
 #. module: purchase_preorder
 #: field:products.supplier,product_qty:0
@@ -595,12 +635,12 @@ msgstr "Buscar pre-pedido de venta"
 #. module: purchase_preorder
 #: field:products.supplier,sep_consu_cur:0
 msgid "Sep Consu Cur"
-msgstr "Septiembre consu actual"
+msgstr "Septiembre Consu actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,sep_consu_last:0
 msgid "Sep Consu Last"
-msgstr "Septiembre consu último"
+msgstr "Septiembre Consu Último"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -623,8 +663,14 @@ msgid "Show form"
 msgstr "Mostrar formulario"
 
 #. module: purchase_preorder
+#: field:print.purchase.report.wzd,start_date:0
+msgid "Start Date"
+msgstr "Fecha inicio"
+
+#. module: purchase_preorder
 #: field:products.supplier,product_state:0
 #: field:purchase.preorder,state:0
+#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "State"
 msgstr "Estado"
 
@@ -663,7 +709,7 @@ msgstr "UoC (Proveedor)"
 #. module: purchase_preorder
 #: field:purchase.preorder,supp_service_days_ids:0
 msgid "Supplier service                                                 days"
-msgstr "Días servicio proveedor"
+msgstr "Supplier service                                                 days"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,supp_transport_ids:0
@@ -673,7 +719,7 @@ msgstr "Trasporte proveedor"
 #. module: purchase_preorder
 #: field:products.supplier,test:0
 msgid "Test"
-msgstr "Prueba"
+msgstr "Test"
 
 #. module: purchase_preorder
 #: selection:products.supplier,product_state:0
