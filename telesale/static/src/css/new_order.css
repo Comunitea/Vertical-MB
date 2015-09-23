@@ -17,35 +17,73 @@
 .telesale #toppart {
     position: relative;
     width: 100%;
-    height: 18%;
+    /*height: 18%;*/
     border-top: solid 1px #CECBCB;
     border-bottom: solid 1px #CECBCB;
 }
-
-.telesale #leftpart {
+.telesale .row{
+  margin-left: auto;
+  margin-right: auto;
+}
+.telesale #middlepart {
     position: relative;
-    float:left;
-    width:75.8%;
+    width:100%;
     height: 50%;
     border-right: solid 1px #CECBCB;
 }
+.telesale #leftpart {
+    /*position: relative;
+    float:left;
+    width:75.8%;*/
+    height: 100%;
+    border-right: solid 1px #CECBCB;
+}
 .telesale #rightpart {
-    position: relative;
+    /*position: relative;
     float: left;
-    width:24%;
-    height: 50%;
+    width:24%;*/
+    height: 100%;
 }
 .telesale #bottompart {
     position: relative;
-    clear:both;
+    /*clear:both;*/
     width: 100%;
     height: 27.7%;
     border-top: solid 1px #CECBCB;
 }
 
+.telesale .bottomleft {
+    /*position: relative;
+    float:left;
+    width:75.8%;*/
+    height: 100%;
+}
 
+.telesale .bottomright {
+    /*position: relative;
+    float:left;
+    width:75.8%;*/
+    height: 100%;
+}
 
+.telesale .semiheight{
+    height: 50%;
+    /*display: table-cell;*/
+    /*vertical-align: middle*/
+}
+.telesale #toppart .fullheight{
+    height: 100%;
+}
 
+.telesale .aux2{
+  display: table;
+  width:100%;
+  height:100%;
+}
+.telesale .aux1{
+  display: table-cell;
+  vertical-align: middle
+}
 
 .telesale #pagespart button {
     color: black;
@@ -291,13 +329,13 @@
 
 
 .telesale #leftpart .selected{
-    background: #8B0000; 
+    background: #8B0000;
 }
 
 /***************************************************************************************************************/
 /************************************************ RIGHT PART ****************************************************/
 /***************************************************************************************************************/
-.telesale #rightpart table {
+.telesale #bottompart table {
     position: absolute;
     margin-top: 6px;
     width: 99%;
@@ -308,7 +346,7 @@
     font-weight: bold;
 }
 
-.telesale #rightpart td{
+.telesale #bottompart td{
     border: 1px solid #000;
     cursor:pointer;
     text-align: center;
@@ -316,7 +354,7 @@
     font-size: 20px;
 }
 
-.telesale #rightpart th{
+.telesale #bottompart th{
     border: 1px solid #000;
     width: 30%;
     height: 9%;
