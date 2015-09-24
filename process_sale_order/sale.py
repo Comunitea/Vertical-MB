@@ -20,6 +20,8 @@
 ##############################################################################
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
+from openerp.tools.translate import _
+from openerp.exceptions import except_orm
 
 
 class QualitativeNote(models.Model):
@@ -215,10 +217,38 @@ class sale_order_line(models.Model):
                 # Calculate prices
                 uom_pu, uos_pu = \
                     product.get_uom_uos_prices(uos_id,
-                                               custom_price_udv=self.price_udv)
+                                              custom_price_udv=self.price_udv)
                 # Avoid trigger onchange_price_unit, already calculed
                 if uom_pu != self.price_unit:
                     self.do_onchange = False
                     self.price_unit = uom_pu
             else:
                 self.do_onchange = True
+
+
+class sale_order(models.Model):
+    _inherit = 'sale.order'
+
+    @api.multi
+    def action_ship_create(self):
+        """
+        It compares lines and shows an error if it found many lines of the
+        same product with different units of measure selected.
+        """
+        t_line = self.env['sale.order.line']
+        # import ipdb; ipdb.set_trace()
+
+        for order in self:
+            for line in order.order_line:
+                domain = [('order_id', '=', order.id),
+                          ('product_id', '=', line.product_id.id),
+                          ('id', '!=', line.id),
+                          ('product_uos', '!=', line.product_uos.id)]
+                line_objs = t_line.search(domain)
+                if line_objs:
+                    raise except_orm(_('Error'),
+                                     _("You can't sale product %s in different sale units") % line_objs[0].product_id.name)
+
+        res = super(sale_order, self).action_ship_create()
+
+        return res
