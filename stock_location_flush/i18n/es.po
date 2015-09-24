@@ -23,12 +23,12 @@ msgstr "Cancelar"
 #. module: stock_location_flush
 #: field:stock.location.manual.flush,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por"
 
 #. module: stock_location_flush
 #: field:stock.location.manual.flush,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado en"
 
 #. module: stock_location_flush
 #: view:stock.location.manual.flush:stock_location_flush.stock_location_manual_flush_form
@@ -53,12 +53,12 @@ msgstr "Ubicaciones de inventario"
 #. module: stock_location_flush
 #: field:stock.location.manual.flush,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización por"
 
 #. module: stock_location_flush
 #: field:stock.location.manual.flush,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: stock_location_flush
 #: code:addons/stock_location_flush/stock.py:36

@@ -25,7 +25,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                    Click para crear un nuevo comentario cualitativo\n"
+"                    Clic para crear un nuevo comentario cualitativo\n"
 "                </p><p>\n"
 "                    Lo usamos para pasar información entre ventas y compras\n"
 "                </p>\n"
@@ -97,7 +97,7 @@ msgstr "Movimiento de existencias"
 #. module: process_sale_order
 #: help:product.template,box_discount:0
 msgid "When you sale this product in boxesThis will be the % discounted over the priceunit. If a box have 10 units and discount is20%, the new box price will be 80 intead of100, imaging price unit equals to 1."
-msgstr "Cuando se vende este producto en cajas, este sera el % descontado sobre el precio unitario. Si una caja tiene 10 unidades y su descueento del 20%, el nuevo precio de la caja será 80 en lugar de 100, si consideramos el precio unitario iugual a 1"
+msgstr "Cuando se vende este producto en cajas, este será el % descontado sobre el precio unitario. Si una caja tiene 10 unidades y su descuento del 20%, el nuevo precio de la caja será 80 en lugar de 100, si consideramos el precio unitario igual a 1"
 
 #. module: process_sale_order
 #: code:addons/process_sale_order/sale.py:250

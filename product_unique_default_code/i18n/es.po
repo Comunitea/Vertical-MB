@@ -28,5 +28,5 @@ msgstr "Plantilla producto"
 #. module: product_unique_default_code
 #: sql_constraint:product.product:0
 msgid "The code of Product must be unique !"
-msgstr "El código del Producto debe ser único"
+msgstr "El código del producto debe ser único"
 

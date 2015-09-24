@@ -42,12 +42,12 @@ msgstr "Precio de coste"
 #. module: sale_max_discount
 #: field:sale.specific.price,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado en"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,customer_id:0
@@ -57,13 +57,13 @@ msgstr "Cliente"
 #. module: sale_max_discount
 #: help:sale.specific.price,message_last_post:0
 msgid "Date of the last message posted on the record."
-msgstr "Date of the last message posted on the record."
+msgstr "Fecha del último mensaje publicado en el registro."
 
 #. module: sale_max_discount
 #: code:addons/sale_max_discount/sale.py:51
 #, python-format
 msgid "Discount is greather than the maximun discount of product. The sale need to be approved"
-msgstr "El descuento es mayor al máximo permitido. Debe ser aprovado"
+msgstr "El descuento es mayor al máximo permitido. Debe ser aprobado"
 
 #. module: sale_max_discount
 #: selection:sale.specific.price,state:0
@@ -78,12 +78,12 @@ msgstr "Fecha fin"
 #. module: sale_max_discount
 #: field:sale.specific.price,message_follower_ids:0
 msgid "Followers"
-msgstr "Followers"
+msgstr "Seguidores"
 
 #. module: sale_max_discount
 #: help:sale.specific.price,message_summary:0
 msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
-msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Sostiene el resumen Chatter (número de mensajes, ...). Este resumen es directamente en formato html para ser insertada en vistas kanban."
 
 #. module: sale_max_discount
 #: field:sale.specific.price,id:0
@@ -93,27 +93,27 @@ msgstr "ID"
 #. module: sale_max_discount
 #: help:sale.specific.price,message_unread:0
 msgid "If checked new messages require your attention."
-msgstr "If checked new messages require your attention."
+msgstr "Si los nuevos mensajes controlados requieren su atención."
 
 #. module: sale_max_discount
 #: field:sale.specific.price,message_is_follower:0
 msgid "Is a Follower"
-msgstr "Is a Follower"
+msgstr "Es un seguidor"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,message_last_post:0
 msgid "Last Message Date"
-msgstr "Last Message Date"
+msgstr "Fecha último mensaje"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización por"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: sale_max_discount
 #: field:product.category,last_edit:0
@@ -148,12 +148,12 @@ msgstr "Descuento máximo para ventas"
 #. module: sale_max_discount
 #: field:sale.specific.price,message_ids:0
 msgid "Messages"
-msgstr "Messages"
+msgstr "Mensajes"
 
 #. module: sale_max_discount
 #: help:sale.specific.price,message_ids:0
 msgid "Messages and communication history"
-msgstr "Messages and communication history"
+msgstr "Mensajes e historia de la comunicación"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,pricelist_price:0
@@ -193,7 +193,7 @@ msgstr "Rechazado"
 #. module: sale_max_discount
 #: field:sale.specific.price,sale_line_id:0
 msgid "Sale line id"
-msgstr "Sale line id"
+msgstr "Línea venta id"
 
 #. module: sale_max_discount
 #: model:ir.actions.act_window,name:sale_max_discount.action_sale_specific_price
@@ -231,7 +231,7 @@ msgstr "Estado"
 #. module: sale_max_discount
 #: field:sale.specific.price,message_summary:0
 msgid "Summary"
-msgstr "Summary"
+msgstr "Sumario"
 
 #. module: sale_max_discount
 #: code:addons/sale_max_discount/sale_specific_price.py:51
@@ -242,13 +242,13 @@ msgstr "La venta ya ha sido facturada"
 #. module: sale_max_discount
 #: field:sale.specific.price,message_unread:0
 msgid "Unread Messages"
-msgstr "Unread Messages"
+msgstr "Mensajes no leídos"
 
 #. module: sale_max_discount
 #: code:addons/sale_max_discount/sale.py:50
 #, python-format
 msgid "Warning!"
-msgstr "Warning!"
+msgstr "¡Advertencia!"
 
 #. module: sale_max_discount
 #: view:product.template:sale_max_discount.product_template_max_discount_filter

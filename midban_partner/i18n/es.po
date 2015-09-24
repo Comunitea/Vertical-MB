@@ -23,9 +23,9 @@ msgid "* Validate pending: no validationpassed\n"
 "* Validated: both Comercial and logisticvalidations have been aproved\n"
 ""
 msgstr "* Validación Pendiente: No ha pasado la validación\n"
-"* Pendiente Validación Lógistica: La información logística del producto no ha sido revisada todavía\n"
-"* Pendiente Validación Lógistica: La información comercial del producto no ha sido revisada todavía\n"
-"* Validated: Ammbas validaciones comercial y lógistica están aprovadas\n"
+"* Pendiente validación lógistica: La información logística del producto no ha sido revisada todavía\n"
+"* Pendiente validación lógistica: La información comercial del producto no ha sido revisada todavía\n"
+"* Validated: Ambas validaciones comercial y lógistica están aprobadas\n"
 ""
 
 #. module: midban_partner
@@ -57,7 +57,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                Click to create a new unregister reason.\n"
 "              </p><p>\n"
-"                Gestion los motivos de baja. Los motivos definidos aquí pueden ser selecionados\n"
+"                Gestiona los motivos de baja. Los motivos definidos aquí pueden ser selecionados\n"
 "                en el asistente de baja de los productos.\n"
 "              </p>\n"
 "            "
@@ -85,12 +85,12 @@ msgstr "Atrás"
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Call Days Time Slot"
-msgstr "Franja Horaria Días de llamada"
+msgstr "Franja horaria días de llamada"
 
 #. module: midban_partner
 #: field:res.partner,call_days_slot:0
 msgid "Call Days Time Slot "
-msgstr "Franja Horaria Días de llamada"
+msgstr "Franja horaria días de llamada"
 
 #. module: midban_partner
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
@@ -101,17 +101,17 @@ msgstr "Cancelar"
 #: code:addons/midban_partner/partner.py:286
 #, python-format
 msgid "Cannot activate a customer without vat"
-msgstr "No se puede activar un cliente sin nif"
+msgstr "No se puede activar un cliente sin NIF"
 
 #. module: midban_partner
 #: field:res.partner.ref.history,date:0
 msgid "Change date"
-msgstr "Change date"
+msgstr "Cambia fecha"
 
 #. module: midban_partner
 #: field:unregister.partner.reason,code:0
 msgid "Code"
-msgstr "Code"
+msgstr "Código"
 
 #. module: midban_partner
 #: code:addons/midban_partner/partner.py:274
@@ -275,18 +275,18 @@ msgstr "Última actualización por"
 #: field:unregister.partner.reason,write_date:0
 #: field:week.days,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Logistic Validated"
-msgstr "Logistica Validada"
+msgstr "Logística validada"
 
 #. module: midban_partner
 #: code:addons/midban_partner/partner.py:256
 #, python-format
 msgid "Logistic validate done"
-msgstr "Validación logistica realizada"
+msgstr "Validación logística realizada"
 
 #. module: midban_partner
 #: selection:res.partner,state2:0
@@ -307,7 +307,7 @@ msgstr "Nombre"
 #. module: midban_partner
 #: field:supplier.transport,npalets:0
 msgid "Number of palets"
-msgstr "Nº Palets"
+msgstr "Nº palets"
 
 #. module: midban_partner
 #: field:week.days,sequence:0
@@ -346,7 +346,7 @@ msgstr "Motivos de baja"
 #: code:addons/midban_partner/partner.py:248
 #, python-format
 msgid "Pending logistic and commercial validate"
-msgstr "Pendiente de validación logistica y comercial"
+msgstr "Pendiente de validación logística y comercial"
 
 #. module: midban_partner
 #: model:ir.actions.act_window,name:midban_partner.action_process_unregister_partner
@@ -362,7 +362,7 @@ msgstr "Motivo"
 #. module: midban_partner
 #: field:res.partner,reception_method:0
 msgid "Reception Method"
-msgstr "Método Recepción"
+msgstr "Método recepción"
 
 #. module: midban_partner
 #: field:res.partner.ref.history,old_ref:0
@@ -372,7 +372,7 @@ msgstr "Ref"
 #. module: midban_partner
 #: field:res.partner,ref_history_ids:0
 msgid "Refs history"
-msgstr "Refs history"
+msgstr "Refs histórico"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
@@ -416,7 +416,7 @@ msgstr "Estado"
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Suplliers Info"
-msgstr "Información Proveedor"
+msgstr "Información proveedor"
 
 #. module: midban_partner
 #: field:call.days.time.slot,partner_id:0
@@ -431,7 +431,7 @@ msgstr "Proveedor"
 #: view:supplier.transport:midban_partner.midban_supplier_transport_view_form
 #: view:supplier.transport:midban_partner.midban_supplier_transport_view_tree
 msgid "Supplier Transports"
-msgstr "Transportes Proveedor"
+msgstr "Transportes proveedor"
 
 #. module: midban_partner
 #: field:res.partner,supp_accept_days_ids:0
@@ -452,7 +452,7 @@ msgstr "Proveedor/Cliente"
 #. module: midban_partner
 #: selection:res.partner,reception_method:0
 msgid "Tlf"
-msgstr "Tlf"
+msgstr "Telf"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
@@ -463,7 +463,7 @@ msgstr "Transportes"
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Unregister"
-msgstr "Dar de Baja"
+msgstr "Dar de baja"
 
 #. module: midban_partner
 #: field:process.unregister.partner,reason_id:0
@@ -529,7 +529,7 @@ msgstr "Si está marcado cuando imprimamos los albaránes serán agrupados por t
 #. module: midban_partner
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
 msgid "or"
-msgstr "or"
+msgstr "o"
 
 #. module: midban_partner
 #: field:partner.history,partner_id:0

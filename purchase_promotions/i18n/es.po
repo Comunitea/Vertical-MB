@@ -19,7 +19,7 @@ msgstr ""
 #: field:partner.promotion,category:0
 #: selection:partner.promotion,type:0
 msgid "Category"
-msgstr "Categoria"
+msgstr "Categoría"
 
 #. module: promotions
 #: model:ir.model,name:promotions.model_purchase_order_line
@@ -29,7 +29,7 @@ msgstr "Línea pedido de compra"
 #. module: promotions
 #: field:products.supplier,have_promotion:0
 msgid "has promotion"
-msgstr "Tiene promocion"
+msgstr "Tiene promoción"
 
 #. module: promotions
 #: selection:partner.promotion,applicable:0
@@ -44,7 +44,7 @@ msgstr "Fecha inicial"
 #. module: promotions
 #: field:products.supplier,precentage_promo:0
 msgid "percentage promo"
-msgstr "Porc. Promo."
+msgstr "Porc. promo."
 
 #. module: promotions
 #: model:ir.model,name:promotions.model_stock_picking
@@ -64,7 +64,7 @@ msgstr "Tipo"
 #. module: promotions
 #: model:ir.model,name:promotions.model_products_supplier
 msgid "Products Supplier"
-msgstr "Products Supplier"
+msgstr "Productos proveedor"
 
 #. module: promotions
 #: field:partner.promotion,product:0
@@ -80,7 +80,7 @@ msgstr "Descuento total"
 #. module: promotions
 #: field:purchase.order.line,price_unit_promotion:0
 msgid "Unit price with                                                         promotion"
-msgstr "Precio unitario con                                                    promoción"
+msgstr "Precio unitario con promoción"
 
 #. module: promotions
 #: field:partner.promotion,discount:0
@@ -121,7 +121,7 @@ msgstr "Nombre"
 #: code:addons/promotions/promotion.py:59
 #, python-format
 msgid "Not found promotion discount type"
-msgstr "No se ha encontrado el tipo de descuento promocion"
+msgstr "No se ha encontrado el tipo de descuento promoción"
 
 #. module: promotions
 #: field:partner.promotion,applicable:0
@@ -137,7 +137,7 @@ msgstr "Pedido de compra"
 #: code:addons/promotions/purchase.py:147
 #, python-format
 msgid "Error!"
-msgstr "Error!"
+msgstr "¡Error!"
 
 #. module: promotions
 #: model:ir.model,name:promotions.model_partner_promotion
@@ -158,7 +158,7 @@ msgstr "Promoción"
 #. module: promotions
 #: model:ir.model,name:promotions.model_partner_promotion_rel
 msgid "Partner promotion table rel"
-msgstr "Partner promotion table rel"
+msgstr "Partner promoción tabla rel"
 
 #. module: promotions
 #: code:addons/promotions/purchase_preorder.py:40
@@ -180,7 +180,7 @@ msgstr "Secuencia"
 #: code:addons/promotions/purchase.py:148
 #, python-format
 msgid "Define purchase journal for                                        this company: \"%s\" (id:%d)."
-msgstr "Define purchase journal for                                        this company: \"%s\" (id:%d)."
+msgstr "Definir diario de compras para esta empresa: \"%s\" (id:%d)."
 
 #. module: promotions
 #: selection:partner.promotion,type:0

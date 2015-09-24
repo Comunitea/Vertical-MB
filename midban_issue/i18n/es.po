@@ -21,7 +21,7 @@ msgstr ""
 #: field:sale.order,issue_count:0
 #: field:stock.picking,issue_count:0
 msgid "# Issues"
-msgstr "# Issues"
+msgstr "# Cuestiones"
 
 #. module: midban_issue
 #: model:ir.actions.act_window,help:midban_issue.action_issue_reason
@@ -78,7 +78,7 @@ msgstr "<p class=\"oe_view_nocontent_create\">\n"
 #: field:issue,affected_partner_id:0
 #: field:issue.report,affected_partner_id:0
 msgid "Affected Client"
-msgstr "Empresa Afectada"
+msgstr "Empresa afectada"
 
 #. module: midban_issue
 #: view:issue.report:midban_issue.view_issue_report_search
@@ -130,17 +130,17 @@ msgstr "Categoría de producto"
 #: view:issue.report:midban_issue.view_issue_report_search
 #: field:issue.report,caused_partner_id:0
 msgid "Caused Partner"
-msgstr "Empresa Causante"
+msgstr "Empresa causante"
 
 #. module: midban_issue
 #: view:issue:midban_issue.midban_issue_view_search
 msgid "Caused parter"
-msgstr "Empresa Causante"
+msgstr "Empresa causante"
 
 #. module: midban_issue
 #: view:issue:midban_issue.midban_issue_view_search
 msgid "Caussed partner"
-msgstr "Empresa Causante"
+msgstr "Empresa causante"
 
 #. module: midban_issue
 #: field:issue.reason,code:0
@@ -153,21 +153,21 @@ msgstr "Código"
 #: model:ir.actions.act_window,name:midban_issue.action_create_issue_sale
 #: model:ir.actions.act_window,name:midban_issue.action_create_issue_stock
 msgid "Create issue"
-msgstr "Create issue"
+msgstr "Crear tema"
 
 #. module: midban_issue
 #: field:issue.reason,create_uid:0
 #: field:issue.type,create_uid:0
 #: field:product.info,create_uid:0
 msgid "Created by"
-msgstr "Creado Por"
+msgstr "Creado por"
 
 #. module: midban_issue
 #: field:issue.reason,create_date:0
 #: field:issue.type,create_date:0
 #: field:product.info,create_date:0
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: midban_issue
 #: selection:issue,edi_message:0
@@ -184,7 +184,7 @@ msgstr "Fecha"
 #: field:issue,create_date:0
 #: field:issue.report,create_date:0
 msgid "Date Created"
-msgstr "Fecha Creación"
+msgstr "Fecha creación"
 
 #. module: midban_issue
 #: help:issue,message_last_post:0
@@ -220,7 +220,7 @@ msgstr "Agrupar por..."
 #. module: midban_issue
 #: help:issue,message_summary:0
 msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
-msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Sostiene el resumen Chatter (número de mensajes, ...). Este resumen es directamente en formato html para ser insertada en vistas kanban."
 
 #. module: midban_issue
 #: field:issue,id:0
@@ -234,7 +234,7 @@ msgstr "ID"
 #. module: midban_issue
 #: help:issue,message_unread:0
 msgid "If checked new messages require your attention."
-msgstr "Si está marcado, nuevos mensajes requiren tu atención"
+msgstr "Si está marcado, nuevos mensajes requieren tu atención"
 
 #. module: midban_issue
 #: selection:issue,object:0
@@ -305,12 +305,12 @@ msgstr "Motivos"
 #: model:ir.ui.menu,name:midban_issue.menu_issue_types_stock
 #: view:issue.type:midban_issue.issue_type_view_form
 msgid "Issue Types"
-msgstr "Tipos de Incidencia"
+msgstr "Tipos de incidencia"
 
 #. module: midban_issue
 #: field:issue,issue_code:0
 msgid "Issue code"
-msgstr "Código Incidencia"
+msgstr "Código incidencia"
 
 #. module: midban_issue
 #: field:issue,origin:0
@@ -321,12 +321,12 @@ msgstr "Origen"
 #. module: midban_issue
 #: sql_constraint:issue.reason:0
 msgid "Issue reason code alredy exists!"
-msgstr "El código de este motivo ya existe!"
+msgstr "¡El código de este motivo ya existe!"
 
 #. module: midban_issue
 #: model:ir.model,name:midban_issue.model_issue_reason
 msgid "Issue reasons"
-msgstr "Motivos Incidencias"
+msgstr "Motivos incidencias"
 
 #. module: midban_issue
 #: sql_constraint:issue.type:0
@@ -368,7 +368,7 @@ msgstr "Análisis de incidencias"
 #. module: midban_issue
 #: field:issue,message_last_post:0
 msgid "Last Message Date"
-msgstr "Fecha último mensage"
+msgstr "Fecha último mensaje"
 
 #. module: midban_issue
 #: field:issue,write_uid:0
@@ -384,7 +384,7 @@ msgstr "Última actualización por"
 #: field:issue.type,write_date:0
 #: field:product.info,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. module: midban_issue
 #: field:product.info,lot_id:0
@@ -453,12 +453,12 @@ msgstr "Producto"
 #. module: midban_issue
 #: model:ir.model,name:midban_issue.model_product_info
 msgid "Product info related to issues"
-msgstr "Productos"
+msgstr "Información del producto en relación"
 
 #. module: midban_issue
 #: field:issue,product_ids:0
 msgid "Product information"
-msgstr "Producto"
+msgstr "Información de producto"
 
 #. module: midban_issue
 #: view:issue:midban_issue.issues_view_form
@@ -554,7 +554,7 @@ msgstr "Solución"
 #. module: midban_issue
 #: field:issue.reason,stock_location_id:0
 msgid "Stock location"
-msgstr "Ubicación de Stock"
+msgstr "Ubicación de stock"
 
 #. module: midban_issue
 #: field:issue,message_summary:0
@@ -569,7 +569,7 @@ msgstr "Tipo"
 #. module: midban_issue
 #: view:issue.report:midban_issue.view_issue_report_tree
 msgid "Total Qty."
-msgstr "Cant. Total"
+msgstr "Cant. total"
 
 #. module: midban_issue
 #: view:issue:midban_issue.midban_issue_view_search
@@ -590,7 +590,7 @@ msgstr "UdM"
 #. module: midban_issue
 #: field:issue,message_unread:0
 msgid "Unread Messages"
-msgstr "Mensajes No Leídos"
+msgstr "Mensajes no leídos"
 
 #. module: midban_issue
 #: view:issue:midban_issue.midban_issue_view_search

@@ -18,7 +18,7 @@ msgstr ""
 #. module: product_unsafety_preorder
 #: view:product.stock.unsafety:0
 msgid "Create PreOrder"
-msgstr "Crear PrePedido"
+msgstr "Crear prepedido"
 
 #. module: product_unsafety_preorder
 #: view:product.stock.unsafety:0

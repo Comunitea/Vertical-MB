@@ -26,7 +26,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                    Click para crear una reserva de stock.\n"
+"                    Clic para crear una reserva de stock.\n"
 "                    </p><p>\n"
 "                    Este menú te permite preparar y reservar cantidades\n"
 "                    de productos.\n"
@@ -42,7 +42,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para marcar un presupuesto marcado como compra reservada\n"
+"                Clic para marcar un presupuesto marcado como compra reservada\n"
 "              </p><p>\n"
 "                Es una venta normal, aquí están las ventas que se crearon desde el modelo de reservas de stock\n"
 "              </p>\n"
@@ -73,7 +73,7 @@ msgstr "Confirmar reserva"
 #: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
 #: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
 msgid "Create Sale"
-msgstr "Crear Venta"
+msgstr "Crear venta"
 
 #. module: midban_product_reserve
 #: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
@@ -89,7 +89,7 @@ msgstr "Crear ventas desde reservas"
 #: field:sale.from.reserve.wzd,create_uid:0
 #: field:stock.reservation,create_uid:0
 msgid "Created by"
-msgstr "Creado Por"
+msgstr "Creado por"
 
 #. modules: stock_reserve, midban_product_reserve
 #: field:sale.from.reserve.wzd,create_date:0
@@ -128,7 +128,7 @@ msgstr "Borrador"
 #: code:addons/midban_product_reserve/wizard/sale_from_reserve_wzd.py:72
 #, python-format
 msgid "Error!"
-msgstr "Error!"
+msgstr "¡Error!"
 
 #. module: stock_reserve
 #: view:stock.reservation:stock_reserve.view_stock_reservation_search
@@ -149,7 +149,7 @@ msgstr "Información"
 #. module: midban_product_reserve
 #: view:stock.reservation:midban_product_reserve.view_stock_reservation_search_add_fields
 msgid "Invoice State"
-msgstr "Estado Factura"
+msgstr "Estado factura"
 
 #. module: midban_product_reserve
 #: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
@@ -164,7 +164,7 @@ msgstr "Método facturación"
 #. module: midban_product_reserve
 #: view:sale.order:midban_product_reserve.sale_view_order_form_add_reserved_check
 msgid "Is a reserve?"
-msgstr "Es una reserva?"
+msgstr "¿Es una reserva?"
 
 #. modules: stock_reserve, midban_product_reserve
 #: field:sale.from.reserve.wzd,write_uid:0
@@ -176,7 +176,7 @@ msgstr "Última actualización por"
 #: field:sale.from.reserve.wzd,write_date:0
 #: field:stock.reservation,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. modules: stock_reserve, midban_product_reserve
 #: view:stock.reservation:midban_product_reserve.view_stock_reservation_form_add_sales
@@ -272,7 +272,7 @@ msgstr "Movimiento reservado"
 #. module: stock_reserve
 #: model:stock.location,name:stock_reserve.stock_location_reservation
 msgid "Reservation Stock"
-msgstr "Stock Reservado"
+msgstr "Stock reservado"
 
 #. module: stock_reserve
 #: view:stock.reservation:stock_reserve.view_stock_reservation_search
@@ -341,7 +341,7 @@ msgstr "Estado"
 #: model:ir.model,name:midban_product_reserve.model_stock_reservation
 #: model:ir.model,name:stock_reserve.model_stock_reservation
 msgid "Stock Reservation"
-msgstr "Reservas de Stock"
+msgstr "Reservas de stock"
 
 #. module: stock_reserve
 #: model:ir.actions.act_window,name:stock_reserve.action_stock_reservation_tree
@@ -352,7 +352,7 @@ msgstr "Reservas de Stock"
 #: view:stock.reservation:stock_reserve.view_stock_reservation_search
 #: view:stock.reservation:stock_reserve.view_stock_reservation_tree
 msgid "Stock Reservations"
-msgstr "Reservas de Stock"
+msgstr "Reservas de stock"
 
 #. module: midban_product_reserve
 #: view:sale.from.reserve.wzd:midban_product_reserve.view_stock_invoice_onshipping
@@ -389,5 +389,5 @@ msgstr "Fecha validación"
 #. module: stock_reserve
 #: view:stock.reservation:stock_reserve.view_stock_reservation_form
 msgid "View Reservation Move"
-msgstr "Ver Movimiento Reservado"
+msgstr "Ver movimiento reservado"
 

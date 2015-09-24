@@ -46,7 +46,7 @@ msgstr "Creado por"
 #. module: nan_partner_risk
 #: field:open.risk.window,create_date:0
 msgid "Created on"
-msgstr "Created en"
+msgstr "Created el"
 
 #. module: nan_partner_risk
 #: field:open.risk.window,credit_limit:0
@@ -87,7 +87,7 @@ msgstr "Efectos impagados vencidos"
 #: code:addons/nan_partner_risk/risk.py:102
 #, python-format
 msgid "Gives the state of the quotation or sale order. The exception state is automatically set when a cancel operation occurs in the invoice validation (Invoice Exception) or in the packing list process (Shipping Exception). The 'Waiting Schedule' state is set when the invoice is confirmed but waiting for the scheduler to run on the date 'Date Ordered'."
-msgstr "Muestra el estado del presupuesto o pedido de venta. El estado 'Excepción' se da automáticamente cuando ocurre una operación de cancelación durante la validación de la factura (Excepción de Factura) o en el proceso de emitir el albarán (Excepción de Albarán). El estado 'Esperando planificación' se da cuando la factura está confirmada pero esperando por el planificador para lanzarla en la fecha 'Fecha pedido'."
+msgstr "Muestra el estado del presupuesto o pedido de venta. El estado 'Excepción' se da automáticamente cuando ocurre una operación de cancelación durante la validación de la factura (Excepción de factura) o en el proceso de emitir el albarán (Excepción de albarán). El estado 'Esperando planificación' se da cuando la factura está confirmada pero esperando por el planificador para lanzarla en la fecha 'Fecha pedido'."
 
 #. module: nan_partner_risk
 #: field:open.risk.window,id:0
@@ -108,7 +108,7 @@ msgstr "Última actualización por"
 #. module: nan_partner_risk
 #: field:open.risk.window,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. module: nan_partner_risk
 #: model:ir.model,name:nan_partner_risk.model_res_partner

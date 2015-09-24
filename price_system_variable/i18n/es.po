@@ -29,7 +29,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir un nuevo cambio de pvp's de producto.\n"
+"                Clic para añadir un nuevo cambio de pvp's de producto.\n"
 "                </p><p>\n"
 "                Este modelo es generado automáticamente cuando cambia el coste medio ponderado o simplemente el cmc.\n"
 "                </p>\n"
@@ -44,9 +44,9 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir un nuevo cambio de costes de proveedor.\n"
+"                Clic para añadir un nuevo cambio de costes de proveedor.\n"
 "                </p><p>\n"
-"                Este modelo no se genera automaticamente.\n"
+"                Este modelo no se genera automáticamente.\n"
 "                </p>\n"
 "            "
 
@@ -60,9 +60,9 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir un cambio de tarifas variable.\n"
+"                Clic para añadir un cambio de tarifas variable.\n"
 "                </p><p>\n"
-"                Este modelo es generado automáticamente. No es recomendao ser creado por el usuario manualmente.\n"
+"                Este modelo es generado automáticamente. No es recomendado ser creado por el usuario manualmente.\n"
 "                </p>\n"
 "            "
 
@@ -75,7 +75,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir una tarifa variable.\n"
+"                Clic para añadir una tarifa variable.\n"
 "                </p><p>\n"
 "                Puedes definir y ver la tabla de márgenes.\n"
 "                </p>\n"
@@ -90,7 +90,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para añadir un pvp específico de cliente.\n"
+"                Clic para añadir un pvp específico de cliente.\n"
 "                </p><p>\n"
 "                Este modelo tiene prioridad sobre las tarifas.\n"
 "                </p>\n"
@@ -107,7 +107,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                Tabla de precios para la app móvil\n"
 "                </p><p>\n"
-"                Modelo de solo lectura\n"
+"                Modelo de sólo lectura\n"
 "                </p>\n"
 "            "
 
@@ -412,7 +412,7 @@ msgstr "Última actualización por"
 #: field:variable.pricelist,write_date:0
 #: field:wzd.update.cmc,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. module: price_system_variable
 #: field:pricelist.margin,margin:0
@@ -425,7 +425,7 @@ msgstr "Margen"
 #: code:addons/price_system_variable/pricelist.py:1307
 #, python-format
 msgid "Margin must be less than 100                                            please change it"
-msgstr "El margen debe ser menor que 100 %                                            porfavor cambielo."
+msgstr "El margen debe ser menor que 100 % por favor cámbielo."
 
 #. module: price_system_variable
 #: constraint:pricelist.margin:0
@@ -523,13 +523,13 @@ msgstr "Cambio PVP de producto"
 #. module: price_system_variable
 #: field:supplier.change.line,percentage:0
 msgid "Percentage"
-msgstr "Porcentage"
+msgstr "Porcentaje"
 
 #. module: price_system_variable
 #: code:addons/price_system_variable/pricelist.py:1248
 #, python-format
 msgid "Please select a partner for apply specific prices"
-msgstr "Please select a partner for apply specific prices"
+msgstr "Por favor selecciona un partner para aplicar precios específicos"
 
 #. module: price_system_variable
 #: field:variable.change.line,previous_pvp:0
@@ -584,7 +584,7 @@ msgstr "Tarifa & PVP"
 #. module: price_system_variable
 #: field:change.variable.pricelist,label:0
 msgid "Print label?"
-msgstr "Imprimir etiqueta?"
+msgstr "¿Imprimir etiqueta?"
 
 #. module: price_system_variable
 #: view:change.product.pvp:price_system_variable.change_product_pvp_view_search
@@ -619,7 +619,7 @@ msgstr "Productos & PVP"
 #. module: price_system_variable
 #: view:specific.customer.pvp:price_system_variable.specific_customer_pvp_view_form
 msgid "Products PVP"
-msgstr "PVP Productos"
+msgstr "PVP productos"
 
 #. module: price_system_variable
 #: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
@@ -659,7 +659,7 @@ msgstr "Stock real"
 #. module: price_system_variable
 #: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_form
 msgid "Recalculate Table"
-msgstr "Recalculate Table"
+msgstr "Recalcular tabla"
 
 #. module: price_system_variable
 #: model:ir.model,name:price_system_variable.model_sale_order_line
@@ -708,7 +708,7 @@ msgstr "PVP específico"
 #. module: price_system_variable
 #: field:specific.pvp.line,specific_id:0
 msgid "Specific model"
-msgstr "Modelo especifico"
+msgstr "Modelo específico"
 
 #. module: price_system_variable
 #: field:pricelist.pvp.line,date_start:0
@@ -763,7 +763,7 @@ msgstr "Tabla de precios de tarifa"
 #. module: price_system_variable
 #: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_form
 msgid "Table of prices"
-msgstr "TAbla de precios"
+msgstr "Tabla de precios"
 
 #. module: price_system_variable
 #: model:ir.ui.menu,name:price_system_variable.menu_table_pricelist_prices_purchase
@@ -780,7 +780,7 @@ msgstr "No hay modelo cambio pvp producto para este producto."
 #: code:addons/price_system_variable/purchase.py:350
 #, python-format
 msgid "There is no supplier                                                        pricelist rule for                                                        this product."
-msgstr "No hay regla                                                        de tarifa de proveedor  para                                                      este producto."
+msgstr "No hay regla de tarifa de proveedor para este producto."
 
 #. module: price_system_variable
 #: field:pricelist.range,to_cost:0
@@ -795,7 +795,7 @@ msgstr "Para actualizar"
 #. module: price_system_variable
 #: selection:product.template,product_class:0
 msgid "Ultrafresh"
-msgstr "Ultrafresh"
+msgstr "Ultrafresco"
 
 #. module: price_system_variable
 #: code:addons/price_system_variable/purchase.py:224
@@ -822,7 +822,7 @@ msgstr "Actualizar CMC"
 #: view:change.supplier.cost:price_system_variable.change_supplier_cost_view_form
 #: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_form
 msgid "Update Prices"
-msgstr "Actualizar Precios"
+msgstr "Actualizar precios"
 
 #. module: price_system_variable
 #: field:purchase.order.line,update_pricelist:0
@@ -894,16 +894,16 @@ msgstr "¡Advertencia!"
 #. module: price_system_variable
 #: constraint:pricelist.pvp.line:0
 msgid "You cannot have 2 change product pvp lines whith overlaped dates!          for the same product"
-msgstr "No puedes tener 2 lineas de cambio de pvp de precion con fechas solapadas para el mismo producto"
+msgstr "No puedes tener 2 líneas de cambio de pvp de precio con fechas solapadas para el mismo producto"
 
 #. module: price_system_variable
 #: constraint:specific.pvp.line:0
 msgid "You cannot have 2 specific product pvp whith overlaped dates!"
-msgstr "No puedes tener 2 lineas de cambio de pvp de precion con fechas solapadas!"
+msgstr "¡No puedes tener 2 líneas de cambio de pvp de precion con fechas solapadas!"
 
 #. module: price_system_variable
 #: code:addons/price_system_variable/purchase.py:225
 #, python-format
 msgid "You must first cancel all Variable change pricelist                         related"
-msgstr "Debes cancelar primero todos los cambios de tarifa variable                         relacionados"
+msgstr "Debes cancelar primero todos los cambios de tarifa variable relacionados"
 
