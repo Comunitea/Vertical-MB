@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 12:04+0000\n"
-"PO-Revision-Date: 2014-12-31 12:04+0000\n"
+"POT-Creation-Date: 2015-09-24 16:09+0000\n"
+"PO-Revision-Date: 2015-09-24 16:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,6 @@ msgstr "Comprar después"
 
 #. module: depot_cross_dock
 #: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -60,6 +59,11 @@ msgid "Created on"
 msgstr "Creado el"
 
 #. module: depot_cross_dock
+#: model:stock.picking.type,name:depot_cross_dock.picking_type_croos_dock
+msgid "Cross Dock Depot"
+msgstr "Cross Dock Depot"
+
+#. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Cross Docks products"
 msgstr "Productos cross dock"
@@ -74,7 +78,7 @@ msgstr "Compra retrasada"
 #: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:138
 #, python-format
 msgid "Error!"
-msgstr "Error!"
+msgstr "¡Error!"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,id:0
@@ -138,21 +142,6 @@ msgstr "Regla de abastecimiento"
 #: field:res.partner,regulator:0
 msgid "Regulator"
 msgstr "Regulador"
-
-#. module: depot_cross_dock
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
-msgid "Reset Drop Codes"
-msgstr "Reiniciar drop codes"
-
-#. module: depot_cross_dock
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
-msgid "Reset Route Drop Codes"
-msgstr "Reiniciar drop codes ruta"
-
-#. module: depot_cross_dock
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
-msgid "Reset the counter of drop codes in all active transport routes"
-msgstr "Reinicia el contador de drop codes para todas las rutas de transporte activas"
 
 #. module: depot_cross_dock
 #: help:res.partner,regulator:0

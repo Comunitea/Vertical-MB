@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 13:05+0000\n"
-"PO-Revision-Date: 2014-12-31 13:05+0000\n"
+"POT-Creation-Date: 2015-09-24 16:49+0000\n"
+"PO-Revision-Date: 2015-09-24 16:49+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -117,7 +117,7 @@ msgid "Approved"
 msgstr "Aprobar"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:200
+#: code:addons/price_system_variable/pricelist.py:201
 #, python-format
 msgid "At least one pricelist has                                                  no active version !\n"
 "Please                                                  create or activate one."
@@ -228,16 +228,6 @@ msgid "Change supplier prices"
 msgstr "Cambio costes proveedor"
 
 #. module: price_system_variable
-#: selection:product.template,product_class:0
-msgid "Chilled"
-msgstr "Refrigerado"
-
-#. module: price_system_variable
-#: field:product.template,product_class:0
-msgid "Class"
-msgstr "Clase"
-
-#. module: price_system_variable
 #: field:change.product.pvp,create_uid:0
 #: field:change.supplier.cost,create_uid:0
 #: field:change.variable.pricelist,create_uid:0
@@ -316,14 +306,14 @@ msgid "Draft"
 msgstr "Borrador"
 
 #. module: price_system_variable
-#: selection:product.template,product_class:0
-msgid "Dry"
-msgstr "Seco"
-
-#. module: price_system_variable
 #: field:pricelist.pvp.line,date_end:0
 #: field:specific.pvp.line,date_end:0
 msgid "End Date"
+msgstr "Fecha fin"
+
+#. module: price_system_variable
+#: field:pricelist.partnerinfo,to_date:0
+msgid "End date"
 msgstr "Fecha fin"
 
 #. module: price_system_variable
@@ -341,19 +331,9 @@ msgid "Error!"
 msgstr "¡Error!"
 
 #. module: price_system_variable
-#: selection:product.template,product_class:0
-msgid "Fresh"
-msgstr "Fresco"
-
-#. module: price_system_variable
 #: field:pricelist.range,from_cost:0
 msgid "From Cost"
 msgstr "Desde coste"
-
-#. module: price_system_variable
-#: selection:product.template,product_class:0
-msgid "Frozen"
-msgstr "Congelado"
 
 #. module: price_system_variable
 #: field:change.product.pvp,id:0
@@ -372,6 +352,11 @@ msgstr "Congelado"
 #: field:wzd.update.cmc,id:0
 msgid "ID"
 msgstr "ID"
+
+#. module: price_system_variable
+#: field:pricelist.partnerinfo,from_date:0
+msgid "Init date"
+msgstr "Fecha inicio"
 
 #. module: price_system_variable
 #: model:ir.model,name:price_system_variable.model_account_invoice_line
@@ -422,7 +407,7 @@ msgid "Margin"
 msgstr "Margen"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:1307
+#: code:addons/price_system_variable/pricelist.py:1300
 #, python-format
 msgid "Margin must be less than 100                                            please change it"
 msgstr "El margen debe ser menor que 100 % por favor cámbielo."
@@ -478,11 +463,6 @@ msgid "New cost"
 msgstr "Coste nuevo"
 
 #. module: price_system_variable
-#: selection:product.template,product_class:0
-msgid "No Class"
-msgstr "Sin clase"
-
-#. module: price_system_variable
 #: code:addons/price_system_variable/purchase.py:131
 #, python-format
 msgid "No columns found in margin table for current price range"
@@ -504,7 +484,7 @@ msgid "Orig Purchase"
 msgstr "Origen compra"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:48
+#: code:addons/price_system_variable/pricelist.py:49
 #, python-format
 msgid "Other Pricelist"
 msgstr "Otra tarifa"
@@ -515,7 +495,7 @@ msgid "PVP"
 msgstr "PVP"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:52
+#: code:addons/price_system_variable/pricelist.py:53
 #, python-format
 msgid "PVP product Change"
 msgstr "Cambio PVP de producto"
@@ -526,7 +506,7 @@ msgid "Percentage"
 msgstr "Porcentaje"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:1248
+#: code:addons/price_system_variable/pricelist.py:1241
 #, python-format
 msgid "Please select a partner for apply specific prices"
 msgstr "Por favor selecciona un partner para aplicar precios específicos"
@@ -591,7 +571,6 @@ msgstr "¿Imprimir etiqueta?"
 #: field:change.product.pvp,product_id:0
 #: view:change.variable.pricelist:price_system_variable.change_variable_pricelist_view_search
 #: field:change.variable.pricelist,product_id:0
-#: model:ir.model,name:price_system_variable.model_product_product
 #: field:specific.pvp.line,product_id:0
 #: field:supplier.change.line,product_id:0
 #: view:table.pricelist.prices:price_system_variable.table_pricelist_prices_view_search
@@ -739,13 +718,13 @@ msgid "Supplier"
 msgstr "Proveedor"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:51
+#: code:addons/price_system_variable/pricelist.py:52
 #, python-format
 msgid "Supplier Price Change"
 msgstr "Cambio precios de proveedor"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:49
+#: code:addons/price_system_variable/pricelist.py:50
 #, python-format
 msgid "Supplier Prices on the product form"
 msgstr "Precios de proveedor en el formulario de producto"
@@ -771,13 +750,13 @@ msgid "Table pricelist prices"
 msgstr "Tabla de precios de tarifa"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:1265
+#: code:addons/price_system_variable/pricelist.py:1258
 #, python-format
 msgid "There is no change                                                 product pvp for                                                 this product."
 msgstr "No hay modelo cambio pvp producto para este producto."
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/purchase.py:350
+#: code:addons/price_system_variable/purchase.py:353
 #, python-format
 msgid "There is no supplier                                                        pricelist rule for                                                        this product."
 msgstr "No hay regla de tarifa de proveedor para este producto."
@@ -791,11 +770,6 @@ msgstr "Hasta coste"
 #: field:sale.order.line,to_update:0
 msgid "To be updated"
 msgstr "Para actualizar"
-
-#. module: price_system_variable
-#: selection:product.template,product_class:0
-msgid "Ultrafresh"
-msgstr "Ultrafresco"
 
 #. module: price_system_variable
 #: code:addons/price_system_variable/purchase.py:224
@@ -848,7 +822,7 @@ msgid "Updated Date"
 msgstr "Fecha de actualización"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:50
+#: code:addons/price_system_variable/pricelist.py:51
 #, python-format
 msgid "Variable Price"
 msgstr "Precio variable"
@@ -880,13 +854,13 @@ msgid "Virtual Stock"
 msgstr "Stock virtual"
 
 #. module: price_system_variable
-#: code:addons/price_system_variable/pricelist.py:200
-#: code:addons/price_system_variable/pricelist.py:1249
-#: code:addons/price_system_variable/pricelist.py:1264
-#: code:addons/price_system_variable/pricelist.py:1306
-#: code:addons/price_system_variable/purchase.py:349
-#: code:addons/price_system_variable/sale.py:164
-#: code:addons/price_system_variable/sale.py:200
+#: code:addons/price_system_variable/pricelist.py:201
+#: code:addons/price_system_variable/pricelist.py:1242
+#: code:addons/price_system_variable/pricelist.py:1257
+#: code:addons/price_system_variable/pricelist.py:1299
+#: code:addons/price_system_variable/purchase.py:352
+#: code:addons/price_system_variable/sale.py:158
+#: code:addons/price_system_variable/sale.py:189
 #, python-format
 msgid "Warning!"
 msgstr "¡Advertencia!"
@@ -906,4 +880,10 @@ msgstr "¡No puedes tener 2 líneas de cambio de pvp de precion con fechas solap
 #, python-format
 msgid "You must first cancel all Variable change pricelist                         related"
 msgstr "Debes cancelar primero todos los cambios de tarifa variable relacionados"
+
+#. module: price_system_variable
+#: view:pvp.change.cmc:price_system_variable.view_pvp_change_cmc_form
+#: view:wzd.update.cmc:price_system_variable.view_update_cmc_form
+msgid "or"
+msgstr "or"
 

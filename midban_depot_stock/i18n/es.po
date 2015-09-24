@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-21 15:07+0000\n"
-"PO-Revision-Date: 2015-09-21 15:07+0000\n"
+"POT-Creation-Date: 2015-09-24 16:15+0000\n"
+"PO-Revision-Date: 2015-09-24 16:15+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -98,29 +98,35 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                </p><p>\n"
 "                It should be created by a wizard and not manually.\n"
 "                </p>\n"
+"            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                 Clic para añadir un vehículo.\n"
+"                Clic para añadir un vehículo to add a vehicle.\n"
 "                </p><p>\n"
-"                Debe ser creado por un wizard y no manualmente.\n"
+"                Debería ser creado por un asistente y no manualmente.\n"
 "                </p>\n"
+"            "
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,help:midban_depot_stock.action_route
 msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                Click to create a new route.\n"
 "              </p>\n"
+"            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                Clic para crear una nueva ruta.\n"
 "              </p>\n"
+"            "
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,help:midban_depot_stock.action_tag
 msgid "<p class=\"oe_view_nocontent_create\">\n"
 "                Click to create a new tag.\n"
 "              </p>\n"
+"            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                Clic para crear una nueva etiqueta.\n"
 "              </p>\n"
+"            "
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,help:midban_depot_stock.action_detail_route
@@ -131,6 +137,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                Los detalles deberían ser sólo creados por el asistente o por recálculo cuando se cambia la relacción entre clientes y rutas\n"
 "              </p>\n"
+""
 
 #. module: midban_depot_stock
 #: view:route:midban_depot_stock.route_view_form
@@ -172,7 +179,7 @@ msgid "Aisles Config"
 msgstr "Conf pasillos"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:772
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:771
 #, python-format
 msgid "Anything pending of                                                  picking"
 msgstr "Nada pendiente de picking"
@@ -267,7 +274,7 @@ msgstr "Volver a pendiente"
 msgid "Blue lines indicates thar product is configured as variable weight.\n"
 "                            That means that the system will not convert between quantities if the stock unit and\n"
 "                            purchase unit are not the same."
-msgstr "Las lineas azules indican que el producto está configurado como con peso variable.\n"
+msgstr "Las líneas azules indican que el producto está configurado como con peso variable.\n"
 "Eso significa que el sistema no convertirá cantidades entre las distintas unidades"
 
 #. module: midban_depot_stock
@@ -278,7 +285,7 @@ msgstr "Caja"
 #. module: midban_depot_stock
 #: selection:tag,type:0
 msgid "Box Tag"
-msgstr "Caja"
+msgstr "Etiqueta caja"
 
 #. module: midban_depot_stock
 #: selection:stock.location,storage_type:0
@@ -839,7 +846,7 @@ msgstr "Detalle ids"
 #. module: midban_depot_stock
 #: field:route.detail,detail_name_str:0
 msgid "Detail name"
-msgstr "Detail name"
+msgstr "Nombre detalle"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/sale.py:166
@@ -956,7 +963,7 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/sale.py:165
 #: code:addons/midban_depot_stock/sale.py:171
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:560
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:695
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:694
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:131
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:134
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:144
@@ -1004,10 +1011,10 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:530
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:539
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:609
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:761
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:766
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:772
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:834
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:760
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:765
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:771
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:833
 #: code:addons/midban_depot_stock/wizard/create_tag_wizard.py:132
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:136
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:230
@@ -1318,7 +1325,7 @@ msgstr "Rutas de inventario"
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_account_invoice
 msgid "Invoice"
-msgstr "Factura"
+msgstr "Facturar"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_account_invoice_line
@@ -1460,7 +1467,7 @@ msgid "Location not found"
 msgstr "Ubicación no encontrada"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:766
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:765
 #, python-format
 msgid "Locations are required to                                                  do a picking task"
 msgstr "Elegir cámara es obligatorio para hacer una tarea de picking"
@@ -1532,7 +1539,7 @@ msgid "Machines to move palets between locations"
 msgstr "Máquinas para mover palets entre ubicaciones"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:761
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:760
 #, python-format
 msgid "Machines type %s not valid                                 You must select a machine transpalet or order                                 prepare"
 msgstr "Máquinas de tipo %s no válidas. Debes seleccionar una máquina transpalet o preparadora de pedidos"
@@ -1710,7 +1717,7 @@ msgid "No locations will be created"
 msgstr "No se crearán ubicaciones"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:695
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:694
 #, python-format
 msgid "No max volume defined in                                                     warehouse"
 msgstr "No hay volumen máximo definido en el almacén"
@@ -1722,7 +1729,7 @@ msgid "No picking location matching with                                     spe
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:834
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:833
 #, python-format
 msgid "No pickings to put in a                                                  wave"
 msgstr "No hay albaranes que poner en la ola"
@@ -1888,6 +1895,8 @@ msgstr "Operación"
 #: field:stock.task,operation_ids:0
 #: view:wave.report:midban_depot_stock.view_wave_report_form
 #: field:wave.report,operation_ids:0
+#: field:wave.report,to_process:0
+#: field:wave.report,visited:0
 msgid "Operations"
 msgstr "Operaciones"
 
@@ -1935,7 +1944,7 @@ msgstr "Orden"
 #: view:website:midban_depot_stock.report_delivery_list
 #: view:website:midban_depot_stock.report_supplier_reception
 msgid "Order (Origin)"
-msgstr "Pedido (origen)"
+msgstr "Pedido (Origen)"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_supplier_order
@@ -2333,6 +2342,11 @@ msgstr "Cantidad (S.U.)"
 #: field:stock.move,wait_receipt_qty:0
 msgid "Quantity pending receipt"
 msgstr "Cant. pend. recibir"
+
+#. module: midban_depot_stock
+#: field:wave.report,uom_qty_ok:0
+msgid "Quantity to revised"
+msgstr "Quantity to revised"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_stock_quant
@@ -3019,6 +3033,11 @@ msgid "To process"
 msgstr "A procesar"
 
 #. module: midban_depot_stock
+#: field:wave.report,to_revised:0
+msgid "To revised"
+msgstr "A revisar"
+
+#. module: midban_depot_stock
 #: view:crm.phonecall:midban_depot_stock.view_crm_case_phonecalls_filter_custom
 #: view:purchase.order:midban_depot_stock.view_purchase_order_filter_add_today
 #: view:sale.order:midban_depot_stock.view_sales_order_filter_add_route
@@ -3189,6 +3208,11 @@ msgstr "Unidades"
 #: field:wave.report,uos_qty:0
 msgid "UoS quantity"
 msgstr "Cant. UdV"
+
+#. module: midban_depot_stock
+#: field:wave.report,uos_qty_ok:0
+msgid "UoS quantity to revised"
+msgstr "UdV cantidad a revisar"
 
 #. module: midban_depot_stock
 #: view:stock.task:midban_depot_stock.stock_task_view_search
@@ -3396,7 +3420,7 @@ msgstr "Asistente"
 #. module: midban_depot_stock
 #: field:aisle.record,wzd_id:0
 msgid "Wizard id"
-msgstr "ID asistenteWizard"
+msgstr "ID asistente"
 
 #. module: midban_depot_stock
 #: help:stock.picking,camera_id:0
@@ -3587,3 +3611,4 @@ msgstr "{'readonly': [('route_detail_id', '!=', False)]}"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
 msgstr "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
+

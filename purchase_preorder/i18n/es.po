@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-23 08:34+0000\n"
-"PO-Revision-Date: 2015-09-23 08:34+0000\n"
+"POT-Creation-Date: 2015-09-24 17:06+0000\n"
+"PO-Revision-Date: 2015-09-24 17:06+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,11 +29,6 @@ msgstr "(actualizar)"
 #: field:products.supplier,subtotal:0
 msgid "Amount"
 msgstr "Subtotal"
-
-#. module: purchase_preorder
-#: view:website:purchase_preorder.replenishement_purchase_order
-msgid "Amount Total"
-msgstr "Cantidad total"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,total:0
@@ -104,11 +99,6 @@ msgid "Consumptions"
 msgstr "Consumos"
 
 #. module: purchase_preorder
-#: view:website:purchase_preorder.replenishement_purchase_order
-msgid "Create Date"
-msgstr "Fecha creado"
-
-#. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_supplier_form
 msgid "Create PreOrder"
 msgstr "Crear prepedido"
@@ -136,7 +126,7 @@ msgstr "Creado por"
 #: field:products.supplier,create_date:0
 #: field:purchase.preorder,create_date:0
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -147,11 +137,6 @@ msgstr "Actual"
 #: field:products.supplier,date_last_purchase:0
 msgid "Date"
 msgstr "Fecha"
-
-#. module: purchase_preorder
-#: view:website:purchase_preorder.replenishement_purchase_order
-msgid "Date Order"
-msgstr "Fecha pedido"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,debit:0
@@ -186,7 +171,7 @@ msgstr "Denegado"
 #. module: purchase_preorder
 #: field:products.supplier,do_onchange:0
 msgid "Do Onchange"
-msgstr "Do onchange"
+msgstr "Hacer onchange"
 
 #. module: purchase_preorder
 #: selection:purchase.preorder,state:0
@@ -399,7 +384,6 @@ msgstr "Meses"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,name:0
-#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "Name"
 msgstr "Nombre"
 
@@ -670,7 +654,6 @@ msgstr "Fecha inicio"
 #. module: purchase_preorder
 #: field:products.supplier,product_state:0
 #: field:purchase.preorder,state:0
-#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "State"
 msgstr "Estado"
 
@@ -762,3 +745,9 @@ msgstr "Validado"
 #: field:products.supplier,virtual_stock:0
 msgid "Virtual Stock Conservative"
 msgstr "Stock virtual conservativo"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "en desarrollo"
+msgstr "en desarrollo"
+

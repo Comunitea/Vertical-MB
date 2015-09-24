@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-24 08:58+0000\n"
-"PO-Revision-Date: 2015-09-24 08:58+0000\n"
+"POT-Creation-Date: 2015-09-24 16:31+0000\n"
+"PO-Revision-Date: 2015-09-24 16:31+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,7 +40,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para crear un nuevo tipo de temperatura.\n"
+"                Clic para crear un nuevo tipo de temperatura.\n"
 "              </p><p>\n"
 "              </p>\n"
 "            "
@@ -141,11 +141,6 @@ msgid "Box(es)"
 msgstr "Caja(s)"
 
 #. module: midban_product
-#: model:product.uom,name:midban_product.product_uom_box2
-msgid "Box(es)2"
-msgstr "Box(es)2"
-
-#. module: midban_product
 #: field:product.template,breakfast_snack:0
 msgid "Breakfast/Snack"
 msgstr "Desayuno/merienda"
@@ -236,14 +231,12 @@ msgid "Coefficients and sizes of logistic units"
 msgstr "Coeficientes y tamaños de unidades logísticas"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:341
 #: code:addons/midban_product/product.py:342
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial y lógistica realizada.Pendiente de dar de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:331
 #: code:addons/midban_product/product.py:332
 #, python-format
 msgid "Comercial validate done"
@@ -366,25 +359,15 @@ msgid "Dry"
 msgstr "Seco"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:298
 #: code:addons/midban_product/product.py:299
-#: code:addons/midban_product/product.py:307
 #: code:addons/midban_product/product.py:308
-#: code:addons/midban_product/product.py:312
 #: code:addons/midban_product/product.py:313
-#: code:addons/midban_product/product.py:565
 #: code:addons/midban_product/product.py:566
-#: code:addons/midban_product/product.py:577
 #: code:addons/midban_product/product.py:578
-#: code:addons/midban_product/product.py:617
 #: code:addons/midban_product/product.py:618
-#: code:addons/midban_product/product.py:647
 #: code:addons/midban_product/product.py:648
-#: code:addons/midban_product/product.py:729
 #: code:addons/midban_product/product.py:730
-#: code:addons/midban_product/product.py:746
 #: code:addons/midban_product/product.py:747
-#: code:addons/midban_product/product.py:768
 #: code:addons/midban_product/product.py:769
 #, python-format
 msgid "Error"
@@ -525,7 +508,6 @@ msgid "Logistic Validated"
 msgstr "Logística validada"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:321
 #: code:addons/midban_product/product.py:322
 #, python-format
 msgid "Logistic validate done"
@@ -577,16 +559,6 @@ msgid "MA/PA Supplier"
 msgstr "MA/PA Proveedor"
 
 #. module: midban_product
-#: model:product.uom,name:midban_product.product_uom_mantle
-msgid "Mantle(s)"
-msgstr "Manto(s)"
-
-#. module: midban_product
-#: model:product.uom,name:midban_product.product_uom_mantle2
-msgid "Mantle(s)2"
-msgstr "Mantle(s)2"
-
-#. module: midban_product
 #: field:product.template,margin:0
 msgid "Margin"
 msgstr "Margen"
@@ -602,7 +574,6 @@ msgid "Mark"
 msgstr "Marca"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:469
 #: code:addons/midban_product/product.py:470
 #, python-format
 msgid "Need a logistic unit in sales"
@@ -611,12 +582,12 @@ msgstr "Se necesita una unidad logistica en ventas"
 #. module: midban_product
 #: field:product.template,no_gluten:0
 msgid "No Gluten"
-msgstr "No Gluten"
+msgstr "Sin gluten"
 
 #. module: midban_product
 #: view:product.template:midban_product.midban_product_search_form_view
 msgid "No gluten"
-msgstr "No gluten"
+msgstr "Sin gluten"
 
 #. module: midban_product
 #: selection:product.template,product_class:0
@@ -664,17 +635,6 @@ msgid "Palet Wood Height"
 msgstr "Altura madera palet"
 
 #. module: midban_product
-#: model:product.uom,name:midban_product.product_uom_palet
-msgid "Palet(s)"
-msgstr "Palet(s)"
-
-#. module: midban_product
-#: model:product.uom,name:midban_product.product_uom_palet2
-msgid "Palet(s)2"
-msgstr "Palet(s)2"
-
-#. module: midban_product
-#: code:addons/midban_product/product.py:286
 #: code:addons/midban_product/product.py:287
 #, python-format
 msgid "Pending logistic and commercial validate"
@@ -743,7 +703,6 @@ msgid "Product denied"
 msgstr "Producto denegado"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:385
 #: code:addons/midban_product/product.py:386
 #, python-format
 msgid "Product denied in register process again"
@@ -755,7 +714,6 @@ msgid "Product deny reasons"
 msgstr "Motivos denegación alta producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:364
 #: code:addons/midban_product/product.py:365
 #, python-format
 msgid "Product denyed"
@@ -767,21 +725,18 @@ msgid "Product history"
 msgstr "Historial de producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:504
 #: code:addons/midban_product/product.py:505
 #, python-format
 msgid "Product logistic units are wrong"
 msgstr "Las unidades logísticas del producto estan mal"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:351
 #: code:addons/midban_product/product.py:352
 #, python-format
 msgid "Product registered"
-msgstr "Producto Dado de alta"
+msgstr "Producto dado de alta"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:374
 #: code:addons/midban_product/product.py:375
 #, python-format
 msgid "Product registered again"
@@ -798,14 +753,12 @@ msgid "Product unregistered"
 msgstr "Dado de baja"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:478
 #: code:addons/midban_product/product.py:479
 #, python-format
 msgid "Product uom not in logistic units                              "
 msgstr "La unidad de medida del producto no se encuentra en la relación con unidades logísticas                              "
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:486
 #: code:addons/midban_product/product.py:487
 #, python-format
 msgid "Product uos not in logistic units                                  "
@@ -875,14 +828,12 @@ msgid "Size wood pallet, affects the calculation of the volume"
 msgstr "Tamaño de la madera del pallet, afecta al cálculo del volumen"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:299
 #: code:addons/midban_product/product.py:300
 #, python-format
 msgid "Some unit dimension is equals to zero. Please check it in supplier %s"
 msgstr "Alguna dimensíon de la logística es cero. Por favor compruébalo para el proveedor %s"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:308
 #: code:addons/midban_product/product.py:309
 #, python-format
 msgid "Some unit dimension is equals to zero. Please check it."
@@ -894,18 +845,16 @@ msgid "Status"
 msgstr "Estado"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:617
 #: code:addons/midban_product/product.py:618
 #, python-format
 msgid "Supplier %s not defined in product                                            supplier list"
 msgstr "EL proveedor %s no está definido en el listado de proveedores del producto"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:729
 #: code:addons/midban_product/product.py:730
 #, python-format
 msgid "Supplier_id not in supplier_ids"
-msgstr "Supplier_idno en supplier_ids"
+msgstr "Supplier_id no en supplier_ids"
 
 #. module: midban_product
 #: view:temp.type:midban_product.midban_product_temp_type_view_form
@@ -960,34 +909,27 @@ msgid "The defined unit of measure will be related with the logistic unit"
 msgstr "La unidad de medida definida será relacionada con la unidad lógistica unidad"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:768
 #: code:addons/midban_product/product.py:769
 #, python-format
 msgid "The product %s is                              not related with any supplier                              "
 msgstr "EL producto %s no está relacionado con nigún proveedor                              "
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:565
 #: code:addons/midban_product/product.py:566
-#: code:addons/midban_product/product.py:577
 #: code:addons/midban_product/product.py:578
-#: code:addons/midban_product/product.py:647
 #: code:addons/midban_product/product.py:648
-#: code:addons/midban_product/product.py:746
 #: code:addons/midban_product/product.py:747
 #, python-format
 msgid "The product unit of measure %s is                              not related with any logistic                              unit"
 msgstr "La unidad del producto %s no está relacionada con ninguna unidad logística"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:956
 #: code:addons/midban_product/product.py:957
 #, python-format
 msgid "The supplit uom are                              not related to suppplier uoms                             "
 msgstr "La unidad de medida del proveedor no está relacionada con las unidades del proveedor                             "
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:948
 #: code:addons/midban_product/product.py:949
 #, python-format
 msgid "The supplit uoms are                              not related to product uom                             "
@@ -1146,11 +1088,10 @@ msgid "Web"
 msgstr "Web"
 
 #. module: midban_product
-#: code:addons/midban_product/product.py:313
 #: code:addons/midban_product/product.py:314
 #, python-format
 msgid "You need to set gross weight"
-msgstr "You need to set gross weight"
+msgstr "Necesitas establecer el peso bruto"
 
 #. module: midban_product
 #: model:ir.actions.act_window,name:midban_product.action_product_allergen

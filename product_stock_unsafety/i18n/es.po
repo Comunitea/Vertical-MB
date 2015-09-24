@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-16 12:05+0000\n"
-"PO-Revision-Date: 2015-09-16 12:05+0000\n"
+"POT-Creation-Date: 2015-09-24 16:58+0000\n"
+"PO-Revision-Date: 2015-09-24 16:58+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -189,7 +189,7 @@ msgstr "Regla de inventario mínimo"
 #: code:addons/product_stock_unsafety/schedulers.py:98
 #, python-format
 msgid "Minimum Stock Days"
-msgstr "Díasstock mínimos"
+msgstr "Días stock mínimos"
 
 #. module: product_stock_unsafety
 #: view:minimum.day:product_stock_unsafety.view_minimum_day_tree
@@ -205,6 +205,11 @@ msgstr "Nombre"
 #: view:product.stock.unsafety:product_stock_unsafety.view_product_stock_unsafety_form
 msgid "Order"
 msgstr "Pedido"
+
+#. module: product_stock_unsafety
+#: field:product.stock.unsafety,preorder_id:0
+msgid "Preorder"
+msgstr "Preorder"
 
 #. module: product_stock_unsafety
 #: model:ir.model,name:product_stock_unsafety.model_procurement_order
@@ -310,6 +315,11 @@ msgid "Remaining Days of Sale"
 msgstr "Días restantes de venta"
 
 #. module: product_stock_unsafety
+#: field:product.stock.unsafety,orderpoint_id:0
+msgid "Replenishement Rule"
+msgstr "Regla de reabastecimiento"
+
+#. module: product_stock_unsafety
 #: field:product.stock.unsafety,responsible:0
 msgid "Responsible"
 msgstr "Responsable"
@@ -372,9 +382,19 @@ msgid "Supplier"
 msgstr "Proveedor"
 
 #. module: product_stock_unsafety
+#: help:product.stock.unsafety,orderpoint_id:0
+msgid "The replenishement rule that launch this under minimum alert."
+msgstr "La regla de reabastecimiento que lanza este en alerta mínima."
+
+#. module: product_stock_unsafety
 #: view:stock.config.settings:product_stock_unsafety.view_stock_config_settings_custom
 msgid "Traceability"
 msgstr "Trazabilidad"
+
+#. module: product_stock_unsafety
+#: view:stock.warehouse.orderpoint:product_stock_unsafety.view_warehouse_orderpoint_form
+msgid "True"
+msgstr "Verdadero"
 
 #. module: product_stock_unsafety
 #: help:product.template,specific_adjustement_period:0
@@ -396,3 +416,4 @@ msgstr "Stock virtual conservativo"
 #: view:product.template:product_stock_unsafety.view_product_form_remaining_days
 msgid "days"
 msgstr "días"
+

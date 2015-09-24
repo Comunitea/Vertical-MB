@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * depot_edi
+#	* depot_edi
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 09:03+0000\n"
-"PO-Revision-Date: 2015-06-12 09:03+0000\n"
+"POT-Creation-Date: 2015-09-24 16:11+0000\n"
+"PO-Revision-Date: 2015-09-24 16:11+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr "Cancelar"
 
 #. module: depot_edi
 #: selection:account.discount,mode:0
-#: code:addons/depot_edi/account.py:313
+#: code:addons/depot_edi/account.py:211
 #, python-format
 msgid "Charge"
 msgstr "Cargo"
@@ -215,14 +215,14 @@ msgstr "Diferente importe impuesto %s no coincide con la factura"
 #. module: depot_edi
 #: view:account.discount:depot_edi.discount_form
 #: selection:account.discount,mode:0
-#: code:addons/depot_edi/account.py:313
+#: code:addons/depot_edi/account.py:211
 #, python-format
 msgid "Discount"
 msgstr "Descuento"
 
 #. module: depot_edi
-#: code:addons/depot_edi/account.py:329
-#: code:addons/depot_edi/account.py:343
+#: code:addons/depot_edi/account.py:227
+#: code:addons/depot_edi/account.py:241
 #, python-format
 msgid "Discount need percentage or amount"
 msgstr "Descuento necesita porcentaje o cantidad"
@@ -236,11 +236,6 @@ msgstr "Tipo descuento"
 #: view:account.discount.type:depot_edi.account_discoun_type_tree
 msgid "Discount types"
 msgstr "Tipos descuento"
-
-#. module: depot_edi
-#: field:account.invoice,amount_discount:0
-msgid "Discount/Chargel"
-msgstr "Descuento/cargo"
 
 #. module: depot_edi
 #: view:account.discount:depot_edi.account_discoun_tree
@@ -334,8 +329,8 @@ msgid "End Reception"
 msgstr "Fin Recepción"
 
 #. module: depot_edi
-#: code:addons/depot_edi/account.py:328
-#: code:addons/depot_edi/account.py:342
+#: code:addons/depot_edi/account.py:226
+#: code:addons/depot_edi/account.py:240
 #: code:addons/depot_edi/edi.py:223
 #, python-format
 msgid "Error"
@@ -404,16 +399,6 @@ msgstr "Generar EDI"
 #: view:edi.import:depot_edi.wizard_edi_import
 msgid "Get Files"
 msgstr "Obtener archivos"
-
-#. module: depot_edi
-#: field:account.invoice.line,global_charge:0
-msgid "Global charge"
-msgstr "Cargo global"
-
-#. module: depot_edi
-#: field:account.invoice.line,global_discount:0
-msgid "Global discount"
-msgstr "Descuento global"
 
 #. module: depot_edi
 #: field:account.discount,id:0

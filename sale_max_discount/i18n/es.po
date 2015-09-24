@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * sale_max_discount
+#	* sale_max_discount
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 09:38+0000\n"
-"PO-Revision-Date: 2015-05-14 09:38+0000\n"
+"POT-Creation-Date: 2015-09-24 17:15+0000\n"
+"PO-Revision-Date: 2015-09-24 17:15+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,6 +60,11 @@ msgid "Date of the last message posted on the record."
 msgstr "Fecha del último mensaje publicado en el registro."
 
 #. module: sale_max_discount
+#: field:sale.specific.price,discount:0
+msgid "Discount"
+msgstr "Descuento"
+
+#. module: sale_max_discount
 #: code:addons/sale_max_discount/sale.py:51
 #, python-format
 msgid "Discount is greather than the maximun discount of product. The sale need to be approved"
@@ -69,6 +74,11 @@ msgstr "El descuento es mayor al máximo permitido. Debe ser aprobado"
 #: selection:sale.specific.price,state:0
 msgid "Draft"
 msgstr "Borrador"
+
+#. module: sale_max_discount
+#: model:ir.model,name:sale_max_discount.model_sale_specific_price
+msgid "Email Thread"
+msgstr "Hilo de mensajes"
 
 #. module: sale_max_discount
 #: field:sale.specific.price,end_date:0
@@ -128,11 +138,6 @@ msgid "Last edition of max discount"
 msgstr "Última edición del descuento máximo"
 
 #. module: sale_max_discount
-#: field:sale.specific.price,margin:0
-msgid "Margin"
-msgstr "Margen"
-
-#. module: sale_max_discount
 #: field:product.category,max_discount:0
 #: view:product.template:sale_max_discount.product_template_add_max_discount_form
 #: field:product.template,max_discount:0
@@ -156,14 +161,9 @@ msgid "Messages and communication history"
 msgstr "Mensajes e historia de la comunicación"
 
 #. module: sale_max_discount
-#: field:sale.specific.price,pricelist_price:0
-msgid "Pricelist price"
-msgstr "Precio tarifa"
-
-#. module: sale_max_discount
-#: field:sale.specific.price,product_id:0
-msgid "Product"
-msgstr "Producto"
+#: field:sale.specific.price,pricelist_id:0
+msgid "Pricelist"
+msgstr "Lista de precios"
 
 #. module: sale_max_discount
 #: model:ir.model,name:sale_max_discount.model_product_category
@@ -179,6 +179,11 @@ msgstr "Plantilla de producto"
 #: model:ir.ui.menu,name:sale_max_discount.max_discount_template_menu
 msgid "Products max discounts"
 msgstr "Descuentos máxmios de producto"
+
+#. module: sale_max_discount
+#: field:sale.specific.price,product_id:0
+msgid "Produt"
+msgstr "Producto"
 
 #. module: sale_max_discount
 #: view:sale.specific.price:sale_max_discount.sale_specific_price_form
@@ -209,7 +214,6 @@ msgstr "Línea pedido de venta"
 #. module: sale_max_discount
 #: field:sale.order.line,specific_price_id:0
 #: view:sale.specific.price:sale_max_discount.sale_specific_price_form
-#: field:sale.specific.price,specific_price:0
 msgid "Specific price"
 msgstr "Precio específico"
 
@@ -234,7 +238,7 @@ msgid "Summary"
 msgstr "Sumario"
 
 #. module: sale_max_discount
-#: code:addons/sale_max_discount/sale_specific_price.py:51
+#: code:addons/sale_max_discount/sale_specific_price.py:76
 #, python-format
 msgid "The sale is invoiced"
 msgstr "La venta ya ha sido facturada"
