@@ -1016,3 +1016,12 @@ class ProductUom(models.Model):
             res = recs.name_get()
 
         return res
+
+
+class product_category(osv.Model):
+
+    _inherit = "product.category"
+
+    _columns = {
+        'code': fields.char('Code', size=12)
+    }

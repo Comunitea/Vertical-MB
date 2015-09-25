@@ -271,6 +271,41 @@
             </field>
         </record>
 
+        <record id="product_category_search_view_add_code" model="ir.ui.view">
+            <field name="name">product.category.search.add_code</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="code"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_category_form_view_add_code" model="ir.ui.view">
+            <field name="name">product.category.form.add_code</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <div class="oe_title" position="after">
+                    <group>
+                        <field name="code"/>
+                    </group>
+                </div>
+            </field>
+        </record>
+
+        <record id="product_category_list_view_add_code" model="ir.ui.view">
+            <field name="name">product.category.list.add_code</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_list_view"/>
+            <field name="arch" type="xml">
+                <field name="complete_name" position="before">
+                    <field name="code"/>
+                </field>
+            </field>
+        </record>
+
         <!-- Action view for product allergen model -->
         <record id="action_product_allergen" model="ir.actions.act_window">
             <field name="name">action_product_allergen</field>
