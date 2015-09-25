@@ -57,24 +57,18 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             var self = this;
             // --------  WIDGETS ---------
             this.notification = new module.SynchIconWidget(this,{});
-            this.notification.appendTo(this.$('#topheader'));
+            this.notification.replace(this.$('#placeholder-session-buttons1'));
 
             // Close button --> Close the session
             this.close_button = new module.HeaderButtonWidget(this,{
                 label: _t('Close'),
                 action: function(){ self.try_close(); },
             });
-            this.close_button.appendTo(this.$('#topheader'));
+            this.close_button.replace(this.$('#placeholder-session-buttons2'));
 
             // Buttons navigation screens
             this.screen_buttons = new module.ScreenButtonWidget(this, {});
-            this.screen_buttons.appendTo(this.$('#topheader'));
-
-            // New order buttons
-            // this.order_buttons = new module.OrderButtonBlockWidget(this, {});
-            // this.order_buttons.appendTo(this.$('#topheader'));
-
-
+            this.screen_buttons.replace(this.$('#placeholder-screen-buttons'));
 
              // --------  SCREEN WIDGETS ---------
 

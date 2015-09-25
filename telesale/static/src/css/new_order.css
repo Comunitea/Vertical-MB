@@ -17,7 +17,7 @@
 .telesale #toppart {
     position: relative;
     width: 100%;
-    /*height: 18%;*/
+    height: 20%;
     border-top: solid 1px #CECBCB;
     border-bottom: solid 1px #CECBCB;
 }
@@ -28,7 +28,7 @@
 .telesale #middlepart {
     position: relative;
     width:100%;
-    height: 50%;
+    height: 55%;
     border-right: solid 1px #CECBCB;
 }
 .telesale #leftpart {
@@ -48,7 +48,7 @@
     position: relative;
     /*clear:both;*/
     width: 100%;
-    height: 27.7%;
+    height: 20.5%;
     border-top: solid 1px #CECBCB;
 }
 
@@ -65,22 +65,32 @@
     width:75.8%;*/
     height: 100%;
 }
-
+.telesale #bottompart  input{
+    color:black;
+    width:100%;
+    height:50%;
+}
+.telesale #toppart  input{
+    color:black;
+    width:100%;
+    height:3vh;
+}
 .telesale .semiheight{
     height: 50%;
     /*display: table-cell;*/
     /*vertical-align: middle*/
 }
-.telesale #toppart .fullheight{
+.telesale .fullheight{
     height: 100%;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
 }
 
-.telesale .aux2{
+.telesale .centerinside{
   display: table;
-  width:100%;
-  height:100%;
 }
-.telesale .aux1{
+
+.telesale .centerthis{
   display: table-cell;
   vertical-align: middle
 }
@@ -114,7 +124,10 @@
 }
 .telesale #topheader button {
     color: black;
-    height:98%;
+    height:100%;
+    width: 100%;
+    margin:0;
+    padding: 0;
     vertical-align: middle;
     border: 1px solid #353A7E;
     background: #7f82ac;
@@ -194,18 +207,15 @@
     width: 80%;
 }
 .telesale #leftpart .button-order-container .span-state{
-    /*float:right;*/
-    font-size:20px;
-    display:table-cell;
-    vertical-align: middle;
+    font-size: 1vw;
     text-align: center;
-    width: 20%;
 }
 .telesale #leftpart .button-order-container button {
     color:black;
-    margin-left:1%;
-    font-size: 14px;
+    width:100%;
+    margin:0.1vw;
     font-weight: bold;
+    font-size: 0.8vw;
     border: 2px solid #353A7E;
     background: #7f82ac;
     background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
@@ -217,14 +227,39 @@
 /* order container Table*/
 .telesale  #leftpart .order-container{
     position: relative;
-    height: 69%;
+    height: 89%;
     width:100%;
     overflow:auto;
 }
+
+/* Sold Product table*/
+.telesale #rightpart .sold-product-table {
+    margin-top: 1vh;
+    width: 100&;
+    border: 1px solid #000;
+    font-weight: bold;
+    color:black;
+}
+
+.telesale #rightpart .sold-product-table th{
+  border: 1px solid #000;
+  height: 2vh;
+  background: #7f82ac;
+  text-align: center;
+  font-weight: bold;
+}
+.telesale #rightpart .sold-product-table th.pc-header-name{
+    width: 75%;
+}
+.telesale #rightpart .sold-product-table th.pc-header-price{
+    width: 15%;
+}.telesale #rightpart .sold-product-table th.pc-header-add{
+    width: 10%;
+}
 /* Order lines table*/
 .telesale #leftpart .order-container .order-line-table {
-    margin: 0.5%;
-    width: 99%;
+    margin-top: 1vh;
+    width: 100;
     border: 1px solid #000;
     font-weight: bold;
     color:black;
@@ -232,11 +267,13 @@
 
 .telesale  #leftpart .order-container .order-line-table th{
     border: 1px solid #000;
-    height: 5%;
+    height: 3vh;
     background: #7f82ac;
     text-align: center;
     font-weight: bold;
 }
+
+
 .telesale  #leftpart .order-container .order-line-table th.header-code{
     width: 10%;
 }
@@ -336,12 +373,12 @@
 /************************************************ RIGHT PART ****************************************************/
 /***************************************************************************************************************/
 .telesale #bottompart table {
-    position: absolute;
-    margin-top: 6px;
+    /*position: absolute;*/
+    /*margin-top: 6px;*/
     width: 99%;
     height: 99%;
     border: 1px solid #000;
-    margin-left: 3px;
+    /*margin-left: 3px;*/
     color:black;
     font-weight: bold;
 }
@@ -374,7 +411,7 @@
 
 .telesale #bottompart button {
     color: black;
-    height:50%;
+    /*height:50%;*/
     margin:0.1%;
     font-size: 11px;
     font-weight: bold;

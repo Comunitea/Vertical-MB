@@ -166,6 +166,8 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             //right part
             this.productinfo_order_widget = new module.ProductInfoOrderWidget(this, {});
             this.productinfo_order_widget.replace($('#placeholder-bottompart-left'));
+            this.sold_product_line_widget = new module.SoldProductWidget(this, {});
+            this.sold_product_line_widget.replace($('#placeholder-rightpart'));
 
         }
     });

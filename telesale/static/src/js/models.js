@@ -42,7 +42,8 @@ function openerp_ts_models(instance, module){
                 'company':              null,
                 'orders':               new module.OrderCollection(),
                 'products':             new module.ProductCollection(),
-                'calls':             new module.CallsCollection(),
+                'calls':                new module.CallsCollection(),
+                'sold_lines':           new module.SoldLinesCollection(),
                 'product_search_string': "",
                 'products_names':            [], // Array of products names
                 'products_codes':            [], // Array of products code
@@ -132,13 +133,13 @@ function openerp_ts_models(instance, module){
                     }
 
                     self.db.add_units(units);
-                //     return self.fetch(
-                //         'product.product',
-                //         ['name','product_class','list_price','cmc','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
-                //         [['sale_ok','=',true]]
-                //     );
-                // }).then(function(products){
-                //     self.db.add_products(products);
+                    return self.fetch(
+                        'product.product',
+                        ['name','product_class','list_price','cmc','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
+                        [['sale_ok','=',true]]
+                    );
+                }).then(function(products){
+                    self.db.add_products(products);
 
                     return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
@@ -741,8 +742,8 @@ function openerp_ts_models(instance, module){
         get_last_line_by: function(period, client_id){
             var date = new Date();
             var date_str;
-            if (period == "month") {
-                date.setDate(date.getDate() - 30);
+            if (period == "3month") {
+                date.setDate(date.getDate() - 90);
                 date_str = this.dateToStr(date);
             }else{
                 var year = date.getFullYear()
@@ -755,7 +756,8 @@ function openerp_ts_models(instance, module){
                                             domain
                                             )
                 .then(function(order_lines){
-                    self.add_lines_to_current_order(order_lines);
+                    // self.add_lines_to_current_order(order_lines);
+                    self.ts_model.get('sold_lines').reset(order_lines)
                 })
             return loaded
         },
@@ -796,6 +798,9 @@ function openerp_ts_models(instance, module){
                     var line = new module.Orderline(line_vals);
                     this.get('orderLines').add(line);
                 }
+                else{
+                  alert(_t("This product is already in the order"));
+                }
             }
         },
         get_last_order_lines: function(client_id){
@@ -805,13 +810,15 @@ function openerp_ts_models(instance, module){
             var loaded = self.ts_model.fetch_limited_ordered('sale.order',['id','name','order_line'], //name y order line no necesarias
                                                 domain,1,['-id'])
                 .then(function(order){
+                    if (order){
                     return self.ts_model.fetch('sale.order.line',
                                                 ['product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
                                                 [
                                                     ['order_id', '=', order.id],
-                                                 ]);
+                                                 ]);}
                 }).then(function(order_lines){
-                    self.add_lines_to_current_order(order_lines);
+                    // self.add_lines_to_current_order(order_lines);
+                    self.ts_model.get('sold_lines').reset(order_lines)
                 })
             return loaded
         },
@@ -863,5 +870,12 @@ function openerp_ts_models(instance, module){
 
     module.CallsCollection = Backbone.Collection.extend({
         model: module.Calls,
+    });
+    //**************************** SOLD LINES AND SOLD LINESCOLLECTION***********************************************
+    module.SoldLines = Backbone.Model.extend({
+    });
+
+    module.SoldLinesCollection = Backbone.Collection.extend({
+        model: module.SoldLines,
     });
 }
