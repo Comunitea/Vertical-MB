@@ -1531,14 +1531,14 @@ msgstr "UdV"
 #: code:addons/telesale/static/src/xml/new_order_template.xml:177
 #, python-format
 msgid "UoS Price"
-msgstr "Precio UdV"
+msgstr "PVP UdV"
 
 #. module: telesale
 #. openerp-web
 #: code:addons/telesale/static/src/xml/new_order_template.xml:175
 #, python-format
 msgid "UoS Qty"
-msgstr "Cantidad UdV"
+msgstr "Cnt UdV"
 
 #. module: telesale
 #. openerp-web
@@ -1703,4 +1703,3 @@ msgstr "Mostrar"
 #: selection:sale.order,chanel:0
 msgid "telesale"
 msgstr "Televenta"
-

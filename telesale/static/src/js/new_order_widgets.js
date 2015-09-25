@@ -695,23 +695,23 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 if (client_id){
                     $.when(self.ts_model.get('selectedOrder').get_last_order_lines(client_id))
                         .done(function(){
-                            self.bind_orderline_events(); //in get_last_order_lines we unbid add event of currentOrderLines to render faster
-                            self.renderElement();
-                            self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
+                            // self.bind_orderline_events(); //in get_last_order_lines we unbid add event of currentOrderLines to render faster
+                            // self.renderElement();
+                            // self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
                         })
                         .fail(function(){
                             alert(_t("NOT WORKING"));
                         })
                 }
             });
-            this.$('#vum-button').click(function(){
+            this.$('#vut-button').click(function(){
                 var client_id = self.check_customer_get_id();
                 if (client_id){
-                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('month', client_id))
+                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('3month', client_id))
                         .done(function(){
-                            self.bind_orderline_events(); //in get_last_line_by we unbid add event of currentOrderLines to render faster
-                            self.renderElement();
-                            self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
+                            // self.bind_orderline_events(); //in get_last_line_by we unbid add event of currentOrderLines to render faster
+                            // self.renderElement();
+                            // self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
 
                         })
                         .fail(function(){
@@ -719,14 +719,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         })
                 }
             });
-            this.$('#via-button').click(function(){
+            this.$('#so-button').click(function(){
                 var client_id = self.check_customer_get_id();
                 if (client_id){
                     $.when(self.ts_model.get('selectedOrder').get_last_line_by('year', client_id))
                         .done(function(){
-                            self.bind_orderline_events(); //in get_last_line_by we unbid add event of currentOrderLines to render faster
-                            self.renderElement();
-                            self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
+                            // self.bind_orderline_events(); //in get_last_line_by we unbid add event of currentOrderLines to render faster
+                            // self.renderElement();
+                            // self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
                         })
                         .fail(function(){
                             alert(_t("NOT WORKING"));
@@ -1114,6 +1114,62 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 this.line_widgets.push(product_line);
                 product_line.appendTo(self.$('.sustitutelines'));
                 this.$('.add-sustitute')[0].focus();
+            }
+        },
+    });
+
+
+    module.SoldProductLineWidget = module.TsBaseWidget.extend({
+        template:'Sold-Product-Line-Widget',
+        init: function(parent, options){
+            this._super(parent,options);
+            this.sold_line = options.sold_line;
+        },
+
+        renderElement: function() {
+            var self=this;
+            this._super();
+            this.$('#add-line').off("click").click(_.bind(this.add_line_to_order, this));
+
+        },
+        add_line_to_order: function() {
+            var self=this;
+            self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line])
+            //in get_last_order_lines we unbid add event of currentOrderLines to render faster
+            self.ts_widget.new_order_screen.order_widget.bind_orderline_events();
+            self.ts_widget.new_order_screen.order_widget.renderElement()
+            self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
+
+        },
+    });
+
+    module.SoldProductWidget = module.TsBaseWidget.extend({
+        template:'Sold-Product-Widget',
+        init: function(parent, options){
+            var self = this;
+            this._super(parent,options);
+            this.ts_model.get('sold_lines').bind('reset', function(){
+                self.renderElement();
+            });
+            this.line_widgets = [];
+        },
+
+        renderElement: function() {
+            var self=this;
+            this._super();
+            // free subwidgets  memory from previous renders
+            for(var i = 0, len = this.line_widgets.length; i < len; i++){
+                this.line_widgets[i].destroy();
+            }
+            this.line_widgets = [];
+            var sold_lines = this.ts_model.get("sold_lines").models || []
+
+            var $lines_content = this.$('.soldproductlines');
+            for (var i=0, len = sold_lines.length; i < len; i++){
+                var line_obj = sold_lines[i].attributes;
+                var sold_line = new module.SoldProductLineWidget(self, {sold_line: line_obj})
+                this.line_widgets.push(sold_line)
+                sold_line.appendTo($lines_content)
             }
         },
     });
