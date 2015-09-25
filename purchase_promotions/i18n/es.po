@@ -1,13 +1,13 @@
-# Translation of OpenERP Server.
+# Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * promotions
+#	* purchase_promotions
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0\n"
+"Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-02 16:16+0000\n"
-"PO-Revision-Date: 2014-06-02 16:16+0000\n"
+"POT-Creation-Date: 2015-09-24 17:11+0000\n"
+"PO-Revision-Date: 2015-09-24 17:11+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,198 +15,195 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: promotions
-#: field:partner.promotion,category:0
-#: selection:partner.promotion,type:0
-msgid "Category"
-msgstr "Categoria"
-
-#. module: promotions
-#: model:ir.model,name:promotions.model_purchase_order_line
-msgid "Purchase Order Line"
-msgstr "Línea pedido de compra"
-
-#. module: promotions
-#: field:products.supplier,have_promotion:0
-msgid "has promotion"
-msgstr "Tiene promocion"
-
-#. module: promotions
-#: selection:partner.promotion,applicable:0
-msgid "Sale"
-msgstr "Venta"
-
-#. module: promotions
-#: field:partner.promotion,init_date:0
-msgid "Initial date"
-msgstr "Fecha inicial"
-
-#. module: promotions
-#: field:products.supplier,precentage_promo:0
-msgid "percentage promo"
-msgstr "Porc. Promo."
-
-#. module: promotions
-#: model:ir.model,name:promotions.model_stock_picking
-msgid "Picking List"
-msgstr "Albarán"
-
-#. module: promotions
-#: view:purchase.preorder:0
-msgid "Consumptions"
-msgstr "Consumos"
-
-#. module: promotions
-#: field:partner.promotion,type:0
-msgid "Type"
-msgstr "Tipo"
-
-#. module: promotions
-#: model:ir.model,name:promotions.model_products_supplier
-msgid "Products Supplier"
-msgstr "Products Supplier"
-
-#. module: promotions
-#: field:partner.promotion,product:0
-#: selection:partner.promotion,type:0
-msgid "Product"
-msgstr "Producto"
-
-#. module: promotions
-#: help:purchase.order,amount_discounted:0
-msgid "The Total discount"
-msgstr "Descuento total"
-
-#. module: promotions
-#: field:purchase.order.line,price_unit_promotion:0
-msgid "Unit price with                                                         promotion"
-msgstr "Precio unitario con                                                    promoción"
-
-#. module: promotions
-#: field:partner.promotion,discount:0
-#: field:purchase.order,amount_discounted:0
-msgid "Discount"
-msgstr "Descuento"
-
-#. module: promotions
-#: code:addons/promotions/promotion.py:58
-#, python-format
-msgid "Not found register"
-msgstr "No se han encontrado registros"
-
-#. module: promotions
-#: model:ir.actions.act_window,name:promotions.act_promotion_partner
-#: model:ir.ui.menu,name:promotions.menu_general_promotion_purchases
-#: model:ir.ui.menu,name:promotions.menu_general_promotion_sales
-#: model:ir.ui.menu,name:promotions.menu_promotion_purchases
-#: model:ir.ui.menu,name:promotions.menu_promotion_sales
-#: view:partner.promotion:0
-#: view:purchase.preorder:0
-#: view:res.partner:0
-#: field:res.partner,promotion_ids:0
-msgid "Promotions"
-msgstr "Promociones"
-
-#. module: promotions
-#: selection:partner.promotion,applicable:0
-msgid "Purchase"
-msgstr "Compra"
-
-#. module: promotions
-#: field:partner.promotion,name:0
-msgid "Name"
-msgstr "Nombre"
-
-#. module: promotions
-#: code:addons/promotions/promotion.py:59
-#, python-format
-msgid "Not found promotion discount type"
-msgstr "No se ha encontrado el tipo de descuento promocion"
-
-#. module: promotions
-#: field:partner.promotion,applicable:0
-msgid "Applicable"
-msgstr "Aplicable"
-
-#. module: promotions
-#: model:ir.model,name:promotions.model_purchase_order
-msgid "Purchase Order"
-msgstr "Pedido de compra"
-
-#. module: promotions
-#: code:addons/promotions/purchase.py:147
-#, python-format
-msgid "Error!"
-msgstr "Error!"
-
-#. module: promotions
-#: model:ir.model,name:promotions.model_partner_promotion
-msgid "partner.promotion"
-msgstr "partner.promotion"
-
-#. module: promotions
+#. module: purchase_promotions
 #: field:partner.promotion,accumulated:0
 #: field:partner.promotion.rel,accumulated:0
 msgid "Accumulated"
 msgstr "Acumulado"
 
-#. module: promotions
-#: field:partner.promotion.rel,promotion_id:0
-msgid "Promotion"
-msgstr "Promoción"
+#. module: purchase_promotions
+#: field:purchase.order,amount_discounted:0
+msgid "Amount discounted"
+msgstr "Amount discounted"
 
-#. module: promotions
-#: model:ir.model,name:promotions.model_partner_promotion_rel
-msgid "Partner promotion table rel"
-msgstr "Partner promotion table rel"
+#. module: purchase_promotions
+#: field:partner.promotion,applicable:0
+msgid "Applicable"
+msgstr "Aplicable"
 
-#. module: promotions
-#: code:addons/promotions/purchase_preorder.py:40
+#. module: purchase_promotions
+#: field:partner.promotion,category:0
+#: selection:partner.promotion,type:0
+msgid "Category"
+msgstr "Categoría"
+
+#. module: purchase_promotions
+#: view:products.supplier:purchase_promotions.view_purchase_preorder_promotion_form
+msgid "Consumptions"
+msgstr "Consumos"
+
+#. module: purchase_promotions
+#: field:partner.promotion,create_uid:0
+#: field:partner.promotion.rel,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: purchase_promotions
+#: field:partner.promotion,create_date:0
+#: field:partner.promotion.rel,create_date:0
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: purchase_promotions
+#: field:partner.promotion,discount:0
+msgid "Discount"
+msgstr "Descuento"
+
+#. module: purchase_promotions
+#: code:addons/purchase_promotions/purchase_preorder.py:64
 #, python-format
 msgid "Don't has promotions"
 msgstr "No tiene promociones"
 
-#. module: promotions
-#: view:purchase.preorder:0
-msgid "promotions"
-msgstr "Promociones"
-
-#. module: promotions
-#: field:partner.promotion.rel,sequence:0
-msgid "Sequence"
-msgstr "Secuencia"
-
-#. module: promotions
-#: code:addons/promotions/purchase.py:148
-#, python-format
-msgid "Define purchase journal for                                        this company: \"%s\" (id:%d)."
-msgstr "Define purchase journal for                                        this company: \"%s\" (id:%d)."
-
-#. module: promotions
-#: selection:partner.promotion,type:0
-msgid "Global"
-msgstr "Global"
-
-#. module: promotions
+#. module: purchase_promotions
 #: field:partner.promotion,final_date:0
 msgid "Final date"
 msgstr "Fecha final"
 
-#. module: promotions
-#: model:ir.model,name:promotions.model_account_invoice
-msgid "Invoice"
-msgstr "Factura"
+#. module: purchase_promotions
+#: selection:partner.promotion,type:0
+msgid "Global"
+msgstr "Global"
 
-#. module: promotions
-#: model:ir.model,name:promotions.model_res_partner
+#. module: purchase_promotions
+#: code:addons/purchase_promotions/purchase_preorder.py:62
+#, python-format
+msgid "Has promotions"
+msgstr "Tiene promociones"
+
+#. module: purchase_promotions
+#: field:partner.promotion,id:0
+#: field:partner.promotion.rel,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: purchase_promotions
+#: field:partner.promotion,init_date:0
+msgid "Initial date"
+msgstr "Fecha inicial"
+
+#. module: purchase_promotions
+#: field:partner.promotion,write_uid:0
+#: field:partner.promotion.rel,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualiación por"
+
+#. module: purchase_promotions
+#: field:partner.promotion,write_date:0
+#: field:partner.promotion.rel,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: purchase_promotions
+#: field:partner.promotion,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: purchase_promotions
+#: code:addons/purchase_promotions/promotion.py:59
+#, python-format
+msgid "Not found promotion discount type"
+msgstr "No encontrado tipo de descuento de promoción"
+
+#. module: purchase_promotions
+#: code:addons/purchase_promotions/promotion.py:58
+#, python-format
+msgid "Not found register"
+msgstr "Registro no encontrado"
+
+#. module: purchase_promotions
+#: model:ir.model,name:purchase_promotions.model_res_partner
 #: field:partner.promotion,partner_id:0
 #: field:partner.promotion.rel,partner_id:0
 msgid "Partner"
 msgstr "Empresa"
 
-#. module: promotions
-#: code:addons/promotions/purchase_preorder.py:38
-#, python-format
-msgid "Has promotions"
-msgstr "Tiene promociones"
+#. module: purchase_promotions
+#: model:ir.model,name:purchase_promotions.model_partner_promotion_rel
+msgid "Partner promotion table rel"
+msgstr "Tabla relacionada de promociones de empresa"
+
+#. module: purchase_promotions
+#: field:partner.promotion,product:0
+#: selection:partner.promotion,type:0
+msgid "Product"
+msgstr "Producto"
+
+#. module: purchase_promotions
+#: model:ir.model,name:purchase_promotions.model_products_supplier
+msgid "Products Supplier"
+msgstr "Productos solicitados al proveedor"
+
+#. module: purchase_promotions
+#: field:partner.promotion.rel,promotion_id:0
+msgid "Promotion"
+msgstr "Promoción"
+
+#. module: purchase_promotions
+#: model:ir.actions.act_window,name:purchase_promotions.act_promotion_partner
+#: model:ir.ui.menu,name:purchase_promotions.menu_general_promotion_purchases
+#: model:ir.ui.menu,name:purchase_promotions.menu_promotion_purchases
+#: view:partner.promotion:purchase_promotions.partner_promotion_form_view
+#: view:partner.promotion:purchase_promotions.partner_promotion_tree_view
+#: view:products.supplier:purchase_promotions.view_purchase_preorder_promotion_form
+#: field:products.supplier,product_promotions:0
+#: view:res.partner:purchase_promotions.view_partner_form_promotion
+#: field:res.partner,promotion_ids:0
+msgid "Promotions"
+msgstr "Promociones"
+
+#. module: purchase_promotions
+#: selection:partner.promotion,applicable:0
+msgid "Purchase"
+msgstr "Compra"
+
+#. module: purchase_promotions
+#: model:ir.model,name:purchase_promotions.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: purchase_promotions
+#: model:ir.model,name:purchase_promotions.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línea pedido de compra"
+
+#. module: purchase_promotions
+#: field:partner.promotion.rel,sequence:0
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: purchase_promotions
+#: help:purchase.order,amount_discounted:0
+msgid "The Total discount"
+msgstr "Descuento total"
+
+#. module: purchase_promotions
+#: field:partner.promotion,type:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: purchase_promotions
+#: field:products.supplier,have_promotion:0
+msgid "has promotion"
+msgstr "Tiene promoción"
+
+#. module: purchase_promotions
+#: field:products.supplier,precentage_promo:0
+msgid "percentage promo"
+msgstr "Porc. promo."
+
+#. module: purchase_promotions
+#: view:products.supplier:purchase_promotions.view_purchase_preorder_promotion_form
+msgid "promotions"
+msgstr "promociones"
 

@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * depot_edi
+#	* depot_edi
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 09:03+0000\n"
-"PO-Revision-Date: 2015-06-12 09:03+0000\n"
+"POT-Creation-Date: 2015-09-24 16:11+0000\n"
+"PO-Revision-Date: 2015-09-24 16:11+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -74,10 +74,10 @@ msgstr "Cancelar"
 
 #. module: depot_edi
 #: selection:account.discount,mode:0
-#: code:addons/depot_edi/account.py:313
+#: code:addons/depot_edi/account.py:211
 #, python-format
 msgid "Charge"
-msgstr "Chargo"
+msgstr "Cargo"
 
 #. module: depot_edi
 #: field:account.discount.type,code:0
@@ -215,14 +215,14 @@ msgstr "Diferente importe impuesto %s no coincide con la factura"
 #. module: depot_edi
 #: view:account.discount:depot_edi.discount_form
 #: selection:account.discount,mode:0
-#: code:addons/depot_edi/account.py:313
+#: code:addons/depot_edi/account.py:211
 #, python-format
 msgid "Discount"
 msgstr "Descuento"
 
 #. module: depot_edi
-#: code:addons/depot_edi/account.py:329
-#: code:addons/depot_edi/account.py:343
+#: code:addons/depot_edi/account.py:227
+#: code:addons/depot_edi/account.py:241
 #, python-format
 msgid "Discount need percentage or amount"
 msgstr "Descuento necesita porcentaje o cantidad"
@@ -230,17 +230,12 @@ msgstr "Descuento necesita porcentaje o cantidad"
 #. module: depot_edi
 #: view:account.discount.type:depot_edi.account_discoun_type_form
 msgid "Discount type"
-msgstr "Tipo Descuento"
+msgstr "Tipo descuento"
 
 #. module: depot_edi
 #: view:account.discount.type:depot_edi.account_discoun_type_tree
 msgid "Discount types"
-msgstr "Tipos Descuento"
-
-#. module: depot_edi
-#: field:account.invoice,amount_discount:0
-msgid "Discount/Chargel"
-msgstr "Descuento/Cargo"
+msgstr "Tipos descuento"
 
 #. module: depot_edi
 #: view:account.discount:depot_edi.account_discoun_tree
@@ -252,12 +247,12 @@ msgstr "Descuentos"
 #. module: depot_edi
 #: view:account.invoice:depot_edi.account_invoice_supplier_discounts_form
 msgid "Discounts/Charges"
-msgstr "Descuentos/Cargos"
+msgstr "Descuentos/cargos"
 
 #. module: depot_edi
 #: model:ir.model,name:depot_edi.model_account_discount
 msgid "Discounts/Charges for invoices"
-msgstr "Descuentos/Cargos para facturas"
+msgstr "Descuentos/cargos para facturas"
 
 #. module: depot_edi
 #: field:edi,doc_type_ids:0
@@ -334,8 +329,8 @@ msgid "End Reception"
 msgstr "Fin Recepción"
 
 #. module: depot_edi
-#: code:addons/depot_edi/account.py:328
-#: code:addons/depot_edi/account.py:342
+#: code:addons/depot_edi/account.py:226
+#: code:addons/depot_edi/account.py:240
 #: code:addons/depot_edi/edi.py:223
 #, python-format
 msgid "Error"
@@ -378,7 +373,7 @@ msgstr "Error en campo"
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:112
 #, python-format
 msgid "Field error "
-msgstr "Error Campo "
+msgstr "Error campo "
 
 #. module: depot_edi
 #: view:edi.doc:depot_edi.edi_doc_view_form
@@ -388,7 +383,7 @@ msgstr "Archivo"
 #. module: depot_edi
 #: field:edi.doc,file_name:0
 msgid "File Name"
-msgstr "Nombre Archivo"
+msgstr "Nombre archivo"
 
 #. module: depot_edi
 #: field:res.partner,gln:0
@@ -403,17 +398,7 @@ msgstr "Generar EDI"
 #. module: depot_edi
 #: view:edi.import:depot_edi.wizard_edi_import
 msgid "Get Files"
-msgstr "Obtener Archivos"
-
-#. module: depot_edi
-#: field:account.invoice.line,global_charge:0
-msgid "Global charge"
-msgstr "Cargo Global"
-
-#. module: depot_edi
-#: field:account.invoice.line,global_discount:0
-msgid "Global discount"
-msgstr "Descuento Global"
+msgstr "Obtener archivos"
 
 #. module: depot_edi
 #: field:account.discount,id:0
@@ -439,7 +424,7 @@ msgstr "IMportar EDI"
 #. module: depot_edi
 #: model:ir.ui.menu,name:depot_edi.view_wizard_edi_import
 msgid "Import Files"
-msgstr "Importar Archivos"
+msgstr "Importar archivos"
 
 #. module: depot_edi
 #: selection:edi.doc,state:0
@@ -471,7 +456,7 @@ msgstr "Impuesto de factura"
 #. module: depot_edi
 #: field:edi.doc,send_date:0
 msgid "Last Send Date"
-msgstr "ültima fecha de envío"
+msgstr "Última fecha de envío"
 
 #. module: depot_edi
 #: field:account.discount,write_uid:0
@@ -498,7 +483,7 @@ msgstr "Última actualización en"
 #. module: depot_edi
 #: field:account.discount,invoice_line_id:0
 msgid "Line"
-msgstr "Linea"
+msgstr "Línea"
 
 #. module: depot_edi
 #: field:edi.doc,message:0
@@ -521,7 +506,7 @@ msgstr "Nombre"
 #: code:addons/depot_edi/edi.py:776
 #, python-format
 msgid "Not found corect NODO value                           in the INVOIC file "
-msgstr "No encontrado valor correcto para NODO                           en el archivo INVOIC"
+msgstr "No encontrado valor correcto para NODO en el archivo INVOIC"
 
 #. module: depot_edi
 #: code:addons/depot_edi/edi.py:247
@@ -559,7 +544,7 @@ msgstr "No encontrado albarán para la compra: "
 #: code:addons/depot_edi/edi.py:687
 #, python-format
 msgid "Not invoice line taxes matching with EDI file,"
-msgstr "No hay impuestos de linea que coincidan con el archivo EDI,"
+msgstr "No hay impuestos de línea que coincidan con el archivo EDI,"
 
 #. module: depot_edi
 #: field:stock.picking,num_dispatch_advice:0
@@ -616,7 +601,7 @@ msgstr "Unidad de medida del producto"
 #. module: depot_edi
 #: model:ir.model,name:depot_edi.model_edi
 msgid "Provides general functions to impor edi files"
-msgstr "Provve funciones generales para importar ficheros edi"
+msgstr "Provee funciones generales para importar ficheros edi"
 
 #. module: depot_edi
 #: model:ir.model,name:depot_edi.model_purchase_order
@@ -641,7 +626,7 @@ msgstr "Respuesta"
 #. module: depot_edi
 #: field:edi.doc,response_document_id:0
 msgid "Response Document"
-msgstr "Documento Respuesta"
+msgstr "Documento respuesta"
 
 #. module: depot_edi
 #: field:account.discount,sequence:0
@@ -677,7 +662,7 @@ msgstr "Sin procesar"
 #. module: depot_edi
 #: field:stock.warehouse,start_reception_hour:0
 msgid "Start Reception"
-msgstr "Empezar Recepción"
+msgstr "Empezar recepción"
 
 #. module: depot_edi
 #: view:edi.doc:depot_edi.edi_doc_view_form
@@ -712,19 +697,19 @@ msgstr "El fichero ha sido creado correctamente"
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:104
 #, python-format
 msgid "The product not have                                        ean13/ean14. "
-msgstr "El producto no tiene                                        ean13/ean14. "
+msgstr "El producto no tiene ean13/ean14. "
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:97
 #, python-format
 msgid "The street configured for the                                 depot is not complete!"
-msgstr "La calle configurada para el                                 depot no está completa!"
+msgstr "La calle configurada para el depot no está completa!"
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:90
 #, python-format
 msgid "The street configured for the                                 supplier is not complete!"
-msgstr "La calle configurada para el                                 depot no está completa!"
+msgstr "La calle configurada para el depot no está completa!"
 
 #. module: depot_edi
 #: code:addons/depot_edi/wizard/export_edi_wzd.py:73
@@ -736,14 +721,14 @@ msgstr "El proveedor no tiene GLN"
 #: code:addons/depot_edi/edi.py:255
 #, python-format
 msgid "The value of CENVFAC field is not an                             integer"
-msgstr "EL valor de CENVFAC fieldno es un                            entero"
+msgstr "EL valor de CENVFAC fieldno es un entero"
 
 #. module: depot_edi
 #: view:edi.import:depot_edi.wizard_edi_import
 msgid "This wizard will import all files in the input edi Folder.\n"
 "                       The system parameter for edi importation must be correctly setted"
 msgstr "Este asistente importara todos los campos en el directorio de entrada de EDI.\n"
-"                       El parametro de sístema para la importación EDI tiene que estar correctamente configurado"
+"                       El parámetro de sistema para la importación EDI tiene que estar correctamente configurado"
 
 #. module: depot_edi
 #: field:account.discount,type_id:0

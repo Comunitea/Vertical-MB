@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * field_change_logger
+#	* field_change_logger
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-01 14:16+0000\n"
-"PO-Revision-Date: 2015-06-01 14:16+0000\n"
+"POT-Creation-Date: 2015-09-24 16:13+0000\n"
+"PO-Revision-Date: 2015-09-24 16:13+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: code:addons/field_change_logger/logger_config.py:97
 #, python-format
 msgid "<br/>Field %s added: %s"
-msgstr "<br/>Campo %s Añadido: %s"
+msgstr "<br/>Campo %s añadido: %s"
 
 #. module: field_change_logger
 #: code:addons/field_change_logger/logger_config.py:58
@@ -64,23 +64,18 @@ msgstr "Config"
 #: field:logger.config,create_uid:0
 #: field:logger.config.field,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por"
 
 #. module: field_change_logger
 #: field:logger.config,create_date:0
 #: field:logger.config.field,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado en"
 
 #. module: field_change_logger
 #: field:logger.config.field,log_field:0
 msgid "Field"
 msgstr "Campo"
-
-#. module: field_change_logger
-#: model:ir.model,name:field_change_logger.model_ir_model_fields
-msgid "Fields"
-msgstr "Campos"
 
 #. module: field_change_logger
 #: field:logger.config,id:0
@@ -92,13 +87,13 @@ msgstr "ID"
 #: field:logger.config,write_uid:0
 #: field:logger.config.field,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualiación por"
 
 #. module: field_change_logger
 #: field:logger.config,write_date:0
 #: field:logger.config.field,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: field_change_logger
 #: field:logger.config.field,logger:0
@@ -147,5 +142,5 @@ msgstr "El modelo %s no tiene mensajería"
 #. module: field_change_logger
 #: field:logger.config,watch_fields:0
 msgid "Watch fields"
-msgstr "Watch fields"
+msgstr "Ver campos"
 

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-31 12:04+0000\n"
-"PO-Revision-Date: 2014-12-31 12:04+0000\n"
+"POT-Creation-Date: 2015-09-24 16:09+0000\n"
+"PO-Revision-Date: 2015-09-24 16:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,6 @@ msgstr "Comprar después"
 
 #. module: depot_cross_dock
 #: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -37,12 +36,12 @@ msgstr "Elige si quieres crear compras para productos de midban o para productos
 #: model:ir.ui.menu,name:depot_cross_dock.action_process_cross_wzd_menu
 #: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
 msgid "Create Cross Dock Purchases"
-msgstr "Crear Compras Cross-dock"
+msgstr "Crear compras cross-dock"
 
 #. module: depot_cross_dock
 #: view:process.cross.dock.wzd:depot_cross_dock.process_cross_dock_wzd_view
 msgid "Create Purchases"
-msgstr "Crear Compras"
+msgstr "Crear compras"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,mode:0
@@ -52,29 +51,34 @@ msgstr "Crear compras para"
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_uid:0
 msgid "Created by"
-msgstr "creado por"
+msgstr "Creado por"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,create_date:0
 msgid "Created on"
-msgstr "creado el"
+msgstr "Creado el"
+
+#. module: depot_cross_dock
+#: model:stock.picking.type,name:depot_cross_dock.picking_type_croos_dock
+msgid "Cross Dock Depot"
+msgstr "Cross Dock Depot"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Cross Docks products"
-msgstr "Productos Cross Dock"
+msgstr "Productos cross dock"
 
 #. module: depot_cross_dock
 #: code:addons/depot_cross_dock/procurement.py:36
 #, python-format
 msgid "Delayed Buy"
-msgstr "Compra Retrasada"
+msgstr "Compra retrasada"
 
 #. module: depot_cross_dock
 #: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:138
 #, python-format
 msgid "Error!"
-msgstr "Error!"
+msgstr "¡Error!"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,id:0
@@ -96,22 +100,22 @@ msgstr "¡Importante!: La ruta de transporte debe ser asignada"
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,write_uid:0
 msgid "Last Updated by"
-msgstr "Última Actualización por"
+msgstr "Última actualización por"
 
 #. module: depot_cross_dock
 #: field:process.cross.dock.wzd,write_date:0
 msgid "Last Updated on"
-msgstr "Última Actualización en"
+msgstr "Última actualización en"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Midban and cross dock products"
-msgstr "Productos de Misban y Cross Dock"
+msgstr "Productos de midban y cross Dock"
 
 #. module: depot_cross_dock
 #: selection:process.cross.dock.wzd,mode:0
 msgid "Midban products"
-msgstr "Productos Midban"
+msgstr "Productos midban"
 
 #. module: depot_cross_dock
 #: code:addons/depot_cross_dock/wizard/process_cross_dock_wzd.py:138
@@ -138,21 +142,6 @@ msgstr "Regla de abastecimiento"
 #: field:res.partner,regulator:0
 msgid "Regulator"
 msgstr "Regulador"
-
-#. module: depot_cross_dock
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
-msgid "Reset Drop Codes"
-msgstr "Reiniciar Drop Codes"
-
-#. module: depot_cross_dock
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
-msgid "Reset Route Drop Codes"
-msgstr "Reiniciar Drop Codes Ruta"
-
-#. module: depot_cross_dock
-#: view:reset.drop.code.wzd:depot_cross_dock.reset_drop_code_wzd_view
-msgid "Reset the counter of drop codes in all active transport routes"
-msgstr "Reinicia el contador de drop codes para todas las rutas de transporte activas"
 
 #. module: depot_cross_dock
 #: help:res.partner,regulator:0

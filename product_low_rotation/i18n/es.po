@@ -18,17 +18,17 @@ msgstr ""
 #. module: product_low_rotation
 #: model:ir.actions.act_window,name:product_low_rotation.act_update_rotation_products
 msgid "\"Update Rotation"
-msgstr "\"Actualizar Rotación"
+msgstr "\"Actualizar rotación"
 
 #. module: product_low_rotation
 #: view:product.product:product_low_rotation.product_min_rotation_tree_view
 msgid "Actual rotation"
-msgstr "Rotación Actual"
+msgstr "Rotación actual"
 
 #. module: product_low_rotation
 #: view:update.rotation:product_low_rotation.view_update_rotation_wizard
 msgid "Are you sure you want to update rotation?"
-msgstr "Está seguro de que desea actualizar las rotaciones?"
+msgstr "¿Está seguro de que desea actualizar las rotaciones?"
 
 #. module: product_low_rotation
 #: view:update.rotation:product_low_rotation.view_update_rotation_wizard
@@ -38,12 +38,12 @@ msgstr "Cancelar"
 #. module: product_low_rotation
 #: field:update.rotation,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creado por"
 
 #. module: product_low_rotation
 #: field:update.rotation,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado en"
 
 #. module: product_low_rotation
 #: field:update.rotation,id:0
@@ -53,19 +53,19 @@ msgstr "ID"
 #. module: product_low_rotation
 #: field:update.rotation,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Última actualización por"
 
 #. module: product_low_rotation
 #: field:update.rotation,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización en"
 
 #. module: product_low_rotation
 #: field:product.category,min_rotation:0
 #: field:product.template,min_rotation:0
 #: field:product.template,rotation:0
 msgid "Mín. rotation"
-msgstr "Rotación Mín."
+msgstr "Rotación mín."
 
 #. module: product_low_rotation
 #: model:ir.model,name:product_low_rotation.model_product_category
@@ -81,7 +81,7 @@ msgstr "Plantilla de producto"
 #: help:product.category,min_rotation:0
 #: help:product.template,min_rotation:0
 msgid "Product minimal rotation. If the average weekly sales decline last month of this amount is added to the product as low minimum rotation"
-msgstr "rotación mínima del producto. Si la media de ventas semanales del último mes baja de esta cantidad se añade el producto como bajo rotación mínima"
+msgstr "Rotación mínima del producto. Si la media de ventas semanales del último mes baja de esta cantidad se añade el producto como bajo rotación mínima"
 
 #. module: product_low_rotation
 #: view:product.product:product_low_rotation.product_min_rotation_tree_view
@@ -104,7 +104,7 @@ msgstr "Existencias y variaciones esperadas"
 #. module: product_low_rotation
 #: field:product.template,under_rotation:0
 msgid "Under Rotation"
-msgstr "Under Rotation"
+msgstr "Bajo rotación"
 
 #. module: product_low_rotation
 #: view:product.product:product_low_rotation.product_min_rotation_tree_view

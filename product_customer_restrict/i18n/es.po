@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * product_customer_restrict
+#	* product_customer_restrict
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 09:32+0000\n"
-"PO-Revision-Date: 2015-06-12 09:32+0000\n"
+"POT-Creation-Date: 2015-09-24 16:56+0000\n"
+"PO-Revision-Date: 2015-09-24 16:56+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: product_customer_restrict
 #: view:res.partner:product_customer_restrict.view_partner_rules_form
 msgid "Catalog Customer rules"
-msgstr "Reglas Cliente catálogo de productos "
+msgstr "Reglas cliente catálogo de productos "
 
 #. module: product_customer_restrict
 #: field:partner.rules,category_id:0
@@ -29,7 +29,7 @@ msgstr "Categoría"
 #: constraint:partner.rules:0
 msgid "Category repeated.\n"
 "Category is alredady defined in this                     other rule, maybe in some parent customer rule"
-msgstr "Category repetida.\n"
+msgstr "Categoría repetida.\n"
 "La categoría ya está definida en otra regla, quizás en alguna regla de cliente padre"
 
 #. module: product_customer_restrict
@@ -50,24 +50,24 @@ msgstr "Cliente"
 #. module: product_customer_restrict
 #: view:product.template:product_customer_restrict.midban_depot_product_form_view
 msgid "Customer list"
-msgstr "Listado Cliente"
+msgstr "Listado cliente"
 
 #. module: product_customer_restrict
 #: field:partner.rules,end_date:0
 msgid "End Date"
-msgstr "Fecha Fin"
+msgstr "Fecha fin"
 
 #. module: product_customer_restrict
 #: view:product.template:product_customer_restrict.midban_depot_product_form_view
 #: field:product.template,exclusive_ids:0
 msgid "Exclusive customers"
-msgstr "Clientes Exclusivos"
+msgstr "Clientes exclusivos"
 
 #. module: product_customer_restrict
 #: view:res.partner:product_customer_restrict.view_partner_rules_form
 #: field:res.partner,exclusive_ids:0
 msgid "Exclusive products"
-msgstr "Productos Exclusivos"
+msgstr "Productos exclusivos"
 
 #. module: product_customer_restrict
 #: field:partner.rules,id:0
@@ -120,7 +120,7 @@ msgstr "Plantilla de producto"
 msgid "Product rule repeated.\n"
 "Product is alredady defined in                     other rule, maybe in some parent customer rule"
 msgstr "Regla de producto repetida.\n"
-"El producto ya está definido en                     otra regla, tal vez en alguna regla de las empresas padre"
+"El producto ya está definido en otra regla, tal vez en alguna regla de las empresas padre"
 
 #. module: product_customer_restrict
 #: field:res.partner,parent_right:0
@@ -130,7 +130,7 @@ msgstr "Padre derecho"
 #. module: product_customer_restrict
 #: field:res.partner,rule_type:0
 msgid "Rule type"
-msgstr "Tipo Regla"
+msgstr "Tipo regla"
 
 #. module: product_customer_restrict
 #: field:res.partner,rule_ids:0
@@ -140,7 +140,7 @@ msgstr "Reglas"
 #. module: product_customer_restrict
 #: constraint:partner.rules:0
 msgid "Rules can not be empty. Please define a product or                       category."
-msgstr "Las reglas no pueden estar vacías. Por favor defina un producto o                       categoría."
+msgstr "Las reglas no pueden estar vacías. Por favor defina un producto o categoría."
 
 #. module: product_customer_restrict
 #: model:ir.model,name:product_customer_restrict.model_partner_rules
@@ -150,15 +150,15 @@ msgstr "Modelo de reglas asociadas al cliente"
 #. module: product_customer_restrict
 #: field:partner.rules,start_date:0
 msgid "Start Date"
-msgstr "Fecha Inicio"
+msgstr "Fecha inicio"
 
 #. module: product_customer_restrict
 #: constraint:res.partner:0
 msgid "There are rules of different type defined in parent                     partners or child partners of this group"
-msgstr "Existen reglas de diferente tipo definidas en empresas                     padre o hijas de este grupo"
+msgstr "Existen reglas de diferente tipo definidas en empresas padre o hijas de este grupo"
 
 #. module: product_customer_restrict
 #: help:product.template,exclusive_ids:0
 msgid "This product will only be exclusive to customers who appear here"
-msgstr "El producto solo podrá ser vendido a estos clientes"
+msgstr "El producto sólo podrá ser vendido a estos clientes"
 

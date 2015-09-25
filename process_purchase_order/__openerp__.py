@@ -37,7 +37,6 @@
                 "purchase",
                 ],
     "data": [
-        # 'product_view.xml',
         'purchase_view.xml',
     ],
     "demo": [],
