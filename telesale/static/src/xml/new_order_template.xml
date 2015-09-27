@@ -126,8 +126,7 @@
                 <input type="text" class='col-temp' t-att-value="widget.model.get('temperature')" readonly="readonly" tabIndex="-1"/>
             </td>
             <td class="cell-qnote">
-                <input type="text" class='col-qnote' t-att-value="widget.model.get('qnote')"/>
-            </td>
+                <input type="text" class='col-qnote' t-att-value="widget</td>
             <td class="cell-deta">
                 <input type="text" class='col-detail' t-att-value="widget.model.get('detail')"/>
             </td-->
@@ -136,7 +135,7 @@
     </t>
 
     <t t-name="Order-Widget">
-        <div class="button-order-container">
+        <div class="button-order-container fullheight">
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
                 <button class="add-line-button">Add</button>
@@ -473,18 +472,36 @@
               </div>
         </div>
         <div class="col-xs-3 fullheight">
-            <div class="row semiheight">
+
               <div class="fullheight centerinside">
-                  <div class="centerthis">
+
                   <t t-if="widget.order_model.get('state') == 'draft'">
-                      <button type="button" class="btn btn-default save-button">SAVE</button>
-                      <button class="cancel-button">CANCEL</button>
-                      <button class="confirm-button">CONFIRM</button>
+                      <div class="order-button">
+                          <div class="fullheight centerinside">
+                               <div class="centerthis">
+                        <button type="button" class="save-button">SAVE</button>
+                      </div>
+                      </div>
+                      </div>
+                      <div class="order-button">
+                          <div class="fullheight centerinside">
+                               <div class="centerthis">
+                          <button class="cancel-button">CANCEL</button>
+                      </div>
+                      </div>
+                      </div>
+                      <div class="order-button">
+                          <div class="fullheight centerinside">
+                               <div class="centerthis">
+                          <button class="confirm-button">CONFIRM</button>
+                      </div>
+                      </div>
+                      </div>
                   </t>
               </div>
-            </div>
+
         </div>
-        </div>
+
 
 
 
@@ -624,7 +641,7 @@
     <t t-name="Order-Screen-Widget">
         <div class="order-screen-content">
             <div id="pagespart">
-                <div id="order-selector fullheight">
+                <div id="order-selector" class="fullheight">
                     <button class="neworder-button">+</button>
                     <button class="removeorder-button">-</button>
                     <ol id="orders"></ol>

@@ -100,6 +100,7 @@
     height:98%;
     vertical-align: middle;
     margin-right:0px;
+    font-size:2vmin;
     border: 1px solid #353A7E;
     background: #7f82ac;
     background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
@@ -124,6 +125,7 @@
 }
 .telesale #topheader button {
     color: black;
+    font-size:2vmin;
     height:100%;
     width: 100%;
     margin:0;
@@ -235,7 +237,7 @@
 /* Sold Product table*/
 .telesale #rightpart .sold-product-table {
     margin-top: 1vh;
-    width: 100&;
+    width: 100%;
     border: 1px solid #000;
     font-weight: bold;
     color:black;
@@ -256,10 +258,15 @@
 }.telesale #rightpart .sold-product-table th.pc-header-add{
     width: 10%;
 }
+.telesale  #rightpart .sold-product-table td{
+    border: 1px solid #000;
+    cursor:pointer;
+    text-align: center;
+}
 /* Order lines table*/
 .telesale #leftpart .order-container .order-line-table {
     margin-top: 1vh;
-    width: 100;
+    width: 100%;
     border: 1px solid #000;
     font-weight: bold;
     color:black;
@@ -373,32 +380,32 @@
 /************************************************ RIGHT PART ****************************************************/
 /***************************************************************************************************************/
 .telesale #bottompart table {
-    /*position: absolute;*/
+    position:relative;
     /*margin-top: 6px;*/
-    width: 99%;
-    height: 99%;
+    width: 100%;
+    height: 100%;
     border: 1px solid #000;
     /*margin-left: 3px;*/
     color:black;
-    font-weight: bold;
+    font-size: 1.5vmin;
 }
 
 .telesale #bottompart td{
     border: 1px solid #000;
-    cursor:pointer;
+    /*cursor:pointer;*/
     text-align: center;
     vertical-align: middle;
-    font-size: 20px;
+    font-size: 1.5vmin;
 }
 
 .telesale #bottompart th{
     border: 1px solid #000;
-    width: 30%;
-    height: 9%;
+    width: 40%;
+    /*height: 9%;*/
     background: #7f82ac;
     text-align: left;
-    padding-left: 2px;
-    font-size: 13px;
+    /*padding-left: 2px;*/
+    font-size: 1.5vmin;
     font-weight: bold;
     text-align: center;
 
@@ -413,7 +420,7 @@
     color: black;
     /*height:50%;*/
     margin:0.1%;
-    font-size: 11px;
+    font-size: 2vmin;
     font-weight: bold;
     border: 2px solid #353A7E;
     background: #7f82ac;
@@ -445,7 +452,10 @@
 .telesale #bottompart .form-col input.total {
     font-weight: bold;
 }
-
+.telesale #bottompart .order-button {
+    width: 100%;
+    height: 33.3%;
+}
 
 /***************************************************************************************************************/
 /******************************************** SUSTITUTE POP-UP  ************************************************/
@@ -461,7 +471,7 @@
     padding:10px;
     padding-top:20px;
     text-align:center;
-    font-size:20px;
+    font-size:2vmin;
     font-weight:bold;
     background-color: #B1B1B1;
     border-radius: 10px;
@@ -510,7 +520,7 @@
 .telesale .product-sust-pop-up button#close-sust {
     height: 100%;
     width: 20%;
-    font-size:17px;
+    font-size:3vmin;
 }
 
 
@@ -521,7 +531,7 @@
     height: 9%;
     background: #7f82ac;
     padding-left: 2px;
-    font-size: 12px;
+    font-size: 2vmin;
     text-align: center;
 }
 
@@ -541,7 +551,7 @@
 .telesale  .product-sust-pop-up .sustitute-table td{
     border: 1px solid #000;
     height: 100%;
-    font-size: 12px;
+    font-size: 2vmin;
     text-align: left;
     vertical-align: middle;
     padding-left: 0.5%;
