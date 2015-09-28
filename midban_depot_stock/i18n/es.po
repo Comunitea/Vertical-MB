@@ -2380,6 +2380,16 @@ msgid "Regularity"
 msgstr "Periodicidad"
 
 #. module: midban_depot_stock
+#: field:partner.route.info,last_date:0
+msgid "Last Date"
+msgstr "Última fecha"
+
+#. module: midban_depot_stock
+#: field:partner.route.info,next_date:0
+msgid "Next Date"
+msgstr "Próxima fecha"
+
+#. module: midban_depot_stock
 #: view:account.invoice:midban_depot_stock.invoice_form_add_sales_pickings_link
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "Related Pickings"
@@ -3611,4 +3621,3 @@ msgstr "{'readonly': [('route_detail_id', '!=', False)]}"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
 msgstr "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
-

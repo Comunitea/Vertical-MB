@@ -631,7 +631,7 @@ msgstr "Documento respuesta"
 #. module: depot_edi
 #: field:account.discount,sequence:0
 msgid "Sequence"
-msgstr "Sequencia"
+msgstr "Secuencia"
 
 #. module: depot_edi
 #: field:edi.doc,service_id:0
@@ -786,4 +786,3 @@ msgstr "No encontrados atributos: NUMLINEA o TIPART. en fichero:"
 #, python-format
 msgid "not found fields: "
 msgstr "Campos no encontrados: "
-
