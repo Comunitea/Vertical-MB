@@ -201,7 +201,8 @@
     color:black;
     padding:0.5vmin !important; /*width:100%;
     height:50%;*/
-    line-height: 0 !important
+    height: 3vh;
+
 }
 .telesale .mandatory{
     background:rgb(161, 161, 255);
