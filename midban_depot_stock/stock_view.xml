@@ -242,7 +242,7 @@
                     <filter string="Storage Zone" domain="[('zone', '=', 'storage')]"/>
                     <group expand="1" string="Group By">
                         <filter string="Temp type" context="{'group_by':'temp_type_id'}"/>
-                        <filter string="Camara" context="{'group_by':'camera'}"/>
+                        <!-- <filter string="Camara" context="{'group_by':'camera'}"/>  habría que crear campo camera_id en todas las ubicaciones-->
                         <filter string="Zone" context="{'group_by':'zone'}"/>
                     </group>
                 </filter>
