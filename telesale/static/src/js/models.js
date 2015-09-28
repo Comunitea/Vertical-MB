@@ -757,7 +757,18 @@ function openerp_ts_models(instance, module){
                                             )
                 .then(function(order_lines){
                     // self.add_lines_to_current_order(order_lines);
-                    self.ts_model.get('sold_lines').reset(order_lines)
+                    var unique_lines = []
+                    var added_products = []
+                    for (var i=0, len = order_lines.length; i < len; i++){
+                        line = order_lines[i]
+                        if ( (added_products.length > 0) && (added_products.indexOf(line.product_id[0]) > 0) ){
+                          continue
+                        }
+                        unique_lines.push(line)
+                        added_products.push(line.product_id[0])
+                    }
+                    self.ts_model.get('sold_lines').reset(unique_lines)
+                    // self.ts_model.get('sold_lines').reset(order_lines)
                 })
             return loaded
         },
@@ -818,7 +829,18 @@ function openerp_ts_models(instance, module){
                                                  ]);}
                 }).then(function(order_lines){
                     // self.add_lines_to_current_order(order_lines);
-                    self.ts_model.get('sold_lines').reset(order_lines)
+                    var unique_lines = []
+                    var added_products = []
+                    for (var i=0, len = order_lines.length; i < len; i++){
+                        line = order_lines[i]
+                        if ( (added_products.length > 0) && (added_products.indexOf(line.product_id[0]) > 0) ){
+                          continue
+                        }
+                        unique_lines.push(line)
+                        added_products.push(line.product_id[0])
+                    }
+                    self.ts_model.get('sold_lines').reset(unique_lines)
+                    // self.ts_model.get('sold_lines').reset(order_lines)
                 })
             return loaded
         },
