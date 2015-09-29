@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <templates id="template" xml:space="preserve">
-    
+
    <t t-name="Product-Reserved-Screen-Widget">
         <div class="product-reserved-screen">
             <div id="placeholder-product-reserved-widget">
@@ -11,23 +11,23 @@
 
     <t t-name="Product-Reserved-Widget">
             <div class="product-reserved-search">
-                <div class="input-column">
-                    <div class="center-content">
+                <div class="col-xs-4 fullheight centerinside">
+                    <div class="centerthis">
                         <label for="customer">Customer:</label>
                         <input type="text" id="input-customer" name="customer"/>
                     </div>
                 </div>
 
-                <div class="input-column">
-                    <div class="center-content">
+                <div class="col-xs-4 fullheight centerinside">
+                    <div class="centerthis">
                         <label for="customer">Product:</label>
                         <input type="text" id="input-product" name="customer"/>
                     </div>
                 </div>
-                
-                <div class="input-column">
-                    <div class="center-content">
-                        <button id="search-reserved">SEARCH</button>   
+
+                <div class="col-xs-4 fullheight centerinside">
+                    <div class="centerthis">
+                        <button id="search-reserved">SEARCH</button>
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                     <button id="button-create-reserve">Create Order</button>
                 </t>
             </td>
-            
+
         </tr>
     </t>
 
@@ -134,4 +134,4 @@
             </div>
         </div>
     </t>
-</templates> 
+</templates>
