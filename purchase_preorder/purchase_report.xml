@@ -26,7 +26,7 @@
           file="purchase_preorder.replenishement_purchase_order"
       />
 
-      <record id="purchase.preorderaction_report_replenishement_purchase_order" model="ir.actions.report.xml">
+      <record id="purchase.preorder.action_report_replenishement_purchase_order" model="ir.actions.report.xml">
           <field name="my_landscape_paperformat" ref="my_paperformat_landscape"/>
       </record>
 
