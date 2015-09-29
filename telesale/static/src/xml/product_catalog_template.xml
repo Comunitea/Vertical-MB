@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <templates id="template" xml:space="preserve">
-    
+
     <t t-name="Product-Catalog-Screen-Widget">
         <div class="product-catalog-screen">
              <div class="search-box">
@@ -11,7 +11,7 @@
             <div id="placeholder-product-catalog-widget">
             </div>
         </div>
-    </t>     
+    </t>
 
     <t t-name="Product-Catalog-Widget">
             <div class="product-catalog-content">
@@ -55,4 +55,4 @@
         </tr>
     </t>
 
-</templates> 
+</templates>

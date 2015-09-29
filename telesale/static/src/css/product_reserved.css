@@ -9,6 +9,11 @@
     width: 100%;
     height: 10%;
     border-bottom: solid 1px #CECBCB;
+    text-align: center;
+}
+
+.telesale .product-reserved-search button{
+    font-size: 1.5vmin;
 }
 
 .telesale .product-reserved-search .input-column{
@@ -49,7 +54,7 @@
     border: 1px solid #000;
     height: 9%;
     background: #7f82ac;
-    font-size: 13px;
+    font-size: 1.5vmin;
     text-align: center;
     color:black;
 }
@@ -164,4 +169,3 @@
     background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
     background:      linear-gradient(#b2b3d7, #7f82ac);
 }
-
