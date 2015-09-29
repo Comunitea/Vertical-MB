@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, api, exceptions, _
+from openerp import models, api
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 
@@ -33,43 +33,45 @@ class purchase_order_parser(models.AbstractModel):
         """
         Function that searches for products you can sell the supplier.
         """
-        prod_tmp_ids = []
+        prod_objs = []
         prod_supp_info = self.env['product.supplierinfo']
         if supplier_ids:
             domain = [('name', 'in', supplier_ids)]
             prod_sup_objs = prod_supp_info.search(domain)
-            if cat_ids:
-                prod_tmp_ids = [x.product_tmpl_id.id for x in prod_sup_objs
-                                if x.x.product_tmpl_id.categ_id in cat_ids]
-            else:
-                prod_tmp_ids = [x.product_tmpl_id.id for x in prod_sup_objs]
+            prod_tmp_ids = [x.product_tmpl_id.id for x in prod_sup_objs]
 
-        return prod_tmp_ids
+            domain = [
+                ('product_tmpl_id', 'in', prod_tmp_ids),
+            ]
+            if cat_ids:
+                domain.append(('categ_id', 'child_of', cat_ids))
+            prod_objs = self.env['product.product'].search(domain)
+        return prod_objs
 
     def get_report_data(self, data):
         res = []
-        # prod_objs = []
-        # # Get products to give in the report
-        # if data.get('product_ids', False):
-        #     domain = [('product_tmpl_id', 'in', data['product_ids'])]
-        #     prod_objs = self.env['product.product'].search(domain)
-        #
-        # elif data.get('supplier_ids', False):
-        #     prod_tmp_ids = self._get_products_suppliers(data['supplier_ids'],
-        #                                                 data['category_ids'])
-        #     domain = [('product_tmpl_id', 'in', prod_tmp_ids)]
-        #     prod_objs = self.env['product.product'].search(domain)
-        #
-        # elif data.get('category_ids', False):
-        #     domain = [('categ_id', 'in', data['category_ids'])]
-        #     prod_objs = self.env['product.product'].search(domain)
-        #
-        # if not prod_objs:
-        #     raise except_orm(_("Error"),
-        #                      _("No products founded for the search domain"))
-        #
+        prod_objs = []
+        # Get products to give in the report
+        # import ipdb; ipdb.set_trace()
+
+        if data.get('product_ids', False):
+            domain = [('product_tmpl_id', 'in', data['product_ids'])]
+            prod_objs = self.env['product.product'].search(domain)
+
+        elif data.get('supplier_ids', False):
+            prod_objs = self._get_products_suppliers(data['supplier_ids'],
+                                                     data['category_ids'])
+
+        elif data.get('category_ids', False):
+            domain = [('categ_id', 'child_of', data['category_ids'])]
+            prod_objs = self.env['product.product'].search(domain)
+
+        if not prod_objs:
+            raise except_orm(_("Error"),
+                             _("No products founded for the search domain"))
+
         # prod_ids = [x.id for x in prod_objs]
-        #
+
         # t_sm = self.env['stock_move']
         # past_sales_domain = [
         #     ('date', '>=', data['start_date']),
@@ -80,7 +82,18 @@ class purchase_order_parser(models.AbstractModel):
         #     ('procurement_id.sale_line_id', '!=', False)
         # ]
         # past_sales_objs = t_sm.search(past_sales_domain)
-        # for move in past_sales_objs:
+        for prod in prod_objs:
+            dic_data = {'code': prod.default_code,
+                        'name': prod.name,
+                        'sales': (0, 0),
+                        'pending': (0, 0),
+                        'stock': (0, 0),
+                        'incoming': (0, 0),
+                        'outgoing': (0, 0),
+                        'diff': (0, 0),
+                        'to_order': (0, 0),
+                        }
+            res.append(dic_data)
 
         return res
 
