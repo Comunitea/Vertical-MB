@@ -256,7 +256,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self=this;
             var domain = [['id', '=', product_id]]
             var loaded = self.ts_model.fetch('product.product',
-                                            ['name','product_class','list_price','cmc','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'products_substitute_ids', 'min_unit'],
+                                            ['name','product_class','list_price','cmc','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'product_tmpl_id','products_substitute_ids'],
                                             domain
                                             )
                 .then(function(products){
