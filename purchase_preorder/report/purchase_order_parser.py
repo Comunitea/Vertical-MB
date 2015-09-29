@@ -38,7 +38,7 @@ class purchase_order_parser(models.AbstractModel):
         domain = [('order_id.create_date', '>=', data['start_date']),
                   ('order_id.create_date', '<=', data['end_date'])]
         line_objs = self.env['purchase.order.line'].search(domain)
-
+        import ipdb; ipdb.set_trace()
         docargs = {
             'doc_ids': line_objs._ids,
             'doc_model': 'purchase_order',
