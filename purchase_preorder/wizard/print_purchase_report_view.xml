@@ -8,10 +8,28 @@
           <field name="type">form</field>
           <field name="arch" type="xml">
             <form string="Print Purchase Report" version="7.0">
-                <group colspan="4" col="2">
-                    <field name="start_date"/>
-                    <field name="end_date"/>
-                </group>
+                <sheet>
+                    <group string="Between Dates">
+                      <group>
+                          <field name="end_date"/>
+                      </group>
+                      <group>
+                          <field name="end_date"/>
+                      </group>
+                    </group>
+                    <group string="Between Dates">
+                    <group string="Categories">
+                        <field name="category_ids" nolabel="1"/>
+                    </group>
+
+                    <group string="Suppliers">
+                        <field name="supplier_ids" nolabel="1"/>
+                    </group>
+                    </group>
+                    <group string="Products">
+                        <field name="product_ids" nolabel="1" colspan="4"/>
+                    </group>
+                </sheet>
                 <footer>
                   <button string="Generate" name="generate_print_purchase_report"
                   type="object" icon="gtk-ok"  class="oe_highlight"/>

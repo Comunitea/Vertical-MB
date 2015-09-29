@@ -63,7 +63,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                 this.current_popup.show(extra_data);
             }
             else{
-                this.current_popup.show();
+                this.current_popup.show(extra_data);
             }
             this.current_screen.show();
         },

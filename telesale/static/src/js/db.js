@@ -12,6 +12,7 @@ function openerp_ts_db(instance, module){
             this.cache = {};
 
             this.product_by_id = {};
+            this.product_by_tmp_id = {};
             this.product_code_id = {};
             this.product_name_id = {};
 
@@ -73,6 +74,7 @@ function openerp_ts_db(instance, module){
                 var product = products[i];
                 // var search_string = this._product_search_string(product);
                 this.product_by_id[product.id] = product;
+                this.product_by_tmp_id[product.product_tmpl_id[0]] = product;
                 this.product_name_id[product.name] = product.id;
                 if(product.default_code){
                     this.product_code_id[product.default_code] = product.id;
@@ -164,6 +166,9 @@ function openerp_ts_db(instance, module){
         },
         get_product_by_id: function(id){
             return this.product_by_id[id];
+        },
+        get_product_by_tmp_id: function(id){
+            return this.product_by_tmp_id[id];
         },
         get_product_by_code: function(code){
             if(this.product_by_code[code]){
