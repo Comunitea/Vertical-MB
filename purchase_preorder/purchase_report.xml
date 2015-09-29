@@ -2,11 +2,11 @@
 <openerp>
     <data>
 
-      <record id="my_paperformat_landscape" model="report.paperformat">
+      <!-- <record id="my_paperformat_landscape" model="report.paperformat">
           <field name="name">LandScape paper</field>
           <field name="default" eval="True"/>
           <field name="format">A4</field>
-          <field name="orientation">Portrait</field>
+          <field name="orientation">Portrait</field> -->
           <!-- <field name="page_height">80</field>
           <field name="page_width">175</field> -->
           <!-- <field name="margin_top">3</field>
@@ -16,19 +16,19 @@
           <field name="header_line" eval="False"/>
           <field name="header_spacing">3</field>
           <field name="dpi">0</field> -->
-    </record>
+    <!-- </record> -->
       <report
-          string="Replenishement Purchase Report"
+          string="Purchase Report"
           id="action_report_replenishement_purchase_order"
           model="purchase.order"
           report_type="qweb-pdf"
           name="purchase_preorder.replenishement_purchase_order"
           file="purchase_preorder.replenishement_purchase_order"
       />
-
+<!--
       <record id="purchase_preorder.action_report_replenishement_purchase_order" model="ir.actions.report.xml">
-          <field name="my_landscape_paperformat" ref="my_paperformat_landscape"/>
-      </record>
+          <field name="paperformat_id" ref="purchase_preorder.my_paperformat_landscape"/>
+      </record> -->
 
     </data>
 </openerp>
