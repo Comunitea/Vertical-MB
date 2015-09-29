@@ -38,7 +38,7 @@ class print_purchase_report(models.TransientModel):
     @api.multi
     def generate_print_purchase_report(self):
         rep_name = 'purchase_preorder.replenishement_purchase_order'
-        a = self.env["report"].get_action(self, rep_name)
+        a = self.env["report"].get_action(self, rep_name)       
         data_dic = {
             'start_date': self.start_date,
             'end_date': self.end_date,
