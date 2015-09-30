@@ -82,7 +82,6 @@ class ProductsSupplier(models.Model):
     @api.onchange('product_uoc_qty')
     def _check_uoc_qty(self):
 
-        #import pdb; pdb.set_trace()
         if self.last_tm == self._context['tm']:
             return
         self.last_tm = self._context['tm']

@@ -536,7 +536,6 @@ class purchase_preorder(osv.Model):
                         if line.product_id.description_purchase:
                             lname += '\n' + \
                                 line.product_id.description_purchase
-                        #import pdb; pdb.set_trace()
                         seller_delay = int(line.product_id.seller_delay)
                         format = DEFAULT_SERVER_DATETIME_FORMAT
                         dateo = datetime.strptime(date_order, format)
@@ -579,15 +578,9 @@ class purchase_preorder(osv.Model):
 
     def open_in_tree(self, cr, uid, ids, context=None):
 
-
-        #import pdb; pdb.set_trace()
         view_ref = self.pool.get('ir.model.data').get_object_reference(
             cr, uid, 'purchase_preorder', 'product_supplier_preorder_tree_full')
-
-
         tree_res = view_ref and view_ref[1] or False,
-
-
         pool_ids = self.browse (cr, uid,ids, context).product_supplier_ids
         #'view_id = 'product_supplier_preorder_tree_full'
         preorder_id = self.browse(cr, uid, ids).id
@@ -602,11 +595,7 @@ class purchase_preorder(osv.Model):
             'context': context,
             'domain' : [['preorder_id', '=', preorder_id]] #pool_ids[0].preorder_id.id]]
         }
-
-
         return res
-
-
 class products_supplier(osv.Model):
     _name = 'products.supplier'
     _description = 'Products Supplier'

@@ -689,7 +689,6 @@ class stock_pack_operation(models.Model):
         """
         # se supone que se pasa desde log_unit a mantos, pero no vale
         # hay que cambiar para tener en cuenta desde cualquiera
-        # import pdb; pdb.set_trace()
         if context is None:
             context = {}
         res = {}

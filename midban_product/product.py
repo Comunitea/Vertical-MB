@@ -653,7 +653,6 @@ class product_product(models.Model):
     #calcula para una cantidad dada, las cantidades en las distintas unidades
     @api.model
     def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
-        #import pdb; pdb.set_trace()
         res = {'base': 0.0,
                'unit': 0.0,
                'box': 0.0}
@@ -669,7 +668,6 @@ class product_product(models.Model):
     #calcula para una cantidad dada, las cantidades en las distintas unidades
     @api.model
     def get_sale_unit_conversions(self, qty_uoc, uoc_id):
-        #import pdb; pdb.set_trace()
         res = {'base': 0.0,
                'unit': 0.0,
                'box': 0.0}
@@ -683,7 +681,6 @@ class product_product(models.Model):
     #calcula para un precio dado, los precios en las udistintas unidades
     @api.model
     def get_price_conversions(self, qty_uoc, uoc_id, supplier_id):
-        #import pdb; pdb.set_trace()
         res = {'base': 0.0,
                'unit': 0.0,
                'box': 0.0}

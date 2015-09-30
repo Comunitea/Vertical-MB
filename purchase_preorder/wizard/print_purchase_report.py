@@ -29,7 +29,7 @@ class print_purchase_report(models.TransientModel):
 
     @api.multi
     def generate_print_purchase_report(self):
-        # import ipdb; ipdb.set_trace()
+
         rep_name = 'purchase_preorder.replenishement_purchase_order'
         a = self.env["report"].get_action(self, rep_name)
         data_dic = {
