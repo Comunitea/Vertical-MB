@@ -141,7 +141,7 @@ function openerp_ts_models(instance, module){
                 }).then(function(products){
                     self.db.add_products(products);
 
-                    return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state'], [['customer','=',true], ['state2','=','registered']])
+                    return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
                     for (key in customers){
                         self.get('customer_names').push(customers[key].name);
@@ -575,6 +575,7 @@ function openerp_ts_models(instance, module){
                 num_order: this.generateNumOrder(),
                 partner_code: '',
                 partner: '',
+                customer_comment: '',
                 contact_name: '',
                 date_order: this.getStrDate(),
                 date_invoice: this.getStrDatePlanned(),

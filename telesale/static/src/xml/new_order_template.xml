@@ -284,11 +284,8 @@
                     <th class="header-qty">Qty</th>
                     <th class="header-unit">Unit</th>
                     <th class="header-pvp">PVP</th>
-                    <th class="header-pvp">Disc.</th>
-                    <th class="header-total">Total</th>
-                    <!--th class="header-temp">Tmp ºC</th>
-                    <th class="header-qnote">Qnote</th>
-                    <th class="header-deta">Detail</th-->
+                    <th class="header-disc">Disc.</th>
+                    <th class="header-pvp">Total</th>
                 </thead>
                 <tbody class="orderlines">
 
@@ -401,9 +398,10 @@
                 <div class="fullheight centerinside">
                     <div class="centerthis">
                       <label for="coment">Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
+                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment"><t t-esc="widget.order_model.get('coment')"/></textarea>
                       <label for="coment">Customer Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
+                      <textarea class="semiheight notes" rows="2" cols="22" id='costumer_comment' name="costumer_comment" readonly="readonly"><t t-esc="widget.order_model.get('customer_comment')"/></textarea>
+                      <!-- <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' readonly="readonly" name="customer_comment" t-att-value="widget.order_model.get('customer_comment')"/> -->
                     </div>
                 </div>
           </div>
@@ -798,7 +796,7 @@
             <span class="product-cell"><t t-esc="widget.sold_line.price_udv"/></span>
           </td>
           <td class="pc-cell-stock">
-            <button id="add-line">+</button>
+            <button class="fullwidth" id="add-line">+</button>
           </td>
       </tr>
     </t>

@@ -309,38 +309,27 @@
     font-weight: bold;
 }
 
-
+.telesale  #leftpart .order-container .order-line-table th.header-nline{
+    width: 4%;
+}
 .telesale  #leftpart .order-container .order-line-table th.header-code{
     width: 10%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-product{
-    width: 23%;
-}
-
-.telesale  #leftpart .order-container .order-line-table th.header-unit{
-    width: 9%;
+    width: 20%;
 }
 .telesale  #leftpart .order-container .order-line-table th.header-qty{
-    width: 6%;
-}.telesale  #leftpart .order-container .order-line-table th.header-pvp{
-    width: 6%;
+    width: 9%;
 }
-}.telesale  #leftpart .order-container .order-line-table th.header-disc{
-    width: 6%;
+.telesale  #leftpart .order-container .order-line-table th.header-unit{
+    width: 8%;
 }
-.telesale  #leftpart .order-container .order-line-table th.header-total{
-    width: 6%;
+.telesale  #leftpart .order-container .order-line-table th.header-pvp{
+    width: 8%;
 }
-.telesale  #leftpart .order-container .order-line-table th.header-temp{
-    width: 6%;
+.telesale  #leftpart .order-container .order-line-table th.header-disc{
+    width: 8%;
 }
-.telesale  #leftpart .order-container .order-line-table th.header-qnote{
-    width: 15%;
-}
-.telesale  #leftpart .order-container .order-line-table th.header-deta{
-    width: 15%;
-}
-
 
 .telesale  #leftpart .order-container .order-line-table td{
     border: 1px solid #000;
@@ -354,50 +343,40 @@
     color: black;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-nline{
-    width: 5%;
-/*    text-align: center;
-    vertical-align: middle;
-    font-size: 15px;*/
+    width: 4%;
 }
-
-
 .telesale  #leftpart .order-container .order-line-table td.cell-code{
     width: 10%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-product{
-    width: 23%;
+    width: 20%;
 }
-
 .telesale  #leftpart .order-container .order-line-table td.cell-unit{
-    width: 9%;
+    width: 8%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-qty{
-    width: 6%;
+    width: 9%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-pvp{
-    width: 6%;
+    width: 8%;
 }
 .telesale  #leftpart .order-container .order-line-table td.cell-disc{
-    width: 6%;
+    width: 8%;
 }
-.telesale  #leftpart .order-container .order-line-table td.cell-total{
-    width: 6%;
+.telesale  #leftpart .order-container .order-line-table td.cell-pvp input{
     text-align: right;
 }
-.telesale  #leftpart .order-container .order-line-table td.cell-tmp{
-    width: 6%;
-}
-.telesale  #leftpart .order-container .order-line-table td.cell-qnote{
-    width: 10%;
-}
-.telesale  #leftpart .order-container .order-line-table td.cell-deta{
-    width: 15%;
-}
-.telesale  #leftpart .order-container .order-line-table td.cell-total input{
+.telesale  #leftpart .order-container .order-line-table td.cell-qty input{
     text-align: right;
 }
-.telesale  #leftpart .order-container .order-line-table td.cell-temp input{
-    text-align: center;
+/*.telesale  #leftpart .order-container .order-line-table td.cell-disc input{
+    text-align: right;
+}*/
+.telesale  #leftpart .order-container .order-line-table .col-discount{
+    text-align: right;
+}
+.telesale  #leftpart .order-container .order-line-table .col-total{
+    text-align: right;
 }
 
 

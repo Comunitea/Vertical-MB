@@ -66,6 +66,38 @@
             </field>
         </record>
 
+
+
+
+
+
+        <record id="view_order_form_add_customer_comment" model="ir.ui.view">
+           <field name="name">sale.order.form.customer_comment</field>
+           <field name="model">sale.order</field>
+           <field name="inherit_id" ref="sale.view_order_form"/>
+           <field name="arch" type="xml">
+               <field name='partner_id' position="after">
+                   <field name="customer_comment"/>
+                   <!-- <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
+                          attrs="{'readonly': [('state', 'in', [('progress,' 'manual', 'shipping_except', 'invoice_except', 'done')])]}"/> -->
+               </field>
+               <!-- <field name='date_order' position="after">
+                   <field name="date_planned" attrs="{'readonly': [('route_detail_id', '!=', False)]}"/>
+               </field> -->
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+
+
+
+
         <record id="sale_view_order_form_ultra_fresh" model="ir.ui.view">
             <field name="name">sale.view.order.form.ultra.fresh</field>
             <field name="model">sale.order</field>
