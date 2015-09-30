@@ -47,7 +47,7 @@
                 <span class="product-cell"><t t-esc="widget.product.virtual_stock_conservative"/></span>
             </td>
             <td class="pc-cell-add">
-                <button class="add-product">add</button>
+                <button class="add-product">+</button>
             </td>
             <td class="pc-cell-show">
                 <button class="show-product">show</button>

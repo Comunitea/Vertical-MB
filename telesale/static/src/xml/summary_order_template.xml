@@ -124,7 +124,7 @@
                 </span>
             </td>
             <td class="summary-cell-show">
-                <button id="button-adding-lines">Add</button>
+                <button id="button-adding-lines">+</button>
             </td>
             <td class="summary-cell-add">
                 <button id="button-show-order">Show</button>

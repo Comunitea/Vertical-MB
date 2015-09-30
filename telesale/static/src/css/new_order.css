@@ -90,8 +90,8 @@
 }
 .telesale .fullwidth{
     width: 100%;
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
 }
 .telesale .leftpartbuttons{
     width: 0px;
@@ -252,7 +252,7 @@
     border: 1px solid #000;
     font-weight: bold;
     color:black;
-    font-size:1.5vmin;
+    font-size:1.7vmin;
     overflow:auto;
 }
 
@@ -447,7 +447,7 @@
 
 .telesale #bottompart button {
     color: black;
-    /*height:50%;*/
+    height:100%;
     margin:0.1%;
     font-size: 1.5vmin;
     font-weight: bold;
@@ -534,6 +534,7 @@
     table-layout: fixed;
     color: black;
     font-size: 1.5vmin;
+    overflow: auto;
 }
 
 .telesale .product-sust-pop-up button {
@@ -554,7 +555,7 @@
 .telesale .product-sust-pop-up button#close-sust {
     height: 100%;
     width: 20%;
-    font-size:1.5vmin;
+    font-size:1.8vmin;
 }
 
 
@@ -565,12 +566,12 @@
     /*height: 9%;*/
     background: #7f82ac;
     padding-left: 2px;
-    font-size: 1.5vmin;
+    font-size: 1.7vmin;
     text-align: center;
 }
 
 .telesale  .product-sust-pop-up .sustitute-table th.sust-header-name{
-    width: 55%;
+    width: 60%;
 }
 .telesale  .product-sust-pop-up .sustitute-table th.sust-header-code{
     width: 15%;
@@ -579,28 +580,30 @@
     width: 15%;
 }
 .telesale  .product-sust-pop-up .sustitute-table th.sust-header-add{
-    width: 15%;
+    width: 10%;
 }
 
 .telesale  .product-sust-pop-up .sustitute-table td{
     border: 1px solid #000;
     height: 100%;
-    font-size: 1.5vmin;
+    font-size: 1.7vmin;
     text-align: left;
     vertical-align: middle;
     padding-left: 0.5%;
 }
 
 .telesale  .product-sust-pop-up .sustitute-table td.sust-cell-name{
-    width: 55%;
+    width: 60%;
 }
 .telesale  .product-sust-pop-up .sustitute-table td.sust-cell-code{
     width: 15%;
 }
 .telesale  .product-sust-pop-up .sustitute-table td.sust-cell-stock{
     width: 15%;
+    text-align: right;
+    padding-right: 0.5vmin;
 }
 .telesale  .product-sust-pop-up .sustitute-table td.sust-cell-add{
-    width: 15%;
+    width: 10%;
     text-align: center;
 }
