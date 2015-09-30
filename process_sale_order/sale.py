@@ -217,7 +217,7 @@ class sale_order_line(models.Model):
                 # Calculate prices
                 uom_pu, uos_pu = \
                     product.get_uom_uos_prices(uos_id,
-                                              custom_price_udv=self.price_udv)
+                                               custom_price_udv=self.price_udv)
                 # Avoid trigger onchange_price_unit, already calculed
                 if uom_pu != self.price_unit:
                     self.do_onchange = False

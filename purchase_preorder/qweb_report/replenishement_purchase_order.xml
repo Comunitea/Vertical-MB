@@ -3,142 +3,55 @@
     <data>
         <template id="replenishement_purchase_order">
             <t t-call="report.html_container">
-              <t t-foreach="docs" t-as="o">
-                <t t-call="report.external_layout">
+              <t t-call="report.external_layout">
+                <t t-foreach="docs" t-as="o">
+
                   <div class="page">
 
-                      <h1 align="center">Purchase Order Report</h1>
-                      <h2>en desarrollo</h2>
+                      <h1 align="center">Warehouse Replenishement List</h1>
+                      <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3>
+                      <h3>Filter by:</h3>
+                      <div>
+                           <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>
+                      </div>
 
-                      <!-- <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Code</th>
-                                <th class="text-center">Product</th>
-                                <th class="text-center" colspan="2">Sales</th>
-                                <th class="text-center" colspan="2">Pending Sales</th>
-                                <th class="text-center" colspan="2">Stock</th>
-                                <th class="text-center" colspan="2" >Purchases</th>
-                                <th class="text-center" colspan="2" >Difference</th>
-                                <th class="text-center" colspan="2" >To purchase</th>
-                            </tr>
-                            <tr>
-                                <th class="text-center">codigo</th>
-                                <th class="text-center">producto</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                              <tr>
-                                  <td class="text-center">codigo</td>
-                                  <td class="text-center">producto</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                              </tr>
-                              <tr>
-                                  <td class="text-center">codigo</td>
-                                  <td class="text-center">producto</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                              </tr>
-                              <tr>
-                                  <td class="text-center">codigo</td>
-                                  <td class="text-center">producto</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                              </tr>
-                              <tr>
-                                  <td class="text-center">codigo</td>
-                                  <td class="text-center">producto</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center"</td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                                  <td class="text-center" </td>
-                              </tr>
-
-                        </tbody>
-                  </table> -->
-
-
-
-
-                    <table class="table table-bordered">
+                      <div t-if="meta_info['supplier_names']">
+                          <b>Suppliers: </b>  <span t-esc="meta_info['supplier_names']"/>
+                      </div>
+                      <div t-if="meta_info['category_names']">
+                          <b>Categories: </b>  <span t-esc="meta_info['category_names']"/>
+                      </div>
+                      <div t-if="meta_info['filter_products']">
+                          <b>Specific Products.</b>
+                      </div>
+                      <br/>
+                      <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th class="text-center" colspan="2">Products</th>
-                                <th class="text-center" colspan="2">Sales</th>
-                                <th class="text-center" colspan="2">Pending Sales</th>
-                                <th class="text-center" colspan="2">Stock</th>
-                                <th class="text-center" colspan="2" >Purchases</th>
-                                <th class="text-center" colspan="2" >To Charge</th>
+                                <th class="text-center" colspan="2">Period Sales</th>
+                                <!-- <th class="text-center" colspan="2">Pending Sales</th> -->
+                                <th class="text-center" colspan="2">In Stock</th>
+                                <th class="text-center" colspan="2" >Incoming</th>
+                                <th class="text-center" colspan="2" >Outgoing</th>
                                 <th class="text-center" colspan="2" >Difference</th>
-                                <th class="text-center" colspan="2" >To purchase</th>
+                                <th class="text-center" colspan="2" >To Purchase</th>
                             </tr>
                             <tr>
                                 <th class="text-center">Code</th>
                                 <th class="text-center">Name</th>
+                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
+                                <!-- <th class="text-center">Units</th>
+                                <th class="text-center">Base</th> -->
+                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
+                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
+                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
+                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Comp</th>
                                 <th class="text-center">Palets</th>
                                 <th class="text-center">Mantles</th>
                             </tr>
@@ -150,8 +63,8 @@
                                 <td> <span t-esc="d['name']"/> </td>
                                 <td> <span t-esc="d['sales'][0]"/> </td>
                                 <td> <span t-esc="d['sales'][1]"/> </td>
-                                <td> <span t-esc="d['pending'][0]"/> </td>
-                                <td> <span t-esc="d['pending'][1]"/> </td>
+                                <!-- <td> <span t-esc="d['pending'][0]"/> </td>
+                                <td> <span t-esc="d['pending'][1]"/> </td> -->
                                 <td> <span t-esc="d['stock'][0]"/> </td>
                                 <td> <span t-esc="d['stock'][1]"/> </td>
                                 <td> <span t-esc="d['incoming'][0]"/> </td>

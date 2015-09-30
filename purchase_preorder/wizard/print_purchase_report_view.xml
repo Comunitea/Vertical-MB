@@ -7,9 +7,9 @@
           <field name="model">print.purchase.report.wzd</field>
           <field name="type">form</field>
           <field name="arch" type="xml">
-            <form string="Print Purchase Report" version="7.0">
+            <form string="Print Replenishement Warehouse List" version="7.0">
                 <sheet>
-                    <group string="Between Dates">
+                    <group string="Consult Sales Period">
                       <group>
                           <field name="start_date"/>
                       </group>
@@ -17,17 +17,19 @@
                           <field name="end_date"/>
                       </group>
                     </group>
-                    <group string="Between Dates">
-                    <group string="Categories">
-                        <field name="category_ids" nolabel="1"/>
+                    <group>
+                        <field name="filter_options"/>
                     </group>
-
-                    <group string="Suppliers">
-                        <field name="supplier_ids" nolabel="1"/>
+                    <group>
+                    <group string="Suppliers" attrs="{'invisible': [('filter_options','=','products')]}">
+                        <field name="supplier_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                    <group string="Categories"  attrs="{'invisible': [('filter_options','=','products')]}">
+                        <field name="category_ids" nolabel="1" widget="many2many_tags"/>
                     </group>
                     </group>
-                    <group string="Products">
-                        <field name="product_ids" nolabel="1" colspan="4"/>
+                    <group string="Products" attrs="{'invisible': [('filter_options','=','supp_categ')]}">
+                        <field name="product_ids" nolabel="1" colspan="4" widget="many2many_tags"/>
                     </group>
                 </sheet>
                 <footer>
@@ -39,7 +41,7 @@
           </field>
       </record>
 
-      <act_window name="Print Purchase Report"
+      <act_window name="Print Replenishement Warehouse List"
           res_model="print.purchase.report.wzd"
           view_id="print_purchase_report_view_form"
           view_mode="form"
@@ -47,8 +49,8 @@
           id="action_print_purchase_report_wzd"/>
 
       <menuitem id="print_purchase_report_menu"
-        name="Print Purchase Report"
-        string="Print Purchase Report"
+        name="Print Replenishements"
+        string="Print Replenishement"
         action="action_print_purchase_report_wzd"
         parent="menu_purchase_preorder"
         sequence="81"/>

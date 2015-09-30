@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-24 17:06+0000\n"
-"PO-Revision-Date: 2015-09-24 17:06+0000\n"
+"POT-Creation-Date: 2015-09-30 15:51+0000\n"
+"PO-Revision-Date: 2015-09-30 15:51+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -76,6 +76,11 @@ msgid "August"
 msgstr "Agosto"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Base"
+msgstr "Base"
+
+#. module: purchase_preorder
 #: field:products.supplier,boxes:0
 #: field:purchase.order.line,boxes:0
 #: field:purchase.preorder,boxes:0
@@ -89,9 +94,29 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: purchase_preorder
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
+msgid "Categories"
+msgstr "Categorías"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Categories:"
+msgstr "Categorías:"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Code"
+msgstr "Código"
+
+#. module: purchase_preorder
 #: selection:products.supplier,product_state:0
 msgid "Comercial validation pending"
 msgstr "Validación comercial pendiente"
+
+#. module: purchase_preorder
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
+msgid "Consult Sales Period"
+msgstr "Período consulta (Ventas)"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
@@ -169,6 +194,11 @@ msgid "Denied"
 msgstr "Denegado"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Difference"
+msgstr "Diferencia"
+
+#. module: purchase_preorder
 #: field:products.supplier,do_onchange:0
 msgid "Do Onchange"
 msgstr "Hacer onchange"
@@ -189,6 +219,17 @@ msgid "End Date"
 msgstr "Fecha fin"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "End Date:"
+msgstr "Fecha fin:"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/report/purchase_order_parser.py:122
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: purchase_preorder
 #: field:products.supplier,feb_consu_cur:0
 msgid "Feb Consu Cur"
 msgstr "Febrero consu actual"
@@ -202,6 +243,16 @@ msgstr "Febrero consu último"
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_form
 msgid "February"
 msgstr "Febrero"
+
+#. module: purchase_preorder
+#: field:print.purchase.report.wzd,filter_options:0
+msgid "Filter by"
+msgstr "Filtrado por"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Filter by:"
+msgstr "Filtrado por:"
 
 #. module: purchase_preorder
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
@@ -232,9 +283,24 @@ msgid "ID"
 msgstr "ID"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "In Stock"
+msgstr "En Stock"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Incoming"
+msgstr "En entrada"
+
+#. module: purchase_preorder
 #: field:products.supplier,incoming_qty:0
 msgid "Incoming qty."
 msgstr "Cant. entradas."
+
+#. module: purchase_preorder
+#: model:ir.model,name:purchase_preorder.model_product_supplierinfo
+msgid "Information about a product supplier"
+msgstr "Información de un proveedor de producto"
 
 #. module: purchase_preorder
 #: field:products.supplier,jan_consu_cur:0
@@ -319,6 +385,7 @@ msgstr "Validación logística pendiente"
 #: field:products.supplier,mantles:0
 #: field:purchase.order.line,mantles:0
 #: field:purchase.preorder,mantles:0
+#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "Mantles"
 msgstr "Mantos"
 
@@ -384,6 +451,7 @@ msgstr "Meses"
 
 #. module: purchase_preorder
 #: field:purchase.preorder,name:0
+#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "Name"
 msgstr "Nombre"
 
@@ -396,6 +464,12 @@ msgstr "Coste neto"
 #: field:products.supplier,net_net_cost:0
 msgid "Net net cost"
 msgstr "Coste neto neto"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/report/purchase_order_parser.py:123
+#, python-format
+msgid "No products founded for the search domain"
+msgstr "No se encontraron productos con el criterio de busqueda actual"
 
 #. module: purchase_preorder
 #: field:products.supplier,nov_consu_cur:0
@@ -428,11 +502,22 @@ msgid "October"
 msgstr "Octubre"
 
 #. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Outgoing"
+msgstr "En salida"
+
+#. module: purchase_preorder
 #: field:products.supplier,palets:0
 #: field:purchase.order.line,palets:0
 #: field:purchase.preorder,palets:0
+#: view:website:purchase_preorder.replenishement_purchase_order
 msgid "Palets"
 msgstr "Palets"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Period Sales"
+msgstr "Period Sales"
 
 #. module: purchase_preorder
 #: field:purchase.order,preorder_id:0
@@ -466,15 +551,31 @@ msgstr "Precio compra"
 
 #. module: purchase_preorder
 #: model:ir.actions.act_window,name:purchase_preorder.action_print_purchase_report_wzd
-#: model:ir.ui.menu,name:purchase_preorder.print_purchase_report_menu
 #: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
-msgid "Print Purchase Report"
-msgstr "Imprimir informe de compra"
+msgid "Print Replenishement Warehouse List"
+msgstr "Imprimir listado reaprovisionamiento almacenes"
+
+#. module: purchase_preorder
+#: model:ir.ui.menu,name:purchase_preorder.print_purchase_report_menu
+msgid "Print Replenishements"
+msgstr "Imprimir reaprovisionamientos"
 
 #. module: purchase_preorder
 #: field:products.supplier,product_id:0
 msgid "Product"
 msgstr "Producto"
+
+#. module: purchase_preorder
+#: field:print.purchase.report.wzd,category_ids:0
+msgid "Product Categorys"
+msgstr "Categorías de producto"
+
+#. module: purchase_preorder
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
+#: field:print.purchase.report.wzd,product_ids:0
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Products"
+msgstr "Productos"
 
 #. module: purchase_preorder
 #: model:ir.model,name:purchase_preorder.model_products_supplier
@@ -494,11 +595,6 @@ msgstr "Pedido de compra"
 #: model:ir.model,name:purchase_preorder.model_purchase_order_line
 msgid "Purchase Order Line"
 msgstr "Línea pedido de compra"
-
-#. module: purchase_preorder
-#: view:website:purchase_preorder.replenishement_purchase_order
-msgid "Purchase Order Report"
-msgstr "Informe de pedido de compra"
 
 #. module: purchase_preorder
 #: model:ir.ui.menu,name:purchase_preorder.menu_purchase_preorder
@@ -647,9 +743,24 @@ msgid "Show form"
 msgstr "Mostrar formulario"
 
 #. module: purchase_preorder
+#: selection:print.purchase.report.wzd,filter_options:0
+msgid "Specific Products"
+msgstr "Productos específicos"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Specific Products."
+msgstr "Productos especifcíficos."
+
+#. module: purchase_preorder
 #: field:print.purchase.report.wzd,start_date:0
 msgid "Start Date"
 msgstr "Fecha inicio"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Start Date:"
+msgstr "Fecha de inicio:"
 
 #. module: purchase_preorder
 #: field:products.supplier,product_state:0
@@ -700,9 +811,30 @@ msgid "Supplier transport"
 msgstr "Trasporte proveedor"
 
 #. module: purchase_preorder
+#: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
+#: field:print.purchase.report.wzd,supplier_ids:0
+msgid "Suppliers"
+msgstr "Proveedores"
+
+#. module: purchase_preorder
+#: selection:print.purchase.report.wzd,filter_options:0
+msgid "Suppliers and/or Categories"
+msgstr "Proveedores y/o categorías"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Suppliers:"
+msgstr "Proveedores:"
+
+#. module: purchase_preorder
 #: field:products.supplier,test:0
 msgid "Test"
 msgstr "Test"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "To Purchase"
+msgstr "A Comprar"
 
 #. module: purchase_preorder
 #: selection:products.supplier,product_state:0
@@ -723,6 +855,11 @@ msgstr "Unidad de compra"
 #: field:products.supplier,unitskg:0
 msgid "Unit or Kg"
 msgstr "Unidad o Kg"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Units"
+msgstr "Unidades"
 
 #. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_tree
@@ -748,6 +885,5 @@ msgstr "Stock virtual conservativo"
 
 #. module: purchase_preorder
 #: view:website:purchase_preorder.replenishement_purchase_order
-msgid "en desarrollo"
-msgstr "en desarrollo"
-
+msgid "Warehouse Replenishement List"
+msgstr "Listado de reaprovisionamiento almacenes"

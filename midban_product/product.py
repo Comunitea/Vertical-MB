@@ -512,6 +512,7 @@ class ProductTemplate(models.Model):
         """
         self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
 
+
 class product_product(models.Model):
 
     _inherit = "product.product"
