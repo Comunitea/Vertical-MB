@@ -42,27 +42,6 @@ class sale_report(osv.osv):
                 res[item.id] = item.location_id.get_camera()
         return res
 
-    def _get_to_revised (self, cr, uid, ids, field_names, args,
-                           context=None):
-
-        if context is None:
-            context = {}
-        res = {}
-        wave_reports = self.pool['wave.reports']
-        to_process = False
-
-        for wave in self.browse(cr, uid, ids, context=context):
-            to_process = False
-            wave_reports_pool = wave_reports.search(cr, uid, [('wave_id', '=', wave.id)])
-            if wave_reports_pool:
-                wave_reports_id = wave_reports.browse(cr, uid, wave_reports_pool)[0]
-                if wave_reports_id:
-                    to_process = wave_reports_id.to_revised
-            res[wave.id] = to_process
-        return res
-
-
-
     def _get_operation_ids(self, cr, uid, ids, field_names, args,
                            context=None):
         res = {}
@@ -149,21 +128,13 @@ class sale_report(osv.osv):
         'pack_id': fields.many2one('stock.quant.package', 'Pack',
                                    readonly=True),
         'to_process': fields.function(_get_operation_ids, type="boolean",
-                                         string="Operations",
+                                         string="Processed (All Ops)",
                                          relation="stock.pack.operation",
                                          multi='multi_'),
         'visited': fields.function(_get_operation_ids, type="boolean",
-                                         string="Operations",
+                                         string="Visited (All Ops)",
                                          relation="stock.pack.operation",
                                          multi='multi_'),
-        'to_revised': fields.function (_get_to_revised, type="boolean",
-                                       string='To revised', relation='wave.reports'),
-        'uos_qty_ok': fields.float('UoS quantity to revised', readonly=True),
-        'uom_qty_ok': fields.float('Quantity to revised', readonly=True),
-
-
-        #fields.related('wave_reports_id', 'to_revised', type='boolean', string ="To Revised", readonly = True)
-
     }
 
     def _select(self):
