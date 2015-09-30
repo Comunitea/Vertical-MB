@@ -21,7 +21,7 @@
 from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.rrule import rrule, WEEKLY
 import time
 
@@ -245,7 +245,7 @@ class route(models.Model):
         if not delete:
             domain.append(('date', '<=', end_date))
         detail_objs = self.env['route.detail'].search(domain)
-        # Create a detail for the date and add the customer to de list
+        # Create a detail for the date and add the customer to the list
         if detail_objs:
             detail_objs.unlink()
         for p_info in self.partner_ids:
@@ -254,6 +254,9 @@ class route(models.Model):
                                                   (3 if reg == '3_week' else
                                                       (4 if reg == '4_week'
                                                           else False)))
+            # To include end date in rrules
+            if dt_end.weekday() == day_number:
+                dt_end = dt_end + timedelta(days=1)
             rrules = rrule(WEEKLY, interval=interval,
                            byweekday=day_number).between(dt_sta, dt_end,
                                                          inc=True)

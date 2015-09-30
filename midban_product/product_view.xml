@@ -18,6 +18,11 @@
                             <field name="state2" widget="statusbar"/>
                      </header>
                 </xpath>
+
+                <field name="list_price" position="after">
+                    <field name="doorstep_price"/>
+                </field>
+
                 <field name="sale_ok" position="before">
                     <div>
                         <button name="%(action_process_unregister_product)d" string="Unregister"
@@ -268,6 +273,41 @@
                     </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="product_category_search_view_add_code" model="ir.ui.view">
+            <field name="name">product.category.search.add_code</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="code"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="product_category_form_view_add_code" model="ir.ui.view">
+            <field name="name">product.category.form.add_code</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <div class="oe_title" position="after">
+                    <group>
+                        <field name="code"/>
+                    </group>
+                </div>
+            </field>
+        </record>
+
+        <record id="product_category_list_view_add_code" model="ir.ui.view">
+            <field name="name">product.category.list.add_code</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_list_view"/>
+            <field name="arch" type="xml">
+                <field name="complete_name" position="before">
+                    <field name="code"/>
+                </field>
             </field>
         </record>
 

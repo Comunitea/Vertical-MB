@@ -209,7 +209,8 @@ products do not require units for validation'),
                                               string="Hidde variant page",
                                               type="boolean",
                                               method=True,
-                                              readonly=True)
+                                              readonly=True),
+        'doorstep_price': fields.float("Doorstep Price", digits=(4, 2)),
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',
@@ -1013,3 +1014,12 @@ class ProductUom(models.Model):
             res = recs.name_get()
 
         return res
+
+
+class product_category(osv.Model):
+
+    _inherit = "product.category"
+
+    _columns = {
+        'code': fields.char('Code', size=12)
+    }

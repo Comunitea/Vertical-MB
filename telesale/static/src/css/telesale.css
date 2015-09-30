@@ -1,6 +1,6 @@
  /* Principal screen */
 .telesale {
-    font-size: 12px;
+    font-size: 1.7vmin;
     font-weight: bold;
     /*position: absolute;*/
     position: fixed; /*con los css explicitos en la carpeta views*/
@@ -9,6 +9,14 @@
     width: 100%;
     height: 100%;
 }
+
+.telesale label{
+    display:block;
+    margin:0.1vmin
+}
+/*.telesale label{
+  display: block;
+}*/
  /*  ********* The black loading screen ********* */
 
 .telesale .loader{
@@ -110,7 +118,7 @@
 /*Screens Buttons*/
 .telesale #topheader .select-screen-buttons{
     position:relative;
-    width: 80%;
+    width: 88%;
     height: 100%;
     color: gray;
     background: #393939;
@@ -148,9 +156,9 @@
 }
 
 
-.telesale ol#screen-list-buttons {
+/*.telesale ol#screen-list-buttons {
     display: inline;
-}
+}*/
 
 .telesale li.screen-selector-button {
     display: inline;
@@ -185,13 +193,20 @@
 
 .telesale .ui-autocomplete-input{
     color:black;
+    font-size: 1.5vmin;
+    line-height: 0;
 }
 
 .telesale input{
     color:black;
+    padding:0.5vmin !important; /*width:100%;
+    height:50%;*/
+    height: 3vh;
+
 }
 .telesale .mandatory{
     background:rgb(161, 161, 255);
+    width: 100%;
 
 }
 .telesale .warning-red{
@@ -220,6 +235,12 @@
     background: linear-gradient(#FC1616, #F5DAD6);
 }
 
+.telesale .col-sm-1 .col-md-1 .col-lg-1 .col-xs-2 .col-sm-2 .col-md-2 .col-lg-2 .col-xs-3 .col-sm-3 .col-md-3 .col-lg-3 .col-xs-4 .col-sm-4 .col-md-4 .col-lg-4 .col-xs-5 .col-sm-5 .col-md-5 .col-lg-5 .col-xs-6 .col-sm-6 .col-md-6 .col-lg-6 .col-xs-7 .col-sm-7 .col-md-7 .col-lg-7 .col-xs-8 .col-sm-8 .col-md-8 .col-lg-8 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 0.4vw !important;
+    padding-left: 0.4vw !important;
+  }
 
 
 
@@ -257,7 +278,7 @@
   *border-right-width: 2px;
   *border-bottom-width: 2px;
 
-  .ui-menu-item > a.ui-corner-all {
+ .ui-menu-item > a.ui-corner-all {
     display: block;
     padding: 3px 15px;
     clear: both;

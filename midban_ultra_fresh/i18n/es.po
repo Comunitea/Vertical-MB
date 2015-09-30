@@ -25,7 +25,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                    Click para crear un nuevo comentario cualitativo\n"
+"                    Clic para crear un nuevo comentario cualitativo\n"
 "                </p><p>\n"
 "                    Lo usamos para pasar información entre ventas y compras\n"
 "                </p>\n"
@@ -41,7 +41,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 "              </p>\n"
 "            "
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
-"                Click para crear una nueva compra de productos ultrafrescos\n"
+"                Clic para crear una nueva compra de productos ultrafrescos\n"
 "              </p><p>\n"
 "                Estos productos serán puestos en la ubicación de salida.\n"
 "              </p>\n"
@@ -76,12 +76,12 @@ msgstr "Cambiar ultrafrescos PVP"
 #: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
 #: model:ir.actions.act_window,name:midban_ultra_fresh.action_ultrafresh_change_prices
 msgid "Change Ultrafresh Prices"
-msgstr "Cambiar Precios Ultrafrescos"
+msgstr "Cambiar precios ultrafrescos"
 
 #. module: midban_ultra_fresh
 #: field:calc.ultrafresh.price.wzd,line_ids:0
 msgid "Change lines"
-msgstr "Cambiar lineas"
+msgstr "Cambiar líneas"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
@@ -105,12 +105,12 @@ msgstr "Creado por"
 #: field:calc.ultrafresh.price.wzd,create_date:0
 #: field:qualitative.note,create_date:0
 msgid "Created on"
-msgstr "Creado en"
+msgstr "Creado el"
 
 #. module: midban_ultra_fresh
 #: field:calc.ultrafresh.price.wzd,date:0
 msgid "Date"
-msgstr "Fecha Busqueda compras"
+msgstr "Fecha búsqueda compras"
 
 #. module: midban_ultra_fresh
 #: field:calc.ultrafresh.price.wzd,date_sales:0
@@ -125,7 +125,7 @@ msgstr "Detalles"
 #. module: midban_ultra_fresh
 #: field:calc.price.line,final_pvp:0
 msgid "Final pvp "
-msgstr "PVP Final "
+msgstr "PVP final "
 
 #. module: midban_ultra_fresh
 #: field:calc.price.line,id:0
@@ -147,12 +147,12 @@ msgstr "Última actualización por"
 #: field:calc.ultrafresh.price.wzd,write_date:0
 #: field:qualitative.note,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. module: midban_ultra_fresh
 #: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
 msgid "Lines"
-msgstr "Lineas"
+msgstr "Líneas"
 
 #. module: midban_ultra_fresh
 #: field:calc.price.line,margin:0
@@ -167,7 +167,7 @@ msgstr "Nombre"
 #. module: midban_ultra_fresh
 #: field:calc.price.line,num_purchases:0
 msgid "Nº Purchases"
-msgstr "Nº Compras"
+msgstr "Nº compras"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
@@ -192,17 +192,17 @@ msgstr "Línea pedido de compra"
 #. module: midban_ultra_fresh
 #: field:purchase.order.line,purchased_kg:0
 msgid "Purchased Kg"
-msgstr "Kg Comprados"
+msgstr "Kg comprados"
 
 #. module: midban_ultra_fresh
 #: field:calc.price.line,purchased_kg:0
 msgid "Purchased kg"
-msgstr "Kg Comprados"
+msgstr "Kg comprados"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report
 msgid "Qty Buy"
-msgstr "Cantidad Comprada"
+msgstr "Cantidad comprada"
 
 #. module: midban_ultra_fresh
 #: field:sale.order.line,q_note:0
@@ -245,7 +245,7 @@ msgstr "INFORME DE COMPRAS DE ULTRAFRESCO"
 #: model:ir.ui.menu,name:midban_ultra_fresh.menu_ultrafresh_purchase
 #: view:purchase.order:midban_ultra_fresh.ultrafres_purchase_order_form
 msgid "UltraFresh Purchase"
-msgstr "Compra Ultrafreso"
+msgstr "Compra ultrafreso"
 
 #. module: midban_ultra_fresh
 #: model:stock.picking.type,name:midban_ultra_fresh.picking_type_ultrafresh
@@ -261,12 +261,12 @@ msgstr "Informe de ultrafresco"
 #: view:purchase.order:midban_ultra_fresh.view_purchase_order_filter_add_ultrafresh
 #: field:purchase.order,ultrafresh_purchase:0
 msgid "Ultrafresh purchase"
-msgstr "Compra de Ultrafresco"
+msgstr "Compra de ultrafresco"
 
 #. module: midban_ultra_fresh
 #: view:calc.ultrafresh.price.wzd:midban_ultra_fresh.calac_ultrafresh_price_wzd_view
 msgid "Ultrafresh purchases"
-msgstr "Compras de Ultrafrescos"
+msgstr "Compras de ultrafrescos"
 
 #. module: midban_ultra_fresh
 #: view:website:midban_ultra_fresh.ultrafresh_purchase_report

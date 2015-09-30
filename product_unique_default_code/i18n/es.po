@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 13:39+0000\n"
-"PO-Revision-Date: 2015-07-03 13:39+0000\n"
+"POT-Creation-Date: 2015-09-24 17:04+0000\n"
+"PO-Revision-Date: 2015-09-24 17:04+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: product_unique_default_code
+#: constraint:product.product:0
+msgid "Default code must be unique in active products"
+msgstr "El código por defecto debe ser único en productos activos"
 
 #. module: product_unique_default_code
 #: model:ir.model,name:product_unique_default_code.model_product_product
@@ -23,10 +28,5 @@ msgstr "Producto"
 #. module: product_unique_default_code
 #: model:ir.model,name:product_unique_default_code.model_product_template
 msgid "Product Template"
-msgstr "Plantilla producto"
-
-#. module: product_unique_default_code
-#: sql_constraint:product.product:0
-msgid "The code of Product must be unique !"
-msgstr "El código del Producto debe ser único"
+msgstr "Plantilla de producto"
 

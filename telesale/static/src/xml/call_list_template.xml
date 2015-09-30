@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <templates id="template" xml:space="preserve">
-    
+
     <t t-name="Call-List-Screen-Widget">
         <div class="call-list-content">
             <!-- <button class="probe">Call list content</button> -->
             <div class="filter-calls">
-                <div class="filter-block">
-                    <div class="center-content">
+
+                    <div class="col-xs-4 fullheight centerinside">
+                      <div class="centerthis">
                         <label for="date_call">Date:</label>
                          <input type="date" id="date-call-search" name="date_call" t-att-value="widget.ts_model.get('selectedOrder').get('date_order')"/>
+                      </div>
                     </div>
-                </div>
-                <div class="filter-block">
-                    <div class="center-content">
+                    <div class="col-xs-4 fullheight centerinside">
+                      <div class="centerthis">
                         <label for="state">State:</label>
                         <select id="state-select">
                             <option selected="selected" value="open">Pending</option>
@@ -21,13 +22,14 @@
                             <option value="cancel">Cancelled</option>
                             <option value="any">Any</option>
                         </select>
+                      </div>
                     </div>
-                </div>
-                <div class="filter-block">
-                    <div class="center-content">
+                    <div class="col-xs-4 fullheight centerinside">
+                      <div class="centerthis">
                         <button id="create-call">Create</button>
+                      </div>
                     </div>
-                </div>
+
             </div>
             <div class="calls-lines">
                 <div id="placeholder-call-list-widget"></div>
@@ -36,7 +38,7 @@
     </t>
 
     <t t-name="Call-List-Widget">
-            <div class="calls_lines_container">
+            <div class="col-xs-12 fullheight centerinside">
                 <table class="calls-table">
                     <thead>
                         <th class="call-head-date">Date</th>
@@ -111,7 +113,7 @@
                         </t>
                         <t t-if="widget.ts_model.get('call_id') === false">
                            <button id="do-call">Do call</button>
-                        </t>                   
+                        </t>
                     </t>
                     <t t-if="widget.call.state !== 'open' ">
                         NO
@@ -120,43 +122,49 @@
                 <t t-if="widget.call.state === 'calling'">
                    <button id="finish-call">Finish</button>
                 </t>
-                
+
             </td>
         </tr>
     </t>
 
     <t t-name="Add-Call-Pop-Up-Screen-Widget">
         <div class="phonecall-pop-up">
-            <div class="popup-block">
-                 <div class="center-content">
+            <div class="row centerinside quarterheight">
+                 <div class="centerthis">
                     <label for="date_create">Date:</label>
                     <input type="datetime-local" step="1" id="date-call-create" name="date_create" t-att-value="widget.ts_model.get('selectedOrder').get('date_order')"/>
                 </div>
             </div>
-            <div class="popup-block">
-                <div class="center-content">
+            <div class="row centerinside quarterheight">
+                 <div class="centerthis">
                      <label for="customer_create">Customer:</label>
                      <input id="customer-create" name="customer_create"/>
                  </div>
             </div>
-            <div class="popup-block">
-                 <div class="center-content">
+            <div class="row centerinside quarterheight">
+                 <div class="centerthis">
                     <label for="comment_create">Coment:</label>
                     <input id="comment-create" name="comment_create"/>
                 </div>
             </div>
-            <div class="popup-block">
-                <div class="buttons-block">
-                    <div class="center-content">
+            <div class="row centerinside quarterheight">
+                    <!-- <div class="centerthis">
                         <button id="create-phonecall">Create</button>
                     </div>
-                </div>
-                 <div class="buttons-block">
-                    <div class="center-content">
+                    <div class="centerthis">
                         <button id="close-call-popup">Close</button>
+                    </div> -->
+                    <div class="centerthis">
+                        <!-- <div class="col-xs-6 fullheight"> -->
+                        <button id="create-phonecall">Create</button>
+                          <!-- </div> -->
+                          <!-- <div class="col-xs-6 fullheight"> -->
+                        <button id="close-call-popup">Close</button>
+
+                    <!-- </div> -->
                     </div>
-                 </div>
             </div>
+
         </div>
     </t>
 
@@ -190,4 +198,4 @@
         </div>
     </t>
 
-</templates> 
+</templates>

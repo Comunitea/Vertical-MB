@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <templates id="template" xml:space="preserve">
-    
+
     <t t-name="Summary-Order-Screen-Widget">
         <div class="summary-order-screen">
             <div id="placeholder-summary-order-widget">
@@ -11,28 +11,45 @@
 
     <t t-name="Summary-Order-Widget">
             <div class="summary-order-search">
-                <div class="input-column2">
-                    <div class="center-content">
+              <div class="col-xs-4 fullheight centerinside textcenter">
+                <div class="centerthis">
                         <label for="date_start">Date Start:</label>
                         <input type="date" id='input-date_start2' name="date_start"/>
-                    </div>
                 </div>
-                <div class="input-column2">
-                    <div class="center-content">
+              </div>
+              <div class="col-xs-4 fullheight centerinside textcenter">
+                <div class="centerthis">
                         <label for="date_end">Date End:</label>
                         <input type="date" id='input-date_end2' name="date_end"/>
-                    </div>
                 </div>
-                    <div class="input-column2">
-                        <div class="center-content">
-                        <button id="search-customer2">SEARCH</button>   
-                        <button id="search-customer2-week">Week</button>   
-                        <button id="search-customer2-month">Month</button>   
-                        <button id="search-customer2-trimester">Trimester</button>   
+              </div>
+              <div class="col-xs-4 fullheight centerinside textcenter">
+                <div class="centerthis">
+                  <div class="col-xs-3 fullheight centerinside">
+                    <div class="centerthis">
+                        <button id="search-customer2">SEARCH</button>
                     </div>
+                  </div>
+                  <div class="col-xs-3 fullheight centerinside">
+                    <div class="centerthis">
+                        <button id="search-customer2-week">Week</button>
+                    </div>
+                  </div>
+                  <div class="col-xs-3 fullheight centerinside">
+                    <div class="centerthis">
+                        <button id="search-customer2-month">Month</button>
+                    </div>
+                  </div>
+                  <div class="col-xs-3 fullheight centerinside">
+                    <div class="centerthis">
+                        <button id="search-customer2-trimester">Trimester</button>
+                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
             <div class="summary-order-content">
+              <div class="col-xs-12 fullheight centerinside">
                 <table class="summary-order-table">
                     <thead>
                         <th class="summary-head-name">Name</th>
@@ -49,6 +66,7 @@
 
                     </tbody>
                 </table>
+              </div>
             </div>
 
     </t>
@@ -114,4 +132,4 @@
         </tr>
     </t>
 
-</templates> 
+</templates>

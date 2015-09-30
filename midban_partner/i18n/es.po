@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-15 11:36+0000\n"
-"PO-Revision-Date: 2015-09-15 11:36+0000\n"
+"POT-Creation-Date: 2015-09-24 16:27+0000\n"
+"PO-Revision-Date: 2015-09-24 16:27+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -23,9 +23,9 @@ msgid "* Validate pending: no validationpassed\n"
 "* Validated: both Comercial and logisticvalidations have been aproved\n"
 ""
 msgstr "* Validación Pendiente: No ha pasado la validación\n"
-"* Pendiente Validación Lógistica: La información logística del producto no ha sido revisada todavía\n"
-"* Pendiente Validación Lógistica: La información comercial del producto no ha sido revisada todavía\n"
-"* Validated: Ammbas validaciones comercial y lógistica están aprovadas\n"
+"* Pendiente validación lógistica: La información logística del producto no ha sido revisada todavía\n"
+"* Pendiente validación lógistica: La información comercial del producto no ha sido revisada todavía\n"
+"* Validated: Ambas validaciones comercial y lógistica están aprobadas\n"
 ""
 
 #. module: midban_partner
@@ -57,7 +57,7 @@ msgid "<p class=\"oe_view_nocontent_create\">\n"
 msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "                Click to create a new unregister reason.\n"
 "              </p><p>\n"
-"                Gestion los motivos de baja. Los motivos definidos aquí pueden ser selecionados\n"
+"                Gestiona los motivos de baja. Los motivos definidos aquí pueden ser selecionados\n"
 "                en el asistente de baja de los productos.\n"
 "              </p>\n"
 "            "
@@ -85,12 +85,12 @@ msgstr "Atrás"
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Call Days Time Slot"
-msgstr "Franja Horaria Días de llamada"
+msgstr "Franja horaria días de llamada"
 
 #. module: midban_partner
 #: field:res.partner,call_days_slot:0
 msgid "Call Days Time Slot "
-msgstr "Franja Horaria Días de llamada"
+msgstr "Franja horaria días de llamada"
 
 #. module: midban_partner
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
@@ -98,29 +98,29 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:286
+#: code:addons/midban_partner/partner.py:303
 #, python-format
 msgid "Cannot activate a customer without vat"
-msgstr "No se puede activar un cliente sin nif"
+msgstr "No se puede activar un cliente sin NIF"
 
 #. module: midban_partner
 #: field:res.partner.ref.history,date:0
 msgid "Change date"
-msgstr "Change date"
+msgstr "Cambia fecha"
 
 #. module: midban_partner
 #: field:unregister.partner.reason,code:0
 msgid "Code"
-msgstr "Code"
+msgstr "Código"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:274
+#: code:addons/midban_partner/partner.py:291
 #, python-format
 msgid "Comercial and validate done. Pending to register"
 msgstr "Validación comercial realizada. Pendiente de dar de alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:265
+#: code:addons/midban_partner/partner.py:282
 #, python-format
 msgid "Comercial validate done"
 msgstr "Validación comercial realizada"
@@ -275,18 +275,18 @@ msgstr "Última actualización por"
 #: field:unregister.partner.reason,write_date:0
 #: field:week.days,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización en"
+msgstr "Última actualización el"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Logistic Validated"
-msgstr "Logistica Validada"
+msgstr "Logística validada"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:256
+#: code:addons/midban_partner/partner.py:273
 #, python-format
 msgid "Logistic validate done"
-msgstr "Validación logistica realizada"
+msgstr "Validación logística realizada"
 
 #. module: midban_partner
 #: selection:res.partner,state2:0
@@ -299,6 +299,16 @@ msgid "Mail"
 msgstr "Correo"
 
 #. module: midban_partner
+#: field:res.partner,min_palets:0
+msgid "Min Palets"
+msgstr "Min Palets"
+
+#. module: midban_partner
+#: help:res.partner,min_palets:0
+msgid "Minimum quantity, expresed in palets, needed to the supplier acepts the order"
+msgstr "Cantidad mínima, expresada en palets, necesaria para que el proveedor acepte la orden"
+
+#. module: midban_partner
 #: field:supplier.transport,name:0
 #: field:week.days,name:0
 msgid "Name"
@@ -307,7 +317,7 @@ msgstr "Nombre"
 #. module: midban_partner
 #: field:supplier.transport,npalets:0
 msgid "Number of palets"
-msgstr "Nº Palets"
+msgstr "Nº palets"
 
 #. module: midban_partner
 #: field:week.days,sequence:0
@@ -327,10 +337,10 @@ msgid "Partner History"
 msgstr "Historial"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:285
+#: code:addons/midban_partner/partner.py:302
 #, python-format
 msgid "Partner error"
-msgstr "Partner error"
+msgstr "Error empresa"
 
 #. module: midban_partner
 #: model:ir.model,name:midban_partner.model_partner_history
@@ -343,10 +353,10 @@ msgid "Partner unregister reasons"
 msgstr "Motivos de baja"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:248
+#: code:addons/midban_partner/partner.py:265
 #, python-format
 msgid "Pending logistic and commercial validate"
-msgstr "Pendiente de validación logistica y comercial"
+msgstr "Pendiente de validación logística y comercial"
 
 #. module: midban_partner
 #: model:ir.actions.act_window,name:midban_partner.action_process_unregister_partner
@@ -362,7 +372,7 @@ msgstr "Motivo"
 #. module: midban_partner
 #: field:res.partner,reception_method:0
 msgid "Reception Method"
-msgstr "Método Recepción"
+msgstr "Método recepción"
 
 #. module: midban_partner
 #: field:res.partner.ref.history,old_ref:0
@@ -372,7 +382,7 @@ msgstr "Ref"
 #. module: midban_partner
 #: field:res.partner,ref_history_ids:0
 msgid "Refs history"
-msgstr "Refs history"
+msgstr "Refs historicos"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
@@ -380,14 +390,14 @@ msgid "Register"
 msgstr "Dar de alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:287
+#: code:addons/midban_partner/partner.py:304
 #: selection:res.partner,state2:0
 #, python-format
 msgid "Registered"
 msgstr "Alta"
 
 #. module: midban_partner
-#: code:addons/midban_partner/partner.py:296
+#: code:addons/midban_partner/partner.py:313
 #, python-format
 msgid "Registered again"
 msgstr "Volver a dar de alta"
@@ -416,7 +426,7 @@ msgstr "Estado"
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Suplliers Info"
-msgstr "Información Proveedor"
+msgstr "Información proveedor"
 
 #. module: midban_partner
 #: field:call.days.time.slot,partner_id:0
@@ -431,7 +441,7 @@ msgstr "Proveedor"
 #: view:supplier.transport:midban_partner.midban_supplier_transport_view_form
 #: view:supplier.transport:midban_partner.midban_supplier_transport_view_tree
 msgid "Supplier Transports"
-msgstr "Transportes Proveedor"
+msgstr "Transportes proveedor"
 
 #. module: midban_partner
 #: field:res.partner,supp_accept_days_ids:0
@@ -447,12 +457,12 @@ msgstr "Transportes proveedor"
 #. module: midban_partner
 #: field:time.slot,partner_id:0
 msgid "Supplier/Customer"
-msgstr "Proveedor/Cliente"
+msgstr "Proveedor/cliente"
 
 #. module: midban_partner
 #: selection:res.partner,reception_method:0
 msgid "Tlf"
-msgstr "Tlf"
+msgstr "Telf"
 
 #. module: midban_partner
 #: view:res.partner:midban_partner.midban_view_partner_form
@@ -463,7 +473,7 @@ msgstr "Transportes"
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
 #: view:res.partner:midban_partner.midban_view_partner_form
 msgid "Unregister"
-msgstr "Dar de Baja"
+msgstr "Dar de baja"
 
 #. module: midban_partner
 #: field:process.unregister.partner,reason_id:0
@@ -529,7 +539,7 @@ msgstr "Si está marcado cuando imprimamos los albaránes serán agrupados por t
 #. module: midban_partner
 #: view:process.unregister.partner:midban_partner.view_process_unregister_partner_form
 msgid "or"
-msgstr "or"
+msgstr "o"
 
 #. module: midban_partner
 #: field:partner.history,partner_id:0
@@ -550,3 +560,4 @@ msgstr "desconocido2"
 #: selection:res.partner,invoice_method:0
 msgid "unknow3"
 msgstr "desconocido3"
+

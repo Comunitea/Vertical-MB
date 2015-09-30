@@ -38,6 +38,7 @@
                 "midban_product",  # log_base_id, base_use_field... fields
                 "sale",
                 "sale_stock",
+                # "midban_depot_stock", #because overwrite action_ship_create
                 ],
     "data": [
         'product_view.xml',

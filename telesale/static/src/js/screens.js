@@ -63,7 +63,7 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                 this.current_popup.show(extra_data);
             }
             else{
-                this.current_popup.show();
+                this.current_popup.show(extra_data);
             }
             this.current_screen.show();
         },
@@ -165,7 +165,9 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
             this.totals_order_widget.replace($('#placeholder-bottompart'));
             //right part
             this.productinfo_order_widget = new module.ProductInfoOrderWidget(this, {});
-            this.productinfo_order_widget.replace($('#placeholder-rightpart'));
+            this.productinfo_order_widget.replace($('#placeholder-bottompart-left'));
+            this.sold_product_line_widget = new module.SoldProductWidget(this, {});
+            this.sold_product_line_widget.replace($('#placeholder-rightpart'));
 
         }
     });

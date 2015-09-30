@@ -20,21 +20,33 @@
 ##############################################################################
 from openerp import models, fields, api
 
+
 class print_purchase_report(models.TransientModel):
 
     _name = 'print.purchase.report.wzd'
 
-    start_date = fields.Date(string="Start Date")
-    end_date = fields.Date(string="End Date")
+    start_date = fields.Date(string="Start Date", default=fields.Date.today(),
+                             required=True)
+    end_date = fields.Date(string="End Date", default=fields.Date.today(),
+                           required=True)
+    category_ids = fields.Many2many('product.category', 'wzd_category_rel',
+                                    'wzd_id', 'cat_id', 'Product Categorys')
+    product_ids = fields.Many2many('product.template', 'wzd_product_rel',
+                                   'wzd_id', 'prod_id', 'Products')
+    supplier_ids = fields.Many2many('res.partner', 'wzd_partner_rel',
+                                    'wzd_id', 'supp_id', 'Suppliers',
+                                    domain=[('supplier', '=', True)])
 
     @api.multi
     def generate_print_purchase_report(self):
-
         rep_name = 'purchase_preorder.replenishement_purchase_order'
         a = self.env["report"].get_action(self, rep_name)
         data_dic = {
             'start_date': self.start_date,
             'end_date': self.end_date,
+            'category_ids': [x.id for x in self.category_ids],
+            'product_ids': [x.id for x in self.product_ids],
+            'supplier_ids': [x.id for x in self.supplier_ids],
         }
         a['data'] = data_dic
         return a

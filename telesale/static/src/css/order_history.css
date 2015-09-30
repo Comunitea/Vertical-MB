@@ -1,4 +1,8 @@
 
+.telesale .textcenter{
+    text-align: center;
+}
+
 .telesale .order-history-screen{
     width: 100%;
     height:100%;
@@ -42,34 +46,33 @@
     border: 1px solid #000;
     margin-left: 0.5%;
     margin-right: 0.5%;
-    font-size: 16px;
+    font-size: 1.5vmin;
 }
 
 .telesale .history-line-table th{
     border: 1px solid #000;
     height: 9%;
     background: #7f82ac;
-    font-size: 13px;
     text-align: center;
     color:black;
 }
 .telesale .history-line-table th.head-name{
-    width: 20%;
+    width: 10%;
 }
 .telesale .history-line-table th.head-date{
     width: 20%;
 }
 .telesale .history-line-table th.head-total{
-    width: 20%;
+    width: 15%;
 }
 .telesale .history-line-table th.head-state{
-    width: 20%;
+    width: 10%;
 }
 .telesale .history-line-table th.head-add{
-    width: 10%;
+    width: 12.5%;
 }
 .telesale .history-line-table th.head-create{
-    width: 10%;
+    width: 12.5%;
 }
 
 .telesale .history-line-table td{
@@ -80,22 +83,22 @@
 }
 
 .telesale .history-line-table td.cell-name{
-    width: 20%;
+    width: 10%;
 }
 .telesale .history-line-table td.cell-date{
     width: 20%;
 }
 .telesale .history-line-table td.cell-total{
-    width: 20%;
+    width: 15%;
 }
 .telesale .history-line-table td.cell-state{
-    width: 20%;
+    width: 10%;
 }
 .telesale .history-line-table td.cell-add{
-    width: 10%;
+    width: 12.5%;
 }
 .telesale .history-line-table td.cell-create{
-    width: 10%;
+    width: 12.5%;
 }
 
 .telesale .order-history-screen button {
@@ -108,8 +111,7 @@
     background: -moz-linear-gradient(#b2b3d7, #7f82ac);
     background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
     background:      linear-gradient(#b2b3d7, #7f82ac);
+    width: 100%;
+    padding: 0px;
+    font-size: 1.5vmin;
 }
-
-
-
-

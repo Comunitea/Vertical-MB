@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#       * stock_move_reassign
+#	* stock_move_reassign
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-11 17:00+0000\n"
-"PO-Revision-Date: 2015-08-11 17:00+0000\n"
+"POT-Creation-Date: 2015-09-24 17:21+0000\n"
+"PO-Revision-Date: 2015-09-24 17:21+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -137,3 +137,4 @@ msgstr "Esperando disponibilidad"
 #: field:reassign.stock.line.wzd,wzd_id:0
 msgid "Wzd"
 msgstr "Wzd"
+
