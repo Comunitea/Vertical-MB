@@ -229,6 +229,9 @@ class sale_order_line(models.Model):
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
+    customer_comment = fields.Text('Customer comment', readonly=True,
+                          related='partner_id.comment')
+
     @api.multi
     def action_ship_create(self):
         """

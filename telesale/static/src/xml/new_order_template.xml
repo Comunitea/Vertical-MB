@@ -184,7 +184,7 @@
             <div class="col-xs-2 fullheight centerinside leftpartbuttons">
               <div class="centerthis">
 
-                <div class="span-state">
+                <div class="span-state fullwidth">
 
                   <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'sent'">
                       Draft
@@ -284,11 +284,8 @@
                     <th class="header-qty">Qty</th>
                     <th class="header-unit">Unit</th>
                     <th class="header-pvp">PVP</th>
-                    <th class="header-pvp">Disc.</th>
-                    <th class="header-total">Total</th>
-                    <!--th class="header-temp">Tmp ºC</th>
-                    <th class="header-qnote">Qnote</th>
-                    <th class="header-deta">Detail</th-->
+                    <th class="header-disc">Disc.</th>
+                    <th class="header-pvp">Total</th>
                 </thead>
                 <tbody class="orderlines">
 
@@ -401,9 +398,10 @@
                 <div class="fullheight centerinside">
                     <div class="centerthis">
                       <label for="coment">Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
+                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment"><t t-esc="widget.order_model.get('coment')"/></textarea>
                       <label for="coment">Customer Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='coment' name="coment" t-att-value="widget.order_model.get('coment')"/>
+                      <textarea class="semiheight notes" rows="2" cols="22" id='costumer_comment' name="costumer_comment" readonly="readonly"><t t-esc="widget.order_model.get('customer_comment')"/></textarea>
+                      <!-- <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' readonly="readonly" name="customer_comment" t-att-value="widget.order_model.get('customer_comment')"/> -->
                     </div>
                 </div>
           </div>
@@ -472,34 +470,33 @@
                   </div>
               </div>
         </div>
-        <div class="col-xs-3 fullheight">
-
-              <div class="fullheight centerinside">
-
-                  <t t-if="widget.order_model.get('state') == 'draft'">
-                      <div class="order-button">
-                          <div class="fullheight centerinside">
-                               <div class="centerthis">
-                        <button type="button" class="save-button">SAVE</button>
-                               </div>
-                          </div>
-                      </div>
-                      <div class="order-button">
-                          <div class="fullheight centerinside">
-                               <div class="centerthis">
-                          <button class="cancel-button">CANCEL</button>
-                               </div>
-                          </div>
-                      </div>
-                      <div class="order-button">
-                          <div class="fullheight centerinside">
-                               <div class="centerthis">
-                          <button class="confirm-button">CONFIRM</button>
-                               </div>
-                          </div>
-                      </div>
-                  </t>
+        <div class="col-xs-3 fullheight centerinside">
+          <div class="fullheight centerinside fullwidth">
+            <t t-if="widget.order_model.get('state') == 'draft'">
+              <div class="order-button">
+                <div class="fullheight centerinside fullwidth">
+                  <div class="centerthis">
+                    <button type="button" class="save-button fullwidth">SAVE</button>
+                  </div>
+                </div>
               </div>
+              <div class="order-button">
+                  <div class="fullheight centerinside fullwidth">
+                       <div class="centerthis">
+                  <button class="cancel-button fullwidth">CANCEL</button>
+                       </div>
+                  </div>
+              </div>
+              <div class="order-button">
+                  <div class="fullheight centerinside fullwidth">
+                       <div class="centerthis">
+                  <button class="confirm-button fullwidth">CONFIRM</button>
+                       </div>
+                  </div>
+              </div>
+            </t>
+          </div>
+
 
         </div>
 
@@ -741,17 +738,17 @@
 
     <t t-name="Sustitute-Line-Widget">
         <tr>
-            <td class="sust-cell-name">
-                <span class="product-cell"><t t-esc="widget.product.name"/></span>
-            </td>
             <td class="sust-cell-code">
                 <span class="product-cell"><t t-esc="widget.product.default_code"/></span>
+            </td>
+            <td class="sust-cell-name">
+                <span class="product-cell"><t t-esc="widget.product.name"/></span>
             </td>
             <td class="sust-cell-stock">
                 <span class="product-cell"><t t-esc="widget.product.virtual_stock_conservative"/></span>
             </td>
             <td class="sust-cell-add">
-                  <button class="add-sustitute">Add</button>
+                  <button class="add-sustitute">+</button>
             </td>
         </tr>
     </t>
@@ -760,8 +757,8 @@
         <div class="sust-widget-content">
             <table class="sustitute-table">
                 <thead>
-                    <th class="sust-header-name">Name</th>
                     <th class="sust-header-code">Code</th>
+                    <th class="sust-header-name">Name</th>
                     <th class="sust-header-stock">Stock</th>
                     <th class="sust-header-add">Add</th>
                 </thead>
@@ -771,15 +768,6 @@
             </table>
         </div>
     </t>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -808,7 +796,7 @@
             <span class="product-cell"><t t-esc="widget.sold_line.price_udv"/></span>
           </td>
           <td class="pc-cell-stock">
-            <button id="add-line">+</button>
+            <button class="fullwidth" id="add-line">+</button>
           </td>
       </tr>
     </t>

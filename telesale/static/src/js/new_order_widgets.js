@@ -64,6 +64,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#partner').focus();
         },
         renderElement: function () {
+            // debugger;
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
@@ -115,6 +116,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
                     this.order_model.set('partner', partner_obj.name);
+                    // debugger;
+                    this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit, 2));
                     this.order_model.set('customer_debt', my_round(partner_obj.credit, 2));
                     contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
@@ -134,8 +137,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.refresh();
                         break;
                     }
+                    // debugger;
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
                     this.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
+                    this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
                     this.order_model.set('customer_debt', my_round(partner_obj.credit,2));
                     contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
