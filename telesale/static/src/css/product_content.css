@@ -22,7 +22,7 @@
 .telesale .product-catalog-content{
     height:95%;
     overflow: auto;
-    font-size: 1.5vmin;
+    font-size: 1.7vmin;
 }
 
 .telesale .catalog-table{
@@ -37,7 +37,7 @@
     border: 1px solid #000;
     height: 9%;
     background: #7f82ac;
-    font-size: 1.5vmin;
+    font-size: 1.7vmin;
     text-align: center;
     color:black;
 }
@@ -60,7 +60,7 @@
     border: 1px solid #000;
     height: 100%;
     text-align: center;
-    font-size: 1.5vmin;
+    font-size: 1.7vmin;
     vertical-align: middle
 }
 .telesale .catalog-table td.pc-cell-name{

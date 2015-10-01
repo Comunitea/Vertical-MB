@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <templates id="template" xml:space="preserve">
-    
+
    <t t-name="Key-Shorts-Screen-Widget">
         <div class="customer-data-content">
-            <p>Atajos de teclado para moverse rapidamente por la aplicación</p>
-            <p>Convinaciones de teclas:</p>
-            <p> 
+            <p>Atajos de teclado para moverse rápidamente por la aplicación</p>
+            <p>Combinaciones de teclas:</p>
+            <p>
                 ALT+F1 -------------------------> Mostrar esta pantalla
                 <br/>
                 ALT+Q --------------------------> Nuevo pedido
                 <br/>
                 ALT+W --------------------------> Historial pedidos
                 <br/>
-                ALT+E --------------------------> Catálogo productos
+                ALT+E --------------------------> Listado llamadas
                 <br/>
-                ALT+R --------------------------> Productos reservados
+                ALT+R --------------------------> Catálogo productos
                 <br/>
-                ALT+T --------------------------> Listado llamadas
+                ALT+T --------------------------> Productos reservados
                 <br/>
                 ALT+Y --------------------------> Resumen pedidos
                 <br/>
                 <br/>
 
-                ALT+P --------------------------> Nuevo Pedido
+                ALT+P --------------------------> Nueva orden de pedido
                 <br/>
-                ALT+O --------------------------> Eliminar pedido
+                ALT+O --------------------------> Eliminar orden de pedido
                 <br/>
                 <br/>
 
 
-                ALT+A --------------------------> Añadir linea pedido
+                ALT+A --------------------------> Añadir línea pedido
                 <br/>
-                ALT+S --------------------------> Eliminar linea pedido
+                ALT+S --------------------------> Eliminar línea pedido
                 <br/>
                 <br/>
 
@@ -52,9 +52,9 @@
                 <br/>
                 <br/>
 
-                CTRL+down-----------------------> Selecionar linea de abajo
+                CTRL+down-----------------------> Selecionar línea de abajo
                 <br/>
-                CTRL+up-------------------------> Selecionar linea de arriba
+                CTRL+up-------------------------> Selecionar línea de arriba
                 <br/>
                 <br/>
                 CTRL+left-----------------------> Foco en botones pedidos
@@ -71,4 +71,4 @@
         </div>
     </t>
 
-</templates> 
+</templates>

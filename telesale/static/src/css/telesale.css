@@ -186,9 +186,10 @@
 .telesale .customer-data-content{
     width: 100%;
     position: absolute;
+    margin-left: 3%;
     top: 0;
     bottom: 0;
-    background: #FAEBD7;
+    background: #F0EEEE;
 }
 
 .telesale .ui-autocomplete-input{

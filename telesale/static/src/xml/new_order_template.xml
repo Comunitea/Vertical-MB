@@ -688,7 +688,7 @@
 
     <t t-name="Order-Button-Widget">
         <li class="order-selector-button">
-            <button class="select-order"><t t-esc="(widget.order.get('partner') ? widget.order.get('partner')+' - ':'') + widget.order.get('creationDate').toString('t')"/></button>
+            <button t-att-id="widget.bo_id" class="select-order"><t t-esc="(widget.order.get('partner') ? widget.order.get('partner')+' - ':'') + widget.order.get('creationDate').toString('t')"/></button>
         </li>
     </t>
 
