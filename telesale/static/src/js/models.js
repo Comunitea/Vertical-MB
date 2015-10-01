@@ -62,7 +62,8 @@ function openerp_ts_models(instance, module){
                 'nbr_pending_operations': 0,
                 'visible_products': {},
                 'call_id': false,
-                'update_catalog': 'a'  //value to detect changes between a and b to update the catalog only when click in label
+                'update_catalog': 'a',  //value to detect changes between a and b to update the catalog only when click in label
+                'bo_id': 0 //it's a counter to assign to the buttons when you do click on '+'
             });
 
             this.get('orders').bind('remove', function(){ self.on_removed_order(); });
@@ -377,6 +378,7 @@ function openerp_ts_models(instance, module){
             return new_str
         },
         parse_utc_to_str_date: function(str_date){
+          //debugger;
             return this.datetimeToStr(instance.web.str_to_datetime(str_date));
         },
         dateToStr: function(date) {

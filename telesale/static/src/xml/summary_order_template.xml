@@ -80,7 +80,7 @@
                 <span class="summary-cell"><t t-esc="widget.order.partner_id[1]"/></span>
             </td>
             <td class="summary-cell-date">
-                <span class="summary-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.order.date_order)"/></span>
+                <span class="summary-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.ts_model.parse_utc_to_str_date(widget.order.date_order))"/></span>
             </td>
             <td class="summary-cell-date">
                 <span class="summary-cell"><t t-esc="widget.ts_model.localFormatDateTime(widget.order.date_planned)"/></span>

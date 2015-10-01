@@ -209,7 +209,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                  self.$('#button_so').click(); //Summary orders page
                 self.$("#input-date_start2").focus();
             });
-            Mousetrap.bind('alt+f1', function(e){
+            Mousetrap.bind('alt+f12', function(e){
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;
@@ -341,6 +341,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             });
 
             Mousetrap.bind('ctrl+left', function(e){
+              debugger;
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;

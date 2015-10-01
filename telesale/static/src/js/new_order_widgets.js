@@ -18,6 +18,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this._super(parent,options);
             var self = this;
             this.order = options.order;
+            this.bo_id = this.ts_model.get('bo_id');
             this.order.bind('destroy',function(){ self.destroy(); });
             this.ts_model.bind('change:selectedOrder', _.bind( function(ts_model) {
 
@@ -43,9 +44,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             });
         },
         setButtonSelected: function() {
+
             /*TODO NO SE PONE EL COLOR BIEN, YA QUE COJE UNA LISTA Y NO EL BOTON*/
+            var identify = 'button#' + this.bo_id
             $('.select-order').removeClass('selected-order');
-            this.$el.addClass('select-order');
+            $(identify).addClass('selected-order');
         },
         closeOrder: function(event) {
             this.order.destroy();
