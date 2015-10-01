@@ -2,36 +2,74 @@
 <openerp>
     <data>
         <template id="report_stock_tag">
-           <!--  <t t-call="report.html_container"> -->
+          <style type="text/css">
+           .my_border{
+               border:solid 1px;
+           }
+           .head span{
+             font-size:20px
+           }
+           .content{
+               position:relative;
+               height:800px;
+           }
+           .content .head{
+               position:relative;
+               height:150px;
+              border:solid 1px;
+           }
+           .content .middle{
+               position:relative;
+               height:350px;
+              border:solid 1px;
+           }
+           .content .bottom{
+               position:relative;
+               height:300px;
+               border:solid 1px;
+           }
+         </style>
+            <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
                    <!--  <t t-call="report.external_layout"> -->
                         <div class="page">
-                            <div class="oe_structure"/>
+                            <div class=" my_border content">
+                                <div class="head">
+                                      <span> ALBERTO POLO DISTRIBUCIONES S.A</span><br/>
+                                      <span> 50197 - ZARAGOZA - ESPAÑA</span><br/>
+                                      <span> TFNO.: 976 57 49 09</span><br/>
+                                      <span> info@albertopolodistibucuines.com</span><br/>
+                                </div>
 
-                            <h1 align="center">Stock Tags</h1>
-                             <div>
-                                 <h3><strong>PRODUCT:  </strong><span t-field="o.product_id"/></h3>
-                                 <h3><strong>REFERENCE:  </strong><span t-field="o.default_code"/></h3>
-                                 <h3><strong>EAN 13: </strong><span t-field="o.ean13"/></h3>
-                                 <h3><strong>PACKAGE: </strong><span t-field="o.package_id"/></h3>
-                                 <h3><strong>ORDER:  </strong><span t-field="o.purchase_id"/></h3>
-                                 <h3><strong>DATE ORDER: </strong> <span t-field="o.date_order"/></h3>
-                                 <h3><strong>UNITS:  </strong><span t-field="o.num_units"/></h3>
-                                 <h3><strong>BOXES:  </strong><span t-field="o.num_boxes"/></h3>
-                                 <h3><strong>WEIGHT:  </strong><span t-field="o.weight"/></h3>
-                                 <h3><strong>LOT:  </strong><span t-field="o.lot_id"/></h3>
-                                 <h3><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></h3>
-                                 <h3><strong>BAR CODE: </strong> </h3>
-                                    <div class="col-xs-12 mt32 text-center">
-                                        <table class="table table-condensed" style="border-bottom: 3px solid black !important;"><thead><th> </th></thead></table>
-                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', (o.ean13 and o.ean13 or '') + ';' + (o.lot_id and o.lot_id.name or '') + ';' + (o.package_id and o.package_id.name or ''), 600, 100)" style="width:600px;height:100px"/>
-                                        <p t-esc="(o.ean13 and o.ean13 or '') + ';' + (o.lot_id and o.lot_id.name or '') + ';' + (o.package_id and o.package_id.name or '')"></p>
+                                 <div class="middle">
+                                      <h1><span t-field="o.product_id.name"/></h1>
+                                      <h2><strong>REF: </strong><span t-field="o.default_code"/></h2>
+                                      <h3><strong>PACKAGE: </strong><span t-field="o.package_id"/></h3>
+                                      <h3><strong>LOT:  </strong><span t-field="o.lot_id"/></h3>
+                                      <h3><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></h3>
+                                       <!-- <h3><strong>REFERENCE:  </strong><span t-field="o.default_code"/></h3> -->
+                                       <!-- <h3><strong>EAN 13: </strong><span t-field="o.ean13"/></h3> -->
+                                       <!-- <h3><strong>ORDER:  </strong><span t-field="o.purchase_id"/></h3> -->
+                                       <!-- <h3><strong>DATE ORDER: </strong> <span t-field="o.date_order"/></h3>
+                                       <h3><strong>UNITS:  </strong><span t-field="o.num_units"/></h3>
+                                       <h3><strong>BOXES:  </strong><span t-field="o.num_boxes"/></h3>
+                                       <h3><strong>WEIGHT:  </strong><span t-field="o.weight"/></h3> -->
+                                   </div>
+
+                                    <div class="bottom text-center">
+                                        <div class="img-center">
+                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'                                     % ('Code128',
+                                              'PK' + (o.package_id and str(o.package_id.id) or ''),
+                                              600,
+                                              200)" style="width:600px;height:200px"/>
+                                            <h2 t-esc="'PK' + (o.package_id and str(o.package_id.id) or '')"/>
+                                        </div>
                                     </div>
-                             </div>
+                                  </div>
                         </div>
                     </t>
                 <!--  </t> -->
-            <!--  </t> -->
+             </t>
         </template>
     </data>
 </openerp>

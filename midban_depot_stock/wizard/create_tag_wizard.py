@@ -60,7 +60,7 @@ class create_tag_wizard(osv.TransientModel):
                     'ean13': prod.ean13,
                     'purchase_id': purchase_id,
                     'lot_id': op.lot_id and op.lot_id.id or False,
-                    'removal_date': op.lot_id and op.lot_id.removal_date,
+                    'removal_date': op.lot_id and op.lot_id.removal_date or False,
                     'package_id': op.result_package_id.id
                     or False
                 }
