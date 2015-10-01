@@ -36,6 +36,12 @@ class print_purchase_report(models.TransientModel):
     supplier_ids = fields.Many2many('res.partner', 'wzd_partner_rel',
                                     'wzd_id', 'supp_id', 'Suppliers',
                                     domain=[('supplier', '=', True)])
+    filter_options = fields.Selection([('products', 'Specific Products'),
+                                       ('supp_categ',
+                                        'Suppliers and/or Categories')],
+                                      string='Filter by',
+                                      required=True,
+                                      default='supp_categ')
 
     @api.multi
     def generate_print_purchase_report(self):
