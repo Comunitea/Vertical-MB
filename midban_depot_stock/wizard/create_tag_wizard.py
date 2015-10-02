@@ -45,37 +45,51 @@ class create_tag_wizard(osv.TransientModel):
             elif context['active_model'] == 'stock.picking':
                 pick_obj = t_pick.browse(cr, uid, active_id, context=context)
                 operation_ids = pick_obj.pack_operation_ids
-
             for op in operation_ids:
                 vals = {}
                 prod = op.operation_product_id and \
                     op.operation_product_id or False
                 if prod:
+                    lot_id = op.lot_id and op.lot_id.id or False
+                    if not lot_id:
+                        lot_id = op.package_id and \
+                            (op.package_id.packed_lot_id and
+                             op.package_id.packed_lot_id.id or False) or\
+                            False
                     vals = {
                         'product_id': prod.id,
                         'default_code': prod.default_code,
-                        'lot_id': op.lot_id and op.lot_id.id or False,
+                        'lot_id': lot_id,
                         'removal_date': op.lot_id and op.lot_id.removal_date or
                         False,
                         'package_id': op.result_package_id and
                         op.result_package_id.id or False
                     }
-                    if not vals['lot_id']:
-                        vals['lot_id'] = op.package_id and \
-                            (op.package_id.packed_lot_id and
-                             op.package_id.packed_lot_id.id or False) or False
-
                     # if op.picking_id.picking_type_code == 'internal':
-                    item_ids.append(t_item.create(cr, uid, vals, context))
+                    print_tag = True
+                    # Check if we are inreposition task if is needed a tag
+                    if lot_id and context['active_model'] == 'stock.task':
+                        # Reception operation, Suppliers to input location
+                        if not op.package_id and op.result_package_id:
+                            pass
+                        else:
+                            pack = op.location_dest_id.get_package_of_lot(lot_id)
+                            if pack:
+                                print_tag = False
+                    if print_tag:
+                        item_ids.append(t_item.create(cr, uid, vals, context))
         res.update({'tag_ids': item_ids})
         if context.get('show_print_report', False):
             res.update({'show_print_report': True})
+        if item_ids:
+            res.update({'tag_exist': True})
         return res
 
     _columns = {
         'tag_ids': fields.one2many('tag.item', 'wizard_id', 'Tags'),
         'show_print_report': fields.boolean('Show', readonly=True),
         'printed': fields.boolean('Printed', readonly=True),
+        'tag_exist': fields.boolean('TAg Exists?')
     }
 
     def print_tags(self, cr, uid, ids, context=None):

@@ -8,6 +8,11 @@
             <field name="arch" type="xml">
                 <form string="Print Tags">
                     <sheet>
+                        <field name="tag_exist" invisible="1"/>
+                        <group attrs="{'invisible': [('tag_exist', '=', True)]}">
+                            <p>No tags to print. Create it manually if you want</p>
+                        </group>
+
                         <group string="Tags">
                             <field name="show_print_report" nolabel="1" invisible="1"/>
                             <field name="printed" nolabel="1" invisible="1"/>
