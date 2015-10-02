@@ -50,33 +50,22 @@ class create_tag_wizard(osv.TransientModel):
                 vals = {}
                 prod = op.operation_product_id and \
                     op.operation_product_id or False
-                purchase_id = op.picking_id.purchase_id and \
-                    op.picking_id.purchase_id.id or False
-                num_units = 0
-                num_boxes = 0
-                vals = {
-                    'product_id': prod.id,
-                    'default_code': prod.default_code,
-                    'ean13': prod.ean13,
-                    'purchase_id': purchase_id,
-                    'lot_id': op.lot_id and op.lot_id.id or False,
-                    'removal_date': op.lot_id and op.lot_id.removal_date or False,
-                    'package_id': op.result_package_id.id
-                    or False
-                }
-                if prod and op.picking_id.picking_type_code == 'incoming':
-                    num_units = op.product_qty
-                elif prod and \
-                        op.picking_id.picking_type_code == 'internal':
-                    num_units = op.package_id.packed_qty - op.product_qty
-                    if op.package_id and op.result_package_id:
-                        num_units = op.product_qty
-                    else:
-                        num_units = op.packed_qty
-                    vals['lot_id'] = op.package_id and \
-                        (op.package_id.packed_lot_id and
-                         op.package_id.packed_lot_id.id or False) or False
-                if vals:
+                if prod:
+                    vals = {
+                        'product_id': prod.id,
+                        'default_code': prod.default_code,
+                        'lot_id': op.lot_id and op.lot_id.id or False,
+                        'removal_date': op.lot_id and op.lot_id.removal_date or
+                        False,
+                        'package_id': op.result_package_id and
+                        op.result_package_id.id or False
+                    }
+                    if not vals['lot_id']:
+                        vals['lot_id'] = op.package_id and \
+                            (op.package_id.packed_lot_id and
+                             op.package_id.packed_lot_id.id or False) or False
+
+                    # if op.picking_id.picking_type_code == 'internal':
                     item_ids.append(t_item.create(cr, uid, vals, context))
         res.update({'tag_ids': item_ids})
         if context.get('show_print_report', False):
@@ -161,4 +150,9 @@ class tag_item(osv.TransientModel):
     @api.onchange('package_id')
     def onchange_product_id(self):
         """ Get default code and ean13"""
-        self.product_id = self.package_id.product_id.id
+        if self.package_id.product_id:
+            self.product_id = self.package_id.product_id.id
+            self.default_code = self.package_id.product_id.default_code
+            self.lot_id = self.package_id.quant_ids and \
+                self.package_id.quant_ids[0].lot_id and \
+                self.package_id.quant_ids[0].lot_id.id

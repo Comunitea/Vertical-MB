@@ -35,11 +35,8 @@
                         <div class="page">
                             <div class=" my_border content">
                                 <div class="head">
-                                      <!-- <span> ALBERTO POLO DISTRIBUCIONES S.A</span><br/>
-                                      <span> 50197 - ZARAGOZA - ESPAÑA</span><br/>
-                                      <span> TFNO.: 976 57 49 09</span><br/>
-                                      <span> info@albertopolodistibucuines.com</span><br/> -->
                                       <span t-field="o.company_id.partner_id.name"/><br/>
+                                      <span t-field="o.company_id.partner_id.street"/><br/>
                                       <span t-field="o.company_id.partner_id.zip"/> - <span t-field="o.company_id.partner_id.city"/> - <span t-field="o.company_id.partner_id.state_id.name"/><br/>
                                       TFNO.:<span t-field="o.company_id.partner_id.phone"/><br/>
                                       <span t-field="o.company_id.partner_id.website"/><br/>
