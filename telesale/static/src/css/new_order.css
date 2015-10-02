@@ -52,7 +52,9 @@
     height: 20.5%;
     border-top: solid 1px #CECBCB;
 }
-
+.telesale #bottompart table{
+    margin-top: 0.4vh;
+}
 .telesale .bottomleft {
     /*position: relative;
     float:left;
@@ -111,7 +113,7 @@
     height:98%;
     vertical-align: middle;
     margin-right:0px;
-    font-size:1.5vmin;
+    font-size:1.7vmin;
     border: 1px solid #353A7E;
     background: #7f82ac;
     background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
@@ -134,9 +136,12 @@
 .telesale  button.select-order{
     background: linear-gradient(#FC1616, #F5DAD6);
 }
+.telesale #pagespart button.selected-order{
+    background: linear-gradient(#FC1616, #F5DAD6);
+}
 .telesale #topheader button {
     color: black;
-    font-size:1.5vmin;
+    font-size:1.7vmin;
     height:100%;
     width: 100%;
     margin:0;
@@ -428,7 +433,7 @@
     color: black;
     height:100%;
     margin:0.1%;
-    font-size: 1.5vmin;
+    font-size: 2vmin;
     font-weight: bold;
     border: 2px solid #353A7E;
     background: #7f82ac;

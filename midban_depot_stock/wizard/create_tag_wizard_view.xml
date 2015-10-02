@@ -13,14 +13,9 @@
                             <field name="printed" nolabel="1" invisible="1"/>
                             <field name="tag_ids" nolabel="1" colspan="4">
                                 <tree string="Tags" editable="top">
+                                    <field name="package_id"/>
                                     <field name="product_id"/>
                                     <field name="default_code"/>
-                                    <field name="ean13"/>
-                                    <field name="package_id"/>
-                                    <field name="purchase_id"/>
-                                    <field name="num_units"/>
-                                    <field name="num_boxes"/>
-                                    <field name="weight"/>
                                     <field name="lot_id" domain="[('product_id','=?', product_id)]"/>
                                     <field name="removal_date"/>
                                 </tree>

@@ -115,6 +115,7 @@ class stock_task(osv.Model):
                         'warehouse_id': False,
                     }
                     picks.write(vals)
+                    picks.do_unreserve()
 
                 elif task.type == 'ubication':
                     op_vals.update(
@@ -126,6 +127,7 @@ class stock_task(osv.Model):
                         picking.write({'operator_id': False,
                                        'machine_id': False,
                                        'wave_id': False})
+                        picking.do_unreserve()
                     task.wave_id.refresh()
                     task.wave_id.cancel_picking()
                 task.operation_ids.write(op_vals)

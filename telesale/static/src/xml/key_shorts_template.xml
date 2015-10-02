@@ -1,74 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <templates id="template" xml:space="preserve">
-    
+
    <t t-name="Key-Shorts-Screen-Widget">
         <div class="customer-data-content">
-            <p>Atajos de teclado para moverse rapidamente por la aplicación</p>
-            <p>Convinaciones de teclas:</p>
-            <p> 
-                ALT+F1 -------------------------> Mostrar esta pantalla
+            <h3>Atajos de teclado para moverse rápidamente por la aplicación</h3>
+            <h3>Combinaciones de teclas:</h3>
+            <p>
+                ALT + F12 -------------------------> Mostrar esta pantalla
                 <br/>
-                ALT+Q --------------------------> Nuevo pedido
+                ALT + Q --------------------------> Nuevo pedido
                 <br/>
-                ALT+W --------------------------> Historial pedidos
+                ALT + W --------------------------> Historial pedidos
                 <br/>
-                ALT+E --------------------------> Catálogo productos
+                ALT + E --------------------------> Listado llamadas
                 <br/>
-                ALT+R --------------------------> Productos reservados
+                ALT + R --------------------------> Catálogo productos
                 <br/>
-                ALT+T --------------------------> Listado llamadas
+                ALT + T --------------------------> Productos reservados
                 <br/>
-                ALT+Y --------------------------> Resumen pedidos
-                <br/>
-                <br/>
-
-                ALT+P --------------------------> Nuevo Pedido
-                <br/>
-                ALT+O --------------------------> Eliminar pedido
+                ALT + Y --------------------------> Resumen pedidos
                 <br/>
                 <br/>
 
-
-                ALT+A --------------------------> Añadir linea pedido
+                ALT + P --------------------------> Nueva orden de pedido
                 <br/>
-                ALT+S --------------------------> Eliminar linea pedido
-                <br/>
-                <br/>
-
-                CTRL+U -------------------------> Botón ULT
-                <br/>
-                CTRL+M -------------------------> Botón VUM
-                <br/>
-                CTRL+A -------------------------> Botón VIA
-                <br/>
-                CTRL+P -------------------------> Botón PROMO
-                <br/>
-                CTRL+S -------------------------> Botón SUST
-                <br/>
-                CTRL+I -------------------------> Botón INFO
-                <br/>
-                CTRL+Q--------------------------> Botón cliente
+                ALT + O --------------------------> Eliminar orden de pedido
                 <br/>
                 <br/>
 
-                CTRL+down-----------------------> Selecionar linea de abajo
+
+                ALT + A --------------------------> Añadir línea pedido
                 <br/>
-                CTRL+up-------------------------> Selecionar linea de arriba
-                <br/>
-                <br/>
-                CTRL+left-----------------------> Foco en botones pedidos
+                ALT + S --------------------------> Eliminar línea pedido
                 <br/>
                 <br/>
 
-                CTRL+ALT+B----------------------> Botón Borrador
+                CTRL + U -------------------------> Botón ULT
                 <br/>
-                CTRL+ALT+C----------------------> Botón Cancelar
+                CTRL + M -------------------------> Botón VUM
                 <br/>
-                CTRL+ALT+ENTER------------------> Botón Confirmar
+                CTRL + A -------------------------> Botón VIA
+                <br/>
+                CTRL + P -------------------------> Botón PROMO
+                <br/>
+                CTRL + S -------------------------> Botón SUST
+                <br/>
+                CTRL + I -------------------------> Botón INFO
+                <br/>
+                CTRL + Q--------------------------> Botón cliente
+                <br/>
+                <br/>
+
+                CTRL + down-----------------------> Selecionar línea de abajo
+                <br/>
+                CTRL + up-------------------------> Selecionar línea de arriba
+                <br/>
+                <br/>
+                CTRL + left-----------------------> Foco en botones pedidos
+                <br/>
+                <br/>
+
+                CTRL + ALT + B----------------------> Botón Borrador
+                <br/>
+                CTRL + ALT + C----------------------> Botón Cancelar
+                <br/>
+                CTRL + ALT + ENTER------------------> Botón Confirmar
                 <br/>
             </p>
         </div>
     </t>
 
-</templates> 
+</templates>

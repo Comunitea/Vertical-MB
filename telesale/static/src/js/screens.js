@@ -152,7 +152,13 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                 });
                 new_order_button.appendTo($('#orders'));
                 new_order_button.selectOrder();
+                var counter = this.ts_model.get('bo_id');
+                counter = counter + 1;
+                this.ts_model.set('bo_id', counter);
             }, self);
+
+
+
             // Also creates first order when is loaded for dirst time
             this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model }));
             this.order_widget= new module.OrderWidget(this, {});
