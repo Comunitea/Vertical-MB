@@ -42,11 +42,15 @@ class route(osv.Model):
         'num_boxes': fields.float('Boxes'),
         'weight': fields.float('Weight'),
         'lot_id': fields.many2one('stock.production.lot', 'Lot'),
-        'removal_date': fields.date('Expiry Date')
+        'removal_date': fields.date('Expiry Date'),
+        'company_id': fields.many2one('res.company', 'Company')
+
     }
 
     _defaults = {
-        'type': 'palet'
+        'type': 'palet',
+        'company_id': lambda self, cr, uid,
+        c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id,
     }
 
     @api.onchange('product_id')
