@@ -99,9 +99,10 @@
                 <input type="search" class='col-product mandatory' t-att-value="widget.model.get('product')"/>
             </td>
             <td class="cell-qty">
-                <input type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty')"/>
+                <input id="inputuosqty" type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty')"/>
             </td>
             <td class="cell-unit">
+                <!-- <select class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
                 <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/>
             </td>
             <td class="cell-pvp">
@@ -301,8 +302,9 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
-                        <label for="customer">Customer:</label>
+                        <label for="customer" id="labelpartner">Customer:</label>
                         <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/>
+                        <!-- <select class="mandatory" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/> -->
                     </div>
                   </div>
               </div>
