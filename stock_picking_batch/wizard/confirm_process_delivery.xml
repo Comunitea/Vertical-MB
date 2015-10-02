@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="confirm_process_delivery_form" model="ir.ui.view">
+            <field name="name">confirm.process.delivery.form</field>
+            <field name="model">confirm.process.delivery</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Batch process delivery">
+                    <h1>
+                      Process all the selected deliveries?
+                  </h1>
+                  <footer>
+                      <button string="Batch process" name="confirm" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+       <record id="action_stock_picking_process" model="ir.actions.act_window">
+            <field name="name">Process delivery (batch)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">confirm.process.delivery</field>
+           <field name="src_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="confirm_process_delivery_form"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record id="ir_stock_picking_process" model="ir.values">
+            <field name="name">Process delivery (batch)</field>
+            <field name="key2">client_action_multi</field>
+            <field name="model">stock.picking</field>
+            <field name="value" eval="'ir.actions.act_window,%d'%action_stock_picking_process" />
+        </record>
+
+    </data>
+</openerp>
+
