@@ -215,14 +215,17 @@ class reposition_wizard(osv.TransientModel):
                     'uos_id': pack_obj.uos_id.id,
                     'uos_qty': uos_qty}
                 assigned = 0
+                rest_pack_qty = pack_qty
                 for q in pack_obj.quant_ids:
-                    if q.product_id.id == prod.id and assigned < pack_qty:
-                        if pack_qty > q.qty:
+                    if q.product_id.id == prod.id and assigned < rest_pack_qty:
+                        if rest_pack_qty > q.qty:
                             force_quants_assign.append((q, q.qty))
                             assigned += q.qty
+                            rest_pack_qty -= assigned
                         else:
-                            force_quants_assign.append((q, pack_qty))
-                            assigned += pack_qty
+                            force_quants_assign.append((q, rest_pack_qty))
+                            assigned += rest_pack_qty
+                            rest_pack_qty -= assigned
                 operation_dics.append(op_vals)
 
         camera_id = loc.get_camera()
@@ -253,8 +256,6 @@ class reposition_wizard(osv.TransientModel):
             move_obj.create(cr, uid, vals, context=context)
             t_pick.action_confirm(cr, uid, [pick_id], context=context)
             ctx = context.copy()  # force the assignement
-            # import ipdb; ipdb.set_trace()
-
             ctx.update({'force_quants_location': force_quants_assign})
             t_pick.action_assign(cr, uid, [pick_id], context=ctx)
             t_pick.do_prepare_partial(cr, uid, [pick_id], context=context)

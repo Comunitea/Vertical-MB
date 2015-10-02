@@ -111,7 +111,6 @@ class purchase_order_parser(models.AbstractModel):
         res = []
         prod_dics = []
         # Get products to give in the report
-        # import ipdb; ipdb.set_trace()
         fields = ['name', 'default_code', 'qty_available', 'incoming_qty',
                   'outgoing_qty', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa']
         if data.get('product_ids', False):

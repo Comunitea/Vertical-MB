@@ -239,7 +239,6 @@ class sale_order(models.Model):
         same product with different units of measure selected.
         """
         t_line = self.env['sale.order.line']
-        # import ipdb; ipdb.set_trace()
 
         for order in self:
             for line in order.order_line:
