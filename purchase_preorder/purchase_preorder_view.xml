@@ -23,6 +23,7 @@
                     <field name="mantles" />
                     <field name="palets"/>
                     <field name="total"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
