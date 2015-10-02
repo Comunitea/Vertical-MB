@@ -932,7 +932,8 @@ class stock_pack_operation(models.Model):
                 pass
             else:
                 pack = op.location_dest_id.get_package_of_lot(lot_id)
-                op.result_package_id = pack.id if pack else False
+                pack_to_create_id = vals.get('result_package_id', False)
+                op.result_package_id = pack.id if pack else pack_to_create_id
         return op
 
     @api.one

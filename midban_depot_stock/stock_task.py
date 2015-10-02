@@ -115,7 +115,7 @@ class stock_task(osv.Model):
                         'warehouse_id': False,
                     }
                     picks.write(vals)
-                    picks.do_unreserve()
+                    # picks.do_unreserve()
 
                 elif task.type == 'ubication':
                     op_vals.update(
