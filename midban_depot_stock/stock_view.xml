@@ -69,9 +69,9 @@
                 <!-- Add fields from assign_task_wzd.py -->
                 <field name="partner_id" position="after">
                     <field name="user_id"/>
-                    <field name="operator_id"  attrs="{'invisible': [('task_type', '=', False)]}"/>
-                    <field name="machine_id"  attrs="{'invisible': [('task_type', '=', False)]}"/>
-                    <field name="warehouse_id"  attrs="{'invisible': [('task_type', '=', False)]}"/>
+                    <field name="operator_id"  attrs="{'invisible': [('operator_id', '=', False)]}"/>
+                    <field name="machine_id"  attrs="{'invisible': [('machine_id', '=', False)]}"/>
+                    <field name="warehouse_id"  attrs="{'invisible': [('warehouse_id', '=', False)]}"/>
                     <field name="task_type" attrs="{'invisible': [('task_type', '=', False)]}"/>
                     <field name="camera_id" attrs="{'invisible': [('task_type', '!=', 'reposition')]}"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
