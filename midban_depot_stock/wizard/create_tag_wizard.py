@@ -56,14 +56,20 @@ class create_tag_wizard(osv.TransientModel):
                             (op.package_id.packed_lot_id and
                              op.package_id.packed_lot_id.id or False) or\
                             False
+
+                    pack_id = op.result_package_id and op.result_package_id.id\
+                        or False
+                    if context['active_model'] == 'stock.task':
+                        # Reposition of entire package printtag for the package
+                        if not op.product_id and op.package_id and not pack_id:
+                            pack_id = op.package_id.id
                     vals = {
                         'product_id': prod.id,
                         'default_code': prod.default_code,
                         'lot_id': lot_id,
                         'removal_date': op.lot_id and op.lot_id.removal_date or
                         False,
-                        'package_id': op.result_package_id and
-                        op.result_package_id.id or False
+                        'package_id': pack_id
                     }
                     # if op.picking_id.picking_type_code == 'internal':
                     print_tag = True

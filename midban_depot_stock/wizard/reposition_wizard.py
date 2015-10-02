@@ -253,6 +253,8 @@ class reposition_wizard(osv.TransientModel):
             move_obj.create(cr, uid, vals, context=context)
             t_pick.action_confirm(cr, uid, [pick_id], context=context)
             ctx = context.copy()  # force the assignement
+            # import ipdb; ipdb.set_trace()
+
             ctx.update({'force_quants_location': force_quants_assign})
             t_pick.action_assign(cr, uid, [pick_id], context=ctx)
             t_pick.do_prepare_partial(cr, uid, [pick_id], context=context)
