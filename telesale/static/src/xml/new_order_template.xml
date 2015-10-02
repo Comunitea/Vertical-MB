@@ -410,7 +410,7 @@
     </t>
 
     <t t-name="Totals-Order-Widget">
-        <div class="col-xs-3 fullheight">
+        <div class="col-xs-2 fullheight">
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
@@ -431,7 +431,7 @@
                   </div>
               </div>
         </div>
-        <div class="col-xs-3 fullheight">
+        <div class="col-xs-2 fullheight">
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
@@ -451,7 +451,7 @@
                   </div>
               </div>
         </div>
-        <div class="col-xs-3 fullheight">
+        <div class="col-xs-2 fullheight">
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
@@ -472,7 +472,28 @@
                   </div>
               </div>
         </div>
-        <div class="col-xs-3 fullheight centerinside">
+        <div class="col-xs-2 fullheight">
+            <div class="row semiheight">
+                <div class="fullheight centerinside fullwidth">
+                  <div class="centerthis">
+                  <label for="total">Proveedores:</label>
+                  <input type="text" class='total mandatory' id="total_order"
+                      t-att-value="widget.order_model.get('partner_code')" tabIndex="-1"/>
+                </div>
+              </div>
+              </div>
+
+              <div class="row semiheight">
+                  <div class="fullheight centerinside fullwidth">
+                      <div class="centerthis">
+                        <!-- <label for="total">Total Fresh:</label>
+                        <input type="text" class='total' id="total_fresh"
+                            t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/> -->
+                          </div>
+                  </div>
+              </div>
+        </div>
+        <div class="col-xs-4 fullheight centerinside">
           <div class="fullheight centerinside fullwidth">
             <t t-if="widget.order_model.get('state') == 'draft'">
               <div class="order-button">
@@ -672,7 +693,7 @@
                 <div class="bottomright col-xs-8 fullheight">
                     <div id="placeholder-bottompart">
                     </div>
-              </div>
+                </div>
             </div>
         </div>
     </t>
