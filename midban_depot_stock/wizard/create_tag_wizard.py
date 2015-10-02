@@ -77,11 +77,6 @@ class create_tag_wizard(osv.TransientModel):
                         (op.package_id.packed_lot_id and
                          op.package_id.packed_lot_id.id or False) or False
                 if vals:
-                    num_boxes = prod.un_ca and \
-                        num_units / prod.un_ca or 0
-                    vals['num_units'] = num_units
-                    vals['num_boxes'] = num_boxes
-                    vals['weight'] = num_units * prod.kg_un
                     item_ids.append(t_item.create(cr, uid, vals, context))
         res.update({'tag_ids': item_ids})
         if context.get('show_print_report', False):
@@ -103,16 +98,10 @@ class create_tag_wizard(osv.TransientModel):
         for item in wzd_obj.tag_ids:
             vals = {
                 'product_id': item.product_id.id,
-                'default_code': item.default_code,
-                'ean13': item.ean13,
-                'purchase_id': item.purchase_id and item.purchase_id.id
-                or False,
-                'weight': item.weight,
-                'package_id': item.package_id.id,
-                'num_units': item.num_units,
-                'num_boxes': item.num_boxes,
+                'default_code': item.default_code or False,
                 'lot_id': item.lot_id and item.lot_id.id or False,
-                'removal_date': item.removal_date
+                'removal_date': item.removal_date,
+                'package_id': item.package_id and item.package_id.id or False
             }
             tag_ids.append(t_tag.create(cr, uid, vals, context))
         ctx = dict(context)
@@ -152,14 +141,9 @@ class tag_item(osv.TransientModel):
         'product_id': fields.many2one('product.product', 'Product',
                                       required=True),
         'default_code': fields.char('Reference', size=128),
-        'ean13': fields.char('EAN13', size=13),
-        'purchase_id': fields.many2one('purchase.order', 'Purchase order'),
-        'num_units': fields.float('Units'),
-        'num_boxes': fields.float('Boxes'),
-        'weight': fields.float('Weight'),
         'lot_id': fields.many2one('stock.production.lot', 'Lot'),
         'removal_date': fields.date('Expiry Date'),
-        'package_id': fields.many2one('stock.quant.package', 'Package')
+        'package_id': fields.many2one('stock.quant.package', 'Package'),
 
     }
 
@@ -168,24 +152,13 @@ class tag_item(osv.TransientModel):
         """ Get default code and ean13"""
         self.default_code = self.product_id.default_code
         self.ean13 = self.product_id.ean13
-        self.weight = self.product_id.kg_un
-        self.units = 1
 
     @api.onchange('lot_id')
     def onchange_lot_id(self):
         """ Get default code and ean13"""
         self.removal_date = self.lot_id.removal_date
 
-    @api.onchange('num_units')
-    def onchange_units(self):
-        """ Get boxes and new weight"""
-        if self.product_id and self.product_id.un_ca:
-            self.num_boxes = self.num_units / self.product_id.un_ca
-            self.weight = self.product_id.kg_un * self.num_units
-
-    @api.onchange('num_boxes')
-    def onchange_boxes(self):
-        """ Get units and new weight"""
-        if self.product_id and self.product_id.un_ca:
-            self.num_units = self.num_boxes * self.product_id.un_ca
-            self.weight = self.product_id.kg_un * self.num_units
+    @api.onchange('package_id')
+    def onchange_product_id(self):
+        """ Get default code and ean13"""
+        self.product_id = self.package_id.product_id.id
