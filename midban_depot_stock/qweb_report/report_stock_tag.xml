@@ -3,74 +3,76 @@
     <data>
         <template id="report_stock_tag">
           <style type="text/css">
-           .my_border{
-               border:solid 1px;
-           }
            .head span{
-             font-size:20px
+             font-size:11px;
+           }
+           .middle span{
+             font-size:15px;
+           }
+           .middle strong{
+             font-size:15px;
            }
            .content{
                position:relative;
-               height:800px;
+               min-height:150mm;
+               width:100mm;
+               margin:0;
+               padding:0;
+               <!-- border:solid 1px; -->
            }
            .content .head{
                position:relative;
-               height:150px;
-              border:solid 1px;
+               height:30mm;
+               margin:0;
+               width:100mm;
+              <!-- border:solid 1px; -->
            }
            .content .middle{
                position:relative;
-               height:350px;
-              border:solid 1px;
+               height: 50mm;
+               width:100mm;
+               <!-- border:solid 1px; -->
+               margin:0;
            }
            .content .bottom{
                position:relative;
-               height:300px;
-               border:solid 1px;
+               height: 70mm;
+               width:100mm;
+               <!-- border:solid 1px; -->
+               margin:0;
            }
          </style>
-            <t t-call="report.html_container">
+            <!-- <t t-call="report.html_container"> -->
                 <t t-foreach="docs" t-as="o">
                    <!--  <t t-call="report.external_layout"> -->
                         <div class="page">
-                            <div class=" my_border content">
+                            <div class="content">
                                 <div class="head">
                                       <span t-field="o.company_id.partner_id.name"/><br/>
                                       <span t-field="o.company_id.partner_id.street"/><br/>
                                       <span t-field="o.company_id.partner_id.zip"/> - <span t-field="o.company_id.partner_id.city"/> - <span t-field="o.company_id.partner_id.state_id.name"/><br/>
-                                      TFNO.:<span t-field="o.company_id.partner_id.phone"/><br/>
+                                      <span>TFNO.: </span><span t-field="o.company_id.partner_id.phone"/><br/>
                                       <span t-field="o.company_id.partner_id.website"/><br/>
                                 </div>
 
                                  <div class="middle">
-                                      <h1><span t-field="o.product_id.name"/></h1>
-                                      <h2><strong>REF: </strong><span t-field="o.default_code"/></h2>
-                                      <h3><strong>PACKAGE: </strong><span t-field="o.package_id"/></h3>
-                                      <h3><strong>LOT:  </strong><span t-field="o.lot_id"/></h3>
-                                      <h3><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></h3>
-                                       <!-- <h3><strong>REFERENCE:  </strong><span t-field="o.default_code"/></h3> -->
-                                       <!-- <h3><strong>EAN 13: </strong><span t-field="o.ean13"/></h3> -->
-                                       <!-- <h3><strong>ORDER:  </strong><span t-field="o.purchase_id"/></h3> -->
-                                       <!-- <h3><strong>DATE ORDER: </strong> <span t-field="o.date_order"/></h3>
-                                       <h3><strong>UNITS:  </strong><span t-field="o.num_units"/></h3>
-                                       <h3><strong>BOXES:  </strong><span t-field="o.num_boxes"/></h3>
-                                       <h3><strong>WEIGHT:  </strong><span t-field="o.weight"/></h3> -->
+                                        <h2 t-esc="o.product_id.name"/>
+                                      <p><strong>REF: </strong><span t-field="o.default_code"/></p>
+                                      <p><strong>PACKAGE: </strong><span t-field="o.package_id"/></p>
+                                      <p><strong>LOT:  </strong><span t-field="o.lot_id"/></p>
+                                      <p><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></p>
                                    </div>
 
                                     <div class="bottom text-center">
-                                        <div class="img-center">
-                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'                                     % ('Code128',
-                                              'PK' + (o.package_id and str(o.package_id.id) or ''),
-                                              600,
-                                              200)" style="width:600px;height:200px"/>
-                                            <h2 t-esc="'PK' + (o.package_id and str(o.package_id.id) or '')"/>
-                                        </div>
+                                        <h2 t-esc="'PK' + (o.package_id and str(o.package_id.id) or '')"/>
+                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'                                     % ('Code128',                                               'PK' + (o.package_id and str(o.package_id.id) or ''),                                               800,                                               300)" style="width:350px;height:150px"/>
+                                        <h3 t-esc="o.package_id and o.package_id.location_id.name or False"/>
                                     </div>
                                   </div>
                         </div>
                     </t>
                 <!--  </t> -->
-             </t>
+             <!-- </t> -->
         </template>
     </data>
 </openerp>
