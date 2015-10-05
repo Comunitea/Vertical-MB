@@ -202,7 +202,7 @@ class res_partner(osv.Model):
         if not args:
             args = []
 
-        ids = self.search(cr, uid, [('ref', operator, name)] + args,
+        ids = self.search(cr, uid, [('ref', '=', name)] + args,
                               limit=limit, context=context)
 
         if name and len(ids) == 0:
