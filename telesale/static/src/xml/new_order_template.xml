@@ -322,8 +322,11 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
-                      <label for="code">Customer code:</label>
-                      <input class="  mandatory" type="text" id='partner_code' name="code" t-att-value="widget.order_model.get('partner_code')"/>
+                      <label for="total">Suppliers:</label>
+                      <input type="text" class='total mandatory' id="supplier"
+                          t-att-value="widget.order_model.get('supplier')" tabIndex="-1"/>
+                      <!-- <label for="code">Customer code:</label>
+                      <input class="  mandatory" type="text" id='partner_code' name="code" t-att-value="widget.order_model.get('partner_code')"/> -->
                     </div>
                   </div>
               </div>
@@ -476,9 +479,9 @@
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
-                  <label for="total">Proveedores:</label>
+                  <!-- <label for="total">Suppliers:</label>
                   <input type="text" class='total mandatory' id="total_order"
-                      t-att-value="widget.order_model.get('partner_code')" tabIndex="-1"/>
+                      t-att-value="widget.order_model.get('partner_code')" tabIndex="-1"/> -->
                 </div>
               </div>
               </div>

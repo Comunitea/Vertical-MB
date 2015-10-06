@@ -67,7 +67,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#partner').focus();
         },
         renderElement: function () {
-            // debugger;
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
@@ -77,6 +76,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
             this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
             this.$('#coment').blur(_.bind(this.set_value, this, 'coment'))
+            this.$('#supplier').blur(_.bind(this.set_value, this, 'supplier'))
 
             //autocomplete products and units from array of names
             this.$('#partner_code').autocomplete({
@@ -84,6 +84,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             });
             this.$('#partner').autocomplete({
                 source: this.ts_model.get('customer_names'),
+            });
+            this.$('#supplier').autocomplete({
+                source: this.ts_model.get('supplier_names'),
             });
 
         },
@@ -105,6 +108,19 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
         },
+        get_supplier_names: function(partner_obj) {
+            self = this
+            if (partner_obj.supplier_ids) {
+              var supplier_names = [];
+                for (var i = 0, len = partner_obj.supplier_ids.length; i < len; i++){
+                var key = partner_obj.supplier_ids[i]
+                if(self.ts_model.db.suppliers_name_id[key]){
+                  supplier_names.push(self.ts_model.db.suppliers_name_id[key])
+                }
+              }
+              self.ts_model.set('supplier_names', supplier_names)
+          }
+        },
         perform_onchange: function(key, value) {
             if (!value) {return;}
             switch (key){
@@ -118,8 +134,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         break;
                     }
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
+                    this.get_supplier_names(partner_obj);
                     this.order_model.set('partner', partner_obj.name);
-                    // debugger;
                     this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit, 2));
                     this.order_model.set('customer_debt', my_round(partner_obj.credit, 2));
@@ -129,6 +145,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.check_partner_routes(partner_id);
                     this.refresh();
                     this.$('#date_invoice').focus();
+
                     break;
 
                 case "partner":
@@ -140,8 +157,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.refresh();
                         break;
                     }
-                    // debugger;
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
+                    this.get_supplier_names(partner_obj);
                     this.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
                     this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
@@ -150,6 +167,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
                     this.order_model.set('contact_name', contact_obj.name);
                     this.check_partner_routes(partner_id);
+
                     this.refresh();
                     this.$('#partner_code').focus();
                     break;
