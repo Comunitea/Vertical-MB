@@ -19,6 +19,8 @@ function openerp_ts_db(instance, module){
             this.partner_by_id = {};
             this.partner_ref_id = {};
             this.partner_name_id = {};
+            this.suppliers_name_id = {};
+            this.supplier_from_name_to_id = {};
 
             this.tax_by_id = {};
             this.map_tax_by_id = {};
@@ -119,6 +121,16 @@ function openerp_ts_db(instance, module){
                 if(partner.ref){
                     this.partner_ref_id[partner.ref] = partner.id;
                 }
+            }
+        },
+        add_suppliers: function(suppliers){
+            if(!suppliers instanceof Array){
+                suppliers = [suppliers];
+            }
+            for(var i = 0, len = suppliers.length; i < len; i++){
+                var supplier = suppliers[i];
+                this.suppliers_name_id[supplier.id] = supplier.name;
+                this.supplier_from_name_to_id[supplier.name] = supplier.id;
             }
         },
         add_taxes: function(taxes){

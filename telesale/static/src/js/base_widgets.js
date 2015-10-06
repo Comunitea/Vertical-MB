@@ -341,7 +341,6 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             });
 
             Mousetrap.bind('ctrl+left', function(e){
-              debugger;
                 $( document.activeElement ).blur();
                 if (e.preventDefault) e.preventDefault();
                 else e.returnValue = false;

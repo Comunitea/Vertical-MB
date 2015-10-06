@@ -41,7 +41,9 @@
                 'sale_product_substitute',
                 'midban_depot_stock',
                 'midban_product_reserve',
-                'process_sale_order'],
+                'process_sale_order',
+                'indirect_sale', # because of supplier_ids field
+                'frigo_edi'], # because of indirect_customer field
     'qweb': ['static/src/xml/*.xml'],
     'installable': True,
     'auto_install': False,
