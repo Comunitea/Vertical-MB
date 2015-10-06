@@ -759,6 +759,9 @@ function openerp_ts_models(instance, module){
                                             domain
                                             )
                 .then(function(order_lines){
+                  if (!order_lines){
+                    order_lines = []
+                  }
                     // self.add_lines_to_current_order(order_lines);
                     var unique_lines = []
                     var added_products = []
@@ -832,6 +835,9 @@ function openerp_ts_models(instance, module){
                                                  ]);}
                 }).then(function(order_lines){
                     // self.add_lines_to_current_order(order_lines);
+                    if (!order_lines){
+                      order_lines = []
+                    }
                     var unique_lines = []
                     var added_products = []
                     for (var i=0, len = order_lines.length; i < len; i++){
