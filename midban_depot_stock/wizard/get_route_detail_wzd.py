@@ -30,9 +30,11 @@ class get_route_detail_wzd(models.TransientModel):
     end_date = fields.Date('End Date', default=fields.Date.context_today)
     item_ids = fields.One2many('item.create.route', 'wzd_id',
                                'Selected Routes')
-    delete = fields.Boolean('Delete Future',
-                            help='if checked will delete all details in the'
-                                 'future.')
+    delete = fields.Boolean('Regenerate Future Dates',
+                            help="If it is checked, it will delete all dates'\
+                            'already generated")
+                            # help='if checked will delete all details in the'
+                            #      'future.')
 
     @api.model
     def default_get(self, fields_list):

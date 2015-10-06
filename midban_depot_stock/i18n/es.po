@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-02 20:55+0000\n"
-"PO-Revision-Date: 2015-10-02 20:55+0000\n"
+"POT-Creation-Date: 2015-10-06 17:20+0000\n"
+"PO-Revision-Date: 2015-10-06 17:20+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -729,11 +729,6 @@ msgid "Day"
 msgstr "Día"
 
 #. module: midban_depot_stock
-#: field:get.route.detail.wzd,delete:0
-msgid "Delete Future"
-msgstr "Borrar futuro"
-
-#. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Delete operations"
 msgstr "Borrar operaciones"
@@ -945,7 +940,7 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:131
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:134
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:144
-#: code:addons/midban_depot_stock/wizard/get_route_detail_wzd.py:66
+#: code:addons/midban_depot_stock/wizard/get_route_detail_wzd.py:68
 #: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:50
 #: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:95
 #: code:addons/midban_depot_stock/wizard/manual_transfer_wzd.py:115
@@ -1217,6 +1212,11 @@ msgid "If checked, when you try confirm                                        a
 msgstr "Si está activado, cuando confirmas un pedido de venta, no serás capaz de hacerlo si no hay un detalle de una ruta de reparto (envío) planificado para el cliente de la venta"
 
 #. module: midban_depot_stock
+#: help:get.route.detail.wzd,delete:0
+msgid "If it is checked, it will delete all dates'                            'already generated"
+msgstr "Si está marcado, borrará todas las fechas futuras que ya están generadas"
+
+#. module: midban_depot_stock
 #: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
 msgid "If no pack defined to put away he product, the wizard will only search stock for products without package."
 msgstr "Si no hay paquete definido de donde quitar el producto, el asistente buscará sólo mercancía que no esté dentro de un paquete"
@@ -1303,7 +1303,7 @@ msgstr "Rutas de inventario"
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_account_invoice
 msgid "Invoice"
-msgstr "Facturar"
+msgstr "Factura"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_account_invoice_line
@@ -1732,7 +1732,7 @@ msgid "No reposition type founded                                               
 msgstr "No se ha encontrado el tipo reposición. Debe definirlo en el almacén."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/get_route_detail_wzd.py:66
+#: code:addons/midban_depot_stock/wizard/get_route_detail_wzd.py:68
 #, python-format
 msgid "No routes to shedule."
 msgstr "No hay rutas que planificar."
@@ -2348,6 +2348,11 @@ msgstr "Registro cambiado"
 #: view:website:midban_depot_stock.report_supplier_reception
 msgid "Reference"
 msgstr "Referencia"
+
+#. module: midban_depot_stock
+#: field:get.route.detail.wzd,delete:0
+msgid "Regenerate Future Dates"
+msgstr "Regenerar fechas futuras"
 
 #. module: midban_depot_stock
 #: field:partner.route.info,regularity:0
@@ -3496,11 +3501,6 @@ msgstr "_Cancelar"
 #: view:stock.transfer_details:midban_depot_stock.stock_transfer_details_form_in
 msgid "blue:var_weight == True"
 msgstr "blue:var_weight == True"
-
-#. module: midban_depot_stock
-#: help:get.route.detail.wzd,delete:0
-msgid "if checked will delete all details in thefuture."
-msgstr "Si está marcado borraremos los detalles futuros a la fecha de fin."
 
 #. module: midban_depot_stock
 #: help:customer.list,sale_id:0

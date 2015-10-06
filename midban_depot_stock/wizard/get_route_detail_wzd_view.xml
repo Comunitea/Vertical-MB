@@ -7,11 +7,11 @@
             <field name="arch" type="xml">
                 <form>
                     <head>
-                        
+
                     </head>
                     <sheet>
                         <p>This wizard will generate de detailed routes for the selected routes.
-                           If no dates in the lines the wizard will use the globals dates 
+                           If no dates in the lines the wizard will use the globals dates
                         </p>
                         <group colspan="4">
                             <group col="2">
@@ -21,6 +21,9 @@
                                 <field name="end_date"/>
                             </group>
                         </group>
+                        <group >
+                            <field name="delete"/>
+                        </group>
                         <group string="Selected routes">
                             <field name="item_ids" nolabel="1">
                                 <tree editable="top">
@@ -28,13 +31,15 @@
                                     <field name="start_date"/>
                                     <field name="end_date"/>
                                     <field name="last_pending_date"/>
+                                    <!-- <label for="delete"/> -->
+
                                 </tree>
                             </field>
                         </group>
                     </sheet>
                     <footer>
-                        <label for="delete"/>
-                        <field name="delete"/>
+                        <!-- <label for="delete"/>
+                        <field name="delete"/> -->
                         <button name="create_route_details" string="Create Details" type="object" class="oe_highlight"/>
                         <button string="Cancel" class="oe_link" special="cancel"/>
                     </footer>
