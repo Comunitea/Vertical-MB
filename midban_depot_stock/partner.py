@@ -72,7 +72,7 @@ class partner_route_info(models.Model):
     next_date = fields2.Date('Next Date', compute='_compute_dates',
                              readonly=False)
     route_id = fields2.Many2one('route', 'Route')
-    day_id = fields2.Many2one('week.days', 'Week_day', readonly=True,
+    day_id = fields2.Many2one('week.days', 'Week day', readonly=True,
                               related="route_id.day_id")
     type = fields2.Selection([('auto_sale', 'Auto Sale'),
                              ('comercial', 'Comercial'),
