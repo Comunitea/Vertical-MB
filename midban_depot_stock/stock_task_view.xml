@@ -21,6 +21,10 @@
                                 <field name="type"/>
                                 <field name="picking_id"/>
                                 <field name="wave_id" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
+                                <field name="pack_ids" widget="many2many_tags" attrs="{'invisible': [('type', '!=', 'ubication')]}"/>
+                                <button name="add_location_operations" string="Add Operations"
+                                        type="object"
+                                        class="oe_link oe_inline" attrs="{'invisible': [('type', '!=', 'ubication')]}"/>
                             </group>
                             <group>
                                 <field name="machine_id"/>
