@@ -265,6 +265,34 @@ products do not require units for validation'),
         new_id = super(product_template, self).create(cr, user, vals, context)
         return new_id
 
+    def write(self, cr, uid, ids, vals, context=None):
+        ''' We don't need to no control change of uom if not validated product'''
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        validated_ids = []
+        not_validated_ids = []
+        for product in self.browse(cr, uid, ids, context=context):
+            if product.state2 not in ['validated',
+                                   'registered',
+                                   'unregistered',
+                                   'denied'] and \
+                            'uom_po_id' in vals:
+                not_validated_ids.append(product.id)
+            else:
+                validated_ids.append(product.id)
+
+        if not_validated_ids:
+            uom_vals = {}
+            uom_vals['uom_id'] = vals.pop('uom_id')
+            uom_vals['uom_po_id'] = vals.pop('uom_po_id')
+            res = super(product_template, self).write(cr, uid, not_validated_ids, vals, context)
+            osv.osv.write(self, cr, uid, not_validated_ids, uom_vals, context=context)
+        if  validated_ids:
+            return super(product_template, self).write(cr, uid, validated_ids, vals, context)
+        return res
+
+
     def _update_history(self, cr, uid, ids, context, product_obj, activity,
                         reason=False):
         """ Update product history model for the argument partner_obj whith
