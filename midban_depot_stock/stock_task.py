@@ -58,6 +58,10 @@ class stock_task(osv.Model):
                                          'Operations', readonly=True,
                                          states={'assigned': [('readonly',
                                                                False)]}),
+        'pack_ids': fields.many2many('stock.quant.package', 'task_pack_rel',
+                                     'task_id', 'pack_id', string="Add packs",
+                                     help="Search packs in ubication pìckings "
+                                     "and adds the operation to task")
     }
     _defaults = {
         'state': 'assigned',
@@ -151,3 +155,10 @@ class stock_task(osv.Model):
         """
         return self.write({'state': 'assigned',
                           'paused': False})
+
+    # @api.one
+    # def add_location_operation(self, pack_id):
+    #     domain = [
+    #         ('picking_id.')
+    #     ]
+    #     return
