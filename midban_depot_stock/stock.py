@@ -333,34 +333,6 @@ class stock_picking(osv.Model):
                 op.to_process = True  # Write to be to process by default
         return
 
-    @api.multi
-    def write(self, vals):
-        """
-        Overwrited in order to write in the picking of type pick the detail
-        route if the pick is not done.
-        """
-        for pick in self:
-            if vals.get('route_detail_id', False):
-                t_detail = self.env['route.detail']
-                detail_obj = t_detail.browse(vals['route_detail_id'])
-                detail_date = detail_obj.date + " 19:00:00"
-                pick.min_date = detail_date
-
-            if pick.sale_id and pick.group_id and \
-                    vals.get('route_detail_id', False) and \
-                    pick.picking_type_code == 'outgoing':
-                domain = [('id', '!=', pick.id),
-                          ('group_id', '=', pick.group_id.id),
-                          ('picking_type_code', '!=', 'outgoing')]
-                pick_objs = self.search(domain)
-                for pick2 in pick_objs:
-                    if pick2.state != 'done':
-                        vals = {'route_detail_id': vals['route_detail_id'],
-                                'min_date': detail_date}
-                        pick2.write(vals)
-        res = super(stock_picking, self).write(vals)
-        return res
-
     @api.onchange('route_detail_id')
     @api.multi
     def onchange_route_detail_id(self):
@@ -452,6 +424,56 @@ class StockPicking(models.Model):
         string='Total Weight', readonly=True, store=True,
         help="Calculed as the total of stock qty in moves * "
         "product gross weight")
+    validated = fields2.Boolean('Validated', default=False,
+                                help="If checked the picking will be "
+                                "considered when you get a picking task")
+
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrited in order to write in the picking of type pick the detail
+        route if the pick is not done.
+        """
+        # import ipdb; ipdb.set_trace()
+
+        for pick in self:
+            route_detail_id = False
+            if 'route_detail_id' in vals:
+                route_detail_id = vals['route_detail_id']
+            elif pick.route_detail_id:
+                route_detail_id = pick.route_detail_id.id
+
+            if 'validated' in vals:
+                validated = vals['validated']
+            else:
+                validated = pick.validated
+
+            if route_detail_id:
+                t_detail = self.env['route.detail']
+                detail_obj = t_detail.browse(route_detail_id)
+                detail_date = detail_obj.date + " 19:00:00"
+                # pick.min_date = detail_date
+                # Write the route detail date in the min_date of picking
+                vals['min_date'] = detail_date
+
+            # If outgoing picking write the route and the min_date in the
+            # related picking of picking type, also the validated check
+
+            if pick.sale_id and pick.group_id and \
+                    route_detail_id and \
+                    pick.picking_type_code == 'outgoing':
+                domain = [('id', '!=', pick.id),
+                          ('group_id', '=', pick.group_id.id),
+                          ('picking_type_code', '!=', 'outgoing')]
+                pick_objs = self.search(domain)
+                for pick2 in pick_objs:
+                    if pick2.state != 'done':
+                        vals2 = {'route_detail_id': route_detail_id,
+                                 'min_date': detail_date,
+                                 'validated': validated}
+                        pick2.write(vals2)
+        res = super(stock_picking, self).write(vals)
+        return res
 
     @api.one
     @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
