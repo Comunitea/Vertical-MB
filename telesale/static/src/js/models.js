@@ -57,6 +57,7 @@ function openerp_ts_models(instance, module){
                 'qnotes_names':          [], // Array of qualitative note names
                 'customer_names':          [], // Array of customer names
                 'customer_codes':          [], // Array of customer refs
+                'supplier_names':          [], // Array of supplier refs
                 'pricelist':            null,
                 'selectedOrder':        null,
                 'nbr_pending_operations': 0,
@@ -142,13 +143,16 @@ function openerp_ts_models(instance, module){
                 }).then(function(products){
                     self.db.add_products(products);
 
-                    return self.fetch('res.partner',['name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
+                    return self.fetch('res.partner',['comercial','supplier_ids','indirect_customer','name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
                     for (key in customers){
                         self.get('customer_names').push(customers[key].name);
                         self.get('customer_codes').push(customers[key].ref);
                     }
                     self.db.add_partners(customers);
+                    return self.fetch('res.partner',['name'], [['supplier','=',true], ['customer_ids','!=',false]])
+                }).then(function(suppliers){
+                    self.db.add_suppliers(suppliers);
 
                     return self.fetch('account.tax', ['amount', 'price_include', 'type'], [['type_tax_use','=','sale']]);
                 }).then(function(taxes) {
@@ -378,7 +382,6 @@ function openerp_ts_models(instance, module){
             return new_str
         },
         parse_utc_to_str_date: function(str_date){
-          //debugger;
             return this.datetimeToStr(instance.web.str_to_datetime(str_date));
         },
         dateToStr: function(date) {
@@ -577,6 +580,7 @@ function openerp_ts_models(instance, module){
                 num_order: this.generateNumOrder(),
                 partner_code: '',
                 partner: '',
+                supplier: '',
                 customer_comment: '',
                 contact_name: '',
                 date_order: this.getStrDate(),
@@ -740,6 +744,7 @@ function openerp_ts_models(instance, module){
                 date_order: this.get('date_order'),
                 date_planned: this.get('date_planned'),
                 note: this.get('coment'),
+                supplier_id : this.ts_model.db.supplier_from_name_to_id[this.get('supplier')],
             };
         },
         get_last_line_by: function(period, client_id){
@@ -759,6 +764,9 @@ function openerp_ts_models(instance, module){
                                             domain
                                             )
                 .then(function(order_lines){
+                  if (!order_lines){
+                    order_lines = []
+                  }
                     // self.add_lines_to_current_order(order_lines);
                     var unique_lines = []
                     var added_products = []
@@ -832,6 +840,9 @@ function openerp_ts_models(instance, module){
                                                  ]);}
                 }).then(function(order_lines){
                     // self.add_lines_to_current_order(order_lines);
+                    if (!order_lines){
+                      order_lines = []
+                    }
                     var unique_lines = []
                     var added_products = []
                     for (var i=0, len = order_lines.length; i < len; i++){

@@ -115,6 +115,7 @@ class sale(osv.osv):
                 or False,
                 'note': order['note'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
+                'supplier_id': order['supplier_id'] or False
             }
             if order['erp_id'] and order['erp_state'] == 'draft':
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)

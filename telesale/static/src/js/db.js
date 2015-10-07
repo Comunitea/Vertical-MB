@@ -18,7 +18,10 @@ function openerp_ts_db(instance, module){
 
             this.partner_by_id = {};
             this.partner_ref_id = {};
+            this.partner_search_string = "";
             this.partner_name_id = {};
+            this.suppliers_name_id = {};
+            this.supplier_from_name_to_id = {};
 
             this.tax_by_id = {};
             this.map_tax_by_id = {};
@@ -60,11 +63,20 @@ function openerp_ts_db(instance, module){
             return str + '\n';
         },
         _partner_search_string: function(partner){
-            var str = '' + partner.id + ':' + partner.name;
-            if(partner.ref){
+            // var str = '' + partner.id + ':' + partner.name;
+            // if(partner.ref){
+            //     str += '|' + partner.ref;
+            // }
+            // return str + '\n';
+            var str = partner.name;
+            if (partner.ref){
                 str += '|' + partner.ref;
             }
-            return str + '\n';
+            if (partner.comercial){
+                str += '|' + partner.comercial;
+            }
+            str = '' + partner.id + ':' + str.replace(':','') + '\n';
+            return str
         },
         add_products: function(products){
             if(!products instanceof Array){
@@ -111,7 +123,6 @@ function openerp_ts_db(instance, module){
             }
             for(var i = 0, len = partners.length; i < len; i++){
                 var partner = partners[i];
-                var search_string = this._partner_search_string(partner);
                 partner.property_account_position = partner.property_account_position[0];
                 partner.property_product_pricelist = partner.property_product_pricelist[0];
                 this.partner_by_id[partner.id] = partner;
@@ -119,6 +130,19 @@ function openerp_ts_db(instance, module){
                 if(partner.ref){
                     this.partner_ref_id[partner.ref] = partner.id;
                 }
+                var search_string = this._partner_search_string(partner);
+                console.log(search_string);
+                this.partner_search_string += search_string
+            }
+        },
+        add_suppliers: function(suppliers){
+            if(!suppliers instanceof Array){
+                suppliers = [suppliers];
+            }
+            for(var i = 0, len = suppliers.length; i < len; i++){
+                var supplier = suppliers[i];
+                this.suppliers_name_id[supplier.id] = supplier.name;
+                this.supplier_from_name_to_id[supplier.name] = supplier.id;
             }
         },
         add_taxes: function(taxes){
