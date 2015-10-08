@@ -345,7 +345,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_order">Date Order:</label>
-                      <input class="  mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()"/>
+                      <input class="mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()"/>
                     </div>
                   </div>
               </div>
@@ -404,9 +404,8 @@
                     <div class="centerthis">
                       <label for="coment">Notes:</label>
                       <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment"><t t-esc="widget.order_model.get('coment')"/></textarea>
-                      <label for="coment">Customer Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='costumer_comment' name="costumer_comment" readonly="readonly"><t t-esc="widget.order_model.get('customer_comment')"/></textarea>
-                      <!-- <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' readonly="readonly" name="customer_comment" t-att-value="widget.order_model.get('customer_comment')"/> -->
+                      <label for="customer_note">Customer Notes:</label>
+                      <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' name="customer_comment"><t t-esc="widget.order_model.get('customer_comment')"/></textarea>
                     </div>
                 </div>
           </div>

@@ -229,7 +229,7 @@ class sale_order_line(models.Model):
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
-    customer_comment = fields.Text('Customer comment', readonly=True,
+    customer_comment = fields.Text('Customer comment', 
                           related='partner_id.comment')
 
     @api.multi

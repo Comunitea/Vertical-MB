@@ -744,6 +744,7 @@ function openerp_ts_models(instance, module){
                 date_order: this.get('date_order'),
                 date_planned: this.get('date_planned'),
                 note: this.get('coment'),
+                customer_comment: this.get('customer_comment'),
                 supplier_id : this.ts_model.db.supplier_from_name_to_id[this.get('supplier')],
             };
         },
