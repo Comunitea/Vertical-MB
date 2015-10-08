@@ -16,7 +16,7 @@
             <!-- <field name="kind">function</field>
             <field name="action">act_validate_pending()</field> -->
             <field name="kind">dummy</field>
-            <field name="action">act_validate_pending()</field>
+            <field name="action"></field>
         </record>
         <record id="act_commercial_pending" model="workflow.activity">
             <field name="wkf_id" ref="wkf_partner"/>

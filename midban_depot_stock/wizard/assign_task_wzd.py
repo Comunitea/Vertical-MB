@@ -208,8 +208,8 @@ class assign_task_wzd(osv.TransientModel):
             res = operator.reposition_mac_id.id
         elif task_type == 'picking' and operator.picking_mac_id:
             res = operator.picking_mac_id.id
-
-        if not res:
+        #me salto esta comprobación
+        if not res and False:
             raise osv.except_osv(_('Error!'), _("Machine not defined either\
                                                  operator sheet or picking \
                                                  wizard"))
@@ -228,8 +228,8 @@ class assign_task_wzd(osv.TransientModel):
         on_course_tasks = t_task.search(cr, uid, domain, context=context)
         if on_course_tasks and not context.get('no_raise', False):
             raise osv.except_osv(_('Error!'), _('You have a task on course.'))
-
-        if machine_id:
+        #me salto esta comprobación
+        if machine_id and False:
             domain = [
                 ('machine_id', '=', machine_id),
                 ('state', '=', 'assigned')
@@ -394,7 +394,8 @@ class assign_task_wzd(osv.TransientModel):
                                                      context=context)
         machine_obj = self.pool.get('stock.machine').browse(cr, uid,
                                                             machine_id)
-        if machine_obj.type in ['prep_order', 'transpalet']:
+        #me salto la comprobación del maquina
+        if machine_obj.type in ['prep_order', 'transpalet'] and False:
             raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
                                  You must select a retractil machine'))
         self._check_on_course(cr, uid, ids, machine_id, context=context)
@@ -504,7 +505,8 @@ class assign_task_wzd(osv.TransientModel):
                                                      context=context)
         machine_obj = self.pool.get('stock.machine').browse(cr, uid,
                                                             machine_id)
-        if machine_obj.type in ['prep_order', 'transpalet']:
+        #me salto la comprobacion de la maquina
+        if machine_obj.type in ['prep_order', 'transpalet'] and False:
             raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
                                  You must select a retractil machine'))
         self._check_on_course(cr, uid, ids, machine_id, context=context)
@@ -757,7 +759,8 @@ class assign_task_wzd(osv.TransientModel):
                                                      context=context)
         machine_obj = self.pool.get('stock.machine').browse(cr, uid,
                                                             machine_id)
-        if machine_obj.type in ['retractil']:
+        #me salto la comprobacion de la maquina
+        if machine_obj.type in ['retractil'] and False:
             raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
                                  You must select a machine transpalet or order\
                                  prepare'))
