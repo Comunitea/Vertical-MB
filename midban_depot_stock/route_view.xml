@@ -180,6 +180,7 @@
                         <group>
                             <field name="date"/>
                             <field name="comercial_id"/>
+                            <field name="delivery_man_id"/>
                             <field name="route_type"/>
                         </group>
                         <group string="Customer List" attrs="{'invisible': [('route_type','=','telesale')]}">
