@@ -13,8 +13,10 @@
             <field name="wkf_id" ref="wkf_product_tmp"/>
             <field name="flow_start">True</field>
             <field name="name">validate_pending</field>
-             <field name="kind">function</field>
-            <field name="action">act_validate_pending()</field>
+             <!-- <field name="kind">function</field>
+            <field name="action">act_validate_pending()</field> -->
+            <field name="kind">dummy</field>
+           <field name="action"></field>
         </record>
         <record id="act_commercial_pending" model="workflow.activity">
             <field name="wkf_id" ref="wkf_product_tmp"/>
@@ -48,7 +50,7 @@
              <field name="flow_stop">True</field>
             <field name="action">act_denied()</field>
         </record>
-        
+
         <!-- TransitionsS -->
         <record id="trans_validate_to_commercial" model="workflow.transition">
             <field name="act_from" ref="act_validate_pending"/>
@@ -111,6 +113,6 @@
             <field name="act_to" ref="act_validated"/>
             <field name="signal">deny</field>
         </record>
-        
+
     </data>
 </openerp>

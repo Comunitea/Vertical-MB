@@ -10,6 +10,9 @@
                     <field name="min_date" position="attributes">
                         <attribute name="invisible">0</attribute>
                     </field>
+                    <field name="min_date" position="after">
+                        <field name="validated" invisible="0"/>
+                    </field>
             </field>
         </record>
 
@@ -21,6 +24,7 @@
 
                 <field name="min_date" position="before">
                     <field name="orig_planned_date" attrs="{'invisible': [('sale_id', '=', False)]}"/>
+                    <field name="validated" attrs="{'invisible': [('sale_id', '=', False)]}"/>
                 </field>
                 <!-- Show only when no custom operations" -->
                 <button name="do_enter_transfer_details" position="replace">
@@ -76,7 +80,7 @@
                     <field name="camera_id" attrs="{'invisible': [('task_type', '!=', 'reposition')]}"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])],
-                                   'invisible': [('route_detail_id', '=', False)]}"/>
+                                   'invisible': [('picking_type_code', '!=', 'outgoing'), ('route_detail_id', '=', False)]}"/>
                     <field name="trans_route_id" attrs="{'invisible': [('route_detail_id', '=', False)]}"/>
                     <field name="order_note"/>
                     <field name="total_weight"/>
@@ -264,6 +268,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <filter string="Today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]"/>
+                    <filter string="Validated" name="validated" domain="[('validated', '=', True)]"/>
                     <separator/>
                 </field>
                 <filter string="Procurement Group" position="after">
@@ -398,6 +403,7 @@
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
+                    <field name="validated"  attrs="{'readonly': [('state', 'in', [('done')])]}"/>
                     <field name="state" readonly="True" invisible="1"/>
                     <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
                     <field name="trans_route_id" invisible="1"/>
@@ -421,6 +427,7 @@
                     <separator/>
                         <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
                         <filter string="Tomorrow" name="filter_today" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                        <filter string="Validated" name="validated" domain="[('validated', '=', True)]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>

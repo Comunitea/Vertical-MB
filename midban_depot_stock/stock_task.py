@@ -23,8 +23,10 @@ from openerp.osv import osv, fields
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import datetime
 import time
-# from openerp.tools.translate import _
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
 from openerp import api
+import time
 
 
 class stock_task(osv.Model):
@@ -33,13 +35,13 @@ class stock_task(osv.Model):
     _order = "id desc"
     _columns = {
         'user_id': fields.many2one('res.users', 'User', required=True,
-                                   readonly=True),
+                                   readonly=False),
         'type': fields.selection([('ubication', 'Ubication',),
                                   ('reposition', 'Reposition'),
                                   ('picking', 'Picking')],
                                  'Task Type', required=True, readonly=True),
         'date_start': fields.datetime("Date Start", readonly=True,
-                                      required=True),
+                                      required=False),
         'duration': fields.float('Duration', readonly=True,
                                  help="Duration in Minutes"),
         'date_end': fields.datetime("Date End", readonly=True),
@@ -58,10 +60,16 @@ class stock_task(osv.Model):
                                          'Operations', readonly=True,
                                          states={'assigned': [('readonly',
                                                                False)]}),
+        'pack_ids': fields.many2many('stock.quant.package', 'task_pack_rel',
+                                     'task_id', 'pack_id', string="Add packs",
+                                     help="Search packs in ubication pìckings "
+                                     "and adds the operation to task")
     }
     _defaults = {
         'state': 'assigned',
-        'paused': False
+        'paused': False,
+        'type': 'ubication',
+        'date_start': time.strftime('%Y-%m-%d')
     }
 
     @api.one
@@ -151,3 +159,32 @@ class stock_task(osv.Model):
         """
         return self.write({'state': 'assigned',
                           'paused': False})
+
+    @api.one
+    def add_loc_operation(self, pack_id):
+
+        pack_obj = self.env['stock.quant.package'].browse(pack_id)
+        wh = self.env['stock.warehouse'].search([])[0]
+        pick_loc_type_id = wh.ubication_type_id.id
+        domain = [
+            ('picking_id.picking_type_id', '=', pick_loc_type_id),
+            ('package_id', '=', pack_obj.id),
+            ('picking_id.state', 'in', ['assigned', 'partially_available'])
+        ]
+
+        op_objs = self.env['stock.pack.operation'].search(domain)
+        if not op_objs:
+            raise except_orm(_('Error'), ('Not operation mathcing with pack \
+                            %s') % pack_obj.name)
+        op_objs.assign_location()
+        op_objs.task_id = self.id
+        return
+
+    @api.one
+    def add_location_operations(self):
+        if not self.pack_ids:
+            raise except_orm(_('Error'),
+                             _('No packs defined to add operations'))
+        for pack in self.pack_ids:
+            self.add_loc_operation(pack.id)
+        return

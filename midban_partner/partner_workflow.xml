@@ -13,7 +13,9 @@
             <field name="wkf_id" ref="wkf_partner"/>
             <field name="name">validate_pending</field>
             <field name="flow_start">True</field>
-            <field name="kind">function</field>
+            <!-- <field name="kind">function</field>
+            <field name="action">act_validate_pending()</field> -->
+            <field name="kind">dummy</field>
             <field name="action">act_validate_pending()</field>
         </record>
         <record id="act_commercial_pending" model="workflow.activity">

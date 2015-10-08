@@ -604,7 +604,8 @@ class assign_task_wzd(osv.TransientModel):
             ('state', 'in', ['confirmed', 'assigned']),
             ('picking_id.wave_id', '=', False),
             ('picking_id.operator_id', '=', False),
-            ('picking_id.trans_route_id', '!=', False)
+            ('picking_id.trans_route_id', '!=', False),
+            ('picking_id.validated', '=', True),
         ]
         move_ids = move_obj.search(cr, uid, domain, context=context)
         if not move_ids:
