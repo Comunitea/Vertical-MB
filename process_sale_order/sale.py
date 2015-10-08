@@ -43,6 +43,7 @@ class sale_order_line(models.Model):
     do_onchange = fields.Boolean('Do onchange', default=True)
     q_note = fields.Many2one('qualitative.note', 'Qualitative Comment')
     detail_note = fields.Char('Details', size=256)
+    product_code = fields.Char('Reference', size=32)
 
     def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
                                   qty=0, uom=False, qty_uos=0, uos=False,
@@ -90,6 +91,20 @@ class sale_order_line(models.Model):
             res['value']['discount'] = prod_obj.box_discount
 
         return res
+
+    @api.onchange('product_code')
+    def product_code_onchange(self):
+        """
+        We change the product_uom_qty
+        """
+        code = self.product_code
+        if code:
+            pr_ids = self.env['product.product'].search([('default_code', '=', code)])
+            if len(pr_ids) == 1:
+                self.product_id = pr_ids[0]
+            else:
+                self.product_code = False
+
 
     @api.onchange('product_uos_qty')
     def product_uos_qty_onchange(self):

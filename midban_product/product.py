@@ -254,6 +254,41 @@ products do not require units for validation'),
         return super(product_template, self).write(cr, uid, ids,
                                                    vals, context=context)'''
 
+    def action_copy_logistic_info (self, cr, uid, ids, context=None):
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        for product in self.browse(cr, uid, ids, context=context):
+            vals = {
+                'supp_kg_un':product.kg_un,
+                'supp_un_ca':product.un_ca,
+                'supp_ca_ma':product.ca_ma,
+                'supp_ma_pa':product.ma_pa,
+                'supp_un_width':product.un_width,
+                'supp_ca_width':product.ca_width,
+                'supp_ma_width':product.ma_width,
+                'supp_pa_width':product.pa_width,
+                'supp_un_height':product.un_height,
+                'supp_ca_height':product.ca_height,
+                'supp_ma_height':product.ma_height,
+                'supp_pa_height':product.pa_height,
+                'supp_un_length':product.un_length,
+                'supp_ca_length':product.ca_length,
+                'supp_ma_length':product.ma_length,
+                'supp_pa_length':product.pa_length,
+                'var_coeff_un':product.var_coeff_un,
+                'var_coeff_ca':product.var_coeff_ca,
+                'log_base_id':product.log_base_id and product.log_base_id.id or False,
+                'log_unit_id':product.log_unit_id and product.log_unit_id.id or False,
+                'log_box_id':product.log_box_id and product.log_box_id.id or False,
+                'base_use_purchase':product.base_use_sale,
+                'unit_use_purchase':product.unit_use_sale,
+                'box_use_purchase':product.box_use_sale,
+                'is_var_coeff':product.is_var_coeff,
+            }
+            supp_info_ids = [x.id for x in product.seller_ids]
+            self.pool.get('product.supplierinfo').write(cr, uid, supp_info_ids, vals, context=context)
+
     def create(self, cr, user, vals, context=None):
         """ Generates a sequence in the internal reference name.
             This sequence must be unique by product. And can be changed
@@ -264,6 +299,34 @@ products do not require units for validation'),
                                                     'product.serial.number')
         new_id = super(product_template, self).create(cr, user, vals, context)
         return new_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        ''' We don't need to no control change of uom if not validated product'''
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+
+        validated_ids = []
+        not_validated_ids = []
+        for product in self.browse(cr, uid, ids, context=context):
+            if product.state2 not in ['validated',
+                                   'registered',
+                                   'unregistered',
+                                   'denied'] and \
+                            'uom_po_id' in vals:
+                not_validated_ids.append(product.id)
+            else:
+                validated_ids.append(product.id)
+
+        if not_validated_ids:
+            uom_vals = {}
+            uom_vals['uom_id'] = vals.pop('uom_id')
+            uom_vals['uom_po_id'] = vals.pop('uom_po_id')
+            res = super(product_template, self).write(cr, uid, not_validated_ids, vals, context)
+            osv.osv.write(self, cr, uid, not_validated_ids, uom_vals, context=context)
+        if  validated_ids:
+            return super(product_template, self).write(cr, uid, validated_ids, vals, context)
+        return res
+
 
     def _update_history(self, cr, uid, ids, context, product_obj, activity,
                         reason=False):

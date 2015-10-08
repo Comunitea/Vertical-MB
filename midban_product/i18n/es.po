@@ -1114,3 +1114,7 @@ msgstr "Motivos baja de producto"
 msgid "{'invisible': [('hidde_variant_page', '=', True)]}"
 msgstr "{'invisible': [('hidde_variant_page', '=', True)]}"
 
+#. module: midban_product
+#: view:product.template:midban_product.midban_view_product_extra_form
+msgid "Copy logistic info to suppliers"
+msgstr "Copiar información logística en los proveedores."

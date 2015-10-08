@@ -110,8 +110,13 @@
                             <field name="ma_length" required="0"/>
                             <field name="pa_length" required="1"/>
                         </group>
-                    </group>
 
+                    </group>
+                     <group colspan="4" >
+                    <button name="action_copy_logistic_info" string="Copy logistic info to suppliers"
+                                type="object"
+                                class="oe_link" />
+                    </group>
                 </field>
 
                  <notebook position="inside">
