@@ -168,13 +168,13 @@ class sale_order_line(models.Model):
                 prod = self.env['product.product'].browse(vals['product_id'])
             else:
                 prod = line.product_id
-            uos_qty = vals.get('product_uos_qty', False) and \
-                vals['product_uos_qty'] or line.product_uos_qty
-            uos_id = vals.get('product_uos', False) and \
-                vals['product_uos'] or line.product_uos.id
-
-            vals['product_uom_qty'] = uos_qty / prod._get_factor(uos_id)
-            vals['product_uom'] = prod.uom_id.id
+            if prod:
+                uos_qty = vals.get('product_uos_qty', False) and \
+                    vals['product_uos_qty'] or line.product_uos_qty
+                uos_id = vals.get('product_uos', False) and \
+                    vals['product_uos'] or line.product_uos.id
+                vals['product_uom_qty'] = uos_qty / prod._get_factor(uos_id)
+                vals['product_uom'] = prod.uom_id.id
             res = super(sale_order_line, line).write(vals)
         return res
 
