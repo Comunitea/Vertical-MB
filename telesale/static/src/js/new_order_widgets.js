@@ -76,6 +76,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
             this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
             this.$('#coment').blur(_.bind(this.set_value, this, 'coment'))
+            this.$('#customer_comment').blur(_.bind(this.set_value, this, 'customer_comment'))
             this.$('#supplier').blur(_.bind(this.set_value, this, 'supplier'))
 
             //autocomplete products and units from array of names
@@ -99,14 +100,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             self = this
             var model = new instance.web.Model('res.partner');
             model.call("any_detail_founded",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
-            .then(function(result){
-                if (!result){
-                    alert(_t("Customer has no assigned any delivery route"));
-                    self.order_model.set('partner', "");
-                    self.order_model.set('partner_code', "");
-                    self.refresh();
-                }
-            });
+            // .then(function(result){
+            //     if (!result){
+            //         alert(_t("Customer has no assigned any delivery route"));
+            //         self.order_model.set('partner', "");
+            //         self.order_model.set('partner_code', "");
+            //         self.refresh();
+            //     }
+            // });
         },
         get_supplier_names: function(partner_obj) {
             self = this

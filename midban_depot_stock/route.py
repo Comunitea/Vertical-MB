@@ -351,7 +351,10 @@ class route_detail(models.Model):
     customer_ids = fields.One2many('customer.list', 'detail_id',
                                    'Customer List')
     call_ids = fields.One2many('crm.phonecall', 'detail_id', 'Call list')
-    comercial_id = fields.Many2one('res.users', 'Comercial')
+    comercial_id = fields.Many2one('res.users', 'Comercial',
+                                    related='route_id.comercial_id',
+                                    readonly=True)
+    delivery_man_id = fields.Many2one('res.users', 'Delivery Man')
     route_type = fields.Selection([('auto_sale', 'Auto Sale'),
                                    ('comercial', 'Comercial'),
                                    ('delivery', 'Delivery'),

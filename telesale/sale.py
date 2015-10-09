@@ -111,11 +111,12 @@ class sale(osv.osv):
                 'date_invoice': order['date_invoice'] or False,
                 'date_order': time.strftime("%Y-%m-%d %H:%M:%S"),
                 'date_planned':
-                'date_planed' in order and order['date_planned'] + " 22:59:59"
+                'date_planned' in order and order['date_planned'] + " 19:00:00"
                 or False,
                 'note': order['note'] or False,
+                'customer_comment': 'customer_comment' in order and order['customer_comment'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
-                'supplier_id': order['supplier_id'] or False
+                'supplier_id': 'supplier_id' in order and order['supplier_id'] or False
             }
             if order['erp_id'] and order['erp_state'] == 'draft':
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)

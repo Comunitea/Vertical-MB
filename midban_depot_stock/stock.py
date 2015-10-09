@@ -274,6 +274,8 @@ class stock_picking(osv.Model):
         transfer_obj = t_transfer.with_context(ctx).\
             create({'picking_id': self.id})
         transfer_obj = t_transfer.create({'picking_id': self.id})
+        transfer_obj.item_ids.unlink()
+        transfer_obj.packop_ids.unlink()
         pending_ops_vals = []
         something_done = False
         for op in self.pack_operation_ids:
@@ -319,7 +321,6 @@ class stock_picking(osv.Model):
                 # in warehouse_scan_gun_module, because maybe the assigned
                 # operation were deleted by doinf a partial picking.
                 pending_ops_vals.append(new_ops_vals)
-
         if something_done:
             transfer_obj.do_detailed_transfer()
             new_pick_obj = self.search([('backorder_id', '=', self.id)])
@@ -434,8 +435,6 @@ class StockPicking(models.Model):
         Overwrited in order to write in the picking of type pick the detail
         route if the pick is not done.
         """
-        # import ipdb; ipdb.set_trace()
-
         for pick in self:
             route_detail_id = False
             if 'route_detail_id' in vals:
@@ -509,6 +508,21 @@ class StockPackage(models.Model):
                                      readonly=True,
                                      store=True)
 
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        """
+        Used by task view to show only packs in input location.
+        """
+        res = super(StockPackage, self).name_search(name, args=args,
+                                                    operator=operator,
+                                                    limit=limit)
+        if self._context.get('incoming_loc_packages', False):
+            wh = self.env['stock.warehouse'].search([])[0]
+            input_loc = wh.wh_input_stock_loc_id
+            args = [('location_id', '=', input_loc.id)]
+            recs = self.search(args)
+            res = recs.name_get()
+        return res
 
 class stock_package(models.Model):
     _inherit = "stock.quant.package"
@@ -601,12 +615,6 @@ class stock_package(models.Model):
         'product_id': fields.related('quant_ids', 'product_id', readonly=True,
                                      type="many2one", string="Product",
                                      relation="product.product"),
-        # 'packed_lot_id': fields.function(_get_package_lot_id,
-        #                                  string="Packed Lot",
-        #                                  readonly=True,
-        #                                  type="many2one",
-        #                                  store=True,
-        #                                  relation="stock.production.lot"),
         'packed_qty': fields.function(_get_packed_qty, type="float",
                                       string="Packed qty",
                                       readonly=True,

@@ -497,15 +497,15 @@ class ProductTemplate(models.Model):
                                    help='If checked we can manage'
                                    ' products of variable weight.\n'
                                    'System will not convert between units.')
-    log_base_id = fields2.Many2one('product.uom', 'Base',
+    log_base_id = fields2.Many2one('product.uom', 'Logistic Base',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic base',
                                    default=_get_kg_unit)
-    log_box_id = fields2.Many2one('product.uom', 'Box',
+    log_box_id = fields2.Many2one('product.uom', 'Logistic Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic box',
                                   default=_get_box_unit)
-    log_unit_id = fields2.Many2one('product.uom', 'Unit',
+    log_unit_id = fields2.Many2one('product.uom', 'Logistic Unit',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic unit',
                                    default=_get_unit_unit)
@@ -953,15 +953,15 @@ class ProductSupplierinfo(models.Model):
                                    help='If checked we can manage'
                                    ' products of variable weight.\n'
                                    'System will not convert between units.')
-    log_base_id = fields2.Many2one('product.uom', 'Base',
+    log_base_id = fields2.Many2one('product.uom', 'Logistic Base',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic base',
                                    default=_get_kg_unit)
-    log_box_id = fields2.Many2one('product.uom', 'Box',
+    log_box_id = fields2.Many2one('product.uom', 'Logistic Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic unit',
                                   default=_get_box_unit)
-    log_unit_id = fields2.Many2one('product.uom', 'Unit',
+    log_unit_id = fields2.Many2one('product.uom', 'Logistic Unit',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic box',
                                    default=_get_unit_unit)
