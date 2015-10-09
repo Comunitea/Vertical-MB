@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+      <record id="view_order_cancel_sale_to_draft" model="ir.ui.view">
+            <field name="name">view.order.cancel.sale.to.draft</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <button name="cancel_sale_to_draft"
+                            states="manual,progress,wait_risk"
+                            string="Cancel and draft"
+                            type="object"
+                            groups="base.group_user"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
