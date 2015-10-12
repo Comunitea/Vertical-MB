@@ -174,8 +174,8 @@ class stock_task(osv.Model):
 
         op_objs = self.env['stock.pack.operation'].search(domain)
         if not op_objs:
-            raise except_orm(_('Error'), ('Not operation mathcing with pack \
-                            %s') % pack_obj.name)
+            raise except_orm(_('Error'), _('Not ubication operation mathcing \
+                            with pack %s') % pack_obj.name)
         op_objs.assign_location()
         op_objs.task_id = self.id
         return op_objs.id

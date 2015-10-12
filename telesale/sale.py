@@ -111,11 +111,12 @@ class sale(osv.osv):
                 'date_invoice': order['date_invoice'] or False,
                 'date_order': time.strftime("%Y-%m-%d %H:%M:%S"),
                 'date_planned':
-                'date_planed' in order and order['date_planned'] + " 22:59:59"
+                'date_planned' in order and order['date_planned'] + " 19:00:00"
                 or False,
                 'note': order['note'] or False,
+                'customer_comment': 'customer_comment' in order and order['customer_comment'] or False,
                 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
-                'supplier_id': order['supplier_id'] or False
+                'supplier_id': 'supplier_id' in order and order['supplier_id'] or False
             }
             if order['erp_id'] and order['erp_state'] == 'draft':
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)
@@ -142,21 +143,13 @@ class sale(osv.osv):
             order_lines = order['lines']
             t_data = self.pool.get('ir.model.data')
             xml_id_name = 'midban_product.product_uom_box'
-            box_id = t_data.xmlid_to_res_id(cr, uid, xml_id_name)
-            unit_id = t_data.xmlid_to_res_id(cr, uid,
-                                             'product.product_uom_unit')
             for line in order_lines:
                 product_obj = t_product.browse(cr, uid, line['product_id'])
-                product_uom_id = unit_id
-                product_uos_id = unit_id
+                product_uom_id = line['product_uom']
                 product_uom_qty = line['qty']
-                product_uos_qty = line['qty']
-                choose_unit = 'unit'
-                if line['product_uom'] == box_id:
-                    product_uos_id == box_id
-                    product_uos_qty = line['qty']
-                    product_uom_qty = line['qty'] * product_obj.un_ca
-                    choose_unit = 'box'
+
+                product_uos_id = line['product_uos']
+                product_uos_qty = line['product_uos_qty']
                 vals = {
                     'order_id': order_id,
                     'name': product_obj.name,
@@ -169,8 +162,6 @@ class sale(osv.osv):
                     'product_uos_qty': product_uos_qty,
                     'tax_id': [(6, 0, line['tax_ids'])],
                     'pvp_ref': line['pvp_ref'],
-                    # 'min_unit': product_obj.min_unit,
-                    'choose_unit': choose_unit,
                     'q_note': line.get('qnote', False),
                     'detail_note': line.get('detail_note', False)
                 }

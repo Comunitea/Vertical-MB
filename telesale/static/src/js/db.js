@@ -203,6 +203,9 @@ function openerp_ts_db(instance, module){
         get_partner_by_id: function(id){
             return this.partner_by_id[id];
         },
+        get_supplier_by_id: function(id){
+            return this.suppliers_name_id[id];
+        },
         get_partner_by_code: function(ref){
             if(this.partner_by_ref[ref]){
                 return this.partner_by_ref[ref];
