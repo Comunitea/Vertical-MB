@@ -178,7 +178,7 @@ class stock_task(osv.Model):
                             %s') % pack_obj.name)
         op_objs.assign_location()
         op_objs.task_id = self.id
-        return
+        return op_objs.id
 
     @api.one
     def add_location_operations(self):
