@@ -249,6 +249,23 @@ function openerp_ts_models(instance, module){
             order_model.set('date_invoice', order_obj.date_invoice);
             order_model.set('date_planned', order_obj.date_planned);
             order_model.set('num_order',order_obj.name);
+            order_model.set('customer_comment',order_obj.customer_comment);
+            order_model.set('comercial',partner_obj.user_id[1]);
+            order_model.set('coment',order_obj.note);
+
+            var supplier_name = ''
+            if (order_obj.supplier_id){
+                supplier_name = this.db.get_supplier_by_id(order_obj.supplier_id[0]);
+                if (!supplier_name){
+                  supplier_name = ''
+                }
+            }
+            order_model.set('supplier', supplier_name);
+
+            debugger;
+            var contact = this.db.get_partner_contact(order_obj.partner_id[0])
+            order_model.set('contact_name',contact.name);
+
             for (key in order_lines){
                 var line = order_lines[key];
                 var prod_obj = this.db.get_product_by_id(line.product_id[0]);
@@ -431,7 +448,8 @@ function openerp_ts_models(instance, module){
             pvp: 0,
             pvp_ref: 0, //in order to change the discount
             total: 0,
-            product_uos_id: 0,
+            product_uos: 0,
+            product_uos_qty: 0,
             price_uos_qty: 0,
             price_udv: 0,
             //to calc totals
@@ -474,14 +492,17 @@ function openerp_ts_models(instance, module){
         },
         export_as_JSON: function() {
             var product_id = this.ts_model.db.product_name_id[this.get('product')];
-            var unit_id = this.ts_model.db.unit_name_id[this.get('unit')];
+            var uom_id = this.ts_model.db.unit_name_id[this.get('unit')];
+            var uos_id = this.ts_model.db.unit_name_id[this.get('product_uos')];
             var qnote_id = this.ts_model.db.qnote_name_id[this.get('qnote')];
             return {
                 qty: this.get('qty'),
+                product_uom: uom_id,
+                product_uos_qty: this.get('product_uos_qty'),
+                product_uos: uos_id,
                 price_unit: this.get('pvp'),
                 price_udv: this.get('price_udv'),
                 product_id:  product_id,
-                product_uom: unit_id,
                 qnote: qnote_id,
                 tax_ids: this.get('taxes_ids'),
                 pvp_ref: this.get('pvp_ref'),
