@@ -68,9 +68,10 @@ class partner_route_info(models.Model):
                                     ('4_week', '4 Weeks')], 'Regularity',
                                    default="1_week", required=True)
     last_date = fields2.Date('Last Date', compute='_compute_dates',
-                             readonly=False)
+                             readonly=True)
     next_date = fields2.Date('Next Date', compute='_compute_dates',
-                             readonly=False)
+                             readonly=True)
+    init_date = fields2.Date('Init Date', readonly=False)
     route_id = fields2.Many2one('route', 'Route')
     day_id = fields2.Many2one('week.days', 'Week day', readonly=True,
                               related="route_id.day_id")
@@ -268,7 +269,7 @@ class partner_route_info(models.Model):
                                          _('Customer %s is asigned to a route \
                                             of other \
                                             comercial' % partner_obj.name))
-            res = super(partner_route_info, self).create(vals)
+        res = super(partner_route_info, self).create(vals)
         route_obj = t_route.browse(route_id)
         res._recalculate_routes(route_obj, False)
         return res
