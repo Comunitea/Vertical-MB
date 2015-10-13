@@ -96,6 +96,7 @@ class sale(osv.osv):
         create_mail = False
         if context is None:
             context = {}
+
         for rec in orders:
             order = rec['data']
             if order['erp_id'] and order['erp_state'] != 'draft':
@@ -113,18 +114,19 @@ class sale(osv.osv):
                 'date_planned':
                 'date_planned' in order and order['date_planned'] + " 19:00:00"
                 or False,
-                'note': order['note'] or False,
+                'note': 'note' in order and order['note'] or False,
                 'customer_comment': 'customer_comment' in order and order['customer_comment'] or False,
-                'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
+                # 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
                 'supplier_id': 'supplier_id' in order and order['supplier_id'] or False
             }
             if order['erp_id'] and order['erp_state'] == 'draft':
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)
-                if order['note'] and (order_obj.note != order['note']):
+                if 'note' in order and order['note'] and (order_obj.note != order['note']):
                     create_mail = True
                 t_order.write(cr, uid, [order['erp_id']], vals)
                 order_id = order['erp_id']
             else:
+                vals['name'] = t_sequence.get(cr, uid, 'telesale.order') or '/'
                 order_id = t_order.create(cr, uid, vals)
                 if order['note']:
                     create_mail = True
@@ -143,6 +145,10 @@ class sale(osv.osv):
             order_lines = order['lines']
             t_data = self.pool.get('ir.model.data')
             xml_id_name = 'midban_product.product_uom_box'
+            if order['erp_id'] and order['erp_state'] == 'draft':
+                domain = [('order_id', '=', order_id)]
+                line_ids = t_order_line.search(cr, uid, domain)
+                t_order_line.unlink(cr, uid, line_ids)
             for line in order_lines:
                 product_obj = t_product.browse(cr, uid, line['product_id'])
                 product_uom_id = line['product_uom']
@@ -165,10 +171,7 @@ class sale(osv.osv):
                     'q_note': line.get('qnote', False),
                     'detail_note': line.get('detail_note', False)
                 }
-                if order['erp_id'] and order['erp_state'] == 'draft':
-                    domain = [('order_id', '=', order_id)]
-                    line_ids = t_order_line.search(cr, uid, domain)
-                    t_order_line.unlink(cr, uid, line_ids)
+
                 t_order_line.create(cr, uid, vals)
             if order['action_button'] == 'confirm':
                 wf_service = netsvc.LocalService('workflow')

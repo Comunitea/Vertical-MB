@@ -467,9 +467,9 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                       <div class="centerthis">
-                        <label for="total">Total Fresh:</label>
+                        <!-- <label for="total">Total Fresh:</label>
                         <input type="text" class='total' id="total_fresh"
-                            t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/>
+                            t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/> -->
                           </div>
                   </div>
               </div>

@@ -899,21 +899,20 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){
                     var product_obj = self.ts_model.db.get_product_by_id(product_id)
-                    if (product_obj.product_class == 'normal'){
-                        self.sum_cmc += product_obj.cmc * line.get('qty');
-                        self.sum_box += line.get('boxes');
-                        self.weight += line.get('weight');
-                        self.discount += line.get('pvp_ref') != 0 ? (line.get('pvp_ref') - line.get('pvp')) * line.get('qty') : 0;
-                        self.margin += (line.get('pvp') -  product_obj.cmc) * line.get('qty');
-                        self.pvp_ref += line.get('pvp_ref') * line.get('qty');
-                        self.base += line.get_price_without_tax('total');
-                        self.iva += line.get_tax();
-                        self.total += line.get_price_with_tax();
-
-                    }
-                    else{
-                        self.sum_fresh += line.get_price_without_tax('total');
-                    }
+                    // if (product_obj.product_class == 'normal'){
+                      self.sum_cmc += product_obj.cmc * line.get('qty');
+                      self.sum_box += line.get('boxes');
+                      self.weight += line.get('weight');
+                      self.discount += line.get('pvp_ref') != 0 ? (line.get('pvp_ref') - line.get('pvp')) * line.get('qty') : 0;
+                      self.margin += (line.get('pvp') -  product_obj.cmc) * line.get('qty');
+                      self.pvp_ref += line.get('pvp_ref') * line.get('qty');
+                      self.base += line.get_price_without_tax('total');
+                      self.iva += line.get_tax();
+                      self.total += line.get_price_with_tax();
+                    // }
+                    // else{
+                    //     self.sum_fresh += line.get_price_without_tax('total');
+                    // }
                 }
             }, this));
             this.order_model.set('total_base', my_round(self.base, 2));

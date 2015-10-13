@@ -247,11 +247,17 @@ function openerp_ts_models(instance, module){
             var state = order_obj.state
             order_model.set('state', state);
             order_model.set('date_invoice', order_obj.date_invoice);
-            order_model.set('date_planned', order_obj.date_planned);
+            var only_date = order_obj.date_planned.split(' ');
+            if(only_date.length > 1){
+              order_model.set('date_planned', only_date[0]);
+            }else {
+              order_model.set('date_planned', order_obj.date_planned);
+            }
+            // order_model.set('date_planned', order_obj.date_planned);
             order_model.set('num_order',order_obj.name);
-            order_model.set('customer_comment',order_obj.customer_comment);
+            order_model.set('customer_comment',order_obj.customer_comment || '');
             order_model.set('comercial',partner_obj.user_id[1]);
-            order_model.set('coment',order_obj.note);
+            order_model.set('coment',order_obj.note || '');
 
             var supplier_name = ''
             if (order_obj.supplier_id){
@@ -262,7 +268,6 @@ function openerp_ts_models(instance, module){
             }
             order_model.set('supplier', supplier_name);
 
-            debugger;
             var contact = this.db.get_partner_contact(order_obj.partner_id[0])
             order_model.set('contact_name',contact.name);
 
@@ -751,6 +756,7 @@ function openerp_ts_models(instance, module){
         exportAsJSON: function() {
             var orderLines;
             orderLines = [];
+            // debugger;
             (this.get('orderLines')).each(_.bind( function(item) {
                 return orderLines.push(item.export_as_JSON());
             }, this));
