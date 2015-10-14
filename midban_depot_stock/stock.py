@@ -926,7 +926,7 @@ class stock_pack_operation(models.Model):
                     vals['package_id'] = False
         if vals.get('product_id', False):
             for op in self:
-                if op.product_id.id != vals['product_id']:
+                if op.product_id.id != vals['product_id'] and op.product_id:
                     raise exceptions.Warning(_("Cannot change product once "
                                                "operation is created, delete "
                                                "this and crate another one in"

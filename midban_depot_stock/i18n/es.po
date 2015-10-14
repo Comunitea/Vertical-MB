@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-08 16:10+0000\n"
-"PO-Revision-Date: 2015-10-08 16:10+0000\n"
+"POT-Creation-Date: 2015-10-13 10:51+0000\n"
+"PO-Revision-Date: 2015-10-13 10:51+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgid "2 Weeks"
 msgstr "2 Semanas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:289
+#: code:addons/midban_depot_stock/route.py:295
 #, python-format
 msgid "2 details of same day for same                                            route"
 msgstr "2 detalles en el mismo día para la misma ruta"
@@ -375,7 +375,7 @@ msgid "Cameras picked"
 msgstr "Cámaras picked"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:294
+#: code:addons/midban_depot_stock/route.py:300
 #, python-format
 msgid "Can not re-schedule a route in %s                                            state"
 msgstr "No se puede replanificar una ruta en el estado de %s "
@@ -650,25 +650,25 @@ msgid "Customer"
 msgstr "Cliente"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:268
+#: code:addons/midban_depot_stock/partner.py:269
 #, python-format
 msgid "Customer %s is asigned to a route                                             of other                                             comercial"
 msgstr "Customer %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:125
+#: code:addons/midban_depot_stock/partner.py:126
 #, python-format
 msgid "Customer %s is asigned to a route of                                           other comercial"
 msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:215
+#: code:addons/midban_depot_stock/partner.py:216
 #, python-format
 msgid "Customer %s is asigned to a route of                                     other comercial"
 msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:101
+#: code:addons/midban_depot_stock/partner.py:102
 #, python-format
 msgid "Customer %s must have a zip code.                                      "
 msgstr "El cliente %s debe tener código postal."
@@ -723,6 +723,7 @@ msgstr "Fecha propagada para la fecha programada en el albarán relacionado"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/route.py:235
+#: code:addons/midban_depot_stock/route.py:258
 #, python-format
 msgid "Date range not valid."
 msgstr "Rango de fechas no válido"
@@ -854,13 +855,13 @@ msgid "Detail route %s must be of delivery                                      
 msgstr "El detalle de la ruta %s debe ser de tipo envío"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:392
+#: code:addons/midban_depot_stock/route.py:398
 #, python-format
 msgid "Detail route for day %s can not be deleted                              because is a past date"
 msgstr "El detalle de la ruta para el día %s no puede ser borrado porque es una fecha pasada"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:397
+#: code:addons/midban_depot_stock/route.py:403
 #, python-format
 msgid "Detail route for day %s with state is %s can not                              be deleted. Only pending routes can be                             deleted"
 msgstr "El detalle de la ruta para el día %s cuyo estado es %s no puede ser borrado. Sólo rutas pendientes pueden ser eliminadas"
@@ -903,7 +904,7 @@ msgid "EAN13"
 msgstr "EAN13"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:398
+#: code:addons/midban_depot_stock/route.py:404
 #, python-format
 msgid "ERROR"
 msgstr "ERROR"
@@ -934,19 +935,20 @@ msgid "Enter transfer details"
 msgstr "Introduce detalles de la transferencia"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:194
-#: code:addons/midban_depot_stock/partner.py:196
-#: code:addons/midban_depot_stock/partner.py:214
-#: code:addons/midban_depot_stock/partner.py:244
-#: code:addons/midban_depot_stock/partner.py:247
-#: code:addons/midban_depot_stock/partner.py:267
+#: code:addons/midban_depot_stock/partner.py:195
+#: code:addons/midban_depot_stock/partner.py:197
+#: code:addons/midban_depot_stock/partner.py:215
+#: code:addons/midban_depot_stock/partner.py:245
+#: code:addons/midban_depot_stock/partner.py:248
+#: code:addons/midban_depot_stock/partner.py:268
 #: code:addons/midban_depot_stock/route.py:136
 #: code:addons/midban_depot_stock/route.py:183
 #: code:addons/midban_depot_stock/route.py:234
 #: code:addons/midban_depot_stock/route.py:238
-#: code:addons/midban_depot_stock/route.py:265
-#: code:addons/midban_depot_stock/route.py:288
-#: code:addons/midban_depot_stock/route.py:293
+#: code:addons/midban_depot_stock/route.py:257
+#: code:addons/midban_depot_stock/route.py:271
+#: code:addons/midban_depot_stock/route.py:294
+#: code:addons/midban_depot_stock/route.py:299
 #: code:addons/midban_depot_stock/sale.py:165
 #: code:addons/midban_depot_stock/sale.py:171
 #: code:addons/midban_depot_stock/stock_task.py:177
@@ -1268,7 +1270,7 @@ msgid "Imposible to pause tasks                                                 
 msgstr "Imposible pausar tarea, no tienes ninguna tarea asignada/pausada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:269
+#: code:addons/midban_depot_stock/route.py:275
 #, python-format
 msgid "Imposible to schedule dates between %s and                                     %s with regularity of %s                                     week(s)"
 msgstr "Imposible planificar fechas entre %s y %s con un intervalo de %s semana(s)"
@@ -1299,6 +1301,11 @@ msgstr "En la primera parte puedes transferir productos provenientes de un paque
 #: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
 msgid "In the second part you can move entire packs between locations."
 msgstr "En la segunda parte puedes mover palets enteros entre las ubicaciones."
+
+#. module: midban_depot_stock
+#: field:partner.route.info,init_date:0
+msgid "Init Date"
+msgstr "Fecha inicio"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_stock_inventory
@@ -2660,7 +2667,7 @@ msgid "Schedule Task Wizard"
 msgstr "Asistente planificador de tareas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:321
+#: code:addons/midban_depot_stock/route.py:327
 #, python-format
 msgid "Scheduled Call from %s"
 msgstr "LLamada planificada a %s"
@@ -2955,7 +2962,7 @@ msgid "Telesale"
 msgstr "Televenta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:318
+#: code:addons/midban_depot_stock/route.py:324
 #, python-format
 msgid "Telesale Call "
 msgstr "LLamada televenta "
@@ -2971,8 +2978,8 @@ msgid "Temperature Type"
 msgstr "Tipo temperatura"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:194
-#: code:addons/midban_depot_stock/partner.py:245
+#: code:addons/midban_depot_stock/partner.py:195
+#: code:addons/midban_depot_stock/partner.py:246
 #, python-format
 msgid "The customer has no zip code"
 msgstr "El cliente no tiene código postal"
@@ -3017,7 +3024,7 @@ msgid "The zip code %s is already                                               
 msgstr "El código postal %s ya está asignado a la ruta %s. Cámbialo o no podrás guardar cambios en la ruta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:107
+#: code:addons/midban_depot_stock/partner.py:108
 #, python-format
 msgid "The zip code %s is not in the route zip                                       codes list"
 msgstr "EL código postal %s no está en el listado de códigos postales"
@@ -3182,7 +3189,6 @@ msgstr "Verdadero"
 #: view:route:midban_depot_stock.route_view_search
 #: field:route,type:0
 #: view:stock.machine:midban_depot_stock.stock_machine_view_search
-#: view:route.detail:midban_depot_stock.route_detail_view_form
 #: field:tag,type:0
 msgid "Type"
 msgstr "Tipo"
@@ -3364,9 +3370,9 @@ msgid "Warning"
 msgstr "Aviso"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:100
-#: code:addons/midban_depot_stock/partner.py:106
-#: code:addons/midban_depot_stock/partner.py:124
+#: code:addons/midban_depot_stock/partner.py:101
+#: code:addons/midban_depot_stock/partner.py:107
+#: code:addons/midban_depot_stock/partner.py:125
 #: code:addons/midban_depot_stock/route.py:95
 #: code:addons/midban_depot_stock/sale.py:118
 #, python-format
@@ -3498,13 +3504,13 @@ msgid "Zip Codes"
 msgstr "Códigos postales"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:250
+#: code:addons/midban_depot_stock/partner.py:251
 #, python-format
 msgid "Zip code %s of customer %s                                      is not included in the route                                      %s"
 msgstr "El código postal %s del cliente %s no está incluido en la ruta %s"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:198
+#: code:addons/midban_depot_stock/partner.py:199
 #, python-format
 msgid "Zip code %s of customer %s                                  is not included in the route                                  %s"
 msgstr "Código postal %s del cliente %s no está incluido en la ruta %s"
@@ -3629,4 +3635,3 @@ msgstr "{'readonly': [('route_detail_id', '!=', False)]}"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
 msgstr "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
-
