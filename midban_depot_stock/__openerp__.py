@@ -72,6 +72,7 @@
         "wizard/create_camera_locations_view.xml",
         "wizard/get_route_detail_wzd_view.xml",
         "wizard/manual_transfer_wzd_view.xml",
+        "wizard/validate_routes.xml",
         'stock_view.xml',
         'procurement_view.xml',
         'crm_phonecall_view.xml',
