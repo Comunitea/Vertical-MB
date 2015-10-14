@@ -70,13 +70,13 @@ msgstr "Error!"
 #. module: stock_picking_review
 #: model:ir.actions.act_window,name:stock_picking_review.action_fast_return
 msgid "Fast Return"
-msgstr "Devolución rápida (sobre aceptadas)"
+msgstr "Marcar revisados y devolución"
 
 #. module: stock_picking_review
 #: code:addons/stock_picking_review/stock.py:169
 #, python-format
 msgid "Fast return is only available with outgoing pickings!"
-msgstr "La devolución rápida solo está disponible para albaranes de salidad!"
+msgstr "La devolución rápida solo está disponible para albaranes de salida!"
 
 #. module: stock_picking_review
 #: view:fast.return:stock_picking_review.fast_return_form
@@ -86,7 +86,7 @@ msgstr "Devoluciones rápidas"
 #. module: stock_picking_review
 #: view:fast.return:stock_picking_review.fast_return_form
 msgid "Generate all return pickings?"
-msgstr "Generar los albaranes de devolución?"
+msgstr "Generar los albaranes de devolución?. Se maracarán también los albaranes como revisados"
 
 #. module: stock_picking_review
 #: field:fast.return,id:0

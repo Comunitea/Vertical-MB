@@ -99,8 +99,8 @@ class stock_move(models.Model):
     def action_done(self):
         res = super(stock_move, self).action_done()
         for move in self:
-            move.accepted_qty = move.product_uos_qty
-            move.product_uom_acc_qty = move.product_uom_qty
+            move.write({'accepted_qty':move.product_uos_qty,
+                        'product_uom_acc_qty': move.product_uom_qty})
         return res
 
     def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
@@ -126,10 +126,14 @@ class StockPicking(models.Model):
 
     _inherit = "stock.picking"
 
-    payment_mode = fields.Many2one(string='Payment Mode',
-                                   store=True,
-                                   related='sale_id.payment_mode_id')
-    invoice_id = fields.Many2one()
+    reviewed = fields.Boolean(string="Reviewed", default=False)
+    payment_mode = fields.Many2one(
+        'payment.mode',
+        compute='_get_payment_mode',
+        string='Payment Mode',
+        store=True,
+        )
+    #invoice_id = fields.Many2one()
     move_lines = fields.One2many('stock.move', 'picking_id',
                                  'Internal Moves',
                                  states={'done': [('readonly', False)],
@@ -150,6 +154,36 @@ class StockPicking(models.Model):
     amount_discounted_acc = fields.Float(
         compute='_amount_all_acc', digits_compute=dp.get_precision('Sale Price'),
         string='Sale price', readonly=True, store=True)
+    receipt_amount = fields.Float(
+        compute='_receipt_amount', digits_compute=dp.get_precision('Sale Price'),
+        string='Receipt', readonly=False, store=True)
+
+
+    @api.multi
+    @api.depends('group_id')
+    def _get_payment_mode(self):
+        sale_obj = self.env["sale.order"]
+
+        for picking in self:
+            picking.payment_mode = False
+            if picking.group_id:
+                sale_ids = sale_obj.search([('procurement_group_id', '=', picking.group_id.id)])
+                if sale_ids:
+            #       sale = sale_obj.browse(sale_ids[0])
+                    picking.payment_mode = sale_ids[0].payment_mode_id
+
+    @api.multi
+    @api.depends('amount_total_acc')
+    def _receipt_amount(self):
+        cash_type = self.env['ir.model.data'].get_object_reference('stock_picking_review', 'payment_mode_type_cash')
+        cash_type_id = cash_type[1]
+        for picking in self:
+            if not picking.sale_id:
+                picking.receipt_amount = 0.0
+                continue
+            else:
+                if picking.sale_id.payment_mode_id.type.id == cash_type_id:
+                    picking.receipt_amount = picking.amount_total_acc
 
     @api.multi
     def fast_returns(self):
@@ -170,6 +204,7 @@ class StockPicking(models.Model):
                                                 ' is only available with'
                                                 ' outgoing pickings!'))
             for move in pick.move_lines:
+                to_check_moves = [move.move_dest_id] if move.move_dest_id.id else []
                 to_check_moves = [move.move_dest_id] if move.move_dest_id.id else []
                 while to_check_moves:
                     current_move = to_check_moves.pop()
@@ -220,7 +255,7 @@ class StockPicking(models.Model):
                         'move_dest_id': move_dest_id,
                         'invoice_state': 'none'
                     })
-                moves += new_move_id
+                    moves += new_move_id
             if len(moves):
                 new_picking = pick.copy({
                     'move_lines': [],
@@ -232,10 +267,13 @@ class StockPicking(models.Model):
                 moves.picking_id = new_picking.id
                 new_picking.action_confirm()
                 new_picking.action_assign()
+
+        self.write({'reviewed': True})
         return res
 
     @api.multi
-    @api.depends('move_lines', 'move_lines.price_subtotal_accepted', 'partner_id')
+    @api.depends('move_lines', 'partner_id','move_lines.accepted_qty',
+                 'move_lines.product_uom_qty')
     def _amount_all_acc(self):
         for picking in self:
             if not picking.sale_id:

@@ -30,8 +30,7 @@ class FastReturn(models.TransientModel):
     def fast_return(self):
         pickings = self.env['stock.picking'].browse(self.env.context['active_ids'])
         picking_ids = pickings.fast_returns()
-        if not picking_ids:
-            raise except_orm(_('Error!'), _('No return picking created!'))
+
         data_pool = self.env['ir.model.data']
 
         #action_id = data_pool.xmlid_to_res_id('stock.action_picking_tree_ready')
