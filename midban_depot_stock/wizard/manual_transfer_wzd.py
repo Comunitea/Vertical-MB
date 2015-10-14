@@ -95,8 +95,8 @@ class manual_transfer_wzd(models.TransientModel):
                             raise except_orm(_('Error'),
                                              _('Imposible assign the move'))
 
-                        # Move will be the our calculed quants reserved
-                        move_obj.action_assign()
+                        # # Move will be the our calculed quants reserved
+                        # move_obj.action_assign()
                     # Create the operation to move a multiproduct pack
                     op_vals = line.get_operation_vals(pick_obj)
                     self.env['stock.pack.operation'].create(op_vals)
@@ -134,8 +134,8 @@ class transfer_lines(models.TransientModel):
                                       required=True)
     dest_location_id = fields.Many2one('stock.location', 'To location',
                                        required=True)
-    do_pack = fields.Selection([('no_pack', 'No Pack'), ('palet', 'Palet'),
-                                ('box', 'Box')], 'Do Pack', default='no_pack')
+    do_pack = fields.Selection([('no_pack', 'No Pack'), ('do_pack', 'Do Pack'),
+                                ], 'Do Pack', default='do_pack')
 
     @api.onchange('package_id')
     @api.multi
@@ -167,19 +167,24 @@ class transfer_lines(models.TransientModel):
             # Search quants to force the assignament later
             domain = [('product_id', '=', product.id),
                       ('location_id', '=', line.src_location_id.id),
-                      ('qty', '>', 0.0),
-                      ('package_id', '=', line.package_id.id)]
+                      ('qty', '>', 0.0)]
+            if line.package_id:
+                domain.append(('package_id', '=', line.package_id.id))
             if line.lot_id:
                 domain.append(('lot_id', '=', line.lot_id.id))
             quants_objs = t_quant.search(domain)
             assigned_qty = 0
+            rst_qty = line_qty
             for quant in quants_objs:
-                if line.quantity > quant.qty:
-                    res.append((quant, quant.qty))
-                    assigned_qty += quant.qty
-                else:
-                    res.append((quant, line_qty))
-                    assigned_qty += line_qty
+                if assigned_qty < line_qty:
+                    if rst_qty >= quant.qty:
+                        res.append((quant, quant.qty))
+                        assigned_qty += quant.qty
+                    else:
+                        res.append((quant, rst_qty))
+                        assigned_qty += rst_qty
+                    rst_qty = line_qty - assigned_qty
+
             if assigned_qty < line_qty:
                 raise except_orm(_('Error'), _('Not enought stock available\
                                  for product %s, and quantity of \

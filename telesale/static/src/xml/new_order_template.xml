@@ -302,7 +302,13 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
-                        <label for="customer" id="labelpartner">Customer:</label>
+                      <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
+                          <label for="customer" id="labelpartner">Indirect Customer:</label>
+                      </t>
+                      <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
+                          <label for="customer" id="labelpartner">Customer:</label>
+                      </t>
+                        <!-- <label for="customer" id="labelpartner">Customer:</label> -->
                         <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/>
                         <!-- <select class="mandatory" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/> -->
                     </div>
@@ -416,9 +422,9 @@
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
-                    <label for="total_base">Total Base:</label>
-                    <input type="text" id='total_base' name="total_base"
-                    t-att-value="widget.order_model.get('total_base').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                    <label for="total_discount">Discount:</label>
+                    <input type="numeric" id='total_discount' name="total_discount"
+                        t-att-value="widget.order_model.get('total_discount').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                 </div>
                 </div>
               </div>
@@ -426,10 +432,8 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                       <div class="centerthis">
-                        <label for="total_discount">Discount:</label>
-                        <input type="numeric" id='total_discount' name="total_discount"
-                            t-att-value="widget.order_model.get('total_discount').toFixed(2)" readonly="readonly" tabIndex="-1"/>
-                          </div>
+
+                      </div>
                   </div>
               </div>
         </div>
@@ -437,19 +441,20 @@
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
-                  <label for="total_iva">Total Iva:</label>
-                  <input type="numeric" id='total_iva' name="total_discount"
-                      t-att-value="widget.order_model.get('total_iva').toFixed(2)" readonly="readonly" tabIndex="-1"/>
-                </div>
+                    <label for="total">Discount (%):</label>
+                    <input type="text" class='total' name="discount_total"
+                        t-att-value="widget.order_model.get('total_discount').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                  </div>
               </div>
               </div>
 
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                       <div class="centerthis">
-                        <label for="total_margin">Total Margin:</label>
-                        <input type="numeric" t-att-value="widget.order_model.get('total_margin').toFixed(2)" readonly="readonly" tabIndex="-1"/>
-                          </div>
+                        <label for="total_base">Total Base:</label>
+                        <input type="text" id='total_base' name="total_base"
+                        t-att-value="widget.order_model.get('total_base').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                      </div>
                   </div>
               </div>
         </div>
@@ -457,9 +462,8 @@
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
-                  <label for="total">Total Order:</label>
-                  <input type="text" class='total' id="total_order"
-                      t-att-value="widget.order_model.get('total').toFixed(2)" tabIndex="-1" readonly="readonly"/>
+                  <label for="total_margin">Total Margin:</label>
+                  <input type="numeric" t-att-value="widget.order_model.get('total_margin').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                 </div>
               </div>
               </div>
@@ -467,10 +471,13 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                       <div class="centerthis">
-                        <label for="total">Total Fresh:</label>
+                      <label for="total_iva">Total Iva:</label>
+                      <input type="numeric" id='total_iva' name="total_discount"
+                          t-att-value="widget.order_model.get('total_iva').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                        <!-- <label for="total">Total Fresh:</label>
                         <input type="text" class='total' id="total_fresh"
-                            t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/>
-                          </div>
+                            t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/> -->
+                      </div>
                   </div>
               </div>
         </div>
@@ -478,6 +485,9 @@
             <div class="row semiheight">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
+                    <label for="total">Margin (%):</label>
+                    <input type="text" class='total' id='total_margin'
+                        t-att-value="widget.order_model.get('total_margin').toFixed(2)" readonly="readonly" tabIndex="-1"/>
                   <!-- <label for="total">Suppliers:</label>
                   <input type="text" class='total mandatory' id="total_order"
                       t-att-value="widget.order_model.get('partner_code')" tabIndex="-1"/> -->
@@ -488,10 +498,13 @@
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                       <div class="centerthis">
+                      <label for="total" class="totalorder">Total Order:</label>
+                      <input type="text" class='total totalorder' id="total_order"
+                          t-att-value="widget.order_model.get('total').toFixed(2)" tabIndex="-1" readonly="readonly"/>
                         <!-- <label for="total">Total Fresh:</label>
                         <input type="text" class='total' id="total_fresh"
                             t-att-value="widget.order_model.get('total_fresh').toFixed(2)" tabIndex="-1" readonly="readonly"/> -->
-                          </div>
+                      </div>
                   </div>
               </div>
         </div>
@@ -675,13 +688,13 @@
                 </div>
             </div>
             <div id="middlepart">
-              <!-- <div id="leftpart"> -->
+
               <div id="leftpart" class="col-xs-9 fullheight">
                   <div id="placeholder-order-widget">
                   </div>
 
               </div>
-              <!-- <div id="rightpart"> -->
+
               <div id="rightpart" class="col-xs-3 fullheight">
                 <div id="placeholder-rightpart">
                 </div>
@@ -797,7 +810,7 @@
 
 
     <t t-name="Sold-Product-Widget">
-            <div class="fullheight">
+            <div class="fullheight overflow">
                 <table class="sold-product-table">
                     <thead>
                         <th class="pc-header-name">Name</th>

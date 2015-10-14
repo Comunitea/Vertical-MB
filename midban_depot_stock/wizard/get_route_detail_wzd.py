@@ -51,7 +51,7 @@ class get_route_detail_wzd(models.TransientModel):
                 last_date = route_obj.get_last_pending_date()
                 vals = {
                     'route_id': route_id,
-                    'last_pending_date': last_date and last_date[0] or False
+                    'last_pending_date': last_date and last_date[0] or False,
                 }
                 item_obj = self.env['item.create.route'].create(vals)
                 created_items_ids.append(item_obj.id)

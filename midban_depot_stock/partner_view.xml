@@ -21,6 +21,7 @@
                                     <field name="regularity"/>
                                     <field name="last_date"/>
                                     <field name="next_date"/>
+                                    <field name="init_date"/>
                                 </tree>
                             </field>
                         </group>

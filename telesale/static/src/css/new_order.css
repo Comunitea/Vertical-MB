@@ -392,6 +392,9 @@
 /***************************************************************************************************************/
 /************************************************ RIGHT PART ****************************************************/
 /***************************************************************************************************************/
+.telesale .fullheight .overflow{
+    overflow: auto;
+}
 .telesale #bottompart table {
     position:relative;
     /*margin-top: 6px;*/
@@ -464,6 +467,10 @@
 }
 .telesale #bottompart .form-col input.total {
     font-weight: bold;
+}
+.telesale #bottompart .totalorder{
+    font-size: 2vmin;
+    color: blue;
 }
 .telesale #bottompart .order-button {
     width: 100%;
