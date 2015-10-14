@@ -567,6 +567,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
                     this.model.set('price_udv', my_round(uos_pu, 2))
+                    this.model.set('total', my_round(uos_qty * uos_pu, 2))
                     this.refresh()
                     break;
 
