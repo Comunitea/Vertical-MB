@@ -247,5 +247,23 @@ function openerp_ts_db(instance, module){
         get_orders: function(){
             return this.load('orders',[]);
         },
+        is_indirect_customer_by_name: function(partner){
+            var res = false;
+            debugger;
+            if(partner){
+              var partner_id = this.partner_name_id[partner];
+
+              if (partner_id){
+                var partner_obj = this.get_partner_by_id(partner_id)
+
+                if (partner_obj){
+                  res = partner_obj.indirect_customer
+                }
+              }
+
+            }
+
+            return res
+        },
     });
 }
