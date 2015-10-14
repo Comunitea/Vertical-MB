@@ -886,6 +886,11 @@ function openerp_ts_models(instance, module){
                 })
             return loaded
         },
+        deleteProductLine: function(id_line){
+          var self=this;
+          debugger;
+          // self.get('orderLines')
+        },
         addProductLine: function(product_id){
             var self=this;
             var customer_id = this.ts_model.db.partner_name_id[this.get('partner')];

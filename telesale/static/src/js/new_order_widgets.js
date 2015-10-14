@@ -1109,8 +1109,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         add_product_to_order: function() {
             var product_id = this.product.id
             if (product_id){
-                var current_order= this.ts_model.get('selectedOrder')
+                var current_order = this.ts_model.get('selectedOrder')
+                current_order.removeLine();
                 current_order.addProductLine(product_id);
+
                 $('button#button_no').click();
             }
         },

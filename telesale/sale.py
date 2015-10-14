@@ -238,6 +238,8 @@ class sale_order_line(osv.osv):
         Overwrite in order to get the last sale preice to calculate a
         aproximate price of fresh products in telesale
         """
+        # import ipdb; ipdb.set_trace()
+
         if context is None:
             context = {}
         sup = super(sale_order_line, self)
