@@ -21,7 +21,7 @@
 
 from openerp.osv import osv, fields
 import openerp.addons.decimal_precision as dp
-
+from openerp import api
 
 class account_invoice_line(osv.osv):
     _inherit = "account.invoice.line"
@@ -34,6 +34,7 @@ class account_invoice_line(osv.osv):
                   digits_compute=dp.get_precision('Product Unit of Measure'))
     }
 
+    @api.multi
     def product_id_change(self, product, uom_id, qty=0, name='',
                           type='out_invoice', partner_id=False,
                           fposition_id=False, price_unit=False,
@@ -49,6 +50,7 @@ class account_invoice_line(osv.osv):
             res['value']['quantity_second_uom'] = 0.0
         return res
 
+    @api.multi
     def uos_id_change(self, product, uom, qty=0, name='', type='out_invoice',
                       partner_id=False, fposition_id=False, price_unit=False,
                       currency_id=False, company_id=None):
