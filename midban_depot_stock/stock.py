@@ -819,6 +819,7 @@ class stock_pack_operation(models.Model):
         """
         Search for quants of param product in his storage locations
         """
+
         res = False
         t_quant = self.env['stock.quant']
         pick_loc = product.picking_location_id
@@ -839,10 +840,15 @@ class stock_pack_operation(models.Model):
         Return True whe picking is available and no older reference in storage
         """
         res = False
+
         if not product.picking_location_id:
-            raise exceptions.Warning(_('Error!'),
-                                     _('Not picking location for product \
-                                     %s.' % product.name))
+            pick_loc = self.env.ref("stock.virtual_picking_location")
+            return True
+            # raise exceptions.Warning(_('Error!'),
+            #                          _('Not picking location for product \
+            #                          %s.' % product.name))
+            #
+
         pick_loc = product.picking_location_id
         volume = product.get_volume_for(prop_qty)
         if not pick_loc.filled_percent:  # If empty add wood volume
@@ -868,7 +874,11 @@ class stock_pack_operation(models.Model):
         if self.operation_product_id:
             product = self.operation_product_id
             if self._is_picking_loc_available(product, self.packed_qty):
-                self.location_dest_id = product.picking_location_id.id
+                #cambio para que si no hay, coja por defecto
+                 if product.picking_location_id:
+                    self.location_dest_id = product.picking_location_id.id
+                 else:
+                    self.location_dest_id = self.env.ref("stock.virtual_picking_location").id
             else:
                 locations = product.picking_location_id.get_locations_by_zone(
                     'storage')

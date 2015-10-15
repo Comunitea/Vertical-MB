@@ -99,14 +99,14 @@
                 <input type="search" class='col-product mandatory' t-att-value="widget.model.get('product')"/>
             </td>
             <td class="cell-qty">
-                <input id="inputuosqty" type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty')"/>
+                <input id="inputuosqty" type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty').toFixed(2)"/>
             </td>
             <td class="cell-unit">
                 <!-- <select class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
                 <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/>
             </td>
             <td class="cell-pvp">
-                <input type="text" class='col-price_udv mandatory' t-att-value="widget.model.get('price_udv')" />
+                <input type="text" class='col-price_udv mandatory' t-att-value="widget.model.get('price_udv').toFixed(2)" />
             </td>
              <td class="cell-qty">
                 <input type="text" class='col-qty' t-att-value="widget.model.get('qty').toFixed(2)" readonly="readonly"/>
@@ -831,7 +831,7 @@
               <span class="product-cell"><t t-esc="widget.sold_line.product_id[1]"/></span>
           </td>
           <td class="pc-cell-code">
-            <span class="product-cell"><t t-esc="widget.sold_line.price_udv"/></span>
+            <span class="product-cell"><t t-esc="widget.sold_line.price_udv.toFixed(2)"/></span>
           </td>
           <td class="pc-cell-stock">
             <button class="fullwidth" id="add-line">+</button>

@@ -8,7 +8,6 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-
         <!-- Location Task. Necesary change src location to Input location and Dest location to stock location -->
         <record id="picking_type_ubication_task" model="stock.picking.type">
             <field name="name">Ubication Task</field>
