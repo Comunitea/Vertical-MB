@@ -582,7 +582,7 @@ class product_product(models.Model):
 
 
     #Saca la los ids de las unidades disponibles para venta
-    @api.model
+    @api.multi
     def get_sale_unit_ids(self):
         res = []
         if self.base_use_sale and self.log_base_id:
@@ -594,7 +594,7 @@ class product_product(models.Model):
         return res
 
     # y para compras ....
-    @api.model
+    @api.multi
     def get_purchase_unit_ids(self, supplier_id):
         res = []
         supp = self.get_product_supp_record(supplier_id)
@@ -609,16 +609,16 @@ class product_product(models.Model):
             res.append(supp.log_box_id.id)
         return res
 
-    @api.model
+    @api.multi
     def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id=0):
         return uom_qty * self._get_factor(uos_id, supplier_id)
 
-    @api.model
+    @api.multi
     def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id=0):
         return uos_qty / self._get_factor(uos_id, supplier_id)
 
 
-    @api.model
+    @api.multi
     def get_uom_logistic_unit(self):
         if self.uom_id.id == self.log_base_id.id:
             return 'base'
@@ -643,7 +643,7 @@ class product_product(models.Model):
                              not related with any logistic \
                              unit' % self.uom_id.name))
 
-    @api.model
+    @api.multi
     def get_uom_uos_prices(self, uos_id, custom_price_unit=0.0,
                            custom_price_udv=0.0):
         if custom_price_udv:
@@ -671,7 +671,7 @@ class product_product(models.Model):
         return functools.reduce(operator.mul,
                                 [self[x] for x in conversion_fields])
 
-    @api.model
+    @api.multi
     def get_product_supp_record(self, supplier_id):
         res = False
         for supp in self.seller_ids:
@@ -683,7 +683,7 @@ class product_product(models.Model):
                                             supplier list') % supp_obj.name)
         return res
 
-    @api.model
+    @api.multi
     def uom_qty_to_uoc_qty(self, uom_qty, uoc_id, supplier_id = 0):
         """
         Convert product quantity from his default stock unit to the specified
@@ -699,7 +699,7 @@ class product_product(models.Model):
         elif uoc_id == supp.log_box_id.id:
             return conv['box']
 
-    @api.model
+    @api.multi
     def get_uom_po_logistic_unit(self, supplier_id):
         supp = self.get_product_supp_record(supplier_id)
         if self.uom_id.id == supp.log_base_id.id:
@@ -716,7 +716,7 @@ class product_product(models.Model):
 
 
     #calcula para una cantidad dada, las cantidades en las distintas unidades
-    @api.model
+    @api.multi
     def get_purchase_unit_conversions(self, qty_uoc, uoc_id, supplier_id):
         res = {'base': 0.0,
                'unit': 0.0,
@@ -731,7 +731,7 @@ class product_product(models.Model):
         return res
 
     #calcula para una cantidad dada, las cantidades en las distintas unidades
-    @api.model
+    @api.multi
     def get_sale_unit_conversions(self, qty_uoc, uoc_id):
         res = {'base': 0.0,
                'unit': 0.0,
@@ -744,7 +744,7 @@ class product_product(models.Model):
         return res
 
     #calcula para un precio dado, los precios en las udistintas unidades
-    @api.model
+    @api.multi
     def get_price_conversions(self, qty_uoc, uoc_id, supplier_id):
         res = {'base': 0.0,
                'unit': 0.0,
@@ -762,14 +762,14 @@ class product_product(models.Model):
     #devuelve un factor de conversión a la unidad de stock del producto
     #desde otra unidad (uos_id)
     #qty_en_uom_id= _get_factor(uos_id) x qty_en_uos_id
-    @api.model
+    @api.multi
     def _get_factor(self, uos_id, supplier_id = 0):
 
         return self._get_unit_ratios(uos_id, supplier_id)
 
     #Es funcion devuelve un ratio a la unidad base del producto o uom_id
     #para un proveedor dado
-    @api.model
+    @api.multi
     def _get_unit_ratios(self, unit, supplier_id):
         uom_id = self.uom_id.id
         res = 1
@@ -812,7 +812,7 @@ class product_product(models.Model):
         return res * res_uom
     #Da el factor de conversión entre dos unidades para un determinado
     #proveedor
-    @api.model
+    @api.multi
     def _conv_units(self, uom_origen, uom_destino, supplier_id):
         res = self._get_unit_ratios(uom_destino, supplier_id) / \
               self._get_unit_ratios(uom_origen, supplier_id)
@@ -820,7 +820,7 @@ class product_product(models.Model):
 
     #Sacamos el nombre del codigo/nombre de producto por proveedor
     # si no hay coge producto y le pone un asterisco
-    @api.model
+    @api.multi
     def get_product_supplier_name(self, supplier_id, product_id):
 
         if not product_id:
@@ -851,7 +851,7 @@ class product_product(models.Model):
     # sacamos las conversiones de precios,podemos darle un precio
     # para sobreescribir los precios a partir del standar_price
     # habrá que revisarlo en función delos precios y tarifas por proveedor
-    @api.model
+    @api.multi
     def get_uom_uoc_prices_purchases(self, uoc_id, supplier_id,
                                      custom_price_unit=0.0,
                                      custom_price_udc=0.0):
@@ -884,6 +884,7 @@ class product_product(models.Model):
 
         return price_unit, price_udc
 
+    @api.multi
     def get_num_mantles(self, uom_qty, total_uom_mantles=False):
         """
         For a uom_qty get the equivalent number of mantles using the logistic
@@ -906,6 +907,7 @@ class product_product(models.Model):
             mantles = int(math.ceil(uom_qty / uom_in_mantles))
         return mantles
 
+    @api.multi
     def get_volume_for(self, uom_qty, add_wood_height=False):
         """
         Get the volume for a uom_qty in default product uom_id.
@@ -920,6 +922,7 @@ class product_product(models.Model):
         volume = self.pa_width * self.pa_length * height_mantles
         return volume
 
+    @api.multi
     def get_wood_volume(self):
         """
         Get the volume of a wood used to put under the palet
