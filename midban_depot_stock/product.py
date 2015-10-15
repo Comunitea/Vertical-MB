@@ -96,10 +96,10 @@ class product_template(osv.Model):
 
     }
     # Se anula para poner zona
-    # _sql_constraints = [
-    #     ('location_id_uniq', 'unique(picking_location_id)',
-    #      _("Field Location picking is already setted"))
-    # ]
+    _sql_constraints = [
+        ('location_id_uniq', 'unique(picking_location_id)',
+         _("Field Location picking is already setted"))
+    ]
 
     def get_locations_by_zone(self, cr, uid, product_id, zone, context=None):
         """
