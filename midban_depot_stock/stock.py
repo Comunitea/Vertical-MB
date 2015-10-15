@@ -487,7 +487,7 @@ class StockPackage(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"
 
-    @api.depends('quant_ids')
+    @api.depends('quant_ids', 'quant_ids.lot_id')
     @api.one
     def _get_package_lot_id(self):
         """
