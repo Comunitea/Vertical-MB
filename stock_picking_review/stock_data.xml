@@ -7,5 +7,13 @@
             <field name="usage">internal</field>
             <field name="company_id"></field>
         </record>
+
+        <record id="payment_mode_type_cash" model="payment.mode.type">
+            <field name="name">Contado</field>
+            <field name="code">cash</field>
+            <field name="payment_order_type">debit</field>
+            <field name="company_id"></field>
+        </record>
+
     </data>
 </openerp>

@@ -30,7 +30,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             }
             this.open_order =  this.ts_model.get('selectedOrder')
             var loaded = self.ts_model.fetch('sale.order',
-                                            ['name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],  //faltan los impuestos etc
+                                            ['supplier_id','contact_id','note','comercial','customer_comment','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],  //faltan los impuestos etc
                                             [
                                                 ['id', '=', order_id],
                                                 ['chanel', '=', 'telesale']

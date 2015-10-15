@@ -19,7 +19,6 @@
                     <field name="product_uom_qty" readonly="True"/>
                      <field name="product_uom_acc_qty" />
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
-
                     <field name="cost_subtotal" sum="Total"/>
                     <field name="state" readonly="True"/>
                     <button name="action_done" states="confirmed,assigned" string="Process" type="object" groups="stock.group_stock_user" icon="gtk-go-forward" help="Done"/>
@@ -69,7 +68,7 @@
             <field name="arch" type="xml">
                 <filter name="filter_today" position="before">
                     <filter icon="terp-go-today" string="Review Today" name="review_today"
-                            domain="[('date_done','&lt;=',time.strftime('%Y-%m-%d')),('date_done','&gt;=',time.strftime('%Y-%m-%d'))]" help="Orders processed Today"/>
+                            domain="[('reviewed','=',False),('date_done','&lt;=',time.strftime('%Y-%m-%d')),('date_done','&gt;=',time.strftime('%Y-%m-%d'))]" help="Orders processed Today"/>
                 </filter>
 
             </field>
@@ -88,6 +87,8 @@
                     <field name="payment_mode" readonly="True"/>
                     <field name="amount_total" readonly="True" sum="Totals"/>
                     <field name="amount_total_acc" readonly="True" sum="Totals"/>
+                    <field name="receipt_amount" readonly="True" sum="Totals"/>
+                    <field name="reviewed" />
                     <field name="sale_id" readonly="True"/>
                      <field name="invoice_id" readonly="True"/>
                     <field name="invoice_state" readonly="True"/>
@@ -123,11 +124,18 @@
                             <group>
                                 <field name="partner_id"/>
                                 <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                                <field name="amount_total"/>
+                                <field name="amount_total_acc"/>
+                                <field name="payment_mode"/>
+                                <field name="receipt_amount"/>
                             </group>
                             <group>
+                                <field name="reviewed" />
+                                <field name="route_detail_id" />
                                 <field name="date"/>
                                 <field name="min_date"/>
                                 <field name="origin" placeholder="e.g. PO0032" class="oe_inline"/>
+
                             </group>
                         </group>
                         <notebook>
@@ -176,6 +184,19 @@
             <field name="view_mode">tree</field>
             <field name="view_id" ref="stock_picking_review_tree"/>
             <field name="act_window_id" ref="act_review_pickings"/>
+        </record>
+
+
+        <record id="midban_depot_stock.action_replanning_picking_route" model="ir.actions.act_window">
+            <field name="name">Replanning picking in routes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="midban_depot_stock.view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
+            <field name="domain">[('picking_type_code', '=', 'outgoing'),'|' ,('state','not in',('draft','cancel','done')),('reviewed', '=' , False)]</field>
+            <field name="context">{}</field>
         </record>
 
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="validate_routes_form" model="ir.ui.view">
+            <field name="name">validate.routes.form</field>
+            <field name="model">validate.routes</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Validate assigned routes">
+                    <h1>
+                      Validate assigned routes?
+                  </h1>
+                  <footer>
+                      <button string="Validate" name="validate" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+       <record id="action_validate_routes" model="ir.actions.act_window">
+            <field name="name">Validate Routes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">validate.routes</field>
+           <field name="src_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="validate_routes_form"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record id="ir_validate_routes" model="ir.values">
+            <field name="name">Validate Routes</field>
+            <field name="key2">client_action_multi</field>
+            <field name="model">stock.picking</field>
+            <field name="value" eval="'ir.actions.act_window,%d'%action_validate_routes" />
+        </record>
+
+    </data>
+</openerp>
+
