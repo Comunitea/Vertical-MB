@@ -28,7 +28,8 @@
     'website': '',
     "depends": ['stock_valued_picking',
                 'web_action_conditionable',
-                'midban_depot_stock'],
+                'midban_depot_stock',
+                'stock_picking_invoice_link' ],
     "data": [
         'stock_picking_view.xml',
         'stock_data.xml',
