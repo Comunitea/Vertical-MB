@@ -102,11 +102,11 @@ class product_product(osv.Model):
             res['last_date'] = line_obj.order_id.date_order
             res['last_qty'] = line_obj.product_uom_qty
             res['last_price'] = line_obj.price_unit
-        # Calc min price
+        # Calc min price, SE elimino price_system_variable, esto ya no es así
         min_price = 0.0
-        if product_obj.product_class == 'normal':
-            min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
-                                                     pricelist_id)[1]
+        # if product_obj.product_class == 'normal':
+        #     min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
+        #                                              pricelist_id)[1]
         res['min_price'] = min_price
         return res
 
