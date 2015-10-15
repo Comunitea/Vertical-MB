@@ -75,6 +75,7 @@ class manual_transfer_wzd(models.TransientModel):
             for line in field_o2m:
                 # We want to move a entire multiproduct pack, we need to create
                 # one move and assign it for each product inside the pack
+                #import ipdb; ipdb.set_trace()
                 if not line.product_id and line.package_id.is_multiproduct:
                     quants_by_product = line.package_id.get_products_quants()
                     for product in quants_by_product:
@@ -95,8 +96,8 @@ class manual_transfer_wzd(models.TransientModel):
                             raise except_orm(_('Error'),
                                              _('Imposible assign the move'))
 
-                        # # Move will be the our calculed quants reserved
-                        # move_obj.action_assign()
+                        # Move will be the our calculed quants reserved
+                        move_obj.action_assign()
                     # Create the operation to move a multiproduct pack
                     op_vals = line.get_operation_vals(pick_obj)
                     self.env['stock.pack.operation'].create(op_vals)
@@ -167,9 +168,8 @@ class transfer_lines(models.TransientModel):
             # Search quants to force the assignament later
             domain = [('product_id', '=', product.id),
                       ('location_id', '=', line.src_location_id.id),
+                      ('package_id', '=', line.package_id.id),
                       ('qty', '>', 0.0)]
-            if line.package_id:
-                domain.append(('package_id', '=', line.package_id.id))
             if line.lot_id:
                 domain.append(('lot_id', '=', line.lot_id.id))
             quants_objs = t_quant.search(domain)

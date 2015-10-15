@@ -26,7 +26,11 @@ import itertools
 class StockLocations(models.Model):
 
     _inherit ="stock.location"
-    barcode_name = fields.Char("CDB Name")
+    _rec_name = 'bcd_name'
+
+    vagon=fields.Integer('Vagón')
+    bcd_name = fields.Char ("C.D.B. Name")
+    bcd_code = fields.Char("C.D.B. Code", size=25)
 
 class create_camera_locations(models.TransientModel):
     _name = 'create.camera.locations'
@@ -66,13 +70,15 @@ class create_camera_locations(models.TransientModel):
         }
         vals2 = vals
         vals2.update({'name': self.camera_code + ' Picking',
-                      'zone': 'picking'})
+                      'zone': 'picking',
+                      })
         pick = self.env['stock.location'].create(vals2)
         vals2 = vals
         vals2.update({'name': self.camera_code + ' Almacenaje ',
                       'zone': 'storage'})
         store = self.env['stock.location'].create(vals2)
         return pick, store
+
 
     def _get_locations_vals(self, item, camera_obj, pick_zone_obj,
                             store_zone_obj):
@@ -92,36 +98,60 @@ class create_camera_locations(models.TransientModel):
 
         store_tuples = self._get_my_cartesian_product(r_col, r_store, r_subcol)
         store_names = ['/'.join(x) for x in store_tuples]
-        bcd_name = "*" + str(self.id) + "*" #"BCD_NAME"
-        # Create Picking vals
 
+        bcd_code = item.camera_prefix + item.code_row
+        bcd_name = item.camera_prefix + " " + item.code_row
+        # Create Picking vals
+        #import ipdb; ipdb.set_trace()
         for name in pick_names:
-            vals = {
-                'usage': 'internal',
-                'temp_type_id': camera_obj.temp_type_id.id,
-                'width': item.my_width,
-                'length': item.my_length,
-                'height': item.my_height,
-                'name': str(item.aisle_num) + '/' + name,
-                'location_id': pick_zone_obj.id,
-                'zone': 'picking',
-                'barcode_name': bcd_name,
-            }
-            res.append(vals)
+            if len(name.split('/'))==2:
+                fila = name.split('/')[0]
+                if len(fila)==1:
+                    fila = '0' + fila
+                altura = name.split('/')[1]
+                if len(altura)==1:
+                    altura = '0' + altura
+
+                vals = {
+                    'usage': 'internal',
+                    'temp_type_id': camera_obj.temp_type_id.id,
+                    'width': item.my_width,
+                    'length': item.my_length,
+                    'height': item.my_height,
+                    'name': str(item.aisle_num) + '/' + name,
+                    'location_id': pick_zone_obj.id,
+                    'zone': 'picking',
+                    'bcd_code': bcd_code + fila + altura,
+                    'bcd_name': u'%s %s %s'%(bcd_name, fila, altura),
+                    'vagon':item.vagon
+                }
+                print bcd_name
+                res.append(vals)
         # Create Store vals
         for name in store_names:
-            vals = {
-                'usage': 'internal',
-                'temp_type_id': camera_obj.temp_type_id.id,
-                'width': item.my_width,
-                'length': item.my_length,
-                'height': item.my_height,
-                'name':  str(item.aisle_num) + '/' + name,
-                'location_id': store_zone_obj.id,
-                'zone': 'storage',
-                'barcode_name': bcd_name,
-            }
-            res.append(vals)
+            if len(name.split('/'))==2:
+                fila = name.split('/')[0]
+                if len(fila)==1:
+                    fila = '0' + fila
+                altura = name.split('/')[1]
+                if len(altura)==1:
+                    altura = '0' + altura
+
+                vals = {
+                    'usage': 'internal',
+                    'temp_type_id': camera_obj.temp_type_id.id,
+                    'width': item.my_width,
+                    'length': item.my_length,
+                    'height': item.my_height,
+                    'name':  str(item.aisle_num) + '/' + name,
+                    'location_id': store_zone_obj.id,
+                    'zone': 'storage',
+                    'bcd_code': bcd_code + fila + altura,
+                    'bcd_name': u'%s %s %s'%(bcd_name, fila, altura),
+                    'vagon':item.vagon
+                }
+                res.append(vals)
+                print bcd_name
         return res
 
     @api.multi
@@ -184,3 +214,6 @@ class aisle_record(models.TransientModel):
     my_length = fields.Float('Length', default=1.20, required=True)
     my_width = fields.Float('Width', default=0.8, required=True)
     my_height = fields.Float('Height', default=2.5, required=True)
+    code_row = fields.Char('Code', size=3, required=True)
+    camera_prefix = fields.Char('Camera Prefix', size=2, required=True)
+    vagon=fields.Integer('Vagón', required=True)

@@ -15,6 +15,9 @@
                         <group string="Configuration aisles">
                             <field name="aisle_ids" nolabel="1" colspan="4">
                                 <tree string="Aisle" editable="top">
+                                    <field name="camera_prefix"/>
+                                    <field name="code_row"/>
+                                    <field name='vagon'/>
                                     <field name="aisle_num"/>
                                     <field name="num_cols"/>
                                     <field name="num_heights"/>

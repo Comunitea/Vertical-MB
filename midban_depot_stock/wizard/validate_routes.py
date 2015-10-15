@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier Colmenero Fernández$ <javier@pexego.es>
+#    Copyright (C) 2015 Comunitea All Rights Reserved
+#    $Santi Argüeso <santi@comunitea.com>$
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,12 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import assign_task_wzd
-import reposition_wizard
-import stock_transfer_details
-import create_tag_wizard
-import create_camera_locations
-import get_route_detail_wzd
-import manual_transfer_wzd
-import stock_create_multipack_wizard
-import validate_routes
+from openerp import models, fields, api
+
+
+class ValidateRoutes(models.TransientModel):
+
+    _name = 'validate.routes'
+
+    @api.multi
+    def validate(self):
+        pickings = self.env['stock.picking'].browse(self.env.context['active_ids'])
+        pickings.validated = True
+
