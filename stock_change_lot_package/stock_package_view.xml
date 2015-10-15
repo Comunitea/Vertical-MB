@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="stock_move_review_tree">
+            <field name="name">stock.move.review.tree</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+                <tree string="Moves" editable="top" create="false" delete="false">
+                    <field name="picking_id" string="Reference" readonly="True"/>
+                    <field name="origin" readonly="True"/>
+                    <field name="picking_type_id"  invisible="1"  readonly="True"/>
+                    <field name="create_date" invisible="1" groups="base.group_no_one"/>
+                    <field name="product_id" readonly="True"/>
+                     <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
+                    <field name="accepted_qty" />
+                    <field name="product_uos" groups="product.group_uos" readonly="True"/>
+                    <!--field name="rejected" /-->
+                    <field name="product_uom_qty" readonly="True"/>
+                     <field name="product_uom_acc_qty" />
+                    <field name="product_uom" string="Unit of Measure" readonly="True"/>
+                    <field name="cost_subtotal" sum="Total"/>
+                    <field name="state" readonly="True"/>
+                    <button name="action_done" states="confirmed,assigned" string="Process" type="object" groups="stock.group_stock_user" icon="gtk-go-forward" help="Done"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="stock_move_review_simple_tree">
+            <field name="name">stock.move.review.simple.tree</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+                <tree string="Moves" editable="top" create="false" delete="false">
+
+                    <field name="product_id" readonly="True"/>
+                     <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
+                    <field name="accepted_qty" />
+                    <field name="product_uos" groups="product.group_uos" readonly="True"/>
+                    <!--field name="rejected" /-->
+                    <field name="product_uom_qty" readonly="True"/>
+                    <field name="product_uom_acc_qty" />
+                    <field name="product_uom" string="Unit of Measure" readonly="True"/>
+
+                    <field name="cost_subtotal" sum="Total"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_move_review_search">
+            <field name="name">stock.move.review.search</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_search"/>
+            <field name="arch" type="xml">
+                <filter string="Today" position="replace">
+                    <filter icon="terp-go-today" string="Today" name="today"
+                            domain="[('date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59))), ('date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]" help="Orders processed Today or planned for Today"/>
+                </filter>
+
+            </field>
+        </record>
+
+          <record model="ir.ui.view" id="stock_picking_review_search">
+            <field name="name">stock.picking.review.search</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
+            <field name="arch" type="xml">
+                <filter name="filter_today" position="before">
+                    <filter icon="terp-go-today" string="Review Today" name="review_today"
+                            domain="[('reviewed','=',False),('date_done','&lt;=',time.strftime('%Y-%m-%d')),('date_done','&gt;=',time.strftime('%Y-%m-%d'))]" help="Orders processed Today"/>
+                </filter>
+
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_picking_review_tree">
+            <field name="name">stock.picking.review.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="sequence">51</field>
+            <field name="arch" type="xml">
+                <tree string="Pickings" create="false" delete="false">
+                    <field name="name" string="Reference" readonly="True"/>
+                    <field name="partner_id" readonly="True"/>
+                    <field name="date_done" readonly="True"/>
+                    <field name="trans_route_id" readonly="True"/>
+                    <field name="payment_mode" readonly="True"/>
+                    <field name="amount_total" readonly="True" sum="Totals"/>
+                    <field name="amount_total_acc" readonly="True" sum="Totals"/>
+                    <field name="receipt_amount" readonly="True" sum="Totals"/>
+                    <field name="reviewed" />
+                    <field name="sale_id" readonly="True"/>
+                     <field name="invoice_id" readonly="True"/>
+                    <field name="invoice_state" readonly="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_picking_no_create_line_form">
+          <field name="name">stock.picking_no_create</field>
+          <field name="model">stock.picking</field>
+          <field name="inherit_id" ref="stock.view_picking_form"/>
+          <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_lines']" position="attributes">
+              <attributes name="attrs">delete="state!='done'" create="state!='done'"</attributes>
+            </xpath>
+        </field>
+        </record>
+
+         <record model="ir.ui.view" id="stock_picking_review_form">
+            <field name="name">stock.picking.review.form</field>
+            <field name="model">stock.picking</field>
+            <field name="sequence">151</field>
+            <field name="arch" type="xml">
+            <form string="Transfer">
+                    <sheet>
+                         <header>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,partially_available,assigned,done" statusbar_colors="{&quot;shipping_except&quot;:&quot;red&quot;,&quot;invoice_except&quot;:&quot;red&quot;,&quot;waiting_date&quot;:&quot;blue&quot;}"/>
+                        </header>
+                        <h1>
+                            <field name="name" class="oe_inline" attrs="{'invisible': [('name','=','/')]}" readonly="1"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                                <field name="amount_total"/>
+                                <field name="amount_total_acc"/>
+                                <field name="payment_mode"/>
+                                <field name="receipt_amount"/>
+                            </group>
+                            <group>
+                                <field name="reviewed" />
+                                <field name="route_detail_id" />
+                                <field name="date"/>
+                                <field name="min_date"/>
+                                <field name="origin" placeholder="e.g. PO0032" class="oe_inline"/>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Products" >
+                                <separator string="Stock Moves" />
+                                <field name="move_lines"
+                                       context="{'address_in_id': partner_id, 'form_view_ref':'stock.view_move_picking_form', 'tree_view_ref':'stock_picking_review.stock_move_review_simple_tree','default_picking_id': active_id}"/>
+                                <field name="note" placeholder="Add an internal note..." class="oe_inline"/>
+                            </page>
+
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                    </form>
+                </field>
+        </record>
+
+        <act_window name="Move Reviews"
+            res_model="stock.move"
+            view_mode="tree,form"
+            id="act_review_moves"
+            view_id="stock_move_review_tree"
+                    domain="[('picking_type_id.code', '=', 'outgoing')]"
+                context="{'search_default_done':1, 'search_default_today':1}"/>
+
+
+        <act_window name="Picking Reviews"
+            res_model="stock.picking"
+            view_mode="tree,form"
+            id="act_review_pickings"
+            view_id="stock_picking_review_tree"
+                    domain="[('picking_type_id.code', '=', 'outgoing'), ('state', '=', 'done')]"
+                context="{'search_default_review_today':1}"/>
+
+        <record id="action_picking_review_form" model="ir.actions.act_window.view">
+            <field eval="10" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock_picking_review_form"/>
+            <field name="act_window_id" ref="act_review_pickings"/>
+        </record>
+        <record id="action_picking_review_tree" model="ir.actions.act_window.view">
+            <field eval="5" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="stock_picking_review_tree"/>
+            <field name="act_window_id" ref="act_review_pickings"/>
+        </record>
+
+
+        <record id="midban_depot_stock.action_replanning_picking_route" model="ir.actions.act_window">
+            <field name="name">Replanning picking in routes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="midban_depot_stock.view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
+            <field name="domain">[('picking_type_code', '=', 'outgoing'),'|' ,('state','not in',('draft','cancel','done')),('reviewed', '=' , False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+
+        <menuitem id="menu_general_sale_review" name="Sale Reviews" sequence="5"
+                  parent="base.menu_base_partner"/>
+        <menuitem action="act_review_moves" id="menu_review_by_moves"
+                  name="Review by moves" sequence="1" parent="menu_general_sale_review"/>
+        <menuitem action="act_review_pickings" id="menu_review_by_pickings"
+                  name="Review by pickings" sequence="2" parent="menu_general_sale_review"/>
+
+    </data>
+
+
+
+</openerp>
