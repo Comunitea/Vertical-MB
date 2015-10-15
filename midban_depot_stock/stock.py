@@ -487,7 +487,7 @@ class StockPackage(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"
 
-    @api.depends('quant_ids')
+    @api.depends('quant_ids', 'quant_ids.lot_id')
     @api.one
     def _get_package_lot_id(self):
         """
@@ -1372,9 +1372,6 @@ class stock_location(models.Model):
                                           type="char",
                                           string="Filled Between X-Y",
                                           fnct_search=_search_filter_percent),
-        'storage_type': fields.selection([('standard', 'Standard'),
-                                         ('boxes', 'Boxes')],
-                                         'Storage Type'),
         'current_product_id': fields.function(_get_current_product_id,
                                               string="Product",
                                               readonly=True,
@@ -1390,7 +1387,6 @@ class stock_location(models.Model):
                                  'Location Zone')}
 
     _defaults = {
-        'storage_type': 'standard',
         'sequence': 0}
 
     def get_camera(self, cr, uid, ids, context=None):

@@ -42,7 +42,7 @@
         "midban_partner",
         "midban_product",
         "midban_issue",
-        "price_system_variable",
+        # "price_system_variable",
         "l10n_es_toponyms",
         "report",
         "stock_valued_picking",

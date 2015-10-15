@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+         <record model="ir.ui.view" id="stock_quant_package_change_form">
+            <field name="name">stock.quant.package.change.form</field>
+            <field name="model">stock.quant.package</field>
+             <field name="inherit_id" ref="midban_depot_stock.view_quant_package_form_add_type"/>
+           <field name="arch" type="xml">
+                <field name="packed_lot_id" position="after">
+                    <button   name="%(action_change_package_lot)d" string="Change Lot"
+                                type="action"/>
+                    <newline/>
+                </field>
+           </field>
+        </record>
+
+    </data>
+
+
+
+</openerp>

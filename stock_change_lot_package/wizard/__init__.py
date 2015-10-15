@@ -18,23 +18,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from . import change_package
 
-{
-    'name': 'Stock Picking review picking',
-    'version': '1.0',
-    'category': 'stock',
-    'description': """""",
-    'author': 'COMUNITEA',
-    'website': '',
-    "depends": ['stock_valued_picking',
-                'web_action_conditionable',
-                'midban_depot_stock',
-                'stock_picking_invoice_link' ],
-    "data": [
-        'stock_picking_view.xml',
-        'stock_data.xml',
-        'wizard/fast_return.xml'
-        ],
 
-    "installable": True
-}

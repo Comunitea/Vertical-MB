@@ -20,20 +20,16 @@
 ##############################################################################
 
 {
-    'name': 'Stock Picking review picking',
+    'name': 'Change Lot in Packages',
     'version': '1.0',
     'category': 'stock',
     'description': """""",
     'author': 'COMUNITEA',
     'website': '',
-    "depends": ['stock_valued_picking',
-                'web_action_conditionable',
-                'midban_depot_stock',
-                'stock_picking_invoice_link' ],
+    "depends": ['midban_depot_stock'],
     "data": [
-        'stock_picking_view.xml',
-        'stock_data.xml',
-        'wizard/fast_return.xml'
+        'wizard/change_package.xml',
+        'stock_package_view.xml'
         ],
 
     "installable": True
