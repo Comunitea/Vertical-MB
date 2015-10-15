@@ -888,7 +888,7 @@ function openerp_ts_models(instance, module){
         },
         deleteProductLine: function(id_line){
           var self=this;
-          debugger;
+          // debugger;
           // self.get('orderLines')
         },
         addProductLine: function(product_id){
@@ -906,6 +906,9 @@ function openerp_ts_models(instance, module){
                         var line_vals = {ts_model: self.ts_model, order:self,
                              code:product_obj.default_code || "" ,
                              product:product_obj.name,
+                             product_uos_qty:1,
+                             product_uos:product_obj.uom_id[1],
+                             price_udv: my_round(result.value.price_unit || 0, 2),
                              unit:product_obj.uom_id[1],
                              qty:1,
                              pvp: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
@@ -924,7 +927,7 @@ function openerp_ts_models(instance, module){
                 alert(_t("No Customer defined in current order"));
             }
 
-            var pricelist_id = (this.ts_model.db.get_partner_by_id(partner_id)).property_product_pricelist;
+            // var pricelist_id = (this.ts_model.db.get_partner_by_id(partner_id)).property_product_pricelist;
         },
 
     });

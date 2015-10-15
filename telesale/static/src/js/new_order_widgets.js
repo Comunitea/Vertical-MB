@@ -212,7 +212,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             if(this.model.is_selected()){
                 this.$el.addClass('selected');
             }
-
             // Si el campo se rellena con autocomplete se debe usar blur
             this.$('.col-code').blur(_.bind(this.set_value, this, 'code'));
             this.$('.col-product').blur(_.bind(this.set_value, this, 'product'));
