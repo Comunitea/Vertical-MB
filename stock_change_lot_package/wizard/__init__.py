@@ -18,5 +18,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import confirm_process_delivery
+from . import change_package
+
 

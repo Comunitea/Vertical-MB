@@ -20,15 +20,16 @@
 ##############################################################################
 
 {
-    'name': 'Stock Picking batch',
+    'name': 'Change Lot in Packages',
     'version': '1.0',
     'category': 'stock',
     'description': """""",
     'author': 'COMUNITEA',
     'website': '',
-    "depends": ['stock'],
+    "depends": ['midban_depot_stock'],
     "data": [
-        'wizard/confirm_process_delivery.xml',
+        'wizard/change_package.xml',
+        'stock_package_view.xml'
         ],
 
     "installable": True
