@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <record id="view_stock_chage_lot_package" model="ir.ui.view">
+            <field name="name">Change Lot in Package</field>
+            <field name="model">change.lot.package</field>
+            <field name="arch" type="xml">
+                <form string="Change Lot in Packages" version="7">
+                    <group string="Warning!">
+                        <div class="oe_grey" >
+                            Please, use carefully. It is not a recommended practice change the lot in a existing Package
+                            If you change the name of the lot, please review that this action can affect other packages so check that te lot in contained in other packages
+                        </div>
+                    </group>
+                    <group>
+                        <field name="item_ids" nolabel="1">
+                            <tree string="Detail of package" editable="bottom" >
+                                <field name="product_id" />
+                                <field name="packed_qty" />
+                                <field name="lot_id"/>
+                                <!--field name="new_lot_id"/-->
+                            </tree>
+                        </field>
+                    </group>
+
+                    <footer>
+                        <button name="change_lot" string="_Change" type="object" class="oe_highlight"/>
+                        or
+                        <button string="_Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_change_package_lot" model="ir.actions.act_window">
+            <field name="name">Change lot in package</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">change.lot.package</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_stock_chage_lot_package"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>
+
+
