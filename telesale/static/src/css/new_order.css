@@ -282,6 +282,10 @@
     cursor:pointer;
     vertical-align: middle;
 }
+.telesale  #rightpart .sold-product-table td.pc-cell-code{
+    text-align: right;
+    padding-right: 3px;
+}
 .telesale #rightpart .pc-cell-stock{
     text-align: center;
 }
