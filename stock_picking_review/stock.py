@@ -109,7 +109,7 @@ class stock_move(models.Model):
                                                              partner, inv_type,
                                                              context=context)
         if not move.accepted_qty:
-            res = {}
+            return res
         else:
             sale_line = move.procurement_id.sale_line_id
 
