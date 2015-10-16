@@ -390,7 +390,7 @@
         <record id="view_picking_replanning_route_tree" model="ir.ui.view">
             <field name="name">view_picking_replanning_tree_add_route</field>
             <field name="model">stock.picking</field>
-            <field name="sequence">151</field>
+            <field name="priority">151</field>
             <field name="arch" type="xml">
                 <tree string="Outgoing Pickings" editable="top" colors="red:route_detail_id == False" create="false" delete="false">
                     <field name="name"  readonly="True"/>
@@ -415,7 +415,7 @@
          <record id="view_picking_replanning_route_filter" model="ir.ui.view">
             <field name="name">picking.replanning.route.filter</field>
             <field name="model">stock.picking</field>
-             <field name="sequence">151</field>
+             <field name="priority">151</field>
             <field name="arch" type="xml">
                 <search string="Search Pickings">
                     <!-- <field name="detail_date"/> -->

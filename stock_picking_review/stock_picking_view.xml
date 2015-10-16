@@ -5,7 +5,7 @@
         <record model="ir.ui.view" id="stock_move_review_tree">
             <field name="name">stock.move.review.tree</field>
             <field name="model">stock.move</field>
-            <field name="sequence">151</field>
+            <field name="priority">151</field>
             <field name="arch" type="xml">
                 <tree string="Moves" editable="top" create="false" delete="false">
                     <field name="picking_id" string="Reference" readonly="True"/>
@@ -78,7 +78,7 @@
         <record model="ir.ui.view" id="stock_picking_review_tree">
             <field name="name">stock.picking.review.tree</field>
             <field name="model">stock.picking</field>
-            <field name="sequence">151</field>
+            <field name="priority">151</field>
             <field name="arch" type="xml">
                 <tree string="Pickings" create="false" delete="false">
                     <field name="name" string="Reference" readonly="True"/>
@@ -111,7 +111,7 @@
          <record model="ir.ui.view" id="stock_picking_review_form">
             <field name="name">stock.picking.review.form</field>
             <field name="model">stock.picking</field>
-            <field name="sequence">151</field>
+            <field name="priority">151</field>
             <field name="arch" type="xml">
             <form string="Transfer">
                     <sheet>
