@@ -173,7 +173,7 @@ class stock_transfer_details(models.TransientModel):
                 else:
                     move = op.linked_move_operation_ids[0].move_id
                     uos_id = move.product_uos.id or uos_id
-                    uos_qty = prod.uom_qty_to_uos_qty(op.product_qty,
+                    uos_qty = move.product_id.uom_qty_to_uos_qty(op.product_qty,
                                                       uos_id, supplier_id)
 
             item = {

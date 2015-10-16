@@ -686,9 +686,18 @@ class stock_package(models.Model):
         res = super(stock_package, self).write(vals)
         for pack in self:
             if vals.get('parent_id', False):
-                for q in pack.quant_ids:
-                    q.package_id = vals['parent_id']
-                pack.parent_id = False
+                parent_lots = []
+                parent = self.browse(vals['parent_id'])
+                for pq in parent.quant_ids:
+                    parent_lots.append(pq.lot_id.id)
+                if parent_lots:
+                    removed = False
+                    for q in pack.quant_ids:
+                        if q.lot_id in parent_lots:
+                            q.package_id = vals['parent_id']
+                            removed = True
+                        if removed:
+                            pack.parent_id = False
         return res
 
 
