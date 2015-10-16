@@ -186,7 +186,6 @@
                         </group>
                         <field name="volume_by_parent"/>
                         <field name="zone"/>
-                        <field name="storage_type"/>
                         <field name="temp_type_id"/>
                         <field name="width"/>
                         <field name="length"/>

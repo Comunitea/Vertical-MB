@@ -75,7 +75,6 @@ class manual_transfer_wzd(models.TransientModel):
             for line in field_o2m:
                 # We want to move a entire multiproduct pack, we need to create
                 # one move and assign it for each product inside the pack
-                #import ipdb; ipdb.set_trace()
                 if not line.product_id and line.package_id.is_multiproduct:
                     quants_by_product = line.package_id.get_products_quants()
                     for product in quants_by_product:
@@ -224,7 +223,12 @@ class transfer_lines(models.TransientModel):
 
         # Create a pack of do_pack type if do_pack is box or palet
         result_pack_id = False
-        if line.do_pack != 'no_pack':
+        #añadimos una nueva condición
+        # si es do_pack o la cantidad a move es doistinto que la
+        # cantidad del paquete debe crear uno nuevo
+
+        if line.do_pack != 'no_pack' or \
+                        line.quantity != line.package_id.packed_qty:
             vals = {}
             result_pack_id = self.env['stock.quant.package'].create(vals).id
 
@@ -249,7 +253,7 @@ class transfer_lines(models.TransientModel):
         """
         line = self[0]  # Is called always line by line
 
-        op_vals = line.get_operation_vals(pick_obj)
+        #op_vals = line.get_operation_vals(pick_obj)
 
         # Operation to move products without pack or from a pack
         if line.product_id:
