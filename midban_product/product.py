@@ -820,7 +820,7 @@ class product_product(models.Model):
 
     #Sacamos el nombre del codigo/nombre de producto por proveedor
     # si no hay coge producto y le pone un asterisco
-    @api.multi
+    @api.model
     def get_product_supplier_name(self, supplier_id, product_id):
 
         if not product_id:

@@ -569,7 +569,7 @@ class purchase_preorder(osv.Model):
 
         value = {'domain': str([('id', 'in', [new_id])]),
                  'view_type': 'form',
-                 'view_mode': 'tree,form',
+                 'view_mode': 'form',
                  'res_model': 'purchase.order',
                  'view_id': False,
                  'type': 'ir.actions.act_window',
