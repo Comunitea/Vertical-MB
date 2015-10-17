@@ -26,7 +26,7 @@
     'description': """""",
     'author': 'Comunitea',
     'website': '',
-    "depends": ['product', 'sale'],
+    "depends": ['product', 'process_sale_order', 'midban_depot_stock'],
     "data": ['product_view.xml', 'sale_specific_price_workflow.xml', 'sale_specific_price_view.xml', 'security/ir.model.access.csv'],
     "installable": True
 }

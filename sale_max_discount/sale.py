@@ -121,6 +121,55 @@ than the maximun discount of product. The sale need to be approved""")}
                         })
         return res
 
+    def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
+                                  qty=0, uom=False, qty_uos=0, uos=False,
+                                  name='', partner_id=False, lang=False,
+                                  update_tax=True,
+                                  date_order=False,
+                                  packaging=False,
+                                  fiscal_position=False, flag=False,
+                                  warehouse_id=False, context=None):
+        sup = super(sale_order_line, self)
+        res = sup.product_id_change_with_wh(cr, uid, ids, pricelist, product,
+                                    qty=qty, uom=uom, qty_uos=qty_uos, uos=uos,
+                                    name=name, partner_id=partner_id,
+                                    lang=lang, update_tax=update_tax,
+                                    date_order=date_order,
+                                    packaging=packaging,
+                                    fiscal_position=fiscal_position,
+                                    warehouse_id=warehouse_id,
+                                    flag=flag, context=context)
+        if not product or not partner_id:
+            return res
+        specific_price = self.pool['sale.specific.price'].search(
+            cr, uid,
+            [('product_id', '=', product),
+             ('customer_id', '=', partner_id),
+             ('state', '=', 'approved'),
+             ('start_date', '<=', date.today()),
+             ('end_date', '>=', date.today())], context=context)
+        print res['value']['discount']
+        if specific_price:
+            res['value']['discount'] = self.pool.get('sale.specific.price').\
+                browse(cr, uid, specific_price, context).discount
+        print res['value']['discount']
+        return res
+
+    @api.onchange('product_uos')
+    def product_uos_onchange(self):
+        super(sale_order_line, self).product_uos_onchange()
+        if self.product_id and self.order_id.partner_id:
+            specific_price = self.env['sale.specific.price'].search(
+                [('product_id', '=', self.product_id.id),
+                 ('customer_id', '=', self.order_id.partner_id.id),
+                 ('state', '=', 'approved'),
+                 ('start_date', '<=', date.today()),
+                 ('end_date', '>=', date.today())])
+            if specific_price:
+                new_discount = specific_price[0].discount
+                if new_discount > self.discount:
+                    self.discount = new_discount
+                    
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
                           partner_id=False, lang=False, update_tax=True,
