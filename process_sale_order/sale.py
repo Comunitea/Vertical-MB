@@ -87,8 +87,8 @@ class sale_order_line(models.Model):
         res['value']['product_uom'] = prod_obj.uom_id.id
         res['value']['product_uos_qty'] = 1.0
 
-        if prod_obj.box_discount:
-            res['value']['discount'] = prod_obj.box_discount
+        #if prod_obj.box_discount:
+        #    res['value']['discount'] = prod_obj.box_discount
 
         return res
 

@@ -88,6 +88,33 @@ class res_partner(osv.Model):
         is created with field active equals to False. This it's necesary if we
         want see partner name in tree and kanaban view."""
 
+    # ATENCIÓN. Completamente sobreescrito para gestionar nombre comercial
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        res = []
+        for record in self.browse(cr, uid, ids, context=context):
+            if record.comercial:
+                name=record.comercial
+            else:
+                name = record.name
+            if record.parent_id and not record.is_company:
+
+                name = "%s, %s" % (record.parent_name, name)
+            if context.get('show_address_only'):
+                name = self._display_address(cr, uid, record, without_company=True, context=context)
+            if context.get('show_address'):
+                name = name + "\n" + self._display_address(cr, uid, record, without_company=True, context=context)
+            name = name.replace('\n\n','\n')
+            name = name.replace('\n\n','\n')
+            if context.get('show_email') and record.email:
+                name = "%s <%s>" % (name, record.email)
+            res.append((record.id, name))
+        return res
+
+
     # Nedd overwrite because we need overwrite _display_name_store_triggers
     def _display_name_compute(self, cr, uid, ids, name, args, context=None):
         context = dict(context or {})

@@ -47,7 +47,7 @@ class StockCreateMultiPack(models.TransientModel):
                 line.pack_id.write({'parent_id': line.pack_dest_id.id})
         picking = self.env['stock.picking'].browse(
             self.env.context.get('active_id', False))
-        picking.delete_picking_package_operations
+        picking.delete_picking_package_operations()
         picking.do_prepare_partial()
         return {'type': 'ir.actions.act_window_close'}
 
