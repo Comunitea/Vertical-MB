@@ -90,7 +90,6 @@ class sale_order_line(models.Model):
         #if prod_obj.box_discount:
         #    res['value']['discount'] = prod_obj.box_discount
 
-        print res['value']['discount']
         return res
 
     @api.onchange('product_code')

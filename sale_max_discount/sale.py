@@ -148,11 +148,9 @@ than the maximun discount of product. The sale need to be approved""")}
              ('state', '=', 'approved'),
              ('start_date', '<=', date.today()),
              ('end_date', '>=', date.today())], context=context)
-        print res['value']['discount']
         if specific_price:
             res['value']['discount'] = self.pool.get('sale.specific.price').\
                 browse(cr, uid, specific_price, context).discount
-        print res['value']['discount']
         return res
 
     @api.onchange('product_uos')
