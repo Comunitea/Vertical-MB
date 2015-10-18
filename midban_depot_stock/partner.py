@@ -127,6 +127,15 @@ class partner_route_info(models.Model):
                                           other comercial' %
                                          self.partner_id.name),
                         }
+            if self.route_id.type in ['delivery']:
+                close_days = [wd.sequence for wd in self.partner_id.close_days]
+                route_wd = self.route_id.day_id.sequence
+                if route_wd in close_days:
+                    warning = {
+                        'title': _('Warning!'),
+                        'message': _('You are assigning a route for a \
+                                        partner closed  day '),
+                    }
         if warning:
             res['warning'] = warning
         return res

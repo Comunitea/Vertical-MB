@@ -24,6 +24,7 @@ from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 from lxml import etree
 from openerp.exceptions import ValidationError
+from datetime import datetime, date
 
 
 class stock_picking(osv.Model):
@@ -343,7 +344,15 @@ class stock_picking(osv.Model):
         planned with the detail date
         """
         if self.route_detail_id:
+            route_date = datetime.strptime(self.route_detail_id.date, '%Y-%m-%d').date()
+            close_days = [wd.sequence for wd in self.partner_id.close_days]
+            route_wd = route_date.weekday()
             self.min_date = self.route_detail_id.date + " 19:00:00"
+            if close_days and (route_wd+1) in close_days:
+                return {
+                    'warning': {'title': _("Warning"),
+                                'message': _("You are assigning a route for a partner closed  day ")},
+                }
 
     @api.multi
     def do_prepare_partial(self):

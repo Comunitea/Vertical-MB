@@ -169,7 +169,7 @@ than the maximun discount of product. The sale need to be approved""")}
                 new_discount = specific_price[0].discount
                 if new_discount > self.discount:
                     self.discount = new_discount
-                    
+
     def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
                           uom=False, qty_uos=0, uos=False, name='',
                           partner_id=False, lang=False, update_tax=True,
