@@ -220,15 +220,11 @@ class transfer_lines(models.TransientModel):
         if product and qty not specified.
         """
         line = self[0]  # Is called always line by line
-
         # Create a pack of do_pack type if do_pack is box or palet
         result_pack_id = False
-        #añadimos una nueva condición
-        # si es do_pack o la cantidad a move es doistinto que la
-        # cantidad del paquete debe crear uno nuevo
+        #añadimos una nueva condición  para evitar productos sin paquete
 
-        if line.do_pack != 'no_pack' or \
-                        line.quantity != line.package_id.packed_qty:
+        if line.do_pack == 'do_pack' or product:
             vals = {}
             result_pack_id = self.env['stock.quant.package'].create(vals).id
 
@@ -254,7 +250,7 @@ class transfer_lines(models.TransientModel):
         line = self[0]  # Is called always line by line
 
         #op_vals = line.get_operation_vals(pick_obj)
-
+        import ipdb; ipdb.set_trace()
         # Operation to move products without pack or from a pack
         if line.product_id:
             qty = line.quantity

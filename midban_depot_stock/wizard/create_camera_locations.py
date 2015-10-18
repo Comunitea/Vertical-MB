@@ -74,7 +74,7 @@ class create_camera_locations(models.TransientModel):
                       })
         pick = self.env['stock.location'].create(vals2)
         vals2 = vals
-        vals2.update({'name': self.camera_code + ' Almacenaje ',
+        vals2.update({'name': self.camera_code + ' Almacenaje',
                       'zone': 'storage'})
         store = self.env['stock.location'].create(vals2)
         return pick, store

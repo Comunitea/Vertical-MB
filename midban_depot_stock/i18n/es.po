@@ -877,6 +877,12 @@ msgid "Do Pack"
 msgstr "Empaquetar"
 
 #. module: midban_depot_stock
+#: field:transfer.line,no_pack:0
+#: selection:transfer.line,no_pack:0
+msgid "No Pack"
+msgstr "Sin Empaquetar"
+
+#. module: midban_depot_stock
 #: field:stock.pack.operation,do_onchange:0
 msgid "Do onchange"
 msgstr "Do onchange"
