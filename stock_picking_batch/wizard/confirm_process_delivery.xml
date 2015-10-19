@@ -9,14 +9,27 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Batch process delivery">
-                    <h1>
-                      Process all the selected deliveries?
-                  </h1>
-                  <footer>
-                      <button string="Batch process" name="confirm" type="object" class="oe_highlight"/>
-                      or
-                      <button string="Cancel" class="oe_link" special="cancel"/>
-                  </footer>
+                    <field name="rendered" invisible="1"/>
+                    <h1 attrs="{'invisible': [('rendered', '=', True)]}">
+                        Process all the selected deliveries?
+                    </h1>
+                    <h2 attrs="{'invisible': [('rendered', '=', True)]}">
+                        Will only be invoiced the pickings of customers with invoice directly method.
+                    </h2>
+                    <group attrs="{'invisible': [('rendered', '=', True)]}">
+                        <field name="journal_id" domain="[('type','=',journal_type)]"/>
+                        <field name="group" />
+                        <field name="invoice_date" />
+                    </group>
+                    <footer>
+                        <button string="Batch process" name="confirm" type="object" class="oe_highlight"
+                                attrs="{'invisible': [('rendered', '=', True)]}"/>
+                        <span attrs="{'invisible': [('rendered', '=', True)]}"> or </span>
+                        <button string="Cancel" class="oe_link" special="cancel"
+                                attrs="{'invisible': [('rendered', '=', True)]}"/>
+                        <button string="Close" class="oe_link" special="cancel"
+                                attrs="{'invisible': [('rendered', '=', False)]}"/>
+                    </footer>
                 </form>
             </field>
         </record>

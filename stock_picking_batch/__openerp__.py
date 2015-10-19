@@ -29,6 +29,8 @@
     "depends": ['stock'],
     "data": [
         'wizard/confirm_process_delivery.xml',
+        'views/picking_batch_report.xml',
+        'report_picking.xml'
         ],
 
     "installable": True
