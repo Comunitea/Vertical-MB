@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#   * midban_depot_stock
 #
 msgid ""
 msgstr ""
@@ -2261,6 +2261,7 @@ msgid "Print Reposition"
 msgstr "Imprimir reposición"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:74
 #: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
 #: model:ir.actions.act_window,name:midban_depot_stock.action_create_tag_wizard
