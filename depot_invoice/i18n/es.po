@@ -1,0 +1,36 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* depot_invoice
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-19 16:07+0000\n"
+"PO-Revision-Date: 2015-10-19 16:07+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: depot_invoice
+#: field:stock.invoice.onshipping,group_fiscal:0
+msgid "Group by parent partner"
+msgstr "Agrupar por empresa padre"
+
+#. module: depot_invoice
+#: model:ir.model,name:depot_invoice.model_stock_picking
+msgid "Picking List"
+msgstr "Albarán"
+
+#. module: depot_invoice
+#: model:ir.model,name:depot_invoice.model_stock_invoice_onshipping
+msgid "Stock Invoice Onshipping"
+msgstr "Factura en el envío de existencias"
+
+#. module: depot_invoice
+#: model:ir.model,name:depot_invoice.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de existencias"
