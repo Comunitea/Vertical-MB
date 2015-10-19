@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Pexego All Rights Reserved
-#    $Jesús Ventosinos Mayor <jesus@pexego.es>$
+#    Copyright (C) 2015 Comunitea Servicios Informáticos All Rights Reserved
+#    $Javier Colmenero Fernández$ <javier@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,20 +18,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
-{
-    'name': 'Stock Picking batch',
-    'version': '1.0',
-    'category': 'stock',
-    'description': """""",
-    'author': 'COMUNITEA',
-    'website': '',
-    "depends": ['stock'],
-    "data": [
-        'wizard/confirm_process_delivery.xml',
-        'views/picking_batch_report.xml',
-        'report_picking.xml'
-        ],
-
-    "installable": True
-}
+import stock_invoice_onshipping

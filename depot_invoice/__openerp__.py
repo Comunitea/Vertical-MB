@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Pexego All Rights Reserved
-#    $Jesús Ventosinos Mayor <jesus@pexego.es>$
+#    Copyright (C) 2015 Comunitea Servicios Informáticos All Rights Reserved
+#    $Carlos Lombardía Rodríguez$ <carlos@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -20,18 +20,23 @@
 ##############################################################################
 
 {
-    'name': 'Stock Picking batch',
-    'version': '1.0',
-    'category': 'stock',
-    'description': """""",
-    'author': 'COMUNITEA',
-    'website': '',
-    "depends": ['stock'],
+    "name": "Depot Invoice",
+    "version": "1.0",
+    "author": "Comunitea",
+    "category": "Custom",
+    "website": "www.comunitea.com",
+    "description": """
+        Lets invoice grouping by fiscal partner
+    """,
+    "images": [],
+    "depends": [
+        "stock_account",
+        "sale_stock"
+    ],
     "data": [
-        'wizard/confirm_process_delivery.xml',
-        'views/picking_batch_report.xml',
-        'report_picking.xml'
-        ],
-
-    "installable": True
+        'wizard/stock_invoice_onshipping_view.xml',
+    ],
+    "demo": [],
+    "test": [],
+    "installable": True,
 }
