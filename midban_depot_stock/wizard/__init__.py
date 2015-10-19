@@ -18,12 +18,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import assign_task_wzd
-import reposition_wizard
-import stock_transfer_details
-import create_tag_wizard
-import create_camera_locations
-import get_route_detail_wzd
-import manual_transfer_wzd
-import stock_create_multipack_wizard
-import validate_routes
+from . import assign_task_wzd
+from . import reposition_wizard
+from . import stock_transfer_details
+from . import create_tag_wizard
+from . import create_camera_locations
+from . import get_route_detail_wzd
+from . import manual_transfer_wzd
+from . import stock_create_multipack_wizard
+from . import validate_routes
+from . import stock_return_picking
