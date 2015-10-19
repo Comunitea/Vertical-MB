@@ -68,15 +68,24 @@ class create_camera_locations(models.TransientModel):
             'length': 100,
             'height': 100,
         }
+
         vals2 = vals
         vals2.update({'name': self.camera_code + ' Picking',
                       'zone': 'picking',
                       })
-        pick = self.env['stock.location'].create(vals2)
+        domain = [('name', '=', vals2.update['name'])]
+        pick = self.env['stock.location'].search(domain)
+        if not pick:
+            pick = self.env['stock.location'].create(vals2)
+
         vals2 = vals
         vals2.update({'name': self.camera_code + ' Almacenaje',
                       'zone': 'storage'})
-        store = self.env['stock.location'].create(vals2)
+        domain = [('name', '=', vals2.update['name'])]
+        store = self.env['stock.location'].search(domain)
+        if not store:
+            store = self.env['stock.location'].create(vals2)
+
         return pick, store
 
 
