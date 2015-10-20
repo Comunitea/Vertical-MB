@@ -119,6 +119,7 @@ class product_template(osv.Model):
     _inherit = 'product.template'
     _columns = {
         'ean14': fields.char('Code EAN14', size=14),
+        'ean_consum': fields.char('EAN Consum', size=14),
         'temp_type': fields.many2one('temp.type',
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
