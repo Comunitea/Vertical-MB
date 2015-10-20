@@ -171,6 +171,9 @@ class purchase_order_parser(models.AbstractModel):
         report_obj = self.env['report']
         report_name = 'purchase_preorder.replenishement_purchase_order'
         # report = report_obj._get_report_from_name(report_name)
+        if not data:
+            raise except_orm(_('Error'),
+                             _('You must print it from a wizard'))
         stocks_dics = self.get_report_data(data)
 
         filter_products = True if data['product_ids'] else False
