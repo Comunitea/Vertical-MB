@@ -61,5 +61,27 @@
             </field>
         </record>
 
+        <record id="view_account_invoice_filter_add_route" model="ir.ui.view">
+            <field name="name">account.invoice.select</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <filter name="group_by_partner_id"  position="after">
+                    <filter name="group_by_route_id" string="Route" context="{'group_by':'trans_route_id'}"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="invoice_tree" model="ir.ui.view">
+            <field name="name">account.invoice.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="trans_route_id"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </openerp>
