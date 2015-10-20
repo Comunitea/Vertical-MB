@@ -1835,8 +1835,12 @@ class stock_quant(models.Model):
                 #                         product.name)
                 sup = super(stock_quant, self).\
                     apply_removal_strategy(cr, uid, location, product, qty, domain,
-                                   removal_strategy, context=context)
+                                            'fefo', context=context)
+                print "quant" + str(sup[0][0].id)
+                print "product" + sup[0][0].product_id.name
+
                 return sup
+
             order = 'removal_date, in_date, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
@@ -1864,6 +1868,18 @@ class stock_quant(models.Model):
                 res += self._quants_get_order(cr, uid, storage_loc, product,
                                               check_storage_qty, domain, order,
                                               context=context)
+            # Pending qty?
+            # check_global_qty = 0.0
+            # for record in res:
+            #     if record[0] is None:
+            #         check_global_qty += record[1]
+            #         res.remove(record)
+            #
+            # if check_global_qty:
+            #     res += self._quants_get_order(cr, uid,, product,
+            #                                   check_storage_qty, domain, order,
+            #                                   context=context)
+
             return res
         elif context.get('force_quants_location', False):
             res = context['force_quants_location']
