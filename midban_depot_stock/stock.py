@@ -1412,13 +1412,14 @@ class stock_location(models.Model):
         Get the first parent location marked as camera.
         """
         res = False
-        loc_id = ids[0]
-        loc = self.browse(cr, uid, loc_id, context=context)
-        while not res and loc.location_id:
-            if loc.location_id.camera:
-                res = loc.location_id.id
-            else:
-                loc = loc.location_id
+        if ids:
+            loc_id = ids[0]
+            loc = self.browse(cr, uid, loc_id, context=context)
+            while not res and loc.location_id:
+                if loc.location_id.camera:
+                    res = loc.location_id.id
+                else:
+                    loc = loc.location_id
         return res
 
     def get_locations_by_zone(self, cr, uid, ids, zone, add_domain=False,
@@ -1830,10 +1831,15 @@ class stock_quant(models.Model):
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
             if not pick_loc_obj:
-                raise exceptions.Warning(_('Error!'), _('Not picking location\
-                                        defined for product %s') %
-                                         product.name)
+                # raise exceptions.Warning(_('Error!'), _('Not picking location\
+                #                         defined for product %s') %
+                #                          product.name)
+                sup = super(stock_quant, self).\
+                apply_removal_strategy(cr, uid, location, product, qty, domain,
+                                   removal_strategy, context=context)
+                return sup
             order = 'removal_date, in_date, id'
+
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
