@@ -23,15 +23,17 @@ from openerp.osv import osv, fields
 import openerp.addons.decimal_precision as dp
 from openerp import api
 
+
 class account_invoice_line(osv.osv):
     _inherit = "account.invoice.line"
     _columns = {
         'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
         'second_uom_id': fields.many2one("product.uom", "Second Uom",
                                          readonly=True),
-        'quantity_second_uom': fields.\
-            float("Qty Second Uom", readonly=True,
-                  digits_compute=dp.get_precision('Product Unit of Measure'))
+        'quantity_second_uom':
+        fields.float("Qty Second Uom", readonly=True,
+                     digits_compute=dp.get_precision('Product Unit of Measure')
+                     )
     }
 
     @api.multi
@@ -110,7 +112,7 @@ class account_invoice(osv.osv):
                                         multi="orders_picks",
                                         relation='purchase.order',
                                         string="Related Sales",
-                                        readonly=True)
+                                        readonly=True),
     }
 
     def action_view_sales(self, cr, uid, ids, context=None):
@@ -195,3 +197,19 @@ class account_invoice(osv.osv):
         else:
             return False
         return result
+
+from openerp import models, fields
+
+
+class AccountInvoice(models.Model):
+
+    _inherit = 'account.invoice'
+
+    trans_route_id = fields.Many2one('route', 'Transport route',
+                                     compute='_get_route_id', store=True)
+
+    @api.one
+    @api.depends('pick_ids', 'invoice_line')
+    def _get_route_id(self):
+        self.trans_route_id = self.pick_ids and \
+            self.pick_ids[0].trans_route_id or False
