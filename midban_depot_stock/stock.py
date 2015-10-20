@@ -1830,9 +1830,13 @@ class stock_quant(models.Model):
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
             if not pick_loc_obj:
-                raise exceptions.Warning(_('Error!'), _('Not picking location\
-                                        defined for product %s') %
-                                         product.name)
+                #raise exceptions.Warning(_('Error!'), _('Not picking location\
+                #                        defined for product %s') %
+                #                         product.name)
+                sup = super(stock_quant, self).\
+                    apply_removal_strategy(cr, uid, location, product, qty, domain,
+                                   removal_strategy, context=context)
+                return sup
             order = 'removal_date, in_date, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
