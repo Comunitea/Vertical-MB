@@ -19,15 +19,94 @@
 #
 ##############################################################################
 from openerp import models, fields, api
+from openerp.addons.stock_account.wizard.stock_invoice_onshipping \
+    import JOURNAL_TYPE_MAP
 
 
 class ConfirmProcessDelivery(models.TransientModel):
 
     _name = 'confirm.process.delivery'
 
+    @api.model
+    def _get_journal(self):
+        journal_obj = self.env['account.journal']
+        journal_type = self._get_journal_type()
+        journals = journal_obj.search([('type', '=', journal_type)])
+        return journals and journals[0] or False
+
+    @api.model
+    def _get_journal_type(self):
+        res_ids = self._context.get('active_ids', [])
+        pick_obj = self.env['stock.picking']
+        pickings = pick_obj.browse(res_ids)
+        pick = pickings and pickings[0]
+        if not pick or not pick.move_lines:
+            return 'sale'
+        type = pick.picking_type_id.code
+        if type == 'incoming':
+            usage = pick.move_lines[0].location_id.usage
+        else:
+            usage = pick.move_lines[0].location_dest_id.usage
+        return JOURNAL_TYPE_MAP.get((type, usage), ['sale'])[0]
+
+    journal_id = fields.Many2one('account.journal', 'Destination Journal',
+                                 required=True, default=_get_journal)
+    journal_type = fields.Selection(
+        [('purchase_refund', 'Refund Purchase'),
+         ('purchase', 'Create Supplier Invoice'),
+         ('sale_refund', 'Refund Sale'), ('sale', 'Create Customer Invoice')],
+        'Journal Type', readonly=True, default=_get_journal_type)
+    group = fields.Boolean("Group by partner")
+    invoice_date = fields.Date('Invoice Date')
+    rendered = fields.Boolean('Rendered')
+
+    @api.multi
+    @api.onchange('journal_id')
+    def onchange_journal_id(self):
+        domain = {}
+        value = {}
+        active_id = self._context.get('active_id', False)
+        if active_id:
+            picking = self.env['stock.picking'].browse(active_id)
+            type = picking.picking_type_id.code
+            if type == 'incoming':
+                usage = picking.move_lines[0].location_id.usage
+            else:
+                usage = picking.move_lines[0].location_dest_id.usage
+            journal_types = JOURNAL_TYPE_MAP.get(
+                (type, usage), ['sale', 'purchase', 'sale_refund',
+                                'purchase_refund'])
+            domain['journal_id'] = [('type', 'in', journal_types)]
+        if self.journal_id:
+            value['journal_type'] = self.journal_id.type
+        return {'value': value, 'domain': domain}
+
+    @api.one
+    def create_invoice(self, pickings):
+        pick_ids = [p.id for p in pickings if p.invoice_state == '2binvoiced'
+                    and p.partner_id.invoice_method == 'a']
+        invoice_wzd_vals = {
+            'journal_id': self.journal_id.id,
+            'journal_type': self.journal_type,
+            'group': self.group, 'invoice_date': self.invoice_date
+        }
+        invoice_wzd = self.env['stock.invoice.onshipping'].create(
+            invoice_wzd_vals)
+        invoice_ids = invoice_wzd.with_context(active_ids=pick_ids).create_invoice()
+        invoices = self.env['account.invoice'].browse(invoice_ids)
+        invoices.signal_workflow('invoice_open')
+
     @api.multi
     def confirm(self):
-        pickings = self.env['stock.picking'].browse(self.env.context['active_ids'])
-        pickings_to_deliver = pickings.filtered(lambda r: r.state in ['assigned', 'partially_available'])
+        picking_ids = self.env.context['active_ids']
+        pickings = self.env['stock.picking'].browse(picking_ids)
+        pickings_to_deliver = pickings.filtered(lambda r: r.state in
+                                                ['assigned',
+                                                 'partially_available'])
+        if not pickings_to_deliver:
+            return
         res = pickings_to_deliver.do_transfer()
-        return res
+        self.create_invoice(pickings_to_deliver)
+        self.rendered = True
+        return self.env['report'].get_action(
+            pickings_to_deliver, 'stock_picking_batch.report_picking_batch')

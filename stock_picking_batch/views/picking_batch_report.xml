@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="report_picking_batch">
+            <t t-foreach="docs" t-as="o">
+                <t t-if="not o.invoice_id">
+                    <t t-call="stock.report_picking">
+                        <t t-set="docs" t-value="o"/>
+                    </t>
+                </t>
+                <t t-if="o.invoice_id">
+                    <t t-call="account.report_invoice_document">
+                        <t t-set="o" t-value="o.invoice_id"/>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

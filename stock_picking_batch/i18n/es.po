@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* stock_picking_batch
+#   * stock_picking_batch
 #
 msgid ""
 msgstr ""
@@ -30,6 +30,17 @@ msgstr "Procesar albaranes en lote"
 msgid "Cancel"
 msgstr "Cancelar"
 
+
+#. module: stock_picking_batch
+#: selection:confirm.process.delivery,journal_type:0
+msgid "Create Customer Invoice"
+msgstr "Create Customer Invoice"
+
+#. module: stock_picking_batch
+#: selection:confirm.process.delivery,journal_type:0
+msgid "Create Supplier Invoice"
+msgstr "Crear factura de proveedor"
+
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,create_uid:0
 msgid "Created by"
@@ -41,9 +52,29 @@ msgid "Created on"
 msgstr "Created on"
 
 #. module: stock_picking_batch
+#: field:confirm.process.delivery,journal_id:0
+msgid "Destination Journal"
+msgstr "Diario destino"
+
+#. module: stock_picking_batch
+#: field:confirm.process.delivery,group:0
+msgid "Group by partner"
+msgstr "Agrupar por empresa"
+
+#. module: stock_picking_batch
 #: field:confirm.process.delivery,id:0
 msgid "ID"
 msgstr "ID"
+
+#. module: stock_picking_batch
+#: field:confirm.process.delivery,invoice_date:0
+msgid "Invoice Date"
+msgstr "Fecha de factura"
+
+#. module: stock_picking_batch
+#: field:confirm.process.delivery,journal_type:0
+msgid "Journal Type"
+msgstr "Tipo de diario"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,write_uid:0
@@ -56,6 +87,11 @@ msgid "Last Updated on"
 msgstr "Last Updated on"
 
 #. module: stock_picking_batch
+#: model:ir.actions.report.xml,name:stock_picking_batch.action_report_picking_batch
+msgid "Picking batch"
+msgstr "Picking batch"
+
+#. module: stock_picking_batch
 #: view:confirm.process.delivery:stock_picking_batch.confirm_process_delivery_form
 msgid "Process all the selected deliveries?"
 msgstr "¿Procesar todos los albaranes seleccionados?"
@@ -64,6 +100,21 @@ msgstr "¿Procesar todos los albaranes seleccionados?"
 #: model:ir.actions.act_window,name:stock_picking_batch.action_stock_picking_process
 msgid "Process delivery (batch)"
 msgstr "Procesar albaranes (en lote)"
+
+#. module: stock_picking_batch
+#: selection:confirm.process.delivery,journal_type:0
+msgid "Refund Purchase"
+msgstr "Refund Purchase"
+
+#. module: stock_picking_batch
+#: selection:confirm.process.delivery,journal_type:0
+msgid "Refund Sale"
+msgstr "Refund Sale"
+
+#. module: stock_picking_batch
+#: view:confirm.process.delivery:stock_picking_batch.confirm_process_delivery_form
+msgid "Will only be invoiced the pickings of customers with invoice directly method."
+msgstr "Solo se facturarán los albaranes cuya empresa tenga como modo de facturación factura directa."
 
 #. module: stock_picking_batch
 #: view:confirm.process.delivery:stock_picking_batch.confirm_process_delivery_form
