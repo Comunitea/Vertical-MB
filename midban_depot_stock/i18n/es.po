@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_depot_stock
+#   * midban_depot_stock
 #
 msgid ""
 msgstr ""
@@ -2261,6 +2261,7 @@ msgid "Print Reposition"
 msgstr "Imprimir reposición"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:74
 #: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
 #: model:ir.actions.act_window,name:midban_depot_stock.action_create_tag_wizard
@@ -2537,6 +2538,7 @@ msgid "Rouet Type"
 msgstr "Tipo ruta"
 
 #. module: midban_depot_stock
+#: view:account.invoice:midban_depot_stock.view_account_invoice_filter_add_route
 #: field:item.create.route,route_id:0
 #: field:partner.route.info,route_id:0
 #: field:procurement.order,trans_route_id:0
@@ -3216,6 +3218,12 @@ msgstr "Rutas"
 #: model:res.groups,name:midban_depot_stock.transport_routes_manager
 msgid "Transport Routes manager"
 msgstr "Gestor de rutas"
+
+
+#. module: midban_depot_stock
+#: field:account.invoice,trans_route_id:0
+msgid "Transport route"
+msgstr "Transport route"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_form_depot

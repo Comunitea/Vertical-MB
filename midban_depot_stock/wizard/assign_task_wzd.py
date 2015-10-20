@@ -637,7 +637,10 @@ class assign_task_wzd(osv.TransientModel):
         #virtual_picking_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'stock', 'virtual_picking_location')[1]
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
+            '|',
             ('product_id.picking_location_id', 'child_of', loc_ids),
+            # Si el producto no tiene ubic. picking, que lo agregue tb
+            ('product_id.picking_location_id', '=', False),
             ('state', 'in', ['confirmed', 'assigned']),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '=', selected_route),
@@ -654,6 +657,7 @@ class assign_task_wzd(osv.TransientModel):
             ('picking_id.min_date', '<=', end_date),
         ]
         res = move_obj.search(cr, uid, domain, context=context)
+        print res
         return (res, selected_route)
 
     def _get_pickings(self, cr, uid, ids, move_ids, context=None):
@@ -787,17 +791,25 @@ class assign_task_wzd(osv.TransientModel):
                                                  picking'))
         pickings_to_wave = []
         moves_by_product = {}
+        moves_by_product_no_loc = {}
         # Get the moves grouped by product
         for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
-            if move.product_id not in moves_by_product:
-                moves_by_product[move.product_id] = [move.id]
+            if move.product_id.picking_location_id:
+                if move.product_id not in moves_by_product:
+                    moves_by_product[move.product_id] = [move.id]
+                else:
+                    moves_by_product[move.product_id].append(move.id)
             else:
-                moves_by_product[move.product_id].append(move.id)
+                if move.product_id not in moves_by_product_no_loc:
+                    moves_by_product_no_loc[move.product_id] = [move.id]
+                else:
+                    moves_by_product_no_loc[move.product_id].append(move.id)
         # Get a order list of lists, òrdered by picking camera
         moves_by_product = sorted(moves_by_product.items(),
                                   key=lambda p:
                                   p[0].picking_location_id.get_camera())
-
+        moves_by_product_no_loc = sorted(moves_by_product_no_loc.items())
+        moves_by_product.extend(moves_by_product_no_loc)
         # Get pickings to put in a wave
         pickings_to_wave = self._get_pickings_to_wave(cr, uid, ids,
                                                       moves_by_product,

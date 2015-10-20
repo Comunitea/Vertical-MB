@@ -58,7 +58,7 @@ class stock_transfer_details(models.TransientModel):
         wzd_obj = self.with_context(ctx).create(vals)
         return wzd_obj.wizard_view()
 
-    @api.one
+    @api.multi
     def do_detailed_transfer(self):
         # Revisamos para apuntar en todas las operaciones las Uos
         for item in self.item_ids:
@@ -69,6 +69,19 @@ class stock_transfer_details(models.TransientModel):
         related_pick = self.picking_id.move_lines[0].move_dest_id.picking_id
         related_pick.do_prepare_partial()
         related_pick.write({'midban_operations': True})
+        if self.picking_id.picking_type_code == 'incoming':
+            return {
+                'name': _('Print Tags'),
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': [self.env.ref('midban_depot_stock.create_tag_wizard_view').id],
+                'res_model': 'create.tag.wizard',
+                'context': "{'active_model': 'stock.picking', 'active_id': %s}" % self.picking_id.id,
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'target': 'new',
+                'res_id': False
+            }
         return res
 
     @api.multi

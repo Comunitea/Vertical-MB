@@ -38,6 +38,7 @@
                     <group>
                         <field name="product_class" string="Sale Type"/>
                         <field name="ean14"/>
+                        <field name="ean_consum"/>
                         <field name="temp_type"/>
                         <field name="temperature"/>
                     </group>
