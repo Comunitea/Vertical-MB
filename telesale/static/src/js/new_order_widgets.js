@@ -733,10 +733,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         })
                 }
             });
-            this.$('#vut-button').click(function(){
+            this.$('#vua-button').click(function(){
                 var client_id = self.check_customer_get_id();
                 if (client_id){
-                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('3month', client_id))
+                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('year', client_id))
                         .done(function(){
                             // self.bind_orderline_events(); //in get_last_line_by we unbid add event of currentOrderLines to render faster
                             // self.renderElement();
@@ -751,7 +751,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#so-button').click(function(){
                 var client_id = self.check_customer_get_id();
                 if (client_id){
-                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('year', client_id))
+                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('3month', client_id))
                         .done(function(){
                             // self.bind_orderline_events(); //in get_last_line_by we unbid add event of currentOrderLines to render faster
                             // self.renderElement();

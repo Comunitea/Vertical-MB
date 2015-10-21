@@ -102,7 +102,9 @@ function openerp_ts_models(instance, module){
         fetch_limited_ordered: function(model, fields, domain, limit, orderby, ctx){
             return new instance.web.Model(model).query(fields).filter(domain).limit(limit).order_by(orderby).context(ctx).first()
         },
-
+        fetch_ordered: function(model, fields, domain, orderby, ctx){
+            return new instance.web.Model(model).query(fields).filter(domain).order_by(orderby).context(ctx).all()
+        },
         // loads all the needed data on the sever. returns a deferred indicating when all the data has loaded.
         load_server_data: function(){
             var self=this;
@@ -782,14 +784,17 @@ function openerp_ts_models(instance, module){
                 date.setDate(date.getDate() - 90);
                 date_str = this.dateToStr(date);
             }else{
-                var year = date.getFullYear()
-                date_str = year + "-" + "01" + "-" + "01";
+                // var year = date.getFullYear()
+                // date_str = year + "-" + "01" + "-" + "01";
+                date.setDate(date.getDate() - 365);
+                date_str = this.dateToStr(date);
             }
+            date_str = date_str + " 00:00:00"
             var self=this;
-            var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done']]]
-            var loaded = self.ts_model.fetch('sale.order.line',
-                                            ['product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
-                                            domain
+            var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done', 'history']]]
+            var loaded = self.ts_model.fetch_ordered('sale.order.line',
+                                            ['order_id', 'product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
+                                            domain, ['-order_id']
                                             )
                 .then(function(order_lines){
                   if (!order_lines){
@@ -856,7 +861,7 @@ function openerp_ts_models(instance, module){
         get_last_order_lines: function(client_id){
             var self=this;
             this.ready = $.Deferred(); // used to notify the GUI that the PosModel has loaded all resources
-            var domain = [['partner_id', '=', client_id],['state', 'in', ['progress', 'manual', 'done']]]
+            var domain = [['partner_id', '=', client_id],['state', 'in', ['progress', 'manual', 'done', 'history']], ['order_line', '!=', false]]
             var loaded = self.ts_model.fetch_limited_ordered('sale.order',['id','name','order_line'], //name y order line no necesarias
                                                 domain,1,['-id'])
                 .then(function(order){
@@ -867,6 +872,7 @@ function openerp_ts_models(instance, module){
                                                     ['order_id', '=', order.id],
                                                  ]);}
                 }).then(function(order_lines){
+                   debugger;
                     // self.add_lines_to_current_order(order_lines);
                     if (!order_lines){
                       order_lines = []

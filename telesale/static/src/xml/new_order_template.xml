@@ -154,7 +154,7 @@
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="vut-button">VUT</button>
+              <button id="vua-button">VUA</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
@@ -220,58 +220,6 @@
                 </div>
               </div>
             </div>
-            <!-- </div> -->
-
-
-
-
-
-
-            <!-- <div class="functional-buttons">
-                <button class="add-line-button">Add</button>
-                <button class="remove-line-button">Remove</button>
-                <button id="ult-button">ULT</button>
-                <button id="vut-button">VUT</button>
-                <button id="so-button">SO</button>
-                <button id="promo-button">PROMO</button>
-                <button id="sust-button">SUST</button>
-                <button id="info-button">INFO</button>
-                <button id="show-client">SHOW CUSTOMER</button>
-            </div>
-
-            <span class="span-state">State Order:
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'sent'">
-                Draft
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'draft'">
-                Quotation Sent
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'cancel'">
-                Canceled
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'waiting_date'">
-                Waiting Schedule
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'progress'">
-                Confirmed
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'manual'">
-                Sale to Invoice
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'shipping_except'">
-                Shipping Exception
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'invoice_except'">
-                Invoice Exception
-            </t>
-            <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'done'">
-                Done
-            </t>
-             <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'wait_risk'">
-                Waiting Risk Approval
-            </t> -->
-
-            <!-- </span> -->
         </div>
         <div class="order-container">
             <table class="order-line-table">
