@@ -319,8 +319,10 @@ products do not require units for validation'),
 
         if not_validated_ids:
             uom_vals = {}
-            uom_vals['uom_id'] = vals.pop('uom_id')
-            uom_vals['uom_po_id'] = vals.pop('uom_po_id')
+            if vals.get('uom_id'):
+                uom_vals['uom_id'] = vals.pop('uom_id')
+            if vals.get('uom_id'):
+                uom_vals['uom_po_id'] = vals.pop('uom_po_id')
             res = super(product_template, self).write(cr, uid, not_validated_ids, vals, context)
             osv.osv.write(self, cr, uid, not_validated_ids, uom_vals, context=context)
         if  validated_ids:
