@@ -97,7 +97,7 @@ class product_template(osv.Model):
     }
     # Se anula para poner zona
     _sql_constraints = [
-        ('location_id_uniq', 'unique(picking_location_id)',
+        ('location_id_uniq', 'Check(1=1)',
          _("Field Location picking is already setted"))
     ]
 
