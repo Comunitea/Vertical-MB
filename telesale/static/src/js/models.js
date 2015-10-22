@@ -148,7 +148,8 @@ function openerp_ts_models(instance, module){
                     return self.fetch('res.partner',['comercial','supplier_ids','indirect_customer','name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
                     for (key in customers){
-                        self.get('customer_names').push(customers[key].name);
+                        var customer_name = customers[key].comercial || customers[key].name
+                        self.get('customer_names').push(customer_name);
                         self.get('customer_codes').push(customers[key].ref);
                     }
                     self.db.add_partners(customers);
@@ -240,7 +241,8 @@ function openerp_ts_models(instance, module){
         // build a order loaded from the server as order_obj the selected order_model
         build_order: function(order_obj, order_model, order_lines){
             var partner_obj = this.db.get_partner_by_id(order_obj.partner_id[0]);
-            order_model.set('partner', partner_obj.name);
+            var cus_name = partner_obj.comercial || partner_obj.name
+            order_model.set('partner', cus_name);
             order_model.set('partner_code', partner_obj.ref || "");
             order_model.set('customer_debt', my_round(partner_obj.credit,2));
             order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
@@ -730,10 +732,6 @@ function openerp_ts_models(instance, module){
             else{
               this.selected_orderline = undefined;
             }
-        },
-        get_client_name: function(){
-            var client = this.get('partner');
-            return client ? client.name : "";
         },
         getLastOrderline: function(){
             return this.get('orderLines').at(this.get('orderLines').length -1);
