@@ -475,6 +475,7 @@ function openerp_ts_models(instance, module){
         },
 
         set_selected: function(selected){
+            console.log("SET SELECTED")
             this.selected = selected;
             this.trigger('change_line');
         },
@@ -715,6 +716,7 @@ function openerp_ts_models(instance, module){
 
         },
         selectLine: function(line){
+           console.log("selectLine")
             if(line){
                 if (line !== this.selected_orderline){
                     if(this.selected_orderline) {

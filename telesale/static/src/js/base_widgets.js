@@ -152,14 +152,14 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             //Add line
             Mousetrap.bind('alt+a', function(e) {
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.add-line-button').click();
             });
             //Remove line
             Mousetrap.bind('alt+s', function(e) {
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.remove-line-button').click()
             });
@@ -167,7 +167,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             //change betwen button block
             Mousetrap.bind('alt+q', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_no').click();  //new order screen
                 self.$("#partner").focus();
@@ -175,7 +175,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             });
             Mousetrap.bind('alt+w', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_oh').click(); //Order history page
                 self.$('#input-customer').focus();
@@ -184,101 +184,101 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             });
             Mousetrap.bind('alt+e', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_cl').click();//call list page
                 self.$('#date-call-search').focus();
             });
             Mousetrap.bind('alt+r', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_pc').click(); //product catalog
                 self.$('#search-product').focus();
             });
             Mousetrap.bind('alt+t', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_pr').click();  //product reserved page
             });
             Mousetrap.bind('alt+y', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                  self.$('#button_so').click(); //Summary orders page
                 self.$("#input-date_start2").focus();
             });
             Mousetrap.bind('alt+f12', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                  self.$('#button_ks').click(); //key shorts page
             });
             Mousetrap.bind('ctrl+u', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#ult-button').click();  //ULT button
             });
             Mousetrap.bind('ctrl+m', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#vum-button').click();  //VUM button
             });
             Mousetrap.bind('ctrl+a', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#via-button').click();  //VIA button
             });
             Mousetrap.bind('ctrl+p', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#promo-button').click();  //PROMOT button
             });
             Mousetrap.bind('ctrl+s', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#sust-button').click();  //SUST button
             });
             Mousetrap.bind('ctrl+i', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#info-button').click();  //INFO button
             });
             Mousetrap.bind('ctrl+q', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#show-client').click();  //SHOW button
             });
 
             Mousetrap.bind('ctrl+alt+b', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.save-button').click();  //SAVE button
             });
             Mousetrap.bind('ctrl+alt+c', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.cancel-button').click();  //CANCEL button
             });
             Mousetrap.bind('ctrl+alt+enter', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.confirm-button').click();  //CONFIRM button
             });
             Mousetrap.bind('ctrl+down', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 var wgt_order = self.new_order_screen.order_widget;
                 var order_lines_wgts = wgt_order.orderlinewidgets;
@@ -303,7 +303,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             });
             Mousetrap.bind('ctrl+up', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 var wgt_order = self.new_order_screen.order_widget;
                 var order_lines_wgts = wgt_order.orderlinewidgets;
@@ -328,21 +328,21 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
 
             Mousetrap.bind('alt+p', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.neworder-button').click();  //new order
             });
 
             Mousetrap.bind('alt+o', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.removeorder-button').click();  //remove order
             });
 
             Mousetrap.bind('ctrl+left', function(e){
                 $( document.activeElement ).blur();
-                if (e.preventDefault) e.preventDefault();
+                if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.selected-order button')[0].focus();
             });
