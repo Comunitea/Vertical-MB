@@ -225,7 +225,7 @@
     width: 80%;
 }
 .telesale #leftpart .button-order-container .span-state{
-    font-size: 1.5vw;
+    font-size: 1vw;
     text-align: right;
 }
 .telesale #leftpart .button-order-container button {
@@ -475,6 +475,10 @@
 .telesale #bottompart .totalorder{
     font-size: 2vmin;
     color: blue;
+}
+.telesale #toppart .red{
+    font-weight: bold;
+    color: red;
 }
 .telesale #bottompart .order-button {
     width: 100%;

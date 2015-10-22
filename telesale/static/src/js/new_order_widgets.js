@@ -136,7 +136,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
                     this.get_supplier_names(partner_obj);
-                    this.order_model.set('partner', partner_obj.name);
+                    var cus_name = partner_obj.comercial || partner_obj.name
+                    this.order_model.set('partner', cus_name);
                     this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit, 2));
                     this.order_model.set('customer_debt', my_round(partner_obj.credit, 2));
@@ -197,6 +198,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         template: 'Order-line-Widget',
         init: function(parent, options) {
             this._super(parent,options);
+            this.order_widget = parent
             this.model = options.model;
             this.order = options.order;
             this.price_and_min = false;
@@ -204,12 +206,44 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.model.bind('change_line', this.refresh, this); //#TODO entra demasiadas veces por la parte esta
         },
         click_handler: function() {
+            // debugger;
             this.order.selectLine(this.model);
             this.trigger('order_line_selected');
+        },
+        control_arrow_keys: function(){
+          var self=this;
+            this.$('.col-product_uos_qty').keydown(function(event){
+              // debugger;
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (30)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-product_uos_qty').focus();
+                    }
+                }
+              }
+            });
+            this.$('.col-discount').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 9) {  // Tecla TAB
+                event.defaultPrevented;
+
+                $('.add-line-button').click()
+              }
+            });
         },
         renderElement: function() {
             var self=this;
             this._super();
+            this.$el.unbind()
             this.$el.click(_.bind(this.click_handler, this));
             if(this.model.is_selected()){
                 this.$el.addClass('selected');
@@ -229,6 +263,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-total').change(_.bind(this.set_value, this, 'total'));
             this.$('.col-detail').change(_.bind(this.set_value, this, 'detail'));
 
+            // Mapeo de teclas para moverse por la tabla con las flechas
+            this.control_arrow_keys()
+            // Creamos nueva linea al tabular la última columna de descuento
             if(this.model.get('product')){
                 var uos = [];
                 product_id = this.ts_model.db.product_name_id[this.model.get('product')]
@@ -646,8 +683,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
         },
         refresh: function(){
+            console.log("Refresh Line")
             this.renderElement();
-            this.trigger('order_line_refreshed');
+            // this.trigger('order_line_refreshed');
         },
     });
 
@@ -680,7 +718,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.currentOrderLines.bind('add', this.renderElement, this);
             this.currentOrderLines.bind('remove', this.renderElement, this);
         },
-        show_client: function(){
+        show_client: function(){"SIGIENTE LINEA"
             var client_id = this.check_customer_get_id()
             if (client_id){
                 context = new instance.web.CompoundContext()
@@ -835,8 +873,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     model: orderLine,
                     order: this.ts_model.get('selectedOrder'),
                 });
-                line.on('order_line_selected', self, self.order_line_selected);
-                line.on('order_line_refreshed', self, self.order_line_refreshed);
+                // line.on('order_line_selected', self, self.order_line_selected);
+                // line.on('order_line_refreshed', self, self.order_line_refreshed);
                 line.appendTo($content);
                 self.orderlinewidgets.push(line);
             }, this));
@@ -1036,6 +1074,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this._super();
         },
         calcProductInfo: function () {
+            // debugger;
             var self = this;
             this.selected_line = this.ts_model.get('selectedOrder').get('selected_line');
             if (!this.selected_line.get("product")){
@@ -1056,6 +1095,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
         },
         change_product: function(){
+            // debugger;
             var self = this;
             var line_product = this.selected_line.get("product")
             self.n_line = self.selected_line.get('n_line') + " / " + self.ts_model.get('selectedOrder').get('orderLines').length;
