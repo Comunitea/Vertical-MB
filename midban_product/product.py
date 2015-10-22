@@ -119,6 +119,7 @@ class product_template(osv.Model):
     _inherit = 'product.template'
     _columns = {
         'ean14': fields.char('Code EAN14', size=14),
+        'ean_consum': fields.char('EAN Consum', size=14),
         'temp_type': fields.many2one('temp.type',
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
@@ -277,15 +278,16 @@ products do not require units for validation'),
                 'supp_ca_length':product.ca_length,
                 'supp_ma_length':product.ma_length,
                 'supp_pa_length':product.pa_length,
-                'var_coeff_un':product.var_coeff_un,
-                'var_coeff_ca':product.var_coeff_ca,
-                'log_base_id':product.log_base_id and product.log_base_id.id or False,
-                'log_unit_id':product.log_unit_id and product.log_unit_id.id or False,
-                'log_box_id':product.log_box_id and product.log_box_id.id or False,
-                'base_use_purchase':product.base_use_sale,
-                'unit_use_purchase':product.unit_use_sale,
-                'box_use_purchase':product.box_use_sale,
-                'is_var_coeff':product.is_var_coeff,
+
+                # 'var_coeff_un':product.var_coeff_un,
+                # 'var_coeff_ca':product.var_coeff_ca,
+                # 'log_base_id':product.log_base_id and product.log_base_id.id or False,
+                # 'log_unit_id':product.log_unit_id and product.log_unit_id.id or False,
+                # 'log_box_id':product.log_box_id and product.log_box_id.id or False,
+                # 'base_use_purchase':product.base_use_sale,
+                # 'unit_use_purchase':product.unit_use_sale,
+                # 'box_use_purchase':product.box_use_sale,
+                # 'is_var_coeff':product.is_var_coeff,
             }
             supp_info_ids = [x.id for x in product.seller_ids]
             self.pool.get('product.supplierinfo').write(cr, uid, supp_info_ids, vals, context=context)
@@ -320,8 +322,10 @@ products do not require units for validation'),
 
         if not_validated_ids:
             uom_vals = {}
-            uom_vals['uom_id'] = vals.pop('uom_id')
-            uom_vals['uom_po_id'] = vals.pop('uom_po_id')
+            if vals.get('uom_id'):
+                uom_vals['uom_id'] = vals.pop('uom_id')
+            if vals.get('uom_id'):
+                uom_vals['uom_po_id'] = vals.pop('uom_po_id')
             res = super(product_template, self).write(cr, uid, not_validated_ids, vals, context)
             osv.osv.write(self, cr, uid, not_validated_ids, uom_vals, context=context)
         if  validated_ids:
