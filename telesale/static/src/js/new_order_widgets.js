@@ -146,6 +146,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.check_partner_routes(partner_id);
                     this.refresh();
                     this.$('#date_invoice').focus();
+                    $('#ult-button').click();
 
                     break;
 
@@ -171,6 +172,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
                     this.refresh();
                     this.$('#partner_code').focus();
+                    $('#ult-button').click();
                     break;
 
                 case "date_invoice":
@@ -320,12 +322,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('pvp', my_round( (product_obj.product_class == "normal") ? (result.value.price_unit || 0) : (result.value.last_price_fresh || 0), 2));
                                 self.model.set('total', my_round(result.value.price_unit || 0,2));
                                 self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
-                                if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
-                                    alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
-                                    var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
-                                    self.model.set('qty', new_qty);
-                                    self.refresh();
-                                }
+
+                                // COMENTADO PARA QUE NO SAQUE EL AVISO SIEMPRE
+                                // if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
+                                //     alert(_t("You want sale 1 " + " " + product_obj.uom_id[1] + " but only " +  product_obj.virtual_stock_conservative + " available."))
+                                //     var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
+                                //     self.model.set('qty', new_qty);
+                                //     self.refresh();
+                                // }
 
                                 self.inicialize_unit_values()
                                 self.refresh();
@@ -718,6 +722,12 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             });
             this.$('.remove-line-button').click(function(){
                 self.ts_model.get('selectedOrder').removeLine();
+                var selected_line = self.ts_model.get('selectedOrder').getSelectedLine();
+                if (selected_line){
+                    n_line = selected_line.get('n_line')
+                    self.orderlinewidgets[n_line-1].$el.find('.col-code').focus();
+                }
+
             });
             this.$('#ult-button').click(function(){
                 var client_id = self.check_customer_get_id();

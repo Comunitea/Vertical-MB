@@ -758,7 +758,6 @@ function openerp_ts_models(instance, module){
         exportAsJSON: function() {
             var orderLines;
             orderLines = [];
-            // debugger;
             (this.get('orderLines')).each(_.bind( function(item) {
                 return orderLines.push(item.export_as_JSON());
             }, this));
@@ -872,7 +871,6 @@ function openerp_ts_models(instance, module){
                                                     ['order_id', '=', order.id],
                                                  ]);}
                 }).then(function(order_lines){
-                   debugger;
                     // self.add_lines_to_current_order(order_lines);
                     if (!order_lines){
                       order_lines = []
@@ -894,7 +892,6 @@ function openerp_ts_models(instance, module){
         },
         deleteProductLine: function(id_line){
           var self=this;
-          // debugger;
           // self.get('orderLines')
         },
         addProductLine: function(product_id){
