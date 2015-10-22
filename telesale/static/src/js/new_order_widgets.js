@@ -698,7 +698,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.orderlinewidgets = [];
         },
         check_customer_get_id: function(){
-            debugger;
             var client_name = this.ts_model.get('selectedOrder').get('partner')
             var client_id = this.ts_model.db.partner_name_id[client_name];
             if (!client_id){
