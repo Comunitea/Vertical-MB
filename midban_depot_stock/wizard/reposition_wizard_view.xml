@@ -12,8 +12,8 @@
                     </p>
                     <group>
                         <field name="specific_locations"/>
-                        <field name="selected_loc_ids" attrs="{'invisible': [('specific_locations', '=', False)]}" widget="many2many_tags" domain="[('camera', '=', False), ('zone', '=', 'picking')]"/>
-                        <field name="product_ids" attrs="{'invisible': [('specific_locations', '=', False)]}" domain="[('picking_location_id', 'in', selected_loc_ids)]"/>
+                        <field name="selected_loc_ids" attrs="{'invisible': [('specific_locations', '=', False)]}" widget="many2many_tags" domain="[('camera', '=', False), ('zone', '=', 'picking')]"  on_change="onchange_loc_ids(selected_loc_ids)"/>
+                        <field name="product_ids" attrs="{'invisible': [('specific_locations', '=', False)]}"/>
                         <field name="capacity" attrs="{'invisible': [('specific_locations', '=', True)],
                                                        'required':  [('specific_locations', '=', False)]
                                                       }"/>
