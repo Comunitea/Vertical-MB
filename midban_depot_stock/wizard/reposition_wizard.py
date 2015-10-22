@@ -47,12 +47,15 @@ class reposition_wizard(osv.TransientModel):
                                              'location_id',
                                              'Specific locations',
                                              help="Locations to replenish"),
+        'product_ids': fields.many2one('product.product', 'Products')
     }
     _defaults = {
         'warehouse_id': lambda self, cr, uid, ctx=None:
         self.pool.get('stock.warehouse').search(cr, uid, [])[0],
         'limit': 100,
     }
+
+
 
     def _get_packs_ordered(self, cr, uid, quant_ids, context=None):
         """

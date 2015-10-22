@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_product
+#       * midban_product
 #
 msgid ""
 msgstr ""
@@ -227,7 +227,7 @@ msgstr "Clase"
 #. module: midban_product
 #: field:product.category,code:0
 msgid "Code"
-msgstr "Code"
+msgstr "Código"
 
 #. module: midban_product
 #: field:product.template,ean14:0
@@ -264,7 +264,7 @@ msgstr "Comentario"
 #. module: midban_product
 #: view:product.template:midban_product.midban_view_product_extra_form
 msgid "Commercial Validated"
-msgstr "Commercial Validado"
+msgstr "Comercial Validado"
 
 #. module: midban_product
 #: field:product.template,consignment:0
@@ -361,6 +361,16 @@ msgstr "Postre"
 #: field:product.template,doorstep_price:0
 msgid "Doorstep Price"
 msgstr "Precio a domicilio"
+
+#. module: midban_product
+#: model:product.pricelist,name:midban_product.list1
+msgid "Doorstep Pricelist"
+msgstr "Tarifa a domicilio"
+
+#. module: midban_product
+#: model:product.pricelist.version,name:midban_product.ver1
+msgid "Doorstep Pricelist Version"
+msgstr "Versión tarifa a domicilio"
 
 #. module: midban_product
 #: field:product.template,drained_weight:0
@@ -620,6 +630,22 @@ msgstr "Sin gluten"
 #: view:product.template:midban_product.midban_product_search_form_view
 msgid "No gluten"
 msgstr "Sin gluten"
+
+#. module: midban_product
+#: model:product.price.type,name:midban_product.nook_price
+#: field:product.template,nook_price:0
+msgid "Nook Price"
+msgstr "Precio rincón"
+
+#. module: midban_product
+#: model:product.pricelist,name:midban_product.list2
+msgid "Nook Pricelist"
+msgstr "Tarifa rincón"
+
+#. module: midban_product
+#: model:product.pricelist.version,name:midban_product.ver2
+msgid "Nook Pricelist Version"
+msgstr "Versión tarifa rincón"
 
 #. module: midban_product
 #: selection:product.template,product_class:0
@@ -885,7 +911,7 @@ msgstr "Estado"
 #: code:addons/midban_product/product.py:682
 #, python-format
 msgid "Supplier %s not defined in product                                            supplier list"
-msgstr "EL proveedor %s no está definido en el listado de proveedores del producto"
+msgstr "El proveedor %s no está definido en el listado de proveedores del producto"
 
 #. module: midban_product
 #: code:addons/midban_product/product.py:791
@@ -1133,7 +1159,7 @@ msgstr "action_product_allergen"
 #: view:process.deny.product:midban_product.view_process_deny_product_form
 #: view:process.unregister.product:midban_product.view_process_unregister_product_form
 msgid "or"
-msgstr "or"
+msgstr "o"
 
 #. module: midban_product
 #: model:ir.actions.act_window,name:midban_product.action_unregister_product_reason

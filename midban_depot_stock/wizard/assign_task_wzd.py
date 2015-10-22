@@ -458,12 +458,12 @@ class assign_task_wzd(osv.TransientModel):
             op.assign_location()
             if wzd_obj.location_ids:
                 camera_id = op.location_dest_id.get_camera()
-                if not camera_id:
-                    raise osv.except_osv(_('Error!'),
-                                         _('Some operation of picking %s\
-                                            have no a scheduled location\
-                                            child of any \
-                                            camera' % pick.name))
+                # if not camera_id:
+                #     raise osv.except_osv(_('Error!'),
+                #                          _('Some operation of picking %s\
+                #                             have no a scheduled location\
+                #                             child of any \
+                #                             camera' % pick.name))
                 if not (camera_id in camera_ids):
                     continue
             op.write({'task_id': task_id})
