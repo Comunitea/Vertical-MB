@@ -21,6 +21,7 @@
 
                 <field name="list_price" position="after">
                     <field name="doorstep_price"/>
+                    <field name="nook_price"/>
                 </field>
 
                 <field name="sale_ok" position="before">

@@ -211,6 +211,7 @@ products do not require units for validation'),
                                               method=True,
                                               readonly=True),
         'doorstep_price': fields.float("Doorstep Price", digits=(4, 2)),
+        'nook_price': fields.float('Nook Price', digits=(4, 2))
     }
     _defaults = {
         'default_code': lambda obj, cr, uid, context: '/',

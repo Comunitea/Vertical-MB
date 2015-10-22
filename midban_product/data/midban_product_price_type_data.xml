@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="doorstep_price" model="product.price.type">
+            <field name="name">Doorstep Price</field>
+            <field name="field">doorstep_price</field>
+        </record>
+
+        <record id="nook_price" model="product.price.type">
+            <field name="name">Nook Price</field>
+            <field name="field">nook_price</field>
+        </record>
+
+        <record id="list1" model="product.pricelist">
+            <field name="name">Doorstep Pricelist</field>
+            <field name="type">sale</field>
+        </record>
+        <record id="ver1" model="product.pricelist.version">
+            <field name="pricelist_id" ref="list1"/>
+            <field name="name">Doorstep Pricelist Version</field>
+        </record>
+        <record id="item1" model="product.pricelist.item">
+            <field name="price_version_id" ref="ver1"/>
+            <field name="base" ref="doorstep_price"/>
+            <field name="name">Doorstep Pricelist Line</field>
+        </record>
+
+        <record id="list2" model="product.pricelist">
+            <field name="name">Nook Pricelist</field>
+            <field name="type">sale</field>
+        </record>
+        <record id="ver2" model="product.pricelist.version">
+            <field name="pricelist_id" ref="list2"/>
+            <field name="name">Nook Pricelist Version</field>
+        </record>
+        <record id="item2" model="product.pricelist.item">
+            <field name="price_version_id" ref="ver2"/>
+            <field name="base" ref="nook_price"/>
+            <field name="name">Nook Pricelist Line</field>
+        </record>
+
+    </data>
+</openerp>
