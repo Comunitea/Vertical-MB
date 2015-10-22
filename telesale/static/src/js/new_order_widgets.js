@@ -136,7 +136,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
                     this.get_supplier_names(partner_obj);
-                    this.order_model.set('partner', partner_obj.name);
+                    var cus_name = partner_obj.comercial || partner_obj.name
+                    this.order_model.set('partner', cus_name);
                     this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit, 2));
                     this.order_model.set('customer_debt', my_round(partner_obj.credit, 2));
@@ -660,6 +661,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.orderlinewidgets = [];
         },
         check_customer_get_id: function(){
+            debugger;
             var client_name = this.ts_model.get('selectedOrder').get('partner')
             var client_id = this.ts_model.db.partner_name_id[client_name];
             if (!client_id){
