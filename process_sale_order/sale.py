@@ -22,6 +22,7 @@ from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+from openerp.tools.float_utils import float_round, float_compare
 
 
 class QualitativeNote(models.Model):
@@ -114,9 +115,12 @@ class sale_order_line(models.Model):
         product = self.product_id
         if product:
             if self.do_onchange:
-                qty = self.product_uos_qty
+                #qty = self.product_uos_qty
                 uos_id = self.product_uos.id
-
+                qty = float_round(self.product_uos_qty,
+                                  precision_rounding=self.product_uos.rounding,
+                                  rounding_method='UP')
+                self.product_uos_qty = qty
                 #conv = product.get_unit_conversions(qty, uos_id)
                 # base, unit, or box
                 #log_unit = product.get_uom_logistic_unit()
