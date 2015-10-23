@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <field name="active" position="after">
-                    <field name="valued_picking"/>
+                    <field name="valued_picking" invisible="1"/>
                 </field>
             </field>
         </record>

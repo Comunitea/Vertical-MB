@@ -28,5 +28,5 @@ class ValidateRoutes(models.TransientModel):
     @api.multi
     def validate(self):
         pickings = self.env['stock.picking'].browse(self.env.context['active_ids'])
-        pickings.validated = True
+        pickings.write({'validated': True})
 
