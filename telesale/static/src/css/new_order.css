@@ -96,7 +96,8 @@
     padding-right: 0.5vw;
 }
 .telesale .leftpartbuttons{
-    width: 0px;
+    /*width: 0px;*/
+    vertical-align: middle;
 }
 
 .telesale .centerinside{
@@ -105,7 +106,8 @@
 
 .telesale .centerthis{
   display: table-cell;
-  vertical-align: middle
+  vertical-align: middle;
+  padding: 0px;
 }
 
 .telesale #pagespart button {
@@ -226,7 +228,8 @@
 }
 .telesale #leftpart .button-order-container .span-state{
     font-size: 1vw;
-    text-align: right;
+    width: 100%;
+    text-align: center;
 }
 .telesale #leftpart .button-order-container button {
     color:black;
@@ -248,57 +251,6 @@
     height: 89%;
     width:100%;
     overflow:auto;
-}
-
-/* Sold Product table*/
-.telesale #rightpart .sold-product-table {
-    margin-top: 1vh;
-    width: 100%;
-    border: 1px solid #000;
-    font-weight: bold;
-    color:black;
-    font-size:1.7vmin;
-    overflow:auto;
-}
-
-.telesale #rightpart .sold-product-table th{
-  border: 1px solid #000;
-  height: 2vh;
-  background: #7f82ac;
-  text-align: center;
-  font-weight: bold;
-}
-.telesale #rightpart .sold-product-table th.pc-header-name{
-    width: 75%;
-}
-.telesale #rightpart .sold-product-table th.pc-header-price{
-    width: 15%;
-}
-.telesale #rightpart .sold-product-table th.pc-header-add{
-    width: 10%;
-}
-.telesale  #rightpart .sold-product-table td{
-    border: 1px solid #000;
-    cursor:pointer;
-    vertical-align: middle;
-}
-.telesale  #rightpart .sold-product-table td.pc-cell-code{
-    text-align: right;
-    padding-right: 3px;
-}
-.telesale #rightpart .pc-cell-stock{
-    text-align: center;
-}
-.telesale #rightpart .sold-product-table button {
-    color: black;
-    vertical-align: middle;
-    margin-right:0px;
-    border: 1px solid #353A7E;
-    background: #7f82ac;
-    font-size:1.7vmin;
-    background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
-    background: -moz-linear-gradient(#b2b3d7, #7f82ac);
-    background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
 }
 
 /* Order lines table*/
@@ -388,7 +340,6 @@
     text-align: right;
 }
 
-
 .telesale #leftpart .selected{
     background: #8B0000;
 }
@@ -429,6 +380,57 @@
     font-weight: bold;
     text-align: center;
 
+}
+
+/* Sold Product table*/
+.telesale #rightpart .sold-product-table {
+    margin-top: 1vh;
+    width: 100%;
+    border: 1px solid #000;
+    font-weight: bold;
+    color:black;
+    font-size:1.7vmin;
+    overflow:auto;
+}
+
+.telesale #rightpart .sold-product-table th{
+  border: 1px solid #000;
+  height: 2vh;
+  background: #7f82ac;
+  text-align: center;
+  font-weight: bold;
+}
+.telesale #rightpart .sold-product-table th.pc-header-name{
+    width: 75%;
+}
+.telesale #rightpart .sold-product-table th.pc-header-price{
+    width: 15%;
+}
+.telesale #rightpart .sold-product-table th.pc-header-add{
+    width: 10%;
+}
+.telesale  #rightpart .sold-product-table td{
+    border: 1px solid #000;
+    cursor:pointer;
+    vertical-align: middle;
+}
+.telesale  #rightpart .sold-product-table td.pc-cell-code{
+    text-align: right;
+    padding-right: 3px;
+}
+.telesale #rightpart .pc-cell-stock{
+    text-align: center;
+}
+.telesale #rightpart .sold-product-table button {
+    color: black;
+    vertical-align: middle;
+    margin-right:0px;
+    border: 1px solid #353A7E;
+    background: #7f82ac;
+    font-size:1.7vmin;
+    background: -webkit-gradient(linear, left top, left bottom, from(#b2b3d7), to(#7f82ac));
+    background: -moz-linear-gradient(#b2b3d7, #7f82ac);
+    background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
 }
 
 
