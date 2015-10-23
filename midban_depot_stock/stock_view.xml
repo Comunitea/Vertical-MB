@@ -277,6 +277,17 @@
             </field>
         </record>
 
+        <record id="view_picking_internal_tree_add_route" model="ir.ui.view">
+            <field name="name">stock.picking.internal.tree.add_rout</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                    <field name="state" position="after">
+                        <field name="route_detail_id"/>
+                    </field>
+            </field>
+        </record>
+
         <record id="view_inventory_form_add_categories" model="ir.ui.view">
             <field name="name">stock.inventory.form.add_categories</field>
             <field name="model">stock.inventory</field>
