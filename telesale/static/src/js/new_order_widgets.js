@@ -124,10 +124,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         perform_onchange: function(key, value) {
             if (!value) {return;}
-<<<<<<< HEAD
-=======
-            // debugger;
->>>>>>> eae3a8ac21306c5ac8b7fbb4e7acc2d0c37f8436
             if (key == "partner_code" || key == "partner"){
                 partner_id = (key == "partner_code") ? this.ts_model.db.partner_ref_id[value] : this.ts_model.db.partner_name_id[value];
                 if (!partner_id){
@@ -217,33 +213,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
               }
             });
-            this.$('.col-discount').keydown(function(event){
-              debugger;
-              var keyCode = event.keyCode || event.which;
-<<<<<<< HEAD
-              if (keyCode == 9) {  // Tecla TAB
-                // event.defaultPrevented;
-=======
-              if (keyCode == 9) {  // Tecla TAB (9)
-                event.defaultPrevented;
-                var selected_line = self.order.selected_orderline;
-                if (selected_line){
-                    var n_line = selected_line.get('n_line');
-                    if (n_line == self.order_widget.orderlinewidgets.length){
-                        $('.add-line-button').click()
-                    }
-                    else{
-                        var next_line = self.order_widget.orderlinewidgets[n_line]
-                        if(next_line){
-                          self.order.selectLine(next_line.model);
-                          next_line.$el.find('.col-code').focus();
-                        }
-                    }
-                }
->>>>>>> eae3a8ac21306c5ac8b7fbb4e7acc2d0c37f8436
-
-              }
-            });
         },
         renderElement: function() {
             var self=this;
@@ -264,7 +233,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-qnote').blur(_.bind(this.set_value, this, 'qnote'));
             this.$('.col-qty').change(_.bind(this.set_value, this, 'qty'));
             this.$('.col-pvp').change(_.bind(this.set_value, this, 'pvp'));
-            this.$('.col-discount').change(_.bind(this.set_value, this, 'discount'));
+            this.$('.col-discount').focusout(_.bind(this.set_value, this, 'discount'));
             this.$('.col-total').change(_.bind(this.set_value, this, 'total'));
             this.$('.col-detail').change(_.bind(this.set_value, this, 'detail'));
 
@@ -307,7 +276,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         set_value: function(key) {
             var value = this.$('.col-'+key).val();
             var set=true;
-            if (key == 'qty' || key == 'pvp' || key == 'total' ){
+            if (key == 'qty' || key == 'pvp' || key == 'total' || key == 'discount' ){
                 if (isNaN(value)){
                     this.$('.col-'+key).val(this.model.get(key));
                     alert(_t(value + " is not a valid number"));
@@ -461,7 +430,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if(log_unit == 'unit'){
                         price_unit = price_udv * product_obj.kg_un;
                     }
-                    if(log_unit == 'box'){
+                    if(log_unit =order= 'box'){
                         price_unit = price_udv * product_obj.kg_un * product_obj.un_ca;
                     }
                     price_unit = price_unit
@@ -533,7 +502,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         perform_onchange: function(key) {
-            debugger;
+            var self=this;
             var value = this.$('.col-'+key).val();
             if (!value) {return;}
 
@@ -687,6 +656,22 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 case "discount":
                     this.model.set('discount', value);
                     this.refresh();
+                    debugger;
+                    // Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
+                    var selected_line = self.order.selected_orderline;
+                    if (selected_line){
+                        var n_line = selected_line.get('n_line');
+                        if (n_line == self.order_widget.orderlinewidgets.length){
+                            $('.add-line-button').click()
+                        }
+                        else{
+                            var next_line = self.order_widget.orderlinewidgets[n_line]
+                            if(next_line){
+                              self.order.selectLine(next_line.model);
+                              next_line.$el.find('.col-code').focus();
+                            }
+                        }
+                    }
                     break;
             }
         },
