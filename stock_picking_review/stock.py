@@ -133,6 +133,8 @@ class StockPicking(models.Model):
         string='Payment Mode',
         store=True,
         )
+    delivery_id = fields.Many2one(related='route_detail_id.comercial_id',
+                                   store=True, string='Delivery Person')
     #invoice_id = fields.Many2one()
     move_lines = fields.One2many('stock.move', 'picking_id',
                                  'Internal Moves',
