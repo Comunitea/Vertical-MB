@@ -294,7 +294,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-pvp').change(_.bind(this.set_value, this, 'pvp'));
             this.$('.col-pvp').focus(_.bind(this.click_handler, this, 'pvp'));
 
-            this.$('.col-discount').change(_.bind(this.set_value, this, 'discount'));
+            this.$('.col-discount').blur(_.bind(this.set_value, this, 'discount'));
             this.$('.col-discount').focus(_.bind(this.click_handler, this, 'discount'));
 
             this.$('.col-total').change(_.bind(this.set_value, this, 'total'));
@@ -352,8 +352,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     value = my_round(value,2);
             }
             if (set){
-                // if ( this.model.get(key) != value || key == "discount"){
-                if ( this.model.get(key) != value){
+                if ( this.model.get(key) != value || key == "discount"){
+                // if ( this.model.get(key) != value){
                     this.model.set(key, value);
                     this.perform_onchange(key);
                 }
@@ -730,7 +730,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 //     break;
                 case "discount":
                     this.model.set('discount', value);
-                    this.refresh('code');
+                    if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
+                        this.refresh('code');
+
+                    }
                     // Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
                     // var selected_line = self.order.selected_orderline;
                     // if (selected_line){
