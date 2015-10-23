@@ -286,10 +286,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     value = my_round(value,2);
             }
             if (set){
-                if ( this.model.get(key) != value ){
+                // if ( this.model.get(key) != value ){
                     this.model.set(key, value);
                     this.perform_onchange(key);
-                }
+                // }
             }
         },
         update_stock_product: function(product_id){
@@ -656,7 +656,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 case "discount":
                     this.model.set('discount', value);
                     this.refresh();
-                    debugger;
                     // Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
                     var selected_line = self.order.selected_orderline;
                     if (selected_line){
