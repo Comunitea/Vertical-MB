@@ -616,11 +616,19 @@ class product_product(models.Model):
 
     @api.multi
     def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id=0):
-        return uom_qty * self._get_factor(uos_id, supplier_id)
+        round = self.env['product.uom'].browse(uos_id).rounding
+        return float_round(uom_qty * self._get_factor(uos_id, supplier_id),
+                           precision_rounding=round,
+                           rounding_method='UP'
+                           )
 
     @api.multi
     def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id=0):
-        return uos_qty / self._get_factor(uos_id, supplier_id)
+        round = self.uom_id.rounding
+        return float_round(uos_qty / self._get_factor(uos_id, supplier_id),
+                           precision_rounding=round,
+                           rounding_method='UP'
+                           )
 
 
     @api.multi
