@@ -124,7 +124,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         perform_onchange: function(key, value) {
             if (!value) {return;}
-            debugger;
+            // debugger;
             if (key == "partner_code" || key == "partner"){
                 partner_id = (key == "partner_code") ? this.ts_model.db.partner_ref_id[value] : this.ts_model.db.partner_name_id[value];
                 if (!partner_id){
@@ -147,9 +147,18 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.order_model.set('contact_name', contact_obj.name);
                     this.check_partner_routes(partner_id);
 
+                    if(this.order_model.get('orderLines').length == 0){
+                        $('.add-line-button').click()
+                    }
+                    else{
+                        if (key == "partner") {
+                          this.$('#partner_code').focus();
+                        }
+                        else {
+                          this.$('#date_invoice').focus();
+                        }
+                    }
                     this.refresh();
-                    if (key == "partner") {this.$('#partner_code').focus();}
-                    else {this.$('#date_invoice').focus();}
                     $('#ult-button').click();
                 }
             }
@@ -199,8 +208,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var next_line = self.order_widget.orderlinewidgets[idx - 1]
                     if (next_line) {
 
-
-
                       self.order.selectLine(next_line.model);
                       next_line.$el.find('.col-product_uos_qty').focus();
                     }
@@ -208,11 +215,25 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
               }
             });
             this.$('.col-discount').keydown(function(event){
+              debugger;
               var keyCode = event.keyCode || event.which;
-              if (keyCode == 9) {  // Tecla TAB
+              if (keyCode == 9) {  // Tecla TAB (9)
                 event.defaultPrevented;
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    if (n_line == self.order_widget.orderlinewidgets.length){
+                        $('.add-line-button').click()
+                    }
+                    else{
+                        var next_line = self.order_widget.orderlinewidgets[n_line]
+                        if(next_line){
+                          self.order.selectLine(next_line.model);
+                          next_line.$el.find('.col-code').focus();
+                        }
+                    }
+                }
 
-                $('.add-line-button').click()
               }
             });
         },
