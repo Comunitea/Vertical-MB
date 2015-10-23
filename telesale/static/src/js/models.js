@@ -577,20 +577,21 @@ function openerp_ts_models(instance, module){
                 "tax": taxtotal,
             };
         },
-        update_pvp: function(){
-            var self = this;
-            var customer_id = this.ts_model.db.partner_name_id[this.order.get('partner')];
-            var pricelist_id = (this.ts_model.db.get_partner_by_id(customer_id)).property_product_pricelist;
-            var model = new instance.web.Model("product.pricelist");
-            var product_id = this.ts_model.db.product_name_id[this.get('product')];
-            var loaded = model.call("ts_get_product_pvp",[product_id,pricelist_id])
-            .then(function(result){
-                if (result[0])
-                    self.set('pvp', result[0])
-                    self.set('total', my_round(self.get('qty') * result[0]),2);
-            })
-            return loaded;
-        }
+        // update_pvp: function(){
+        //     // No se tiene en cuenta descuento
+        //     var self = this;
+        //     var customer_id = this.ts_model.db.partner_name_id[this.order.get('partner')];
+        //     var pricelist_id = (this.ts_model.db.get_partner_by_id(customer_id)).property_product_pricelist;
+        //     var model = new instance.web.Model("product.pricelist");
+        //     var product_id = this.ts_model.db.product_name_id[this.get('product')];
+        //     var loaded = model.call("ts_get_product_pvp",[product_id,pricelist_id])
+        //     .then(function(result){
+        //         if (result[0])
+        //             self.set('pvp', result[0])
+        //             self.set('total', my_round(self.get('qty') * result[0]),2);
+        //     })
+        //     return loaded;
+        // }
 
     });
     module.OrderlineCollection = Backbone.Collection.extend({
