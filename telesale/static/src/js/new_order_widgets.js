@@ -124,44 +124,20 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         perform_onchange: function(key, value) {
             if (!value) {return;}
-            switch (key){
-                case "partner_code":
-                    partner_id = this.ts_model.db.partner_ref_id[value];
-                    if (!partner_id){
-                        alert(_t("Customer code '" + value + "' does not exist"));
-                        this.order_model.set('partner', "");
-                        this.order_model.set('partner_code', "");
-                        this.refresh();
-                        break;
-                    }
+            debugger;
+            if (key == "partner_code" || key == "partner"){
+                partner_id = (key == "partner_code") ? this.ts_model.db.partner_ref_id[value] : this.ts_model.db.partner_name_id[value];
+                if (!partner_id){
+                    var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
+                    alert(alert_msg);
+                    this.order_model.set('partner', "");
+                    this.order_model.set('partner_code', "");
+                    this.refresh();
+                }
+                else{
                     partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
-                    this.get_supplier_names(partner_obj);
                     var cus_name = partner_obj.comercial || partner_obj.name
                     this.order_model.set('partner', cus_name);
-                    this.order_model.set('customer_comment', partner_obj.comment);
-                    this.order_model.set('limit_credit', my_round(partner_obj.credit_limit, 2));
-                    this.order_model.set('customer_debt', my_round(partner_obj.credit, 2));
-                    contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
-                    this.order_model.set('contact_name', contact_obj.name);
-                    this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
-                    this.check_partner_routes(partner_id);
-                    this.refresh();
-                    this.$('#date_invoice').focus();
-                    $('#ult-button').click();
-
-                    break;
-
-                case "partner":
-                    partner_id = this.ts_model.db.partner_name_id[value];
-                    if (!partner_id){
-                        alert(_t("Customer name '" + value + "' does not exist"));
-                        this.order_model.set('partner', "");
-                        this.order_model.set('partner_code', "");
-                        this.refresh();
-                        break;
-                    }
-                    partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
-                    this.get_supplier_names(partner_obj);
                     this.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
                     this.order_model.set('customer_comment', partner_obj.comment);
                     this.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
@@ -172,19 +148,19 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.check_partner_routes(partner_id);
 
                     this.refresh();
-                    this.$('#partner_code').focus();
+                    if (key == "partner") {this.$('#partner_code').focus();}
+                    else {this.$('#date_invoice').focus();}
                     $('#ult-button').click();
-                    break;
-
-                case "date_invoice":
-                    this.$('#date_planed').focus();
-                    break;
-                case "date_planed":
-                    this.$('#date_order').focus();
-                    break;
-                case "date_invoice":
-                    this.$('#partner').focus();
-                    break;
+                }
+            }
+            if (key == "date_invoice"){
+              this.$('#date_planed').focus();
+            }
+            if (key == "date_planed"){
+              this.$('#date_order').focus();
+            }
+            if (key == "date_order"){
+              this.$('#partner').focus();
             }
         },
         refresh: function(){
@@ -357,7 +333,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 }
                                 self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? result.value.price_unit : 0,2 ));
                                 self.model.set('pvp', my_round( (product_obj.product_class == "normal") ? (result.value.price_unit || 0) : (result.value.last_price_fresh || 0), 2));
-                                self.model.set('total', my_round(result.value.price_unit || 0,2));
                                 self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
 
                                 // COMENTADO PARA QUE NO SAQUE EL AVISO SIEMPRE
@@ -369,8 +344,12 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 // }
 
                                 self.inicialize_unit_values()
+                                var subtotal = self.model.get('pvp') * self.model.get('qty') * (1 - self.model.get('discount') / 100.0)
+                                self.model.set('total', my_round(subtotal || 0,2));
                                 self.refresh();
                                 self.$('.col-product_uos_qty').focus()
+                                self.$('.col-product_uos_qty').select()
+
                             });
                         })
                         .fail(function(){
