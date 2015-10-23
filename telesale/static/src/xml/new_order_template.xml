@@ -371,7 +371,7 @@
                       <label for="coment">Notes:</label>
                       <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment"><t t-esc="widget.order_model.get('coment')"/></textarea>
                       <label for="customer_note">Customer Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' name="customer_comment"><t t-esc="widget.order_model.get('customer_comment')"/></textarea>
+                      <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' name="customer_comment"><t t-esc="widget.order_model.get('customer_comment')" t-if="widget.order_model.get('customer_comment')"/></textarea>
                     </div>
                 </div>
           </div>
