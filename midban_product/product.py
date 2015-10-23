@@ -730,9 +730,9 @@ class product_product(models.Model):
 
         cte =  qty_uoc / self._get_unit_ratios(uoc_id, supplier_id)
 
-        res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
-        res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
-        res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        res['base'] = float_round(cte * self._get_unit_ratios(supp.log_base_id.id, supplier_id), supp.log_base_id.rounding)
+        res['unit'] = float_round(cte * self._get_unit_ratios(supp.log_unit_id.id, supplier_id), supp.log_unit_id.rounding)
+        res['box'] = float_round(cte * self._get_unit_ratios(supp.log_box_id.id, supplier_id), supp.log_box_id.rounding)
         return res
 
     #calcula para una cantidad dada, las cantidades en las distintas unidades
@@ -743,9 +743,9 @@ class product_product(models.Model):
                'box': 0.0}
         cte =  qty_uoc / self._get_unit_ratios(uoc_id, 0)
 
-        res['base'] = float_round(cte * self._get_unit_ratios(self.log_base_id.id, 0), 2)
-        res['unit'] = float_round(cte * self._get_unit_ratios(self.log_unit_id.id, 0), 2)
-        res['box'] = float_round(cte * self._get_unit_ratios(self.log_box_id.id, 0), 2)
+        res['base'] = float_round(cte * self._get_unit_ratios(self.log_base_id.id, 0), self.log_base_id.rounding)
+        res['unit'] = float_round(cte * self._get_unit_ratios(self.log_unit_id.id, 0), self.log_unit_id.rounding)
+        res['box'] = float_round(cte * self._get_unit_ratios(self.log_box_id.id, 0), self.log_box_id.rounding)
         return res
 
     #calcula para un precio dado, los precios en las udistintas unidades
@@ -758,9 +758,9 @@ class product_product(models.Model):
 
         cte = qty_uoc * self._get_unit_ratios(uoc_id, supplier_id)
 
-        res['base'] = float_round(cte / self._get_unit_ratios(supp.log_base_id.id, supplier_id), 2)
-        res['unit'] = float_round(cte / self._get_unit_ratios(supp.log_unit_id.id, supplier_id), 2)
-        res['box'] = float_round(cte / self._get_unit_ratios(supp.log_box_id.id, supplier_id), 2)
+        res['base'] = float_round(cte / self._get_unit_ratios(supp.log_base_id.id, supplier_id), supp.log_base_id.rounding)
+        res['unit'] = float_round(cte / self._get_unit_ratios(supp.log_unit_id.id, supplier_id), supp.log_unit_id.rounding)
+        res['box'] = float_round(cte / self._get_unit_ratios(supp.log_box_id.id, supplier_id), supp.log_box_id.rounding)
         return res
 
 
