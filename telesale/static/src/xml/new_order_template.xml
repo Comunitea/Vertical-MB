@@ -182,7 +182,7 @@
               <button id="show-client">CUSTOMER</button>
             </div>
             </div>
-            <div class="col-xs-3 fullheight centerinside leftpartbuttons">
+            <div class="col-xs-3 fullheight centerinside">
               <div class="centerthis">
 
                 <div class="span-state fullwidth">
@@ -217,6 +217,7 @@
                    <t t-if="widget.ts_model.get('selectedOrder').get('state') == 'wait_risk'">
                       Waiting Risk Approval
                   </t>
+
                   <span t-esc="widget.ts_model.get('selectedOrder').get('num_order')"/>
                   <!-- <input class=" " type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/> -->
                 </div>
