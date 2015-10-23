@@ -164,11 +164,9 @@ class stock_picking(osv.Model):
     @api.one
     def _regularize_move_quantities(self):
         self.recompute_remaining_qty(self)
-        # total_operations = self._get_total_operation_quantities()
         operations = []
         for move in self.move_lines:
             if move.product_id.is_var_coeff:
-                # move.update_receipt_quantity(total_operations[move.product_id.id])
                 total_operations = {'product_uom_qty': 0.0,
                                     'product_uos_qty': 0.0}
                 for link in move.linked_move_operation_ids:
@@ -344,7 +342,8 @@ class stock_picking(osv.Model):
         planned with the detail date
         """
         if self.route_detail_id:
-            route_date = datetime.strptime(self.route_detail_id.date, '%Y-%m-%d').date()
+            route_date = datetime.strptime(self.route_detail_id.date,
+                                           '%Y-%m-%d').date()
             close_days = [wd.sequence for wd in self.partner_id.close_days]
             route_wd = route_date.weekday()
             self.min_date = self.route_detail_id.date + " 19:00:00"
@@ -533,6 +532,7 @@ class StockPackage(models.Model):
             res = recs.name_get()
         return res
 
+
 class stock_package(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"
@@ -702,7 +702,7 @@ class stock_package(models.Model):
                 if parent_lots:
                     removed = False
                     for q in pack.quant_ids:
-                        if q.lot_id in parent_lots:
+                        if q.lot_id.id in parent_lots:
                             q.package_id = vals['parent_id']
                             removed = True
                         if removed:
@@ -862,18 +862,11 @@ class stock_pack_operation(models.Model):
         if not product.picking_location_id:
             pick_loc = self.env.ref("stock.virtual_picking_location")
             return True
-            # raise exceptions.Warning(_('Error!'),
-            #                          _('Not picking location for product \
-            #                          %s.' % product.name))
-            #
 
         pick_loc = product.picking_location_id
         volume = product.get_volume_for(prop_qty)
-        if not pick_loc.filled_percent:  # If empty add wood volume
-            wood_volume = product.get_wood_volume()
-            vol_aval = pick_loc.available_volume - wood_volume
-        else:
-            vol_aval = pick_loc.available_volume
+        avail, fill = pick_loc.get_available_volume_for_product(product)
+        vol_aval = avail
         old_ref = self._older_refernce_in_storage(product)
         if (not old_ref and volume <= vol_aval):
             res = True
@@ -893,9 +886,9 @@ class stock_pack_operation(models.Model):
             product = self.operation_product_id
             if self._is_picking_loc_available(product, self.packed_qty):
                 #cambio para que si no hay, coja por defecto
-                 if product.picking_location_id:
+                if product.picking_location_id:
                     self.location_dest_id = product.picking_location_id.id
-                 else:
+                else:
                     self.location_dest_id = self.env.ref("stock.virtual_picking_location").id
             else:
                 locations = product.picking_location_id.get_locations_by_zone(
@@ -905,7 +898,8 @@ class stock_pack_operation(models.Model):
                     location = self._search_closest_pick_location(product,
                                                                   locations)
                     my_volume = product.get_volume_for(self.packed_qty)
-                    if location and location.available_volume > my_volume:
+                    avail, fill = product.picking_location_id.get_available_volume_for_product(product)
+                    if location and avail > my_volume:
                         found = True
                     else:
                         locations.remove(location.id)
@@ -1267,6 +1261,61 @@ class stock_location(models.Model):
         res = [('id', 'in', sel_loc_ids)]
 
         return res
+
+    def get_available_volume_for_product(self, cr, uid, ids, product,
+                                         context=None):
+        loc = self.browse(cr, uid, ids, context)[0]
+        products = self.pool.get('product.product').search(
+            cr, uid, [('picking_location_id', '=', loc.id)], context=context)
+        portion_product = len(products)
+        quant_obj = self.pool.get('stock.quant')
+        ope_obj = self.pool.get('stock.pack.operation')
+        volume = 0.0
+        quant_ids = quant_obj.search(cr, uid, [('location_id', 'child_of',
+                                                loc.id),
+                                               ('product_id', '=',
+                                                product.id)],
+                                     context=context)
+        volume = self.pool.get('stock.location')._get_quants_volume(
+            cr, uid, quant_ids, context=context)
+        domain = [
+            ('location_dest_id', 'child_of', loc.id),
+            ('processed', '=', 'false'),
+            ('product_id', '=', product.id),
+            ('picking_id.state', 'in', ['assigned'])]
+        operation_ids = ope_obj.search(cr, uid, domain, context=context)
+        ops_by_pack = {}
+        is_pick_zone = loc.zone == 'picking'
+        # if picking location we get the volume without wood beacuse in
+        # picking zone we use only one wood, and we add this volume later
+        add_wood_height = False if is_pick_zone else True
+        for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
+            # Operation Beach to input
+            if not ope.package_id and ope.result_package_id:
+                pack = ope.result_package_id
+                if pack not in ops_by_pack:
+                    ops_by_pack[ope.result_package_id] = [ope]
+                else:
+                    ops_by_pack[ope.result_package_id].append(ope)
+            # Location task operations or reposition
+            elif not ope.product_id and ope.package_id:
+                pack_obj = ope.package_id.\
+                    with_context(add_wood_height=add_wood_height)
+                volume += pack_obj.volume
+            # Reposition operations, remove from a pack and put in other
+            elif ope.product_id and ope.package_id \
+                    and ope.result_package_id:
+                volume += ope.product_id.get_volume_for(ope.product_qty)
+            # Units operations, no packages
+            else:
+                volume += ope.operation_product_id.un_width * \
+                    ope.operation_product_id.un_height * \
+                    ope.operation_product_id.un_length * \
+                    ope.product_qty
+        available_volume = (loc.volume / portion_product) - volume
+        fill_per = loc.volume and volume * 100.0 / \
+            (loc.volume / portion_product) or 0.0
+        return available_volume, fill_per
 
     def _get_filter_percentage(self, cr, uid, ids, name, args, context=None):
         """ Function search to use filled % like a filter. """
@@ -1831,13 +1880,9 @@ class stock_quant(models.Model):
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
             if not pick_loc_obj:
-
-                #raise exceptions.Warning(_('Error!'), _('Not picking location\
-                #                        defined for product %s') %
-                #                         product.name)
-                sup = super(stock_quant, self).\
-                    apply_removal_strategy(cr, uid, location, product, qty, domain,
-                                            'fefo', context=context)
+                sup = super(stock_quant, self).apply_removal_strategy(
+                    cr, uid, location, product, qty, domain, 'fefo',
+                    context=context)
 
                 return sup
 
