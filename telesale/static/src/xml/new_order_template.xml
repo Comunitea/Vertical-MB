@@ -403,7 +403,7 @@
                   <div class="centerthis">
                     <label for="total">Discount (%):</label>
                     <input type="text" class='total' name="discount_total"
-                        t-att-value="widget.order_model.get('total_discount').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                        t-att-value="widget.order_model.get('total_discount_per')" readonly="readonly" tabIndex="-1"/>
                   </div>
               </div>
               </div>
@@ -447,7 +447,7 @@
                   <div class="centerthis">
                     <label for="total">Margin (%):</label>
                     <input type="text" class='total' id='total_margin'
-                        t-att-value="widget.order_model.get('total_margin').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                        t-att-value="widget.order_model.get('total_margin_per')" readonly="readonly" tabIndex="-1"/>
                   <!-- <label for="total">Suppliers:</label>
                   <input type="text" class='total mandatory' id="total_order"
                       t-att-value="widget.order_model.get('partner_code')" tabIndex="-1"/> -->

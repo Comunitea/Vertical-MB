@@ -1027,7 +1027,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       self.sum_cmc += product_obj.cmc * line.get('qty');
                       self.sum_box += line.get('boxes');
                       self.weight += line.get('weight');
-                      self.discount += line.get('pvp_ref') != 0 ? (line.get('pvp_ref') - line.get('pvp')) * line.get('qty') : 0;
+                    //   self.discount += line.get('pvp_ref') != 0 ? (line.get('pvp_ref') - line.get('pvp')) * line.get('qty') : 0;
+                      self.discount += line.get('qty') * line.get('pvp') * (line.get('discount') / 100)
                       self.margin += (line.get('pvp') -  product_obj.cmc) * line.get('qty');
                       self.pvp_ref += line.get('pvp_ref') * line.get('qty');
                       self.base += line.get_price_without_tax('total');
@@ -1047,6 +1048,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var discount_per = (0).toFixed(2) + "%";
             if (self.pvp_ref != 0){
                 var discount_num = (self.discount/self.pvp_ref) * 100 ;
+                if (discount_num < 0)
+                    var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
+                else
+                    var discount_per = my_round( discount_num , 2).toFixed(2) + "%";
+            }
+            if (self.base != 0){
+                var discount_num = (self.discount/self.base) * 100 ;
                 if (discount_num < 0)
                     var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
                 else
