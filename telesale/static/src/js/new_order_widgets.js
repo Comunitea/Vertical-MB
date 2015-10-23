@@ -124,7 +124,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         perform_onchange: function(key, value) {
             if (!value) {return;}
-            debugger;
             if (key == "partner_code" || key == "partner"){
                 partner_id = (key == "partner_code") ? this.ts_model.db.partner_ref_id[value] : this.ts_model.db.partner_name_id[value];
                 if (!partner_id){
@@ -147,9 +146,18 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.order_model.set('contact_name', contact_obj.name);
                     this.check_partner_routes(partner_id);
 
+                    if(this.order_model.get('orderLines').length == 0){
+                        $('.add-line-button').click()
+                    }
+                    else{
+                        if (key == "partner") {
+                          this.$('#partner_code').focus();
+                        }
+                        else {
+                          this.$('#date_invoice').focus();
+                        }
+                    }
                     this.refresh();
-                    if (key == "partner") {this.$('#partner_code').focus();}
-                    else {this.$('#date_invoice').focus();}
                     $('#ult-button').click();
                 }
             }
@@ -199,20 +207,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var next_line = self.order_widget.orderlinewidgets[idx - 1]
                     if (next_line) {
 
-
-
                       self.order.selectLine(next_line.model);
                       next_line.$el.find('.col-product_uos_qty').focus();
                     }
                 }
-              }
-            });
-            this.$('.col-discount').keydown(function(event){
-              var keyCode = event.keyCode || event.which;
-              if (keyCode == 9) {  // Tecla TAB
-                event.defaultPrevented;
-
-                $('.add-line-button').click()
               }
             });
         },
@@ -235,7 +233,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-qnote').blur(_.bind(this.set_value, this, 'qnote'));
             this.$('.col-qty').change(_.bind(this.set_value, this, 'qty'));
             this.$('.col-pvp').change(_.bind(this.set_value, this, 'pvp'));
-            this.$('.col-discount').change(_.bind(this.set_value, this, 'discount'));
+            this.$('.col-discount').focusout(_.bind(this.set_value, this, 'discount'));
             this.$('.col-total').change(_.bind(this.set_value, this, 'total'));
             this.$('.col-detail').change(_.bind(this.set_value, this, 'detail'));
 
@@ -278,7 +276,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         set_value: function(key) {
             var value = this.$('.col-'+key).val();
             var set=true;
-            if (key == 'qty' || key == 'pvp' || key == 'total' ){
+            if (key == 'qty' || key == 'pvp' || key == 'total' || key == 'discount' ){
                 if (isNaN(value)){
                     this.$('.col-'+key).val(this.model.get(key));
                     alert(_t(value + " is not a valid number"));
@@ -288,10 +286,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     value = my_round(value,2);
             }
             if (set){
-                if ( this.model.get(key) != value ){
+                // if ( this.model.get(key) != value ){
                     this.model.set(key, value);
                     this.perform_onchange(key);
-                }
+                // }
             }
         },
         update_stock_product: function(product_id){
@@ -432,7 +430,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if(log_unit == 'unit'){
                         price_unit = price_udv * product_obj.kg_un;
                     }
-                    if(log_unit == 'box'){
+                    if(log_unit =order= 'box'){
                         price_unit = price_udv * product_obj.kg_un * product_obj.un_ca;
                     }
                     price_unit = price_unit
@@ -504,6 +502,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         perform_onchange: function(key) {
+            var self=this;
             var value = this.$('.col-'+key).val();
             if (!value) {return;}
 
@@ -535,60 +534,37 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.call_product_id_change(product_id);
                     break;
 
-                case "qty":
-                    var prod_name = this.$('.col-product').val();
-                    var product_id = this.ts_model.db.product_name_id[prod_name];
-                    if (!product_id){
-                        alert(_t("Product name '" + prod_name + "' does not exist"));
-                        this.model.set('qty', "1");
-                        this.refresh();
-                        break;
-                    }
-                    var uom_name = this.$('.col-unit').val();
-                    var uom_id = this.ts_model.db.unit_name_id[uom_name];
-                    if (!uom_id){
-                        alert(_t("Unit of measure '" + uom_name + "' does not exist"));
-                        this.model.set('qty', 1);
-                        this.refresh();
-                        break;
-                    }
-                    var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    if ( (value > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
-                        alert(_t("You want sale " + value + " " + uom_name + " but only " +  product_obj.virtual_stock_conservative + " available."))
-                        var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
-                        this.model.set('qty', new_qty);
-                        this.refresh();
-                        break;
-                    }
-
-                    //change weight
-                    var weight =  this.model.get('weight')
-                    this.model.set('weight', my_round(value * weight,2));
-                    this.refresh();
-                    break;
-
-                case "product_uos":
-                    var prod_name = this.$('.col-product').val();
-                    var uos_name = value;
-                    var uos_qty = this.$('.col-product_uos_qty').val();
-                    var price_unit = this.$('.col-pvp').val();
-                    conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
-                    log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('qty', my_round(conv[log_unit], 2));
-                    this.model.set('product_uos', value);
-                    var product_id = this.ts_model.db.product_name_id[prod_name];
-                    var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    if(uos_name == product_obj.log_box_id[1]){
-                        this.model.set('discount', my_round(product_obj.box_discount, 2))
-                    }
-                    else{
-                        this.model.set('discount', my_round(0.00, 2))
-                    }
-                    uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
-                    this.model.set('price_udv', my_round(uos_pu, 2))
-                    this.model.set('total', my_round(uos_qty * uos_pu, 2))
-                    this.refresh()
-                    break;
+                // case "qty":
+                //     var prod_name = this.$('.col-product').val();
+                //     var product_id = this.ts_model.db.product_name_id[prod_name];
+                //     if (!product_id){
+                //         alert(_t("Product name '" + prod_name + "' does not exist"));
+                //         this.model.set('qty', "1");
+                //         this.refresh();
+                //         break;
+                //     }
+                //     var uom_name = this.$('.col-unit').val();
+                //     var uom_id = this.ts_model.db.unit_name_id[uom_name];
+                //     if (!uom_id){
+                //         alert(_t("Unit of measure '" + uom_name + "' does not exist"));
+                //         this.model.set('qty', 1);
+                //         this.refresh();
+                //         break;
+                //     }
+                //     var product_obj = this.ts_model.db.get_product_by_id(product_id);
+                //     if ( (value > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
+                //         alert(_t("You want sale " + value + " " + uom_name + " but only " +  product_obj.virtual_stock_conservative + " available."))
+                //         var new_qty = (product_obj.virtual_stock_conservative < 0) ? 0.0 : product_obj.virtual_stock_conservative
+                //         this.model.set('qty', new_qty);
+                //         this.refresh();
+                //         break;
+                //     }
+                //
+                //     //change weight
+                //     var weight =  this.model.get('weight')
+                //     this.model.set('weight', my_round(value * weight,2));
+                //     this.refresh();
+                //     break;
 
                 case "product_uos_qty":
                     var prod_name = this.$('.col-product').val();
@@ -612,11 +588,38 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         boxes = value
                     }
                     this.model.set('boxes', my_round(boxes, 2));
-                    var pvp = this.$('.col-price_udv').val();
-                    this.model.set('total', my_round(value * pvp, 2));
                     this.refresh();
                     break;
 
+                case "product_uos":
+                    var prod_name = this.$('.col-product').val();
+                    var uos_name = value;
+                    var uos_qty = this.$('.col-product_uos_qty').val();
+                    var price_unit = this.$('.col-pvp').val();
+                    conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
+                    log_unit = this.getUomLogisticUnit(prod_name)
+                    this.model.set('qty', my_round(conv[log_unit], 2));
+                    this.model.set('product_uos', value);
+                    var product_id = this.ts_model.db.product_name_id[prod_name];
+                    var product_obj = this.ts_model.db.get_product_by_id(product_id);
+                    if(uos_name == product_obj.log_box_id[1]){
+                        this.model.set('discount', my_round(product_obj.box_discount, 2))
+                    }
+                    else{
+                        this.model.set('discount', my_round(0.00, 2))
+                    }
+                    uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
+                    this.model.set('price_udv', my_round(uos_pu, 2))
+                    this.refresh()
+                    break;
+                case "price_udv":
+                    var prod_name = this.$('.col-product').val();
+                    var uos_name = this.$('.col-product_uos').val();
+                    var uom_pu = this.getUomUosPrices(prod_name, uos_name, 0, value)
+                    this.model.set('price_udv', my_round(value, 2));
+                    this.model.set('pvp', my_round(uom_pu, 2));
+                    this.refresh();
+                    break;
                 case "pvp":
                     var prod_name = this.$('.col-product').val();
                     var uos_name = this.$('.col-product_uos').val();
@@ -625,45 +628,61 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.model.set('pvp', my_round(value, 2));
                     this.refresh();
                     break;
-                case "price_udv":
-                    var prod_name = this.$('.col-product').val();
-                    var uos_name = this.$('.col-product_uos').val();
-                    uom_pu = this.getUomUosPrices(prod_name, uos_name, 0, value)
-                    this.model.set('price_udv', my_round(value, 2));
-                    this.model.set('pvp', my_round(uom_pu, 2));
-                    var qty = this.$('.col-product_uos_qty').val();
-                    this.model.set('total', my_round(value * qty, 2));
+
+                // case "product_uos":
+                //     this.model.set('product_uos', value);
+                //     this.refresh();
+                //     break;
+                // case "unit":
+                //     this.model.set('unit', value);
+                //     this.refresh();
+                //     break;
+                // case "qnote":
+                //     var qnote_id = this.ts_model.db.qnote_name_id[value]
+                //     if (!qnote_id){
+                //         alert(_t("Qnote name '" + value + "' does not exist"));
+                //         this.model.set('qnote', "");
+                //         this.refresh();
+                //         break;
+                //     }
+                //     var qnote_obj = this.ts_model.db.get_qnote_by_id(qnote_id);
+                //     this.model.set('qnote', qnote_obj.code);
+                //     this.refresh();
+                //     break;
+                // case "detail":
+                //     this.model.set('detail', value);
+                //     this.refresh();
+                //     break;
+                case "discount":
+                    this.model.set('discount', value);
                     this.refresh();
-                    break;
-                case "product_uos":
-                    this.model.set('product_uos', value);
-                    this.refresh();
-                    break;
-                case "unit":
-                    this.model.set('unit', value);
-                    this.refresh();
-                    break;
-                case "qnote":
-                    var qnote_id = this.ts_model.db.qnote_name_id[value]
-                    if (!qnote_id){
-                        alert(_t("Qnote name '" + value + "' does not exist"));
-                        this.model.set('qnote', "");
-                        this.refresh();
-                        break;
+                    // Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
+                    var selected_line = self.order.selected_orderline;
+                    if (selected_line){
+                        var n_line = selected_line.get('n_line');
+                        if (n_line == self.order_widget.orderlinewidgets.length){
+                            $('.add-line-button').click()
+                        }
+                        else{
+                            var next_line = self.order_widget.orderlinewidgets[n_line]
+                            if(next_line){
+                              self.order.selectLine(next_line.model);
+                              next_line.$el.find('.col-code').focus();
+                            }
+                        }
                     }
-                    var qnote_obj = this.ts_model.db.get_qnote_by_id(qnote_id);
-                    this.model.set('qnote', qnote_obj.code);
-                    this.refresh();
-                    break;
-                case "detail":
-                    this.model.set('detail', value);
-                    this.refresh();
                     break;
             }
         },
         refresh: function(){
             console.log("Refresh Line")
+            var price = this.model.get("pvp")
+            var qty = this.model.get("qty")
+            var disc = this.model.get("discount")
+            var subtotal = price * qty * (1 - (disc/ 100.0))
+            this.model.set('total',subtotal);
             this.renderElement();
+
             // this.trigger('order_line_refreshed');
         },
     });
