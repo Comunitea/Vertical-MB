@@ -111,7 +111,6 @@ class create_camera_locations(models.TransientModel):
         bcd_code = item.camera_prefix + item.code_row
         bcd_name = item.camera_prefix + " " + item.code_row
         # Create Picking vals
-        #import ipdb; ipdb.set_trace()
         for name in pick_names:
             if len(name.split('/'))==2:
                 fila = name.split('/')[0]

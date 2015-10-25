@@ -624,7 +624,6 @@ class assign_task_wzd(osv.TransientModel):
         if context is None:
             context = {}
         move_obj = self.pool.get('stock.move')
-
         res = []
         obj = self.browse(cr, uid, ids[0], context=context)
         selected_route = obj.trans_route_id and obj.trans_route_id.id or False
@@ -647,15 +646,6 @@ class assign_task_wzd(osv.TransientModel):
             ('picking_id.min_date', '>=', start_date),
             ('picking_id.min_date', '<=', end_date),
         ]
-        domain1 = [
-            ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
-            ('|'),('product_id.picking_location_id','=', False),('product_id.picking_location_id', 'child_of', loc_ids),
-            ('state', 'in', ['confirmed', 'assigned']),
-            ('picking_id.operator_id', '=', False),
-            ('picking_id.trans_route_id', '=', selected_route),
-            ('picking_id.min_date', '>=', start_date),
-            ('picking_id.min_date', '<=', end_date),
-        ]
         res = move_obj.search(cr, uid, domain, context=context)
         print res
         return (res, selected_route)
@@ -665,8 +655,6 @@ class assign_task_wzd(osv.TransientModel):
         For all moves from a same product, get the new pickings, or the
         original picking if it only have one move.
         """
-
-        #import ipdb; ipdb.set_trace()
         res = set()
         if context is None:
             context = {}

@@ -250,7 +250,6 @@ class transfer_lines(models.TransientModel):
         line = self[0]  # Is called always line by line
 
         #op_vals = line.get_operation_vals(pick_obj)
-        #import ipdb; ipdb.set_trace()
         # Operation to move products without pack or from a pack
         if line.product_id:
             qty = line.quantity
