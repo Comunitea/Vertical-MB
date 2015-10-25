@@ -32,7 +32,7 @@
             <field name="name">stock.move.review.simple.tree</field>
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
-                <tree string="Moves" editable="top" create="false" delete="false">
+                <tree string="Moves" editable="top" delete="false">
 
                     <field name="product_id" readonly="True"/>
                      <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
@@ -42,7 +42,6 @@
                     <field name="product_uom_qty" readonly="True"/>
                     <field name="product_uom_acc_qty" />
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
-
                     <field name="cost_subtotal" sum="Total"/>
 
                 </tree>
@@ -68,9 +67,15 @@
             <field name="inherit_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
             <field name="arch" type="xml">
                 <filter name="filter_today" position="before">
+                    <filter icon="terp-go-today" string="Not Reviewed" name="not_reviewed"
+                            domain="[('reviewed','=',False)]" help="Orders not reviewed "/>
                     <filter icon="terp-go-today" string="Review Today" name="review_today"
                             domain="[('reviewed','=',False),('date_done','&lt;=',time.strftime('%Y-%m-%d')),('date_done','&gt;=',time.strftime('%Y-%m-%d'))]" help="Orders processed Today"/>
                 </filter>
+                <group string="Group By" position="inside">
+                    <filter name="group_by_delivery_id" string="Delivery person"
+                        context="{'group_by': 'delivery_id'}"/>
+                </group>
 
             </field>
         </record>
@@ -89,6 +94,7 @@
                     <field name="amount_total" readonly="True" sum="Totals"/>
                     <field name="amount_total_acc" readonly="True" sum="Totals"/>
                     <field name="receipt_amount" readonly="True" sum="Totals"/>
+                    <field name="delivery_id" />
                     <field name="reviewed" />
                     <field name="sale_id" readonly="True"/>
                      <field name="invoice_id" readonly="True"/>
@@ -166,13 +172,18 @@
                 context="{'search_default_done':1, 'search_default_today':1}"/>
 
 
-        <act_window name="Picking Reviews"
-            res_model="stock.picking"
-            view_mode="tree,form"
-            id="act_review_pickings"
-            view_id="stock_picking_review_tree"
-                    domain="[('picking_type_id.code', '=', 'outgoing'), ('state', '=', 'done')]"
-                context="{'search_default_review_today':1}"/>
+
+        <record id="act_review_pickings" model="ir.actions.act_window">
+            <field name="name">Picking Reviews</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="stock_picking_review_tree"/>
+            <field name="search_view_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
+            <field name="domain">[('picking_type_id.code', '=', 'outgoing'), ('state', '=', 'done')]</field>
+            <field name="context">{'search_default_review_today':1}</field>
+        </record>
 
         <record id="action_picking_review_form" model="ir.actions.act_window.view">
             <field eval="10" name="sequence"/>

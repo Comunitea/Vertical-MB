@@ -55,7 +55,66 @@ class reposition_wizard(osv.TransientModel):
         'limit': 100,
     }
 
+    def onchange_loc_ids(self, cr, uid, ids, selected_loc_ids=False,
+                         context=None):
+        if not selected_loc_ids:
+            return True
+        selected_loc_ids = selected_loc_ids[0][2]
+        product_ids = self.pool.get('product.product').search(
+            cr, uid, [('picking_location_id', 'in', selected_loc_ids)],
+            context=context)
+        return {'domain': {'product_ids': [('id', 'in', product_ids)]}}
 
+    def _get_volume_in_loc_by_prod(self, cr, uid, loc, prod_id,
+                                   portion_product, context={}):
+        # eliminar y usar get_available_volume_for_product de stock location
+        quant_obj = self.pool.get('stock.quant')
+        ope_obj = self.pool.get('stock.pack.operation')
+        volume = 0.0
+        quant_ids = quant_obj.search(cr, uid, [('location_id', 'child_of',
+                                                loc.id),
+                                               ('product_id', '=', prod_id)],
+                                     context=context)
+        volume = self.pool.get('stock.location')._get_quants_volume(
+            cr, uid, quant_ids, context=context)
+        domain = [
+            ('location_dest_id', 'child_of', loc.id),
+            ('processed', '=', 'false'),
+            ('product_id', '=', prod_id),
+            ('picking_id.state', 'in', ['assigned'])]
+        operation_ids = ope_obj.search(cr, uid, domain, context=context)
+        ops_by_pack = {}
+        is_pick_zone = loc.zone == 'picking'
+        # if picking location we get the volume without wood beacuse in
+        # picking zone we use only one wood, and we add this volume later
+        add_wood_height = False if is_pick_zone else True
+        for ope in ope_obj.browse(cr, uid, operation_ids, context=context):
+            # Operation Beach to input
+            if not ope.package_id and ope.result_package_id:
+                pack = ope.result_package_id
+                if pack not in ops_by_pack:
+                    ops_by_pack[ope.result_package_id] = [ope]
+                else:
+                    ops_by_pack[ope.result_package_id].append(ope)
+            # Location task operations or reposition
+            elif not ope.product_id and ope.package_id:
+                pack_obj = ope.package_id.\
+                    with_context(add_wood_height=add_wood_height)
+                volume += pack_obj.volume
+            # Reposition operations, remove from a pack and put in other
+            elif ope.product_id and ope.package_id \
+                    and ope.result_package_id:
+                volume += ope.product_id.get_volume_for(ope.product_qty)
+            # Units operations, no packages
+            else:
+                volume += ope.operation_product_id.un_width * \
+                    ope.operation_product_id.un_height * \
+                    ope.operation_product_id.un_length * \
+                    ope.product_qty
+        available_volume = (loc.volume / portion_product) - volume
+        fill_per = loc.volume and volume * 100.0 / \
+            (loc.volume / portion_product) or 0.0
+        return available_volume, fill_per
 
     def _get_packs_ordered(self, cr, uid, quant_ids, context=None):
         """
@@ -115,7 +174,8 @@ class reposition_wizard(osv.TransientModel):
                     res.append(packs_ordered)
         return res
 
-    def _get_reposition_picking(self, cr, uid, ids, dest_id, prod, pack_cands,
+    def _get_reposition_picking(self, cr, uid, ids, dest_id, prod,
+                                portion_in_loc, pack_cands,
                                 context=None):
         """
         Get a reposition picking for ubication dest_id if its possible.
@@ -135,23 +195,21 @@ class reposition_wizard(osv.TransientModel):
         t_pack = self.pool.get("stock.quant.package")
 
         obj = self.browse(cr, uid, ids[0], context=context)
-        if not prod.picking_location_id:
-            raise osv.except_osv(_('Error!'), _('Not picking location.'))
         pick_loc_obj = prod.picking_location_id
         reposition_task_type_id = obj.warehouse_id.reposition_type_id.id
         storage_loc_id = pick_loc_obj.get_general_zone('storage')
         picking_loc_id = pick_loc_obj.get_general_zone('picking')
 
         loc = loc_obj.browse(cr, uid, dest_id, context=context)
-        vol_aval = loc.available_volume
-
+        product_vol = loc.volume / portion_in_loc
+        vol_aval, filled_per = self._get_volume_in_loc_by_prod(
+            cr, uid, loc, prod.id, portion_in_loc, context)
         idx = 0
         limit = len(pack_cands) - 1
         operation_dics = []
         packs_to_split = []
         total_move_qty = 0
         to_replenish_packs = []
-        filled_per = loc.filled_percent
         while vol_aval and filled_per < obj.limit and idx <= limit:
             candidates = pack_cands[idx]  # list of packages ordered by volume
             for pack_obj in candidates:
@@ -281,14 +339,14 @@ class reposition_wizard(osv.TransientModel):
             context = {}
         prod_obj = self.pool.get('product.product')
         pick_id = False
-        # obj = self.browse(cr, uid, ids[0], context=context)
         prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
-                                              dest_id)], context=context,
-                                   limit=1)
-        if prod_ids:
-            product = prod_obj.browse(cr, uid, prod_ids, context=context)[0]
-            if not product.picking_location_id:
-                raise osv.except_osv(_('Error!'), _('Not picking location.'))
+                                              dest_id)], context=context)
+        prod_in_loc = len(prod_ids)
+        wzd = self.browse(cr, uid, ids[0], context)
+        if wzd.product_ids:
+            prod_ids = [x for x in prod_ids if x in wzd.product_ids._ids]
+        for prod_id in prod_ids:
+            product = prod_obj.browse(cr, uid, prod_id, context=context)[0]
             pick_loc_obj = product.picking_location_id
             storage_id = pick_loc_obj.get_general_zone('storage')
             t_quant = self.pool.get('stock.quant')
@@ -318,7 +376,8 @@ class reposition_wizard(osv.TransientModel):
                                                    context=context)
             if pack_cands:
                 pick_id = self._get_reposition_picking(cr, uid, ids, dest_id,
-                                                       product, pack_cands,
+                                                       product, prod_in_loc,
+                                                       pack_cands,
                                                        context=context)
         return pick_id
 
