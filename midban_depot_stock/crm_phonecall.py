@@ -41,7 +41,7 @@ class crm_phonecall(models.Model):
         """
         Modify the state of the call based on the result visit
         """
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         if vals.get('result', False):
             if vals['result'] in ['sale_done', 'call_no_order']:
                 vals['state'] = 'done'
