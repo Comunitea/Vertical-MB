@@ -330,7 +330,7 @@ class resPartner(models.Model):
         res = False
         detail = self.get_next_route_detail()
         if detail:
-            res = True
+            res = {'detail_date': detail.date}
         return res
 
     def search(self, cr, user, args, offset=0, limit=None, order=None,
