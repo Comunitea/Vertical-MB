@@ -13,7 +13,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
     // Buttons of differents order actuing like pages of orders
     module.OrderButtonWidget = module.TsBaseWidget.extend({
         template:'Order-Button-Widget',
-        init: function(parent, options) {
+        init: function(parentautocomplete, options) {
 
             this._super(parent,options);
             var self = this;
@@ -64,12 +64,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         change_selected_order: function() {
             this.renderElement();
-            this.$('#partner').focus();
+            this.$('#partner_code').focus();
         },
         renderElement: function () {
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
+            this.$('#partner_code').focus()
             this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
             this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
@@ -165,15 +166,15 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                 });
             }
-            if (key == "date_invoice"){
-              this.$('#date_planed').focus();
-            }
-            if (key == "date_planed"){
-              this.$('#date_order').focus();
-            }
-            if (key == "date_order"){
-              this.$('#partner').focus();
-            }
+            // if (key == "date_invoice"){
+            //   this.$('#date_planed').focus();
+            // }
+            // if (key == "date_planed"){
+            //   this.$('#date_order').focus();
+            // }
+            // if (key == "date_order"){
+            //   this.$('#partner_code').focus();
+            // }
         },
         refresh: function(){
             this.renderElement();
