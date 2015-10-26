@@ -253,23 +253,24 @@
                       <div class="centerthis">
                           <!-- <label for="num_order">Nº order:</label>
                           <input class=" " type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/> -->
-                          <label for="num_order">Customer Code</label>
-                          <input class="mandatory" type="text" id='partner_code' name="num_order" t-att-value="widget.order_model.get('partner_code')" tabIndex="1"/>
+                          <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
+                              <label for="customer" class="red" id="labelpartner">Indirect Customer:</label>
+                          </t>
+                          <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
+                              <label for="customer" id="labelpartner">Customer:</label>
+                          </t>
+                            <!-- <label for="customer" id="labelpartner">Customer:</label> -->
+                            <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="1"/>
+                            <!-- <select class="mandatory" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/> -->
                       </div>
                   </div>
                 </div>
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
-                      <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
-                          <label for="customer" class="red" id="labelpartner">Indirect Customer:</label>
-                      </t>
-                      <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
-                          <label for="customer" id="labelpartner">Customer:</label>
-                      </t>
-                        <!-- <label for="customer" id="labelpartner">Customer:</label> -->
-                        <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="7"/>
-                        <!-- <select class="mandatory" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/> -->
+                      <label for="partner_code">Customer Code</label>
+                      <input class="mandatory" type="text" id='partner_code' name="partner_code" t-att-value="widget.order_model.get('partner_code')" tabIndex="7"/>
+
                     </div>
                   </div>
               </div>

@@ -75,6 +75,7 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             var search_string = ""
             var customer_name = this.order_model.get('partner');
             var products_list = [];
+            var loaded = $.Deferred()
             var partner_id = this.ts_model.db.partner_name_id[customer_name];
             if (partner_id) {
                 var model = new instance.web.Model('res.partner');
@@ -94,7 +95,9 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
                     }
                     self.ts_model.set('product_search_string', search_string)
                     self.ts_model.get('products').reset(products_list)
+                    loaded.resolve()
                 });
+            return loaded
             }
         },
         change_selected_order: function() {

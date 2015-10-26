@@ -70,7 +70,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
-            this.$('#partner_code').focus()
             this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
             this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
@@ -124,43 +123,47 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
           }
         },
         perform_onchange: function(key, value) {
+            var self=this;
             if (!value) {return;}
             if (key == "partner_code" || key == "partner"){
-                partner_id = (key == "partner_code") ? this.ts_model.db.partner_ref_id[value] : this.ts_model.db.partner_name_id[value];
-                if (!partner_id){
-                    var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
-                    alert(alert_msg);
-                    this.order_model.set('partner', "");
-                    this.order_model.set('partner_code', "");
-                    this.refresh();
-                }
-                else{
-                    partner_obj = this.ts_model.db.get_partner_by_id(partner_id);
-                    var cus_name = partner_obj.comercial || partner_obj.name
-                    this.order_model.set('partner', cus_name);
-                    this.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
-                    this.order_model.set('customer_comment', partner_obj.comment);
-                    this.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
-                    this.order_model.set('customer_debt', my_round(partner_obj.credit,2));
-                    contact_obj = this.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
-                    this.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
-                    this.order_model.set('contact_name', contact_obj.name);
-                    this.check_partner_routes(partner_id);
-
-                    if(this.order_model.get('orderLines').length == 0){
-                        $('.add-line-button').click()
+              $.when( self.ts_widget.product_catalog_screen.product_catalog_widget.search_products_to_sell() )
+              .done(function(){
+                    partner_id = (key == "partner_code") ? self.ts_model.db.partner_ref_id[value] : self.ts_model.db.partner_name_id[value];
+                    if (!partner_id){
+                        var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
+                        alert(alert_msg);
+                        this.order_model.set('partner', "");
+                        this.order_model.set('partner_code', "");
+                        this.refresh();
                     }
                     else{
-                        if (key == "partner") {
-                          this.$('#partner_code').focus();
+                        partner_obj = self.ts_model.db.get_partner_by_id(partner_id);
+                        var cus_name = partner_obj.comercial || partner_obj.name
+                        self.order_model.set('partner', cus_name);
+                        self.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
+                        self.order_model.set('customer_comment', partner_obj.comment);
+                        self.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
+                        self.order_model.set('customer_debt', my_round(partner_obj.credit,2));
+                        contact_obj = self.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
+                        self.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
+                        self.order_model.set('contact_name', contact_obj.name);
+                        self.check_partner_routes(partner_id);
+
+                        if(self.order_model.get('orderLines').length == 0){
+                            $('.add-line-button').click()
                         }
-                        else {
-                          this.$('#date_invoice').focus();
+                        else{
+                            if (key == "partner") {
+                              self.$('#partner_code').focus();
+                            }
+                            else {
+                              self.$('#date_invoice').focus();
+                            }
                         }
+                        self.refresh();
+                        $('#ult-button').click();
                     }
-                    this.refresh();
-                    $('#ult-button').click();
-                }
+                });
             }
             // if (key == "date_invoice"){
             //   this.$('#date_planed').focus();
@@ -824,6 +827,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self = this;
             this._super();
 
+            // #  Habría que hacer unbind??
             this.$('.add-line-button').click(function(){
                 var order =  self.ts_model.get('selectedOrder')
                 var partner_id = self.ts_model.db.partner_name_id[order.get('partner')]
