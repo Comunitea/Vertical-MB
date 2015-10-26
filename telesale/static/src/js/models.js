@@ -139,7 +139,7 @@ function openerp_ts_models(instance, module){
                     self.db.add_units(units);
                     return self.fetch(
                         'product.product',
-                        ['name','product_class','list_price','cmc','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id'],
+                        ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id'],
                         [['sale_ok','=',true]]
                     );
                 }).then(function(products){
@@ -287,7 +287,7 @@ function openerp_ts_models(instance, module){
                                  total: my_round(line.price_subtotal,2),
                                  discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
                                  weight: my_round(prod_obj.weight * line.product_uom_qty,2),
-                                 margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class == "normal") ? ( (line.price_unit - prod_obj.cmc) / line.price_unit) : 0 ), 2),
+                                 margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class == "normal") ? ( (line.price_unit - prod_obj.standard_price) / line.price_unit) : 0 ), 2),
                                  taxes_ids: line.tax_id || prod_obj.taxes_id || [],
                                  pvp_ref: line.pvp_ref,
                                  qnote: line.q_note[1] || "",
@@ -530,7 +530,7 @@ function openerp_ts_models(instance, module){
         },
         get_all_prices: function(){
             var self = this;
-            var base = round_dc(this.get('qty') * this.get('pvp'), 2);
+            var base = round_dc(this.get('qty') * this.get('pvp') * (1 - (this.get('discount') / 100.0)), 2);
             var totalTax = base;
             var totalNoTax = base;
             var taxtotal = 0;
@@ -841,7 +841,7 @@ function openerp_ts_models(instance, module){
                                      total: my_round(line.current_pvp ? line.product_uom_qty * line.current_pvp : 0 ,2),
                                      discount: my_round( 0, 2 ),
                                      weight: my_round(line.product_uom_qty * prod_obj.weight,2),
-                                     margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.cmc) / line.current_pvp)  : 0 ), 2),
+                                     margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),
                                      taxes_ids: line.tax_id || product_obj.taxes_id || [],
                                      pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
                                      qnote: line['q_note'][1] || "",
@@ -919,7 +919,7 @@ function openerp_ts_models(instance, module){
                              total: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
                              discount: 0,
                              weight: product_obj.weight || 0.0,
-                             margin: my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2),
+                             margin: my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.standard_price) / result.value.price_unit) : 0 , 2),
                              taxes_ids: result.value.tax_id || [],
                              pvp_ref: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
                             }
