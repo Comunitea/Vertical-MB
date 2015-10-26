@@ -65,7 +65,9 @@ class partner_route_info(models.Model):
     regularity = fields2.Selection([('1_week', '1 Week'),
                                     ('2_week', '2 Weeks'),
                                     ('3_week', '3 Weeks'),
-                                    ('4_week', '4 Weeks')], 'Regularity',
+                                    ('4_week', '4 Weeks'),
+                                    ('3yes_1no', '3 Weeks Yes, 1 Week No'),
+                                    ('2yes_2no', '2 Weeks Yes, 2 Week No')], 'Regularity',
                                    default="1_week", required=True)
     last_date = fields2.Date('Last Date', compute='_compute_dates',
                              readonly=True)

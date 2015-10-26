@@ -258,8 +258,11 @@ class route(models.Model):
                                      _('Date range not valid.'))
             interval = 1 if reg == '1_week' else (2 if reg == '2_week' else
                                                   (3 if reg == '3_week' else
-                                                      (4 if reg == '4_week'
-                                                          else False)))
+                                                      (4 if reg == '4_week' else
+                                                         (1 if reg == '3yes_1no' else
+                                                            (1 if reg == '2yes_2no'
+                                                          else False)))))
+
             # To include end date in rrules
             if dt_end.weekday() == day_number:
                 dt_end = dt_end + timedelta(days=1)
@@ -273,6 +276,29 @@ class route(models.Model):
                                     %s with regularity of %s \
                                     week(s)' % (start_date, end_date,
                                                 str(interval))))
+
+            to_remove = []
+
+            if reg == '3yes_1no':
+                count = 0
+                for date in customer_dates:
+                    count += 1
+                    if count == 4:
+                        to_remove.append(date)
+                        count = 0
+            if reg == '2yes_2no':
+                count = 0
+                for date in customer_dates:
+                    count += 1
+                    if count >= 3:
+                        if count == 3:
+                            to_remove.append(date)
+                        else:
+                            to_remove.append(date)
+                            count = 0
+            for date in to_remove:
+                customer_dates.remove(date)
+
             for date in customer_dates:
                 domain = [
                     ('date', '=', date),
