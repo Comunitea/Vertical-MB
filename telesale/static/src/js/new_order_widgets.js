@@ -493,6 +493,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         getUomUosPrices: function(product_name, uos_name, custom_price_unit, custom_price_udv){
+            debugger;
             var product_id = this.ts_model.db.product_name_id[product_name];
             var product_obj = this.ts_model.db.get_product_by_id(product_id);
             var uos_id = this.ts_model.db.unit_name_id[uos_name];
@@ -509,8 +510,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if(log_unit == 'unit'){
                         price_unit = price_udv * product_obj.kg_un;
                     }
-                    if(log_unit =order= 'box'){
-                        price_unit = price_udv * product_obj.kg_un * product_obj.un_ca;
+                    if(log_unit == 'box'){
+                        price_unit =  price_udv * product_obj.kg_un * product_obj.un_ca;
                     }
                     price_unit = price_unit
                 }
@@ -547,10 +548,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         price_udv = price_unit;
                     }
                     if(log_unit == 'unit'){
-                        price_udv = price_unit * product_obj.kg_un;
+                        price_udv =  my_round(price_unit / (product_obj.kg_un || 1) , 2);
                     }
                     if(log_unit == 'box'){
-                        price_udv = price_unit * product_obj.kg_un * product_obj.un_ca;
+                        price_udv =  my_round( (price_unit / (product_obj.un_ca || 1) ) / (product_obj.kg_un || 1) , 2);
                     }
                 }
                 else if(uos_id == product_obj.log_unit_id[0]){
@@ -561,7 +562,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         price_udv = price_unit;
                     }
                     if(log_unit == 'box'){
-                        price_udv = price_unit / product_obj.un_ca;
+                        price_udv = my_round( price_unit / (product_obj.un_ca || 1) ,2);
                     }
                 }
 
