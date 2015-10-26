@@ -70,7 +70,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
-            this.$('#partner_code').focus()
             this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
             this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
