@@ -247,9 +247,17 @@
     </t>
 
     <t t-name="Data-Order-Widget">
-
-
           <div class="col-xs-2 fullheight">
+              <div class="row semiheight">
+                  <div class="fullheight centerinside fullwidth">
+                      <div class="centerthis">
+                          <!-- <label for="num_order">Nº order:</label>
+                          <input class=" " type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/> -->
+                          <label for="num_order">Customer Code</label>
+                          <input class="mandatory" type="text" id='partner_code' name="num_order" t-att-value="widget.order_model.get('partner_code')" tabIndex="1"/>
+                      </div>
+                  </div>
+                </div>
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
@@ -260,21 +268,11 @@
                           <label for="customer" id="labelpartner">Customer:</label>
                       </t>
                         <!-- <label for="customer" id="labelpartner">Customer:</label> -->
-                        <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/>
+                        <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="7"/>
                         <!-- <select class="mandatory" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/> -->
                     </div>
                   </div>
               </div>
-              <div class="row semiheight">
-                  <div class="fullheight centerinside fullwidth">
-                      <div class="centerthis">
-                          <!-- <label for="num_order">Nº order:</label>
-                          <input class=" " type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/> -->
-                          <label for="num_order">Customer Code</label>
-                          <input class=" " type="text" id='partner_code' name="num_order" t-att-value="widget.order_model.get('partner_code')" tabIndex="-1"/>
-                      </div>
-                  </div>
-                </div>
           </div>
 
           <div class="col-xs-2 fullheight">
@@ -288,7 +286,7 @@
                         <label for="total">Suppliers:</label>
                       </t>
                       <input type="text" class='total mandatory' id="supplier"
-                          t-att-value="widget.order_model.get('supplier')" tabIndex="-1"/>
+                          t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
                     </div>
                   </div>
               </div>
@@ -307,7 +305,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_order">Date Order:</label>
-                      <input class="mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()"/>
+                      <input class="mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()" tabIndex="3"/>
                     </div>
                   </div>
               </div>
@@ -326,7 +324,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_planned">Date Planned:</label>
-                      <input class="  mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.ts_model.getCurrentDatePlannedStr()"/>
+                      <input class="  mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.ts_model.getCurrentDatePlannedStr()" tabIndex="4"/>
                     </div>
                   </div>
               </div>
@@ -346,7 +344,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_invoice">Date invoice:</label>
-                      <input  class="  mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDatePlannedStr()"/>
+                      <input  class="  mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDatePlannedStr()" tabIndex="5"/>
                     </div>
                   </div>
               </div>
@@ -369,9 +367,9 @@
                 <div class="fullheight centerinside">
                     <div class="centerthis">
                       <label for="coment">Notes:</label>
-                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment"><t t-esc="widget.order_model.get('coment')"/></textarea>
+                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment" tabIndex="6"><t t-esc="widget.order_model.get('coment')"/></textarea>
                       <label for="customer_note">Customer Notes:</label>
-                      <textarea class="semiheight notes" rows="2" cols="22" id='customer_comment' name="customer_comment"><t t-esc="widget.order_model.get('customer_comment')" t-if="widget.order_model.get('customer_comment')"/></textarea>
+                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='customer_comment' name="customer_comment" tabIndex="8"><t t-esc="widget.order_model.get('customer_comment')" t-if="widget.order_model.get('customer_comment')"/></textarea>
                     </div>
                 </div>
           </div>
