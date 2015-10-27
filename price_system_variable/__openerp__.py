@@ -43,7 +43,7 @@
              'pricelist_view.xml',
              'price_data.xml',
              'purchase_view.xml',
-             'table_pricelist_prices_view.xml'],
+             ],
     "demo": [],
     "test": [],
     "installable": True,

@@ -21,3 +21,4 @@
 import product
 import sale
 import stock
+import table_pricelist_prices
