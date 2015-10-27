@@ -593,6 +593,10 @@
                     <td><t t-esc="widget.mark"/></td>
                 </tr>
                 <tr>
+                  <th scope="row">Max Discount</th>
+                    <td><t t-esc="widget.max_discount"/></td>
+                </tr>
+                <!-- <tr>
                     <th scope="row">Class</th>
 
                     <td>
@@ -606,7 +610,7 @@
                         Ultra Fresh
                     </t>
                     </td>
-                </tr>
+                </tr> -->
                 <tr>
                     <th scope="row">Weight Unit</th>
                     <td><t t-esc="widget.unit_weight"/></td>

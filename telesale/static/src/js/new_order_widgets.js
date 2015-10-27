@@ -305,6 +305,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         renderElement: function() {
             var self=this;
+
             this._super();
             this.$el.unbind()
             // this.$el.click(_.bind(this.click_handler, this));
@@ -358,8 +359,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // Creamos nueva linea al tabular la última columna de descuento
             if(this.model.get('product')){
                 var uos = [];
-                product_id = this.ts_model.db.product_name_id[this.model.get('product')]
-                product_obj = this.ts_model.db.product_by_id[product_id]
+                var product_id = this.ts_model.db.product_name_id[this.model.get('product')]
+                var product_obj = this.ts_model.db.product_by_id[product_id]
                 if(product_obj.base_use_sale){
                     uos.push(product_obj.log_base_id[1]);
                 }
@@ -388,6 +389,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-qnote').autocomplete({
                 source:this.ts_model.get('qnotes_names')
             });
+
+
         },
         set_value: function(key) {
             var value = this.$('.col-'+key).val();
@@ -413,7 +416,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self=this;
             var domain = [['id', '=', product_id]]
             var loaded = self.ts_model.fetch('product.product',
-                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'product_tmpl_id','products_substitute_ids'],
+                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'max_discount', 'category_max_discount', 'product_tmpl_id','products_substitute_ids'],
                                             domain
                                             )
                 .then(function(products){
@@ -442,7 +445,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : '');
                                 self.model.set('qty', 0);
                                 self.model.set('discount', result.value.discount || 0);
-                                debugger;
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));
                                 if (!result.value.price_unit || result.value.price_unit == 'warn') {
                                     result.value.price_unit = 0;
@@ -817,7 +819,25 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var disc = this.model.get("discount")
             var subtotal = price * qty * (1 - (disc/ 100.0))
             this.model.set('total',subtotal);
+
             this.renderElement();
+            //Añadir color rojo al descuento en caso de superar el máximo
+            if(this.model.get('product')){
+                debugger;
+                var product_id = this.ts_model.db.product_name_id[this.model.get('product')]
+                var product_obj = this.ts_model.db.product_by_id[product_id]
+                var max_discount = 0.0
+
+                if(product_obj.max_discount){
+                  max_discount = product_obj.max_discount
+                }
+                else{
+                  max_discount = product_obj.category_max_discount || 0.0
+                }
+                if(disc > max_discount){
+                  this.$('.col-discount').addClass('red')
+                }
+            }
             console.log('.col-'+ focus_key)
             this.$('.col-'+ focus_key).focus()
             // this.trigger('order_line_refreshed');
@@ -1201,6 +1221,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.min_price = "";
             this.margin = "";
             this.discount = "";
+            this.max_discount = "";
             this.n_line = "";
             this.class = "";
         },
@@ -1264,6 +1285,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                             self.min_price = my_round(result.min_price,2).toFixed(2);
                             self.mark = result.product_mark;
                             self.class = result.product_class;
+                            self.max_discount = my_round(result.max_discount,2).toFixed(2) + "%";
                             self.unit_weight = my_round(result.weight_unit,2).toFixed(2);
                             self.renderElement();
                         });

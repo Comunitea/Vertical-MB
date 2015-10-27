@@ -688,7 +688,6 @@ function openerp_ts_models(instance, module){
             return new Date().getTime();
         },
         addLine: function() {
-            debugger;
             var line = new module.Orderline({ts_model: this.ts_model, order:this})
             this.get('orderLines').add(line);
             return line
