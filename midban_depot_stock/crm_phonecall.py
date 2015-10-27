@@ -27,23 +27,25 @@ class crm_phonecall(models.Model):
     detail_id = fields.Many2one('route.detail', 'Route detail', readonly=True,
                                 ondelete="cascade")
     result = fields.Selection([('sale_done', 'Sale done'),
+                               ('not_done', 'Not Done'),
                                ('not_responding', 'Not responding'),
                                ('comunicate', 'Comunicate'),
                                ('call_no_order', 'Call without order'),
                                ('call_other_moment', 'Call other moment'),
                                ('call_no_done', 'Call not done')],
                               string="Call result",
-                              default="call_no_done")
+                              default="not_done")
 
     @api.one
     def write(self, vals):
         """
         Modify the state of the call based on the result visit
         """
+        # import ipdb; ipdb.set_trace()
         if vals.get('result', False):
             if vals['result'] in ['sale_done', 'call_no_order']:
                 vals['state'] = 'done'
-            elif vals['result'] in ['comunicate', 'not_responding']:
+            elif vals['result'] in ['comunicate', 'not_responding', 'not_done']:
                 vals['state'] = 'pending'
             elif vals['result'] in ['call_other_day', 'call_other_moment']:
                 vals['state'] = 'open'

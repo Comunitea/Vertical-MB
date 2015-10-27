@@ -367,7 +367,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self=this;
             var domain = [['id', '=', product_id]]
             var loaded = self.ts_model.fetch('product.product',
-                                            ['name','product_class','list_price','cmc','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'product_tmpl_id','products_substitute_ids'],
+                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'product_tmpl_id','products_substitute_ids'],
                                             domain
                                             )
                 .then(function(products){
@@ -402,7 +402,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 }
                                 self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? result.value.price_unit : 0,2 ));
                                 self.model.set('pvp', my_round( (product_obj.product_class == "normal") ? (result.value.price_unit || 0) : (result.value.last_price_fresh || 0), 2));
-                                self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.cmc) / result.value.price_unit) : 0 , 2));
+                                self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.standard_price) / result.value.price_unit) : 0 , 2));
 
                                 // COMENTADO PARA QUE NO SAQUE EL AVISO SIEMPRE
                                 // if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){
@@ -493,6 +493,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         getUomUosPrices: function(product_name, uos_name, custom_price_unit, custom_price_udv){
+            debugger;
             var product_id = this.ts_model.db.product_name_id[product_name];
             var product_obj = this.ts_model.db.get_product_by_id(product_id);
             var uos_id = this.ts_model.db.unit_name_id[uos_name];
@@ -509,8 +510,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if(log_unit == 'unit'){
                         price_unit = price_udv * product_obj.kg_un;
                     }
-                    if(log_unit =order= 'box'){
-                        price_unit = price_udv * product_obj.kg_un * product_obj.un_ca;
+                    if(log_unit == 'box'){
+                        price_unit =  price_udv * product_obj.kg_un * product_obj.un_ca;
                     }
                     price_unit = price_unit
                 }
@@ -547,10 +548,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         price_udv = price_unit;
                     }
                     if(log_unit == 'unit'){
-                        price_udv = price_unit * product_obj.kg_un;
+                        price_udv =  my_round(price_unit / (product_obj.kg_un || 1) , 2);
                     }
                     if(log_unit == 'box'){
-                        price_udv = price_unit * product_obj.kg_un * product_obj.un_ca;
+                        price_udv =  my_round( (price_unit / (product_obj.un_ca || 1) ) / (product_obj.kg_un || 1) , 2);
                     }
                 }
                 else if(uos_id == product_obj.log_unit_id[0]){
@@ -561,7 +562,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         price_udv = price_unit;
                     }
                     if(log_unit == 'box'){
-                        price_udv = price_unit / product_obj.un_ca;
+                        price_udv = my_round( price_unit / (product_obj.un_ca || 1) ,2);
                     }
                 }
 
@@ -1021,7 +1022,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.iva = 0;
             this.total = 0;
             this.pvp_ref = 0;
-            this.sum_cmc = 0;
+            this.sum_cost = 0;
             this.sum_box = 0;
             this.sum_fresh = 0;
             (this.currentOrderLines).each(_.bind( function(line) {
@@ -1029,12 +1030,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 if (product_id){
                     var product_obj = self.ts_model.db.get_product_by_id(product_id)
                     // if (product_obj.product_class == 'normal'){
-                      self.sum_cmc += product_obj.cmc * line.get('qty');
+                      self.sum_cost += product_obj.standard_price * line.get('qty');
                       self.sum_box += line.get('boxes');
                       self.weight += line.get('weight');
                     //   self.discount += line.get('pvp_ref') != 0 ? (line.get('pvp_ref') - line.get('pvp')) * line.get('qty') : 0;
                       self.discount += line.get('qty') * line.get('pvp') * (line.get('discount') / 100)
-                      self.margin += (line.get('pvp') -  product_obj.cmc) * line.get('qty');
+                      var price_disc = line.get('pvp') * (1 - (line.get('discount') / 100))
+                      self.margin += (price_disc -  product_obj.standard_price) * line.get('qty');
                       self.pvp_ref += line.get('pvp_ref') * line.get('qty');
                       self.base += line.get_price_without_tax('total');
                       self.iva += line.get_tax();
@@ -1051,15 +1053,16 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order_model.set('total_weight', my_round(self.weight, 2));
             this.order_model.set('total_discount', my_round(self.discount, 2));
             var discount_per = (0).toFixed(2) + "%";
-            if (self.pvp_ref != 0){
-                var discount_num = (self.discount/self.pvp_ref) * 100 ;
-                if (discount_num < 0)
-                    var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
-                else
-                    var discount_per = my_round( discount_num , 2).toFixed(2) + "%";
-            }
+            // if (self.pvp_ref != 0){
+            //     var discount_num = (self.discount/self.pvp_ref) * 100 ;
+            //     if (discount_num < 0)
+            //         var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
+            //     else
+            //         var discount_per = my_round( discount_num , 2).toFixed(2) + "%";
+            // }
             if (self.base != 0){
-                var discount_num = (self.discount/self.base) * 100 ;
+              // Le volvemos a sumamos el descuento porque la base viene sin el
+                var discount_num = (self.discount/(self.base + self.discount) ) * 100 ;
                 if (discount_num < 0)
                     var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
                 else
@@ -1070,7 +1073,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var margin_per = (0).toFixed(2) + "%";
             var margin_per_num = 0
             if (self.base != 0) {
-                margin_per_num = my_round( ((self.base - self.sum_cmc) / self.base) * 100 , 2)
+                margin_per_num = my_round( ((self.base - self.sum_cost) / self.base) * 100 , 2)
                 margin_per = margin_per_num.toFixed(2) + "%"
             }
             this.order_model.set('total_margin_per', margin_per);
