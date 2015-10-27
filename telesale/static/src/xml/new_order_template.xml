@@ -570,8 +570,11 @@
             <table class="product-info-table">
                 <tr>
                     <th scope="row">Stock Product</th>
-                    <td><t t-esc="widget.stock"/></td>
-
+                    <td>
+                      <!-- <span t-if="widget.stock <= 0" class="red" t-esc="widget.stock"/>
+                      <span t-if="widget.stock > 0" t-esc="widget.stock"/> -->
+                      <span id="stock-info"><t t-esc="widget.stock"/></span>
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row">Last Date</th>
@@ -596,17 +599,11 @@
                     <t t-if="widget.class == 'fresh'">
                         Fresh
                     </t>
-                    <t t-if="widget.class == 'dry'">
-                        Dry
+                    <t t-if="widget.class == 'normal'">
+                        Normal
                     </t>
-                    <t t-if="widget.class == 'frozen'">
-                        Frozen
-                    </t>
-                    <t t-if="widget.class == 'chilled'">
-                        Chilled
-                    </t>
-                    <t t-if="widget.class == 'no_class'">
-                        No Class
+                    <t t-if="widget.class == 'ultrafresh'">
+                        Ultra Fresh
                     </t>
                     </td>
                 </tr>
@@ -614,10 +611,10 @@
                     <th scope="row">Weight Unit</th>
                     <td><t t-esc="widget.unit_weight"/></td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th scope="row">Minimum Price</th>
                     <td><t t-esc="widget.min_price"/></td>
-                </tr>
+                </tr> -->
                 <!-- <tr>
                     <th scope="row">Product Margin</th>
                     <td><t t-esc="widget.margin"/></td>

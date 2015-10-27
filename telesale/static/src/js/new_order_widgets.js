@@ -132,9 +132,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if (!partner_id){
                         var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
                         alert(alert_msg);
-                        this.order_model.set('partner', "");
-                        this.order_model.set('partner_code', "");
-                        this.refresh();
+                        self.order_model.set('partner', "");
+                        self.order_model.set('partner_code', "");
+                        self.refresh();
                     }
                     else{
                         partner_obj = self.ts_model.db.get_partner_by_id(partner_id);
@@ -194,7 +194,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.model.bind('change_line', this.refresh, this); //#TODO entra demasiadas veces por la parte esta
         },
         click_handler: function(key) {
-            // debugger;
             var selector = '.col-'+key
             this.order.selectLine(this.model);
             this.$(selector).unbind('focus')
@@ -206,9 +205,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         control_arrow_keys: function(){
           var self=this;
             this.$('.col-product_uos_qty').keydown(function(event){
-              // debugger;
               var keyCode = event.keyCode || event.which;
-              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (30)
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
                 var selected_line = self.order.selected_orderline;
                 if (selected_line){
                     var n_line = selected_line.get('n_line');
@@ -222,9 +220,56 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
               }
             });
+            this.$('.col-price_udv').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-price_udv').focus();
+                    }
+                }
+              }
+            });
+            this.$('.col-pvp').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-pvp').focus();
+                    }
+                }
+              }
+            });
+            this.$('.col-discount').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-discount').focus();
+                    }
+                }
+              }
+            });
             // my_shift = false
             // this.$('.col-discount').keydown(function(event){
-            // debugger
             //  var keyCode = event.keyCode || event.which;
             //   if (event.shiftKey){
             //       my_shift = true
@@ -235,37 +280,38 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             //    }
             // });
             // my_shift = false
-            this.$('.col-discount').keydown(function(event){
-                // debugger
-                 var keyCode = event.keyCode || event.which;
-                 console.log("KKKKK")
-                 console.log(keyCode)
-                 if (keyCode == 13){ //INTRO TAB
-                    //  Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
-                     var selected_line = self.order.selected_orderline;
-                     if (selected_line){
-                         var n_line = selected_line.get('n_line');
-                         if (n_line == self.order_widget.orderlinewidgets.length){
-                             $('.add-line-button').click()
-                         }
-                         else{
-                             var next_line = self.order_widget.orderlinewidgets[n_line]
-                             if(next_line){
-                            //    self.order.selectLine(next_line.model);
-                               next_line.$el.find('.col-code').focus();
-                             }
-                         }
-                     }
-                 }
-            });
+            // this.$('.col-discount').keydown(function(event){
+            //      var keyCode = event.keyCode || event.which;
+            //      console.log("KKKKK")
+            //      console.log(keyCode)
+            //      if (keyCode == 13){ //INTRO TAB
+            //         //  Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
+            //          var selected_line = self.order.selected_orderline;
+            //          if (selected_line){
+            //              var n_line = selected_line.get('n_line');
+            //              if (n_line == self.order_widget.orderlinewidgets.length){
+            //                  $('.add-line-button').click()
+            //              }
+            //              else{
+            //                  var next_line = self.order_widget.orderlinewidgets[n_line]
+            //                  if(next_line){
+            //                 //    self.order.selectLine(next_line.model);
+            //                    next_line.$el.find('.col-code').focus();
+            //                  }
+            //              }
+            //          }
+            //      }
+            // });
         },
         renderElement: function() {
             var self=this;
             this._super();
             this.$el.unbind()
             // this.$el.click(_.bind(this.click_handler, this));
+            // debugger;
             if(this.model.is_selected()){
-                this.$el.addClass('selected');
+                this.$('.col-nline').addClass('selected');
+                // this.$el.addClass('selected');
             }
             // Si el campo se rellena con autocomplete se debe usar blur
             this.$('.col-code').blur(_.bind(this.set_value, this, 'code'));
@@ -493,7 +539,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         getUomUosPrices: function(product_name, uos_name, custom_price_unit, custom_price_udv){
-            debugger;
+            // debugger;
             var product_id = this.ts_model.db.product_name_id[product_name];
             var product_obj = this.ts_model.db.get_product_by_id(product_id);
             var uos_id = this.ts_model.db.unit_name_id[uos_name];
@@ -1165,30 +1211,31 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
+            if(this.stock <= 0){
+              this.$('#stock-info').addClass('red')
+            }
         },
         calcProductInfo: function () {
-            // debugger;
             var self = this;
             this.selected_line = this.ts_model.get('selectedOrder').get('selected_line');
             if (!this.selected_line.get("product")){
                 this.set_default_values();
                 this.renderElement();
             }
-            this.selected_line.unbind('change:discount');
+            // this.selected_line.unbind('change:discount');
             this.selected_line.unbind('change:product');
-            this.selected_line.unbind('change:margin');
-            this.selected_line.bind('change:discount', this.change_discount, this);
+            // this.selected_line.unbind('change:margin');
+            // this.selected_line.bind('change:discount', this.change_discount, this);
             this.selected_line.bind('change:product', this.change_product, this);
-            this.selected_line.bind('change:margin', this.change_margin, this);
+            // this.selected_line.bind('change:margin', this.change_margin, this);
             this.selected_line.trigger('change:product');
-            if (this.selected_line){
-                this.change_discount();
-                this.change_margin();
-            }
+            // if (this.selected_line){
+            //     this.change_discount();
+            //     this.change_margin();
+            // }
 
         },
         change_product: function(){
-            // debugger;
             var self = this;
             var line_product = this.selected_line.get("product")
             self.n_line = self.selected_line.get('n_line') + " / " + self.ts_model.get('selectedOrder').get('orderLines').length;
@@ -1220,26 +1267,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             }
         },
-        change_discount: function(){
-            var discount = this.selected_line.get('discount');
-            discount = discount * 100
-            var discount_str = ""
-            //check type?
-            if (discount < 0){
-                discount = discount * (-1); //remove negative sign
-                discount_str = "+" + discount.toFixed(2) + "%";
-            }else{
-                discount_str = discount.toFixed(2) + "%";
-            }
-            this.discount = discount_str
-            this.renderElement();
-        },
-        change_margin: function(){
-            var margin = this.selected_line.get('margin');
-            margin = margin * 100
-            this.margin = margin.toFixed(2) + "%";
-            this.renderElement();
-        },
+        // change_discount: function(){
+        //     var discount = this.selected_line.get('discount');
+        //     discount = discount * 100
+        //     var discount_str = ""
+        //     //check type?
+        //     if (discount < 0){
+        //         discount = discount * (-1); //remove negative sign
+        //         discount_str = "+" + discount.toFixed(2) + "%";
+        //     }else{
+        //         discount_str = discount.toFixed(2) + "%";
+        //     }
+        //     this.discount = discount_str
+        //     this.renderElement();
+        // },
+        // change_margin: function(){
+        //     var margin = this.selected_line.get('margin');
+        //     margin = margin * 100
+        //     this.margin = margin.toFixed(2) + "%";
+        //     this.renderElement();
+        // },
     });
 
     module.SustituteLineWidget = module.TsBaseWidget.extend({
