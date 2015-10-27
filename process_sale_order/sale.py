@@ -139,11 +139,12 @@ class sale_order_line(models.Model):
             # Change Uom Qty
             uos_id = self.product_uos.id
             uos_qty = self.product_uos_qty
-            #conv = product.get_unit_conversions(uos_qty, uos_id)
+            # conv = product.get_unit_conversions(uos_qty, uos_id)
             log_unit = product.get_uos_logistic_unit(uos_id)
-            #self.product_uom_qty = conv[log_unit]
+            # self.product_uom_qty = conv[log_unit]
             self.product_uom_qty = product.uos_qty_to_uom_qty(uos_qty, uos_id)
-            if log_unit == 'box' and product.box_discount:
+            # Unit es la caja logistica para apolo (llamada base)
+            if log_unit == 'unit' and product.box_discount:
                 self.discount = product.box_discount
             else:
                 self.discount = 0
