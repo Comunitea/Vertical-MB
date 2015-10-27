@@ -20,8 +20,8 @@
 ##############################################################################
 from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
-# from openerp.exceptions import except_orm
 from openerp.tools.translate import _
+from openerp.tools.float_utils import float_round, float_compare
 
 
 class purchase_order_line(models.Model):
@@ -118,15 +118,23 @@ class purchase_order_line(models.Model):
         if product:
             if self.do_onchange:
                 supplier_id = self.order_id.partner_id.id
-                qty = self.product_uoc_qty
-                uoc_id = self.product_uoc.id
 
-                conv = product.get_purchase_unit_conversions(qty, uoc_id,
-                                                             supplier_id)
-                # base, unit, or box
-                log_unit, log_unit_id = product.\
-                    get_uom_po_logistic_unit(supplier_id)
-                self.product_qty = conv[log_unit]
+                qty = self.product_uoc_qty
+                qty = float_round(self.product_uoc_qty,
+                                  precision_rounding=self.product_uoc.rounding,
+                                  rounding_method='UP')
+                self.product_uoc_qty = qty
+                uoc_id = self.product_uoc.id
+                self.product_qty = product.uos_qty_to_uom_qty(qty, uoc_id,
+                                                     supplier_id)
+                self.product_uoc_qty = qty
+                # print self.product_qty
+                # conv = product.get_purchase_unit_conversions(qty, uoc_id,
+                #                                              supplier_id)
+                # # base, unit, or box
+                # log_unit, log_unit_id = product.\
+                #     get_uom_po_logistic_unit(supplier_id)
+                # self.product_qty = conv[log_unit]
 
             else:
                 self.do_onchange = True
@@ -142,12 +150,17 @@ class purchase_order_line(models.Model):
             # Change Uom Qty
             uoc_id = self.product_uoc.id
             uoc_qty = self.product_uoc_qty
-            conv = product.get_purchase_unit_conversions(uoc_qty, uoc_id,
-                                                         supplier_id)
-            log_unit, log_unit_id = product.\
-                get_uom_po_logistic_unit(supplier_id)
-            self.product_qty = conv[log_unit]
-
+            uoc_qty = float_round(self.product_uoc_qty,
+                                  precision_rounding=self.product_uoc.rounding,
+                                  rounding_method='UP')
+            self.product_uoc_qty = uoc_qty
+            # conv = product.get_purchase_unit_conversions(uoc_qty, uoc_id,
+            #                                              supplier_id)
+            # log_unit, log_unit_id = product.\
+            #     get_uom_po_logistic_unit(supplier_id)
+            # self.product_qty = conv[log_unit]
+            self.product_qty = product.uos_qty_to_uom_qty(uoc_qty, uoc_id,
+                                                     supplier_id)
             # Calculate prices
             uom_pu, uoc_pu = product.\
                 get_uom_uoc_prices_purchases(uoc_id, supplier_id,
@@ -176,11 +189,13 @@ class purchase_order_line(models.Model):
                 vals['product_uoc_qty'] or po_line.product_uoc_qty
             uoc_id = vals.get('product_uoc', False) and \
                 vals['product_uoc'] or po_line.product_uoc.id
-            conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
-                                                      supplier_id)
-            # base, unit, box
-            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)
-            vals['product_qty'] = conv[log_unit]
+            # conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
+            #                                           supplier_id)
+            # # base, unit, box
+            # log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)
+            # vals['product_qty'] = conv[log_unit]
+            vals['product_qty'] = prod.uos_qty_to_uom_qty(uoc_qty, uoc_id,
+                                                     supplier_id)
             vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
             res = super(purchase_order_line, po_line).write(vals)
         return res
@@ -201,11 +216,13 @@ class purchase_order_line(models.Model):
             uoc_id = vals.get('product_uoc', False) and \
                 vals['product_uoc'] or False
 
-            conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
-                                                      supplier_id)
-            # base, unit, or box
-            log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)
-            vals['product_qty'] = conv[log_unit]
+            # conv = prod.get_purchase_unit_conversions(uoc_qty, uoc_id,
+            #                                           supplier_id)
+            # # base, unit, or box
+            # log_unit, log_unit_id = prod.get_uom_po_logistic_unit(supplier_id)
+            # vals['product_qty'] = conv[log_unit]
+            vals['product_qty'] = prod.uos_qty_to_uom_qty(uoc_qty, uoc_id,
+                                                     supplier_id)
             vals['product_uom'] = prod.uom_id.id  # Deafult stock unit?
         res = super(purchase_order_line, self).create(vals)
 

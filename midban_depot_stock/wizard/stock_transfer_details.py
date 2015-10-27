@@ -66,9 +66,12 @@ class stock_transfer_details(models.TransientModel):
         res = super(stock_transfer_details, self).do_detailed_transfer()
 
         # Calculate the operations for the next chained picking
-        related_pick = self.picking_id.move_lines[0].move_dest_id.picking_id
-        related_pick.do_prepare_partial()
-        related_pick.write({'midban_operations': True})
+        related_pick = self.picking_id.move_lines and\
+                       self.picking_id.move_lines[0].move_dest_id and\
+                       self.picking_id.move_lines[0].move_dest_id.picking_id
+        if related_pick:
+            related_pick.do_prepare_partial()
+            related_pick.write({'midban_operations': True})
         if self.picking_id.picking_type_code == 'incoming':
             return {
                 'name': _('Print Tags'),
@@ -392,6 +395,7 @@ class stock_transfer_details_items(models.TransientModel):
             self.quantity = self.uos_qty
 
         if not variable:
+            print "Changing"
             picking_id = self._context.get('picking_id', [])
             picking = self.env['stock.picking'].browse(picking_id)
             supplier_id = 0
