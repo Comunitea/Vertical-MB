@@ -41,7 +41,7 @@ class sale_order_line(models.Model):
                 specific_price = self.env['sale.specific.price'].search(
                     [('product_id', '=', line.product_id.id),
                      ('customer_id', '=', line.order_id.partner_id.id),
-                     ('discount', '<=', line.discount),
+                     ('discount', '>=', line.discount),
                      ('state', '=', 'approved'),
                      ('pricelist_id', '=', line.order_id.pricelist_id.id),
                      ('start_date', '<=', date.today()),
@@ -62,7 +62,7 @@ than the maximun discount of product. The sale need to be approved""")}
             [('product_id', '=', line.product_id.id),
              ('customer_id', '=', line.order_id.partner_id.id),
              ('pricelist_id', '=', line.order_id.pricelist_id.id),
-             ('discount', '<=', line.discount),
+             ('discount', '>=', line.discount),
              ('state', '=', 'approved'), ('start_date', '<=', date.today()),
              ('end_date', '>=', date.today())])
         if max_discount and line.discount > max_discount and not \
@@ -91,7 +91,7 @@ than the maximun discount of product. The sale need to be approved""")}
                 _specific_price = self.env['sale.specific.price'].search(
                     [('product_id', '=', line.product_id.id),
                      ('customer_id', '=', line.order_id.partner_id.id),
-                     ('discount', '<=', line.discount),
+                     ('discount', '>=', line.discount),
                      ('pricelist_id', '=', line.order_id.pricelist_id.id),
                      ('state', '=', 'approved'),
                      ('start_date', '<=', date.today()),
