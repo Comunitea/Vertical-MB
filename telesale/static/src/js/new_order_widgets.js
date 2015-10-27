@@ -305,11 +305,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         renderElement: function() {
             var self=this;
-
             this._super();
             this.$el.unbind()
             // this.$el.click(_.bind(this.click_handler, this));
-            // debugger;
             if(this.model.is_selected()){
                 this.$('.col-nline').addClass('selected');
                 // this.$el.addClass('selected');
@@ -794,21 +792,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.refresh('code');
 
                     }
-                    // Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
-                    // var selected_line = self.order.selected_orderline;
-                    // if (selected_line){
-                    //     var n_line = selected_line.get('n_line');
-                    //     if (n_line == self.order_widget.orderlinewidgets.length){
-                    //         $('.add-line-button').click()
-                    //     }
-                    //     else{
-                    //         var next_line = self.order_widget.orderlinewidgets[n_line]
-                    //         if(next_line){
-                    //           self.order.selectLine(next_line.model);
-                    //           next_line.$el.find('.col-code').focus();
-                    //         }
-                    //     }
-                    // }
                     break;
             }
         },
@@ -823,7 +806,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.renderElement();
             //Añadir color rojo al descuento en caso de superar el máximo
             if(this.model.get('product')){
-                debugger;
                 var product_id = this.ts_model.db.product_name_id[this.model.get('product')]
                 var product_obj = this.ts_model.db.product_by_id[product_id]
                 var max_discount = 0.0
@@ -835,7 +817,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                   max_discount = product_obj.category_max_discount || 0.0
                 }
                 if(disc > max_discount){
-                  this.$('.col-discount').addClass('red')
+                  this.$('.col-discount').addClass('warning-red')
                 }
             }
             console.log('.col-'+ focus_key)
@@ -1240,7 +1222,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
             if(this.stock <= 0){
-              this.$('#stock-info').addClass('red')
+              this.$('#stock-info').addClass('warning-red')
             }
         },
         calcProductInfo: function () {
