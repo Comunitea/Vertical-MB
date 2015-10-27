@@ -35,13 +35,14 @@
         'views/telesale.xml',
         'views/templates.xml',
     ],
-    'depends': ['web', 'sale_stock', 'sale', 'sale_stock',
+    'depends': ['web', 'sale', 'sale_stock',
                 'product_customer_restrict', 'midban_product',
                 'crm', 'nan_partner_risk',
                 'sale_product_substitute',
                 'midban_depot_stock',
                 'midban_product_reserve',
                 'process_sale_order',
+                'sale_max_discount',
                 'indirect_sale',  # because of supplier_ids field
                 'frigo_edi'],  # because of indirect_customer field
     'qweb': ['static/src/xml/*.xml'],

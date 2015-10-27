@@ -61,6 +61,7 @@
                             <field name="location_id"/>
                             <field name="location_dest_id" />
                             <field name="picking_id" />
+                            <field name="to_process" />
                             <!-- <field name="owner_id" groups="stock.group_tracking_owner"/> -->
                             <!-- <field name="result_package_id" groups="stock.group_tracking_lot" context="{'location_id': location_dest_id}"/> -->
                         </tree>

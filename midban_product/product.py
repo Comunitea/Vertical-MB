@@ -617,17 +617,23 @@ class product_product(models.Model):
     @api.multi
     def uom_qty_to_uos_qty(self, uom_qty, uos_id, supplier_id=0):
         round = self.env['product.uom'].browse(uos_id).rounding
+        if uos_id == self.uom_id.id:
+            return float_round(uom_qty,
+                           precision_rounding=round
+                           )
         return float_round(uom_qty * self._get_factor(uos_id, supplier_id),
-                           precision_rounding=round,
-                           rounding_method='UP'
+                           precision_rounding=round
                            )
 
     @api.multi
     def uos_qty_to_uom_qty(self, uos_qty, uos_id, supplier_id=0):
         round = self.uom_id.rounding
+        if uos_id == self.uom_id.id:
+            return float_round(uos_qty,
+                           precision_rounding=round
+                           )
         return float_round(uos_qty / self._get_factor(uos_id, supplier_id),
-                           precision_rounding=round,
-                           rounding_method='UP'
+                           precision_rounding=round
                            )
 
 
@@ -786,6 +792,8 @@ class product_product(models.Model):
     def _get_unit_ratios(self, unit, supplier_id):
         uom_id = self.uom_id.id
         res = 1
+        if unit == uom_id:
+            return res
         if supplier_id == 0 :
             supp = self
             kg_un = supp.kg_un or 1.0

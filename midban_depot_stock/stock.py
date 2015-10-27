@@ -628,7 +628,7 @@ class stock_package(models.Model):
                                       string="Packed qty",
                                       readonly=True,
                                       digits_compute=dp.get_precision
-                                      ('Product Price'),),
+                                      ('Product Unit of Measure'),),
         'num_mantles': fields.function(_get_pack_mantles,
                                        type="integer",
                                        string="Nº mantles",
