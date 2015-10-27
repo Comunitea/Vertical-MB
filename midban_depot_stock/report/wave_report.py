@@ -51,7 +51,9 @@ class sale_report(osv.osv):
             item_res = []
             for pick in item.wave_id.picking_ids:
                 for op in pick.pack_operation_ids:
-                    if op.location_id == item.location_id:
+                    # Para revisar por OMAR
+                    if op.location_id == item.location_id and \
+                            (item.customer_id.id == 0  or  item.customer_id.id == op.picking_id.partner_id.id):
                         if op.package_id:
                             if op.package_id.id == item.pack_id.id:
                                 item_res.append(op.id)
