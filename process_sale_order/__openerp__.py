@@ -44,7 +44,9 @@
         'product_view.xml',
         'sale_view.xml',
         'security/ir.model.access.csv',
-        'stock_view.xml'
+        'stock_view.xml',
+        'table_pricelist_prices_view.xml',
+        'cron_table_data.xml,
     ],
     "demo": [],
     "test": [],

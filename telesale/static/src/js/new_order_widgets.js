@@ -485,9 +485,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.model.set('qty', my_round(conv[log_unit], 2));
             var product_id = this.ts_model.db.product_name_id[prod_name];
             var product_obj = this.ts_model.db.get_product_by_id(product_id);
-            var onchange_discount = this.model.get('discount')
-            if (!onchange_discount){
-                if(uos_name == product_obj.log_box_id[1]){
+            var setted_discount = this.model.get('discount')
+            if (!setted_discount){
+                if(uos_name == product_obj.log_unit_id[1]){  // Descuento caja se setea en nuetra unidad logistica, traducida como base
                     this.model.set('discount', my_round(product_obj.box_discount, 2))
                 }
                 else{
@@ -713,7 +713,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if(uos_id == product_obj.log_base_id[0]){
                         boxes = (value / product_obj.kg_un) / product_obj.un_ca
                     }
-                    else if(uos_id == product_obj.log_unit_id[0]){
+                    else if(uos_id == product_obj.log_unit_id[1]){
                         boxes = value / product_obj.un_ca
                     }
                     else if(uos_id == product_obj.log_box_id[0]){
@@ -734,9 +734,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     this.model.set('product_uos', value);
                     var product_id = this.ts_model.db.product_name_id[prod_name];
                     var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    var onchange_discount = this.model.get('discount')
-                    if (!onchange_discount){
-                        if(uos_name == product_obj.log_box_id[1]){
+                    var setted_discount = this.model.get('discount')
+                    if (!setted_discount){
+                        if(uos_name == product_obj.log_unit_id[1]){
                             this.model.set('discount', my_round(product_obj.box_discount, 2))
                         }
                         else{
