@@ -816,8 +816,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 else{
                   max_discount = product_obj.category_max_discount || 0.0
                 }
-                if(disc > max_discount){
-                  this.$('.col-discount').addClass('warning-red')
+                if (max_discount){
+                    if(disc > max_discount){
+                      this.$('.col-discount').addClass('warning-red')
+                    }
                 }
             }
             console.log('.col-'+ focus_key)
