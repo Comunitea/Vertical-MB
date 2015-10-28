@@ -1430,7 +1430,7 @@ class stock_location(models.Model):
                                            ' location'),
         'multipack_location': fields.boolean(
             'Is a multipack location?',
-            hepl='location used to locate multipacks'),
+            help='location used to locate multipacks'),
         'special_location': fields.boolean(
             'Is a special location?',
             help='location used when other locations are full'),
