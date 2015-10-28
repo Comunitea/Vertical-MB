@@ -282,12 +282,15 @@
                     <div class="centerthis">
                       <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
                         <label class="red" for="total">Suppliers:</label>
+                        <input type="text" class='total mandatory' id="supplier"
+                            t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
                       </t>
                       <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
                         <label for="total">Suppliers:</label>
+                        <input type="text" class='total' id="supplier"
+                            value="" readonly="True" tabIndex="-1"/>
+                            <!-- t-att-value="widget.order_model.get('supplier')" readonly="True" tabIndex="-1"/> -->
                       </t>
-                      <input type="text" class='total mandatory' id="supplier"
-                          t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
                     </div>
                   </div>
               </div>

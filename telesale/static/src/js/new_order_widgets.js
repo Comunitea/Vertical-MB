@@ -86,6 +86,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#partner').autocomplete({
                 source: this.ts_model.get('customer_names'),
             });
+            this.get_supplier_names()
             this.$('#supplier').autocomplete({
                 source: this.ts_model.get('supplier_names'),
             });
@@ -111,7 +112,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         get_supplier_names: function(partner_obj) {
             self = this
-            if (partner_obj.supplier_ids) {
+            var partner_name = this.ts_model.get('selectedOrder').get('partner');
+            var partner_id = this.ts_model.db.partner_name_id[partner_name];
+            var partner_obj = this.ts_model.db.get_partner_by_id(partner_id)
+            if (partner_obj && partner_obj.supplier_ids) {
               var supplier_names = [];
                 for (var i = 0, len = partner_obj.supplier_ids.length; i < len; i++){
                 var key = partner_obj.supplier_ids[i]
