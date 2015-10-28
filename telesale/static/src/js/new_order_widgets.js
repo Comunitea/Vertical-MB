@@ -414,7 +414,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self=this;
             var domain = [['id', '=', product_id]]
             var loaded = self.ts_model.fetch('product.product',
-                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'max_discount', 'category_max_discount', 'product_tmpl_id','products_substitute_ids'],
+                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'log_base_discount', 'log_unit_discount','log_box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'max_discount', 'category_max_discount', 'product_tmpl_id','products_substitute_ids'],
                                             domain
                                             )
                 .then(function(products){
@@ -442,7 +442,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('unit', self.model.ts_model.db.unit_by_id[result.value.product_uom].name);
                                 self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : '');
                                 self.model.set('qty', 0);
-                                self.model.set('discount', result.value.discount || 0);
+                                self.model.set('specific_discount', result.value.discount || 0);
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));
                                 if (!result.value.price_unit || result.value.price_unit == 'warn') {
                                     result.value.price_unit = 0;
@@ -458,7 +458,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 //     self.model.set('qty', new_qty);
                                 //     self.refresh();
                                 // }
-
                                 self.inicialize_unit_values()
                                 var subtotal = self.model.get('pvp') * self.model.get('qty') * (1 - self.model.get('discount') / 100.0)
                                 self.model.set('total', my_round(subtotal || 0,2));
@@ -472,6 +471,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                             alert(_t("NOT WORKING"));
                         })
         },
+        set_discounts: function(){
+            var self=this
+            var prod_name = this.model.get('product')
+            var uos_name = this.model.get('product_uos')
+            var product_id = this.ts_model.db.product_name_id[prod_name];
+            var product_obj = this.ts_model.db.get_product_by_id(product_id);
+            var setted_discount = this.model.get('specific_discount')
+            if (!setted_discount){
+                this.model.set('specific_discount', my_round(0.00, 2))
+                if(uos_name == product_obj.log_base_id[1]){
+                    this.model.set('discount', my_round(product_obj.log_base_discount, 2))
+                }
+                else if(uos_name == product_obj.log_unit_id[1]){
+                    this.model.set('discount', my_round(product_obj.log_unit_discount, 2))
+                }
+                else if(uos_name == product_obj.log_box_id[1]){
+                    this.model.set('discount', my_round(product_obj.log_box_discount, 2))
+                }
+            }
+        },
         inicialize_unit_values: function(){
             var prod_name = this.model.get('product')
             var uos_name = this.model.get('product_uos')
@@ -481,17 +500,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
             log_unit = this.getUomLogisticUnit(prod_name)
             this.model.set('qty', my_round(conv[log_unit], 2));
-            var product_id = this.ts_model.db.product_name_id[prod_name];
-            var product_obj = this.ts_model.db.get_product_by_id(product_id);
-            var setted_discount = this.model.get('discount')
-            if (!setted_discount){
-                if(uos_name == product_obj.log_unit_id[1]){  // Descuento caja se setea en nuetra unidad logistica, traducida como base
-                    this.model.set('discount', my_round(product_obj.box_discount, 2))
-                }
-                else{
-                    this.model.set('discount', my_round(0.00, 2))
-                }
-            }
+            // SET DISCOUNTS
+            this.set_discounts()
             uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
             this.model.set('price_udv', my_round(uos_pu, 2))
         },
@@ -543,7 +553,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         getUomUosPrices: function(product_name, uos_name, custom_price_unit, custom_price_udv){
-            // debugger;
             var product_id = this.ts_model.db.product_name_id[product_name];
             var product_obj = this.ts_model.db.get_product_by_id(product_id);
             var uos_id = this.ts_model.db.unit_name_id[uos_name];
@@ -630,7 +639,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 return price_udv;
             }
         },
-
         perform_onchange: function(key) {
             var self=this;
             var value = this.$('.col-'+key).val();
@@ -653,7 +661,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 case "product":
                     // comprobar que clave está en el array
                     var self = this;
-                    product_id = this.ts_model.db.product_name_id[value];
+                    var product_id = this.ts_model.db.product_name_id[value];
                     if (!product_id){
                         alert(_t("Product name '" + value + "' does not exist"));
                         this.model.set('code', "");
@@ -730,17 +738,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     log_unit = this.getUomLogisticUnit(prod_name)
                     this.model.set('qty', my_round(conv[log_unit], 2));
                     this.model.set('product_uos', value);
-                    var product_id = this.ts_model.db.product_name_id[prod_name];
-                    var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    var setted_discount = this.model.get('discount')
-                    if (!setted_discount){
-                        if(uos_name == product_obj.log_unit_id[1]){
-                            this.model.set('discount', my_round(product_obj.box_discount, 2))
-                        }
-                        else{
-                            this.model.set('discount', my_round(0.00, 2))
-                        }
-                    }
+                    // SET DISCOUNTS
+                    this.set_discounts()
                     uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
                     this.model.set('price_udv', my_round(uos_pu, 2))
                     this.refresh('price_udv')
