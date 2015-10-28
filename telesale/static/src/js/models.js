@@ -140,7 +140,7 @@ function openerp_ts_models(instance, module){
                     return self.fetch(
                         'product.product',
                         ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id', 'max_discount', 'category_max_discount'],
-                        [['sale_ok','=',true], ['state2', '=', 'registered']]
+                        [['sale_ok','=',true]]
                     );
                 }).then(function(products){
                     self.db.add_products(products);
