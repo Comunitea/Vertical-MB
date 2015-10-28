@@ -141,6 +141,7 @@ than the maximun discount of product. The sale need to be approved""")}
                                     flag=flag, context=context)
         if not product or not partner_id:
             return res
+
         specific_price = self.pool['sale.specific.price'].search(
             cr, uid,
             [('product_id', '=', product),

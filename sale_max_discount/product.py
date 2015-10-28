@@ -27,7 +27,7 @@ class product_template(models.Model):
 
     max_discount = fields.Float('Max discount', help='Maximum discount for sales')
     last_edit = fields.Datetime('Last edit', help='Last edition of max discount')
-    category_max_discount = fields.Float('Category max discount', related='categ_id.max_discount', readonly="1")
+    category_max_discount = fields.Float(string='Category max discount', related='categ_id.max_discount', readonly="1")
 
     @api.model
     def create(self, vals):
