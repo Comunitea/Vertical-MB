@@ -1083,17 +1083,34 @@ class stock_warehouse(models.Model):
 class stock_location(models.Model):
     _inherit = 'stock.location'
 
+    def _get_max_per_filled(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+        t_config = self.pool.get('ir.config_parameter')
+        param_value = t_config.get_param(cr, uid, 'max.per.filled',
+                                         default='0')
+        return float(param_value)
+
     def _get_location_volume(self, cr, uid, ids, name, args, context=None):
         if context is None:
             context = {}
         res = {}
         for loc in self.browse(cr, uid, ids, context=context):
+            res[loc.id] = {'volume': 0.0, 'real_volume': 0.0}
+            max_per = loc.max_per_filled
+            max_per = max_per if max_per <= 100.0 and max_per > 0.0 else 100.0
             if loc.volume_by_parent:
                 par_loc = loc.location_id
-                res[loc.id] = (par_loc.width * par_loc.height *
-                               par_loc.length) / len(par_loc.child_ids)
+                res[loc.id]['real_volume'] = \
+                    (par_loc.width * par_loc.height * par_loc.length)\
+                    / len(par_loc.child_ids)
+                res[loc.id]['volume'] = res[loc.id]['real_volume']
+                res[loc.id]['volume'] = res[loc.id]['volume'] * \
+                    (max_per / 100.0)
                 continue
-            res[loc.id] = loc.width * loc.height * loc.length
+            res[loc.id]['real_volume'] = loc.width * loc.height * loc.length
+            res[loc.id]['volume'] = res[loc.id]['real_volume']
+            res[loc.id]['volume'] = res[loc.id]['volume'] * (max_per / 100.0)
         return res
 
     def _get_quants_volume(self, cr, uid, quant_ids, context=None):
@@ -1417,9 +1434,20 @@ class stock_location(models.Model):
         'special_location': fields.boolean(
             'Is a special location?',
             help='location used when other locations are full'),
+        'max_per_filled': fields.float('Max percentage filled',
+                                       digits_compute=dp.
+                                       get_precision('Product Price'),
+                                       help="Default value from general \
+                                       settings. Affects over location volume \
+                                       that returns the specific percentage \
+                                       the real"),
         'volume': fields.function(
             _get_location_volume, readonly=True, string='Volume', type="float",
-            digits_compute=dp.get_precision('Product Volume')),
+            digits_compute=dp.get_precision('Product Volume'), multi='vol2'),
+        'real_volume': fields.function(
+            _get_location_volume, readonly=True, string='Real Volume',
+            type="float",
+            digits_compute=dp.get_precision('Product Volume'), multi='vol2'),
         'available_volume': fields.function(
             _get_available_volume, readonly=True, type="float",
             string="Available volume",
@@ -1454,7 +1482,9 @@ class stock_location(models.Model):
                                  'Location Zone')}
 
     _defaults = {
-        'sequence': 0}
+        'sequence': 0,
+        'max_per_filled': _get_max_per_filled,
+    }
 
     def get_camera(self, cr, uid, ids, context=None):
         """
@@ -2016,6 +2046,11 @@ class stock_config_settings(models.TransientModel):
     print_report = fields2.Boolean('Print report task when get a task',
                                    help='If checked, when you get a \
         reposition or picking task the report will be printed')
+    max_per_filled = fields2.Float('Max. Percentage Filled',
+                                   help='In percentage if zero not counted,\
+                                   It is a limit that \
+                                   considers an ubicartion as filled when \
+                                   it reaches the specific percentatage.')
 
     @api.multi
     def get_default_check_route_zip(self, fields):
@@ -2104,6 +2139,8 @@ class stock_config_settings(models.TransientModel):
 
     @api.multi
     def set_default_pick_by_volume(self):
+        import ipdb; ipdb.set_trace()
+
         domain = [('key', '=', 'pick.by.volume')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = 'True' if self.pick_by_volume else 'False'
@@ -2120,3 +2157,16 @@ class stock_config_settings(models.TransientModel):
         domain = [('key', '=', 'print.report')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         param_obj.value = 'True' if self.print_report else 'False'
+
+    @api.multi
+    def get_default_max_per_filled(self, fields):
+        domain = [('key', '=', 'max.per.filled')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        value = float(param_obj.value)
+        return {'max_per_filled': value}
+
+    @api.multi
+    def set_max_per_filled(self):
+        domain = [('key', '=', 'max.per.filled')]
+        param_obj = self.env['ir.config_parameter'].search(domain)
+        param_obj.value = str(self.max_per_filled)

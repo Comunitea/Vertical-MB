@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-26 17:19+0000\n"
-"PO-Revision-Date: 2015-10-26 17:19+0000\n"
+"POT-Creation-Date: 2015-10-28 12:07+0000\n"
+"PO-Revision-Date: 2015-10-28 12:07+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -199,6 +199,21 @@ msgid "Aisles Config"
 msgstr "Conf pasillos"
 
 #. module: midban_depot_stock
+#: help:product.template,base_use_sale:0
+msgid "Allows you to sale in the defined logistic base."
+msgstr "Te permite vender en la unidad logística composición que tengas definida."
+
+#. module: midban_depot_stock
+#: help:product.template,box_use_sale:0
+msgid "Allows you to sale in the defined logistic box"
+msgstr "Te permite vender en la unidad logística contenedor que tengas definida."
+
+#. module: midban_depot_stock
+#: help:product.template,unit_use_sale:0
+msgid "Allows you to sale in the defined logistic unit."
+msgstr "Te permite vender en la unidad logística base que tengas definida."
+
+#. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:778
 #, python-format
 msgid "Anything pending of                                                  picking"
@@ -384,6 +399,13 @@ msgid "Cameras picked"
 msgstr "Cámaras picked"
 
 #. module: midban_depot_stock
+#: field:product.template,base_use_sale:0
+#: field:product.template,box_use_sale:0
+#: field:product.template,unit_use_sale:0
+msgid "Can be used on sales"
+msgstr "Se puede usar en ventas"
+
+#. module: midban_depot_stock
 #: code:addons/midban_depot_stock/route.py:326
 #, python-format
 msgid "Can not re-schedule a route in %s                                            state"
@@ -496,7 +518,7 @@ msgid "Code can not be repeated."
 msgstr "El código no puede repetirse."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:338
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:341
 #, python-format
 msgid "Code of reason_id does not exist"
 msgstr "El código reason_id no existe"
@@ -752,6 +774,11 @@ msgid "Day"
 msgstr "Día"
 
 #. module: midban_depot_stock
+#: help:stock.location,max_per_filled:0
+msgid "Default value from general                                        settings. Affects over location volume                                        that returns the specific percentage                                        the real"
+msgstr "Valor por defecto de la configuración general. Afecta al cálculo del volumen de la ubicación, ya que se devuelve el % especificado del real"
+
+#. module: midban_depot_stock
 #: view:stock.picking:midban_depot_stock.view_picking_form_add_operations
 msgid "Delete operations"
 msgstr "Borrar operaciones"
@@ -880,6 +907,11 @@ msgid "Detail route for day %s with state is %s can not                         
 msgstr "El detalle de la ruta para el día %s cuyo estado es %s no puede ser borrado. Sólo rutas pendientes pueden ser eliminadas"
 
 #. module: midban_depot_stock
+#: field:stock.move,discount:0
+msgid "Disc. (%)"
+msgstr "Desc. (%)"
+
+#. module: midban_depot_stock
 #: field:transfer.line,do_pack:0
 #: selection:transfer.line,do_pack:0
 msgid "Do Pack"
@@ -942,8 +974,8 @@ msgid "End Date"
 msgstr "Fecha fin"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:113
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:130
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:116
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:133
 #, python-format
 msgid "Enter transfer details"
 msgstr "Introduce detalles de la transferencia"
@@ -989,10 +1021,10 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/product.py:118
 #: code:addons/midban_depot_stock/route.py:154
 #: code:addons/midban_depot_stock/stock.py:815
-#: code:addons/midban_depot_stock/stock.py:1486
-#: code:addons/midban_depot_stock/stock.py:1509
-#: code:addons/midban_depot_stock/stock.py:1519
-#: code:addons/midban_depot_stock/stock.py:1940
+#: code:addons/midban_depot_stock/stock.py:1516
+#: code:addons/midban_depot_stock/stock.py:1539
+#: code:addons/midban_depot_stock/stock.py:1549
+#: code:addons/midban_depot_stock/stock.py:1970
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:213
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:230
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:239
@@ -1162,6 +1194,11 @@ msgid "Heights"
 msgstr "Alturas"
 
 #. module: midban_depot_stock
+#: field:product.template,hidde_variant_page:0
+msgid "Hidde variant page"
+msgstr "Esconder pestaña variantes"
+
+#. module: midban_depot_stock
 #: selection:customer.list,result:0
 #: selection:route.report,result:0
 msgid "Holidays"
@@ -1204,9 +1241,28 @@ msgid "If True we can do picking of this location and childrens"
 msgstr "Si es verdadero podremos hacer picking de esta ubicación y sus hijos"
 
 #. module: midban_depot_stock
+#: help:product.template,is_var_coeff:0
+msgid "If any conversion is checked, the                                    product will be processed as a variable                                    weight product in sales process"
+msgstr "Si algún coeficiente de conversión está marcado como variable, el producto se tratará como un producto de peso variable en el proceso de ventas"
+
+#. module: midban_depot_stock
 #: help:stock.picking,validated:0
 msgid "If checked the picking will be considered when you get a picking task"
 msgstr "Si está activo el albarán de picking será considerado cuando pidas una tarea de picking"
+
+#. module: midban_depot_stock
+#: help:product.template,var_coeff_un:0
+msgid "If checked we can manage products of variable weight.\n"
+"System will not convert between units"
+msgstr "Si está activo podremos manejar productos de peso variable.\n"
+"El sistema no convertirá entre unidades"
+
+#. module: midban_depot_stock
+#: help:product.template,var_coeff_ca:0
+msgid "If checked we can manage products of variable weight.\n"
+"System will not convert between units."
+msgstr "Si está activo podremos manejar productos de peso variable.\n"
+"El sistema no convertirá entre unidades"
 
 #. module: midban_depot_stock
 #: help:stock.config.settings,pick_by_volume:0
@@ -1246,7 +1302,7 @@ msgstr "Si está activado, cuando confirmas un pedido de venta, no serás capaz 
 #. module: midban_depot_stock
 #: help:get.route.detail.wzd,delete:0
 msgid "If it is checked, it will delete all dates'                            'already generated"
-msgstr "Si está marcado, borrará todas las fechas futuras que ya están generadas"
+msgstr "If it is checked, it will delete all dates'                            'already generated"
 
 #. module: midban_depot_stock
 #: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
@@ -1295,6 +1351,11 @@ msgstr "Imposible encontrar una ubicación especial"
 #, python-format
 msgid "Impossible found the multipack location"
 msgstr "Imposible encontrar una ubicación para multipacks"
+
+#. module: midban_depot_stock
+#: help:stock.config.settings,max_per_filled:0
+msgid "In percentage if zero not counted,                                   It is a limit that                                    considers an ubicartion as filled when                                    it reaches the specific percentatage."
+msgstr "In percentage if zero not counted,                                   It is a limit that                                    considers an ubicartion as filled when                                    it reaches the specific percentatage."
 
 #. module: midban_depot_stock
 #: field:stock.pack.operation,task_id:0
@@ -1363,7 +1424,7 @@ msgid "Is multiproduct"
 msgstr "Es multiproducto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:337
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:340
 #, python-format
 msgid "Issue error"
 msgstr "Error incidencia"
@@ -1495,6 +1556,21 @@ msgid "Locations to replenish"
 msgstr "Ubicaciones a reposicionar"
 
 #. module: midban_depot_stock
+#: field:product.template,log_base_id:0
+msgid "Logistic Base"
+msgstr "Logistic Base"
+
+#. module: midban_depot_stock
+#: field:product.template,log_box_id:0
+msgid "Logistic Box"
+msgstr "Logistic Box"
+
+#. module: midban_depot_stock
+#: field:product.template,log_unit_id:0
+msgid "Logistic Unit"
+msgstr "Logistic Unit"
+
+#. module: midban_depot_stock
 #: field:out.picking.report,lot_id:0
 #: field:stock.picking.create.multipack.line,lot_id:0
 #: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details
@@ -1596,6 +1672,16 @@ msgid "Manual transfer stock wizard"
 msgstr "Asistente de transferencia de mercancía"
 
 #. module: midban_depot_stock
+#: field:stock.location,max_per_filled:0
+msgid "Max percentage filled"
+msgstr "Max. porcentage volumen"
+
+#. module: midban_depot_stock
+#: field:stock.config.settings,max_per_filled:0
+msgid "Max. Percentage Filled"
+msgstr "Max. porcentage de llenado"
+
+#. module: midban_depot_stock
 #: field:stock.config.settings,max_loc_ops:0
 msgid "Max. location operations"
 msgstr "Max. operaciones ubicación"
@@ -1668,6 +1754,11 @@ msgid "Net Price"
 msgstr "Precio neto"
 
 #. module: midban_depot_stock
+#: field:product.template,no_gluten:0
+msgid "No Gluten"
+msgstr "Sin gluten"
+
+#. module: midban_depot_stock
 #: selection:transfer.line,do_pack:0
 msgid "No Pack"
 msgstr "Sin paquete"
@@ -1703,7 +1794,7 @@ msgid "No empty locations."
 msgstr "No hay ubicaciones libres."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1519
+#: code:addons/midban_depot_stock/stock.py:1549
 #, python-format
 msgid "No general %s location                                                  founded in camera %s."
 msgstr "La zona %s de la ubicación no encontrada en la cámara %s."
@@ -1752,7 +1843,7 @@ msgid "No pickings to put in a                                                  
 msgstr "No hay albaranes que poner en la ola"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1940
+#: code:addons/midban_depot_stock/stock.py:1970
 #, python-format
 msgid "No quants to force the                                                     assignament"
 msgstr "No hay quants necesarios para forzar la asignación al movimiento"
@@ -2219,7 +2310,7 @@ msgid "Print Reposition"
 msgstr "Imprimir reposición"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:74
+#: code:addons/midban_depot_stock/wizard/stock_transfer_details.py:77
 #: view:create.camera.locations:midban_depot_stock.create_camera_locations_view
 #: view:create.tag.wizard:midban_depot_stock.create_tag_wizard_view
 #: model:ir.actions.act_window,name:midban_depot_stock.action_create_tag_wizard
@@ -2260,7 +2351,6 @@ msgid "Procurement Requisition"
 msgstr "Petición de abastecimiento"
 
 #. module: midban_depot_stock
-#: model:ir.model,name:midban_depot_stock.model_product_product
 #: field:out.picking.report,product_id:0
 #: field:stock.location,current_product_id:0
 #: field:stock.pack.operation,operation_product_id:0
@@ -2279,7 +2369,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1811
+#: code:addons/midban_depot_stock/stock.py:1841
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -2372,6 +2462,11 @@ msgid "REF:"
 msgstr "REF:"
 
 #. module: midban_depot_stock
+#: field:stock.location,real_volume:0
+msgid "Real Volume"
+msgstr "Volumen real"
+
+#. module: midban_depot_stock
 #: field:stock.pack.operation,changed:0
 msgid "Record changed"
 msgstr "Registro cambiado"
@@ -2390,7 +2485,7 @@ msgstr "Referencia"
 #. module: midban_depot_stock
 #: field:get.route.detail.wzd,delete:0
 msgid "Regenerate Future Dates"
-msgstr "Regenerar fechas futuras"
+msgstr "Regenerate Future Dates"
 
 #. module: midban_depot_stock
 #: field:partner.route.info,regularity:0
@@ -2983,6 +3078,21 @@ msgid "The customer has no zip code"
 msgstr "El cliente no tiene código postal"
 
 #. module: midban_depot_stock
+#: help:product.template,log_base_id:0
+msgid "The defined unit of measure will be related with the logistic base"
+msgstr "La unidad de medida definida será relacionada con la unidad lógistica base"
+
+#. module: midban_depot_stock
+#: help:product.template,log_box_id:0
+msgid "The defined unit of measure will be related with the logistic box"
+msgstr "La unidad de medida definida será relacionada con la unidad lógistica caja"
+
+#. module: midban_depot_stock
+#: help:product.template,log_unit_id:0
+msgid "The defined unit of measure will be related with the logistic unit"
+msgstr "La unidad de medida definida será relacionada con la unidad lógistica unidad"
+
+#. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:295
 #, python-format
 msgid "The location to replenish %s is not child                                    of a camera location, you must configure                                    it well"
@@ -3301,9 +3411,16 @@ msgid "Var Weight"
 msgstr "Peso var."
 
 #. module: midban_depot_stock
+#: field:product.template,var_coeff_ca:0
+#: field:product.template,var_coeff_un:0
+msgid "Variable coefficient"
+msgstr "Coeficiente variable"
+
+#. module: midban_depot_stock
+#: field:product.template,is_var_coeff:0
 #: field:stock.transfer_details_items,var_weight:0
 msgid "Variable weight"
-msgstr "Variable weight"
+msgstr "Peso variable"
 
 #. module: midban_depot_stock
 #: view:stock.vehicle:midban_depot_stock.stock_vehicle_view_search
@@ -3574,14 +3691,14 @@ msgid "Zone"
 msgstr "Zona"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1510
+#: code:addons/midban_depot_stock/stock.py:1540
 #, python-format
 msgid "Zone %s not exist."
 msgstr "La zona %s no existe."
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/product.py:118
-#: code:addons/midban_depot_stock/stock.py:1486
+#: code:addons/midban_depot_stock/stock.py:1516
 #, python-format
 msgid "Zone not exist."
 msgstr "La zona no existe."
@@ -3684,4 +3801,3 @@ msgstr "{'readonly': [('route_detail_id', '!=', False)]}"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
 msgstr "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
-
