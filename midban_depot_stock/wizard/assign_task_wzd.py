@@ -637,9 +637,9 @@ class assign_task_wzd(osv.TransientModel):
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             '|',
-            ('product_id.picking_location_id', 'child_of', loc_ids),
-            # Si el producto no tiene ubic. picking, que lo agregue tb
             ('product_id.picking_location_id', '=', False),
+            ('product_id.picking_location_id', 'child_of', loc_ids),
+           # Si el producto no tiene ubic. picking, que lo agregue tb
             ('state', 'in', ['confirmed', 'assigned']),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '=', selected_route),
