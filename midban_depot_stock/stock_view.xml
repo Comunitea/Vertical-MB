@@ -190,6 +190,8 @@
                         <field name="width"/>
                         <field name="length"/>
                         <field name="height"/>
+                        <field name="real_volume"/>
+                        <field name="max_per_filled"/>
                         <field name="volume"/>
                         <field name="available_volume"/>
                         <field name="filled_percent"/>
@@ -377,6 +379,10 @@
                             <div>
                                 <field name="min_loc_replenish" class="oe_inline"/>
                                 <label for= "min_loc_replenish"/>
+                            </div>
+                            <div>
+                                <field name="max_per_filled" class="oe_inline"/>
+                                <label for= "max_per_filled"/>
                             </div>
                             <div>
                                 <field name="mandatory_camera" class="oe_inline"/>
