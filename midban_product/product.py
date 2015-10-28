@@ -531,13 +531,13 @@ class ProductTemplate(models.Model):
                                    product will be processed as a variable \
                                    weight product in sales process")
     log_base_discount = fields2.Float('With a discount of',
-                                    help="Get int sale order line if sold in \
+                                    help="Get into sale order line if sold in \
                                     the composition logistic unit")
     log_unit_discount = fields2.Float('With a discount of',
-                                    help="Get int sale order line if sold in \
+                                    help="Get into sale order line if sold in \
                                     the base logistic unit")
     log_box_discount = fields2.Float('With a discount of',
-                                    help="Get int sale order line if sold in \
+                                    help="Get into sale order line if sold in \
                                     the container logistic unit")
 
     @api.one
