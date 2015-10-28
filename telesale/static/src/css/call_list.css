@@ -78,7 +78,7 @@
 .telesale .calls-table td{
     border: 1px solid #000;
     height: 100%;
-    font-size: 15px;
+    font-size: 2vmin;
     text-align: center;
     vertical-align: middle;
 }
