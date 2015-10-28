@@ -41,7 +41,6 @@
                 # "midban_depot_stock", #because overwrite action_ship_create
                 ],
     "data": [
-        'product_view.xml',
         'sale_view.xml',
         'security/ir.model.access.csv',
         'stock_view.xml',
