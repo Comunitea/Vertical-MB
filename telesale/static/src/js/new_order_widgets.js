@@ -503,7 +503,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var price_unit = this.model.get('pvp')
             conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
             log_unit = this.getUomLogisticUnit(prod_name)
-            this.model.set('qty', my_round(conv[log_unit], 2));
+            this.model.set('qty', my_round(conv[log_unit], 4));
             // SET DISCOUNTS
             this.set_discounts()
             uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
@@ -713,8 +713,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var uos_name = this.$('.col-product_uos').val();
                     conv = this.getUnitConversions(prod_name, value, uos_name)
                     log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('product_uos_qty', my_round(value, 2));
-                    this.model.set('qty', my_round(conv[log_unit], 2));
+                    this.model.set('product_uos_qty', my_round(value, 4));
+                    this.model.set('qty', my_round(conv[log_unit], 4));
                     // Se calculan las cajas
                     var boxes = 0.0
                     var product_id = this.ts_model.db.product_name_id[prod_name];
@@ -740,7 +740,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var price_unit = this.$('.col-pvp').val();
                     conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
                     log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('qty', my_round(conv[log_unit], 2));
+                    this.model.set('qty', my_round(conv[log_unit], 4));
                     this.model.set('product_uos', value);
                     // SET DISCOUNTS
                     this.set_discounts()
@@ -1267,7 +1267,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         .then(function(result){
                             self.stock = my_round(result.stock,2).toFixed(2);
                             self.date = result.last_date != "-" ? self.ts_model.localFormatDate(result.last_date.split(" ")[0]) : "-";
-                            self.qty = my_round(result.last_qty,2).toFixed(2);
+                            self.qty = my_round(result.last_qty,4).toFixed(4);
                             self.price = my_round(result.last_price,2).toFixed(2);
                             self.min_price = my_round(result.min_price,2).toFixed(2);
                             self.mark = result.product_mark;

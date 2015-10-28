@@ -77,7 +77,7 @@ class stock_picking(osv.Model):
                                      help='Writed only by reposition wizard\
         to get a reposition task of the selected cameras in the task wizard'),
         'order_note': fields.related('sale_id', 'note', readonly=True,
-                                     type="char", string="Order Note"),
+                                     type="text", string="Order Note"),
         'wave_id': fields.many2one('stock.picking.wave', 'Picking Wave',
                                    states={'done': [('readonly', True)],
                                            'cancel': [('readonly', True)]},
