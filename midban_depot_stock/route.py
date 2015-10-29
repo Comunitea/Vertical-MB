@@ -260,8 +260,9 @@ class route(models.Model):
                                                   (3 if reg == '3_week' else
                                                       (4 if reg == '4_week' else
                                                          (1 if reg == '3yes_1no' else
+                                                           (1 if reg == '3no_1yes' else
                                                             (1 if reg == '2yes_2no'
-                                                          else False)))))
+                                                          else False))))))
 
             # To include end date in rrules
             if dt_end.weekday() == day_number:
@@ -296,6 +297,14 @@ class route(models.Model):
                         else:
                             to_remove.append(date)
                             count = 0
+            if reg == '3no_1yes':
+                count = 0
+                for date in customer_dates:
+                    count += 1
+                    if count in (1,2,3):
+                        to_remove.append(date)
+                    else:
+                        count = 0
             for date in to_remove:
                 customer_dates.remove(date)
 
