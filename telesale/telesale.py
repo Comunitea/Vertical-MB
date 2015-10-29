@@ -79,6 +79,7 @@ class product_product(osv.Model):
                'min_price': 0.0,
                'product_margin': 0.0,
                'discount': 0.0,
+               'max_discount': 0.0,
                'n_line': "-"}
         t_sol = self.pool.get("sale.order.line")
         t_pricelist = self.pool.get("product.pricelist")
@@ -87,14 +88,16 @@ class product_product(osv.Model):
                                                  must be defined"))
         product_obj = self.browse(cr, uid, product_id, context=context)
         res['stock'] = product_obj.virtual_stock_conservative
-
         res['product_mark'] = product_obj.mark or "-"
         res['product_class'] = product_obj.product_class or "-"
+        res['max_discount'] = product_obj.max_discount and \
+            product_obj.max_discount or product_obj.category_max_discount
         res['weight_unit'] = product_obj.weight or "0.00"
         domain = [('product_id', '=', product_id),
                   ('order_id.partner_id', '=', partner_id),
                   ('state', 'in', ['confirmed', 'done']),
-                  ('order_id.chanel', '=', 'telesale')]
+                  ]
+                #   ('order_id.chanel', '=', 'telesale')]
         line_ids = t_sol.search(cr, uid, domain, context=context, limit=1,
                                 order="id desc")
         if line_ids:  # Last sale info

@@ -139,7 +139,7 @@ function openerp_ts_models(instance, module){
                     self.db.add_units(units);
                     return self.fetch(
                         'product.product',
-                        ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id'],
+                        ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id', 'max_discount', 'category_max_discount'],
                         [['sale_ok','=',true]]
                     );
                 }).then(function(products){
@@ -316,7 +316,11 @@ function openerp_ts_models(instance, module){
             var self=this;
             if (!state){state = $('#state-select').val()}
             if (!date){date = $('#date-call-search').val()}
-            var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
+            if(date == ""){
+              var domain = [['user_id', '=', self.get('user').id], ['partner_id', '!=', false]]
+            }else{
+              var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
+            }
             if (state){
                 if (state != "any")
                     domain.push(['state','=',state])
@@ -463,6 +467,7 @@ function openerp_ts_models(instance, module){
             price_udv: 0,
             //to calc totals
             discount: 0,
+            specific_discount: 0,
             weight: 0,
             margin: 0,
             taxes_ids: [],

@@ -86,6 +86,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#partner').autocomplete({
                 source: this.ts_model.get('customer_names'),
             });
+            this.get_supplier_names()
             this.$('#supplier').autocomplete({
                 source: this.ts_model.get('supplier_names'),
             });
@@ -111,7 +112,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         get_supplier_names: function(partner_obj) {
             self = this
-            if (partner_obj.supplier_ids) {
+            var partner_name = this.ts_model.get('selectedOrder').get('partner');
+            var partner_id = this.ts_model.db.partner_name_id[partner_name];
+            var partner_obj = this.ts_model.db.get_partner_by_id(partner_id)
+            if (partner_obj && partner_obj.supplier_ids) {
               var supplier_names = [];
                 for (var i = 0, len = partner_obj.supplier_ids.length; i < len; i++){
                 var key = partner_obj.supplier_ids[i]
@@ -132,9 +136,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if (!partner_id){
                         var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
                         alert(alert_msg);
-                        this.order_model.set('partner', "");
-                        this.order_model.set('partner_code', "");
-                        this.refresh();
+                        self.order_model.set('partner', "");
+                        self.order_model.set('partner_code', "");
+                        self.refresh();
                     }
                     else{
                         partner_obj = self.ts_model.db.get_partner_by_id(partner_id);
@@ -194,7 +198,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.model.bind('change_line', this.refresh, this); //#TODO entra demasiadas veces por la parte esta
         },
         click_handler: function(key) {
-            // debugger;
             var selector = '.col-'+key
             this.order.selectLine(this.model);
             this.$(selector).unbind('focus')
@@ -206,9 +209,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         control_arrow_keys: function(){
           var self=this;
             this.$('.col-product_uos_qty').keydown(function(event){
-              // debugger;
               var keyCode = event.keyCode || event.which;
-              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (30)
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
                 var selected_line = self.order.selected_orderline;
                 if (selected_line){
                     var n_line = selected_line.get('n_line');
@@ -222,9 +224,56 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
               }
             });
+            this.$('.col-price_udv').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-price_udv').focus();
+                    }
+                }
+              }
+            });
+            this.$('.col-pvp').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-pvp').focus();
+                    }
+                }
+              }
+            });
+            this.$('.col-discount').keydown(function(event){
+              var keyCode = event.keyCode || event.which;
+              if (keyCode == 40 || keyCode == 38) {  // KEY DOWWN (40) up (38)
+                var selected_line = self.order.selected_orderline;
+                if (selected_line){
+                    var n_line = selected_line.get('n_line');
+                    var idx =(keyCode == 40) ? n_line + 1 : n_line - 1;
+                    var next_line = self.order_widget.orderlinewidgets[idx - 1]
+                    if (next_line) {
+
+                      self.order.selectLine(next_line.model);
+                      next_line.$el.find('.col-discount').focus();
+                    }
+                }
+              }
+            });
             // my_shift = false
             // this.$('.col-discount').keydown(function(event){
-            // debugger
             //  var keyCode = event.keyCode || event.which;
             //   if (event.shiftKey){
             //       my_shift = true
@@ -235,29 +284,28 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             //    }
             // });
             // my_shift = false
-            this.$('.col-discount').keydown(function(event){
-                // debugger
-                 var keyCode = event.keyCode || event.which;
-                 console.log("KKKKK")
-                 console.log(keyCode)
-                 if (keyCode == 13){ //INTRO TAB
-                    //  Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
-                     var selected_line = self.order.selected_orderline;
-                     if (selected_line){
-                         var n_line = selected_line.get('n_line');
-                         if (n_line == self.order_widget.orderlinewidgets.length){
-                             $('.add-line-button').click()
-                         }
-                         else{
-                             var next_line = self.order_widget.orderlinewidgets[n_line]
-                             if(next_line){
-                            //    self.order.selectLine(next_line.model);
-                               next_line.$el.find('.col-code').focus();
-                             }
-                         }
-                     }
-                 }
-            });
+            // this.$('.col-discount').keydown(function(event){
+            //      var keyCode = event.keyCode || event.which;
+            //      console.log("KKKKK")
+            //      console.log(keyCode)
+            //      if (keyCode == 13){ //INTRO TAB
+            //         //  Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
+            //          var selected_line = self.order.selected_orderline;
+            //          if (selected_line){
+            //              var n_line = selected_line.get('n_line');
+            //              if (n_line == self.order_widget.orderlinewidgets.length){
+            //                  $('.add-line-button').click()
+            //              }
+            //              else{
+            //                  var next_line = self.order_widget.orderlinewidgets[n_line]
+            //                  if(next_line){
+            //                 //    self.order.selectLine(next_line.model);
+            //                    next_line.$el.find('.col-code').focus();
+            //                  }
+            //              }
+            //          }
+            //      }
+            // });
         },
         renderElement: function() {
             var self=this;
@@ -265,7 +313,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$el.unbind()
             // this.$el.click(_.bind(this.click_handler, this));
             if(this.model.is_selected()){
-                this.$el.addClass('selected');
+                this.$('.col-nline').addClass('selected');
+                // this.$el.addClass('selected');
             }
             // Si el campo se rellena con autocomplete se debe usar blur
             this.$('.col-code').blur(_.bind(this.set_value, this, 'code'));
@@ -312,8 +361,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // Creamos nueva linea al tabular la última columna de descuento
             if(this.model.get('product')){
                 var uos = [];
-                product_id = this.ts_model.db.product_name_id[this.model.get('product')]
-                product_obj = this.ts_model.db.product_by_id[product_id]
+                var product_id = this.ts_model.db.product_name_id[this.model.get('product')]
+                var product_obj = this.ts_model.db.product_by_id[product_id]
                 if(product_obj.base_use_sale){
                     uos.push(product_obj.log_base_id[1]);
                 }
@@ -342,6 +391,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-qnote').autocomplete({
                 source:this.ts_model.get('qnotes_names')
             });
+
+
         },
         set_value: function(key) {
             var value = this.$('.col-'+key).val();
@@ -367,7 +418,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self=this;
             var domain = [['id', '=', product_id]]
             var loaded = self.ts_model.fetch('product.product',
-                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'product_tmpl_id','products_substitute_ids'],
+                                            ['name','product_class','list_price','standard_price','default_code','uom_id', 'log_base_id', 'log_base_discount', 'log_unit_discount','log_box_discount', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'max_discount', 'category_max_discount', 'product_tmpl_id','products_substitute_ids'],
                                             domain
                                             )
                 .then(function(products){
@@ -395,7 +446,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('unit', self.model.ts_model.db.unit_by_id[result.value.product_uom].name);
                                 self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : '');
                                 self.model.set('qty', 0);
-                                self.model.set('discount', 0);
+                                self.model.set('specific_discount', result.value.discount || 0);
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));
                                 if (!result.value.price_unit || result.value.price_unit == 'warn') {
                                     result.value.price_unit = 0;
@@ -411,7 +462,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 //     self.model.set('qty', new_qty);
                                 //     self.refresh();
                                 // }
-
                                 self.inicialize_unit_values()
                                 var subtotal = self.model.get('pvp') * self.model.get('qty') * (1 - self.model.get('discount') / 100.0)
                                 self.model.set('total', my_round(subtotal || 0,2));
@@ -425,6 +475,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                             alert(_t("NOT WORKING"));
                         })
         },
+        set_discounts: function(){
+            var self=this
+            var prod_name = this.model.get('product')
+            var uos_name = this.model.get('product_uos')
+            var product_id = this.ts_model.db.product_name_id[prod_name];
+            var product_obj = this.ts_model.db.get_product_by_id(product_id);
+            var setted_discount = this.model.get('specific_discount')
+            if (!setted_discount){
+                this.model.set('specific_discount', my_round(0.00, 2))
+                if(uos_name == product_obj.log_base_id[1]){
+                    this.model.set('discount', my_round(product_obj.log_base_discount, 2))
+                }
+                else if(uos_name == product_obj.log_unit_id[1]){
+                    this.model.set('discount', my_round(product_obj.log_unit_discount, 2))
+                }
+                else if(uos_name == product_obj.log_box_id[1]){
+                    this.model.set('discount', my_round(product_obj.log_box_discount, 2))
+                }
+            }
+        },
         inicialize_unit_values: function(){
             var prod_name = this.model.get('product')
             var uos_name = this.model.get('product_uos')
@@ -433,15 +503,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var price_unit = this.model.get('pvp')
             conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
             log_unit = this.getUomLogisticUnit(prod_name)
-            this.model.set('qty', my_round(conv[log_unit], 2));
-            var product_id = this.ts_model.db.product_name_id[prod_name];
-            var product_obj = this.ts_model.db.get_product_by_id(product_id);
-            if(uos_name == product_obj.log_box_id[1]){
-                this.model.set('discount', my_round(product_obj.box_discount, 2))
-            }
-            else{
-                this.model.set('discount', my_round(0.00, 2))
-            }
+            this.model.set('qty', my_round(conv[log_unit], 4));
+            // SET DISCOUNTS
+            this.set_discounts()
             uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
             this.model.set('price_udv', my_round(uos_pu, 2))
         },
@@ -493,7 +557,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
 
         getUomUosPrices: function(product_name, uos_name, custom_price_unit, custom_price_udv){
-            debugger;
             var product_id = this.ts_model.db.product_name_id[product_name];
             var product_obj = this.ts_model.db.get_product_by_id(product_id);
             var uos_id = this.ts_model.db.unit_name_id[uos_name];
@@ -580,7 +643,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 return price_udv;
             }
         },
-
         perform_onchange: function(key) {
             var self=this;
             var value = this.$('.col-'+key).val();
@@ -603,7 +665,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 case "product":
                     // comprobar que clave está en el array
                     var self = this;
-                    product_id = this.ts_model.db.product_name_id[value];
+                    var product_id = this.ts_model.db.product_name_id[value];
                     if (!product_id){
                         alert(_t("Product name '" + value + "' does not exist"));
                         this.model.set('code', "");
@@ -651,8 +713,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var uos_name = this.$('.col-product_uos').val();
                     conv = this.getUnitConversions(prod_name, value, uos_name)
                     log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('product_uos_qty', my_round(value, 2));
-                    this.model.set('qty', my_round(conv[log_unit], 2));
+                    this.model.set('product_uos_qty', my_round(value, 4));
+                    this.model.set('qty', my_round(conv[log_unit], 4));
                     // Se calculan las cajas
                     var boxes = 0.0
                     var product_id = this.ts_model.db.product_name_id[prod_name];
@@ -661,7 +723,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     if(uos_id == product_obj.log_base_id[0]){
                         boxes = (value / product_obj.kg_un) / product_obj.un_ca
                     }
-                    else if(uos_id == product_obj.log_unit_id[0]){
+                    else if(uos_id == product_obj.log_unit_id[1]){
                         boxes = value / product_obj.un_ca
                     }
                     else if(uos_id == product_obj.log_box_id[0]){
@@ -678,16 +740,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var price_unit = this.$('.col-pvp').val();
                     conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
                     log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('qty', my_round(conv[log_unit], 2));
+                    this.model.set('qty', my_round(conv[log_unit], 4));
                     this.model.set('product_uos', value);
-                    var product_id = this.ts_model.db.product_name_id[prod_name];
-                    var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    if(uos_name == product_obj.log_box_id[1]){
-                        this.model.set('discount', my_round(product_obj.box_discount, 2))
-                    }
-                    else{
-                        this.model.set('discount', my_round(0.00, 2))
-                    }
+                    // SET DISCOUNTS
+                    this.set_discounts()
                     uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
                     this.model.set('price_udv', my_round(uos_pu, 2))
                     this.refresh('price_udv')
@@ -739,21 +795,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.refresh('code');
 
                     }
-                    // Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
-                    // var selected_line = self.order.selected_orderline;
-                    // if (selected_line){
-                    //     var n_line = selected_line.get('n_line');
-                    //     if (n_line == self.order_widget.orderlinewidgets.length){
-                    //         $('.add-line-button').click()
-                    //     }
-                    //     else{
-                    //         var next_line = self.order_widget.orderlinewidgets[n_line]
-                    //         if(next_line){
-                    //           self.order.selectLine(next_line.model);
-                    //           next_line.$el.find('.col-code').focus();
-                    //         }
-                    //     }
-                    // }
                     break;
             }
         },
@@ -764,7 +805,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var disc = this.model.get("discount")
             var subtotal = price * qty * (1 - (disc/ 100.0))
             this.model.set('total',subtotal);
+
             this.renderElement();
+            //Añadir color rojo al descuento en caso de superar el máximo
+            if(this.model.get('product')){
+                var product_id = this.ts_model.db.product_name_id[this.model.get('product')]
+                var product_obj = this.ts_model.db.product_by_id[product_id]
+                var max_discount = 0.0
+
+                if(product_obj.max_discount){
+                  max_discount = product_obj.max_discount
+                }
+                else{
+                  max_discount = product_obj.category_max_discount || 0.0
+                }
+                if (max_discount){
+                    if(disc > max_discount){
+                      this.$('.col-discount').addClass('warning-red')
+                    }
+                }
+            }
             console.log('.col-'+ focus_key)
             this.$('.col-'+ focus_key).focus()
             // this.trigger('order_line_refreshed');
@@ -1148,6 +1208,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.min_price = "";
             this.margin = "";
             this.discount = "";
+            this.max_discount = "";
             this.n_line = "";
             this.class = "";
         },
@@ -1165,30 +1226,31 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
+            if(this.stock <= 0){
+              this.$('#stock-info').addClass('warning-red')
+            }
         },
         calcProductInfo: function () {
-            // debugger;
             var self = this;
             this.selected_line = this.ts_model.get('selectedOrder').get('selected_line');
             if (!this.selected_line.get("product")){
                 this.set_default_values();
                 this.renderElement();
             }
-            this.selected_line.unbind('change:discount');
+            // this.selected_line.unbind('change:discount');
             this.selected_line.unbind('change:product');
-            this.selected_line.unbind('change:margin');
-            this.selected_line.bind('change:discount', this.change_discount, this);
+            // this.selected_line.unbind('change:margin');
+            // this.selected_line.bind('change:discount', this.change_discount, this);
             this.selected_line.bind('change:product', this.change_product, this);
-            this.selected_line.bind('change:margin', this.change_margin, this);
+            // this.selected_line.bind('change:margin', this.change_margin, this);
             this.selected_line.trigger('change:product');
-            if (this.selected_line){
-                this.change_discount();
-                this.change_margin();
-            }
+            // if (this.selected_line){
+            //     this.change_discount();
+            //     this.change_margin();
+            // }
 
         },
         change_product: function(){
-            // debugger;
             var self = this;
             var line_product = this.selected_line.get("product")
             self.n_line = self.selected_line.get('n_line') + " / " + self.ts_model.get('selectedOrder').get('orderLines').length;
@@ -1205,11 +1267,12 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         .then(function(result){
                             self.stock = my_round(result.stock,2).toFixed(2);
                             self.date = result.last_date != "-" ? self.ts_model.localFormatDate(result.last_date.split(" ")[0]) : "-";
-                            self.qty = my_round(result.last_qty,2).toFixed(2);
+                            self.qty = my_round(result.last_qty,4).toFixed(4);
                             self.price = my_round(result.last_price,2).toFixed(2);
                             self.min_price = my_round(result.min_price,2).toFixed(2);
                             self.mark = result.product_mark;
                             self.class = result.product_class;
+                            self.max_discount = my_round(result.max_discount,2).toFixed(2) + "%";
                             self.unit_weight = my_round(result.weight_unit,2).toFixed(2);
                             self.renderElement();
                         });
@@ -1220,26 +1283,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             }
         },
-        change_discount: function(){
-            var discount = this.selected_line.get('discount');
-            discount = discount * 100
-            var discount_str = ""
-            //check type?
-            if (discount < 0){
-                discount = discount * (-1); //remove negative sign
-                discount_str = "+" + discount.toFixed(2) + "%";
-            }else{
-                discount_str = discount.toFixed(2) + "%";
-            }
-            this.discount = discount_str
-            this.renderElement();
-        },
-        change_margin: function(){
-            var margin = this.selected_line.get('margin');
-            margin = margin * 100
-            this.margin = margin.toFixed(2) + "%";
-            this.renderElement();
-        },
+        // change_discount: function(){
+        //     var discount = this.selected_line.get('discount');
+        //     discount = discount * 100
+        //     var discount_str = ""
+        //     //check type?
+        //     if (discount < 0){
+        //         discount = discount * (-1); //remove negative sign
+        //         discount_str = "+" + discount.toFixed(2) + "%";
+        //     }else{
+        //         discount_str = discount.toFixed(2) + "%";
+        //     }
+        //     this.discount = discount_str
+        //     this.renderElement();
+        // },
+        // change_margin: function(){
+        //     var margin = this.selected_line.get('margin');
+        //     margin = margin * 100
+        //     this.margin = margin.toFixed(2) + "%";
+        //     this.renderElement();
+        // },
     });
 
     module.SustituteLineWidget = module.TsBaseWidget.extend({

@@ -69,16 +69,22 @@
 
                 <field name="description_sale"  position="after">
 
-                    <group colspan="2" col="4" string="Relations units - logistic">
+                    <group colspan="4" col="6" string="Relations units - logistic">
                         <group col="2">
                             <field name="log_base_id"/>
                             <field name="log_unit_id"/>
                             <field name="log_box_id"/>
                         </group>
+
                         <group col="2">
                             <field name="base_use_sale"/>
                             <field name="unit_use_sale"/>
                             <field name="box_use_sale"/>
+                        </group>
+                        <group col="2">
+                            <field name="log_base_discount"/>
+                            <field name="log_unit_discount"/>
+                            <field name="log_box_discount"/>
                         </group>
 
                     </group>

@@ -72,5 +72,15 @@
             <field name="value">True</field>
         </record>
 
+        <record id="pick_by_volume" model="ir.config_parameter">
+            <field name="key">pick.by.volume</field>
+            <field name="value">False</field>
+        </record>
+
+        <record id="max_per_filled" model="ir.config_parameter">
+            <field name="key">max.per.filled</field>
+            <field name="value">100</field>
+        </record>
+
     </data>
 </openerp>

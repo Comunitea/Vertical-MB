@@ -90,7 +90,16 @@ class sale_order_line(models.Model):
 
         #if prod_obj.box_discount:
         #    res['value']['discount'] = prod_obj.box_discount
-
+        # import ipdb; ipdb.set_trace()
+        #
+        # log_unit = prod_obj.get_uos_logistic_unit(uos)
+        # # Unit es la caja logistica para apolo (llamada base)
+        # if log_unit == 'base' and prod_obj.log_base_discount:
+        #     res['value']['discount'] = prod_obj.log_base_discount
+        # elif log_unit == 'unit' and prod_obj.log_unit_discount:
+        #     res['value']['discount'] = prod_obj.log_unit_discount
+        # elif log_unit == 'box' and prod_obj.log_box_discount:
+        #     res['value']['discount'] = prod_obj.log_box_discount
         return res
 
     @api.onchange('product_code')
@@ -139,14 +148,17 @@ class sale_order_line(models.Model):
             # Change Uom Qty
             uos_id = self.product_uos.id
             uos_qty = self.product_uos_qty
-            #conv = product.get_unit_conversions(uos_qty, uos_id)
+            # conv = product.get_unit_conversions(uos_qty, uos_id)
             log_unit = product.get_uos_logistic_unit(uos_id)
-            #self.product_uom_qty = conv[log_unit]
+            # self.product_uom_qty = conv[log_unit]
             self.product_uom_qty = product.uos_qty_to_uom_qty(uos_qty, uos_id)
-            if log_unit == 'box' and product.box_discount:
-                self.discount = product.box_discount
-            else:
-                self.discount = 0
+            # Unit es la caja logistica para apolo (llamada base)
+            if log_unit == 'base' and product.log_base_discount:
+                self.discount = product.log_base_discount
+            elif log_unit == 'unit' and product.log_unit_discount:
+                self.discount = product.log_unit_discount
+            elif log_unit == 'box' and product.log_box_discount:
+                self.discount =product.log_box_discount
 
             # Calculate prices
             uom_pu, uos_pu = product.get_uom_uos_prices(uos_id,

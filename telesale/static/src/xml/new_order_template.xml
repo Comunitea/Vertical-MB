@@ -99,7 +99,7 @@
                 <input type="search" class='col-product mandatory' t-att-value="widget.model.get('product')"/>
             </td>
             <td class="cell-qty">
-                <input id="inputuosqty" type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty').toFixed(2)"/>
+                <input id="inputuosqty" type="text" class='col-product_uos_qty mandatory' t-att-value="widget.model.get('product_uos_qty').toFixed(4)"/>
             </td>
             <td class="cell-unit">
                 <!-- <select class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
@@ -109,7 +109,7 @@
                 <input type="text" class='col-price_udv mandatory' t-att-value="widget.model.get('price_udv').toFixed(2)" />
             </td>
              <td class="cell-qty">
-                <input type="text" class='col-qty' t-att-value="widget.model.get('qty').toFixed(2)" readonly="readonly" tabIndex="-1"/>
+                <input type="text" class='col-qty' t-att-value="widget.model.get('qty').toFixed(4)" readonly="readonly" tabIndex="-1"/>
             </td>
              <td class="cell-unit">
                 <input type="text" class='col-unit' t-att-value="widget.model.get('unit')" readonly="readonly" tabIndex="-1"/>
@@ -118,7 +118,7 @@
                 <input type="text" class='col-pvp mandatory' t-att-value="widget.model.get('pvp').toFixed(2)"/>
             </td>
              <td class="cell-discount">
-                <input type="text" class='col-discount mandatory' t-att-value="widget.model.get('discount')"/>
+                <input type="text" class='col-discount mandatory' t-att-value="widget.model.get('specific_discount') || widget.model.get('discount')"/>
             </td>
              <td class="cell-total">
                 <input type="text" class='col-total' t-att-value="widget.model.get('total').toFixed(2)" readonly="readonly" tabIndex="-1"/>
@@ -282,12 +282,15 @@
                     <div class="centerthis">
                       <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
                         <label class="red" for="total">Suppliers:</label>
+                        <input type="text" class='total mandatory' id="supplier"
+                            t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
                       </t>
                       <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
                         <label for="total">Suppliers:</label>
+                        <input type="text" class='total' id="supplier"
+                            value="" readonly="True" tabIndex="-1"/>
+                            <!-- t-att-value="widget.order_model.get('supplier')" readonly="True" tabIndex="-1"/> -->
                       </t>
-                      <input type="text" class='total mandatory' id="supplier"
-                          t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
                     </div>
                   </div>
               </div>
@@ -570,8 +573,11 @@
             <table class="product-info-table">
                 <tr>
                     <th scope="row">Stock Product</th>
-                    <td><t t-esc="widget.stock"/></td>
-
+                    <td>
+                      <!-- <span t-if="widget.stock <= 0" class="red" t-esc="widget.stock"/>
+                      <span t-if="widget.stock > 0" t-esc="widget.stock"/> -->
+                      <span id="stock-info"><t t-esc="widget.stock"/></span>
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row">Last Date</th>
@@ -590,34 +596,32 @@
                     <td><t t-esc="widget.mark"/></td>
                 </tr>
                 <tr>
+                  <th scope="row">Max Discount</th>
+                    <td><t t-esc="widget.max_discount"/></td>
+                </tr>
+                <!-- <tr>
                     <th scope="row">Class</th>
 
                     <td>
                     <t t-if="widget.class == 'fresh'">
                         Fresh
                     </t>
-                    <t t-if="widget.class == 'dry'">
-                        Dry
+                    <t t-if="widget.class == 'normal'">
+                        Normal
                     </t>
-                    <t t-if="widget.class == 'frozen'">
-                        Frozen
-                    </t>
-                    <t t-if="widget.class == 'chilled'">
-                        Chilled
-                    </t>
-                    <t t-if="widget.class == 'no_class'">
-                        No Class
+                    <t t-if="widget.class == 'ultrafresh'">
+                        Ultra Fresh
                     </t>
                     </td>
-                </tr>
+                </tr> -->
                 <tr>
                     <th scope="row">Weight Unit</th>
                     <td><t t-esc="widget.unit_weight"/></td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <th scope="row">Minimum Price</th>
                     <td><t t-esc="widget.min_price"/></td>
-                </tr>
+                </tr> -->
                 <!-- <tr>
                     <th scope="row">Product Margin</th>
                     <td><t t-esc="widget.margin"/></td>
