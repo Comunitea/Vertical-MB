@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-28 12:07+0000\n"
-"PO-Revision-Date: 2015-10-28 12:07+0000\n"
+"POT-Creation-Date: 2015-10-29 10:40+0000\n"
+"PO-Revision-Date: 2015-10-29 10:40+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgid "2 Weeks Yes, 2 Week No"
 msgstr "2 Semanas sí, 2 semanas no"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:321
+#: code:addons/midban_depot_stock/route.py:330
 #, python-format
 msgid "2 details of same day for same                                            route"
 msgstr "2 detalles en el mismo día para la misma ruta"
@@ -60,6 +60,11 @@ msgstr "2 detalles en el mismo día para la misma ruta"
 #: selection:partner.route.info,regularity:0
 msgid "3 Weeks"
 msgstr "3 Semanas"
+
+#. module: midban_depot_stock
+#: selection:partner.route.info,regularity:0
+msgid "3 Weeks No, 1 Week Yes"
+msgstr "3 Semanas no, 1 semana sí"
 
 #. module: midban_depot_stock
 #: selection:partner.route.info,regularity:0
@@ -406,7 +411,7 @@ msgid "Can be used on sales"
 msgstr "Se puede usar en ventas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:326
+#: code:addons/midban_depot_stock/route.py:335
 #, python-format
 msgid "Can not re-schedule a route in %s                                            state"
 msgstr "No se puede replanificar una ruta en el estado de %s "
@@ -685,25 +690,25 @@ msgid "Customer"
 msgstr "Cliente"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:280
+#: code:addons/midban_depot_stock/partner.py:281
 #, python-format
 msgid "Customer %s is asigned to a route                                             of other                                             comercial"
 msgstr "Customer %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:128
+#: code:addons/midban_depot_stock/partner.py:129
 #, python-format
 msgid "Customer %s is asigned to a route of                                           other comercial"
 msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:227
+#: code:addons/midban_depot_stock/partner.py:228
 #, python-format
 msgid "Customer %s is asigned to a route of                                     other comercial"
 msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:104
+#: code:addons/midban_depot_stock/partner.py:105
 #, python-format
 msgid "Customer %s must have a zip code.                                      "
 msgstr "El cliente %s debe tener código postal."
@@ -895,13 +900,13 @@ msgid "Detail route %s must be of delivery                                      
 msgstr "El detalle de la ruta %s debe ser de tipo envío"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:424
+#: code:addons/midban_depot_stock/route.py:433
 #, python-format
 msgid "Detail route for day %s can not be deleted                              because is a past date"
 msgstr "El detalle de la ruta para el día %s no puede ser borrado porque es una fecha pasada"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:429
+#: code:addons/midban_depot_stock/route.py:438
 #, python-format
 msgid "Detail route for day %s with state is %s can not                              be deleted. Only pending routes can be                             deleted"
 msgstr "El detalle de la ruta para el día %s cuyo estado es %s no puede ser borrado. Sólo rutas pendientes pueden ser eliminadas"
@@ -950,7 +955,7 @@ msgid "EAN13"
 msgstr "EAN13"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:430
+#: code:addons/midban_depot_stock/route.py:439
 #, python-format
 msgid "ERROR"
 msgstr "ERROR"
@@ -981,20 +986,20 @@ msgid "Enter transfer details"
 msgstr "Introduce detalles de la transferencia"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:206
-#: code:addons/midban_depot_stock/partner.py:208
-#: code:addons/midban_depot_stock/partner.py:226
-#: code:addons/midban_depot_stock/partner.py:256
-#: code:addons/midban_depot_stock/partner.py:259
-#: code:addons/midban_depot_stock/partner.py:279
+#: code:addons/midban_depot_stock/partner.py:207
+#: code:addons/midban_depot_stock/partner.py:209
+#: code:addons/midban_depot_stock/partner.py:227
+#: code:addons/midban_depot_stock/partner.py:257
+#: code:addons/midban_depot_stock/partner.py:260
+#: code:addons/midban_depot_stock/partner.py:280
 #: code:addons/midban_depot_stock/route.py:136
 #: code:addons/midban_depot_stock/route.py:183
 #: code:addons/midban_depot_stock/route.py:234
 #: code:addons/midban_depot_stock/route.py:238
 #: code:addons/midban_depot_stock/route.py:257
-#: code:addons/midban_depot_stock/route.py:274
-#: code:addons/midban_depot_stock/route.py:320
-#: code:addons/midban_depot_stock/route.py:325
+#: code:addons/midban_depot_stock/route.py:275
+#: code:addons/midban_depot_stock/route.py:329
+#: code:addons/midban_depot_stock/route.py:334
 #: code:addons/midban_depot_stock/sale.py:165
 #: code:addons/midban_depot_stock/sale.py:171
 #: code:addons/midban_depot_stock/stock_task.py:177
@@ -1335,7 +1340,7 @@ msgid "Imposible to pause tasks                                                 
 msgstr "Imposible pausar tarea, no tienes ninguna tarea asignada/pausada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:278
+#: code:addons/midban_depot_stock/route.py:279
 #, python-format
 msgid "Imposible to schedule dates between %s and                                     %s with regularity of %s                                     week(s)"
 msgstr "Imposible planificar fechas entre %s y %s con un intervalo de %s semana(s)"
@@ -2766,7 +2771,7 @@ msgid "Schedule Task Wizard"
 msgstr "Asistente planificador de tareas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:353
+#: code:addons/midban_depot_stock/route.py:362
 #, python-format
 msgid "Scheduled Call from %s"
 msgstr "LLamada planificada a %s"
@@ -3055,7 +3060,7 @@ msgid "Telesale"
 msgstr "Televenta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/route.py:350
+#: code:addons/midban_depot_stock/route.py:359
 #, python-format
 msgid "Telesale Call "
 msgstr "LLamada televenta "
@@ -3071,8 +3076,8 @@ msgid "Temperature Type"
 msgstr "Tipo temperatura"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:206
-#: code:addons/midban_depot_stock/partner.py:257
+#: code:addons/midban_depot_stock/partner.py:207
+#: code:addons/midban_depot_stock/partner.py:258
 #, python-format
 msgid "The customer has no zip code"
 msgstr "El cliente no tiene código postal"
@@ -3132,7 +3137,7 @@ msgid "The zip code %s is already                                               
 msgstr "El código postal %s ya está asignado a la ruta %s. Cámbialo o no podrás guardar cambios en la ruta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:110
+#: code:addons/midban_depot_stock/partner.py:111
 #, python-format
 msgid "The zip code %s is not in the route zip                                       codes list"
 msgstr "EL código postal %s no está en el listado de códigos postales"
@@ -3522,10 +3527,10 @@ msgid "Warning"
 msgstr "Aviso"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:103
-#: code:addons/midban_depot_stock/partner.py:109
-#: code:addons/midban_depot_stock/partner.py:127
-#: code:addons/midban_depot_stock/partner.py:137
+#: code:addons/midban_depot_stock/partner.py:104
+#: code:addons/midban_depot_stock/partner.py:110
+#: code:addons/midban_depot_stock/partner.py:128
+#: code:addons/midban_depot_stock/partner.py:138
 #: code:addons/midban_depot_stock/route.py:95
 #: code:addons/midban_depot_stock/sale.py:118
 #, python-format
@@ -3605,7 +3610,7 @@ msgid "Writed only by reposition wizard        to get a reposition task of the s
 msgstr "Escrito sólo por el asistente de reposición, para obtener tareas de reposición de la cámara selecionada em el planificador de tareas"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:138
+#: code:addons/midban_depot_stock/partner.py:139
 #, python-format
 msgid "You are assigning a route for a                                         partner closed  day "
 msgstr "You are assigning a route for a                                         partner closed  day "
@@ -3669,13 +3674,13 @@ msgid "Zip Codes"
 msgstr "Códigos postales"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:262
+#: code:addons/midban_depot_stock/partner.py:263
 #, python-format
 msgid "Zip code %s of customer %s                                      is not included in the route                                      %s"
 msgstr "El código postal %s del cliente %s no está incluido en la ruta %s"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/partner.py:210
+#: code:addons/midban_depot_stock/partner.py:211
 #, python-format
 msgid "Zip code %s of customer %s                                  is not included in the route                                  %s"
 msgstr "Código postal %s del cliente %s no está incluido en la ruta %s"
@@ -3723,6 +3728,11 @@ msgstr "blue:var_weight == True"
 #: help:customer.list,sale_id:0
 msgid "is linked when confirm a order with this                              detail route"
 msgstr "Es asignado cuando confirmamos un pedido con un detalle de ruta"
+
+#. module: midban_depot_stock
+#: help:stock.location,multipack_location:0
+msgid "location used to locate multipacks"
+msgstr "location used to locate multipacks"
 
 #. module: midban_depot_stock
 #: help:stock.location,special_location:0
@@ -3801,3 +3811,4 @@ msgstr "{'readonly': [('route_detail_id', '!=', False)]}"
 #: view:account.invoice:midban_depot_stock.invoice_supplier_form_add_sales_pickings_link
 msgid "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
 msgstr "{'supp_product_id': product_id, 'supplier_id': parent.partner_id}"
+
