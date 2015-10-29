@@ -276,7 +276,7 @@ class StockPicking(models.Model):
     @api.multi
     @api.depends('move_lines', 'partner_id','move_lines.accepted_qty',
                  'move_lines.product_uom_qty')
-    def _amount_all_acc(self):
+    def _amount_all_acc(self):        
         for picking in self:
             if not picking.sale_id:
                 picking.amount_tax_acc = picking.amount_untaxed_acc = \
