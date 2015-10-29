@@ -2139,7 +2139,7 @@ class stock_config_settings(models.TransientModel):
 
     @api.multi
     def set_default_pick_by_volume(self):
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
 
         domain = [('key', '=', 'pick.by.volume')]
         param_obj = self.env['ir.config_parameter'].search(domain)

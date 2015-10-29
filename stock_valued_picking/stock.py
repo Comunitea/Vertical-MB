@@ -149,8 +149,8 @@ class stock_move(models.Model):
                 #         move.product_uos_qty
                 #     move.cost_subtotal = cost_price * move.product_uos_qty
 
-                import ipdb; ipdb.set_trace()
-                
+                # import ipdb; ipdb.set_trace()
+
                 move.price_subtotal = price_disc_unit * \
                     move.product_uom_qty
                 move.cost_subtotal = cost_price * move.product_uom_qty
