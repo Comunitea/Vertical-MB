@@ -57,12 +57,14 @@ class stock_picking(models.Model):
                 and picking.partner_id.property_product_pricelist.currency_id \
                 or False
             for line in picking.move_lines:
-                if line.product_id.is_var_coeff:
-                    price_unit = line.procurement_id.sale_line_id.price_unit
-                    quantity = line.product_uom_qty
-                else:
-                    price_unit = line.procurement_id.sale_line_id.price_udv
-                    quantity = line.product_uos_qty
+                # if line.product_id.is_var_coeff:
+                #     price_unit = line.procurement_id.sale_line_id.price_unit
+                #     quantity = line.product_uom_qty
+                # else:
+                #     price_unit = line.procurement_id.sale_line_id.price_udv
+                #     quantity = line.product_uos_qty
+                price_unit = line.procurement_id.sale_line_id.price_unit
+                quantity = line.product_uom_qty
                 sale_line = line.procurement_id.sale_line_id
                 if sale_line and line.state != 'cancel':
                     price_disc_unit = price_unit * \
@@ -148,8 +150,6 @@ class stock_move(models.Model):
                 #     move.price_subtotal = price_disc_unit * \
                 #         move.product_uos_qty
                 #     move.cost_subtotal = cost_price * move.product_uos_qty
-
-                # import ipdb; ipdb.set_trace()
 
                 move.price_subtotal = price_disc_unit * \
                     move.product_uom_qty
