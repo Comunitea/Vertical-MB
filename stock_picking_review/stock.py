@@ -28,10 +28,10 @@ class stock_move(models.Model):
     _inherit = "stock.move"
 
     accepted_qty = fields.Float(
-        digits_compute=dp.get_precision('Product UoS accepted'),
+        digits=dp.get_precision('Product Unit of Measure'),
         string='Accepted qty (UoS)')
     product_uom_acc_qty = fields.Float(
-        digits_compute=dp.get_precision('Product UoM accepted'),
+        digits=dp.get_precision('Product Unit of Measure'),
         string='Accepted qty')
     rejected = fields.Boolean('Rejected')
 

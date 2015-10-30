@@ -22,6 +22,8 @@ from openerp.osv import fields, osv
 import openerp.addons.decimal_precision as dp
 from openerp.tools.translate import _
 import math
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class reposition_wizard(osv.TransientModel):
@@ -171,7 +173,7 @@ class reposition_wizard(osv.TransientModel):
             packs_ordered = self._get_packs_ordered(cr, uid, quant_ids_no_lot,
                                                     context=context)
             if packs_ordered:
-                    res.append(packs_ordered)
+                res.append(packs_ordered)
         return res
 
     def _get_reposition_picking(self, cr, uid, ids, dest_id, prod,
@@ -341,24 +343,29 @@ class reposition_wizard(osv.TransientModel):
         pick_id = False
         prod_ids = prod_obj.search(cr, uid, [('picking_location_id', '=',
                                               dest_id)], context=context)
+        #_logger.debug('Localizacion - %s',  dest_id)
+        #_logger.debug('Productos - %s',  prod_ids)
         prod_in_loc = len(prod_ids)
         wzd = self.browse(cr, uid, ids[0], context)
         if wzd.product_ids:
             prod_ids = [x for x in prod_ids if x in wzd.product_ids._ids]
         for prod_id in prod_ids:
             product = prod_obj.browse(cr, uid, prod_id, context=context)[0]
+            _logger.debug('Producto - [%s] %s',  prod_id, product.name)
             pick_loc_obj = product.picking_location_id
+            _logger.debug('Ubicacion - [%s] %s', pick_loc_obj.id, pick_loc_obj.bcd_code)
             storage_id = pick_loc_obj.get_general_zone('storage')
             t_quant = self.pool.get('stock.quant')
             domain = [
                 ('location_id', 'child_of', [storage_id]),
                 ('product_id', '=', product.id),
                 ('qty', '>', 0),
+                ('reservation_id', '=', False)
             ]
-            orderby = 'removal_date, in_date, id'  # aplly fefo
+            orderby = 'removal_date, in_date, id'  # apply fefo
             quant_ids = t_quant.search(cr, uid, domain, order=orderby,
                                        context=context)
-
+            _logger.debug('Quant - %s',  quant_ids)
             lot_ids = []  # order fefo LOT IDS
             quant_ids_no_lot = []  # order fefo QUANTS IDS without lot
 
@@ -391,29 +398,30 @@ class reposition_wizard(osv.TransientModel):
         loc_t = self.pool.get('stock.location')
         wzd_obj = self.browse(cr, uid, ids[0], context=context)
 
-        domain = [('zone', '=', 'picking')]
-        # Get all picking locations
-        picking_loc_ids = loc_t.search(cr, uid, domain, context=context)
-        if not picking_loc_ids:
-            raise osv.except_osv(_('Error!'),
-                                 _('Picking locations does not exist'))
-
-        # Obtener ubicaciones con un porcentaje de capacidad de ocupación
-        # menores que el dado por el asistente
         selected_ids = []
         created_picks = []
         if wzd_obj.selected_loc_ids:
-            selected_ids = [x.id for x in wzd_obj.selected_loc_ids]
+            picking_loc_ids = [x.id for x in wzd_obj.selected_loc_ids]
         else:
-            # get list of locations under wizard capacity filled
-            for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
-                volume = loc.volume
-                if volume:
-                    available = loc.available_volume
-                    filled = volume - available
-                    fill_per = (filled / volume) * 100.0
-                    if fill_per <= wzd_obj.capacity:
-                        selected_ids.append(loc.id)
+            domain = [('zone', '=', 'picking')]
+            # Get all picking locations
+            picking_loc_ids = loc_t.search(cr, uid, domain, context=context)
+            if not picking_loc_ids:
+                raise osv.except_osv(_('Error!'),
+                                     _('Picking locations does not exist'))
+
+        # get list of locations under wizard capacity filled
+        for loc in loc_t.browse(cr, uid, picking_loc_ids, context):
+            # Obtener ubicaciones con un porcentaje de capacidad de ocupación
+            # menores que el dado por el asistente
+            volume = loc.volume
+            if volume:
+                available = loc.available_volume
+                filled = volume - available
+                fill_per = (filled / volume) * 100.0
+                if fill_per <= wzd_obj.capacity + 0.01:
+                    selected_ids.append(loc.id)
+        _logger.debug('Ubicaciones encontradas - %s',  selected_ids)
         if not selected_ids:
             raise osv.except_osv(_('Error!'),
                                  _('No picking location matching with \

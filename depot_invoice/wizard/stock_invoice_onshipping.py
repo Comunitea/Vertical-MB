@@ -24,7 +24,8 @@ from openerp import models, fields, api
 class stock_invoice_onshipping(models.TransientModel):
     _inherit = 'stock.invoice.onshipping'
 
-    group_fiscal = fields.Boolean('Group by parent partner')
+    group_fiscal = fields.Boolean('Group by parent partner', default = True)
+    group = fields.Boolean('Group by partner', default = True)
 
     # @api.multi
     # def create_invoice(self):
@@ -48,12 +49,12 @@ class stock_invoice_onshipping(models.TransientModel):
                                                                    context)
         return res
 
-    @api.onchange('group_fiscal')
-    def onchange_group_fiscal(self):
-        if self.group_fiscal:
-            self.group = True
-
+    # @api.onchange('group_fiscal')
+    # def onchange_group_fiscal(self):
+    #     if self.group_fiscal:
+    #         self.group = True
+    #
     @api.onchange('group')
     def onchange_group(self):
-        if self.group_fiscal:
+        if not self.group:
             self.group_fiscal = False

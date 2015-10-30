@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="product_pricelist_item_tree_view_extend" model="ir.ui.view">
+            <field name="name">product.pricelist.item.tree.extend</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="base" position="after">
+                    <field name="price_discount"/>
+                    <field name="price_surcharge"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

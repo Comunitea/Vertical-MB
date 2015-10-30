@@ -57,12 +57,14 @@ class stock_picking(models.Model):
                 and picking.partner_id.property_product_pricelist.currency_id \
                 or False
             for line in picking.move_lines:
-                if line.product_id.is_var_coeff:
-                    price_unit = line.procurement_id.sale_line_id.price_unit
-                    quantity = line.product_uom_qty
-                else:
-                    price_unit = line.procurement_id.sale_line_id.price_udv
-                    quantity = line.product_uos_qty
+                # if line.product_id.is_var_coeff:
+                #     price_unit = line.procurement_id.sale_line_id.price_unit
+                #     quantity = line.product_uom_qty
+                # else:
+                #     price_unit = line.procurement_id.sale_line_id.price_udv
+                #     quantity = line.product_uos_qty
+                price_unit = line.procurement_id.sale_line_id.price_unit
+                quantity = line.product_uom_qty
                 sale_line = line.procurement_id.sale_line_id
                 if sale_line and line.state != 'cancel':
                     price_disc_unit = price_unit * \
@@ -129,19 +131,30 @@ class stock_move(models.Model):
                 cost_price = move.product_id.standard_price or 0.0
                 move.discount = move.procurement_id.sale_line_id.discount or \
                     0.0
-                if move.product_id.is_var_coeff:
-                    price_unit = move.procurement_id.sale_line_id.price_unit
-                else:
-                    price_unit = move.procurement_id.sale_line_id.price_udv
+
+                #Se comentan las siguientes líneas para que haga el cálculo
+                    #siempre contra el precio unitario y no contra el precio de
+                    #venta, para que salga igual en la factura que en el albarán
+
+                # if move.product_id.is_var_coeff:
+                #     price_unit = move.procurement_id.sale_line_id.price_unit
+                # else:
+                #     price_unit = move.procurement_id.sale_line_id.price_udv
+                price_unit = move.procurement_id.sale_line_id.price_unit
                 price_disc_unit = (price_unit * (1 - (move.discount) / 100.0))
-                if move.product_id.is_var_coeff:
-                    move.price_subtotal = price_disc_unit * \
-                        move.product_uom_qty
-                    move.cost_subtotal = cost_price * move.product_uom_qty
-                else:
-                    move.price_subtotal = price_disc_unit * \
-                        move.product_uos_qty
-                    move.cost_subtotal = cost_price * move.product_uos_qty
+                # if move.product_id.is_var_coeff:
+                #     move.price_subtotal = price_disc_unit * \
+                #         move.product_uom_qty
+                #     move.cost_subtotal = cost_price * move.product_uom_qty
+                # else:
+                #     move.price_subtotal = price_disc_unit * \
+                #         move.product_uos_qty
+                #     move.cost_subtotal = cost_price * move.product_uos_qty
+
+                move.price_subtotal = price_disc_unit * \
+                    move.product_uom_qty
+                move.cost_subtotal = cost_price * move.product_uom_qty
+
                 move.order_price_unit = price_unit
                 move.margin = move.price_subtotal - move.cost_subtotal
                 if move.price_subtotal > 0:

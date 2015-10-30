@@ -46,6 +46,7 @@
         'stock_view.xml',
         'cron_table_data.xml',
         'table_pricelist_prices_view.xml',
+		'pricelist_view.xml'
     ],
     "demo": [],
     "test": [],

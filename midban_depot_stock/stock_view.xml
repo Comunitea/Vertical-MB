@@ -204,9 +204,9 @@
                     <field name="multipack_location"/>
                     <field name="special_location"/>
                 </field>
-                <field name="active" position="after">
+                <!-- <field name="active" position="after">
                     <field name="sequence"/>
-                </field>
+                </field> -->
             </field>
         </record>
 
@@ -221,7 +221,7 @@
                     <!--field name="available_volume"/>
                     <field name="filled_percent"/-->
                     <field name="temp_type_id"/>
-                    <field name="sequence"/>
+                    <!-- <field name="sequence"/> -->
                     <field name="camera"/>
                     <field name="zone"/>
                 </field>
