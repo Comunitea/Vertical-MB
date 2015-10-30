@@ -117,7 +117,7 @@ class manual_transfer_wzd(models.TransientModel):
                     self.env['stock.pack.operation'].create(ops_vals)
         # pick_obj.do_prepare_partial()
         pick_obj.do_transfer()
-        return
+        return ops_vals
 
 
 class transfer_lines(models.TransientModel):
