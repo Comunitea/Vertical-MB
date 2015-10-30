@@ -1415,7 +1415,6 @@ class stock_location(models.Model):
                         operation_product_id.id
         return res
 
-    _order = 'sequence'
     _columns = {
         'width': fields.float('Width',
                               digits_compute=dp.get_precision('Product Price')
@@ -1473,7 +1472,6 @@ class stock_location(models.Model):
                                               type="many2one",
                                               relation="product.product"),
         'temp_type_id': fields.many2one('temp.type', 'Temperature Type'),
-        'sequence': fields.integer('Sequence', required=True),
         'camera': fields.boolean('Picking Camera',
                                  help="If True we can do picking of "
                                  "this location and childrens"),
