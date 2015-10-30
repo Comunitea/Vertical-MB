@@ -65,7 +65,7 @@
 
                                     <div class="bottom text-center">
                                         <h2 t-esc="'PK' + (o.package_id and str(o.package_id.id) or '')"/>
-                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'                                     % ('Code128',                                               'PK' + (o.package_id and str(o.package_id.id) or ''),                                               800,                                               300)" style="width:350px;height:150px"/>
+                                        <img t-att-src="'data:image/png;base64,%s' % barcode('Code128','PK' + (o.package_id and str(o.package_id.id) or ''), 800, 300)" style="width:350px;height:150px"/>
                                         <h3 t-esc="o.package_id and o.package_id.location_id.name or False"/>
                                     </div>
                                   </div>
