@@ -222,12 +222,21 @@ class transfer_lines(models.TransientModel):
         line = self[0]  # Is called always line by line
         # Create a pack of do_pack type if do_pack is box or palet
         result_pack_id = False
-        #añadimos una nueva condición  para evitar productos sin paquete
-
-        if line.do_pack == 'do_pack' or product:
+        if line.do_pack == 'do_pack':
+            #OPción crear paquete
             vals = {}
             result_pack_id = self.env['stock.quant.package'].create(vals).id
-
+        else:
+            #Miramos si hay lote en destino, si lo hay, entonces es destino
+            pack = line.dest_location_id.get_package_of_lot(line.lot_id.id)
+            if pack:
+                result_pack_id = pack.id
+            else:
+            #si no hay lote y es pquete estonces false
+            #si es producto, tenemos que crear uno nuevo
+                if product:
+                    vals = {}
+                    result_pack_id = self.env['stock.quant.package'].create(vals).id
         return {
             'product_id': product and product.id or False,
             'product_uom_id': product and product.uom_id.id or False,
@@ -247,6 +256,7 @@ class transfer_lines(models.TransientModel):
         linked to a pick_obj argument and a list of move_vals ready to create a
         stock.move
         """
+
         line = self[0]  # Is called always line by line
 
         #op_vals = line.get_operation_vals(pick_obj)

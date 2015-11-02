@@ -965,7 +965,9 @@ class stock_pack_operation(models.Model):
                         pass
                     else:
                         pack = new_loc.get_package_of_lot(lot_id)
-                        vals['result_package_id'] = pack.id if pack else False
+                        # vals['result_package_id'] = pack.id if pack else False
+                        vals['result_package_id'] = pack.id if pack else op.result_package_id.id or vals.get('result_package_id', False)
+
         return super(stock_pack_operation, self).write(vals)
 
     @api.model
