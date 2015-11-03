@@ -253,9 +253,9 @@ class route(models.Model):
             if p_info.init_date:  # Get specific date start
                 dt_sta = datetime.strptime(p_info.init_date, FORMAT)
                 # Check Dates Again
-                if not self._valid_dates(dt_sta, dt_end):
-                    raise except_orm(_('Error'),
-                                     _('Date range not valid.'))
+                # if not self._valid_dates(dt_sta, dt_end):
+                #     raise except_orm(_('Error'),
+                #                      _('Date range not valid.'))
             interval = 1 if reg == '1_week' else (2 if reg == '2_week' else
                                                   (3 if reg == '3_week' else
                                                       (4 if reg == '4_week' else
