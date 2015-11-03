@@ -546,40 +546,131 @@ class ProductTemplate(models.Model):
         if not (self.base_use_sale or self.unit_use_sale or self.box_use_sale):
             raise Warning(_('Need a logistic unit in sales'))
 
-    @api.one
-    @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
-    def check_supplier_uoms(self):
+    @api.multi
+    def write(self, vals):
+        """
+        This method compares unit of measure and logistic unit of measure when
+        a product is modified.
+        """
+        for product in self:
+            log_base_id = vals['log_base_id'] if 'log_base_id' in vals \
+                          else product.log_base_id.id
+            log_unit_id = vals['log_unit_id'] if 'log_unit_id' in vals \
+                          else product.log_unit_id.id
+            log_box_id = vals['log_box_id'] if 'log_box_id' in vals \
+                         else product.log_box_id.id
+            uom_id = vals['uom_id'] if 'uom_id' in vals \
+                     else product.uom_id.id
+            # uos_id = vals.get('uos_id', False) \
+            #               and vals['uos_id'] or product.uos_id.id
+            if not((uom_id == log_base_id) or (uom_id == log_unit_id) \
+                   or (uom_id == log_box_id)):
+                   raise except_orm(_('Error'),
+                                    _('Product uom not in logistic' \
+                                      ' units %s') % product.uom_id.name)
+            # if not((uos_id == log_base_id) or (uos_id == log_unit_id) \
+            #        or (uos_id == log_box_id)):
+            #        raise except_orm(_('Error'),
+            #                         _('Product uos not in logistic' \
+            #                           ' units %s') % product.uos_id.name)
+            unit_error = False
+            if log_base_id:
+                if (log_base_id == log_unit_id) or \
+                   (log_base_id == log_box_id):
+                    unit_error = True
+            if log_unit_id:
+                if (log_unit_id == log_base_id) or \
+                   (log_unit_id == log_box_id):
+                    unit_error = True
+            if log_box_id:
+                if (log_box_id == log_base_id) or \
+                   (log_box_id == log_unit_id):
+                    unit_error = True
+            if unit_error:
+                raise except_orm(_('Error'),
+                                 _('Product logistic units are wrong'))
+        res = super(ProductTemplate, self).write(vals)
+        return res
 
-        product_uom = self.uom_id
-        if not ((product_uom == self.log_base_id) or \
-                (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
-            raise Warning(_('Product uom not in logistic units \
-                             ' % product_uom))
+    @api.model
+    def create(self, vals):
+        """
+        This method compares unit of measure and logistic unit of measure when
+        a product is created.
+        """
+        log_base_id = vals.get('log_base_id', False) and vals['log_base_id']
+        log_unit_id = vals.get('log_unit_id', False) and vals['log_unit_id']
+        log_box_id = vals.get('log_box_id', False) and vals['log_box_id']
+        uom_id = vals.get('uom_id', False) and vals['uom_id']
+        # uos_id = vals.get('uos_id', False) and vals['uos_id']
 
-        if self.uos_id:
-            product_uom = self.uos_id
-            if not((product_uom == self.log_base_id) or \
-                    (product_uom == self.log_unit_id) or \
-                    (product_uom == self.log_box_id)):
-                raise Warning(_('Product uos not in logistic units \
-                                 ' % product_uom))
+        if not((uom_id == log_base_id) or (uom_id == log_unit_id) \
+               or (uom_id == log_box_id)):
+               uom_obj = self.env['product.uom'].browse(uom_id)
+               raise except_orm(_('Error'),
+                                _('Product uom not in logistic' \
+                                  ' units %s') % uom_obj.name)
+        # if uos_id:
+            # if not((uos_id == log_base_id) or (uos_id == log_unit_id) \
+            #        or (uos_id == log_box_id)):
+            #        raise except_orm(_('Error'),
+            #                         _('Product uos not in logistic' \
+            #                           ' units %s') % product.uom_id.name)
 
         unit_error = False
-        if self.log_base_id:
-            if (self.log_base_id == self.log_unit_id) or \
-               (self.log_base_id == self.log_box_id):
+        if log_base_id:
+            if (log_base_id == log_unit_id) or \
+               (log_base_id == log_box_id):
                 unit_error = True
-        if self.log_unit_id:
-            if (self.log_unit_id == self.log_base_id) or \
-               (self.log_unit_id == self.log_box_id):
+        if log_unit_id:
+            if (log_unit_id == log_base_id) or \
+               (log_unit_id == log_box_id):
                 unit_error = True
-        if self.log_box_id:
-            if (self.log_box_id == self.log_base_id) or \
-               (self.log_box_id == self.log_unit_id):
+        if log_box_id:
+            if (log_box_id == log_base_id) or \
+               (log_box_id == log_unit_id):
                 unit_error = True
-
         if unit_error:
-            raise Warning(_('Product logistic units are wrong'))
+            raise except_orm(_('Error'),
+                             _('Product logistic units are wrong'))
+
+        res = super(ProductTemplate, self).create(vals)
+        return res
+
+    # @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
+    # def check_supplier_uoms(self):
+    #     # import ipdb; ipdb.set_trace()
+    #
+    #     product_uom = self.uom_id
+    #     if not ((product_uom == self.log_base_id) or \
+    #             (product_uom == self.log_unit_id) or (product_uom == self.log_box_id)):
+    #         raise Warning(_('Product uom not in logistic units \
+    #                          ' % product_uom))
+    #
+    #     if self.uos_id:
+    #         product_uom = self.uos_id
+    #         if not((product_uom == self.log_base_id) or \
+    #                 (product_uom == self.log_unit_id) or \
+    #                 (product_uom == self.log_box_id)):
+    #             raise Warning(_('Product uos not in logistic units \
+    #                              ' % product_uom))
+    #
+    #     unit_error = False
+    #     if self.log_base_id:
+    #         if (self.log_base_id == self.log_unit_id) or \
+    #            (self.log_base_id == self.log_box_id):
+    #             unit_error = True
+    #     if self.log_unit_id:
+    #         if (self.log_unit_id == self.log_base_id) or \
+    #            (self.log_unit_id == self.log_box_id):
+    #             unit_error = True
+    #     if self.log_box_id:
+    #         if (self.log_box_id == self.log_base_id) or \
+    #            (self.log_box_id == self.log_unit_id):
+    #             unit_error = True
+    #
+    #     if unit_error:
+    #         raise Warning(_('Product logistic units are wrong'))
 
     @api.one
     @api.depends('var_coeff_un', 'var_coeff_ca')
