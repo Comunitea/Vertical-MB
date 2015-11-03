@@ -539,6 +539,29 @@ class ProductTemplate(models.Model):
     log_box_discount = fields2.Float('With a discount of',
                                     help="Get into sale order line if sold in \
                                     the container logistic unit")
+    default_code2 = fields2.Char('Internal Reference')
+
+    # Copy default_code and default_code2 to show always the internal_reference
+    # because of default_code not showed when active = False, is a related
+    # in product.template to variants. We need to show default_code2 in no
+    # active products
+    @api.multi
+    def write(self, vals):
+        if vals.get('default_code', False):
+            vals['default_code2'] = vals['default_code']
+        if vals.get('default_code2', False):
+            vals['default_code'] = vals['default_code2']
+        res = super(ProductTemplate, self).write(vals)
+        return res
+
+    @api.multi
+    def create(self, vals):
+        if vals.get('default_code', False):
+            vals['default_code2'] = vals['default_code']
+        if vals.get('default_code2', False):
+            vals['default_code'] = vals['default_code2']
+        res = super(ProductTemplate, self).create(vals)
+        return res
 
     @api.one
     @api.constrains('base_use_sale', 'unit_use_sale', 'box_use_sale')
