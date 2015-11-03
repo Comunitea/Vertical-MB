@@ -196,8 +196,6 @@ class partner_route_info(models.Model):
             self.route_id.id
         partner_obj = t_partner.browse(partner_id)
         route_obj = t_route.browse(route_id)
-        partner_obj = t_partner.browse(partner_id)
-        route_obj = t_route.browse(route_id)
         route_bzip_codes = [x.name for x in route_obj.bzip_ids]
         settings = self._get_route_settings()
         # Check if customer zip is in route zips list
