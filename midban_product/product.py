@@ -1197,8 +1197,6 @@ class ProductSupplierinfo(models.Model):
         This method compares unit of measure and logistic unit of measure when
         a product is created.
         """
-        import ipdb; ipdb.set_trace()
-
         log_base_id = vals.get('log_base_id', False) and vals['log_base_id']
         log_unit_id = vals.get('log_unit_id', False) and vals['log_unit_id']
         log_box_id = vals.get('log_box_id', False) and vals['log_box_id']
