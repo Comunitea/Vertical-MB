@@ -29,7 +29,7 @@ class sale_report(osv.osv):
     _description = "Group picks of waves"
     _auto = False
     _rec_name = 'product_id'
-    _order = 'sequence'
+    _order = 'order_seq'
 
     def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
                              context=None):
@@ -109,6 +109,8 @@ class sale_report(osv.osv):
         'product_qty': fields.float('Quantity', readonly=True),
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
+        'order_seq': fields.related('location_id', 'order_seq', type ='char', size= 12,
+                                    string='Sequence', readonly = True, store = True),
         'sequence': fields.integer('Sequence', readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
@@ -137,6 +139,7 @@ class sale_report(osv.osv):
                                          string="Visited (All Ops)",
                                          relation="stock.pack.operation",
                                          multi='multi_'),
+
     }
 
     def _select(self):
