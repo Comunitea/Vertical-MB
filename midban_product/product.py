@@ -541,39 +541,22 @@ class ProductTemplate(models.Model):
                                     the container logistic unit")
     default_code2 = fields2.Char('Internal Reference')
 
-    # Copy default_code and default_code2 to show always the internal_reference
-    # because of default_code not showed when active = False, is a related
-    # in product.template to variants. We need to show default_code2 in no
-    # active products
-    @api.multi
-    def write(self, vals):
-        if vals.get('default_code', False):
-            vals['default_code2'] = vals['default_code']
-        if vals.get('default_code2', False):
-            vals['default_code'] = vals['default_code2']
-        res = super(ProductTemplate, self).write(vals)
-        return res
-
-    @api.multi
-    def create(self, vals):
-        if vals.get('default_code', False):
-            vals['default_code2'] = vals['default_code']
-        if vals.get('default_code2', False):
-            vals['default_code'] = vals['default_code2']
-        res = super(ProductTemplate, self).create(vals)
-        return res
-
     @api.one
     @api.constrains('base_use_sale', 'unit_use_sale', 'box_use_sale')
     def check_use_sale_checked(self):
         if not (self.base_use_sale or self.unit_use_sale or self.box_use_sale):
             raise Warning(_('Need a logistic unit in sales'))
+        return
 
     @api.multi
     def write(self, vals):
         """
         This method compares unit of measure and logistic unit of measure when
-        a product is modified.
+        a product is modified. Also:
+        # Copy default_code and default_code2 to show always the internal_reference
+        # because of default_code not showed when active = False, is a related
+        # in product.template to variants. We need to show default_code2 in no
+        # active products
         """
         for product in self:
             log_base_id = vals['log_base_id'] if 'log_base_id' in vals \
@@ -612,14 +595,32 @@ class ProductTemplate(models.Model):
             if unit_error:
                 raise except_orm(_('Error'),
                                  _('Product logistic units are wrong'))
+
+        if vals.get('default_code', False):
+            vals['default_code2'] = vals['default_code']
+        if vals.get('default_code2', False):
+            vals['default_code'] = vals['default_code2']
         res = super(ProductTemplate, self).write(vals)
+
+        # If active in vals wait for super to activate it and then write
+        # default code in activated product calling again the super
+        if vals.get('active', False):
+            dc = vals['default_code2'] if 'default_code2' in vals else \
+                self.default_code2
+            vals['default_code'] = dc
+        res = super(ProductTemplate, self).write(vals)
+
         return res
 
     @api.model
     def create(self, vals):
         """
         This method compares unit of measure and logistic unit of measure when
-        a product is created.
+        a product is created. Also:
+        # Copy default_code and default_code2 to show always the internal_reference
+        # because of default_code not showed when active = False, is a related
+        # in product.template to variants. We need to show default_code2 in no
+        # active products
         """
         log_base_id = vals.get('log_base_id', False) and vals['log_base_id']
         log_unit_id = vals.get('log_unit_id', False) and vals['log_unit_id']
@@ -657,6 +658,10 @@ class ProductTemplate(models.Model):
             raise except_orm(_('Error'),
                              _('Product logistic units are wrong'))
 
+        if vals.get('default_code', False):
+            vals['default_code2'] = vals['default_code']
+        if vals.get('default_code2', False):
+            vals['default_code'] = vals['default_code2']
         res = super(ProductTemplate, self).create(vals)
         return res
 

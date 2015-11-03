@@ -354,7 +354,6 @@ msgstr "EAN Consumo"
 #: code:addons/midban_product/product.py:367
 #: code:addons/midban_product/product.py:376
 #: code:addons/midban_product/product.py:381
-
 #: code:addons/midban_product/product.py:568
 #: code:addons/midban_product/product.py:590
 #: code:addons/midban_product/product.py:610
@@ -750,7 +749,6 @@ msgid "Product history"
 msgstr "Historial de producto"
 
 #. module: midban_product
-
 #: code:addons/midban_product/product.py:591
 #: code:addons/midban_product/product.py:635
 #, python-format
@@ -787,7 +785,6 @@ msgid "Product unregistered"
 msgstr "Dado de baja"
 
 #. module: midban_product
-
 #: code:addons/midban_product/product.py:1145
 #: code:addons/midban_product/product.py:1187
 #, python-format
@@ -888,7 +885,6 @@ msgid "Supplier %s not defined in product                                       
 msgstr "EL proveedor %s no está definido en el listado de proveedores del producto"
 
 #. module: midban_product
-
 #: code:addons/midban_product/product.py:912
 #, python-format
 msgid "Supplier_id not in supplier_ids"
