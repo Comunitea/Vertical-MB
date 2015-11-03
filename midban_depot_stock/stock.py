@@ -1479,7 +1479,10 @@ class stock_location(models.Model):
                                  "this location and childrens"),
         'zone': fields.selection([('storage', 'Storage Zone'),
                                   ('picking', 'Picking Zone')],
-                                 'Location Zone')}
+                                 'Location Zone'),
+        # Used in set_order_location_tour module, view defined in that module
+        'order_seq': fields.char('Sequence order'),
+    }
 
     _defaults = {
         'sequence': 0,
