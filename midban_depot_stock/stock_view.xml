@@ -316,6 +316,13 @@
                     <separator string="Picking Report"/>
                     <field name="wave_report_ids"/>
                 </field>
+
+                <button name="confirm_picking" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </button>
+                <button name="done" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </button>
             </field>
         </record>
 

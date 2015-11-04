@@ -259,7 +259,6 @@ products do not require units for validation'),
     def action_copy_logistic_info (self, cr, uid, ids, context=None):
         if isinstance(ids, (int, long)):
             ids = [ids]
-
         for product in self.browse(cr, uid, ids, context=context):
             vals = {
                 'supp_kg_un':product.kg_un,
@@ -667,7 +666,6 @@ class ProductTemplate(models.Model):
 
     # @api.constrains('log_base_id', 'log_unit_id', 'log_box_id', 'uom_id', ' uos_id')
     # def check_supplier_uoms(self):
-    #     # import ipdb; ipdb.set_trace()
     #
     #     product_uom = self.uom_id
     #     if not ((product_uom == self.log_base_id) or \
@@ -956,7 +954,8 @@ class product_product(models.Model):
         if res == 0 or res_uom == 0:
             raise except_orm(_('Error'), _('The product unit of measure %s is \
                              not related with any logistic \
-                             unit' % self.uom_id.name))
+                             unit for product %s' % (self.uom_id.name,
+                                                     self.name)))
 
         return res * res_uom
     #Da el factor de conversión entre dos unidades para un determinado
@@ -1164,7 +1163,7 @@ class ProductSupplierinfo(models.Model):
                           else product.log_unit_id.id
             log_box_id = vals['log_box_id'] if 'log_box_id' in vals \
                          else product.log_box_id.id
-            product_uom = product.product_tmpl_id.uom_id
+            product_uom = product.product_tmpl_id.uom_id.id
             # product_uom = vals['product_uom'] if 'product_uom' in vals \
                     #  else product.product_uom.id
             if not((product_uom == log_base_id) \
@@ -1188,7 +1187,7 @@ class ProductSupplierinfo(models.Model):
             if unit_error:
                 raise except_orm(_('Error'),
                             _('Product logistic units of supplier are wrong'))
-        res = super(ProductTemplate, self).write(vals)
+        res = super(ProductSupplierinfo, self).write(vals)
         return res
 
     @api.model
@@ -1229,7 +1228,7 @@ class ProductSupplierinfo(models.Model):
             raise except_orm(_('Error'),
                              _('Product logistic units of supplier are wrong'))
 
-        res = super(ProductTemplate, self).create(vals)
+        res = super(ProductSupplierinfo, self).create(vals)
         return res
 
     # @api.one
