@@ -8,8 +8,12 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
-                <field name="display_name" position="before">
+                <field name="display_name" position="replace">
+                    <field name="ref"/>
                     <field name="comercial"/>
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="display_name" invisible="1"/>
                 </field>
             </field>
         </record>

@@ -461,7 +461,7 @@ function openerp_ts_models(instance, module){
             pvp: 0,
             pvp_ref: 0, //in order to change the discount
             total: 0,
-            product_uos: 0,
+            product_uos: '',
             product_uos_qty: 0,
             price_uos_qty: 0,
             price_udv: 0,
