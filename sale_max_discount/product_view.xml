@@ -21,7 +21,7 @@
             <field name="arch" type="xml">
                 <field name="description_sale"  position="after">
                     <group colspan="4" col="8" string="Max discount">
-                        <field name="max_discount"/>
+                        <!-- <field name="max_discount"/> -->
                         <field name="last_edit" readonly="1"/>
                     </group>
                 </field>
