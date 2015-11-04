@@ -247,21 +247,60 @@
     </t>
 
     <t t-name="Data-Order-Widget">
-          <div class="col-xs-2 fullheight">
+              <div class="col-xs-4 fullheight">
+                <div class="row semiheight">
+                  <div class="col-xs-12 fullheight">
+                    <div class="fullheight centerinside fullwidth">
+                      <div class="centerthis">
+                        <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
+                            <label for="customer" class="red" id="labelpartner">Indirect Customer:</label>
+                        </t>
+                        <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
+                            <label for="customer" id="labelpartner">Customer:</label>
+                        </t>
+                          <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="1"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row semiheight">
+                  <div class="col-xs-6 fullheight">
+                    <div class="fullheight centerinside fullwidth">
+                      <div class="centerthis">
+                        <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
+                          <label class="red" for="total">Suppliers:</label>
+                          <input type="text" class='total mandatory' id="supplier"
+                              t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
+                        </t>
+                        <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
+                          <label for="total">Suppliers:</label>
+                          <input type="text" class='total' id="supplier"
+                              value="" readonly="True" tabIndex="-1"/>
+                        </t>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-6 fullheight">
+                    <div class="fullheight centerinside fullwidth">
+                      <div class="centerthis">
+                        <label for="contact_name">Contact Name:</label>
+                        <input class=" " type="text" id='contact_name' name="contact_name" t-att-value="widget.order_model.get('contact_name')" readonly="readonly" tabIndex="-1"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          <!-- <div class="col-xs-2 fullheight">
               <div class="row semiheight">
                   <div class="fullheight centerinside fullwidth">
                       <div class="centerthis">
-                          <!-- <label for="num_order">Nº order:</label>
-                          <input class=" " type="text" id='num_order' name="num_order" t-att-value="widget.order_model.get('num_order')" readonly="readonly" tabIndex="-1"/> -->
                           <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
                               <label for="customer" class="red" id="labelpartner">Indirect Customer:</label>
                           </t>
                           <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
                               <label for="customer" id="labelpartner">Customer:</label>
                           </t>
-                            <!-- <label for="customer" id="labelpartner">Customer:</label> -->
                             <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="1"/>
-                            <!-- <select class="mandatory" id="partner" name="customer" t-att-value="widget.order_model.get('partner')"/> -->
                       </div>
                   </div>
                 </div>
@@ -289,7 +328,6 @@
                         <label for="total">Suppliers:</label>
                         <input type="text" class='total' id="supplier"
                             value="" readonly="True" tabIndex="-1"/>
-                            <!-- t-att-value="widget.order_model.get('supplier')" readonly="True" tabIndex="-1"/> -->
                       </t>
                     </div>
                   </div>
@@ -302,7 +340,7 @@
                   </div>
                 </div>
               </div>
-        </div>
+        </div> -->
 
           <div class="col-xs-2 fullheight">
               <div class="row semiheight">

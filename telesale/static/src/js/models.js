@@ -148,7 +148,9 @@ function openerp_ts_models(instance, module){
                     return self.fetch('res.partner',['comercial','supplier_ids','indirect_customer','name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
                 }).then(function(customers){
                     for (key in customers){
-                        var customer_name = customers[key].comercial || customers[key].name
+                        // var customer_name = customers[key].comercial || customers[key].name
+                        // var customer_name = customers[key].comercial + ' | ' + customers[key].name + ' | ' + customers[key].ref
+                        var customer_name = self.getComplexName(customers[key]);
                         self.get('customer_names').push(customer_name);
                         self.get('customer_codes').push(customers[key].ref);
                     }
@@ -241,7 +243,7 @@ function openerp_ts_models(instance, module){
         // build a order loaded from the server as order_obj the selected order_model
         build_order: function(order_obj, order_model, order_lines){
             var partner_obj = this.db.get_partner_by_id(order_obj.partner_id[0]);
-            var cus_name = partner_obj.comercial || partner_obj.name
+            var cus_name = this.getComplexName(partner_obj);
             order_model.set('partner', cus_name);
             order_model.set('partner_code', partner_obj.ref || "");
             order_model.set('customer_debt', my_round(partner_obj.credit,2));
@@ -404,11 +406,12 @@ function openerp_ts_models(instance, module){
         parse_str_date_to_utc: function(str_date){
 
             // Todo esto porque lo de abajo cambia el mes por el día, le cambiamos la fecha antes para obtener el resultado correcto
-            str_date2 = instance.web.datetime_to_str(Date.parse(str_date));
-            str_year = str_date2.split(" ")[0].split("-")[0]
-            str_month = str_date2.split(" ")[0].split("-")[1]
-            str_day = str_date2.split(" ")[0].split("-")[2]
-            new_str = str_year + "-" + str_month + "-" + str_day + " " + str_date2.split(" ")[1]
+            // var str_date2 = instance.web.datetime_to_str(Date.parse(str_date)); //Se comenta porque intercambia day por month, puede que dependa de si estás en firefox o en chrome
+            var str_date2 = str_date;
+            var str_year = str_date2.split(" ")[0].split("-")[0]
+            var str_month = str_date2.split(" ")[0].split("-")[1]
+            var str_day = str_date2.split(" ")[0].split("-")[2]
+            var new_str = str_year + "-" + str_month + "-" + str_day + " " + str_date2.split(" ")[1]
             return new_str
         },
         parse_utc_to_str_date: function(str_date){
@@ -435,6 +438,13 @@ function openerp_ts_models(instance, module){
               var hour_part =  splited[1];
               return date_part[2] + "-" +  date_part[1] + "-" + date_part[0] + " " + hour_part;
           }
+        },
+        getComplexName: function(partner_obj){
+            var res = '';
+            if (partner_obj){
+              res = partner_obj.comercial + ' | ' + partner_obj.name + ' | ' + partner_obj.ref
+            }
+            return res;
         }
 
 

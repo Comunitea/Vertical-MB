@@ -126,7 +126,9 @@ function openerp_ts_db(instance, module){
                 partner.property_account_position = partner.property_account_position[0];
                 partner.property_product_pricelist = partner.property_product_pricelist[0];
                 this.partner_by_id[partner.id] = partner;
-                var cus_name = partner.comercial || partner.name
+                // var cus_name = partner.comercial || partner.name
+                var cus_name = partner.comercial + ' | ' + partner.name + ' | ' + partner.ref
+                // var cus_name = this.ts_model.getComplexName(partner)
                 this.partner_name_id[cus_name] = partner.id;
                 if(partner.ref){
                     this.partner_ref_id[partner.ref] = partner.id;

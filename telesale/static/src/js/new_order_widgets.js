@@ -142,9 +142,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     else{
                         partner_obj = self.ts_model.db.get_partner_by_id(partner_id);
-                        var cus_name = partner_obj.comercial || partner_obj.name
+                        var cus_name = self.ts_model.getComplexName(partner_obj);
                         self.order_model.set('partner', cus_name);
                         self.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
+                        var sup_name = ''
+                        if (partner_obj.indirect_customer && !$.isEmptyObject(partner_obj.supplier_ids)){
+                          sup_name = self.ts_model.db.get_supplier_by_id(partner_obj.supplier_ids[0]);
+                        }
+                        self.order_model.set('supplier', sup_name);
                         self.order_model.set('customer_comment', partner_obj.comment);
                         self.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
                         self.order_model.set('customer_debt', my_round(partner_obj.credit,2));
