@@ -56,17 +56,17 @@
                                 </div>
 
                                  <div class="middle">
-                                        <h2 t-esc="o.product_id.name"/>
-                                      <p><strong>REF: </strong><span t-field="o.default_code"/></p>
+                                      <h2 t-esc="o.product_id.name"/>
+                                      <h2 t-esc="o.default_code"/>
                                       <p><strong>PACKAGE: </strong><span t-field="o.package_id"/></p>
                                       <p><strong>LOT:  </strong><span t-field="o.lot_id"/></p>
                                       <p><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></p>
                                    </div>
 
                                     <div class="bottom text-center">
-                                        <h2 t-esc="'PK' + (o.package_id and str(o.package_id.id) or '')"/>
-                                        <img t-att-src="'data:image/png;base64,%s' % barcode('Code128','PK' + (o.package_id and str(o.package_id.id) or ''), 800, 300)" style="width:350px;height:150px"/>
-                                        <h3 t-esc="o.package_id and o.package_id.location_id.name or False"/>
+                                        <h2 t-esc="o.package_id.name"/>
+                                        <img t-att-src="'data:image/png;base64,%s' % barcode('Code128','' + o.package_id.name or 'PK', 1200, 300)" style="width:350px;height:150px"/>
+                                        <h3 t-esc="o.package_id and o.package_id.location_id.bcd_name or False"/>
                                     </div>
                                   </div>
                         </div>

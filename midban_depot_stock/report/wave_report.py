@@ -29,7 +29,7 @@ class sale_report(osv.osv):
     _description = "Group picks of waves"
     _auto = False
     _rec_name = 'product_id'
-    _order = 'sequence'
+    _order = 'order_seq'
 
     def _get_camera_from_loc(self, cr, uid, ids, field_names, args,
                              context=None):
@@ -109,6 +109,7 @@ class sale_report(osv.osv):
         'product_qty': fields.float('Quantity', readonly=True),
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
+        'order_seq': fields.char('Sequence'),
         'sequence': fields.integer('Sequence', readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
@@ -137,6 +138,7 @@ class sale_report(osv.osv):
                                          string="Visited (All Ops)",
                                          relation="stock.pack.operation",
                                          multi='multi_'),
+
     }
 
     def _select(self):
@@ -148,6 +150,7 @@ class sale_report(osv.osv):
           SUM(SQ.product_qty) AS product_qty,
           SQ.wave_id          AS wave_id,
           SQ.sequence         AS sequence,
+          SQ.order_seq         AS order_seq,
           SUM(SQ.uos_qty)         AS uos_qty,
           SQ.uos_id          AS uos_id,
           SQ.customer_id       AS customer_id,
@@ -163,6 +166,7 @@ class sale_report(osv.osv):
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.sequence AS sequence,
+                  location.order_seq AS order_seq,
                   quant.package_id as pack_id,
                   0 as customer_id
 
@@ -191,7 +195,8 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence
+                     sequence,
+                     order_seq
            UNION
            SELECT Min(operation.id)          AS id,
                   operation.product_id       AS product_id,
@@ -201,7 +206,8 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
-                  location.sequence                 AS sequence,
+                  location.sequence AS sequence,
+                  location.order_seq AS order_seq,
                   operation.package_id as pack_id,
                   0 as customer_id
 
@@ -226,7 +232,8 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence"""
+                     sequence,
+                     order_seq"""
 
     def _subquery_no_grouped_op(self):
         return """SELECT Min(operation.id) AS id,
@@ -238,6 +245,7 @@ class sale_report(osv.osv):
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.SEQUENCE AS SEQUENCE,
+                  location.order_seq AS order_seq,
                   quant.package_id as pack_id,
                   picking.partner_id as customer_id
 
@@ -265,7 +273,8 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence
+                     sequence,
+                     order_seq
            UNION
            SELECT Min(operation.id)          AS id,
                   operation.product_id       AS product_id,
@@ -276,6 +285,7 @@ class sale_report(osv.osv):
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
                   location.sequence                 AS sequence,
+                  location.order_seq AS order_seq,
                   operation.package_id as pack_id,
                   picking.partner_id as customer_id
            FROM   stock_pack_operation operation
@@ -298,7 +308,8 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence"""
+                     sequence,
+                     order_seq"""
 
     def _group_by(self):
         return """SQ.product_id,
@@ -306,6 +317,7 @@ class sale_report(osv.osv):
              SQ.location_id,
              SQ.wave_id,
              SQ.sequence,
+             SQ.order_seq,
              SQ.uos_id,
              SQ.pack_id,
              SQ.customer_id"""

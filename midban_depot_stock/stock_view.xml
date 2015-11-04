@@ -465,7 +465,8 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_picking_replanning_route_tree"/>
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/>
-            <field name="domain">[('picking_type_code', '=', 'outgoing'), ('state','not in',('draft','cancel', 'done'))]</field>
+            <!--<field name="domain">[('picking_type_code', '=', 'outgoing'), ('state','not in',('draft','cancel', 'done'))]</field>-->
+            <field name="domain">[('picking_type_code', '=', 'outgoing'), ('state','in',('assigned','partially_available'))]</field>
             <field name="context">{}</field>
         </record>
 
