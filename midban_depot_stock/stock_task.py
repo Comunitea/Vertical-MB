@@ -89,11 +89,24 @@ class stock_task(osv.Model):
         ctx['active_id'] = len(pick_ids) == 1 and pick_ids[0] or False
         pick_t = self.env['stock.picking'].with_context(ctx)
         pick_objs = pick_t.browse(pick_ids)
+
+        if self.type == 'picking':
+            filter_ids = []
+            for pick in pick_objs:
+                if len(pick.pack_operation_ids) == 1 and \
+                        not pick.pack_operation_ids[0].to_process:
+                    pick.wave_id = False
+                    pick.operator_id = False
+                    continue
+                filter_ids.append(pick.id)
+            pick_objs = pick_t.browse(filter_ids)
+
         for pick in pick_objs:
             if pick.state not in ['done', 'draft', 'cancel']:
                 pick.approve_pack_operations2(self.id)
         if self.type == 'picking':
-            self.wave_id.done()
+            # self.wave_id.done()
+            self.wave_id.state = 'done'
 
         duration = datetime.now() - \
             datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
