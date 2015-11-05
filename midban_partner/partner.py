@@ -119,6 +119,8 @@ class res_partner(osv.Model):
     def _display_name_compute(self, cr, uid, ids, name, args, context=None):
         context = dict(context or {})
         context.pop('show_address', None)
+        context.pop('show_address_only', None)
+        context.pop('show_email', None)
         return dict(self.name_get(cr, uid, ids, context=context))
 
     # Overwrite necesary to fill display_name column propertly.
