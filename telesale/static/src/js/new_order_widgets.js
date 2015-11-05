@@ -1090,6 +1090,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.sum_cost = 0;
             this.sum_box = 0;
             this.sum_fresh = 0;
+            debugger;
             (this.currentOrderLines).each(_.bind( function(line) {
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){

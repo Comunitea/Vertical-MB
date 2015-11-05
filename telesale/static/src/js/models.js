@@ -545,7 +545,8 @@ function openerp_ts_models(instance, module){
         },
         get_all_prices: function(){
             var self = this;
-            var base = round_dc(this.get('qty') * this.get('pvp') * (1 - (this.get('discount') / 100.0)), 2);
+            // var base = round_dc(this.get('qty') * this.get('pvp') * (1 - (this.get('discount') / 100.0)), 2);
+            var base = this.get('qty') * this.get('pvp') * (1 - (this.get('discount') / 100.0));
             var totalTax = base;
             var totalNoTax = base;
             var taxtotal = 0;
@@ -556,20 +557,20 @@ function openerp_ts_models(instance, module){
                 var taxes_ids = self.get('taxes_ids')
                 var taxes =  self.ts_model.get('taxes');
                 var tmp;
-                    var taxtotal;
-                    var totalTax;
+                    // var taxtotal;
+                    // var totalTax;
                 _.each(taxes_ids, function(el) {
                     var tax = _.detect(taxes, function(t) {return t.id === el;});
 
                     if (tax.price_include) {
                         if (tax.type === "percent") {
-                            tmp =  base - round_dc(base / (1 + tax.amount),2);
+                            tmp =  base - base / (1 + tax.amount);
                         } else if (tax.type === "fixed") {
-                            tmp = round_dc(tax.amount * self.get('qty'),2);
+                            tmp = tax.amount * self.get('qty');
                         } else {
                             throw "This type of tax is not supported by the telesale system: " + tax.type;
                         }
-                        tmp = round_dc(tmp,2);
+                        // tmp = round_dc(tmp,2);
                         taxtotal += tmp;
                         totalNoTax -= tmp;
                     } else {
@@ -580,7 +581,7 @@ function openerp_ts_models(instance, module){
                         } else {
                             throw "This type of tax is not supported by the telesale system: " + tax.type;
                         }
-                        tmp = round_dc(tmp,2);
+                        // tmp = round_dc(tmp,2);
                         taxtotal += tmp;
                         totalTax += tmp;
                     }
