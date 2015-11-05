@@ -61,7 +61,7 @@ class sale(osv.osv):
             #     total_margin_per = cur_obj.round(cr, uid, cur, op * 100)
             #     res[order.id]['total_margin_per'] = total_margin_per
             sum_cost = 0
-            sum_margin = 0            
+            sum_margin = 0
             for line in order.order_line:
                 prod_cost = line.product_id.standard_price
                 sum_cost += prod_cost * line.product_uom_qty
@@ -168,23 +168,23 @@ class sale(osv.osv):
                 t_order_line.unlink(cr, uid, line_ids)
             for line in order_lines:
                 product_obj = t_product.browse(cr, uid, line['product_id'])
-                product_uom_id = line['product_uom']
-                product_uom_qty = line['qty']
+                product_uom_id = line.get('product_uom', False)
+                product_uom_qty = line.get('qty', 0.0)
 
-                product_uos_id = line['product_uos']
-                product_uos_qty = line['product_uos_qty']
+                product_uos_id = line.get('product_uos', False)
+                product_uos_qty = line.get('product_uos_qty', 0.0)
                 vals = {
                     'order_id': order_id,
                     'name': product_obj.name,
                     'product_id': product_obj.id,
-                    'price_unit': line['price_unit'],
-                    'price_udv': line['price_udv'],
+                    'price_unit': line.get('price_unit', 0.0),
+                    'price_udv': line.get('price_udv', 0.0),
                     'product_uom': product_uom_id,
                     'product_uos': product_uos_id,
                     'product_uom_qty': product_uom_qty,
                     'product_uos_qty': product_uos_qty,
-                    'tax_id': [(6, 0, line['tax_ids'])],
-                    'pvp_ref': line['pvp_ref'],
+                    'tax_id': [(6, 0, line.get('tax_ids', False))],
+                    'pvp_ref': line.get('pvp_ref', 0.0),
                     'q_note': line.get('qnote', False),
                     'detail_note': line.get('detail_note', False)
                 }
