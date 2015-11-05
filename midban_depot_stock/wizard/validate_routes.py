@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api
+from openerp import models, api
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 
@@ -38,7 +38,7 @@ class ValidateRoutes(models.TransientModel):
         for pick in pick_pickings:
             if not pick.route_detail_id:
                 raise except_orm(_('Error'),
-                                 _('Picking %s without has not route detatl \
+                                 _('Picking %s without has not route detail \
                                    assigned' % pick.name))
 
             # Put unassigned moves inside a new picking
@@ -49,6 +49,7 @@ class ValidateRoutes(models.TransientModel):
                     if not unassigned_pick:
                         copy_values = {'move_lines': [],
                                        'pack_operation_ids': [],
+                                       'validated': False,
                                        'route_detail_id': False,
                                        'group_id': pick.group_id.id}
                         unassigned_pick = pick.copy(copy_values)
@@ -59,6 +60,18 @@ class ValidateRoutes(models.TransientModel):
             picks_by_cam = self._split_pick_by_cameras(pick)
             picks_by_cam.write({'validated': True})
             out_pickings.write({'validated': True})
+
+            unassigned_ids = []
+            if unasigned_picks_lst:
+                for p in unasigned_picks_lst:
+                    p.route_detail_id = False  # Its writed by write method
+                    unassigned_ids.append(p.id)
+                # Display the created pickings
+                action_obj = self.env.ref('stock.action_picking_tree')
+                action = action_obj.read()[0]
+                action['domain'] = str([('id', 'in', unassigned_ids)])
+                action['context'] = {}
+                return action
         return
 
     def _get_pickings_from_outs(self, out_pickings):

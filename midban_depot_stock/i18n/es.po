@@ -2225,7 +2225,7 @@ msgstr "El albarán %s no está asignado"
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:41
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:74
 #, python-format
-msgid "Picking %s without has not route detatl                                    assigned"
+msgid "Picking %s without has not route detail                                    assigned"
 msgstr "El albarán %s no tiene detalle de ruta asignado"
 
 #. module: midban_depot_stock
