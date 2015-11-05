@@ -77,7 +77,8 @@
                     <field name="machine_id"  attrs="{'invisible': [('machine_id', '=', False)]}"/>
                     <field name="warehouse_id"  attrs="{'invisible': [('warehouse_id', '=', False)]}"/>
                     <field name="task_type" attrs="{'invisible': [('task_type', '=', False)]}"/>
-                    <field name="camera_id" attrs="{'invisible': [('task_type', '!=', 'reposition')]}"/>
+                    <!-- <field name="camera_id" attrs="{'invisible': [('task_type', '!=', 'reposition')]}"/> -->
+                    <field name="camera_id"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])],
                                    'invisible': [('picking_type_code', '!=', 'outgoing'), ('route_detail_id', '=', False)]}"/>
