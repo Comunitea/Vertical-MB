@@ -434,6 +434,7 @@ class StockPicking(models.Model):
         help="Calculed as the total of stock qty in moves * "
         "product gross weight")
     validated = fields2.Boolean('Validated', default=False,
+                                readonly=True,
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
 

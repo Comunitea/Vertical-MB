@@ -428,7 +428,7 @@
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
-                    <field name="validated"  attrs="{'readonly': [('state', 'in', [('done')])]}"/>
+                    <field name="validated"/>
                     <field name="state" readonly="True" invisible="1"/>
                     <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
                     <field name="trans_route_id" invisible="1"/>
