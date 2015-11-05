@@ -171,14 +171,14 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 else e.returnValue = false;
                 self.$('#button_no').click();  //new order screen
                 self.$("#partner").focus();
-
             });
+
             Mousetrap.bind('alt+w', function(e){
                 $( document.activeElement ).blur();
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_oh').click(); //Order history page
-                self.$('#input-customer').focus();
+                self.$('.ui-autocomplete-input').focus();
                 // self.$('#button2').click(); //Summary orders page
                 // self.$("#input-date_start2").focus();
             });
@@ -187,7 +187,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_cl').click();//call list page
-                self.$('#date-call-search').focus();
+                self.$('.noclass').focus();
             });
             Mousetrap.bind('alt+r', function(e){
                 $( document.activeElement ).blur();
@@ -201,6 +201,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_pr').click();  //product reserved page
+                self.$('#input-customer').focus();
             });
             Mousetrap.bind('alt+y', function(e){
                 $( document.activeElement ).blur();
@@ -225,7 +226,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 $( document.activeElement ).blur();
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
-                self.$('#vum-button').click();  //VUM button
+                self.$('#vua-button').click();  //VUM button
             });
             Mousetrap.bind('ctrl+a', function(e){
                 $( document.activeElement ).blur();
@@ -344,7 +345,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 $( document.activeElement ).blur();
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
-                self.$('.selected-order button')[0].focus();
+                self.$('.select-order')[0].click();
             });
 
         },

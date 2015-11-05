@@ -122,6 +122,7 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
             this.$el.find('button#button_no').click(function(){ self.select_screen('new_order');
                                                               // self.select_button_block('order_buttons');
                                                               self.setButtonSelected('button#button_no');
+                                                              // self.$("#partner").focus();
                                                              });
             this.$el.find('button#button_so').click(function(){ self.select_screen('summary_order');
                                                               self.setButtonSelected('button#button_so');

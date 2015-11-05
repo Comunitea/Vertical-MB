@@ -651,7 +651,12 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         perform_onchange: function(key) {
             var self=this;
             var value = this.$('.col-'+key).val();
-            if (!value) {return;}
+            // debugger;
+            // if (!value) {
+            //   return;
+            //   alert(_t("Value mustn't be empty"));
+            //   value = 1.0;
+            // }
 
             switch (key) {
                 case "code":
@@ -661,6 +666,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         alert(_t("Product code '" + value + "' does not exist"));
                         this.model.set('code', "");
                         this.model.set('product', "");
+                        this.model.set('product_uos_qty', 0.0);
                         this.refresh('product_uos_qty');
                         break;
                     }
@@ -675,6 +681,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         alert(_t("Product name '" + value + "' does not exist"));
                         this.model.set('code', "");
                         this.model.set('product', "");
+                        this.model.set('product_uos_qty', 0.0);
                         this.refresh('product_uos_qty');
                         break;
                     }
@@ -715,59 +722,101 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
                 case "product_uos_qty":
                     var prod_name = this.$('.col-product').val();
-                    var uos_name = this.$('.col-product_uos').val();
-                    conv = this.getUnitConversions(prod_name, value, uos_name)
-                    log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('product_uos_qty', my_round(value, 4));
-                    this.model.set('qty', my_round(conv[log_unit], 4));
-                    // Se calculan las cajas
-                    var boxes = 0.0
-                    var product_id = this.ts_model.db.product_name_id[prod_name];
-                    var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                    var uos_id = this.ts_model.db.unit_name_id[uos_name];
-                    if(uos_id == product_obj.log_base_id[0]){
-                        boxes = (value / product_obj.kg_un) / product_obj.un_ca
+                    if(prod_name == ""){
+                      alert(_t("Product is not selected"));
                     }
-                    else if(uos_id == product_obj.log_unit_id[1]){
-                        boxes = value / product_obj.un_ca
+                    else{
+                      if(!value){
+                        alert(_t("Value mustn't be empty"));
+                        value = 1.0;
+                      }
+                      else{
+                        var uos_name = this.$('.col-product_uos').val();
+                        conv = this.getUnitConversions(prod_name, value, uos_name)
+                        log_unit = this.getUomLogisticUnit(prod_name)
+                        this.model.set('product_uos_qty', my_round(value, 4));
+                        this.model.set('qty', my_round(conv[log_unit], 4));
+                        // Se calculan las cajas
+                        var boxes = 0.0
+                        var product_id = this.ts_model.db.product_name_id[prod_name];
+                        var product_obj = this.ts_model.db.get_product_by_id(product_id);
+                        var uos_id = this.ts_model.db.unit_name_id[uos_name];
+                        if(uos_id == product_obj.log_base_id[0]){
+                            boxes = (value / product_obj.kg_un) / product_obj.un_ca
+                        }
+                        else if(uos_id == product_obj.log_unit_id[1]){
+                            boxes = value / product_obj.un_ca
+                        }
+                        else if(uos_id == product_obj.log_box_id[0]){
+                            boxes = value
+                        }
+                        this.model.set('boxes', my_round(boxes, 2));
+                      this.refresh('product_uos');
+                      }
                     }
-                    else if(uos_id == product_obj.log_box_id[0]){
-                        boxes = value
-                    }
-                    this.model.set('boxes', my_round(boxes, 2));
-                    this.refresh('product_uos');
                     break;
-
                 case "product_uos":
                     var prod_name = this.$('.col-product').val();
-                    var uos_name = value;
-                    var uos_qty = this.$('.col-product_uos_qty').val();
-                    var price_unit = this.$('.col-pvp').val();
-                    conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
-                    log_unit = this.getUomLogisticUnit(prod_name)
-                    this.model.set('qty', my_round(conv[log_unit], 4));
-                    this.model.set('product_uos', value);
-                    // SET DISCOUNTS
-                    this.set_discounts()
-                    uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
-                    this.model.set('price_udv', my_round(uos_pu, 2))
-                    this.refresh('price_udv')
+                    if(prod_name == ""){
+                        alert(_t("Product is not selected"));
+                    }
+                    else{
+                      if(!value){
+                        alert(_t("Value mustn't be empty"));
+                      }
+                      else{
+                        var uos_name = value;
+                        var uos_qty = this.$('.col-product_uos_qty').val();
+                        var price_unit = this.$('.col-pvp').val();
+                        conv = this.getUnitConversions(prod_name, uos_qty, uos_name)
+                        log_unit = this.getUomLogisticUnit(prod_name)
+                        this.model.set('qty', my_round(conv[log_unit], 4));
+                        this.model.set('product_uos', value);
+                        // SET DISCOUNTS
+                        this.set_discounts()
+                        uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
+                        this.model.set('price_udv', my_round(uos_pu, 2))
+                        this.refresh('price_udv')
+                      }
+                    }
                     break;
                 case "price_udv":
                     var prod_name = this.$('.col-product').val();
-                    var uos_name = this.$('.col-product_uos').val();
-                    var uom_pu = this.getUomUosPrices(prod_name, uos_name, 0, value)
-                    this.model.set('price_udv', my_round(value, 2));
-                    this.model.set('pvp', my_round(uom_pu, 2));
-                    this.refresh('pvp');
+                    if(prod_name == ""){
+                        alert(_t("Product is not selected"));
+                    }
+                    else{
+                      if(!value){
+                        alert(_t("Value mustn't be empty"));
+                        value = 0.0;
+                      }
+                      else{
+                        var uos_name = this.$('.col-product_uos').val();
+                        var uom_pu = this.getUomUosPrices(prod_name, uos_name, 0, value)
+                        this.model.set('price_udv', my_round(value, 2));
+                        this.model.set('pvp', my_round(uom_pu, 2));
+                        this.refresh('pvp');
+                      }
+                    }
                     break;
                 case "pvp":
                     var prod_name = this.$('.col-product').val();
-                    var uos_name = this.$('.col-product_uos').val();
-                    uos_pu = this.getUomUosPrices(prod_name, uos_name,  value)
-                    this.model.set('price_udv', my_round(uos_pu, 2));
-                    this.model.set('pvp', my_round(value, 2));
-                    this.refresh('discount');
+                    if(prod_name == ""){
+                      alert(_t("Product is not selected"));
+                    }
+                    else{
+                      if(!value){
+                        alert(_t("Value mustn't be empty"));
+                        value = 0.0;
+                      }
+                      else{
+                        var uos_name = this.$('.col-product_uos').val();
+                        uos_pu = this.getUomUosPrices(prod_name, uos_name,  value)
+                        this.model.set('price_udv', my_round(uos_pu, 2));
+                        this.model.set('pvp', my_round(value, 2));
+                        this.refresh('discount');
+                      }
+                    }
                     break;
 
                 // case "product_uos":
@@ -795,10 +844,21 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 //     this.refresh();
                 //     break;
                 case "discount":
-                    this.model.set('discount', value);
-                    if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
-                        this.refresh('code');
-
+                    var prod_name = this.$('.col-product').val();
+                    if(prod_name == ""){
+                      alert(_t("Product is not selected"))
+                    }
+                    else{
+                      if(!value){
+                        alert(_t("Value mustn't be empty"));
+                        value = 0;
+                      }
+                      else{
+                        this.model.set('discount', value);
+                        if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
+                            this.refresh('code');
+                        }
+                      }
                     }
                     break;
             }
@@ -865,7 +925,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.currentOrderLines.bind('add', this.renderElement, this);
             this.currentOrderLines.bind('remove', this.renderElement, this);
         },
-        show_client: function(){"SIGIENTE LINEA"
+        show_client: function(){//"SIGIENTE LINEA"
             var client_id = this.check_customer_get_id()
             if (client_id){
                 context = new instance.web.CompoundContext()
@@ -1090,7 +1150,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.sum_cost = 0;
             this.sum_box = 0;
             this.sum_fresh = 0;
-            debugger;
+            // debugger;
             (this.currentOrderLines).each(_.bind( function(line) {
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){
