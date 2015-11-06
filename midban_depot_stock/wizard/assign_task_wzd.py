@@ -742,14 +742,122 @@ class assign_task_wzd(osv.TransientModel):
         res = list(set(res))
         return res
 
+    # def get_picking_task(self, cr, uid, ids, context=None):
+    #     """
+    #     Assign picking task to operator. The task will be linked to a
+    #     wave of picks.
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     move_obj = self.pool.get('stock.move')
+    #     pick_obj = self.pool.get('stock.picking')
+    #     wave_obj = self.pool.get('stock.picking.wave')
+    #     task_obj = self.pool.get("stock.task")
+    #
+    #     obj = self.browse(cr, uid, ids[0], context=context)
+    #     # Check if operator has a task on course
+    #     machine_id = obj.machine_id and obj.machine_id.id or False
+    #     if not machine_id:
+    #         machine_id = self._get_machine_from_user(cr, uid, ids, 'picking',
+    #                                                  context=context)
+    #     machine_obj = self.pool.get('stock.machine').browse(cr, uid,
+    #                                                         machine_id)
+    #     #me salto la comprobacion de la maquina
+    #     # if machine_obj.type in ['retractil'] and False:
+    #     #     raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
+    #     #                          You must select a machine transpalet or order\
+    #     #                          prepare'))
+    #     self._check_on_course(cr, uid, ids, machine_id, context=context)
+    #     if not obj.location_ids:
+    #         raise osv.except_osv(_('Error!'), _('Locations are required to \
+    #                                              do a picking task'))
+    #     to_pick_moves, selected_route = self._get_moves_from_route(cr, uid,
+    #                                                                ids,
+    #                                                                context)
+    #     if not to_pick_moves:
+    #         raise osv.except_osv(_('Error!'), _('Anything pending of \
+    #                                              picking'))
+    #     pickings_to_wave = []
+    #     moves_by_product = {}
+    #     moves_by_product_no_loc = {}
+    #     # Get the moves grouped by product
+    #     for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
+    #         if move.product_id.picking_location_id:
+    #             if move.product_id not in moves_by_product:
+    #                 moves_by_product[move.product_id] = [move.id]
+    #             else:
+    #                 moves_by_product[move.product_id].append(move.id)
+    #         else:
+    #             if move.product_id not in moves_by_product_no_loc:
+    #                 moves_by_product_no_loc[move.product_id] = [move.id]
+    #             else:
+    #                 moves_by_product_no_loc[move.product_id].append(move.id)
+    #     # Get a order list of lists, òrdered by picking camera
+    #     moves_by_product = sorted(moves_by_product.items(),
+    #                               key=lambda p:
+    #                               p[0].picking_location_id.get_camera())
+    #     moves_by_product_no_loc = sorted(moves_by_product_no_loc.items())
+    #     moves_by_product.extend(moves_by_product_no_loc)
+    #     # Get pickings to put in a wave
+    #     pickings_to_wave = self._get_pickings_to_wave(cr, uid, ids,
+    #                                                   moves_by_product,
+    #                                                   context=context)
+    #
+    #     if pickings_to_wave:
+    #         camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
+    #         pick_obj.write(cr, uid, pickings_to_wave,
+    #                        {'operator_id': obj.operator_id.id,
+    #                         'machine_id': machine_id,
+    #                         'warehouse_id': obj.warehouse_id.id,
+    #                         'camera_ids': camera_ids,
+    #                         'task_type': 'picking'},
+    #                        context=context)
+    #         pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
+    #                                     context=context)
+    #         vals = {'user_id': obj.operator_id.id,
+    #                 'camera_ids': camera_ids,
+    #                 'trans_route_id': selected_route,
+    #                 'warehouse_id': obj.warehouse_id.id,
+    #                 'machine_id': obj.machine_id.id,
+    #                 'picking_ids': [(6, 0, pickings_to_wave)]}
+    #         wave_id = wave_obj.create(cr, uid, vals, context=context)
+    #         # wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
+    #         # Create task and associate to picking wave
+    #         vals = {
+    #             'user_id': obj.operator_id.id,
+    #             'type': 'picking',
+    #             'date_start': time.strftime("%Y-%m-%d %H:%M:%S"),
+    #             'wave_id': wave_id,
+    #             'state': 'assigned',
+    #             'machine_id': machine_id,
+    #         }
+    #         task_id = task_obj.create(cr, uid, vals, context=context)
+    #         for pick in pick_obj.browse(cr, uid, pickings_to_wave):
+    #             for op in pick.pack_operation_ids:
+    #                 op.write({'task_id': task_id})
+    #         res = {}
+    #         if obj.print_report:
+    #             res = self._print_report(cr, uid, ids, wave_id=wave_id,
+    #                                      context=context)
+    #         else:
+    #             res = self._get_task_view(cr, uid, ids, task_id,
+    #                                       context=context)
+    #         return res
+    #
+    #     else:
+    #         raise osv.except_osv(_('Error!'), _('No pickings to put in a \
+    #                                              wave'))
+
     def get_picking_task(self, cr, uid, ids, context=None):
         """
         Assign picking task to operator. The task will be linked to a
         wave of picks.
+        DUPLICADO Y MODIFICADO PARA BUSCAR ALBARANES VALIDADOS CON RUTA Y POR
+        CÁMARA
         """
+
         if context is None:
             context = {}
-        move_obj = self.pool.get('stock.move')
         pick_obj = self.pool.get('stock.picking')
         wave_obj = self.pool.get('stock.picking.wave')
         task_obj = self.pool.get("stock.task")
@@ -760,49 +868,28 @@ class assign_task_wzd(osv.TransientModel):
         if not machine_id:
             machine_id = self._get_machine_from_user(cr, uid, ids, 'picking',
                                                      context=context)
-        machine_obj = self.pool.get('stock.machine').browse(cr, uid,
-                                                            machine_id)
-        #me salto la comprobacion de la maquina
-        # if machine_obj.type in ['retractil'] and False:
-        #     raise osv.except_osv(_('Error!'), _('Machines type %s not valid\
-        #                          You must select a machine transpalet or order\
-        #                          prepare'))
         self._check_on_course(cr, uid, ids, machine_id, context=context)
         if not obj.location_ids:
             raise osv.except_osv(_('Error!'), _('Locations are required to \
                                                  do a picking task'))
-        to_pick_moves, selected_route = self._get_moves_from_route(cr, uid,
-                                                                   ids,
-                                                                   context)
-        if not to_pick_moves:
-            raise osv.except_osv(_('Error!'), _('Anything pending of \
-                                                 picking'))
-        pickings_to_wave = []
-        moves_by_product = {}
-        moves_by_product_no_loc = {}
-        # Get the moves grouped by product
-        for move in move_obj.browse(cr, uid, to_pick_moves, context=context):
-            if move.product_id.picking_location_id:
-                if move.product_id not in moves_by_product:
-                    moves_by_product[move.product_id] = [move.id]
-                else:
-                    moves_by_product[move.product_id].append(move.id)
-            else:
-                if move.product_id not in moves_by_product_no_loc:
-                    moves_by_product_no_loc[move.product_id] = [move.id]
-                else:
-                    moves_by_product_no_loc[move.product_id].append(move.id)
-        # Get a order list of lists, òrdered by picking camera
-        moves_by_product = sorted(moves_by_product.items(),
-                                  key=lambda p:
-                                  p[0].picking_location_id.get_camera())
-        moves_by_product_no_loc = sorted(moves_by_product_no_loc.items())
-        moves_by_product.extend(moves_by_product_no_loc)
-        # Get pickings to put in a wave
-        pickings_to_wave = self._get_pickings_to_wave(cr, uid, ids,
-                                                      moves_by_product,
-                                                      context=context)
 
+        loc_ids = [x.id for x in obj.location_ids]
+        date_planned = obj.date_planned
+        start_date = date_planned + " 00:00:00"
+        end_date = date_planned + " 23:59:59"
+        selected_route = obj.trans_route_id and obj.trans_route_id.id or False
+        if not selected_route:
+            selected_route = self._get_random_route(cr, uid, ids, context)
+        domain = [
+            ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
+            ('camera_id', 'in', loc_ids),
+            ('state', '=', 'assigned'),
+            ('min_date', '>=', start_date),
+            ('min_date', '<=', end_date),
+            ('trans_route_id', '=', selected_route),
+            ('validated', '=', True)
+        ]
+        pickings_to_wave = pick_obj.search(cr, uid, domain, context=context)
         if pickings_to_wave:
             camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
             pick_obj.write(cr, uid, pickings_to_wave,
