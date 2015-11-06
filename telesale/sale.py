@@ -155,6 +155,8 @@ class sale(osv.osv):
                     'res_id': order_id,
                     'type': 'email'
                 }
+
+
                 self.pool.get('mail.message').create(cr, uid, vals,
                                                      context=context)
 
@@ -256,7 +258,6 @@ class sale_order_line(osv.osv):
         Overwrite in order to get the last sale preice to calculate a
         aproximate price of fresh products in telesale
         """
-        # import ipdb; ipdb.set_trace()
 
         if context is None:
             context = {}
@@ -337,7 +338,7 @@ class sale_order_line(osv.osv):
                 'discount': l.discount,
                 'price_subtotal': l.product_uom_qty * l.price_unit *
                 (1 - (l.discount / 100.0)),
-                'tax_id': l.tax_id.id,
+                'tax_id': [x.id for x in l.tax_id],
                 'pvp_ref': l.pvp_ref,
                 'current_pvp': l.current_pvp,
                 'q_note': l.q_note.name,
