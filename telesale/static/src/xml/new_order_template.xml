@@ -139,47 +139,47 @@
         <div class="button-order-container fullheight">
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-                <button class="add-line-button">ADD</button>
+                <button class="add-line-button" tabIndex="9">ADD</button>
               </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button class="remove-line-button">REMOVE</button>
+              <button class="remove-line-button" tabIndex="10">REMOVE</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="ult-button">ULT</button>
+              <button id="ult-button" tabIndex="11">ULT</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="vua-button">VUA</button>
+              <button id="vua-button" tabIndex="12">VUA</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="so-button">SO</button>
+              <button id="so-button" tabIndex="13">SO</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="promo-button">PROMO</button>
+              <button id="promo-button" tabIndex="14">PROMO</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="sust-button">SUST</button>
+              <button id="sust-button" tabIndex="15">SUST</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="info-button">INFO</button>
+              <button id="info-button" tabIndex="16">INFO</button>
             </div>
             </div>
             <div class="col-xs-1 fullheight centerinside">
               <div class="centerthis">
-              <button id="show-client">CUSTOMER</button>
+              <button id="show-client" tabIndex="17">CUSTOMER</button>
             </div>
             </div>
             <div class="col-xs-3 fullheight centerinside">
@@ -258,7 +258,7 @@
                         <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
                             <label for="customer" id="labelpartner">Customer:</label>
                         </t>
-                          <input class="mandatory" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="1"/>
+                          <input class="mandatory tab1" type="text" id="partner" name="customer" t-att-value="widget.order_model.get('partner')" tabIndex="1"/>
                       </div>
                     </div>
                   </div>
@@ -270,7 +270,7 @@
                         <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == true">
                           <label class="red" for="total">Suppliers:</label>
                           <input type="text" class='total mandatory' id="supplier"
-                              t-att-value="widget.order_model.get('supplier')" tabIndex="2"/>
+                              t-att-value="widget.order_model.get('supplier')" tabIndex="6"/>
                         </t>
                         <t t-if="widget.ts_model.db.is_indirect_customer_by_name(widget.order_model.get('partner')) == false">
                           <label for="total">Suppliers:</label>
@@ -347,7 +347,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_order">Date Order:</label>
-                      <input class="mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()" tabIndex="3"/>
+                      <input class="mandatory" type="date" id='date_order' name="date_order" t-att-value="widget.ts_model.getCurrentDateStr()" tabIndex="2"/>
                     </div>
                   </div>
               </div>
@@ -366,7 +366,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_planned">Date Planned:</label>
-                      <input class="  mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.order_model.get('date_planned')" tabIndex="4"/>
+                      <input class="  mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.order_model.get('date_planned')" tabIndex="3"/>
                     </div>
                   </div>
               </div>
@@ -386,7 +386,7 @@
                   <div class="fullheight centerinside fullwidth">
                     <div class="centerthis">
                       <label for="date_invoice">Date invoice:</label>
-                      <input  class="  mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDatePlannedStr()" tabIndex="5"/>
+                      <input  class="  mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDatePlannedStr()" tabIndex="4"/>
                     </div>
                   </div>
               </div>
@@ -409,7 +409,7 @@
                 <div class="fullheight centerinside">
                     <div class="centerthis">
                       <label for="coment">Notes:</label>
-                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment" tabIndex="6"><t t-esc="widget.order_model.get('coment')"/></textarea>
+                      <textarea class="semiheight notes mandatory" rows="2" cols="22" id='coment' name="coment" tabIndex="5"><t t-esc="widget.order_model.get('coment')"/></textarea>
                       <label for="customer_note">Customer Notes:</label>
                       <textarea class="semiheight notes mandatory" rows="2" cols="22" id='customer_comment' name="customer_comment" tabIndex="8"><t t-esc="widget.order_model.get('customer_comment')" t-if="widget.order_model.get('customer_comment')"/></textarea>
                     </div>
@@ -514,21 +514,21 @@
               <div class="order-button">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
-                    <button type="button" class="save-button fullwidth">SAVE</button>
+                    <button type="button" class="save-button fullwidth" tabIndex="18">SAVE</button>
                   </div>
                 </div>
               </div>
               <div class="order-button">
                   <div class="fullheight centerinside fullwidth">
                        <div class="centerthis">
-                  <button class="cancel-button fullwidth">CANCEL</button>
+                  <button class="cancel-button fullwidth" tabIndex="19">CANCEL</button>
                        </div>
                   </div>
               </div>
               <div class="order-button">
                   <div class="fullheight centerinside fullwidth">
                        <div class="centerthis">
-                  <button class="confirm-button fullwidth">CONFIRM</button>
+                  <button class="confirm-button fullwidth" tabIndex="20">CONFIRM</button>
                        </div>
                   </div>
               </div>

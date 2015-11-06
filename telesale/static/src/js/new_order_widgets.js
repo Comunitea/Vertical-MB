@@ -49,6 +49,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var identify = 'button#' + this.bo_id
             $('.select-order').removeClass('selected-order');
             $(identify).addClass('selected-order');
+            $('.tab1').focus();
         },
         closeOrder: function(event) {
             this.order.destroy();
@@ -70,7 +71,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self = this;
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
-            this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
+            // this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
             this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
             this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
@@ -80,9 +81,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#supplier').blur(_.bind(this.set_value, this, 'supplier'))
 
             //autocomplete products and units from array of names
-            this.$('#partner_code').autocomplete({
-                source: this.ts_model.get('customer_codes'),
-            });
             this.$('#partner').autocomplete({
                 source: this.ts_model.get('customer_names'),
             });
@@ -90,6 +88,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#supplier').autocomplete({
                 source: this.ts_model.get('supplier_names'),
             });
+            // this.$('#partner_code').autocomplete({
+            //     source: this.ts_model.get('customer_codes'),
+            // });
 
         },
         set_value: function(key) {
@@ -158,18 +159,21 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         self.order_model.set('contact_name', contact_obj.name);
                         self.check_partner_routes(partner_id);
 
+                        // else{
+                        //     if (key == "partner") {
+                        //       self.$('#partner_code').focus();
+                        //     }
+                        //     else {
+                        //       self.$('#date_invoice').focus();
+                        //     }
+                        // }
+                        self.refresh();
                         if(self.order_model.get('orderLines').length == 0){
                             $('.add-line-button').click()
                         }
                         else{
-                            if (key == "partner") {
-                              self.$('#partner_code').focus();
-                            }
-                            else {
-                              self.$('#date_invoice').focus();
-                            }
+                            $('#date_order').focus();
                         }
-                        self.refresh();
                         $('#ult-button').click();
                     }
                 });
@@ -651,7 +655,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         perform_onchange: function(key) {
             var self=this;
             var value = this.$('.col-'+key).val();
-            // debugger;
             // if (!value) {
             //   return;
             //   alert(_t("Value mustn't be empty"));
@@ -1150,7 +1153,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.sum_cost = 0;
             this.sum_box = 0;
             this.sum_fresh = 0;
-            // debugger;
             (this.currentOrderLines).each(_.bind( function(line) {
                 var product_id = self.ts_model.db.product_name_id[line.get('product')]
                 if (product_id){

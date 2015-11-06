@@ -18,7 +18,6 @@
   display: block;
 }*/
  /*  ********* The black loading screen ********* */
-
 .telesale .loader{
     background-color: #222;
     position:absolute;
@@ -209,6 +208,9 @@
     background:rgb(161, 161, 255);
     width: 100%;
 
+}
+.telesale .mandatory:focus{
+    border: 1px solid black;
 }
 .telesale .warning-red{
     background:#FF3232;
