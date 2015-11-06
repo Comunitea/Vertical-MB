@@ -320,7 +320,7 @@ class sale_order_line(osv.osv):
         if period != 'ult':
             cr.execute(SQ, (client_id, date_str))
         else:
-            cr.execute(SQ, (client_id))
+            cr.execute(SQ, (client_id,))
         fetch = cr.fetchall()
         prod_ids = [x[0] for x in fetch]
         res = []

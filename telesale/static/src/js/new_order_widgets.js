@@ -982,7 +982,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#ult-button').click(function(){
                 var client_id = self.check_customer_get_id();
                 if (client_id){
-                    $.when(self.ts_model.get('selectedOrder').get_last_order_line_by('ult', client_id))
+                    $.when(self.ts_model.get('selectedOrder').get_last_line_by('ult', client_id))
                         .done(function(){
                             // self.bind_orderline_events(); //in get_last_order_lines we unbid add event of currentOrderLines to render faster
                             // self.renderElement();
