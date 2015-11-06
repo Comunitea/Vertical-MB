@@ -170,7 +170,7 @@
                                 confirm="Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"/> -->
                         <button name="flow_restart" string="Return to validate pending"
                                 type="object"
-                                class="oe_link" attrs="{'invisible': [('state2','in',['val_pending','registered','denied'])]}"/>
+                                class="oe_link" attrs="{'invisible': [('state2','in',['val_pending','registered'])]}"/>
                     </group>
                 </label>
 
