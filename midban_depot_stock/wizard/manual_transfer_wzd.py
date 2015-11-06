@@ -102,6 +102,7 @@ class manual_transfer_wzd(models.TransientModel):
                     self.env['stock.pack.operation'].create(op_vals)
                 else:
                     # Get operation and related move
+
                     ops_vals, move_vals = line.get_move_ops_vals(pick_obj)
                     # Get quants we will reserve for the move and operation
                     quants2assign = line.get_quants_line()
@@ -136,6 +137,7 @@ class transfer_lines(models.TransientModel):
                                        required=True)
     do_pack = fields.Selection([('no_pack', 'No Pack'), ('do_pack', 'Do Pack'),
                                 ], 'Do Pack', default='do_pack')
+    result_package_id = fields.Many2one('stock.quant.package', 'Packed Pack')
 
     @api.onchange('package_id')
     @api.multi
@@ -221,22 +223,22 @@ class transfer_lines(models.TransientModel):
         """
         line = self[0]  # Is called always line by line
         # Create a pack of do_pack type if do_pack is box or palet
-        result_pack_id = False
-        if line.do_pack == 'do_pack':
-            #OPción crear paquete
-            vals = {}
-            result_pack_id = self.env['stock.quant.package'].create(vals).id
-        else:
-            #Miramos si hay lote en destino, si lo hay, entonces es destino
-            pack = line.dest_location_id.get_package_of_lot(line.lot_id.id)
-            if pack:
-                result_pack_id = pack.id
-            else:
-            #si no hay lote y es pquete estonces false
-            #si es producto, tenemos que crear uno nuevo
-                if product:
-                    vals = {}
-                    result_pack_id = self.env['stock.quant.package'].create(vals).id
+
+        # if line.do_pack == 'do_pack':
+        #     #OPción crear paquete
+        #     vals = {}
+        #     result_pack_id = self.env['stock.quant.package'].create(vals).id
+        # else:
+        #     #Miramos si hay lote en destino, si lo hay, entonces es destino
+        #     pack = line.dest_location_id.get_package_of_lot(line.lot_id.id)
+        #     if pack:
+        #         result_pack_id = pack.id
+        #     else:
+        #     #si no hay lote y es pquete estonces false
+        #     #si es producto, tenemos que crear uno nuevo
+        #         if product:
+        #             vals = {}
+        #             result_pack_id = self.env['stock.quant.package'].create(vals).id
         return {
             'product_id': product and product.id or False,
             'product_uom_id': product and product.uom_id.id or False,
@@ -245,8 +247,9 @@ class transfer_lines(models.TransientModel):
             'lot_id': line.lot_id.id,  # No multiproduct
             'location_id': line.src_location_id.id,
             'location_dest_id': line.dest_location_id.id,
-            'result_package_id': result_pack_id,
+            'result_package_id': line.result_package_id or False,
             'picking_id': pick_obj.id,
+            'do_pack':line.do_pack or 'do_pack'
         }
 
     @api.multi

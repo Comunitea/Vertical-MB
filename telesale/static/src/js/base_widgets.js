@@ -187,7 +187,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('#button_cl').click();//call list page
-                self.$('.noclass').focus();
+                self.$('.tab1').focus();
             });
             Mousetrap.bind('alt+r', function(e){
                 $( document.activeElement ).blur();
@@ -328,10 +328,12 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
             });
 
             Mousetrap.bind('alt+p', function(e){
+                debugger;
                 $( document.activeElement ).blur();
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.neworder-button').click();  //new order
+                self.$('#partner').focus();
             });
 
             Mousetrap.bind('alt+o', function(e){
@@ -339,6 +341,7 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 if (e.defaultPrevented) e.defaultPrevented;
                 else e.returnValue = false;
                 self.$('.removeorder-button').click();  //remove order
+                self.$('#partner').focus();
             });
 
             Mousetrap.bind('ctrl+left', function(e){

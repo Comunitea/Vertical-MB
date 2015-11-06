@@ -122,7 +122,6 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
             this.$el.find('button#button_no').click(function(){ self.select_screen('new_order');
                                                               // self.select_button_block('order_buttons');
                                                               self.setButtonSelected('button#button_no');
-                                                              // self.$("#partner").focus();
                                                              });
             this.$el.find('button#button_so').click(function(){ self.select_screen('summary_order');
                                                               self.setButtonSelected('button#button_so');
@@ -132,7 +131,7 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
                                                                  });
             this.$el.find('button#button_oh').click(function(){ self.select_screen('order_history')
                                                               self.setButtonSelected('button#button_oh');
-                                                                ; });
+                                                                 });
             this.$el.find('button#button_pc').click(function(){ self.select_screen('product_catalog');
                                                                 var upd = self.ts_model.get('update_catalog')
                                                                 if (upd === 'a'){
@@ -156,6 +155,7 @@ function openerp_ts_buttons(instance, module){ //module is instance.telesale
         setButtonSelected: function(button_selector) {
             $('.selected-screen').removeClass('selected-screen');
             $(button_selector).addClass('selected-screen');
+            $('.tab1').focus();
         },
     });
 }
