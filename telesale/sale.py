@@ -19,10 +19,11 @@
 #
 ##############################################################################
 from openerp.osv import fields, osv
-from openerp import netsvc
+from openerp import netsvc, api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 import time
+from datetime import date, timedelta
 
 
 class sale(osv.osv):
@@ -282,3 +283,36 @@ class sale_order_line(osv.osv):
                     line = self.browse(cr, uid, last_id[0], context)
                     res['value']['last_price_fresh'] = line.price_unit
         return res
+
+        # @api.model
+        # def _get_last_lines_by(self, period, client_id):
+        #     """
+        #     """
+        #     cr = self._cr
+        #     # cr.execute("SELECT sum(s.product_qty) FROM stock_move s \
+        #     #             INNER JOIN stock_picking p ON p.id=s.picking_id \
+        #     #             INNER JOIN stock_picking_type pt ON \
+        #     #             pt.id=p.picking_type_id \
+        #     #             WHERE s.state='done' AND pt.code='outgoing' \
+        #     #             AND s.product_id=" + str(product_id) + " \
+        #     #             AND s.date>='" + start + "' \
+        #     #             AND s.date<='" + stop + "'")
+        #     # cr.execute("SELECT distinct product_id FROM sale_order_line sol\
+        #     #             WHERE s.state='done' AND pt.code='outgoing' \
+        #     #             AND s.product_id=" + str(product_id) + " \
+        #     #             AND s.date>='" + start + "' \
+        #     #             AND s.date<='" + stop + "'")
+        #     # return cr.fetchall()
+        #     date_str = date.today()
+        #     if period == "3month":
+        #         date_str = date.today() - timedelta(90)
+        #     elif perio == "year":
+        #         date_str = date.today() - timedelta(365)
+        #     import ipdb; ipdb.set_trace()
+        #     domain = [
+        #         ('order_id.partner_id', '=', client_id),
+        #         ('order_id.date_order', '>=', date_str),
+        #         ('order_id.state', 'in', ('progress', 'manual', 'done', 'history'))
+        #     ]
+        #     lines = self.read_group([], ['product_id', 'product_uom'], groupby='product_id')
+        #     return res

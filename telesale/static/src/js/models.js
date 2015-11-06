@@ -793,43 +793,51 @@ function openerp_ts_models(instance, module){
                 supplier_id : this.ts_model.db.supplier_from_name_to_id[this.get('supplier')],
             };
         },
+        // get_last_line_by: function(period, client_id){
+        //     var date = new Date();
+        //     var date_str;
+        //     if (period == "3month") {
+        //         date.setDate(date.getDate() - 90);
+        //         date_str = this.dateToStr(date);
+        //     }else{
+        //         // var year = date.getFullYear()
+        //         // date_str = year + "-" + "01" + "-" + "01";
+        //         date.setDate(date.getDate() - 365);
+        //         date_str = this.dateToStr(date);
+        //     }
+        //     date_str = date_str + " 00:00:00"
+        //     var self=this;
+        //     var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done', 'history']]]
+        //     var loaded = self.ts_model.fetch_ordered('sale.order.line',
+        //                                     ['order_id', 'product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
+        //                                     domain, ['-order_id']
+        //                                     )
+        //         .then(function(order_lines){
+        //           if (!order_lines){
+        //             order_lines = []
+        //           }
+        //             // self.add_lines_to_current_order(order_lines);
+        //             var unique_lines = []
+        //             var added_products = []
+        //             for (var i=0, len = order_lines.length; i < len; i++){
+        //                 line = order_lines[i]
+        //                 if ( (added_products.length > 0) && (added_products.indexOf(line.product_id[0]) > 0) ){
+        //                   continue
+        //                 }
+        //                 unique_lines.push(line)
+        //                 added_products.push(line.product_id[0])
+        //             }
+        //             self.ts_model.get('sold_lines').reset(unique_lines)
+        //             // self.ts_model.get('sold_lines').reset(order_lines)
+        //         })
+        //     return loaded
+        // },
         get_last_line_by: function(period, client_id){
-            var date = new Date();
-            var date_str;
-            if (period == "3month") {
-                date.setDate(date.getDate() - 90);
-                date_str = this.dateToStr(date);
-            }else{
-                // var year = date.getFullYear()
-                // date_str = year + "-" + "01" + "-" + "01";
-                date.setDate(date.getDate() - 365);
-                date_str = this.dateToStr(date);
-            }
-            date_str = date_str + " 00:00:00"
-            var self=this;
-            var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done', 'history']]]
-            var loaded = self.ts_model.fetch_ordered('sale.order.line',
-                                            ['order_id', 'product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
-                                            domain, ['-order_id']
-                                            )
-                .then(function(order_lines){
-                  if (!order_lines){
-                    order_lines = []
-                  }
-                    // self.add_lines_to_current_order(order_lines);
-                    var unique_lines = []
-                    var added_products = []
-                    for (var i=0, len = order_lines.length; i < len; i++){
-                        line = order_lines[i]
-                        if ( (added_products.length > 0) && (added_products.indexOf(line.product_id[0]) > 0) ){
-                          continue
-                        }
-                        unique_lines.push(line)
-                        added_products.push(line.product_id[0])
-                    }
-                    self.ts_model.get('sold_lines').reset(unique_lines)
-                    // self.ts_model.get('sold_lines').reset(order_lines)
-                })
+          var model = new instance.web.Model('sale.order.line');
+          var loaded = model.call("_get_last_lines_by",[period, client_id],{context:new instance.web.CompoundContext()})
+              .then(function(result){
+                  debugger;
+              });
             return loaded
         },
         add_lines_to_current_order: function(order_lines){

@@ -448,13 +448,14 @@ products do not require units for validation'),
     def flow_restart(self, cr, uid, ids, context=None):
         """ When a product is denied this method lets you restart the product
             workflow so the product will be desactived and state its fixed to
-            validate pending."""
+            validate pending."""        
         for product in self.browse(cr, uid, ids):
             message = _("Product denied in register process again")
             self._update_history(cr, uid, ids, context, product, message)
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_delete(uid, 'product.template', product.id, cr)
             wf_service.trg_create(uid, 'product.template', product.id, cr)
+            product.act_validate_pending()
         return True
 
 

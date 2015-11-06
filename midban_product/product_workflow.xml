@@ -77,7 +77,7 @@
             <field name="act_to" ref="act_active"/>
             <field name="signal">active</field>
         </record>
-        <record id="trans_back_pending_to_validate" model="workflow.transition">
+        <!-- <record id="trans_back_pending_to_validate" model="workflow.transition">
             <field name="act_from" ref="act_logic_pending"/>
             <field name="act_to" ref="act_validate_pending"/>
             <field name="signal">back_pending</field>
@@ -91,7 +91,7 @@
             <field name="act_from" ref="act_validated"/>
             <field name="act_to" ref="act_validate_pending"/>
             <field name="signal">back_pending</field>
-        </record>
+        </record> -->
 
         <record id="trans_validate_pending_to_denied" model="workflow.transition">
             <field name="act_from" ref="act_validate_pending"/>
@@ -110,7 +110,7 @@
         </record>
          <record id="trans_validate_to_denied" model="workflow.transition">
             <field name="act_from" ref="act_validate_pending"/>
-            <field name="act_to" ref="act_validated"/>
+            <field name="act_to" ref="act_denied"/>
             <field name="signal">deny</field>
         </record>
 
