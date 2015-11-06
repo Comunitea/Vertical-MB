@@ -803,11 +803,15 @@ class stock_pack_operation(models.Model):
         'uos_qty': fields.float('UoS quantity'),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
         'do_onchange': fields.boolean('Do onchange'),
-        'changed': fields.boolean('Record changed')}
+        'changed': fields.boolean('Record changed'),
+        'do_pack': fields.selection([('do_pack', 'Do Pack'),
+                                    ('no_pack', 'No Pack')],"Pack Type")
+                                    }
 
     _defaults = {
         'to_process': True,
-        'do_onchange': True}
+        'do_onchange': True,
+        'do_pack': 'do_pack'}
 
     def _search_closest_pick_location(self, prod_obj, free_loc_ids):
         loc_t = self.env['stock.location']
@@ -942,6 +946,7 @@ class stock_pack_operation(models.Model):
         If we change lot_id or product_id in a create operation, we quit the
         pack in the first case and a exception will be raised in the second one
         """
+
         if vals.get('lot_id', False):
             for op in self:
                 if op.lot_id.id != vals['lot_id']:
@@ -953,22 +958,52 @@ class stock_pack_operation(models.Model):
                                                "operation is created, delete "
                                                "this and crate another one in"
                                                " the picking."))
-        if vals.get('location_dest_id', False):
-            new_loc = self.env['stock.location'].\
-                browse(vals['location_dest_id'])
-            for op in self:
-                lot_id = op.lot_id.id if op.lot_id.id else \
-                    (op.packed_lot_id.id if op.packed_lot_id.id else False)
-                if lot_id:
-                    # Reception operation, Suppliers to input location
-                    if not op.package_id and op.result_package_id:
-                        pass
-                    else:
-                        pack = new_loc.get_package_of_lot(lot_id)
-                        # vals['result_package_id'] = pack.id if pack else False
-                        vals['result_package_id'] = pack.id if pack else op.result_package_id.id or vals.get('result_package_id', False)
 
+        #Hay que reescribir esto, lo hago en una función aparte.
+        vals = self.get_result_package_id(vals)
         return super(stock_pack_operation, self).write(vals)
+
+    @api.model
+    def get_result_package_id(self,vals):
+
+        op = self
+        vals['result_package_id'] = vals.get('result_package_id', False)
+
+        if not vals['result_package_id']==False:
+            return vals
+
+        if not (vals.get('location_dest_id', False) and vals.get('package_id', False))== False:
+            pack = False
+            pack_type = vals.get('do_pack', op.do_pack)
+            product_id = vals.get('product_id', op.product_id or False)
+            lot_id = op.lot_id.id if op.lot_id.id else \
+                (op.packed_lot_id.id if op.packed_lot_id.id else False)
+            if not lot_id:
+                lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
+            if lot_id:
+                new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
+                pack = new_loc.get_package_of_lot(lot_id)
+            #miramos que hace por según haya o no = lote en destino y
+            #'pack_type' a do_pack o no_pack (empaquete o no)
+
+
+            if not product_id:
+                if pack_type == "do_pack":
+                    if pack:
+                        vals['result_package_id'] = pack.id
+
+            if product_id:
+                if pack_type == "do_pack":
+                    if pack:
+                        vals['result_package_id'] = pack.id
+                    else:
+                        new_package_id = self.env['stock.quant.package'].create({})
+                        vals['result_package_id'] = new_package_id.id
+
+                if pack_type == "no_pack":
+                        new_package_id = self.env['stock.quant.package'].create({})
+                        vals['result_package_id'] = new_package_id.id
+        return vals
 
     @api.model
     def create(self, vals):
@@ -977,17 +1012,20 @@ class stock_pack_operation(models.Model):
         operation lot we add the qty to this pack by setting it in
         result package id
         """
-        op = super(stock_pack_operation, self).create(vals)
-        lot_id = op.lot_id.id if op.lot_id.id else \
-            (op.packed_lot_id.id if op.packed_lot_id.id else False)
-        if lot_id:
-            # Reception operation, Suppliers to input location
-            if not op.package_id and op.result_package_id:
-                pass
-            else:
-                pack = op.location_dest_id.get_package_of_lot(lot_id)
-                pack_to_create_id = vals.get('result_package_id', False)
-                op.result_package_id = pack.id if pack else pack_to_create_id
+        values_with_result_package_id = self.get_result_package_id(vals)
+        op = super(stock_pack_operation, self).create(values_with_result_package_id)
+
+
+        # lot_id = op.lot_id.id if op.lot_id.id else \
+        #     (op.packed_lot_id.id if op.packed_lot_id.id else False)
+        # if lot_id:
+        #     # Reception operation, Suppliers to input location
+        #     if not op.package_id and op.result_package_id:
+        #         pass
+        #     else:
+        #         pack = op.location_dest_id.get_package_of_lot(lot_id)
+        #         pack_to_create_id = vals.get('result_package_id', False)
+        #         op.result_package_id = pack.id if pack else pack_to_create_id
         return op
 
     @api.one
