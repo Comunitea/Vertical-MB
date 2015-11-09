@@ -112,7 +112,7 @@ function openerp_ts_models(instance, module){
             var loaded = self.fetch('res.users',['name','company_id'],[['id', '=', this.session.uid]])
                 .then(function(users){
                     self.set('user',users[0]);
-
+                    console.time('Test performance company');
                     return self.fetch('res.company',
                     [
                         'currency_id',
@@ -128,25 +128,39 @@ function openerp_ts_models(instance, module){
                     ],
                     [['id','=',users[0].company_id[0]]]);
                 }).then(function(companies){
+                    console.timeEnd('Test performance company');
                     self.set('company',companies[0]);
-
+                    console.time('Test performance units');
                     return self.fetch('product.uom', ['name'], []);
                 }).then(function(units){
+                    console.timeEnd('Test performance units');
                     for (key in units){
                         self.get('units_names').push(units[key].name)
                     }
 
                     self.db.add_units(units);
-                    return self.fetch(
-                        'product.product',
-                        ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id', 'max_discount', 'category_max_discount'],
-                        [['sale_ok','=',true]]
-                    );
+                    console.time('Test performance products');
+                    // return self.fetch(
+                    //     'product.product',
+                    //       ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id', 'max_discount', 'category_max_discount'],
+                    //     [['sale_ok','=',true], ['state2', '=', 'registered']]
+                    // );
+                    var model = new instance.web.Model('product.product');
+                    return model.call("load_products",[],{context:new instance.web.CompoundContext()});
                 }).then(function(products){
+                    console.timeEnd('Test performance products');
+                    // console.log(products)
                     self.db.add_products(products);
 
+                    console.time('Test performance customers');
                     return self.fetch('res.partner',['comercial','supplier_ids','indirect_customer','name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
+
+                    // Por culpa de los properties no es eficiente
+                    // var model = new instance.web.Model('res.partner');
+                    // return model.call("load_partners",[true],{context:new instance.web.CompoundContext()});
                 }).then(function(customers){
+                    // console.log(customers)
+                    console.timeEnd('Test performance customers');
                     for (key in customers){
                         // var customer_name = customers[key].comercial || customers[key].name
                         // var customer_name = customers[key].comercial + ' | ' + customers[key].name + ' | ' + customers[key].ref
@@ -155,25 +169,34 @@ function openerp_ts_models(instance, module){
                         self.get('customer_codes').push(customers[key].ref);
                     }
                     self.db.add_partners(customers);
+                    console.time('Test performance suppliers');
                     return self.fetch('res.partner',['name'], [['supplier','=',true], ['customer_ids','!=',false]])
                 }).then(function(suppliers){
+                  console.timeEnd('Test performance suppliers');
                     self.db.add_suppliers(suppliers);
 
+                    console.time('Test performance Taxes');
                     return self.fetch('account.tax', ['amount', 'price_include', 'type'], [['type_tax_use','=','sale']]);
                 }).then(function(taxes) {
+                    console.timeEnd('Test performance Taxes');
                     self.set('taxes', taxes);
                     self.db.add_taxes(taxes);
+                    console.time('Test performance FP map');
                     return self.fetch('account.fiscal.position.tax', ['position_id', 'tax_src_id', 'tax_dest_id']);
 
 
                 }).then(function(fposition_map) {
-
+                    console.timeEnd('Test performance FP map');
                     self.db.add_taxes_map(fposition_map);
+                    console.time('Test performance FP');
                     return self.fetch('account.fiscal.position', ['name', 'tax_ids']);
                 }).then(function(fposition) {
+                    console.timeEnd('Test performance FP');
                     self.db.add_fiscal_position(fposition);
+                    console.time('Test performance qnote');
                     return self.fetch('qualitative.note', ['name', 'code']);
                 }).then(function(qnotes) {
+                    console.timeEnd('Test performance qnote');
                     for (key in qnotes){
                         self.get('qnotes_names').push(qnotes[key].code)
                     }
@@ -797,7 +820,6 @@ function openerp_ts_models(instance, module){
           var model = new instance.web.Model('sale.order.line');
           var loaded = model.call("get_last_lines_by",[period, client_id],{context:new instance.web.CompoundContext()})
               .then(function(order_lines){
-                  debugger;
                   if (!order_lines){
                     order_lines = []
                   }
