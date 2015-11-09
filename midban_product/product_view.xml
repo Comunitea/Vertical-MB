@@ -33,6 +33,7 @@
                 </xpath>
 
                 <field name="list_price" position="after">
+                    <field name="sale_euro_weight"/>
                     <field name="doorstep_price"/>
                     <field name="nook_price"/>
                 </field>
@@ -175,6 +176,7 @@
                 </label>
 
                 <field name="standard_price" position="after">
+                    <field name="buy_euro_weight"/>
                     <field name="margin" readonly="True"/>
                     <field name="last_purchase_price"/>
                     <!-- <field name="life"/> -->
