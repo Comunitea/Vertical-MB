@@ -1,8 +1,9 @@
+
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier Colmenero Fernández$ <javier@pexego.es>
+#    Copyright (C) 2015 Comunitea All Rights Reserved
+#    $Carlos Lombardía Rodríguez$ <carlos@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,6 +19,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import process_unregister_product
-import process_deny_product
-import set_order_category_products
+from openerp import models, fields, api
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
+
+class WizardOrderCategories(models.TransientModel):
+
+    _name = 'wizard.order.categories'
+
+    
