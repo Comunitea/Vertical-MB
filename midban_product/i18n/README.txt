@@ -34,11 +34,11 @@ msgid "Buy Euro Weight"
 msgstr "€/Kg compra"
 
 #. module: midban_product
-#: field:product.template,sale_euro_weight:0
+#: help:product.template,sale_euro_weight:0
 msgid "Price per gross weight in a sale"
 msgstr "Precio por peso bruto en una venta"
 
 #. module: midban_product
-#: field:product.template,buy_euro_weight:0
+#: help:product.template,buy_euro_weight:0
 msgid "Price per gross weight in a purchase"
 msgstr "Precio por peso bruto en una compra"
