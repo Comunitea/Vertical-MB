@@ -170,7 +170,7 @@ class product_product(osv.Model):
                 'base_use_sale': p.base_use_sale,
                 'unit_use_sale': p.unit_use_sale,
                 'box_use_sale': p.box_use_sale,
-                # 'virtual_stock_conservative': p.virtual_stock_conservative,
+                'virtual_stock_conservative': p.virtual_stock_conservative or 0.0,
                 'taxes_id': [x.id for x in p.taxes_id],
                 'weight': 0,
                 'kg_un': p.kg_un,

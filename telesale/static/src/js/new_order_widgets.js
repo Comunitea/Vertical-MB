@@ -1023,7 +1023,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#promo-button').click(function(){
-                alert(_t("Pending to develop"));
+                debugger;
+                $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder )
+                .done(function(){
+                  alert(_t("Pending to develop"));
+                });
             });
              this.$('#sust-button').click(function(){
                 var current_order = self.ts_model.get('selectedOrder')
