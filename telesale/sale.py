@@ -197,7 +197,6 @@ class sale(osv.osv):
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_validate(uid, 'sale.order', order_id,
                                         'order_confirm', cr)
-            import ipdb; ipdb.set_trace()
 
             if order['set_promotion']:
                 self.apply_promotions(cr, uid, [order_id], context=context)
