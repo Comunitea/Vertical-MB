@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier Colmenero Fernández$ <javier@pexego.es>
+#    Copyright (C) 2015 Comunitea Servicios Informáticos All Rights Reserved
+#    $Carlos Lombardía Rodríguez$ <carlos@comunitea.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,5 +18,27 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import process_unregister_product
-import process_deny_product
+
+{
+    "name": "Set Order Categories And Products",
+    "version": "1.0",
+    "author": "Comunitea",
+    "category": "Custom",
+    "website": "www.comunitea.com",
+    "description": """
+    Provides a way of set the order of categories and product
+    generating a special number over the sequence field and provides a way of
+    seting the sequence.
+    """,
+    "images": [],
+    "depends": [
+        "product",
+    ],
+    "data": [
+        'wizard/set_order_category_products_view.xml',
+        'views/product_view.xml',
+    ],
+    "demo": [],
+    "test": [],
+    "installable": True,
+}
