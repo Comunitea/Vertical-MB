@@ -1,0 +1,73 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* set_order_categ_products
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-10 16:51+0000\n"
+"PO-Revision-Date: 2015-11-10 16:51+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: set_order_categ_products
+#: view:wizard.order.categories:set_order_categ_products.wizard_order_locations_view_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: set_order_categ_products
+#: model:ir.actions.act_window,name:set_order_categ_products.action_order_categories
+#: view:wizard.order.categories:set_order_categ_products.wizard_order_locations_view_form
+msgid "Order Products"
+msgstr "Ordenar productos"
+
+#. module: set_order_categ_products
+#: view:wizard.order.categories:set_order_categ_products.wizard_order_locations_view_form
+msgid "Order Products and Categories"
+msgstr "Ordenar products y categorías"
+
+#. module: set_order_categ_products
+#: field:product.template,product_priority:0
+msgid "Order inside category"
+msgstr "Ordenar por categoría"
+
+#. module: set_order_categ_products
+#: model:ir.model,name:set_order_categ_products.model_product_template
+msgid "Product Template"
+msgstr "Plantilla de producto"
+
+#. module: set_order_categ_products
+#: field:wizard.order.categories,product_order_ids:0
+msgid "Products Order"
+msgstr "Orden productos"
+
+#. module: set_order_categ_products
+#: field:product.template,sequence_order:0
+msgid "Sequence Order"
+msgstr "Orden secuencial"
+
+#. module: set_order_categ_products
+#: view:wizard.order.categories:set_order_categ_products.wizard_order_locations_view_form
+msgid "Set Order"
+msgstr "Establecer orden"
+
+#. module: set_order_categ_products
+#: view:wizard.order.categories:set_order_categ_products.wizard_order_locations_view_form
+msgid "This wizard will generte a sequence number according to the specific order between categories and products."
+msgstr "Este asistente generará una secuencia numérica acorde al orden específico entre categorías y productos."
+
+#. module: set_order_categ_products
+#: field:product.order,wzd_id:0
+msgid "Wzd Order"
+msgstr "Asist. orden"
+
+#. module: set_order_categ_products
+#: view:wizard.order.categories:set_order_categ_products.wizard_order_locations_view_form
+msgid "You can set the order of products inside each category."
+msgstr "Puedes establecer el orden de productos dentro de cada categoría."
+

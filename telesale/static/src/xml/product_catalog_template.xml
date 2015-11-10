@@ -44,7 +44,10 @@
                 </span>
             </td>
             <td class="pc-cell-stock">
-                <span class="product-cell" t-esc="widget.product.virtual_stock_conservative.toFixed(2)"/>
+              <t t-if="widget.product.virtual_stock_conservative">
+                  <span class="product-cell" t-esc="widget.product.virtual_stock_conservative.toFixed(2)"/>
+              </t>
+
             </td>
             <td class="pc-cell-add">
                 <button class="add-product fullwidth">+</button>
