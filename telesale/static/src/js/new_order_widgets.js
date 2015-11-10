@@ -1025,7 +1025,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#promo-button').click(function(){
                 debugger;
                 current_order = self.ts_model.get('selectedOrder')
-                current_order.set('set_promotions', true)
+                current_order.set('set_promotion', true)
                 $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
                 .done(function(){
                   alert(_t("Pending to develop"));

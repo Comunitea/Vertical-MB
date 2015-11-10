@@ -198,7 +198,7 @@ class sale(osv.osv):
                 wf_service.trg_validate(uid, 'sale.order', order_id,
                                         'order_confirm', cr)
 
-            if order['set_promotion']:
+            if 'set_promotion' in order and order['set_promotion']:
                 self.apply_promotions(cr, uid, [order_id], context=context)
         return order_ids
 
