@@ -679,6 +679,7 @@ function openerp_ts_models(instance, module){
                 state:"draft",
                 comercial: '',
                 coment: '',
+                set_promotion: false // if true in the server we create a promotion, and recover again the order
             });
 
             this.ts_model =     attributes.ts_model;
@@ -814,6 +815,7 @@ function openerp_ts_models(instance, module){
                 note: this.get('coment'),
                 customer_comment: this.get('customer_comment'),
                 supplier_id : this.ts_model.db.supplier_from_name_to_id[this.get('supplier')],
+                set_promotion: this.get('set_promotion')
             };
         },
         get_last_line_by: function(period, client_id){
@@ -834,6 +836,10 @@ function openerp_ts_models(instance, module){
             for (key in order_lines){
                 var line = order_lines[key];
                 var prod_obj = this.ts_model.db.get_product_by_id(line.product_id[0]);
+                if  (!prod_obj){
+                  alert(_t('This product can not be loaded, becouse is not registerd'))
+                  return
+                }
                 current_olines = this.get('orderLines').models
                 var product_exist = false;
                 for (key2 in current_olines){

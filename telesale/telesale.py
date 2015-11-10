@@ -187,8 +187,6 @@ class product_product(osv.Model):
         return res
 
 
-
-
 class stock_invoice_onshipping(osv.osv_memory):
     _inherit = "stock.invoice.onshipping"
 

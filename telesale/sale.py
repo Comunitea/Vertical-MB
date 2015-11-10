@@ -197,6 +197,10 @@ class sale(osv.osv):
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_validate(uid, 'sale.order', order_id,
                                         'order_confirm', cr)
+            import ipdb; ipdb.set_trace()
+
+            if order['set_promotion']:
+                self.apply_promotions(cr, uid, [order_id], context=context)
         return order_ids
 
     def cancel_order_from_ui(self, cr, uid, order_id, context=None):
@@ -326,6 +330,9 @@ class sale_order_line(osv.osv):
         prod_ids = [x[0] for x in fetch]
         res = []
         for l in self.browse(prod_ids):
+            # Avoid not registered products
+            if l.product_id.state2 != 'registered':
+                continue
             dic = {
                 'order_id': l.order_id.id,
                 'product_id': (l.product_id.id, l.product_id.name),

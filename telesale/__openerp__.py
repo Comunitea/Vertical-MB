@@ -42,6 +42,7 @@
                 'midban_depot_stock',
                 'midban_product_reserve',
                 'process_sale_order',
+                'sale_custom_promotion',
                 'sale_max_discount',
                 'indirect_sale',  # because of supplier_ids field
                 'frigo_edi'],  # because of indirect_customer field

@@ -1024,7 +1024,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             });
             this.$('#promo-button').click(function(){
                 debugger;
-                $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder )
+                current_order = self.ts_model.get('selectedOrder')
+                current_order.set('set_promotions', true)
+                $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
                 .done(function(){
                   alert(_t("Pending to develop"));
                 });
@@ -1249,6 +1251,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
         },
         saveCurrentOrder: function() {
+            debugger;
             var currentOrder = this.order_model;
             currentOrder.set('action_button', 'save')
             if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
