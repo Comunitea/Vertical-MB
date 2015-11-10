@@ -330,7 +330,10 @@ class edi(models.Model):
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             correct.write({'document_id': doc.id})
             self.make_backup(file_path, doc.file_name)
-            os.remove(file_path)
+            try:
+                os.remove(file_path)
+            except OSError:
+                log.info('not have permission to delete %s' % file_path)
         return
 
 # ****************************************************************************
@@ -793,7 +796,10 @@ class edi(models.Model):
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             invoice.write({'document_id': doc.id})
             self.make_backup(file_path, doc.file_name)
-            os.remove(file_path)
+            try:
+                os.remove(file_path)
+            except OSError:
+                log.info('not have permission to delete %s' % file_path)
         return
 
 # ****************************************************************************
