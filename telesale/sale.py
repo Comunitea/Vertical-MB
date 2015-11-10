@@ -330,8 +330,8 @@ class sale_order_line(osv.osv):
         res = []
         for l in self.browse(prod_ids):
             # Avoid not registered products
-            if l.product_id.state2 != 'registered':
-                continue
+            # if l.product_id.state2 != 'registered':
+            #     continue
             dic = {
                 'order_id': l.order_id.id,
                 'product_id': (l.product_id.id, l.product_id.name),
