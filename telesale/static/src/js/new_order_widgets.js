@@ -65,7 +65,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         change_selected_order: function() {
             this.renderElement();
-            this.$('#partner_code').focus();
+            // this.$('#partner_code').focus();
         },
         renderElement: function () {
             var self = this;
