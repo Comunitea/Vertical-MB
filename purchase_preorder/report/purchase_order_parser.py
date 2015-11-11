@@ -61,6 +61,8 @@ class purchase_order_parser(models.AbstractModel):
             base = prod['incoming_qty']
         elif mode == 'outgoing':
             base = prod['outgoing_qty']
+        else:
+            base = mode
         while base >= ba_un:
             base -= ba_un
             unit += 1
