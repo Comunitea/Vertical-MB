@@ -102,7 +102,6 @@ class manual_transfer_wzd(models.TransientModel):
                     self.env['stock.pack.operation'].create(op_vals)
                 else:
                     # Get operation and related move
-
                     ops_vals, move_vals = line.get_move_ops_vals(pick_obj)
                     # Get quants we will reserve for the move and operation
                     quants2assign = line.get_quants_line()

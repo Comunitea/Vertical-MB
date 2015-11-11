@@ -55,7 +55,8 @@ class sale_report(osv.osv):
                     if op.location_id == item.location_id and \
                             (item.customer_id.id == 0  or  item.customer_id.id == op.picking_id.partner_id.id):
                         if op.package_id:
-                            if op.package_id.id == item.pack_id.id:
+                            if op.package_id.id == item.pack_id.id and\
+                                    op.uos_id == item.uos_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
                                     process = False
@@ -63,7 +64,8 @@ class sale_report(osv.osv):
                                     visited = False
                         else:
                             if op.product_id == item.product_id and \
-                                    op.lot_id == item.lot_id:
+                                    op.lot_id == item.lot_id and\
+                                    op.uos_id == item.uos_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
                                     process = False
