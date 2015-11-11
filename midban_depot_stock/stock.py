@@ -278,48 +278,49 @@ class stock_picking(osv.Model):
         pending_ops_vals = []
         something_done = False
         for op in self.pack_operation_ids:
-            if op.to_process and op.task_id and op.task_id.id == task_id:
-                item = {
-                    'packop_id': op.id,
-                    'product_id': op.product_id.id,
-                    'product_uom_id': op.product_uom_id.id,
-                    'quantity': op.product_qty,
-                    'package_id': op.package_id.id,
-                    'lot_id': op.lot_id.id,
-                    'sourceloc_id': op.location_id.id,
-                    'destinationloc_id': op.location_dest_id.id,
-                    'result_package_id': op.result_package_id.id,
-                    'date': op.date,
-                    'owner_id': op.owner_id.id,
-                    'transfer_id': transfer_obj.id,
-                    'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty}
-                t_item.create(item)
-                something_done = True
-            else:
-                assigned_task_id = False  # If marked to not do deassign it
-                if op.to_process and op.task_id:  # Conservate the task
-                    assigned_task_id = op.task_id.id
+            if not op.to_revised:
+                if op.to_process and op.task_id and op.task_id.id == task_id:
+                    item = {
+                        'packop_id': op.id,
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'quantity': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'sourceloc_id': op.location_id.id,
+                        'destinationloc_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'date': op.date,
+                        'owner_id': op.owner_id.id,
+                        'transfer_id': transfer_obj.id,
+                        'uos_id': op.uos_id.id,
+                        'uos_qty': op.uos_qty}
+                    t_item.create(item)
+                    something_done = True
+                else:
+                    assigned_task_id = False  # If marked to not do deassign it
+                    if op.to_process and op.task_id:  # Conservate the task
+                        assigned_task_id = op.task_id.id
 
-                new_ops_vals = {
-                    'product_id': op.product_id.id,
-                    'product_uom_id': op.product_uom_id.id,
-                    'product_qty': op.product_qty,
-                    'package_id': op.package_id.id,
-                    'lot_id': op.lot_id.id,
-                    'location_id': op.location_id.id,
-                    'location_dest_id': op.location_dest_id.id,
-                    'result_package_id': op.result_package_id.id,
-                    'owner_id': op.owner_id.id,
-                    'task_id': assigned_task_id,
-                    'to_process': True,
-                    'old_id': op.id,
-                    'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty}
-                # To remember the original operation when we scan a barcode
-                # in warehouse_scan_gun_module, because maybe the assigned
-                # operation were deleted by doinf a partial picking.
-                pending_ops_vals.append(new_ops_vals)
+                    new_ops_vals = {
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'product_qty': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'location_id': op.location_id.id,
+                        'location_dest_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'owner_id': op.owner_id.id,
+                        'task_id': assigned_task_id,
+                        #'to_process': True,
+                        'old_id': op.id,
+                        'uos_id': op.uos_id.id,
+                        'uos_qty': op.uos_qty}
+                    # To remember the original operation when we scan a barcode
+                    # in warehouse_scan_gun_module, because maybe the assigned
+                    # operation were deleted by doinf a partial picking.
+                    pending_ops_vals.append(new_ops_vals)
         if something_done:
             transfer_obj.do_detailed_transfer()
             new_pick_obj = self.search([('backorder_id', '=', self.id)])
@@ -329,8 +330,9 @@ class stock_picking(osv.Model):
                     new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
         else:
             for op in self.pack_operation_ids:
-                op.task_id = False  # Write to be able to assign later
-                op.to_process = True  # Write to be to process by default
+                if not op.to_revised:
+                    op.task_id = False  # Write to be able to assign later
+                #op.to_process = True  # Write to be to process by default,
         return
 
     @api.onchange('route_detail_id')
@@ -810,7 +812,7 @@ class stock_pack_operation(models.Model):
                                     }
 
     _defaults = {
-        'to_process': True,
+        'to_process': False,
         'do_onchange': True,
         'do_pack': 'do_pack'}
 
@@ -961,22 +963,45 @@ class stock_pack_operation(models.Model):
                                                " the picking."))
 
         #Hay que reescribir esto, lo hago en una función aparte.
-        vals = self.get_result_package_id(vals)
+        if vals.get('location_dest_id', False) or \
+                vals.get('package_id', False) or \
+                vals.get('product_qty', 0):
+            for op in self:
+                vals = self.get_result_package_id(op, vals)
+
         return super(stock_pack_operation, self).write(vals)
 
-    @api.model
-    def get_result_package_id(self,vals):
+    @api.multi
+    def get_result_package_id(self, op, vals):
+        #Siempre que sea producto,tiene que tener paquete
+        #siempre que sea do_pack empaqueta (si hay) en pacquete destino
+        #op = self
+        if op:
+            if op.task_id and not vals.get('task_id', False):
+                return vals
+            picking = op.picking_id or False
+        else:
+            picking = self.env['stock.picking'].browse(vals['picking_id'])
 
-        op = self
+        #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
+        if picking.picking_type_id.code !='internal' or \
+                        picking.task_type == 'picking' or \
+                        picking.task_type == 'ubication':
+            return vals
+
+
         vals['result_package_id'] = vals.get('result_package_id', False)
+
 
         if not vals['result_package_id']==False:
             return vals
 
-        if not (vals.get('location_dest_id', False) and vals.get('package_id', False))== False:
-            pack = False
-            pack_type = vals.get('do_pack', op.do_pack)
-            product_id = vals.get('product_id', op.product_id or False)
+        # and vals.get('package_id', False))== False:
+        pack = False
+        pack_type = vals.get('do_pack', op.do_pack)
+        product_id = vals.get('product_id', op.product_id or False)
+        if vals.get('package_id', False):
+
             lot_id = op.lot_id.id if op.lot_id.id else \
                 (op.packed_lot_id.id if op.packed_lot_id.id else False)
             if not lot_id:
@@ -984,26 +1009,29 @@ class stock_pack_operation(models.Model):
             if lot_id:
                 new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
                 pack = new_loc.get_package_of_lot(lot_id)
-            #miramos que hace por según haya o no = lote en destino y
-            #'pack_type' a do_pack o no_pack (empaquete o no)
-
-
-            if not product_id:
-                if pack_type == "do_pack":
-                    if pack:
-                        vals['result_package_id'] = pack.id
-
-            if product_id:
-                if pack_type == "do_pack":
-                    if pack:
-                        vals['result_package_id'] = pack.id
-                    else:
-                        new_package_id = self.env['stock.quant.package'].create({})
-                        vals['result_package_id'] = new_package_id.id
-
-                if pack_type == "no_pack":
-                        new_package_id = self.env['stock.quant.package'].create({})
-                        vals['result_package_id'] = new_package_id.id
+        else:
+            # Si es un producto, no tiene package cogemos el lot_id
+            # de los valores, si tiene lote ...
+            lot_id = vals.get('lot_id', False)
+            if lot_id:
+                new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
+                pack = new_loc.get_package_of_lot(lot_id)
+        #miramos que hace por según haya o no = lote en destino y
+        #'pack_type' a do_pack o no_pack (empaquete o no)
+        if not product_id:
+            if pack_type == "do_pack":
+                if pack:
+                    vals['result_package_id'] = pack.id
+        if product_id:
+            if pack_type == "do_pack":
+                if pack:
+                    vals['result_package_id'] = pack.id
+                else:
+                    new_package_id = self.env['stock.quant.package'].create({})
+                    vals['result_package_id'] = new_package_id.id
+            if pack_type == "no_pack" or (pack_type == "do_pack" and not pack):
+                    new_package_id = self.env['stock.quant.package'].create({})
+                    vals['result_package_id'] = new_package_id.id
         return vals
 
     @api.model
@@ -1013,8 +1041,14 @@ class stock_pack_operation(models.Model):
         operation lot we add the qty to this pack by setting it in
         result package id
         """
-        values_with_result_package_id = self.get_result_package_id(vals)
-        op = super(stock_pack_operation, self).create(values_with_result_package_id)
+        if self:
+            for op in self:
+
+                vals = self.get_result_package_id(op, vals)
+        else:
+             vals = self.get_result_package_id(self, vals)
+
+        op = super(stock_pack_operation, self).create(vals)
 
 
         # lot_id = op.lot_id.id if op.lot_id.id else \
