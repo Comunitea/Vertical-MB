@@ -112,7 +112,7 @@ function openerp_ts_models(instance, module){
             var loaded = self.fetch('res.users',['name','company_id'],[['id', '=', this.session.uid]])
                 .then(function(users){
                     self.set('user',users[0]);
-
+                    console.time('Test performance company');
                     return self.fetch('res.company',
                     [
                         'currency_id',
@@ -128,25 +128,39 @@ function openerp_ts_models(instance, module){
                     ],
                     [['id','=',users[0].company_id[0]]]);
                 }).then(function(companies){
+                    console.timeEnd('Test performance company');
                     self.set('company',companies[0]);
-
+                    console.time('Test performance units');
                     return self.fetch('product.uom', ['name'], []);
                 }).then(function(units){
+                    console.timeEnd('Test performance units');
                     for (key in units){
                         self.get('units_names').push(units[key].name)
                     }
 
                     self.db.add_units(units);
-                    return self.fetch(
-                        'product.product',
-                        ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id', 'max_discount', 'category_max_discount'],
-                        [['sale_ok','=',true]]
-                    );
+                    console.time('Test performance products');
+                    // return self.fetch(
+                    //     'product.product',
+                    //       ['name','product_class','list_price','standard_price','default_code','uom_id', 'box_discount', 'log_base_id', 'log_unit_id', 'log_box_id', 'base_use_sale', 'unit_use_sale', 'box_use_sale','virtual_stock_conservative','taxes_id', 'weight', 'kg_un', 'un_ca', 'ca_ma','ma_pa', 'products_substitute_ids', 'product_tmpl_id', 'max_discount', 'category_max_discount'],
+                    //     [['sale_ok','=',true], ['state2', '=', 'registered']]
+                    // );
+                    var model = new instance.web.Model('product.product');
+                    return model.call("load_products",[],{context:new instance.web.CompoundContext()});
                 }).then(function(products){
+                    console.timeEnd('Test performance products');
+                    // console.log(products)
                     self.db.add_products(products);
 
+                    console.time('Test performance customers');
                     return self.fetch('res.partner',['comercial','supplier_ids','indirect_customer','name','ref', 'property_account_position', 'property_product_pricelist', 'credit', 'credit_limit', 'child_ids', 'phone', 'type', 'user_id', 'state', 'comment'], [['customer','=',true], ['state2','=','registered']])
+
+                    // Por culpa de los properties no es eficiente
+                    // var model = new instance.web.Model('res.partner');
+                    // return model.call("load_partners",[true],{context:new instance.web.CompoundContext()});
                 }).then(function(customers){
+                    // console.log(customers)
+                    console.timeEnd('Test performance customers');
                     for (key in customers){
                         // var customer_name = customers[key].comercial || customers[key].name
                         // var customer_name = customers[key].comercial + ' | ' + customers[key].name + ' | ' + customers[key].ref
@@ -155,25 +169,34 @@ function openerp_ts_models(instance, module){
                         self.get('customer_codes').push(customers[key].ref);
                     }
                     self.db.add_partners(customers);
+                    console.time('Test performance suppliers');
                     return self.fetch('res.partner',['name'], [['supplier','=',true], ['customer_ids','!=',false]])
                 }).then(function(suppliers){
+                  console.timeEnd('Test performance suppliers');
                     self.db.add_suppliers(suppliers);
 
+                    console.time('Test performance Taxes');
                     return self.fetch('account.tax', ['amount', 'price_include', 'type'], [['type_tax_use','=','sale']]);
                 }).then(function(taxes) {
+                    console.timeEnd('Test performance Taxes');
                     self.set('taxes', taxes);
                     self.db.add_taxes(taxes);
+                    console.time('Test performance FP map');
                     return self.fetch('account.fiscal.position.tax', ['position_id', 'tax_src_id', 'tax_dest_id']);
 
 
                 }).then(function(fposition_map) {
-
+                    console.timeEnd('Test performance FP map');
                     self.db.add_taxes_map(fposition_map);
+                    console.time('Test performance FP');
                     return self.fetch('account.fiscal.position', ['name', 'tax_ids']);
                 }).then(function(fposition) {
+                    console.timeEnd('Test performance FP');
                     self.db.add_fiscal_position(fposition);
+                    console.time('Test performance qnote');
                     return self.fetch('qualitative.note', ['name', 'code']);
                 }).then(function(qnotes) {
+                    console.timeEnd('Test performance qnote');
                     for (key in qnotes){
                         self.get('qnotes_names').push(qnotes[key].code)
                     }
@@ -656,6 +679,7 @@ function openerp_ts_models(instance, module){
                 state:"draft",
                 comercial: '',
                 coment: '',
+                set_promotion: false // if true in the server we create a promotion, and recover again the order
             });
 
             this.ts_model =     attributes.ts_model;
@@ -791,45 +815,19 @@ function openerp_ts_models(instance, module){
                 note: this.get('coment'),
                 customer_comment: this.get('customer_comment'),
                 supplier_id : this.ts_model.db.supplier_from_name_to_id[this.get('supplier')],
+                set_promotion: this.get('set_promotion')
             };
         },
         get_last_line_by: function(period, client_id){
-            var date = new Date();
-            var date_str;
-            if (period == "3month") {
-                date.setDate(date.getDate() - 90);
-                date_str = this.dateToStr(date);
-            }else{
-                // var year = date.getFullYear()
-                // date_str = year + "-" + "01" + "-" + "01";
-                date.setDate(date.getDate() - 365);
-                date_str = this.dateToStr(date);
-            }
-            date_str = date_str + " 00:00:00"
-            var self=this;
-            var domain = [['order_id.partner_id', '=', client_id],['order_id.date_order', '>=', date_str],['order_id.state', 'in', ['progress', 'manual', 'done', 'history']]]
-            var loaded = self.ts_model.fetch_ordered('sale.order.line',
-                                            ['order_id', 'product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
-                                            domain, ['-order_id']
-                                            )
-                .then(function(order_lines){
+          var model = new instance.web.Model('sale.order.line');
+          var loaded = model.call("get_last_lines_by",[period, client_id],{context:new instance.web.CompoundContext()})
+              .then(function(order_lines){
                   if (!order_lines){
                     order_lines = []
                   }
                     // self.add_lines_to_current_order(order_lines);
-                    var unique_lines = []
-                    var added_products = []
-                    for (var i=0, len = order_lines.length; i < len; i++){
-                        line = order_lines[i]
-                        if ( (added_products.length > 0) && (added_products.indexOf(line.product_id[0]) > 0) ){
-                          continue
-                        }
-                        unique_lines.push(line)
-                        added_products.push(line.product_id[0])
-                    }
-                    self.ts_model.get('sold_lines').reset(unique_lines)
-                    // self.ts_model.get('sold_lines').reset(order_lines)
-                })
+                    self.ts_model.get('sold_lines').reset(order_lines)
+              });
             return loaded
         },
         add_lines_to_current_order: function(order_lines){
@@ -838,6 +836,10 @@ function openerp_ts_models(instance, module){
             for (key in order_lines){
                 var line = order_lines[key];
                 var prod_obj = this.ts_model.db.get_product_by_id(line.product_id[0]);
+                if  (!prod_obj){
+                  alert(_t('This product can not be loaded, becouse is not registerd'))
+                  return
+                }
                 current_olines = this.get('orderLines').models
                 var product_exist = false;
                 for (key2 in current_olines){
@@ -873,39 +875,6 @@ function openerp_ts_models(instance, module){
                   alert(_t("This product is already in the order"));
                 }
             }
-        },
-        get_last_order_lines: function(client_id){
-            var self=this;
-            this.ready = $.Deferred(); // used to notify the GUI that the PosModel has loaded all resources
-            var domain = [['partner_id', '=', client_id],['state', 'in', ['progress', 'manual', 'done', 'history']], ['order_line', '!=', false]]
-            var loaded = self.ts_model.fetch_limited_ordered('sale.order',['id','name','order_line'], //name y order line no necesarias
-                                                domain,1,['-id'])
-                .then(function(order){
-                    if (order){
-                    return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','product_uos','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
-                                                [
-                                                    ['order_id', '=', order.id],
-                                                 ]);}
-                }).then(function(order_lines){
-                    // self.add_lines_to_current_order(order_lines);
-                    if (!order_lines){
-                      order_lines = []
-                    }
-                    var unique_lines = []
-                    var added_products = []
-                    for (var i=0, len = order_lines.length; i < len; i++){
-                        line = order_lines[i]
-                        if ( (added_products.length > 0) && (added_products.indexOf(line.product_id[0]) > 0) ){
-                          continue
-                        }
-                        unique_lines.push(line)
-                        added_products.push(line.product_id[0])
-                    }
-                    self.ts_model.get('sold_lines').reset(unique_lines)
-                    // self.ts_model.get('sold_lines').reset(order_lines)
-                })
-            return loaded
         },
         deleteProductLine: function(id_line){
           var self=this;

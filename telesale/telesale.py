@@ -21,6 +21,7 @@
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+from openerp import api
 
 
 class res_partner(osv.Model):
@@ -60,6 +61,39 @@ class res_partner(osv.Model):
                                       domain=[('customer', '=', True)]),
     }
 
+    # @api.model
+    # def load_partners(self, customer=True):
+    #     """
+    #     Por culma de los property va mas lento que haciendo fetch
+    #     """
+    #     res = []
+    #     domain = [('state2', '=', 'registered')]
+    #     if customer:
+    #         domain.append(('customer', '=', True))
+    #     else:
+    #         domain.append(('supplier', '=', True))
+    #     partners = self.search(domain)
+    #     for p in partners:
+    #         dic = {
+    #             'id': p.id,
+    #             'comercial': p.comercial,
+    #             'supplier_ids': [x.id for x in p.supplier_ids],
+    #             'indirect_customer': p.indirect_customer,
+    #             'name': p.name,
+    #             'ref': p.ref,
+    #             'property_account_position': p.property_account_position.id,
+    #             'property_product_pricelist': p.property_product_pricelist.id,
+    #             'credit': p.credit,
+    #             'credir_limit': p.credit_limit,
+    #             'clild_ids': [x.id for x in p.child_ids],
+    #             'phone': p.phone,
+    #             'type': p.type,
+    #             'user_id': p.user_id and [p.user_id.id, p.user_id.name] or False,
+    #             'state2': p.state2,
+    #             'comment': p.comment
+    #         }
+    #         res.append(dic)
+    #     return res
 
 class product_product(osv.Model):
     _inherit = "product.product"
@@ -111,6 +145,45 @@ class product_product(osv.Model):
         #     min_price = t_pricelist._get_product_pvp(cr, uid, product_id,
         #                                              pricelist_id)[1]
         res['min_price'] = min_price
+        return res
+
+    @api.model
+    def load_products(self):
+        """
+        """
+        res = []
+        products = self.search([('sale_ok', '=', True),
+                                ('state2', '=', 'registered')])
+        for p in products:
+            dic = {
+                'id': p.id,
+                'name': p.name,
+                'product_class': p.product_class,
+                'list_price': p.list_price,
+                'standard_price': p.standard_price,
+                'default_code': p.default_code,
+                'uom_id': p.uom_id and [p.uom_id.id, p.uom_id.name] or False,
+                'box_discount': 0.0,
+                'log_base_id': p.log_base_id and [p.log_base_id.id, p.log_base_id.name] or False,
+                'log_box_id': p.log_box_id and [p.log_box_id.id, p.log_box_id.name] or False,
+                'log_unit_id': p.log_unit_id and [p.log_unit_id.id, p.log_unit_id.name] or False,
+                'base_use_sale': p.base_use_sale,
+                'unit_use_sale': p.unit_use_sale,
+                'box_use_sale': p.box_use_sale,
+                'virtual_stock_conservative': p.virtual_stock_conservative or 0.0,
+                'taxes_id': [x.id for x in p.taxes_id],
+                'weight': 0,
+                'kg_un': p.kg_un,
+                'un_ca': p.un_ca,
+                'ca_ma': p.ca_ma,
+                'ma_pa': p.ma_pa,
+                'products_substitute_ids': [x.id for x in p.products_substitute_ids],
+                'product_tmpl_id': p.product_tmpl_id.id and [p.product_tmpl_id.id, p.product_tmpl_id.name] or False,
+                'max_discount': p.max_discount,
+                'category_max_discount': p.category_max_discount
+
+            }
+            res.append(dic)
         return res
 
 

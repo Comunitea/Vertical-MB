@@ -24,7 +24,7 @@
                         <header>
                             <button name="logic_validated" string="Logistic Validated" attrs="{'invisible': [('state2','in',['commercial_pending','validated','registered','unregistered','denied'])]}" class="oe_highlight"/>
                             <button name="commercial_validated" string="Commercial Validated" attrs= "{'invisible': [('state2','in',['logic_pending','validated','registered','unregistered','denied'])]}" class="oe_highlight"/>
-                            <button name="back_pending" string="Back" attrs="{'invisible': [('state2','in',['val_pending','registered','unregistered','denied'])]}" />
+                            <!-- <button name="back_pending" string="Back" attrs="{'invisible': [('state2','in',['val_pending','registered','unregistered','denied'])]}" /> -->
                             <button name="%(action_process_deny_product)d" string="Deny" attrs= "{'invisible': [('state2','in',['registered','unregistered','denied'])]}" type="action" class="oe_link"/>
                             <button name="active" string="Register" attrs="{'invisible': [('state2','!=','validated')]}" class="oe_highlight"/>
                             <newline/>
@@ -33,6 +33,7 @@
                 </xpath>
 
                 <field name="list_price" position="after">
+                    <field name="sale_euro_weight"/>
                     <field name="doorstep_price"/>
                     <field name="nook_price"/>
                 </field>
@@ -164,14 +165,18 @@
                     <group>
                         <field name="unregister_reason_id" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
                         <field name="deny_reason_id" attrs="{'invisible': [('state2','!=','denied')]}"/>
-                        <button name="flow_restart" string="Return to validate pending"
+                        <!-- <button name="flow_restart" string="Return to validate pending"
                                 type="object"
                                 class="oe_link" attrs="{'invisible': [('state2','!=','denied')]}"
-                                confirm="Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"/>
+                                confirm="Este producto está denegado. ¿Estás seguro de que quieres volver al estado de pendiente de validación?"/> -->
+                        <button name="flow_restart" string="Return to validate pending"
+                                type="object"
+                                class="oe_link" attrs="{'invisible': [('state2','in',['val_pending','registered'])]}"/>
                     </group>
                 </label>
 
                 <field name="standard_price" position="after">
+                    <field name="buy_euro_weight"/>
                     <field name="margin" readonly="True"/>
                     <field name="last_purchase_price"/>
                     <!-- <field name="life"/> -->

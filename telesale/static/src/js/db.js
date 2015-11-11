@@ -252,7 +252,6 @@ function openerp_ts_db(instance, module){
         },
         is_indirect_customer_by_name: function(partner){
             var res = false;
-            // debugger;
             if(partner){
               var partner_id = this.partner_name_id[partner];
 

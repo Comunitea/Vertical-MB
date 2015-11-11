@@ -14,7 +14,7 @@
                 <div class="col-xs-4 fullheight centerinside">
                     <div class="centerthis">
                         <label for="customer">Customer:</label>
-                        <input type="text" id="input-customer" name="customer"/>
+                        <input type="text" id="input-customer" name="customer" class="tab1"/>
                     </div>
                 </div>
 

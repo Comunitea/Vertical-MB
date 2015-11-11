@@ -452,6 +452,9 @@
     background:  -ms-linear-gradient(#b2b3d7, #7f82ac);
     background:      linear-gradient(#b2b3d7, #7f82ac);
 }
+/*.telesale #bottompart button:focus{
+  background: linear-gradient(#F5DAD6, #FC1616);
+}*/
 .telesale #bottompart .bottompart-form {
     position: relative;
     width: 100%;

@@ -11,5 +11,3 @@ access_pricelist_pvp_line,access_pricelist_pvp_line,model_pricelist_pvp_line,bas
 
 access_specific_customer_pvp,access_specific_customer_pvp,model_specific_customer_pvp,base.group_user,1,1,1,1
 access_specific_pvp_line,access_specific_pvp_line,model_specific_pvp_line,base.group_user,1,1,1,1
-access_table_pricelist_prices,access_table_pricelist_prices,model_table_pricelist_prices,base.group_user,1,1,1,1
-

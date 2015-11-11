@@ -19,10 +19,11 @@
 #
 ##############################################################################
 from openerp.osv import fields, osv
-from openerp import netsvc
+from openerp import netsvc, api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 import time
+from datetime import date, timedelta
 
 
 class sale(osv.osv):
@@ -154,6 +155,8 @@ class sale(osv.osv):
                     'res_id': order_id,
                     'type': 'email'
                 }
+
+
                 self.pool.get('mail.message').create(cr, uid, vals,
                                                      context=context)
 
@@ -194,6 +197,9 @@ class sale(osv.osv):
                 wf_service = netsvc.LocalService('workflow')
                 wf_service.trg_validate(uid, 'sale.order', order_id,
                                         'order_confirm', cr)
+
+            if 'set_promotion' in order and order['set_promotion']:
+                self.apply_promotions(cr, uid, [order_id], context=context)
         return order_ids
 
     def cancel_order_from_ui(self, cr, uid, order_id, context=None):
@@ -255,7 +261,6 @@ class sale_order_line(osv.osv):
         Overwrite in order to get the last sale preice to calculate a
         aproximate price of fresh products in telesale
         """
-        # import ipdb; ipdb.set_trace()
 
         if context is None:
             context = {}
@@ -281,4 +286,69 @@ class sale_order_line(osv.osv):
                 if last_id:
                     line = self.browse(cr, uid, last_id[0], context)
                     res['value']['last_price_fresh'] = line.price_unit
+        return res
+
+    @api.model
+    def get_last_lines_by(self, period, client_id):
+        """
+        """
+        cr = self._cr
+        date_str = date.today()
+        if period == "ult":
+            SQ = """ SELECT id
+                     FROM sale_order_line sol
+                     WHERE order_id in
+                        (SELECT id
+                         FROM sale_order WHERE
+                         state in ('progress','manual','done','history')
+                         and partner_id = %s order by id desc limit 1)
+                    ORDER BY id desc"""
+
+        else:
+            if period == "3month":
+                date_str = date.today() - timedelta(90)
+            elif period == "year":
+                date_str = date.today() - timedelta(365)
+            date_str = date_str.strftime("%Y-%m-%d %H:%M:%S")
+            SQ = """ SELECT * FROM
+                        (SELECT distinct on (product_id) sol.id
+                         FROM sale_order_line sol
+                         INNER JOIN sale_order so ON so.id = sol.order_id
+                         WHERE so.state in
+                            ('progress','manual','done','history')
+                         AND so.partner_id = %s
+                         AND so.date_order >= %s
+                         ORDER BY product_id desc, id desc) AS SQ
+                    ORDER BY id desc"""
+
+        if period != 'ult':
+            cr.execute(SQ, (client_id, date_str))
+        else:
+            cr.execute(SQ, (client_id,))
+        fetch = cr.fetchall()
+        prod_ids = [x[0] for x in fetch]
+        res = []
+        for l in self.browse(prod_ids):
+            # Avoid not registered products
+            # if l.product_id.state2 != 'registered':
+            #     continue
+            dic = {
+                'order_id': l.order_id.id,
+                'product_id': (l.product_id.id, l.product_id.name),
+                'product_uom': (l.product_uom.id, l.product_uom.name),
+                'product_uom_qty': l.product_uom_qty,
+                'product_uos': (l.product_uos.id, l.product_uos.name),
+                'product_uos_qty': l.product_uos_qty,
+                'price_udv': l.price_udv,
+                'price_unit': l.price_unit,
+                'discount': l.discount,
+                'price_subtotal': l.product_uom_qty * l.price_unit *
+                (1 - (l.discount / 100.0)),
+                'tax_id': [x.id for x in l.tax_id],
+                'pvp_ref': l.pvp_ref,
+                'current_pvp': l.current_pvp,
+                'q_note': l.q_note.name,
+                'detail_note': l.detail_note
+            }
+            res.append(dic)
         return res

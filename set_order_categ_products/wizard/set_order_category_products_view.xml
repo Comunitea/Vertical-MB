@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+      <record id="wizard_order_locations_view_form" model="ir.ui.view">
+            <field name="name">wizard.order.locations.view.form</field>
+            <field name="model">wizard.order.categories</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Order Products and Categories">
+                  <p>
+                  You can set the order of products inside each category.<br/>
+                  This wizard will generte a sequence number according to the specific order between categories and products.<br/>
+                    </p>
+                    <group string="Order Products">
+                        <field name="product_order_ids" nolabel="1">
+                          <tree editable="top">
+                            <field name="product_id"/>
+                            <field name="sequence"/>
+                          </tree>
+                        </field>
+                    </group>
+                    <button name="set_defined_order" string="Set Order" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </form>
+
+              </field>
+
+
+
+
+        </record>
+
+
+         <act_window id="action_order_categories"
+             name="Order Products"
+             key2="client_action_multi"
+             src_model="product.category"
+             res_model="wizard.order.categories"
+             view_mode="form"
+             view_type="form"
+             target="new"
+            />
+
+    </data>
+</openerp>

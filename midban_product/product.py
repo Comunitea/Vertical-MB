@@ -455,6 +455,7 @@ products do not require units for validation'),
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_delete(uid, 'product.template', product.id, cr)
             wf_service.trg_create(uid, 'product.template', product.id, cr)
+            product.act_validate_pending()
         return True
 
 
@@ -539,6 +540,24 @@ class ProductTemplate(models.Model):
                                     help="Get into sale order line if sold in \
                                     the container logistic unit")
     default_code2 = fields2.Char('Internal Reference')
+
+    buy_euro_weight = fields2.Float("Buy Euro Weight",
+                                    readonly=True,
+                                    compute='_get_buysale_euro_weight',
+                                    help='Price per gross weight in a purchase')
+    sale_euro_weight = fields2.Float("Sale Euro Weight",
+                                    readonly=True,
+                                    compute='_get_buysale_euro_weight',
+                                    help='Price per gross weight in a sale')
+
+    @api.one
+    @api.depends('list_price', 'standard_price', 'weight')
+    def _get_buysale_euro_weight(self):
+        """
+        Calculate the price per gross weight in a purchase or a sale
+        """
+        self.buy_euro_weight = self.standard_price / (self.weight or 1.0)
+        self.sale_euro_weight = self.list_price / (self.weight or 1.0)
 
     @api.one
     @api.constrains('base_use_sale', 'unit_use_sale', 'box_use_sale')

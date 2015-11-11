@@ -5,7 +5,7 @@
     <t t-name="Product-Catalog-Screen-Widget">
         <div class="product-catalog-screen">
              <div class="search-box">
-               <div class="center"><input id="search-product" placeholder="Search Products" /></div>
+               <div class="center"><input id="search-product" placeholder="Search Products" class="tab1"/></div>
                <!-- <img class="search-clear" src="/telesale/static/src/img/search_reset.gif" /> -->
             </div>
             <div id="placeholder-product-catalog-widget">
@@ -44,7 +44,10 @@
                 </span>
             </td>
             <td class="pc-cell-stock">
-                <span class="product-cell" t-esc="widget.product.virtual_stock_conservative.toFixed(2)"/>
+              <t t-if="widget.product.virtual_stock_conservative">
+                  <span class="product-cell" t-esc="widget.product.virtual_stock_conservative.toFixed(2)"/>
+              </t>
+
             </td>
             <td class="pc-cell-add">
                 <button class="add-product fullwidth">+</button>

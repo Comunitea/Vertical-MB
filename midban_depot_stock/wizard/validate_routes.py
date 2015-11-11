@@ -75,6 +75,7 @@ class ValidateRoutes(models.TransientModel):
         return
 
     def _get_pickings_from_outs(self, out_pickings):
+        wh = self.env['stock.warehouse'].search([])[0]
         res = self.env['stock.picking']
         for pick in out_pickings:
             if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
@@ -87,9 +88,9 @@ class ValidateRoutes(models.TransientModel):
                                  _('Picking %s without has not route detatl \
                                    assigned' % pick.name))
             if pick.group_id:
-                domain = [('id', '!=', pick.id),
+                domain = [('state', 'in', ['confirmed', 'assigned']),
                           ('group_id', '=', pick.group_id.id),
-                          ('picking_type_code', '!=', 'outgoing')]
+                          ('picking_type_id', '=', wh.pick_type_id.id)]
                 pick_objs = self.env['stock.picking'].search(domain)
                 for p in pick_objs:
                     res += p

@@ -14,7 +14,7 @@
               <div class="col-xs-4 fullheight centerinside textcenter">
                 <div class="centerthis">
                         <label for="date_start">Date Start:</label>
-                        <input type="date" id='input-date_start2' name="date_start" t-att-value="widget.ts_model.getCurrentDateStr()"/>
+                        <input type="date" id='input-date_start2' name="date_start" t-att-value="widget.ts_model.getCurrentDateStr()" class="tab1"/>
                 </div>
               </div>
               <div class="col-xs-4 fullheight centerinside textcenter">
