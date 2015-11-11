@@ -55,6 +55,7 @@ function openerp_ts_models(instance, module){
                 'units_names':          [], // Array of units names
                 'qnotes':                [], // Array of qualitative note
                 'qnotes_names':          [], // Array of qualitative note names
+                'routes_names':          [], // Array of route names
                 'customer_names':          [], // Array of customer names
                 'customer_codes':          [], // Array of customer refs
                 'supplier_names':          [], // Array of supplier refs
@@ -201,6 +202,21 @@ function openerp_ts_models(instance, module){
                         self.get('qnotes_names').push(qnotes[key].code)
                     }
                     self.db.add_qnotes(qnotes);
+
+
+
+
+                  return self.fetch('route', ['code'], [['type', '=', 'telesale']]);
+                }).then(function(routes) {
+                    console.timeEnd('Test performance routes');
+                    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+                    console.log(routes)
+                    for (key in routes){
+                        self.get('routes_names').push(routes[key].code)
+                    }
+                    console.log(self.get('routes_names'))
+                    self.db.add_routes(routes);
+
                 })
 
             return loaded;
@@ -830,8 +846,8 @@ function openerp_ts_models(instance, module){
               });
             return loaded
         },
-        add_lines_to_current_order: function(order_lines){
-
+        add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
+            debugger;
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
             for (key in order_lines){
                 var line = order_lines[key];
@@ -850,11 +866,15 @@ function openerp_ts_models(instance, module){
                         product_exist = true;
                 }
                 if (!product_exist){
+                    var l_qty = line.product_uom_qty
+                    if(fromsoldprodhistory){
+                      l_qty = 1.0;
+                    }
                     var line_vals = {ts_model: this.ts_model, order:this,
                                      code:prod_obj.default_code || "" ,
                                      product:prod_obj.name,
                                      unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
-                                     qty:line.product_uom_qty, //order line qty
+                                     qty:my_round(l_qty), //order line qty
                                      pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
                                      total: my_round(line.current_pvp ? line.product_uom_qty * line.current_pvp : 0 ,2),
                                      discount: my_round( 0, 2 ),

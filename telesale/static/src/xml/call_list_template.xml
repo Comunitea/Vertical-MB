@@ -7,13 +7,13 @@
             <!-- <button class="probe">Call list content</button> -->
             <div class="filter-calls">
 
-                    <div class="col-xs-4 fullheight centerinside">
+                    <div class="col-xs-3 fullheight centerinside">
                       <div class="centerthis">
                         <label for="date_call">Date:</label>
                          <input type="date" id="date-call-search" name="date_call" t-att-value="widget.ts_model.getCurrentDateStr()" class="noclass tab1"/>
                       </div>
                     </div>
-                    <div class="col-xs-4 fullheight centerinside">
+                    <div class="col-xs-3 fullheight centerinside">
                       <div class="centerthis">
                         <label for="state">State:</label>
                         <select id="state-select">
@@ -24,7 +24,19 @@
                         </select>
                       </div>
                     </div>
-                    <div class="col-xs-4 fullheight centerinside">
+                    <div class="col-xs-3 fullheight centerinside">
+                      <div class="centerthis">
+                        <label for="date_call">Route:</label>
+                         <!-- <input type="text" id="route-search" name="route_call" class="noclass tab1"/> -->
+                        <select id="route_search">
+                          <option t-att-value="0"></option>
+                          <t t-foreach="widget.ts_model.get('routes_names')" t-as="code">
+                            <option t-att-value="widget.ts_model.db.route_name_id[code]"><span t-esc="code"/></option>
+                          </t>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-xs-3 fullheight centerinside">
                       <div class="centerthis">
                         <button id="create-call">Create</button>
                       </div>

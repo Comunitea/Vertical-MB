@@ -1446,7 +1446,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         add_line_to_order: function() {
             var self=this;
-            self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line])
+            self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line], true)
             //in get_last_order_lines we unbid add event of currentOrderLines to render faster
             self.ts_widget.new_order_screen.order_widget.bind_orderline_events();
             self.ts_widget.new_order_screen.order_widget.renderElement()
