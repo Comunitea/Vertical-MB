@@ -50,6 +50,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             $('.select-order').removeClass('selected-order');
             $(identify).addClass('selected-order');
             $('.tab1').focus();
+            if($('#partner').val()){
+                $('#vua-button').click();
+            }
         },
         closeOrder: function(event) {
             this.order.destroy();
@@ -174,8 +177,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         else{
                             $('#date_order').focus();
                         }
-                        self.refresh();
                         $('#vua-button').click();
+                        self.refresh();
                     }
                 });
             }
