@@ -1240,6 +1240,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
             }
            else if ( currentOrder.check() ){
+                var partner_id = this.ts_model.db.partner_name_id[currentOrder.get('partner')]
+                delete this.ts_model.db.cache_sold_lines[partner_id];
                 this.ts_model.push_order(currentOrder.exportAsJSON());
             }
         },

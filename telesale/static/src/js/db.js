@@ -38,6 +38,7 @@ function openerp_ts_db(instance, module){
             this.route_by_id = {};
             this.route_name_id = {};
 
+            this.cache_sold_lines = {};
         },
 
         /* loads a record store from the database. returns default if nothing is found */

@@ -350,9 +350,9 @@ function openerp_ts_models(instance, module){
             if (!date){date = $('#date-call-search').val()}
             if (!route){route = $('#route_search').val()}
             if(date == ""){
-              var domain = [['user_id', '=', self.get('user').id], ['partner_id', '!=', false]]
+              var domain = [['partner_id', '!=', false]]
             }else{
-              var domain = [['user_id', '=', self.get('user').id],['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
+              var domain = [['date', '>=', date + " 00:00:00"],['date', '<=', date + " 23:59:59"], ['partner_id', '!=', false]]
             }
             if (state){
                 if (state != "any")
@@ -832,15 +832,25 @@ function openerp_ts_models(instance, module){
         },
         get_last_line_by: function(period, client_id){
           var model = new instance.web.Model('sale.order.line');
-          var loaded = model.call("get_last_lines_by",[period, client_id],{context:new instance.web.CompoundContext()})
-              .then(function(order_lines){
-                  if (!order_lines){
-                    order_lines = []
-                  }
-                    // self.add_lines_to_current_order(order_lines);
-                    self.ts_model.get('sold_lines').reset(order_lines)
-              });
-            return loaded
+          debugger;
+          var cache_sold_lines = self.ts_model.db.cache_sold_lines[client_id]
+          if (cache_sold_lines && period == 'year'){
+              self.ts_model.get('sold_lines').reset(cache_sold_lines)
+          }
+          else{
+              var loaded = model.call("get_last_lines_by",[period, client_id],{context:new instance.web.CompoundContext()})
+                  .then(function(order_lines){
+                          if (!order_lines){
+                            order_lines = []
+                          }
+                            // self.add_lines_to_current_order(order_lines);
+                          if(period == 'year'){
+                              self.ts_model.db.cache_sold_lines[client_id] = order_lines;
+                          }
+                          self.ts_model.get('sold_lines').reset(order_lines)
+                  });
+                return loaded
+          }
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
             debugger;
