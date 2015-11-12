@@ -301,7 +301,13 @@ function openerp_ts_screens(instance, module) { //module is instance.point_of_sa
                 var date = self.$('#date-call-search').val()
                 var state = self.$('#state-select').val()
                 self.ts_model.get_calls_by_date_state(date,state);
-            })
+            });
+            this.$("#route_search").blur(function(){
+                var date = self.$('#date-call-search').val()
+                var state = self.$('#state-select').val()
+                var route = self.$('#route_search').val()
+                self.ts_model.get_calls_by_date_state(date, state, route);
+            });
             this.$("#create-call").click(function(){
                 state = self.$('#state-select').val()
                 self.ts_widget.screen_selector.show_popup('add_call_popup', false);

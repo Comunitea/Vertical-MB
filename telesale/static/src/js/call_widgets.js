@@ -197,7 +197,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
                     self.ts_widget.screen_selector.close_popup('add_call_popup');
 
                 })
-
+            this.$('#close-finish-call-popup').off('click').click();
         },
     });
 
