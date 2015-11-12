@@ -52,25 +52,35 @@ class purchase_order_parser(models.AbstractModel):
         return prod_dics
 
     def _get_stock_touple(self, prod, mode):
-        unit = 0
         base = 0
-        ba_un = prod['kg_un']
+        comp = 0
+        qty = 0
+        comp_base = prod['kg_un']
+        base_container = prod['un_ca']
         if mode == 'stock':
-            base = prod['qty_available']
+            qty = prod['qty_available']
         elif mode == 'incoming':
-            base = prod['incoming_qty']
+            qty = prod['incoming_qty']
         elif mode == 'outgoing':
-            base = prod['outgoing_qty']
+            qty = prod['outgoing_qty']
         else:
-            base = mode
-        while base >= ba_un:
-            base -= ba_un
-            unit += 1
-        return unit, int(round(base))
+            qty = mode
+
+        # Parse qty to composition
+        if prod['uom_id'] == prod['log_base_id']:  # UOM is composition (our base)
+            comp = qty
+        elif prod['uom_id'] == prod['log_unit_id']:  # UOM is base (our unit)
+            comp = qty * comp_base
+        elif prod['uom_id'] == prod['log_box_id']:  # UOM is container (our box)
+            comp = qty * comp_base * base_container * prod['un_ca']
+        while comp >= comp_base:
+            comp -= comp_base
+            base += 1
+        return base, int(round(comp))
 
     def _get_diff_touple(self, dic_data):
-        unit = 0
         base = 0
+        comp = 0
         sal_u = dic_data['sales'][0]
         sal_b = dic_data['sales'][1]
         pen_u = dic_data['pending'][0]
@@ -81,23 +91,23 @@ class purchase_order_parser(models.AbstractModel):
         inc_b = dic_data['incoming'][1]
         out_u = dic_data['outgoing'][0]
         out_b = dic_data['outgoing'][1]
-        unit = (sal_u + pen_u + out_u) - (stk_u + inc_u)
-        base = (sal_b + pen_b + out_b) - (stk_b + inc_b)
-        return unit, base
+        base = (sal_u + pen_u + out_u) - (stk_u + inc_u)
+        comp = (sal_b + pen_b + out_b) - (stk_b + inc_b)
+        return base, comp
 
     def _get_to_order_touple(self, prod, diff_touple):
         palets = 0
         mantles = 0
-        units = diff_touple[0]
-        base = diff_touple[1]
+        base = diff_touple[0]
+        comp = diff_touple[1]
         mantle_units = prod['kg_un'] * prod['un_ca'] * prod['ca_ma']
         palet_units = mantle_units * prod['ma_pa']
 
         total_units = 0
-        if units > 0:
-            total_units += units
+        if comp > 0:
+            total_units += comp
         if base > 0:
-            total_units += prod['kg_un'] and base / prod['kg_un'] or 0
+            total_units += base * prod['kg_un']
 
         control = True
         while control:
@@ -114,7 +124,8 @@ class purchase_order_parser(models.AbstractModel):
         prod_dics = []
         # Get products to give in the report
         fields = ['name', 'default_code', 'qty_available', 'incoming_qty',
-                  'outgoing_qty', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa']
+                  'outgoing_qty', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa',
+                  'log_base_id', 'log_unit_id', 'log_box_id', 'uom_id']
         if data.get('product_ids', False):
             domain = [('id', 'in', data['product_ids']),
                       ('type', '=', 'product')]
@@ -129,7 +140,8 @@ class purchase_order_parser(models.AbstractModel):
         elif data.get('category_ids', False):
             domain = [('categ_id', 'child_of', data['category_ids']),
                       ('type', '=', 'product')]
-            prod_dics = self.env['product.product'].search_read(domain, fields)
+            prod_dics = self.env['product.template'].search_read(domain,
+                                                                 fields)
 
         if not prod_dics:
             raise except_orm(_("Error"),
@@ -138,7 +150,10 @@ class purchase_order_parser(models.AbstractModel):
         # prod_ids = [x.id for x in prod_dics]
 
         t_sm = self.env['stock.move']
+        t_sol = self.env['sale.order.line']
         for prod in prod_dics:
+            # print prod
+
             dic_data = {'code': prod['default_code'],
                         'name': prod['name'],
                         'sales': (0, 0),
@@ -161,6 +176,32 @@ class purchase_order_parser(models.AbstractModel):
             uom_qty = 0.0
             for move in past_sales_objs:
                 uom_qty += move.product_uom_qty
+            # history_domain = [
+            #     ('order_id.state', '=', 'history'),
+            #     ('order_id.date_order', '>=', data['start_date']),
+            #     ('order_id.date_order', '<=', data['end_date']),
+            #     ('product_id.product_tmpl_id', '=', prod['id'])
+            # ]
+            # hist_lines_objs = t_sol.search(history_domain)
+            # for line in hist_lines_objs:
+            #     uom_qty += line.product_uom_qty
+            # SUUUUPER LEENTO, HACEMOS QUERY MEJOR
+            SQL = """ SELECT sum(product_uom_qty)
+                      FROM sale_order_line sol
+                      INNER JOIN sale_order so ON so.id = sol.order_id
+                      INNER JOIN product_product p ON p.id = sol.product_id
+                      INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
+                      WHERE so.state = 'history'
+                      AND so.date_order >= %s
+                      AND so.date_order <= %s
+                      AND pt.id = %s
+                      """
+            self._cr.execute(SQL, (data['start_date'], data['end_date'],
+                                   prod['id']))
+            fetch = self._cr.fetchall()
+            if fetch and fetch[0] and fetch[0][0] is not None:
+                uom_qty += fetch[0][0]
+
             dic_data['sales'] = self._get_stock_touple(prod, uom_qty)
             dic_data['diff'] = self._get_diff_touple(dic_data)
             dic_data['to_order'] = self._get_to_order_touple(prod,

@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <template id="replenishement_purchase_order">
-            <t t-call="report.html_container">
+            <!-- <t t-call="report.html_container"> -->
               <!-- <t t-call="report.external_layout"> -->
                 <t t-foreach="docs" t-as="o">
 
@@ -81,7 +81,7 @@
                         </tbody>
                   </table>
                   </div>
-                </t>
+                <!-- </t> -->
             <!-- </t> -->
           </t>
 
