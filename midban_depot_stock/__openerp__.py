@@ -33,7 +33,7 @@
         "base",
         "sale_stock",
         "stock_account",
-        "procurement_jit",
+        #"procurement_jit",
         "stock_picking_wave",
         "procurement",
         "purchase",

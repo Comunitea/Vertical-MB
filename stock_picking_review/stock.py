@@ -64,10 +64,10 @@ class stock_move(models.Model):
             self.product_uom_acc_qty = product.uos_qty_to_uom_qty(qty, uos_id)
 
     @api.multi
-    @api.depends('product_id', 'accepted_qty',
-                 'procurement_id.sale_line_id',
-                 'procurement_id.sale_line_id.discount',
-                 'procurement_id.sale_line_id.price_unit')
+    # @api.depends('product_id', 'accepted_qty',
+    #              'procurement_id.sale_line_id',
+    #              'procurement_id.sale_line_id.discount',
+    #              'procurement_id.sale_line_id.price_unit')
     def _get_subtotal_accepted(self):
         for move in self:
             if move.procurement_id.sale_line_id:
@@ -160,9 +160,8 @@ class StockPicking(models.Model):
         compute='_receipt_amount', digits_compute=dp.get_precision('Sale Price'),
         string='Receipt', readonly=False, store=True)
 
-
     @api.multi
-    @api.depends('group_id')
+    #@api.depends('group_id')
     def _get_payment_mode(self):
         sale_obj = self.env["sale.order"]
 
@@ -175,7 +174,7 @@ class StockPicking(models.Model):
                     picking.payment_mode = sale_ids[0].payment_mode_id
 
     @api.multi
-    @api.depends('amount_total_acc')
+    #@api.depends('amount_total_acc')
     def _receipt_amount(self):
         cash_type = self.env['ir.model.data'].get_object_reference('stock_picking_review', 'payment_mode_type_cash')
         cash_type_id = cash_type[1]
@@ -274,8 +273,8 @@ class StockPicking(models.Model):
         return res
 
     @api.multi
-    @api.depends('move_lines', 'partner_id','move_lines.accepted_qty',
-                 'move_lines.product_uom_qty')
+    #@api.depends('move_lines', 'partner_id','move_lines.accepted_qty',
+    #            'move_lines.product_uom_qty')
     def _amount_all_acc(self):
         for picking in self:
             if not picking.sale_id:

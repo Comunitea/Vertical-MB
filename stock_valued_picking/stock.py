@@ -45,7 +45,7 @@ class stock_picking(models.Model):
         ' External Notes')
 
     @api.multi
-    @api.depends('move_lines', 'partner_id')
+    #@api.depends('move_lines', 'partner_id')
     def _amount_all(self):
         for picking in self:
             if not picking.sale_id:
@@ -121,10 +121,10 @@ class stock_move(models.Model):
                             digits=(4, 2), readonly=True, store=True)
 
     @api.multi
-    @api.depends('product_id', 'product_uom_qty',
-                 'procurement_id.sale_line_id',
-                 'procurement_id.sale_line_id.discount',
-                 'procurement_id.sale_line_id.price_unit')
+    # @api.depends('product_id', 'product_uom_qty',
+    #              'procurement_id.sale_line_id',
+    #              'procurement_id.sale_line_id.discount',
+    #              'procurement_id.sale_line_id.price_unit')
     def _get_subtotal(self):
         for move in self:
             if move.procurement_id.sale_line_id:

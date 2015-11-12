@@ -172,20 +172,23 @@ class sale_order(osv.Model):
                                      _('Detail route %s must be of delivery \
                                         type' % route_name))
                 selected_record = False
-                for record in order.route_detail_id.customer_ids:
-                    if record.customer_id.id == order.partner_id.id:
-                        selected_record = record
-                        break
+                customer_item = self.pool.get('customer.list')
+                selected_record = customer_item.search(cr, uid, [('customer_id', '=', order.partner_id.id)], context)[0]
+                # for record in order.route_detail_id.customer_ids:
+                #     if record.customer_id.id == order.partner_id.id:
+                #         selected_record = record
+                #         break
                 if selected_record:
-                    selected_record.write({'sale_id': order.id})
+                    #selected_record.write({'sale_id': order.id})
+                    customer_item.write(cr, uid,selected_record, {'sale_id': order.id} )
                 else:
                     vals = {
                         'detail_id': order.route_detail_id.id,
                         'customer_id': order.partner_id.id,
                         'sale_id': order.id,
                     }
-                    self.pool.get('customer.list').create(cr, uid, vals,
-                                                          context)
+                    customer_item.create(cr, uid, vals,
+                                         context)
         res = super(sale_order, self).action_ship_create(cr, uid, ids,
                                                          context=context)
         return res

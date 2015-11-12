@@ -484,7 +484,7 @@ class StockPicking(models.Model):
         return res
 
     @api.one
-    @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
+    #@api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
     def _get_weight(self):
         total_weight = 0
         for move in self.move_lines:
@@ -496,7 +496,7 @@ class StockPackage(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"
 
-    @api.depends('quant_ids', 'quant_ids.lot_id')
+    #@api.depends('quant_ids', 'quant_ids.lot_id')
     @api.one
     def _get_package_lot_id(self):
         """
