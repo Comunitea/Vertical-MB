@@ -119,7 +119,6 @@ class stock_picking(osv.Model):
                     button.getparent().remove(button)
                 result['arch'] = etree.tostring(doc)
         return result
-
     @api.multi
     def do_transfer(self):
         """
@@ -361,7 +360,6 @@ class stock_picking(osv.Model):
         Overwrited in order to calculate the correct uos_qty in the operation.
         """
         res = super(stock_picking, self).do_prepare_partial()
-
         for picking in self:
             supplier_id = 0
             if picking.picking_type_code == 'incoming' and picking.purchase_id:
@@ -375,54 +373,77 @@ class stock_picking(osv.Model):
                                   move.linked_move_operation_ids]
                     operations = list(set(operations))
                     for op in operations:
-                        prod = op.operation_product_id
-                        var_weight = False
-                        if supplier_id:
-                            supp = prod.get_product_supp_record(supplier_id)
-                            if supp.is_var_coeff:
-                                var_weight = True
-                        else:
-                            if prod.is_var_coeff:
-                                var_weight = True
-                        op_uom_qty = op.packed_qty
-                        op_uos_qty = 0
-                        if op.package_id and not op.product_id:
-                            op_uos_qty = op.package_id.uos_qty
-                        # Variable coeff products
-                        elif op.product_id and var_weight:
-                            moves = list(set([x.move_id for x in
-                                              op.linked_move_operation_ids]))
-                            if len(operations) == 1 and len(moves) == 1:
-                                    op_uos_qty = move_uos_qty
+                        #Si el uom=uos no hago nada de esto
+                        if op.product_uom_id.id != move_uos_id:
+                            prod = op.operation_product_id
+                            var_weight = False
+                            if supplier_id:
+                                supp = prod.get_product_supp_record(supplier_id)
+                                if supp.is_var_coeff:
+                                    var_weight = True
                             else:
-                                op_coeff = 0
-                                for mv in moves:
-                                    op_coeff = \
-                                        mv.product_uom_qty / mv.product_uos_qty
-                                    apr_uos_qty = op_uom_qty / op_coeff
+                                if prod.is_var_coeff:
+                                    var_weight = True
+                            op_uom_qty = op.packed_qty
+                            op_uos_qty = 0
+                            if op.package_id and not op.product_id:
+                                #aquí no podemos fiarnos de la segunda unidad del paquete
+                                #op_uos_qty = op.package_id.uos_qty
+                                product_id = op.package_id.product_id or \
+                                             op.package_id.quant_ids[0].product_id or \
+                                             False
+                                op_uos_qty = product_id.uom_qty_to_uos_qty(op.packed_qty,
+                                                            move_uos_id,
+                                                            supplier_id)
 
-                                    # dec_part = apr_uos_qty - int(apr_uos_qty)
-                                    # if dec_part > 0.95:
-                                    #     apr_uos_qty = \
-                                    #         int(math.ceil(apr_uos_qty))
-                                    # else:
-                                    #     apr_uos_qty = int(apr_uos_qty)
+                            # Variable coeff products
+                            elif op.product_id and var_weight:
+                                moves = list(set([x.move_id for x in
+                                                  op.linked_move_operation_ids]))
+                                if len(operations) == 1 and len(moves) == 1:
+                                        op_uos_qty = move_uos_qty
+                                else:
+                                    op_coeff = 0
+                                    for mv in moves:
+                                        op_coeff = \
+                                            mv.product_uom_qty / mv.product_uos_qty
+                                        apr_uos_qty = op_uom_qty / op_coeff
 
-                                    if apr_uos_qty <= move_uos_qty:
-                                        op_uos_qty += apr_uos_qty
-                                        move_uos_qty -= apr_uos_qty
-                                    else:
-                                        op_uos_qty += move_uos_qty
-                                        break
-                        # Fixed coeff product
-                        elif op.product_id and not var_weight:
-                            op_uos_qty = \
-                                prod.uom_qty_to_uos_qty(op.product_qty,
-                                                        move_uos_id,
-                                                        supplier_id)
+                                        # dec_part = apr_uos_qty - int(apr_uos_qty)
+                                        # if dec_part > 0.95:
+                                        #     apr_uos_qty = \
+                                        #         int(math.ceil(apr_uos_qty))
+                                        # else:
+                                        #     apr_uos_qty = int(apr_uos_qty)
+
+                                        if apr_uos_qty <= move_uos_qty:
+                                            op_uos_qty += apr_uos_qty
+                                            move_uos_qty -= apr_uos_qty
+                                        else:
+                                            op_uos_qty += move_uos_qty
+                                            break
+                            # Fixed coeff product
+                            elif op.product_id and not var_weight:
+                                op_uos_qty = \
+                                    prod.uom_qty_to_uos_qty(op.product_qty,
+                                                            move_uos_id,
+                                                            supplier_id)
+
+
+                        else:
+                            op_uos_qty = op.product_qty
+                            op.uos_id = op.product_uom_id.id
+
                         # Write the calculed uos qty in operation
                         op.uos_qty = op_uos_qty
                         op.uos_id = move_uos_id
+                        #además actualizo el package segunda unidad para que sea ok
+                        #pendiente por rendimiento
+                        # vals = {'uos_id' : op.uos_id.id,
+                        #         'uos_qty' : op.package_id.packed_qty}
+                        # op.package_id.write(vals)
+
+
         return res
 
 
@@ -1043,7 +1064,6 @@ class stock_pack_operation(models.Model):
         """
         if self:
             for op in self:
-
                 vals = self.get_result_package_id(op, vals)
         else:
              vals = self.get_result_package_id(self, vals)
