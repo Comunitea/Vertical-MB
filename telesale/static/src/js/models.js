@@ -202,23 +202,14 @@ function openerp_ts_models(instance, module){
                         self.get('qnotes_names').push(qnotes[key].code)
                     }
                     self.db.add_qnotes(qnotes);
-
-
-
-
                   return self.fetch('route', ['code'], [['type', '=', 'telesale']]);
                 }).then(function(routes) {
                     console.timeEnd('Test performance routes');
-                    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-                    console.log(routes)
                     for (key in routes){
                         self.get('routes_names').push(routes[key].code)
                     }
-                    console.log(self.get('routes_names'))
                     self.db.add_routes(routes);
-
                 })
-
             return loaded;
         },
 
@@ -353,10 +344,11 @@ function openerp_ts_models(instance, module){
             }
             return res;
         },
-        get_calls_by_date_state: function(date, state){
+        get_calls_by_date_state: function(date, state, route){
             var self=this;
             if (!state){state = $('#state-select').val()}
             if (!date){date = $('#date-call-search').val()}
+            if (!route){route = $('#route_search').val()}
             if(date == ""){
               var domain = [['user_id', '=', self.get('user').id], ['partner_id', '!=', false]]
             }else{
@@ -366,8 +358,12 @@ function openerp_ts_models(instance, module){
                 if (state != "any")
                     domain.push(['state','=',state])
             }
+            if (route != "0"){
+              domain.push(['route_id', '=', parseInt(route)])
+            }
+            debugger;
             var context = new instance.web.CompoundContext()
-            self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration'],domain,context)
+            self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration','route_id'],domain,context)
             .then(function(calls){
                 if (!$.isEmptyObject(calls)){
 
