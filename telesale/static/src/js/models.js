@@ -910,11 +910,14 @@ function openerp_ts_models(instance, module){
         },
         addProductLine: function(product_id){
             var self=this;
-            var customer_id = this.ts_model.db.partner_name_id[this.get('partner')];
+            // var customer_id = this.ts_model.db.partner_name_id[this.get('partner')];
+            if(this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
+              $('.remove-line-button').click()
+            }
             $('.add-line-button').click()
             var added_line = self.ts_model.get('selectedOrder').getLastOrderline();
-            var lines_wisgets = self.ts_model.ts_widget.new_order_screen.order_widget.orderlinewidgets
-            lines_wisgets[lines_wisgets.length - 1].call_product_id_change(product_id)
+            var lines_widgets = self.ts_model.ts_widget.new_order_screen.order_widget.orderlinewidgets
+            lines_widgets[lines_widgets.length - 1].call_product_id_change(product_id)
             // debugger;
             // if (customer_id){
             //     var kwargs = {context: new instance.web.CompoundContext({}),
