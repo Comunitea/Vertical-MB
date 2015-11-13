@@ -835,10 +835,6 @@ function openerp_ts_models(instance, module){
         },
         get_last_line_by: function(period, client_id){
           var model = new instance.web.Model('sale.order.line');
-<<<<<<< HEAD
-=======
-          // debugger;
->>>>>>> c7f647f51e85cb7e90cabf12c8f7239fcb2f4aeb
           var cache_sold_lines = self.ts_model.db.cache_sold_lines[client_id]
           if (cache_sold_lines && period == 'year'){
               self.ts_model.get('sold_lines').reset(cache_sold_lines)
