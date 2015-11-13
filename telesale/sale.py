@@ -189,7 +189,8 @@ class sale(osv.osv):
                     'tax_id': [(6, 0, line.get('tax_ids', False))],
                     'pvp_ref': line.get('pvp_ref', 0.0),
                     'q_note': line.get('qnote', False),
-                    'detail_note': line.get('detail_note', False)
+                    'detail_note': line.get('detail_note', False),
+                    'discount': line.get('discount', 0.0)
                 }
 
                 t_order_line.create(cr, uid, vals)

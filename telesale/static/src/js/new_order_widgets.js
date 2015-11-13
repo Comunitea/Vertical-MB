@@ -1178,18 +1178,21 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       self.base += line.get_price_without_tax('total');
                       self.iva += line.get_tax();
                       self.total += line.get_price_with_tax();
+                      // self.margin += (line.get('pvp') - product_obj.standard_price) * line.get('qty');
                     // }
                     // else{
                     //     self.sum_fresh += line.get_price_without_tax('total');
                     // }
+
                 }
             }, this));
-            this.order_model.set('total_base', my_round(self.base, 2));
-            this.order_model.set('total_iva', my_round(self.iva, 2));
-            this.order_model.set('total', my_round(self.total, 2));
-            this.order_model.set('total_weight', my_round(self.weight, 2));
-            this.order_model.set('total_discount', my_round(self.discount, 2));
-            var discount_per = (0).toFixed(2) + "%";
+            self.base = my_round(self.base, 2);
+            this.order_model.set('total_base',self.base);
+            this.order_model.set('total_iva', self.iva);
+            this.order_model.set('total', self.total);
+            this.order_model.set('total_weight', self.weight);
+            this.order_model.set('total_discount', self.discount);
+            var discount_per = (0) + "%";
             // if (self.pvp_ref != 0){
             //     var discount_num = (self.discount/self.pvp_ref) * 100 ;
             //     if (discount_num < 0)
@@ -1201,17 +1204,17 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
               // Le volvemos a sumamos el descuento porque la base viene sin el
                 var discount_num = (self.discount/(self.base + self.discount) ) * 100 ;
                 if (discount_num < 0)
-                    var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
+                    var discount_per = "+" +  discount_num * (-1)  + "%";
                 else
-                    var discount_per = my_round( discount_num , 2).toFixed(2) + "%";
+                    var discount_per =  discount_num.toFixed(2)  + "%";
             }
             this.order_model.set('total_discount_per', discount_per);
-            this.order_model.set('total_margin', my_round(self.margin, 2));
-            var margin_per = (0).toFixed(2) + "%";
+            this.order_model.set('total_margin', self.margin);
+            var margin_per = (0) + "%";
             var margin_per_num = 0
             if (self.base != 0) {
-                margin_per_num = my_round( ((self.base - self.sum_cost) / self.base) * 100 , 2)
-                margin_per = margin_per_num.toFixed(2) + "%"
+                margin_per_num = ((self.base - self.sum_cost) / self.base) * 100
+                margin_per = my_round(margin_per_num, 2).toFixed(2) + "%"
             }
             this.order_model.set('total_margin_per', margin_per);
             this.order_model.set('total_boxes', self.sum_box); //integer
