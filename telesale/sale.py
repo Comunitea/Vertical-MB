@@ -332,23 +332,29 @@ class sale_order_line(osv.osv):
             # Avoid not registered products
             # if l.product_id.state2 != 'registered':
             #     continue
+            # dic = {
+            #     'order_id': l.order_id.id,
+            #     'product_id': (l.product_id.id, l.product_id.name),
+            #     'product_uom': (l.product_uom.id, l.product_uom.name),
+            #     'product_uom_qty': l.product_uom_qty,
+            #     'product_uos': (l.product_uos.id, l.product_uos.name),
+            #     'product_uos_qty': l.product_uos_qty,
+            #     'price_udv': l.price_udv,
+            #     'price_unit': l.price_unit,
+            #     'discount': l.discount,
+            #     'price_subtotal': l.product_uom_qty * l.price_unit *
+            #     (1 - (l.discount / 100.0)),
+            #     'tax_id': [x.id for x in l.tax_id],
+            #     'pvp_ref': l.pvp_ref,
+            #     'current_pvp': l.current_pvp,
+            #     'q_note': l.q_note.name,
+            #     'detail_note': l.detail_note
+            # }
             dic = {
-                'order_id': l.order_id.id,
                 'product_id': (l.product_id.id, l.product_id.name),
-                'product_uom': (l.product_uom.id, l.product_uom.name),
-                'product_uom_qty': l.product_uom_qty,
-                'product_uos': (l.product_uos.id, l.product_uos.name),
-                'product_uos_qty': l.product_uos_qty,
-                'price_udv': l.price_udv,
-                'price_unit': l.price_unit,
-                'discount': l.discount,
-                'price_subtotal': l.product_uom_qty * l.price_unit *
-                (1 - (l.discount / 100.0)),
-                'tax_id': [x.id for x in l.tax_id],
-                'pvp_ref': l.pvp_ref,
-                'current_pvp': l.current_pvp,
-                'q_note': l.q_note.name,
-                'detail_note': l.detail_note
+                'price_unit': l.product_id.list_price,
+                'default_code': l.product_id.default_code or \
+                l.product_id.default_code2
             }
             res.append(dic)
         return res

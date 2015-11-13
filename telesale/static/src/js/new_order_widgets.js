@@ -457,7 +457,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('product', product_obj.name || "");
                                 self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
                                 self.model.set('unit', self.model.ts_model.db.unit_by_id[result.value.product_uom].name);
-                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : '');
+                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : self.model.set('unit'));
                                 self.model.set('qty', 0);
                                 self.model.set('specific_discount', result.value.discount || 0);
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));
@@ -540,18 +540,18 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                    'box': 0.0}
             if(uos_id == product_obj.log_base_id[0]){
                 res['base'] = qty_uos
-                res['unit'] = my_round(res['base'] / product_obj.kg_un, 2)
-                res['box'] = my_round(res['unit'] / product_obj.un_ca, 2)
+                res['unit'] = my_round(res['base'] / product_obj.kg_un, 4)
+                res['box'] = my_round(res['unit'] / product_obj.un_ca, 4)
             }
             else if(uos_id == product_obj.log_unit_id[0]){
                 res['unit'] = qty_uos
-                res['box'] = my_round(res['unit'] / product_obj.un_ca, 2)
-                res['base'] = my_round(res['unit'] * product_obj.kg_un, 2)
+                res['box'] = my_round(res['unit'] / product_obj.un_ca, 4)
+                res['base'] = my_round(res['unit'] * product_obj.kg_un, 4)
             }
             else if(uos_id == product_obj.log_box_id[0]){
                 res['box'] = qty_uos
-                res['unit'] = my_round(res['box'] * product_obj.un_ca, 2)
-                res['base'] = my_round(res['unit'] * product_obj.kg_un, 2)
+                res['unit'] = my_round(res['box'] * product_obj.un_ca, 4)
+                res['base'] = my_round(res['unit'] * product_obj.kg_un, 4)
             }
             return res
         },
@@ -757,7 +757,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         else if(uos_id == product_obj.log_box_id[0]){
                             boxes = value
                         }
-                        this.model.set('boxes', my_round(boxes, 2));
+                        this.model.set('boxes', my_round(boxes, 4));
                       this.refresh('product_uos');
                       }
                     }
@@ -1026,7 +1026,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#promo-button').click(function(){
-                debugger;
                 current_order = self.ts_model.get('selectedOrder')
                 current_order.set('set_promotion', true)
                 $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
@@ -1256,7 +1255,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
         },
         saveCurrentOrder: function() {
-            debugger;
             var currentOrder = this.order_model;
             currentOrder.set('action_button', 'save')
             if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
@@ -1446,17 +1444,30 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         renderElement: function() {
             var self=this;
             this._super();
-            this.$('#add-line').off("click").click(_.bind(this.add_line_to_order, this));
+            // this.$('#add-line').off("click").click(_.bind(this.add_line_to_order, this));
+            this.$('#add-line').off("click").click(_.bind(this.add_product_to_order, this));
 
         },
-        add_line_to_order: function() {
+        // add_line_to_order: function() {
+        //     var self=this;
+        //     self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line], true)
+        //     //in get_last_order_lines we unbid add event of currentOrderLines to render faster
+        //     self.ts_widget.new_order_screen.order_widget.bind_orderline_events();
+        //     self.ts_widget.new_order_screen.order_widget.renderElement()
+        //     self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
+        //
+        // },
+        add_product_to_order: function() {
+            // this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model, contact_name: 'aaa' }));
             var self=this;
-            self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line], true)
-            //in get_last_order_lines we unbid add event of currentOrderLines to render faster
-            self.ts_widget.new_order_screen.order_widget.bind_orderline_events();
-            self.ts_widget.new_order_screen.order_widget.renderElement()
-            self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
-
+            var product_id = this.sold_line.product_id[0]
+            if (product_id){
+                var current_order= this.ts_model.get('selectedOrder')
+                current_order.addProductLine(product_id);
+                // this.ts_widget.screen_selector.set_current_screen('new_order');
+                // $('button#button_no').click();
+                // current_order.selectLine(current_order.get('orderLines').last());
+            }
         },
     });
 
@@ -1479,6 +1490,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 this.line_widgets[i].destroy();
             }
             this.line_widgets = [];
+            // sold lines tiene ahora objetos con info de producto
             var sold_lines = this.ts_model.get("sold_lines").models || []
 
             var $lines_content = this.$('.soldproductlines');

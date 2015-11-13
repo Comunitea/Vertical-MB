@@ -361,7 +361,6 @@ function openerp_ts_models(instance, module){
             if (route != "0"){
               domain.push(['route_id', '=', parseInt(route)])
             }
-            debugger;
             var context = new instance.web.CompoundContext()
             self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration','route_id'],domain,context)
             .then(function(calls){
@@ -832,7 +831,6 @@ function openerp_ts_models(instance, module){
         },
         get_last_line_by: function(period, client_id){
           var model = new instance.web.Model('sale.order.line');
-          debugger;
           var cache_sold_lines = self.ts_model.db.cache_sold_lines[client_id]
           if (cache_sold_lines && period == 'year'){
               self.ts_model.get('sold_lines').reset(cache_sold_lines)
@@ -853,7 +851,6 @@ function openerp_ts_models(instance, module){
           }
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
-            debugger;
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
             for (key in order_lines){
                 var line = order_lines[key];
@@ -909,38 +906,45 @@ function openerp_ts_models(instance, module){
         addProductLine: function(product_id){
             var self=this;
             var customer_id = this.ts_model.db.partner_name_id[this.get('partner')];
-            if (customer_id){
-                var kwargs = {context: new instance.web.CompoundContext({}),
-                              partner_id: customer_id,
-                             }
-                var pricelist_id = (this.ts_model.db.get_partner_by_id(customer_id)).property_product_pricelist;
-                var model = new instance.web.Model("sale.order.line");
-                model.call("product_id_change",[[],pricelist_id,product_id],kwargs)
-                    .then(function(result){
-                        var product_obj = self.ts_model.db.get_product_by_id(product_id);
-                        var line_vals = {ts_model: self.ts_model, order:self,
-                             code:product_obj.default_code || "" ,
-                             product:product_obj.name,
-                             product_uos_qty:1,
-                             product_uos:product_obj.uom_id[1],
-                             price_udv: my_round(result.value.price_unit || 0, 2),
-                             unit:product_obj.uom_id[1],
-                             qty:1,
-                             pvp: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
-                             total: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
-                             discount: 0,
-                             weight: product_obj.weight || 0.0,
-                             margin: my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.standard_price) / result.value.price_unit) : 0 , 2),
-                             taxes_ids: result.value.tax_id || [],
-                             pvp_ref: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
-                            }
-                        var line = new module.Orderline(line_vals);
-                        self.get('orderLines').add(line);
-                    });
-            }
-            else{
-                alert(_t("No Customer defined in current order"));
-            }
+            $('.add-line-button').click()
+            var added_line = self.ts_model.get('selectedOrder').getLastOrderline();
+            var lines_wisgets = self.ts_model.ts_widget.new_order_screen.order_widget.orderlinewidgets
+            lines_wisgets[lines_wisgets.length - 1].call_product_id_change(product_id)
+            // debugger;
+            // if (customer_id){
+            //     var kwargs = {context: new instance.web.CompoundContext({}),
+            //                   partner_id: customer_id,
+            //                  }
+            //     var pricelist_id = (this.ts_model.db.get_partner_by_id(customer_id)).property_product_pricelist;
+            //     var model = new instance.web.Model("sale.order.line");
+            //     model.call("product_id_change_with_wh",[[],pricelist_id,product_id],kwargs)
+            //         .then(function(result){
+            //             var product_obj = self.ts_model.db.get_product_by_id(product_id);
+            //             var line_vals = {ts_model: self.ts_model, order:self,
+            //                  code:product_obj.default_code || "" ,
+            //                  product:product_obj.name,
+            //                  product_uos_qty:1,
+            //                  product_uos:product_obj.uom_id[1],
+            //                  product_uos:(result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : product_obj.uom_id[1]);
+            //                  price_udv: my_round(result.value.price_unit || 0, 2),
+            //                  unit:product_obj.uom_id[1],
+            //                  qty:1,
+            //                  pvp: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
+            //                  total: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
+            //                  discount: 0,
+            //                  weight: product_obj.weight || 0.0,
+            //                  margin: my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.standard_price) / result.value.price_unit) : 0 , 2),
+            //                  taxes_ids: result.value.tax_id || [],
+            //                  pvp_ref: my_round(result.value.price_unit || 0,2), //TODO poner impuestos de producto o vacio
+            //                 }
+            //             var line = new module.Orderline(line_vals);
+            //             line.call_product_id_change(product_obj.id)
+            //             self.get('orderLines').add(line);
+            //         });
+            // }
+            // else{
+            //     alert(_t("No Customer defined in current order"));
+            // }
 
             // var pricelist_id = (this.ts_model.db.get_partner_by_id(partner_id)).property_product_pricelist;
         },
