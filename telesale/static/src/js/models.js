@@ -317,7 +317,8 @@ function openerp_ts_models(instance, module){
                                  qty:line.product_uom_qty,
                                  pvp:my_round(line.price_unit,2), //TODO poner precio del producto???
                                  total: my_round(line.price_subtotal,2),
-                                 discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
+                                //  discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
+                                 discount: my_round(line.discount, 2) || 0.0,
                                  weight: my_round(prod_obj.weight * line.product_uom_qty,2),
                                  margin: my_round( ( (line.price_unit != 0 && prod_obj.product_class == "normal") ? ( (line.price_unit - prod_obj.standard_price) / line.price_unit) : 0 ), 2),
                                  taxes_ids: line.tax_id || prod_obj.taxes_id || [],
@@ -361,7 +362,7 @@ function openerp_ts_models(instance, module){
             if (route != "0"){
               domain.push(['route_id', '=', parseInt(route)])
             }
-            debugger;
+            // debugger;
             var context = new instance.web.CompoundContext()
             self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration','route_id'],domain,context)
             .then(function(calls){
@@ -555,6 +556,8 @@ function openerp_ts_models(instance, module){
             var uom_id = this.ts_model.db.unit_name_id[this.get('unit')];
             var uos_id = this.ts_model.db.unit_name_id[this.get('product_uos')];
             var qnote_id = this.ts_model.db.qnote_name_id[this.get('qnote')];
+            console.log("discounnnnnnnnnnnnnnnnnnnnnnnnnnnnnnt")
+            console.log(this.get('discount'))
             return {
                 qty: this.get('qty'),
                 product_uom: uom_id,
@@ -567,6 +570,7 @@ function openerp_ts_models(instance, module){
                 tax_ids: this.get('taxes_ids'),
                 pvp_ref: this.get('pvp_ref'),
                 detail_note: this.get('detail') || "",
+                discount: this.get('discount') || 0.0
             };
         },
         get_price_without_tax: function(){
@@ -832,7 +836,7 @@ function openerp_ts_models(instance, module){
         },
         get_last_line_by: function(period, client_id){
           var model = new instance.web.Model('sale.order.line');
-          debugger;
+          // debugger;
           var cache_sold_lines = self.ts_model.db.cache_sold_lines[client_id]
           if (cache_sold_lines && period == 'year'){
               self.ts_model.get('sold_lines').reset(cache_sold_lines)
@@ -853,7 +857,6 @@ function openerp_ts_models(instance, module){
           }
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
-            debugger;
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
             for (key in order_lines){
                 var line = order_lines[key];
@@ -876,14 +879,15 @@ function openerp_ts_models(instance, module){
                     if(fromsoldprodhistory){
                       l_qty = 1.0;
                     }
+                    debugger;
                     var line_vals = {ts_model: this.ts_model, order:this,
                                      code:prod_obj.default_code || "" ,
                                      product:prod_obj.name,
                                      unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
                                      qty:my_round(l_qty), //order line qty
                                      pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
-                                     total: my_round(line.current_pvp ? line.product_uom_qty * line.current_pvp : 0 ,2),
-                                     discount: my_round( 0, 2 ),
+                                     total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+                                     discount: my_round( line.discount || 0.0, 2 ),
                                      weight: my_round(line.product_uom_qty * prod_obj.weight,2),
                                      margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),
                                      taxes_ids: line.tax_id || product_obj.taxes_id || [],
