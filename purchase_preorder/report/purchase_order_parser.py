@@ -113,8 +113,10 @@ class purchase_order_parser(models.AbstractModel):
         while control:
             if total_units >= palet_units:
                 palets += 1
+                total_units -= palet_units
             elif total_units >= mantle_units:
                 mantles += 1
+                total_units -= mantle_units
             else:
                 control = False
         return palets, mantles
@@ -152,8 +154,6 @@ class purchase_order_parser(models.AbstractModel):
         t_sm = self.env['stock.move']
         t_sol = self.env['sale.order.line']
         for prod in prod_dics:
-            # print prod
-
             dic_data = {'code': prod['default_code'],
                         'name': prod['name'],
                         'sales': (0, 0),
