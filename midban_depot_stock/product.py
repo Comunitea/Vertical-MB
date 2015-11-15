@@ -23,7 +23,8 @@ from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp import models, api
 from openerp import fields as fields2
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class product_template(osv.Model):
     """
@@ -147,6 +148,7 @@ class ProductTemplate(models.Model):
         """
         Calc stock in logistic units defined as units
         """
+        _logger.debug("CMNT _get_log_units_available")
         self.log_units_available = 0.0
         if self.var_coeff_un or self.var_coeff_ca:
             prod_ids = self.env['product.product'].search([('product_tmpl_id',

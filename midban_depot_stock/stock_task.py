@@ -47,7 +47,8 @@ class stock_task(osv.Model):
         'date_end': fields.datetime("Date End", readonly=True),
         'state': fields.selection([('assigned', 'Assigned'),
                                    ('canceled', 'Canceled'),
-                                   ('done', 'Finished')],
+                                   ('done', 'Finished'),
+                                   ('to_revised', 'To Revised')],
                                   'State', readonly=True, required=True),
         'picking_id': fields.many2one('stock.picking', 'Picking',
                                       readonly=True),
@@ -89,7 +90,8 @@ class stock_task(osv.Model):
         ctx['active_id'] = len(pick_ids) == 1 and pick_ids[0] or False
         pick_t = self.env['stock.picking'].with_context(ctx)
         pick_objs = pick_t.browse(pick_ids)
-
+        final_state = 'done'
+        wave_final_state = 'done'
         if self.type == 'picking':
             filter_ids = []
             for pick in pick_objs:

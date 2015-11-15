@@ -110,7 +110,7 @@ class sale_report(osv.osv):
         'lot_id': fields.many2one('stock.production.lot', 'Lot',
                                   readonly=True),
         'order_seq': fields.char('Sequence'),
-        'sequence': fields.integer('Sequence', readonly=True),
+        #'sequence': fields.integer('Sequence', readonly=True),
         'wave_id': fields.many2one('stock.picking.wave', 'Wave',
                                    readonly=True),
         'camera_id': fields.function(_get_camera_from_loc, type='many2one',
@@ -149,7 +149,6 @@ class sale_report(osv.osv):
           SQ.location_id      AS location_id,
           SUM(SQ.product_qty) AS product_qty,
           SQ.wave_id          AS wave_id,
-          SQ.sequence         AS sequence,
           SQ.order_seq         AS order_seq,
           SUM(SQ.uos_qty)         AS uos_qty,
           SQ.uos_id          AS uos_id,
@@ -165,7 +164,6 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
-                  location.sequence AS sequence,
                   location.order_seq AS order_seq,
                   quant.package_id as pack_id,
                   0 as customer_id
@@ -195,7 +193,6 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence,
                      order_seq
            UNION
            SELECT Min(operation.id)          AS id,
@@ -206,7 +203,6 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
-                  location.sequence AS sequence,
                   location.order_seq AS order_seq,
                   operation.package_id as pack_id,
                   0 as customer_id
@@ -232,7 +228,6 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence,
                      order_seq"""
 
     def _subquery_no_grouped_op(self):
@@ -244,7 +239,6 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
-                  location.SEQUENCE AS SEQUENCE,
                   location.order_seq AS order_seq,
                   quant.package_id as pack_id,
                   picking.partner_id as customer_id
@@ -273,7 +267,6 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence,
                      order_seq
            UNION
            SELECT Min(operation.id)          AS id,
@@ -284,7 +277,6 @@ class sale_report(osv.osv):
                   operation.uos_id AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
-                  location.sequence                 AS sequence,
                   location.order_seq AS order_seq,
                   operation.package_id as pack_id,
                   picking.partner_id as customer_id
@@ -308,7 +300,6 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     sequence,
                      order_seq"""
 
     def _group_by(self):
@@ -316,7 +307,6 @@ class sale_report(osv.osv):
              SQ.lot_id,
              SQ.location_id,
              SQ.wave_id,
-             SQ.sequence,
              SQ.order_seq,
              SQ.uos_id,
              SQ.pack_id,

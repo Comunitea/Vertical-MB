@@ -21,7 +21,9 @@
 from openerp import models, api
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
-
+import time
+import logging
+_logger = logging.getLogger(__name__)
 
 class ValidateRoutes(models.TransientModel):
 
@@ -29,11 +31,11 @@ class ValidateRoutes(models.TransientModel):
 
     @api.multi
     def validate(self):
+        init_t = time.time()
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
 
         pick_pickings = self._get_pickings_from_outs(out_pickings)
-
         unasigned_picks_lst = []
         for pick in pick_pickings:
             if not pick.route_detail_id:
@@ -43,10 +45,15 @@ class ValidateRoutes(models.TransientModel):
 
             # Put unassigned moves inside a new picking
             unassigned_pick = False
+            assing_tot = time.time()
+            unassigned_moves = []
             for move in pick.move_lines:
+                assing_t = time.time()
                 move.action_assign()
+                _logger.debug("CMNT Assign time: %s",time.time() - assing_t)
                 if move.state != 'assigned':
                     if not unassigned_pick:
+                        assing_unp = time.time()
                         copy_values = {'move_lines': [],
                                        'pack_operation_ids': [],
                                        'validated': False,
@@ -54,13 +61,23 @@ class ValidateRoutes(models.TransientModel):
                                        'group_id': pick.group_id.id}
                         unassigned_pick = pick.copy(copy_values)
                         unasigned_picks_lst.append(unassigned_pick)
-                    move.picking_id = unassigned_pick.id
-
+                        _logger.debug("CMNT create unassigned pick: %s",
+                                      time.time() - assing_unp)
+                    unassigned_moves.append(move.id)
+                    #move.picking_id = unassigned_pick.id
+                if len(unassigned_moves):
+                    assing_un = time.time()
+                    moves = self.env['stock.move'].browse(unassigned_moves).\
+                        write({'picking_id': unassigned_pick.id})
+                    _logger.debug("CMNT write unassigned: %s", time.time() - assing_un)
+                _logger.debug("CMNT Assign time cada completo: %s" , time.time() - assing_t)
+            _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
             # Create as many picks as cameras involved and validate_it.
+            split_t = time.time()
             picks_by_cam = self._split_pick_by_cameras(pick)
+            _logger.debug("CMNT Split : %s", time.time() - split_t)
             picks_by_cam.write({'validated': True})
             out_pickings.write({'validated': True})
-
             unassigned_ids = []
             if unasigned_picks_lst:
                 for p in unasigned_picks_lst:
@@ -71,7 +88,9 @@ class ValidateRoutes(models.TransientModel):
                 action = action_obj.read()[0]
                 action['domain'] = str([('id', 'in', unassigned_ids)])
                 action['context'] = {}
+                _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
                 return action
+            _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
         return
 
     def _get_pickings_from_outs(self, out_pickings):
@@ -91,6 +110,7 @@ class ValidateRoutes(models.TransientModel):
                           ('group_id', '=', pick.group_id.id),
                           ('picking_type_code', '!=', 'outgoing')]
                 pick_objs = self.env['stock.picking'].search(domain)
+                pick_objs.write({'route_detail_id': pick.route_detail_id.id})
                 for p in pick_objs:
                     res += p
         return res
@@ -100,7 +120,9 @@ class ValidateRoutes(models.TransientModel):
         if pick.state != 'assigned':
             raise except_orm(_('Error'),
                              _('Picking %s is not assigned' % pick.name))
+        pp_t = time.time()
         pick.do_prepare_partial()
+        _logger.debug("CMNT Prepare partial time: %s", time.time() - pp_t)
         moves_by_cam = {}  # Moves grouped by camera
         for op in pick.pack_operation_ids:
             camera_loc = op.location_id.get_camera()

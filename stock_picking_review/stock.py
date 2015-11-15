@@ -22,6 +22,8 @@ from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+import logging
+_logger = logging.getLogger(__name__)
 
 class stock_move(models.Model):
 
@@ -64,12 +66,10 @@ class stock_move(models.Model):
             self.product_uom_acc_qty = product.uos_qty_to_uom_qty(qty, uos_id)
 
     @api.multi
-    # @api.depends('product_id', 'accepted_qty',
-    #              'procurement_id.sale_line_id',
-    #              'procurement_id.sale_line_id.discount',
-    #              'procurement_id.sale_line_id.price_unit')
+    @api.depends('accepted_qty')
     def _get_subtotal_accepted(self):
         for move in self:
+            _logger.debug("CMNT Calculo en  _get_subtotal_accepted (move)")
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
                 move.discount = move.procurement_id.sale_line_id.discount or \
@@ -161,21 +161,19 @@ class StockPicking(models.Model):
         string='Receipt', readonly=False, store=True)
 
     @api.multi
-    #@api.depends('group_id')
     def _get_payment_mode(self):
         sale_obj = self.env["sale.order"]
-
         for picking in self:
             picking.payment_mode = False
             if picking.group_id:
                 sale_ids = sale_obj.search([('procurement_group_id', '=', picking.group_id.id)])
                 if sale_ids:
-            #       sale = sale_obj.browse(sale_ids[0])
                     picking.payment_mode = sale_ids[0].payment_mode_id
 
     @api.multi
-    #@api.depends('amount_total_acc')
+    @api.depends('amount_total_acc')
     def _receipt_amount(self):
+        _logger.debug("CMNT _receipt_amount")
         cash_type = self.env['ir.model.data'].get_object_reference('stock_picking_review', 'payment_mode_type_cash')
         cash_type_id = cash_type[1]
         for picking in self:
@@ -188,7 +186,6 @@ class StockPicking(models.Model):
 
     @api.multi
     def fast_returns(self):
-
         move_obj = self.env['stock.move']
         #pick_obj = self.pool.get('stock.picking')
         uom_obj = self.env['product.uom']
@@ -273,48 +270,49 @@ class StockPicking(models.Model):
         return res
 
     @api.multi
-    #@api.depends('move_lines', 'partner_id','move_lines.accepted_qty',
-    #            'move_lines.product_uom_qty')
+    @api.depends('move_lines.accepted_qty')
     def _amount_all_acc(self):
+        _logger.debug("CMNT Calculo en  _amount_all_acc (picking)")
         for picking in self:
-            if not picking.sale_id:
-                picking.amount_tax_acc = picking.amount_untaxed_acc = \
-                    picking.amount_gross_acc = 0.0
-                continue
-            taxes = amount_gross = amount_untaxed = 0.0
-            cur = picking.partner_id.property_product_pricelist \
-                and picking.partner_id.property_product_pricelist.currency_id \
-                or False
-            for line in picking.move_lines:
-                if line.product_id.is_var_coeff:
-                    price_unit = line.procurement_id.sale_line_id.price_unit
-                    quantity = line.product_uom_acc_qty
-                else:
-                    price_unit = line.procurement_id.sale_line_id.price_udv
-                    quantity = line.accepted_qty
-                sale_line = line.procurement_id.sale_line_id
-                if sale_line and line.state != 'cancel':
-                    price_disc_unit = price_unit * \
-                        (1 - (sale_line.discount or 0.0) / 100.0)
-                    for c in sale_line.tax_id.compute_all(
-                            price_disc_unit, quantity,
-                            line.product_id,
-                            sale_line.order_id.partner_id)['taxes']:
-                        taxes += c.get('amount', 0.0)
-
-                    amount_gross += (price_unit * quantity)
-                    amount_untaxed += (price_disc_unit * quantity)
-                else:
+            if picking.picking_type_id.code == "outgoing":
+                if not picking.sale_id:
+                    picking.amount_tax_acc = picking.amount_untaxed_acc = \
+                        picking.amount_gross_acc = 0.0
                     continue
-            if cur:
-                picking.amount_tax_acc = cur.round(taxes)
-                picking.amount_untaxed_acc = cur.round(amount_untaxed)
-                picking.amount_gross_acc = cur.round(amount_gross)
-            else:
-                picking.amount_tax_acc = round(taxes, 2)
-                picking.amount_untaxed_acc = round(amount_untaxed, 2)
-                picking.amount_gross_acc = round(amount_gross, 2)
+                taxes = amount_gross = amount_untaxed = 0.0
+                cur = picking.partner_id.property_product_pricelist \
+                    and picking.partner_id.property_product_pricelist.currency_id \
+                    or False
+                for line in picking.move_lines:
+                    if line.product_id.is_var_coeff:
+                        price_unit = line.procurement_id.sale_line_id.price_unit
+                        quantity = line.product_uom_acc_qty
+                    else:
+                        price_unit = line.procurement_id.sale_line_id.price_udv
+                        quantity = line.accepted_qty
+                    sale_line = line.procurement_id.sale_line_id
+                    if sale_line and line.state != 'cancel':
+                        price_disc_unit = price_unit * \
+                            (1 - (sale_line.discount or 0.0) / 100.0)
+                        for c in sale_line.tax_id.compute_all(
+                                price_disc_unit, quantity,
+                                line.product_id,
+                                sale_line.order_id.partner_id)['taxes']:
+                            taxes += c.get('amount', 0.0)
 
-            picking.amount_total_acc = picking.amount_untaxed_acc + picking.amount_tax_acc
-            picking.amount_discounted_acc = picking.amount_gross_acc - \
-                picking.amount_untaxed_acc
+                        amount_gross += (price_unit * quantity)
+                        amount_untaxed += (price_disc_unit * quantity)
+                    else:
+                        continue
+                if cur:
+                    picking.amount_tax_acc = cur.round(taxes)
+                    picking.amount_untaxed_acc = cur.round(amount_untaxed)
+                    picking.amount_gross_acc = cur.round(amount_gross)
+                else:
+                    picking.amount_tax_acc = round(taxes, 2)
+                    picking.amount_untaxed_acc = round(amount_untaxed, 2)
+                    picking.amount_gross_acc = round(amount_gross, 2)
+
+                picking.amount_total_acc = picking.amount_untaxed_acc + picking.amount_tax_acc
+                picking.amount_discounted_acc = picking.amount_gross_acc - \
+                    picking.amount_untaxed_acc

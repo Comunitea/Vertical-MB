@@ -31,6 +31,7 @@
     "images": [],
     "depends": [
         "base",
+        "crm",
         "sale_stock",
         "stock_account",
         #"procurement_jit",

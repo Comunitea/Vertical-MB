@@ -20,7 +20,8 @@
 ##############################################################################
 from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class stock_picking(models.Model):
 
@@ -45,8 +46,9 @@ class stock_picking(models.Model):
         ' External Notes')
 
     @api.multi
-    #@api.depends('move_lines', 'partner_id')
+    @api.depends('move_lines.price_subtotal')
     def _amount_all(self):
+        _logger.debug("CMNT _amount_all")
         for picking in self:
             if not picking.sale_id:
                 picking.amount_tax = picking.amount_untaxed = \
@@ -121,12 +123,11 @@ class stock_move(models.Model):
                             digits=(4, 2), readonly=True, store=True)
 
     @api.multi
-    # @api.depends('product_id', 'product_uom_qty',
-    #              'procurement_id.sale_line_id',
-    #              'procurement_id.sale_line_id.discount',
-    #              'procurement_id.sale_line_id.price_unit')
+    @api.depends('product_uom_qty')
     def _get_subtotal(self):
+        _logger.debug("CMNT _get_subtotal")
         for move in self:
+            _logger.debug("CMNT _get_subtotal (moves)")
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
                 move.discount = move.procurement_id.sale_line_id.discount or \
