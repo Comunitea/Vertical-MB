@@ -128,8 +128,16 @@ class stock_picking(osv.Model):
         Overwrited to add update the uos_qty of package_id and
         result_package_id
         """
+        _logger.debug("CMNT do_transfer")
+        init_t = time.time()
         self._regularize_move_quantities()
+        _logger.debug("CMNT tiempo de _regularize_move_quantities: %s",
+                      time.time() - init_t)
+        init_dt = time.time()
+        _logger.debug("CMNT comienzaa do_transfer heredado")
         res = super(stock_picking, self).do_transfer()
+        _logger.debug("CMNT tiempo de do_transfers: %s",
+                      time.time() - init_dt)
         # Calculate the uos_qty of package when remove qty from it
         for pick in self:
             for op in pick.pack_operation_ids:
@@ -161,6 +169,8 @@ class stock_picking(osv.Model):
                                                           op.uos_id.id)
                             pack_uos_qty = conv_dic[pack_log_unit]
                         op.result_package_id.uos_qty += pack_uos_qty
+        _logger.debug("CMNT tiempo total _do_transfers: %s",
+                      time.time() - init_t)
         return res
 
     @api.one
@@ -269,17 +279,20 @@ class stock_picking(osv.Model):
         assign the new operation to any task, if the operations were assigned
         to a task then we assign the task in the copied operation
         """
+        init_t = time.time()
+        _logger.debug("CMNT approve_pack_operations2")
         t_transfer = self.env['stock.transfer_details']
         t_item = self.env['stock.transfer_details_items']
         ctx = self._context.copy()
         ctx.update({'active_model': 'stock.picking'})
         transfer_obj = t_transfer.with_context(ctx).\
             create({'picking_id': self.id})
-        transfer_obj = t_transfer.create({'picking_id': self.id})
+        #transfer_obj = t_transfer.create({'picking_id': self.id})
         transfer_obj.item_ids.unlink()
         transfer_obj.packop_ids.unlink()
         pending_ops_vals = []
         something_done = False
+        init_pi = time.time()
         for op in self.pack_operation_ids:
             if not op.to_revised:
                 if op.to_process and op.task_id and op.task_id.id == task_id:
@@ -324,8 +337,12 @@ class stock_picking(osv.Model):
                     # in warehouse_scan_gun_module, because maybe the assigned
                     # operation were deleted by doinf a partial picking.
                     pending_ops_vals.append(new_ops_vals)
+        _logger.debug("CMNT tiempo prepara items : %s", time.time() - init_pi)
         if something_done:
+            init_ddt = time.time()
             transfer_obj.do_detailed_transfer()
+            _logger.debug("CMNT tiempo do_detailed_transfer: %s", time.time() - init_ddt)
+
             new_pick_obj = self.search([('backorder_id', '=', self.id)])
             if new_pick_obj and pending_ops_vals:
                 for vals in pending_ops_vals:
@@ -336,6 +353,7 @@ class stock_picking(osv.Model):
                 if not op.to_revised:
                     op.task_id = False  # Write to be able to assign later
                 #op.to_process = True  # Write to be to process by default,
+        _logger.debug("CMNT tiempo total approve_pack_operations2 : %s", time.time() - init_t)
         return
 
     @api.onchange('route_detail_id')

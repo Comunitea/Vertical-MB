@@ -80,7 +80,7 @@ class stock_task(osv.Model):
         else:
             pick_ids = list(set([x.id for x in self.wave_id.picking_ids]))
 
-        # When we call butom after the returned view of the wizard
+        # When we call button after the returned view of the wizard
         # 'active_model': 'stock.task' and we get an error with assert
         # in do_transfer method.
         # Changed it allways to stock.picking
