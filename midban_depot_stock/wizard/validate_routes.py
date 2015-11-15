@@ -38,10 +38,10 @@ class ValidateRoutes(models.TransientModel):
         pick_pickings = self._get_pickings_from_outs(out_pickings)
         unasigned_picks_lst = []
         for pick in pick_pickings:
-            if not pick.route_detail_id:
-                raise except_orm(_('Error'),
-                                 _('Picking %s without has not route detail \
-                                   assigned' % pick.name))
+            # if not pick.route_detail_id:
+            #     raise except_orm(_('Error'),
+            #                      _('Picking %s without has not route detail \
+            #                        assigned' % pick.name))
 
             # Put unassigned moves inside a new picking
             unassigned_pick = False
@@ -76,8 +76,14 @@ class ValidateRoutes(models.TransientModel):
             split_t = time.time()
             picks_by_cam = self._split_pick_by_cameras(pick)
             _logger.debug("CMNT Split : %s", time.time() - split_t)
-            picks_by_cam.write({'validated': True})
-            out_pickings.write({'validated': True})
+
+            route_detail = pick.route_detail_id
+            detail_date = route_detail.date + " 19:00:00"
+            vals2 = {'route_detail_id': route_detail.id,
+                     'min_date': detail_date,
+                     'validated': True}
+            picks_tot = picks_by_cam + out_pickings
+            picks_tot.write(vals2)
             unassigned_ids = []
             if unasigned_picks_lst:
                 for p in unasigned_picks_lst:
@@ -139,14 +145,15 @@ class ValidateRoutes(models.TransientModel):
             if first:  # Skip first moves, we get the original picking
                 first = False
                 pick.camera_id = cam
+                splited_picks += pick
                 continue
             copy_values = {'move_lines': [],
                            'pack_operation_ids': [],
                            'route_detail_id': pick.route_detail_id.id,
                            'group_id': pick.group_id.id}
             new_pick = pick.copy(copy_values)
-            for move in moves_by_cam[cam]:
-                move.picking_id = new_pick  # Assign move to new pick
+            #for move in moves_by_cam[cam]:
+            moves_by_cam[cam].picking_id = new_pick  # Assign move to new pick
             new_pick.camera_id = cam  # Write the camera
             splited_picks += new_pick
         return splited_picks

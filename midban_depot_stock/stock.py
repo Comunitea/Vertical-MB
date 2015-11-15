@@ -490,6 +490,7 @@ class StockPicking(models.Model):
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
 
+    # Se movió la funcionalidad al asistente de validacion de ruta
     # @api.multi
     # def write(self, vals):
     #     """
@@ -497,20 +498,14 @@ class StockPicking(models.Model):
     #     route if the pick is not done.
     #     """
     #     init_t = time.time()
-    #     print "WRITE DE PICKING"
+    #     _logger.debug("CMNT WRITE DE PICKING")
     #     for pick in self:
     #
     #         route_detail_id = False
     #         if 'route_detail_id' in vals:
     #             route_detail_id = vals['route_detail_id']
-    #         elif pick.route_detail_id:
-    #             route_detail_id = pick.route_detail_id.id
-    #
     #         if 'validated' in vals:
     #             validated = vals['validated']
-    #         else:
-    #             validated = pick.validated
-    #
     #         if route_detail_id:
     #             t_detail = self.env['route.detail']
     #             detail_obj = t_detail.browse(route_detail_id)
@@ -527,14 +522,14 @@ class StockPicking(models.Model):
     #                 pick.picking_type_code == 'outgoing':
     #             domain = [('id', '!=', pick.id),
     #                       ('group_id', '=', pick.group_id.id),
-    #                       ('picking_type_code', '!=', 'outgoing')]
+    #                       ('picking_type_code', '!=', 'outgoing'),
+    #                       ('state', '!=', 'done')]
     #             pick_objs = self.search(domain)
-    #             for pick2 in pick_objs:
-    #                 if pick2.state != 'done':
-    #                     vals2 = {'route_detail_id': route_detail_id,
+    #             if pick_objs:
+    #                 vals2 = {'route_detail_id': route_detail_id,
     #                              'min_date': detail_date,
     #                              'validated': validated}
-    #                     pick2.write(vals2)
+    #                 pick_objs.write(vals2)
     #     res = super(stock_picking, self).write(vals)
     #     print "tiempo write picking : " + str(time.time() - init_t)
     #     return res

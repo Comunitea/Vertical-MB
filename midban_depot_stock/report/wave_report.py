@@ -276,7 +276,7 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     order_seq
+                     order_seq,
                      is_package
            UNION
            SELECT Min(operation.id)          AS id,

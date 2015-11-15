@@ -24,7 +24,8 @@ import time
 import random
 from datetime import datetime, timedelta
 from openerp import api
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class assign_task_wzd(osv.TransientModel):
     _name = "assign.task.wzd"
@@ -891,6 +892,7 @@ class assign_task_wzd(osv.TransientModel):
             ('trans_route_id', '=', selected_route),
             ('validated', '=', True)
         ]
+        _logger.debug("CMNT domian bueca pikings%s", domain)
         pickings_to_wave = pick_obj.search(cr, uid, domain, context=context)
         if pickings_to_wave:
             camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
@@ -901,8 +903,8 @@ class assign_task_wzd(osv.TransientModel):
                             'camera_ids': camera_ids,
                             'task_type': 'picking'},
                            context=context)
-            pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
-                                        context=context)
+            #pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
+            #                            context=context)
             vals = {'user_id': obj.operator_id.id,
                     'camera_ids': camera_ids,
                     'trans_route_id': selected_route,
