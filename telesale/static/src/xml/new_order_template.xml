@@ -814,6 +814,7 @@
             <div class="fullheight overflow">
                 <table class="sold-product-table">
                     <thead>
+                        <!-- <th class="">Code</th> -->
                         <th class="pc-header-name">Name</th>
                         <th class="pc-header-price">Price</th>
                         <th class="pc-header-add">Add</th>
@@ -828,14 +829,25 @@
 
     <t t-name="Sold-Product-Line-Widget">
         <tr>
+          <!-- <td class="pc-cell-name">
+            <t t-if="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0])">
+              <span class="product-cell"><t t-esc="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0]).default_code"/></span>
+            </t>
+          </td> -->
           <td class="pc-cell-name">
-              <span class="product-cell"><t t-esc="widget.sold_line.product_id[1]"/></span>
+            <!-- <t t-set="code_part" t-value=""/>
+            <t t-if="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0])">
+              <t t-set="code_part" t-value="'[' + widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0]).default_code + '] ' "/>
+            </t> -->
+              <span class="product-cell"><t t-esc="'[' + widget.sold_line.default_code + '] ' + widget.sold_line.product_id[1]"/></span>
           </td>
           <td class="pc-cell-code">
-            <span class="product-cell"><t t-esc="widget.sold_line.price_udv.toFixed(2)"/></span>
+            <span class="product-cell"><t t-esc="widget.sold_line.price_unit.toFixed(2)"/></span>
           </td>
           <td class="pc-cell-stock">
-            <button class="fullwidth" id="add-line">+</button>
+            <t t-if="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0])">
+              <button class="fullwidth" id="add-line">+</button>
+            </t>
           </td>
       </tr>
     </t>

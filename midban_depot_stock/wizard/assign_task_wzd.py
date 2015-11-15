@@ -455,6 +455,7 @@ class assign_task_wzd(osv.TransientModel):
         for op in t_op.browse(cr, uid, op_ids, context=context):
             if len(assigned_ops) == max_ops:
                 break
+            print u"Asign location para %s"%op.package_id.name
             op.assign_location()
             if wzd_obj.location_ids:
                 camera_id = op.location_dest_id.get_camera()
@@ -877,6 +878,7 @@ class assign_task_wzd(osv.TransientModel):
         date_planned = obj.date_planned
         start_date = date_planned + " 00:00:00"
         end_date = date_planned + " 23:59:59"
+
         selected_route = obj.trans_route_id and obj.trans_route_id.id or False
         if not selected_route:
             selected_route = self._get_random_route(cr, uid, ids, context)

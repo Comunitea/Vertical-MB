@@ -33,6 +33,12 @@ function openerp_ts_db(instance, module){
             this.qnote_by_id = {};
             this.qnote_name_id = {};
             this.all_qnotes = {};
+
+            this.all_routes = {};
+            this.route_by_id = {};
+            this.route_name_id = {};
+
+            this.cache_sold_lines = {};
         },
 
         /* loads a record store from the database. returns default if nothing is found */
@@ -116,6 +122,18 @@ function openerp_ts_db(instance, module){
                 this.qnote_name_id[qnote.code] = qnote.id;
             }
             this.all_qnotes = qnotes
+        },
+        add_routes: function(routes){
+            if(!routes instanceof Array){
+                routes = [routes];
+            }
+            for(var i = 0, len = routes.length; i < len; i++){
+                var route = routes[i];
+
+                this.route_by_id[route.id] = route;
+                this.route_name_id[route.code] = route.id;
+            }
+            this.all_routes = routes
         },
         add_partners: function(partners){
             if(!partners instanceof Array){
@@ -232,6 +250,9 @@ function openerp_ts_db(instance, module){
         },
         get_qnote_by_id: function(id){
             return this.qnote_by_id[id];
+        },
+        get_route_by_id: function(id){
+            return this.route_by_id[id];
         },
         add_order: function(order){
             var last_id = this.load('last_order_id',0);

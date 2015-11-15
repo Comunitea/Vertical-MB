@@ -281,48 +281,49 @@ class stock_picking(osv.Model):
         pending_ops_vals = []
         something_done = False
         for op in self.pack_operation_ids:
-            if op.to_process and op.task_id and op.task_id.id == task_id:
-                item = {
-                    'packop_id': op.id,
-                    'product_id': op.product_id.id,
-                    'product_uom_id': op.product_uom_id.id,
-                    'quantity': op.product_qty,
-                    'package_id': op.package_id.id,
-                    'lot_id': op.lot_id.id,
-                    'sourceloc_id': op.location_id.id,
-                    'destinationloc_id': op.location_dest_id.id,
-                    'result_package_id': op.result_package_id.id,
-                    'date': op.date,
-                    'owner_id': op.owner_id.id,
-                    'transfer_id': transfer_obj.id,
-                    'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty}
-                t_item.create(item)
-                something_done = True
-            else:
-                assigned_task_id = False  # If marked to not do deassign it
-                if op.to_process and op.task_id:  # Conservate the task
-                    assigned_task_id = op.task_id.id
+            if not op.to_revised:
+                if op.to_process and op.task_id and op.task_id.id == task_id:
+                    item = {
+                        'packop_id': op.id,
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'quantity': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'sourceloc_id': op.location_id.id,
+                        'destinationloc_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'date': op.date,
+                        'owner_id': op.owner_id.id,
+                        'transfer_id': transfer_obj.id,
+                        'uos_id': op.uos_id.id,
+                        'uos_qty': op.uos_qty}
+                    t_item.create(item)
+                    something_done = True
+                else:
+                    assigned_task_id = False  # If marked to not do deassign it
+                    if op.to_process and op.task_id:  # Conservate the task
+                        assigned_task_id = op.task_id.id
 
-                new_ops_vals = {
-                    'product_id': op.product_id.id,
-                    'product_uom_id': op.product_uom_id.id,
-                    'product_qty': op.product_qty,
-                    'package_id': op.package_id.id,
-                    'lot_id': op.lot_id.id,
-                    'location_id': op.location_id.id,
-                    'location_dest_id': op.location_dest_id.id,
-                    'result_package_id': op.result_package_id.id,
-                    'owner_id': op.owner_id.id,
-                    'task_id': assigned_task_id,
-                    'to_process': True,
-                    'old_id': op.id,
-                    'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty}
-                # To remember the original operation when we scan a barcode
-                # in warehouse_scan_gun_module, because maybe the assigned
-                # operation were deleted by doinf a partial picking.
-                pending_ops_vals.append(new_ops_vals)
+                    new_ops_vals = {
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'product_qty': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'location_id': op.location_id.id,
+                        'location_dest_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'owner_id': op.owner_id.id,
+                        'task_id': assigned_task_id,
+                        #'to_process': True,
+                        'old_id': op.id,
+                        'uos_id': op.uos_id.id,
+                        'uos_qty': op.uos_qty}
+                    # To remember the original operation when we scan a barcode
+                    # in warehouse_scan_gun_module, because maybe the assigned
+                    # operation were deleted by doinf a partial picking.
+                    pending_ops_vals.append(new_ops_vals)
         if something_done:
             transfer_obj.do_detailed_transfer()
             new_pick_obj = self.search([('backorder_id', '=', self.id)])
@@ -332,8 +333,9 @@ class stock_picking(osv.Model):
                     new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
         else:
             for op in self.pack_operation_ids:
-                op.task_id = False  # Write to be able to assign later
-                op.to_process = True  # Write to be to process by default
+                if not op.to_revised:
+                    op.task_id = False  # Write to be able to assign later
+                #op.to_process = True  # Write to be to process by default,
         return
 
     @api.onchange('route_detail_id')
@@ -1044,6 +1046,7 @@ class stock_pack_operation(models.Model):
                 pack = new_loc.get_package_of_lot(lot_id)
             #miramos que hace por según haya o no = lote en destino y
             #'pack_type' a do_pack o no_pack (empaquete o no)
+
 
             if not product_id:
                 if pack_type == "do_pack":

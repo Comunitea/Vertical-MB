@@ -55,7 +55,8 @@ class sale_report(osv.osv):
                     if op.location_id == item.location_id and \
                             (item.customer_id.id == 0  or  item.customer_id.id == op.picking_id.partner_id.id):
                         if op.package_id:
-                            if op.package_id.id == item.pack_id.id:
+                            if op.package_id.id == item.pack_id.id and\
+                                    op.uos_id == item.uos_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
                                     process = False
@@ -63,7 +64,8 @@ class sale_report(osv.osv):
                                     visited = False
                         else:
                             if op.product_id == item.product_id and \
-                                    op.lot_id == item.lot_id:
+                                    op.lot_id == item.lot_id and\
+                                    op.uos_id == item.uos_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
                                     process = False
@@ -138,6 +140,7 @@ class sale_report(osv.osv):
                                          string="Visited (All Ops)",
                                          relation="stock.pack.operation",
                                          multi='multi_'),
+        'is_package': fields.boolean('Is Package'),
 
     }
 
@@ -153,6 +156,7 @@ class sale_report(osv.osv):
           SUM(SQ.uos_qty)         AS uos_qty,
           SQ.uos_id          AS uos_id,
           SQ.customer_id       AS customer_id,
+          SQ.is_package         as is_package,
           SQ.pack_id      as pack_id"""
 
     def _subquery_grouped_op(self):
@@ -166,7 +170,8 @@ class sale_report(osv.osv):
                   wave.id           AS wave_id,
                   location.order_seq AS order_seq,
                   quant.package_id as pack_id,
-                  0 as customer_id
+                  0 as customer_id,
+                  true as is_package
 
            FROM   stock_quant quant
                   inner join stock_quant_package PACKAGE
@@ -193,7 +198,8 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
-                     order_seq
+                     order_seq,
+                     is_package
            UNION
            SELECT Min(operation.id)          AS id,
                   operation.product_id       AS product_id,
@@ -205,7 +211,8 @@ class sale_report(osv.osv):
                   wave.id                       AS wave_id,
                   location.order_seq AS order_seq,
                   operation.package_id as pack_id,
-                  0 as customer_id
+                  0 as customer_id,
+                  false as is_package
 
            FROM   stock_pack_operation operation
                   inner join stock_picking picking
@@ -228,6 +235,7 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
+                     sequence,
                      order_seq"""
 
     def _subquery_no_grouped_op(self):
@@ -241,7 +249,8 @@ class sale_report(osv.osv):
                   wave.id           AS wave_id,
                   location.order_seq AS order_seq,
                   quant.package_id as pack_id,
-                  picking.partner_id as customer_id
+                  picking.partner_id as customer_id,
+                  true as is_package
 
            FROM   stock_quant quant
                   inner join stock_quant_package PACKAGE
@@ -268,6 +277,7 @@ class sale_report(osv.osv):
                      customer_id,
                      pack_id,
                      order_seq
+                     is_package
            UNION
            SELECT Min(operation.id)          AS id,
                   operation.product_id       AS product_id,
@@ -279,7 +289,8 @@ class sale_report(osv.osv):
                   wave.id                       AS wave_id,
                   location.order_seq AS order_seq,
                   operation.package_id as pack_id,
-                  picking.partner_id as customer_id
+                  picking.partner_id as customer_id,
+                  false as is_package
            FROM   stock_pack_operation operation
                   inner join stock_picking picking
                           ON picking.id = operation.picking_id
@@ -300,6 +311,7 @@ class sale_report(osv.osv):
                      wave.id,
                      customer_id,
                      pack_id,
+                     is_package,
                      order_seq"""
 
     def _group_by(self):
@@ -310,6 +322,7 @@ class sale_report(osv.osv):
              SQ.order_seq,
              SQ.uos_id,
              SQ.pack_id,
+             SQ.is_package,
              SQ.customer_id"""
 
     def init(self, cr):
