@@ -223,9 +223,8 @@ class StockPicking(models.Model):
 
             #Create new picking for returned products
             pick_type_id = pick.picking_type_id.return_picking_type_id and pick.picking_type_id.return_picking_type_id.id or pick.picking_type_id.id
-
+            moves = self.env['stock.move']
             for move in pick.move_lines:
-                moves = self.env['stock.move']
                 new_qty = move.product_uos_qty - move.accepted_qty
                 new_uom_qty = move.product_uom_qty - move.product_uom_acc_qty
                 if new_qty:
