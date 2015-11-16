@@ -147,7 +147,6 @@ class sale(osv.osv):
                 t_order.write(cr, uid, [order['erp_id']], vals)
                 order_id = order['erp_id']
             else:
-                import ipdb; ipdb.set_trace()
                 vals['name'] = t_sequence.get(cr, uid, 'telesale.order') or '/'
                 order_id = t_order.create(cr, uid, vals)
                 if order['note']:
