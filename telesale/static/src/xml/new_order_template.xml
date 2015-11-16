@@ -510,7 +510,7 @@
         </div>
         <div class="col-xs-4 fullheight centerinside">
           <div class="fullheight centerinside fullwidth">
-            <t t-if="widget.order_model.get('state') == 'draft'">
+            <!-- <t t-if="widget.order_model.get('state') == 'draft'"> -->
               <div class="order-button">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
@@ -532,7 +532,7 @@
                        </div>
                   </div>
               </div>
-            </t>
+            <!-- </t> -->
           </div>
 
 

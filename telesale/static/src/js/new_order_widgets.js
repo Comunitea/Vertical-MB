@@ -997,6 +997,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#vua-button').click(function(){
+                debugger;
                 var client_id = self.check_customer_get_id();
                 if (client_id){
                     $.when(self.ts_model.get('selectedOrder').get_last_line_by('year', client_id))
@@ -1235,10 +1236,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         confirmCurrentOrder: function() {
             var currentOrder = this.order_model;
             currentOrder.set('action_button', 'confirm')
-            if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
-                alert(_t('You cant confirm an order which state is diferent than draft.'));
-            }
-            else if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+            // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
+            //     alert(_t('You cant confirm an order which state is diferent than draft.'));
+            // }
+            // else  if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+            if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
                     alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
             }
            else if ( currentOrder.check() ){
@@ -1260,10 +1262,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         saveCurrentOrder: function() {
             var currentOrder = this.order_model;
             currentOrder.set('action_button', 'save')
-            if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
-                alert(_t('You cant save as draft an order which state is diferent than draft.'));
-            }
-            else if ( currentOrder.check() ){
+            // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
+            //     alert(_t('You cant save as draft an order which state is diferent than draft.'));
+            // }
+            // else if ( currentOrder.check() ){
+            if ( currentOrder.check() ){
                 this.ts_model.push_order(currentOrder.exportAsJSON());
             }
         },
