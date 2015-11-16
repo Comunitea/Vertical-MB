@@ -856,6 +856,9 @@ function openerp_ts_models(instance, module){
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
+            if(this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
+              $('.remove-line-button').click()
+            }
             for (key in order_lines){
                 var line = order_lines[key];
                 var prod_obj = this.ts_model.db.get_product_by_id(line.product_id[0]);
@@ -864,45 +867,46 @@ function openerp_ts_models(instance, module){
                   return
                 }
                 current_olines = this.get('orderLines').models
-                var product_exist = false;
+                debugger;
+                // var product_exist = false;
                 for (key2 in current_olines){
                     var o_line = current_olines[key2];
                     var line_product_id =  this.ts_model.db.product_name_id[o_line.get('product')];
 
-                    if (line_product_id == prod_obj.id)
-                        product_exist = true;
+                    // if (line_product_id == prod_obj.id)
+                    //     product_exist = true;
                 }
-                if (!product_exist){
-                    var l_qty = line.product_uom_qty
-                    if(fromsoldprodhistory){
-                      l_qty = 1.0;
-                    }
-                    debugger;
-                    var line_vals = {ts_model: this.ts_model, order:this,
-                                     code:prod_obj.default_code || "" ,
-                                     product:prod_obj.name,
-                                     unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
-                                     qty:my_round(l_qty), //order line qty
-                                     pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
-                                     total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
-                                     discount: my_round( line.discount || 0.0, 2 ),
-                                     weight: my_round(line.product_uom_qty * prod_obj.weight,2),
-                                     margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),
-                                     taxes_ids: line.tax_id || product_obj.taxes_id || [],
-                                     pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
-                                     qnote: line['q_note'][1] || "",
-                                     detail: line["detail_note"] || "",
-                                     product_uos: line['product_uos'][1] || "",
-                                     product_uos_qty: line['product_uos_qty'] || 0.0,
-                                     price_udv: line['price_udv'] || 0.0
-                                    }
-                    var line = new module.Orderline(line_vals);
-                    this.get('orderLines').add(line);
+                // if (!product_exist){
+                var l_qty = line.product_uom_qty
+                if(fromsoldprodhistory){
+                  l_qty = 1.0;
                 }
-                else{
-                  alert(_t("This product is already in the order"));
-                }
+                var line_vals = {ts_model: this.ts_model, order:this,
+                                 code:prod_obj.default_code || "" ,
+                                 product:prod_obj.name,
+                                 unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
+                                 qty:my_round(l_qty), //order line qty
+                                 pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
+                                 total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+                                 discount: my_round( line.discount || 0.0, 2 ),
+                                 weight: my_round(line.product_uom_qty * prod_obj.weight,2),
+                                 margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),
+                                 taxes_ids: line.tax_id || product_obj.taxes_id || [],
+                                 pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
+                                 qnote: line['q_note'][1] || "",
+                                 detail: line["detail_note"] || "",
+                                 product_uos: line['product_uos'][1] || "",
+                                 product_uos_qty: line['product_uos_qty'] || 0.0,
+                                 price_udv: line['price_udv'] || 0.0
+                                }
+                var line = new module.Orderline(line_vals);
+                this.get('orderLines').add(line);
+                // }
+                // else{
+                //   alert(_t("This product is already in the order"));
+                // }
             }
+            $('.col-code').focus(); //si no, al añadir línea desde resumen de pedidos, no existe foco y si añade más líneas da error
         },
         deleteProductLine: function(id_line){
           var self=this;
@@ -918,7 +922,6 @@ function openerp_ts_models(instance, module){
             var added_line = self.ts_model.get('selectedOrder').getLastOrderline();
             var lines_widgets = self.ts_model.ts_widget.new_order_screen.order_widget.orderlinewidgets
             lines_widgets[lines_widgets.length - 1].call_product_id_change(product_id)
-            // debugger;
             // if (customer_id){
             //     var kwargs = {context: new instance.web.CompoundContext({}),
             //                   partner_id: customer_id,
