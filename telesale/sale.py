@@ -118,7 +118,10 @@ class sale(osv.osv):
         for rec in orders:
             order = rec['data']
             if order['erp_id'] and order['erp_state'] != 'draft':
-                raise osv.except_osv(_('Error!'), _("Combination error!"))
+
+                # raise osv.except_osv(_('Error!'), _("Combination error!"))
+                self.cancel_sale_to_draft(cr, uid, order['erp_id'], context)
+                order['erp_state'] = 'draft'
             partner_obj = t_partner.browse(cr, uid, order['partner_id'])
             vals = {
                 'partner_id': partner_obj.id,
@@ -144,6 +147,7 @@ class sale(osv.osv):
                 t_order.write(cr, uid, [order['erp_id']], vals)
                 order_id = order['erp_id']
             else:
+                import ipdb; ipdb.set_trace()
                 vals['name'] = t_sequence.get(cr, uid, 'telesale.order') or '/'
                 order_id = t_order.create(cr, uid, vals)
                 if order['note']:
