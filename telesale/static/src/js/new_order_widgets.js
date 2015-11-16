@@ -145,7 +145,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         self.refresh();
                     }
                     else{
-                        debugger;
                         partner_obj = self.ts_model.db.get_partner_by_id(partner_id);
                         var cus_name = self.ts_model.getComplexName(partner_obj);
                         self.order_model.set('partner', cus_name);

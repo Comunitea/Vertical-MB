@@ -867,7 +867,6 @@ function openerp_ts_models(instance, module){
                   return
                 }
                 current_olines = this.get('orderLines').models
-                debugger;
                 // var product_exist = false;
                 for (key2 in current_olines){
                     var o_line = current_olines[key2];
