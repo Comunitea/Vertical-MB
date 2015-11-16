@@ -57,6 +57,12 @@
                 <br/>
                 CTRL + left-----------------------> Foco en botones pedidos
                 <br/>
+                ALT + Z --------------------------> Foco en primer campo
+                <br/>
+                ALT + X --------------------------> Foco en código de línea de pedido
+                <br/>
+                ALT + C --------------------------> Foco en botón '+' de últimos vendidos
+                <br/>
                 <br/>
 
                 CTRL + ALT + B----------------------> Botón Borrador
