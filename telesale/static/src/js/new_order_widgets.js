@@ -997,7 +997,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#vua-button').click(function(){
-                debugger;
                 var client_id = self.check_customer_get_id();
                 if (client_id){
                     $.when(self.ts_model.get('selectedOrder').get_last_line_by('year', client_id))
@@ -1031,7 +1030,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 current_order.set('set_promotion', true)
                 $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
                 .done(function(){
-                  alert(_t("Pending to develop"));
+                  debugger
+                  $.when(self.ts_widget.summary_order_screen.summary_order_widget.searchCustomerOrders() )
+                  .done(function(){
+                    var history_line = self.ts_widget.summary_order_screen.summary_order_widget.summary_line_widgets[0]
+                    if (history_line){
+                      history_line.$el.find("#button-show-order").click();
+                    }
+                  });
                 });
             });
              this.$('#sust-button').click(function(){

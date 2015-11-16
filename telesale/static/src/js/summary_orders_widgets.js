@@ -90,6 +90,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
         init: function(parent, options) {
             this._super(parent,options);
             this.partner_orders = [];
+            this.summary_line_widgets = []
 
         },
         renderElement: function () {
@@ -100,10 +101,15 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             this.$('#search-customer2-month').click(function (){ self.searchCustomerOrdersBy('month') });
             this.$('#search-customer2-trimester').click(function (){ self.searchCustomerOrdersBy('trimester') });
             var $summary_content = this.$('.summary-lines');
+            for(var i = 0, len = this.summary_line_widgets .length; i < len; i++){
+                this.summary_line_widgets [i].destroy();
+            }
+            this.orderlinewidgets = [];
             for (key in this.partner_orders){
                 var summary_order = this.partner_orders[key];
                 var summary_line = new module.SummarylineWidget(this, {order: summary_order});
                 summary_line.appendTo($summary_content);
+                self.summary_line_widgets.push(summary_line);
             }
         },
         load_partner_orders: function(date_start,date_end){

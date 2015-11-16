@@ -877,7 +877,6 @@ function openerp_ts_models(instance, module){
                     if(fromsoldprodhistory){
                       l_qty = 1.0;
                     }
-                    debugger;
                     var line_vals = {ts_model: this.ts_model, order:this,
                                      code:prod_obj.default_code || "" ,
                                      product:prod_obj.name,
