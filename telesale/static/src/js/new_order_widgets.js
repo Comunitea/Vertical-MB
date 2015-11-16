@@ -1030,7 +1030,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 current_order.set('set_promotion', true)
                 $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
                 .done(function(){
-                  debugger
                   $.when(self.ts_widget.summary_order_screen.summary_order_widget.searchCustomerOrders() )
                   .done(function(){
                     var history_line = self.ts_widget.summary_order_screen.summary_order_widget.summary_line_widgets[0]
@@ -1184,7 +1183,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       self.pvp_ref += line.get('pvp_ref') * line.get('qty');
                       self.base += line.get_price_without_tax('total');
                       self.iva += line.get_tax();
-                      self.total += line.get_price_with_tax();
+                      // self.total += line.get_price_with_tax();
                       // self.margin += (line.get('pvp') - product_obj.standard_price) * line.get('qty');
                     // }
                     // else{
@@ -1193,6 +1192,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
                 }
             }, this));
+            self.total += my_round(self.base, 2) + my_round(self.iva, 2);
             self.base = my_round(self.base, 2);
             this.order_model.set('total_base',self.base);
             this.order_model.set('total_iva', self.iva);
