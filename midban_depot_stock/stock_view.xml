@@ -425,7 +425,7 @@
                     <field name="sale_id" readonly="True"/>
                     <field name="orig_planned_date" readonly="True"/>
                     <field name="order_note" readonly="True" string="Order Notes"/>
-                    <field name="min_date" readonly="True" string="Delivery Date"/>
+                    <field name="min_date" readonly="True" string="Delivery Date" invisible="1"/>
                     <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
                     <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"

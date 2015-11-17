@@ -86,6 +86,7 @@ class stock_picking(osv.Model):
                                    help='Picking wave associated to this '
                                         'picking', copy=False)}
 
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
                         submenu=False):
