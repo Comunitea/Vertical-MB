@@ -971,10 +971,10 @@ class stock_pack_operation(models.Model):
         pack in the first case and a exception will be raised in the second one
         """
 
-        if vals.get('lot_id', False):
-            for op in self:
-                if op.lot_id.id != vals['lot_id']:
-                    vals['package_id'] = False
+        # if vals.get('lot_id', False):
+        #     for op in self:
+        #         if op.lot_id.id != vals['lot_id']:
+        #             vals['package_id'] = False
         if vals.get('product_id', False):
             for op in self:
                 if op.product_id.id != vals['product_id'] and op.product_id:
