@@ -892,7 +892,7 @@ msgstr "El detalle de la ruta debe estar asignado para confirmar el pedido"
 #. module: midban_depot_stock
 #: field:set.detail.routes,route_detail_id:0
 msgid "Detail route"
-msgstr "Detail route"
+msgstr "Detalle ruta"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/sale.py:172
