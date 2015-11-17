@@ -118,7 +118,10 @@ class sale(osv.osv):
         for rec in orders:
             order = rec['data']
             if order['erp_id'] and order['erp_state'] != 'draft':
-                raise osv.except_osv(_('Error!'), _("Combination error!"))
+
+                # raise osv.except_osv(_('Error!'), _("Combination error!"))
+                self.cancel_sale_to_draft(cr, uid, order['erp_id'], context)
+                order['erp_state'] = 'draft'
             partner_obj = t_partner.browse(cr, uid, order['partner_id'])
             vals = {
                 'partner_id': partner_obj.id,
@@ -189,7 +192,8 @@ class sale(osv.osv):
                     'tax_id': [(6, 0, line.get('tax_ids', False))],
                     'pvp_ref': line.get('pvp_ref', 0.0),
                     'q_note': line.get('qnote', False),
-                    'detail_note': line.get('detail_note', False)
+                    'detail_note': line.get('detail_note', False),
+                    'discount': line.get('discount', 0.0)
                 }
 
                 t_order_line.create(cr, uid, vals)
@@ -332,23 +336,29 @@ class sale_order_line(osv.osv):
             # Avoid not registered products
             # if l.product_id.state2 != 'registered':
             #     continue
+            # dic = {
+            #     'order_id': l.order_id.id,
+            #     'product_id': (l.product_id.id, l.product_id.name),
+            #     'product_uom': (l.product_uom.id, l.product_uom.name),
+            #     'product_uom_qty': l.product_uom_qty,
+            #     'product_uos': (l.product_uos.id, l.product_uos.name),
+            #     'product_uos_qty': l.product_uos_qty,
+            #     'price_udv': l.price_udv,
+            #     'price_unit': l.price_unit,
+            #     'discount': l.discount,
+            #     'price_subtotal': l.product_uom_qty * l.price_unit *
+            #     (1 - (l.discount / 100.0)),
+            #     'tax_id': [x.id for x in l.tax_id],
+            #     'pvp_ref': l.pvp_ref,
+            #     'current_pvp': l.current_pvp,
+            #     'q_note': l.q_note.name,
+            #     'detail_note': l.detail_note
+            # }
             dic = {
-                'order_id': l.order_id.id,
                 'product_id': (l.product_id.id, l.product_id.name),
-                'product_uom': (l.product_uom.id, l.product_uom.name),
-                'product_uom_qty': l.product_uom_qty,
-                'product_uos': (l.product_uos.id, l.product_uos.name),
-                'product_uos_qty': l.product_uos_qty,
-                'price_udv': l.price_udv,
-                'price_unit': l.price_unit,
-                'discount': l.discount,
-                'price_subtotal': l.product_uom_qty * l.price_unit *
-                (1 - (l.discount / 100.0)),
-                'tax_id': [x.id for x in l.tax_id],
-                'pvp_ref': l.pvp_ref,
-                'current_pvp': l.current_pvp,
-                'q_note': l.q_note.name,
-                'detail_note': l.detail_note
+                'price_unit': l.product_id.list_price,
+                'default_code': l.product_id.default_code or \
+                l.product_id.default_code2
             }
             res.append(dic)
         return res

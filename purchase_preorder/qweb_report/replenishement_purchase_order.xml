@@ -2,14 +2,14 @@
 <openerp>
     <data>
         <template id="replenishement_purchase_order">
-            <t t-call="report.html_container">
+            <!-- <t t-call="report.html_container"> -->
               <!-- <t t-call="report.external_layout"> -->
                 <t t-foreach="docs" t-as="o">
 
                   <div class="page">
 
-                      <h1 align="center">Warehouse Replenishement List</h1>
-                      <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3>
+                      <h3 align="center">Warehouse Replenishement List: <span t-esc="meta_info['print_date']"/></h3>
+                      <!-- <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3> -->
                       <h3>Filter by:</h3>
                       <div>
                            <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>
@@ -81,7 +81,7 @@
                         </tbody>
                   </table>
                   </div>
-                </t>
+                <!-- </t> -->
             <!-- </t> -->
           </t>
 

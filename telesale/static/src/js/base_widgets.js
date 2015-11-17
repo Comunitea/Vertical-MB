@@ -349,6 +349,24 @@ function openerp_ts_basewidget(instance, module){ //module is instance.point_of_
                 else e.returnValue = false;
                 self.$('.select-order')[0].click();
             });
+            Mousetrap.bind('alt+z', function(e){
+                $( document.activeElement ).blur();
+                if (e.defaultPrevented) e.defaultPrevented;
+                else e.returnValue = false;
+                self.$('.tab1').focus();
+            });
+            Mousetrap.bind('alt+x', function(e){
+                $( document.activeElement ).blur();
+                if (e.defaultPrevented) e.defaultPrevented;
+                else e.returnValue = false;
+                self.$('.col-code').focus();
+            });
+            Mousetrap.bind('alt+c', function(e){
+                $( document.activeElement ).blur();
+                if (e.defaultPrevented) e.defaultPrevented;
+                else e.returnValue = false;
+                self.$('#add-line').focus();
+            });
 
         },
         loading_progress: function(fac){
