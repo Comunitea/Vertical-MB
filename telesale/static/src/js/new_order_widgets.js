@@ -940,6 +940,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                })
 
             }
+            else{
+              alert(_t('You must select a customer'));
+            }
         },
         show_product: function(product_id){
             if (product_id){
