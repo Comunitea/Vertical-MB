@@ -28,3 +28,4 @@ from . import manual_transfer_wzd
 from . import stock_create_multipack_wizard
 from . import validate_routes
 from . import stock_return_picking
+from . import set_detail_routes
