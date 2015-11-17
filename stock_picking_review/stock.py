@@ -22,6 +22,7 @@ from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+import time
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -99,8 +100,9 @@ class stock_move(models.Model):
     def action_done(self):
         res = super(stock_move, self).action_done()
         for move in self:
-            move.write({'accepted_qty':move.product_uos_qty,
-                        'product_uom_acc_qty': move.product_uom_qty})
+            if move.picking_id.picking_type_code == 'outgoing':
+                move.write({'accepted_qty':move.product_uos_qty,
+                            'product_uom_acc_qty': move.product_uom_qty})
         return res
 
     def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
@@ -173,7 +175,7 @@ class StockPicking(models.Model):
     @api.multi
     @api.depends('amount_total_acc')
     def _receipt_amount(self):
-        _logger.debug("CMNT _receipt_amount")
+        init_t = time.time()
         cash_type = self.env['ir.model.data'].get_object_reference('stock_picking_review', 'payment_mode_type_cash')
         cash_type_id = cash_type[1]
         for picking in self:
@@ -183,7 +185,7 @@ class StockPicking(models.Model):
             else:
                 if picking.sale_id.payment_mode_id.type.id == cash_type_id:
                     picking.receipt_amount = picking.amount_total_acc
-
+        _logger.debug("CMNT _receipt_amount %s", time.time() - init_t)
     @api.multi
     def fast_returns(self):
         move_obj = self.env['stock.move']
@@ -271,7 +273,7 @@ class StockPicking(models.Model):
     @api.multi
     @api.depends('move_lines.accepted_qty')
     def _amount_all_acc(self):
-        _logger.debug("CMNT Calculo en  _amount_all_acc (picking)")
+        init_t = time.time()
         for picking in self:
             if picking.picking_type_id.code == "outgoing":
                 if not picking.sale_id:
@@ -315,3 +317,4 @@ class StockPicking(models.Model):
                 picking.amount_total_acc = picking.amount_untaxed_acc + picking.amount_tax_acc
                 picking.amount_discounted_acc = picking.amount_gross_acc - \
                     picking.amount_untaxed_acc
+        _logger.debug("CMNT Calculo en  _amount_all_acc (picking) %s", time.time() - init_t)

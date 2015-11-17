@@ -75,6 +75,7 @@ class stock_task(osv.Model):
 
     @api.one
     def finish_partial_task(self):
+
         if self.type != 'picking':
             pick_ids = list(set([x.picking_id.id for x in self.operation_ids]))
         else:
@@ -106,7 +107,8 @@ class stock_task(osv.Model):
                     if op.to_revised and op.to_process:
                         final_state = 'to_revised'
                         wave_final_state = 'in_progress'
-                filter_ids.append(pick.id)
+                if not to_revised:
+                    filter_ids.append(pick.id)
 
             pick_objs = pick_t.browse(filter_ids)
 

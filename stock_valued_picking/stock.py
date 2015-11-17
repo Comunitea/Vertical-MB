@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
+import time
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -48,9 +49,9 @@ class stock_picking(models.Model):
     @api.multi
     @api.depends('move_lines.price_subtotal')
     def _amount_all(self):
-        _logger.debug("CMNT _amount_all")
+        init_t = time.time()
         for picking in self:
-            if not picking.sale_id:
+            if not picking.sale_id or not picking.picking_type_code in ['outgoing', 'incoming']:
                 picking.amount_tax = picking.amount_untaxed = \
                     picking.amount_gross = 0.0
                 continue
@@ -93,7 +94,7 @@ class stock_picking(models.Model):
             picking.amount_total = picking.amount_untaxed + picking.amount_tax
             picking.amount_discounted = picking.amount_gross - \
                 picking.amount_untaxed
-
+        _logger.debug("CMNT _amount_all %s", time.time() - init_t)
 
 class stock_move(models.Model):
 
@@ -125,9 +126,8 @@ class stock_move(models.Model):
     @api.multi
     @api.depends('product_uom_qty')
     def _get_subtotal(self):
-        _logger.debug("CMNT _get_subtotal")
+        init_t = time.time()
         for move in self:
-            _logger.debug("CMNT _get_subtotal (moves)")
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
                 move.discount = move.procurement_id.sale_line_id.discount or \
@@ -163,3 +163,4 @@ class stock_move(models.Model):
                         (move.margin / move.price_subtotal) * 100
                 else:
                     move.percent_margin = 0
+        _logger.debug("CMNT _get_subtotal %s", time.time() - init_t)
