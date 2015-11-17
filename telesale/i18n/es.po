@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-17 15:57+0000\n"
-"PO-Revision-Date: 2015-11-17 15:57+0000\n"
+"POT-Creation-Date: 2015-11-17 17:31+0000\n"
+"PO-Revision-Date: 2015-11-17 17:31+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -818,7 +818,7 @@ msgstr "Marca"
 #: code:addons/telesale/static/src/xml/new_order_template.xml:637
 #, python-format
 msgid "Max Discount"
-msgstr "Descuento Máx."
+msgstr "Max Discount"
 
 #. module: telesale
 #: field:res.company,min_limit:0
@@ -837,6 +837,13 @@ msgstr "Margen mínimo"
 #, python-format
 msgid "Month"
 msgstr "Mes"
+
+#. module: telesale
+#. openerp-web
+#: code:addons/telesale/static/src/js/buttons_widgets.js:112
+#, python-format
+msgid "My Orders"
+msgstr "Mis Pedidos"
 
 #. module: telesale
 #. openerp-web
@@ -1322,13 +1329,6 @@ msgstr "Reservas de Stock"
 
 #. module: telesale
 #. openerp-web
-#: code:addons/telesale/static/src/js/buttons_widgets.js:112
-#, python-format
-msgid "Summary Orders"
-msgstr "Resumen Pedidos"
-
-#. module: telesale
-#. openerp-web
 #: code:addons/telesale/static/src/xml/new_order_template.xml:271
 #: code:addons/telesale/static/src/xml/new_order_template.xml:276
 #, python-format
@@ -1467,7 +1467,7 @@ msgstr "Unidad"
 #: code:addons/telesale/static/src/js/new_order_widgets.js:533
 #, python-format
 msgid "Unit  not found"
-msgstr "Unidad no encontrada"
+msgstr "Unit  not found"
 
 #. module: telesale
 #. openerp-web

@@ -11,19 +11,19 @@
 
     <t t-name="Order-History-Widget">
             <div class="order-history-search">
-                <div class="col-xs-2 fullheight centerinside textcenter">
+                <div class="col-xs-4 fullheight centerinside textcenter ">
                     <div class="centerthis">
                         <label for="customer">Customer:</label>
-                        <input type="text" id="input-customer" name="customer" class="tab1"/>
+                        <input type="text" id="input-customer" name="customer" class="tab1 customer"/>
                     </div>
                 </div>
-                <div class="col-xs-3 fullheight centerinside textcenter">
+                <div class="col-xs-2 fullheight centerinside textcenter">
                     <div class="centerthis">
                         <label for="date_start">Date Start:</label>
                         <input type="date" id='input-date_start' name="date_start" t-att-value="widget.ts_model.getCurrentDateStr()"/>
                     </div>
                 </div>
-                <div class="col-xs-3 fullheight centerinside textcenter">
+                <div class="col-xs-2 fullheight centerinside textcenter">
                     <div class="centerthis">
                         <label for="date_end">Date End:</label>
                         <input type="date" id='input-date_end' name="date_end" t-att-value="widget.ts_model.getCurrentDateStr()"/>
