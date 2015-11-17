@@ -31,6 +31,7 @@ function openerp_ts_models(instance, module){
             var  self = this;
             this.session = session;  // openerp session
             this.ready = $.Deferred(); // used to notify the GUI that the PosModel has loaded all resources
+            this.ready2 = $.Deferred(); // used to notify the GUI that thepromotion has writed in the server
             // this.flush_mutex = new $.Mutex();  // used to make sure the orders are sent to the server once at time
             this.db = new module.TS_LS();                       // a database used to store the products and categories
             this.db.clear('products','partners');
@@ -150,7 +151,6 @@ function openerp_ts_models(instance, module){
                     return model.call("load_products",[],{context:new instance.web.CompoundContext()});
                 }).then(function(products){
                     console.timeEnd('Test performance products');
-                    // console.log(products)
                     self.db.add_products(products);
 
                     console.time('Test performance customers');
@@ -160,7 +160,6 @@ function openerp_ts_models(instance, module){
                     // var model = new instance.web.Model('res.partner');
                     // return model.call("load_partners",[true],{context:new instance.web.CompoundContext()});
                 }).then(function(customers){
-                    // console.log(customers)
                     console.timeEnd('Test performance customers');
                     for (key in customers){
                         // var customer_name = customers[key].comercial || customers[key].name
@@ -255,6 +254,7 @@ function openerp_ts_models(instance, module){
             if(!order){
                 return;
             }
+            self.ready2 = $.Deferred();
             //try to push an order to the server
             // shadow : true is to prevent a spinner to appear in case of timeout
             (new instance.web.Model('sale.order')).call('create_order_from_ui',[[order]],{context:new instance.web.CompoundContext()})
@@ -262,12 +262,14 @@ function openerp_ts_models(instance, module){
                     //don't show error popup if it fails
                     console.error('Failed to send order:',order);
                     self._flush(index+1);
+                    self.ready2.reject()
                 })
                 .done(function(){
                     //remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
                     self.get('selectedOrder').destroy(); // remove order from UI
+                    self.ready2.resolve()
                 });
         },
         // build a order loaded from the server as order_obj the selected order_model
@@ -527,9 +529,7 @@ function openerp_ts_models(instance, module){
         },
 
         set_selected: function(selected){
-            console.log("SET SELECTED")
             this.selected = selected;
-            this.trigger('change_line');
         },
         is_selected: function(){
             return this.selected;
@@ -555,8 +555,6 @@ function openerp_ts_models(instance, module){
             var uom_id = this.ts_model.db.unit_name_id[this.get('unit')];
             var uos_id = this.ts_model.db.unit_name_id[this.get('product_uos')];
             var qnote_id = this.ts_model.db.qnote_name_id[this.get('qnote')];
-            console.log("discounnnnnnnnnnnnnnnnnnnnnnnnnnnnnnt")
-            console.log(this.get('discount'))
             return {
                 qty: this.get('qty'),
                 product_uom: uom_id,
@@ -774,7 +772,6 @@ function openerp_ts_models(instance, module){
 
         },
         selectLine: function(line){
-           console.log("selectLine")
             if(line){
                 if (line !== this.selected_orderline){
                     if(this.selected_orderline) {
@@ -856,6 +853,9 @@ function openerp_ts_models(instance, module){
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
+            if(this.selected_orderline && this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
+              $('.remove-line-button').click()
+            }
             for (key in order_lines){
                 var line = order_lines[key];
                 var prod_obj = this.ts_model.db.get_product_by_id(line.product_id[0]);
@@ -864,45 +864,46 @@ function openerp_ts_models(instance, module){
                   return
                 }
                 current_olines = this.get('orderLines').models
-                var product_exist = false;
+                // var product_exist = false;
                 for (key2 in current_olines){
                     var o_line = current_olines[key2];
                     var line_product_id =  this.ts_model.db.product_name_id[o_line.get('product')];
 
-                    if (line_product_id == prod_obj.id)
-                        product_exist = true;
+                    // if (line_product_id == prod_obj.id)
+                    //     product_exist = true;
                 }
-                if (!product_exist){
-                    var l_qty = line.product_uom_qty
-                    if(fromsoldprodhistory){
-                      l_qty = 1.0;
-                    }
-                    debugger;
-                    var line_vals = {ts_model: this.ts_model, order:this,
-                                     code:prod_obj.default_code || "" ,
-                                     product:prod_obj.name,
-                                     unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
-                                     qty:my_round(l_qty), //order line qty
-                                     pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
-                                     total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
-                                     discount: my_round( line.discount || 0.0, 2 ),
-                                     weight: my_round(line.product_uom_qty * prod_obj.weight,2),
-                                     margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),
-                                     taxes_ids: line.tax_id || product_obj.taxes_id || [],
-                                     pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
-                                     qnote: line['q_note'][1] || "",
-                                     detail: line["detail_note"] || "",
-                                     product_uos: line['product_uos'][1] || "",
-                                     product_uos_qty: line['product_uos_qty'] || 0.0,
-                                     price_udv: line['price_udv'] || 0.0
-                                    }
-                    var line = new module.Orderline(line_vals);
-                    this.get('orderLines').add(line);
+
+                // if (!product_exist){
+                var l_qty = line.product_uom_qty
+                if(fromsoldprodhistory){
+                  l_qty = 1.0;
                 }
-                else{
-                  alert(_t("This product is already in the order"));
-                }
+                var line_vals = {ts_model: this.ts_model, order:this,
+                                 code:prod_obj.default_code || "" ,
+                                 product:prod_obj.name,
+                                 unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
+                                 qty:my_round(l_qty), //order line qty
+                                 pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
+                                 total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+                                 discount: my_round( line.discount || 0.0, 2 ),
+                                 weight: my_round(line.product_uom_qty * prod_obj.weight,2),
+                                 margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),
+                                 taxes_ids: line.tax_id || product_obj.taxes_id || [],
+                                 pvp_ref: line.current_pvp ? line.current_pvp : 0, //#TODO CUIDADO PUEDE NO ESTAR BIEN
+                                 qnote: line['q_note'][1] || "",
+                                 detail: line["detail_note"] || "",
+                                 product_uos: line['product_uos'][1] || "",
+                                 product_uos_qty: line['product_uos_qty'] || 0.0,
+                                 price_udv: line['price_udv'] || 0.0
+                                }
+                var line = new module.Orderline(line_vals);
+                this.get('orderLines').add(line);
+                // }
+                // else{
+                //   alert(_t("This product is already in the order"));
+                // }
             }
+            $('.col-code').focus(); //si no, al añadir línea desde resumen de pedidos, no existe foco y si añade más líneas da error
         },
         deleteProductLine: function(id_line){
           var self=this;
@@ -918,7 +919,6 @@ function openerp_ts_models(instance, module){
             var added_line = self.ts_model.get('selectedOrder').getLastOrderline();
             var lines_widgets = self.ts_model.ts_widget.new_order_screen.order_widget.orderlinewidgets
             lines_widgets[lines_widgets.length - 1].call_product_id_change(product_id)
-            // debugger;
             // if (customer_id){
             //     var kwargs = {context: new instance.web.CompoundContext({}),
             //                   partner_id: customer_id,

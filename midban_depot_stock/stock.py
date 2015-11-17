@@ -420,79 +420,6 @@ class stock_picking(osv.Model):
         _logger.debug("CMNT total do_prepare: %s", time.time() - init_t)
         return res
 
-    # @api.multi
-    # def do_prepare_partial(self):
-    #     """
-    #     Overwrited in order to calculate the correct uos_qty in the operation.
-    #     """
-    #     print "_do_prepare_partial"
-    #     init_t = time.time()
-    #     res = super(stock_picking, self).do_prepare_partial()
-    #     print "Tiempo original do_prepare: " + str(time.time() - init_t)
-    #     for picking in self:
-    #         supplier_id = 0
-    #         if picking.picking_type_code == 'incoming' and picking.purchase_id:
-    #             supplier_id = picking.partner_id.id
-    #
-    #         for move in picking.move_lines:
-    #             if move.product_uos_qty and move.product_uos:
-    #                 move_uos_qty = move.product_uos_qty
-    #                 move_uos_id = move.product_uos.id
-    #                 operations = [x.operation_id for x in
-    #                               move.linked_move_operation_ids]
-    #                 operations = list(set(operations))
-    #                 for op in operations:
-    #                     prod = op.operation_product_id
-    #                     var_weight = False
-    #                     if supplier_id:
-    #                         supp = prod.get_product_supp_record(supplier_id)
-    #                         if supp.is_var_coeff:
-    #                             var_weight = True
-    #                     else:
-    #                         if prod.is_var_coeff:
-    #                             var_weight = True
-    #                     op_uom_qty = op.packed_qty
-    #                     op_uos_qty = 0
-    #                     if op.package_id and not op.product_id:
-    #                         op_uos_qty = op.package_id.uos_qty
-    #                     # Variable coeff products
-    #                     elif op.product_id and var_weight:
-    #                         moves = list(set([x.move_id for x in
-    #                                           op.linked_move_operation_ids]))
-    #                         if len(operations) == 1 and len(moves) == 1:
-    #                                 op_uos_qty = move_uos_qty
-    #                         else:
-    #                             op_coeff = 0
-    #                             for mv in moves:
-    #                                 op_coeff = \
-    #                                     mv.product_uom_qty / mv.product_uos_qty
-    #                                 apr_uos_qty = op_uom_qty / op_coeff
-    #
-    #                                 # dec_part = apr_uos_qty - int(apr_uos_qty)
-    #                                 # if dec_part > 0.95:
-    #                                 #     apr_uos_qty = \
-    #                                 #         int(math.ceil(apr_uos_qty))
-    #                                 # else:
-    #                                 #     apr_uos_qty = int(apr_uos_qty)
-    #
-    #                                 if apr_uos_qty <= move_uos_qty:
-    #                                     op_uos_qty += apr_uos_qty
-    #                                     move_uos_qty -= apr_uos_qty
-    #                                 else:
-    #                                     op_uos_qty += move_uos_qty
-    #                                     break
-    #                     # Fixed coeff product
-    #                     elif op.product_id and not var_weight:
-    #                         op_uos_qty = \
-    #                             prod.uom_qty_to_uos_qty(op.product_qty,
-    #                                                     move_uos_id,
-    #                                                     supplier_id)
-    #                     # Write the calculed uos qty in operation
-    #                     op.write({'uos_qty': op_uos_qty, 'uos_id':move_uos_id })
-    #                     #op.uos_qty = op_uos_qty
-    #                     #op.uos_id = move_uos_id
-    #     return res
-
 
 class StockPicking(models.Model):
 
@@ -507,6 +434,10 @@ class StockPicking(models.Model):
                                 readonly=True,
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
+    partner_street = fields2.Char('Address', related='partner_id.street',
+                                  readonly=True)
+    partner_city = fields2.Char('City', related='partner_id.city',
+                                 readonly=True)
 
     # Se movió la funcionalidad al asistente de validacion de ruta
     # @api.multi
@@ -566,6 +497,7 @@ class StockPicking(models.Model):
             total_weight += move.product_id.weight * move.product_uom_qty
         self.total_weight = total_weight
         _logger.debug("CMNT _get_weight (picking) %s", time.time() - init_t)
+
 
 class StockPackage(models.Model):
     _inherit = "stock.quant.package"
@@ -897,7 +829,6 @@ class stock_pack_operation(models.Model):
         'do_pack': 'do_pack'}
 
     def _search_closest_pick_location(self, prod_obj, free_loc_ids):
-        _logger.debug("CMNT _search_closest_pick_location operation")
         loc_t = self.env['stock.location']
         if not free_loc_ids:
             raise exceptions.Warning(_('Error!'), _('No empty locations.'))
@@ -2072,9 +2003,8 @@ class stock_quant(models.Model):
                     context=context)
 
                 return sup
-
-            order = 'removal_date, in_date, id'
-
+            #es necesario ordernar antes por package id que por
+            order = 'removal_date, package_id,  in_date, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
