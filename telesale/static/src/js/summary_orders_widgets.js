@@ -102,9 +102,9 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             this.$('#search-customer2-trimester').click(function (){ self.searchCustomerOrdersBy('trimester') });
             var $summary_content = this.$('.summary-lines');
             for(var i = 0, len = this.summary_line_widgets .length; i < len; i++){
-                this.summary_line_widgets [i].destroy();
+                this.summary_line_widgets[i].destroy();
             }
-            this.orderlinewidgets = [];
+            this.summary_line_widgets = [];
             for (key in this.partner_orders){
                 var summary_order = this.partner_orders[key];
                 var summary_line = new module.SummarylineWidget(this, {order: summary_order});
@@ -113,13 +113,16 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             }
         },
         load_partner_orders: function(date_start,date_end){
+           // HAY QUE CONTROLAR LAS FECHAS CON UTC, HORARIO DE INVIERNO -1H VERANO -2H
             var self=this;
             var domain =   [['create_uid', '=', this.ts_model.get('user').id],['chanel', '=', 'telesale']]
             if (date_start != ""){
-                domain.push(['date_order', '>=', date_start])
+                utc_date_start = self.ts_model.parse_str_date_to_utc(date_start + " 00:00:00")
+                domain.push(['date_order', '>=', utc_date_start])
             }
             if (date_end != ""){
-                domain.push(['date_order', '<=', date_end])
+                utc_date_end = self.ts_model.parse_str_date_to_utc(date_end + " 23:59:59")
+                domain.push(['date_order', '<=', utc_date_end])
             }
             var loaded = self.ts_model.fetch('sale.order',
                                             ['name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],  //faltan los impuestos etc
