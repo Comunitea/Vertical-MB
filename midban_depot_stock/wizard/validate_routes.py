@@ -65,12 +65,12 @@ class ValidateRoutes(models.TransientModel):
                                       time.time() - assing_unp)
                     unassigned_moves.append(move.id)
                     #move.picking_id = unassigned_pick.id
-                if len(unassigned_moves):
-                    assing_un = time.time()
-                    moves = self.env['stock.move'].browse(unassigned_moves).\
+            if len(unassigned_moves):
+                assing_un = time.time()
+                moves = self.env['stock.move'].browse(unassigned_moves).\
                         write({'picking_id': unassigned_pick.id})
-                    _logger.debug("CMNT write unassigned: %s", time.time() - assing_un)
-                _logger.debug("CMNT Assign time cada completo: %s" , time.time() - assing_t)
+                _logger.debug("CMNT write unassigned: %s", time.time() - assing_un)
+            _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
             _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
             # Create as many picks as cameras involved and validate_it.
             split_t = time.time()
@@ -84,19 +84,19 @@ class ValidateRoutes(models.TransientModel):
                      'validated': True}
             picks_tot = picks_by_cam + out_pickings
             picks_tot.write(vals2)
-            unassigned_ids = []
-            if unasigned_picks_lst:
-                for p in unasigned_picks_lst:
-                    p.route_detail_id = False  # Its writed by write method
-                    unassigned_ids.append(p.id)
-                # Display the created pickings
-                action_obj = self.env.ref('stock.action_picking_tree')
-                action = action_obj.read()[0]
-                action['domain'] = str([('id', 'in', unassigned_ids)])
-                action['context'] = {}
-                _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
-                return action
+        unassigned_ids = []
+        if unasigned_picks_lst:
+            for p in unasigned_picks_lst:
+                unassigned_ids.append(p.id)
+                p.write ({'route_detail_id': False})
+            # Display the created pickings
+            action_obj = self.env.ref('stock.action_picking_tree')
+            action = action_obj.read()[0]
+            action['domain'] = str([('id', 'in', unassigned_ids)])
+            action['context'] = {}
             _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
+            return action
+        _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
         return
 
     def _get_pickings_from_outs(self, out_pickings):
@@ -131,16 +131,18 @@ class ValidateRoutes(models.TransientModel):
         pick.do_prepare_partial()
         _logger.debug("CMNT Prepare partial time: %s", time.time() - pp_t)
         moves_by_cam = {}  # Moves grouped by camera
+        ops_by_cam = {}
         for op in pick.pack_operation_ids:
             camera_loc = op.location_id.get_camera()
             if camera_loc not in moves_by_cam:
-                moves_by_cam[camera_loc] = []
-            move_objs = list(
-                set([x.move_id for x in op.linked_move_operation_ids]))
-            moves_by_cam[camera_loc].extend(move_objs)
+                moves_by_cam[camera_loc] = self.env['stock.move']
+                ops_by_cam[camera_loc] = self.env['stock.pack.operation']
+            ops_by_cam[camera_loc] += op
+            for x in op.linked_move_operation_ids:
+                if x.move_id not in  moves_by_cam[camera_loc]:
+                    moves_by_cam[camera_loc] += x.move_id
 
         first = True
-
         for cam in moves_by_cam:
             if first:  # Skip first moves, we get the original picking
                 first = False
@@ -152,8 +154,10 @@ class ValidateRoutes(models.TransientModel):
                            'route_detail_id': pick.route_detail_id.id,
                            'group_id': pick.group_id.id}
             new_pick = pick.copy(copy_values)
-            #for move in moves_by_cam[cam]:
-            moves_by_cam[cam].picking_id = new_pick  # Assign move to new pick
+            for move in moves_by_cam[cam]:
+                move.picking_id = new_pick  # Assign move to new pick
+            for op in ops_by_cam[cam]:
+                op.picking_id = new_pick
             new_pick.camera_id = cam  # Write the camera
             splited_picks += new_pick
         return splited_picks

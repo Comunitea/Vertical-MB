@@ -41,19 +41,19 @@ class stock_move(models.Model):
     price_subtotal_accepted = fields.Float(
         compute='_get_subtotal_accepted', string="Subtotal Accepted",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     cost_subtotal_accepted = fields.Float(
         compute='_get_subtotal_accepted', string="Cost subtotal Accepted",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     margin_accepted = fields.Float(
         compute='_get_subtotal_accepted', string="Margin Accepted",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     percent_margin_accepted = fields.Float(
         compute='_get_subtotal_accepted', string="% margin Accepted",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
 
     @api.onchange('accepted_qty')
     def accepted_qty_onchange(self):
@@ -67,7 +67,7 @@ class stock_move(models.Model):
             self.product_uom_acc_qty = product.uos_qty_to_uom_qty(qty, uos_id)
 
     @api.multi
-    @api.depends('accepted_qty')
+    #@api.depends('accepted_qty')
     def _get_subtotal_accepted(self):
         for move in self:
             _logger.debug("CMNT Calculo en  _get_subtotal_accepted (move)")
@@ -145,22 +145,22 @@ class StockPicking(models.Model):
                                  copy=True)
     amount_untaxed_acc = fields.Float(
         compute='_amount_all_acc', digits_compute=dp.get_precision('Sale Price'),
-        string='Untaxed Amount Review', readonly=True, store=True)
+        string='Untaxed Amount Review', readonly=True, store=False)
     amount_tax_acc = fields.Float(
         compute='_amount_all_acc', digits_compute=dp.get_precision('Sale Price'),
-        string='Taxes Review', readonly=True, store=True)
+        string='Taxes Review', readonly=True, store=False)
     amount_total_acc = fields.Float(
         compute='_amount_all_acc', digits_compute=dp.get_precision('Sale Price'),
-        string='Total Review', readonly=True, store=True)
+        string='Total Review', readonly=True, store=False)
     amount_gross_acc = fields.Float(
         compute='_amount_all_acc', digits_compute=dp.get_precision('Sale Price'),
-        string='amount gross Review', readonly=True, store=True)
+        string='amount gross Review', readonly=True, store=False)
     amount_discounted_acc = fields.Float(
         compute='_amount_all_acc', digits_compute=dp.get_precision('Sale Price'),
-        string='Sale price', readonly=True, store=True)
+        string='Sale price', readonly=True, store=False)
     receipt_amount = fields.Float(
         compute='_receipt_amount', digits_compute=dp.get_precision('Sale Price'),
-        string='Receipt', readonly=False, store=True)
+        string='Receipt', readonly=False, store=False)
 
     @api.multi
     def _get_payment_mode(self):
@@ -173,7 +173,7 @@ class StockPicking(models.Model):
                     picking.payment_mode = sale_ids[0].payment_mode_id
 
     @api.multi
-    @api.depends('amount_total_acc')
+    #@api.depends('amount_total_acc')
     def _receipt_amount(self):
         init_t = time.time()
         cash_type = self.env['ir.model.data'].get_object_reference('stock_picking_review', 'payment_mode_type_cash')
@@ -186,6 +186,7 @@ class StockPicking(models.Model):
                 if picking.sale_id.payment_mode_id.type.id == cash_type_id:
                     picking.receipt_amount = picking.amount_total_acc
         _logger.debug("CMNT _receipt_amount %s", time.time() - init_t)
+
     @api.multi
     def fast_returns(self):
         move_obj = self.env['stock.move']
@@ -263,7 +264,8 @@ class StockPicking(models.Model):
                     'origin': pick.name,
                 })
                 res.append(new_picking.id)
-                moves.picking_id = new_picking.id
+                for move in moves:
+                    move.picking_id = new_picking.id
                 new_picking.action_confirm()
                 new_picking.action_assign()
 
@@ -271,7 +273,7 @@ class StockPicking(models.Model):
         return res
 
     @api.multi
-    @api.depends('move_lines.accepted_qty')
+    #@api.depends('move_lines.accepted_qty')
     def _amount_all_acc(self):
         init_t = time.time()
         for picking in self:
@@ -317,4 +319,5 @@ class StockPicking(models.Model):
                 picking.amount_total_acc = picking.amount_untaxed_acc + picking.amount_tax_acc
                 picking.amount_discounted_acc = picking.amount_gross_acc - \
                     picking.amount_untaxed_acc
+        print picking
         _logger.debug("CMNT Calculo en  _amount_all_acc (picking) %s", time.time() - init_t)
