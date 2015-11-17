@@ -141,7 +141,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
                         alert(alert_msg);
                         self.order_model.set('partner', "");
-                        self.order_model.set('partner_code', "");
+                        // self.order_model.set('partner_code', "");
                         self.refresh();
                     }
                     else{
@@ -911,7 +911,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var client_name = this.ts_model.get('selectedOrder').get('partner')
             var client_id = this.ts_model.db.partner_name_id[client_name];
             if (!client_id){
-                alert(_t('No customer defined'));
+                // alert(_t('No customer defined'));
                 return false
             }
             else{

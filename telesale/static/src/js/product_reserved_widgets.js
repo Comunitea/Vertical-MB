@@ -52,6 +52,8 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
             });
             this.$('#search-reserved').click(function (){ self.searchReserved() });
 
+
+
             var $reserved_lines = this.$('.reservedlines');
             for (key in this.product_reserves){
                 var product_reserved = this.product_reserves[key];
@@ -65,6 +67,8 @@ function openerp_ts_product_reserved_widgets(instance, module){ //module is inst
             var product_name = this.$('#input-product').val();
             var partner_id = this.ts_model.db.partner_name_id[partner_name];
             if (!partner_id){
+                var alert_msg = _t("Customer name '" + partner_name + "' does not exist");
+                alert(alert_msg);
                 partner_id = false
             }
             var product_id = this.ts_model.db.product_name_id[product_name];

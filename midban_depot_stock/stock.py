@@ -1993,6 +1993,7 @@ class stock_quant(models.Model):
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
                                removal_strategy, context=None):
         """
+
         If not enought qty in the picking location, we search in storage \
         location.
         Then by overwriting action_assign of stock move, we will find the
@@ -2016,8 +2017,8 @@ class stock_quant(models.Model):
                     context=context)
 
                 return sup
-
-            order = 'removal_date, in_date, id'
+            #es necesario ordernar antes por package id que por
+            order = 'removal_date, package_id,  in_date, id'
 
             if not context.get('from_reserve', False):
                 # Search quants in picking location
@@ -2058,12 +2059,9 @@ class stock_quant(models.Model):
             domain = [('reservation_id', '=', False), ('qty', '>', 0),
                       ('id', 'not in', quants_in_res)]
             if check_global_qty:
-                print res
-                print check_global_qty
                 res += self._quants_get_order(cr, uid, location, product,
                                               check_global_qty, domain, order,
                                               context=context)
-                print res
             return res
         elif context.get('force_quants_location', False):
             res = context['force_quants_location']
