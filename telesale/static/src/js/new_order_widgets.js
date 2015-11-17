@@ -299,8 +299,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // my_shift = false
             // this.$('.col-discount').keydown(function(event){
             //      var keyCode = event.keyCode || event.which;
-            //      console.log("KKKKK")
-            //      console.log(keyCode)
             //      if (keyCode == 13){ //INTRO TAB
             //         //  Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
             //          var selected_line = self.order.selected_orderline;
@@ -871,7 +869,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
         },
         refresh: function(focus_key){
-            console.log("Refresh Line")
             var price = this.model.get("pvp")
             var qty = this.model.get("qty")
             var disc = this.model.get("discount")
@@ -897,7 +894,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                 }
             }
-            console.log('.col-'+ focus_key)
             this.$('.col-'+ focus_key).focus()
             // this.trigger('order_line_refreshed');
         },
@@ -959,7 +955,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         renderElement: function () {
             var self = this;
             this._super();
-
             // #  Habría que hacer unbind??
             this.$('.add-line-button').click(function(){
                 var order =  self.ts_model.get('selectedOrder')
@@ -1026,19 +1021,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#promo-button').click(function(){
-                current_order = self.ts_model.get('selectedOrder')
+                var current_order = self.ts_model.get('selectedOrder')
                 current_order.set('set_promotion', true)
-                $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
+                self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder()
+                $.when( self.ts_model.ready2 )
                 .done(function(){
-                  debugger
-                  $.when(self.ts_widget.summary_order_screen.summary_order_widget.searchCustomerOrders() )
-                  .done(function(){
-                    var history_line = self.ts_widget.summary_order_screen.summary_order_widget.summary_line_widgets[0]
-                    if (history_line){
-                      history_line.$el.find("#button-show-order").click();
-                    }
-                  });
-                });
+                var loaded = self.ts_model.fetch('sale.order',
+                                                ['id', 'name'],
+                                                [
+                                                    ['chanel', '=', 'telesale']
+                                                ])
+                    .then(function(orders){
+                        if (orders[0]) {
+                        var my_id = orders[0].id
+                        $.when( self.load_order_from_server(my_id) )
+                        .done(function(){
+                        });
+
+                      }
+                    });
+                 });
             });
              this.$('#sust-button').click(function(){
                 var current_order = self.ts_model.get('selectedOrder')
@@ -1110,6 +1112,32 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         order_line_selected: function(){
         },
         order_line_refreshed: function(){
+        },
+        load_order_from_server: function(order_id){
+            var self=this;
+          //  if (!flag){
+              //  this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model}));
+            //}
+            this.open_order =  this.ts_model.get('selectedOrder')
+            var loaded = self.ts_model.fetch('sale.order',
+                                            ['supplier_id','contact_id','note','comercial','customer_comment','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
+                                            [
+                                                ['id', '=', order_id],
+                                                ['chanel', '=', 'telesale']
+                                            ])
+                .then(function(orders){
+                    var order = orders[0];
+                    self.order_fetch = order;
+                    return self.ts_model.fetch('sale.order.line',
+                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note', 'discount'],
+                                                [
+                                                    ['order_id', '=', order_id],
+                                                 ]);
+                }).then(function(order_lines){
+                        self.ts_model.build_order(self.order_fetch, self.open_order, order_lines); //build de order model
+                        self.ts_widget.new_order_screen.data_order_widget.refresh();
+                })
+            return loaded
         },
     });
 

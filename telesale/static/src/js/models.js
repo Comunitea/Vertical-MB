@@ -31,6 +31,7 @@ function openerp_ts_models(instance, module){
             var  self = this;
             this.session = session;  // openerp session
             this.ready = $.Deferred(); // used to notify the GUI that the PosModel has loaded all resources
+            this.ready2 = $.Deferred(); // used to notify the GUI that thepromotion has writed in the server
             // this.flush_mutex = new $.Mutex();  // used to make sure the orders are sent to the server once at time
             this.db = new module.TS_LS();                       // a database used to store the products and categories
             this.db.clear('products','partners');
@@ -150,7 +151,6 @@ function openerp_ts_models(instance, module){
                     return model.call("load_products",[],{context:new instance.web.CompoundContext()});
                 }).then(function(products){
                     console.timeEnd('Test performance products');
-                    // console.log(products)
                     self.db.add_products(products);
 
                     console.time('Test performance customers');
@@ -160,7 +160,6 @@ function openerp_ts_models(instance, module){
                     // var model = new instance.web.Model('res.partner');
                     // return model.call("load_partners",[true],{context:new instance.web.CompoundContext()});
                 }).then(function(customers){
-                    // console.log(customers)
                     console.timeEnd('Test performance customers');
                     for (key in customers){
                         // var customer_name = customers[key].comercial || customers[key].name
@@ -255,6 +254,7 @@ function openerp_ts_models(instance, module){
             if(!order){
                 return;
             }
+            self.ready2 = $.Deferred();
             //try to push an order to the server
             // shadow : true is to prevent a spinner to appear in case of timeout
             (new instance.web.Model('sale.order')).call('create_order_from_ui',[[order]],{context:new instance.web.CompoundContext()})
@@ -262,12 +262,14 @@ function openerp_ts_models(instance, module){
                     //don't show error popup if it fails
                     console.error('Failed to send order:',order);
                     self._flush(index+1);
+                    self.ready2.reject()
                 })
                 .done(function(){
                     //remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
                     self.get('selectedOrder').destroy(); // remove order from UI
+                    self.ready2.resolve()
                 });
         },
         // build a order loaded from the server as order_obj the selected order_model
@@ -527,9 +529,7 @@ function openerp_ts_models(instance, module){
         },
 
         set_selected: function(selected){
-            console.log("SET SELECTED")
             this.selected = selected;
-            this.trigger('change_line');
         },
         is_selected: function(){
             return this.selected;
@@ -555,8 +555,6 @@ function openerp_ts_models(instance, module){
             var uom_id = this.ts_model.db.unit_name_id[this.get('unit')];
             var uos_id = this.ts_model.db.unit_name_id[this.get('product_uos')];
             var qnote_id = this.ts_model.db.qnote_name_id[this.get('qnote')];
-            console.log("discounnnnnnnnnnnnnnnnnnnnnnnnnnnnnnt")
-            console.log(this.get('discount'))
             return {
                 qty: this.get('qty'),
                 product_uom: uom_id,
@@ -774,7 +772,6 @@ function openerp_ts_models(instance, module){
 
         },
         selectLine: function(line){
-           console.log("selectLine")
             if(line){
                 if (line !== this.selected_orderline){
                     if(this.selected_orderline) {
@@ -856,7 +853,7 @@ function openerp_ts_models(instance, module){
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
-            if(this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
+            if(this.selected_orderline && this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
               $('.remove-line-button').click()
             }
             for (key in order_lines){
@@ -867,7 +864,6 @@ function openerp_ts_models(instance, module){
                   return
                 }
                 current_olines = this.get('orderLines').models
-                debugger;
                 // var product_exist = false;
                 for (key2 in current_olines){
                     var o_line = current_olines[key2];
