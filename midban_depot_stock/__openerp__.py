@@ -74,6 +74,7 @@
         "wizard/manual_transfer_wzd_view.xml",
         "wizard/validate_routes.xml",
         "wizard/stock_return_picking.xml",
+        "wizard/set_detail_routes_view.xml",
         'stock_view.xml',
         'procurement_view.xml',
         'crm_phonecall_view.xml',
