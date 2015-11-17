@@ -171,14 +171,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         //     }
                         // }
                         self.refresh();
+                        $('#vua-button').click();
                         if(self.order_model.get('orderLines').length == 0){
                             $('.add-line-button').click()
                         }
                         else{
                             $('#date_order').focus();
                         }
-                        $('#vua-button').click();
-                        self.refresh();
+                        // self.refresh();
                     }
                 });
             }
@@ -1212,7 +1212,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       self.pvp_ref += line.get('pvp_ref') * line.get('qty');
                       self.base += line.get_price_without_tax('total');
                       self.iva += line.get_tax();
-                      self.total += line.get_price_with_tax();
+                      // self.total += line.get_price_with_tax();
                       // self.margin += (line.get('pvp') - product_obj.standard_price) * line.get('qty');
                     // }
                     // else{
@@ -1221,6 +1221,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
                 }
             }, this));
+            self.total += my_round(self.base, 2) + my_round(self.iva, 2);
             self.base = my_round(self.base, 2);
             this.order_model.set('total_base',self.base);
             this.order_model.set('total_iva', self.iva);

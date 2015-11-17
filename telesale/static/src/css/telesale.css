@@ -96,8 +96,7 @@
 
 .telesale #content button:focus{
   background: linear-gradient(#F5DAD6, #FC1616);
-}
-
+  }
 /******************************************** TOP BAR *******************************************************/
 /*Close button*/
 .telesale #topheader .header-button{
@@ -116,6 +115,10 @@
     -webkit-transition-property: background;
     -webkit-transition-duration: 0.2s;
     -webkit-transition-timing-function: ease-out;
+}
+.telesale #topheader button:focus{
+    background: linear-gradient(#F5DAD6, #FC1616);
+    /*border-color: #FC1616 2px;*/
 }
 /*Screens Buttons*/
 .telesale #topheader .select-screen-buttons{
