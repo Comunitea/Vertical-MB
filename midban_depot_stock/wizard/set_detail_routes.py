@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2004-2014 Pexego Sistemas Informáticos All Rights Reserved
-#    $Javier Colmenero Fernández$ <javier@pexego.es>
+#    Copyright (C) 2015 Comunitea All Rights Reserved
+#    $Santi Argüeso <santi@comunitea.com>$
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,14 +18,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import assign_task_wzd
-from . import reposition_wizard
-from . import stock_transfer_details
-from . import create_tag_wizard
-from . import create_camera_locations
-from . import get_route_detail_wzd
-from . import manual_transfer_wzd
-from . import stock_create_multipack_wizard
-from . import validate_routes
-from . import stock_return_picking
-from . import set_detail_routes
+from openerp import models, api, fields
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
+
+
+class SetDetailRoutes(models.TransientModel):
+
+    _name = 'set.detail.routes'
+    route_detail_id = fields.Many2one('route.detail', 'Detail route')
+
+    @api.multi
+    def set_details(self):
+        active_ids = self.env.context['active_ids']
+        out_pickings = self.env['stock.picking'].browse(active_ids)
+
+        out_pickings.write({'route_detail_id': self.route_detail_id.id})
+        return

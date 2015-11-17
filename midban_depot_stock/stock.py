@@ -460,6 +460,11 @@ class StockPicking(models.Model):
                                 readonly=True,
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
+    partner_street = fields2.Char('Address', related='partner_id.street',
+                                  readonly=True)
+    partner_city = fields2.Char('City', related='partner_id.city',
+                                 readonly=True)
+
 
     @api.multi
     def write(self, vals):
