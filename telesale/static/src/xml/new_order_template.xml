@@ -103,7 +103,10 @@
             </td>
             <td class="cell-unit">
                 <!-- <select class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
-                <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/>
+                <!-- <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
+                <select class="col-product_uos mandatory">
+                  
+                </select>
             </td>
             <td class="cell-pvp">
                 <input type="text" class='col-price_udv mandatory' t-att-value="widget.model.get('price_udv').toFixed(2)" />

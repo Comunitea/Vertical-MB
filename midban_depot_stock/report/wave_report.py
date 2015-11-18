@@ -53,10 +53,10 @@ class sale_report(osv.osv):
                 for op in pick.pack_operation_ids:
                     # Para revisar por OMAR
                     if op.location_id == item.location_id and \
-                            (item.customer_id.id == 0  or  item.customer_id.id == op.picking_id.partner_id.id):
+                            (not item.customer_id or  item.customer_id.id == op.picking_id.partner_id.id):
                         if op.package_id:
                             if op.package_id.id == item.pack_id.id and\
-                                    (item.uos_id == 0 or op.uos_id == item.uos_id) and\
+                                    (not item.uos_id or op.uos_id == item.uos_id) and\
                                     op.op_package_id == item.op_package_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
@@ -66,7 +66,7 @@ class sale_report(osv.osv):
                         else:
                             if op.product_id == item.product_id and \
                                     op.lot_id == item.lot_id and\
-                                    (item.uos_id == 0 or op.uos_id == item.uos_id) and\
+                                    (not item.uos_id or op.uos_id == item.uos_id) and\
                                     op.op_package_id == item.op_package_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
