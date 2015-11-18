@@ -383,9 +383,15 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 if(product_obj.box_use_sale){
                     uos.push(product_obj.log_box_id[1]);
                 }
-                self.$('.col-product_uos').autocomplete({
-                    source: uos
-                });
+                // self.$('.col-product_uos').autocomplete({
+                //     source: uos
+                // });
+                for (unit in uos){
+                    self.$('.col-product_uos').append($('<option>',{
+                      value: uos[unit],
+                      text: uos[unit]
+                    }))
+                }
             }
            //autocomplete products and units from array of names
             var products_ref = this.ts_model.get('products_codes')
