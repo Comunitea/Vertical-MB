@@ -80,7 +80,11 @@ class sale_order_line(models.Model):
         prod_obj = self.pool.get('product.product').browse(cr, uid,
                                                            product,
                                                            context=context)
-        product_udv_ids = prod_obj.get_sale_unit_ids()
+        t_ir =  self.pool.get('ir.model.data')
+        dom_pricelist = t_ir.xmlid_to_res_id(cr, uid, 'midban_product.list1')
+        uom_id_first = False if dom_pricelist == pricelist else True
+        # SI cliente a domicilio traermos primero la unidad mas pequeña
+        product_udv_ids = prod_obj.get_sale_unit_ids(uom_id_first)
         # uom_domain = [('id', 'in', product_udv_ids)]
         # res['domain'] = {'product_uos': uom_domain}
         res['value']['product_uos'] = \
