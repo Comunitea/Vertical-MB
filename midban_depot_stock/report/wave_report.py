@@ -53,10 +53,10 @@ class sale_report(osv.osv):
                 for op in pick.pack_operation_ids:
                     # Para revisar por OMAR
                     if op.location_id == item.location_id and \
-                            (item.customer_id.id == 0  or  item.customer_id.id == op.picking_id.partner_id.id):
+                            (not item.customer_id or  item.customer_id.id == op.picking_id.partner_id.id):
                         if op.package_id:
                             if op.package_id.id == item.pack_id.id and\
-                                    op.uos_id == item.uos_id and\
+                                    (not item.uos_id or op.uos_id == item.uos_id) and\
                                     op.op_package_id == item.op_package_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
@@ -66,7 +66,7 @@ class sale_report(osv.osv):
                         else:
                             if op.product_id == item.product_id and \
                                     op.lot_id == item.lot_id and\
-                                    op.uos_id == item.uos_id and\
+                                    (not item.uos_id or op.uos_id == item.uos_id) and\
                                     op.op_package_id == item.op_package_id:
                                 item_res.append(op.id)
                                 if not op.to_process:
@@ -167,12 +167,14 @@ class sale_report(osv.osv):
           SQ.pack_id      as pack_id"""
 
     def _subquery_grouped_op(self):
+        #1º Paquete completo, peso fijo.
+        #2º Cantidad de producto, peso fijo.
         return """SELECT Min(operation.id) AS id,
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
                   operation.location_id,
-                  MIN(operation.uos_qty) AS uos_qty,
-                  operation.uos_id AS uos_id,
+                  0 AS uos_qty,
+                  0 AS uos_id,
                   SUM(quant.qty)    AS product_qty,
                   wave.id           AS wave_id,
                   location.sequence AS sequence,
@@ -219,8 +221,8 @@ class sale_report(osv.osv):
                   operation.product_id       AS product_id,
                   operation.lot_id           AS lot_id,
                   operation.location_id,
-                  SUM(operation.uos_qty) AS uos_qty,
-                  operation.uos_id AS uos_id,
+                  0 AS uos_qty,
+                  0 AS uos_id,
                   SUM(operation.product_qty) AS product_qty,
                   wave.id                       AS wave_id,
                   location.sequence AS sequence,
@@ -259,6 +261,8 @@ class sale_report(osv.osv):
                      order_seq"""
 
     def _subquery_no_grouped_op(self):
+        #1º Paquete Completo, producto variable
+        #2º Cantidad de producto, producto variable
         return """SELECT Min(operation.id) AS id,
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
