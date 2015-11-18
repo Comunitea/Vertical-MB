@@ -966,10 +966,13 @@ class stock_pack_operation(models.Model):
         """
         init_t = time.time()
         _logger.debug("CMNT WRITE PACK operation")
-        if vals.get('lot_id', False):
-            for op in self:
-                if op.lot_id.id != vals['lot_id']:
-                    vals['package_id'] = False
+        # Comentado para que al cambiar de paquete en operación no te lo deje
+        # vacío
+        # if vals.get('lot_id', False):
+        #     for op in self:
+        #         if op.lot_id.id != vals['lot_id']:
+        #             vals['package_id'] = False
+
         if vals.get('product_id', False):
             for op in self:
                 if op.product_id.id != vals['product_id'] and op.product_id:
