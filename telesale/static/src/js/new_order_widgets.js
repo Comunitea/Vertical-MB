@@ -170,14 +170,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         //       self.$('#date_invoice').focus();
                         //     }
                         // }
-                        self.refresh();
+                        // self.refresh();
                         $('#vua-button').click();
                         if(self.order_model.get('orderLines').length == 0){
                             $('.add-line-button').click()
                         }
-                        else{
-                            $('#date_order').focus();
-                        }
+                        // else{
+                        //     $('#date_order').focus();
+                        // }
                         // self.refresh();
                     }
                 });
@@ -964,6 +964,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 var partner_id = self.ts_model.db.partner_name_id[order.get('partner')]
                 if (!partner_id){
                     alert(_t('Please select a customer before adding a order line'));
+                    $('#partner').focus();
                 }else{
                     self.ts_model.get('selectedOrder').addLine();
                     var added_line = self.ts_model.get('selectedOrder').getLastOrderline();
