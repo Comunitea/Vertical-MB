@@ -681,7 +681,7 @@ class stock_package(models.Model):
 
     def get_products_qtys(self, cr, uid, ids, context=None):
         """
-        Returns a dictionary containing the quantity for each product
+        Returns a dictionary containing the quants for each product
         """
         if context is None:
             context = {}
@@ -964,12 +964,13 @@ class stock_pack_operation(models.Model):
         If we change lot_id or product_id in a create operation, we quit the
         pack in the first case and a exception will be raised in the second one
         """
+
+        # if vals.get('lot_id', False):
+        #     for op in self:
+        #         if op.lot_id.id != vals['lot_id']:
+        #             vals['package_id'] = False
         init_t = time.time()
         _logger.debug("CMNT WRITE PACK operation")
-        if vals.get('lot_id', False):
-            for op in self:
-                if op.lot_id.id != vals['lot_id']:
-                    vals['package_id'] = False
         if vals.get('product_id', False):
             for op in self:
                 if op.product_id.id != vals['product_id'] and op.product_id:
