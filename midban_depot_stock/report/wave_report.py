@@ -162,6 +162,8 @@ class sale_report(osv.osv):
           SQ.uos_id          AS uos_id,
           SQ.customer_id       AS customer_id,
           SQ.is_package         as is_package,
+          SQ.op_package_id as op_package_id,
+          SQ.to_process as to_process,
           SQ.pack_id      as pack_id"""
 
     def _subquery_grouped_op(self):
