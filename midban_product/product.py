@@ -738,17 +738,26 @@ class product_product(models.Model):
 
     _inherit = "product.product"
 
-
-    #Saca la los ids de las unidades disponibles para venta
     @api.multi
-    def get_sale_unit_ids(self):
+    def get_sale_unit_ids(self, uom_id_first=True):
+        """
+        Saca la los ids de las unidades disponibles para venta, se devuelve
+        de primera la unidad de medida del producto si está entre los
+        resultados a no ser que se indique lo contrario (por ejemplo clientes
+        con tarifa a domicilio, que se trae por defecto las mas pequeña)
+        """
         res = []
+
         if self.base_use_sale and self.log_base_id:
             res.append(self.log_base_id.id)
         if self.unit_use_sale and self.log_unit_id:
             res.append(self.log_unit_id.id)
         if self.box_use_sale and self.log_box_id:
             res.append(self.log_box_id.id)
+
+        if uom_id_first and self.uom_id.id in res:
+            i = res.index(self.uom_id.id)
+            res[i], res[0] = res[0], res[i]
         return res
 
     # y para compras ....
