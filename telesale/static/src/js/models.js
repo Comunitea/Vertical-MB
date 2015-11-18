@@ -520,7 +520,6 @@ function openerp_ts_models(instance, module){
             margin: 0,
             taxes_ids: [],
             temperature: 0,
-            fresh_price: 0,
         },
         initialize: function(options){
             this.ts_model = options.ts_model;
