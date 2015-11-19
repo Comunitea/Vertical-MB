@@ -53,7 +53,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
 
                 model.call("read",[call_id, ["state"]]).then(function(res){
                     if (res.state == "calling"){  // call already in course
-                        alert(_t("This call is in course by other person"));
+                        alert(_t("This call is in course by another person"));
                     }
                     else if(res.state == "open"){  // set call on course
                         var model = new instance.web.Model("crm.phonecall");
