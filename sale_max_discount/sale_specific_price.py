@@ -19,7 +19,8 @@
 #
 ##############################################################################
 from openerp import models, fields, api, exceptions, _
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class sale_specific_price(models.Model):
 
@@ -29,6 +30,7 @@ class sale_specific_price(models.Model):
     @api.one
     @api.depends('customer_id', 'product_id', 'sale_line_id', 'pricelist_id')
     def _get_pricelist_price(self):
+        _logger.debug("CMNT _get_pricelist_price")
         if self.product_id and self.pricelist_id:
             price = self.pricelist_id.price_get(self.product_id.product_variant_ids[0].id, 1.0, self.customer_id.id)
             self.pricelist_price = price[self.pricelist_id.id]
@@ -38,6 +40,7 @@ class sale_specific_price(models.Model):
     @api.one
     @api.depends('pricelist_price', 'discount')
     def _get_specific_price(self):
+        _logger.debug("CMNT _get_specific_price")
         self.specific_price = self.pricelist_price * (1 - (self.discount/100))
 
     customer_id = fields.Many2one('res.partner', 'Customer', required=True)

@@ -14,7 +14,7 @@
                   </h1>
                   <p> It will assign the current route detail to the selected routes</p>
                   <group>
-                      <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"/>
+                      <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"/>
                   </group>
                   <footer>
                       <button string="Set Detail Routes" name="set_details" type="object" class="oe_highlight"/>

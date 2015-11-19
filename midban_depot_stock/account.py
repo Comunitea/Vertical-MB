@@ -22,6 +22,8 @@
 from openerp.osv import osv, fields
 import openerp.addons.decimal_precision as dp
 from openerp import api
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class account_invoice_line(osv.osv):
@@ -211,5 +213,6 @@ class AccountInvoice(models.Model):
     @api.one
     @api.depends('pick_ids', 'invoice_line')
     def _get_route_id(self):
+        _logger.debug("CMNT _get_route_id")
         self.trans_route_id = self.pick_ids and \
             self.pick_ids[0].trans_route_id or False

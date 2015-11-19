@@ -14,7 +14,7 @@
                             <field name="operator_id" on_change="operator_id_change(operator_id)"/>
                         </group>
                         <group>
-                            <field name="trans_route_id" domain="[('type', '=', 'delivery')]"/>
+                            <field name="trans_route_id" domain="[('type', 'in', ('delivery', 'auto_sale'))]"/>
                             <field name="date_planned"/>
                         </group>
                     </group>

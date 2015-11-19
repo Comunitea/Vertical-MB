@@ -20,7 +20,8 @@
 ##############################################################################
 
 from openerp import models, api, fields
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"
@@ -29,6 +30,7 @@ class purchase_order(models.Model):
                  "order_line.discount", "order_line.product_qty")
     @api.one
     def _get_amount_discounted(self):
+        _logger.debug("CMNT _get_amount_discounted")
         gross_amount = 0.0
         for line in self.order_line:
             gross_amount += line.product_qty * line.price_unit

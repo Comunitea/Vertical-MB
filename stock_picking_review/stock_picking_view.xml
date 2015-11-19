@@ -199,7 +199,7 @@
         </record>
 
 
-        <record id="midban_depot_stock.action_replanning_picking_route" model="ir.actions.act_window">
+        <!-- <record id="midban_depot_stock.action_replanning_picking_route" model="ir.actions.act_window">
             <field name="name">Replanning picking in routes</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
@@ -209,7 +209,7 @@
             <field name="search_view_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
             <field name="domain">[('picking_type_code', '=', 'outgoing'),'|' ,('state','not in',('draft','cancel','done')),('reviewed', '=' , False)]</field>
             <field name="context">{}</field>
-        </record>
+        </record> -->
 
 
         <menuitem id="menu_general_sale_review" name="Sale Reviews" sequence="5"
