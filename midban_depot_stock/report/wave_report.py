@@ -22,6 +22,9 @@
 from openerp import tools
 from openerp.osv import fields, osv
 from openerp import models, api
+import time
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class wave_report(osv.osv):
@@ -44,6 +47,8 @@ class wave_report(osv.osv):
 
     def _get_operation_ids(self, cr, uid, ids, field_names, args,
                            context=None):
+        _logger.debug("CMNT _get_operation_ids")
+        init_t = time.time()
         res = {}
         for item in self.browse(cr, uid, ids, context=context):
             process = True
@@ -72,15 +77,18 @@ class wave_report(osv.osv):
                                 if not op.to_process:
                                     process = False
                                 if not op.visited:
-                                    visited = False
+                                    ivisited = False
             res[item.id]={}
             res[item.id]['operation_ids'] = list(set(item_res))
             res[item.id]['to_process'] = process
             res[item.id]['visited'] = visited
+        _logger.debug("CMNT time _get_operation_ids %s" + time.time() - init_t)
         return res
 
     def _set_operation_ids(self, cr, uid, ids, field_name, values, args,
                            context=None):
+        _logger.debug("CMNT _set_operation_ids")
+        init_t = time.time()
         if values:
             pack_op_obj = self.pool['stock.pack.operation']
 
@@ -97,7 +105,7 @@ class wave_report(osv.osv):
                     pack_op_obj.write(cr, uid, [vals_id], vals)
                 elif vals_action == 2:
                     pack_op_obj.unlink(cr, uid, [vals_id])
-
+        _logger.debug("CMNT time _set_operation_ids %s" + time.time() - init_t)
         return True
 
     _columns = {
