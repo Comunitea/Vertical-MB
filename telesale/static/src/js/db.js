@@ -38,6 +38,7 @@ function openerp_ts_db(instance, module){
             this.route_by_id = {};
             this.route_name_id = {};
 
+            this.cache_sold_lines = {};
         },
 
         /* loads a record store from the database. returns default if nothing is found */
@@ -151,7 +152,6 @@ function openerp_ts_db(instance, module){
                     this.partner_ref_id[partner.ref] = partner.id;
                 }
                 var search_string = this._partner_search_string(partner);
-                // console.log(search_string);
                 this.partner_search_string += search_string
             }
         },

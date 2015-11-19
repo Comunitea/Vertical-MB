@@ -420,6 +420,8 @@
                 <tree string="Outgoing Pickings" editable="top" colors="red:route_detail_id == False" create="false" delete="false">
                     <field name="name"  readonly="True"/>
                     <field name="partner_id" readonly="True"/>
+                    <field name="partner_street" readonly="True"/>
+                    <field name="partner_city" readonly="True"/>
                     <field name="sale_id" readonly="True"/>
                     <field name="orig_planned_date" readonly="True"/>
                     <field name="order_note" readonly="True" string="Order Notes"/>

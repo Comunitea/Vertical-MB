@@ -460,6 +460,11 @@ class StockPicking(models.Model):
                                 readonly=True,
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
+    partner_street = fields2.Char('Address', related='partner_id.street',
+                                  readonly=True)
+    partner_city = fields2.Char('City', related='partner_id.city',
+                                 readonly=True)
+
 
     @api.multi
     def write(self, vals):
@@ -971,10 +976,10 @@ class stock_pack_operation(models.Model):
         pack in the first case and a exception will be raised in the second one
         """
 
-        if vals.get('lot_id', False):
-            for op in self:
-                if op.lot_id.id != vals['lot_id']:
-                    vals['package_id'] = False
+        # if vals.get('lot_id', False):
+        #     for op in self:
+        #         if op.lot_id.id != vals['lot_id']:
+        #             vals['package_id'] = False
         if vals.get('product_id', False):
             for op in self:
                 if op.product_id.id != vals['product_id'] and op.product_id:
@@ -1988,6 +1993,7 @@ class stock_quant(models.Model):
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
                                removal_strategy, context=None):
         """
+
         If not enought qty in the picking location, we search in storage \
         location.
         Then by overwriting action_assign of stock move, we will find the
@@ -2011,8 +2017,8 @@ class stock_quant(models.Model):
                     context=context)
 
                 return sup
-
-            order = 'removal_date, in_date, id'
+            #es necesario ordernar antes por package id que por
+            order = 'removal_date, package_id,  in_date, id'
 
             if not context.get('from_reserve', False):
                 # Search quants in picking location
@@ -2053,12 +2059,9 @@ class stock_quant(models.Model):
             domain = [('reservation_id', '=', False), ('qty', '>', 0),
                       ('id', 'not in', quants_in_res)]
             if check_global_qty:
-                print res
-                print check_global_qty
                 res += self._quants_get_order(cr, uid, location, product,
                                               check_global_qty, domain, order,
                                               context=context)
-                print res
             return res
         elif context.get('force_quants_location', False):
             res = context['force_quants_location']

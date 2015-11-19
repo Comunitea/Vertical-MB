@@ -141,7 +141,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
                         alert(alert_msg);
                         self.order_model.set('partner', "");
-                        self.order_model.set('partner_code', "");
+                        // self.order_model.set('partner_code', "");
                         self.refresh();
                     }
                     else{
@@ -170,15 +170,15 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         //       self.$('#date_invoice').focus();
                         //     }
                         // }
-                        self.refresh();
+                        // self.refresh();
+                        $('#vua-button').click();
                         if(self.order_model.get('orderLines').length == 0){
                             $('.add-line-button').click()
                         }
-                        else{
-                            $('#date_order').focus();
-                        }
-                        $('#vua-button').click();
-                        self.refresh();
+                        // else{
+                        //     $('#date_order').focus();
+                        // }
+                        // self.refresh();
                     }
                 });
             }
@@ -299,8 +299,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // my_shift = false
             // this.$('.col-discount').keydown(function(event){
             //      var keyCode = event.keyCode || event.which;
-            //      console.log("KKKKK")
-            //      console.log(keyCode)
             //      if (keyCode == 13){ //INTRO TAB
             //         //  Añadir nueva linea o cambiar el foco a la de abajo si la hubiera
             //          var selected_line = self.order.selected_orderline;
@@ -385,9 +383,15 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 if(product_obj.box_use_sale){
                     uos.push(product_obj.log_box_id[1]);
                 }
-                self.$('.col-product_uos').autocomplete({
-                    source: uos
-                });
+                // self.$('.col-product_uos').autocomplete({
+                //     source: uos
+                // });
+                for (unit in uos){
+                    self.$('.col-product_uos').append($('<option>',{
+                      value: uos[unit],
+                      text: uos[unit]
+                    }))
+                }
             }
            //autocomplete products and units from array of names
             var products_ref = this.ts_model.get('products_codes')
@@ -457,7 +461,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('product', product_obj.name || "");
                                 self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
                                 self.model.set('unit', self.model.ts_model.db.unit_by_id[result.value.product_uom].name);
-                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : '');
+                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : self.model.set('unit'));
                                 self.model.set('qty', 0);
                                 self.model.set('specific_discount', result.value.discount || 0);
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));
@@ -540,18 +544,18 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                    'box': 0.0}
             if(uos_id == product_obj.log_base_id[0]){
                 res['base'] = qty_uos
-                res['unit'] = my_round(res['base'] / product_obj.kg_un, 2)
-                res['box'] = my_round(res['unit'] / product_obj.un_ca, 2)
+                res['unit'] = my_round(res['base'] / product_obj.kg_un, 4)
+                res['box'] = my_round(res['unit'] / product_obj.un_ca, 4)
             }
             else if(uos_id == product_obj.log_unit_id[0]){
                 res['unit'] = qty_uos
-                res['box'] = my_round(res['unit'] / product_obj.un_ca, 2)
-                res['base'] = my_round(res['unit'] * product_obj.kg_un, 2)
+                res['box'] = my_round(res['unit'] / product_obj.un_ca, 4)
+                res['base'] = my_round(res['unit'] * product_obj.kg_un, 4)
             }
             else if(uos_id == product_obj.log_box_id[0]){
                 res['box'] = qty_uos
-                res['unit'] = my_round(res['box'] * product_obj.un_ca, 2)
-                res['base'] = my_round(res['unit'] * product_obj.kg_un, 2)
+                res['unit'] = my_round(res['box'] * product_obj.un_ca, 4)
+                res['base'] = my_round(res['unit'] * product_obj.kg_un, 4)
             }
             return res
         },
@@ -757,7 +761,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         else if(uos_id == product_obj.log_box_id[0]){
                             boxes = value
                         }
-                        this.model.set('boxes', my_round(boxes, 2));
+                        this.model.set('boxes', my_round(boxes, 4));
                       this.refresh('product_uos');
                       }
                     }
@@ -871,7 +875,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
         },
         refresh: function(focus_key){
-            console.log("Refresh Line")
             var price = this.model.get("pvp")
             var qty = this.model.get("qty")
             var disc = this.model.get("discount")
@@ -897,7 +900,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                 }
             }
-            console.log('.col-'+ focus_key)
             this.$('.col-'+ focus_key).focus()
             // this.trigger('order_line_refreshed');
         },
@@ -915,7 +917,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var client_name = this.ts_model.get('selectedOrder').get('partner')
             var client_id = this.ts_model.db.partner_name_id[client_name];
             if (!client_id){
-                alert(_t('No customer defined'));
+                // alert(_t('No customer defined'));
                 return false
             }
             else{
@@ -944,6 +946,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                })
 
             }
+            else{
+              alert(_t('You must select a customer'));
+            }
         },
         show_product: function(product_id){
             if (product_id){
@@ -959,13 +964,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         renderElement: function () {
             var self = this;
             this._super();
-
             // #  Habría que hacer unbind??
             this.$('.add-line-button').click(function(){
                 var order =  self.ts_model.get('selectedOrder')
                 var partner_id = self.ts_model.db.partner_name_id[order.get('partner')]
                 if (!partner_id){
                     alert(_t('Please select a customer before adding a order line'));
+                    $('#partner').focus();
                 }else{
                     self.ts_model.get('selectedOrder').addLine();
                     var added_line = self.ts_model.get('selectedOrder').getLastOrderline();
@@ -1026,13 +1031,26 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#promo-button').click(function(){
-                debugger;
-                current_order = self.ts_model.get('selectedOrder')
+                var current_order = self.ts_model.get('selectedOrder')
                 current_order.set('set_promotion', true)
-                $.when( self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder() )
+                self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder()
+                $.when( self.ts_model.ready2 )
                 .done(function(){
-                  alert(_t("Pending to develop"));
-                });
+                var loaded = self.ts_model.fetch('sale.order',
+                                                ['id', 'name'],
+                                                [
+                                                    ['chanel', '=', 'telesale']
+                                                ])
+                    .then(function(orders){
+                        if (orders[0]) {
+                        var my_id = orders[0].id
+                        $.when( self.load_order_from_server(my_id) )
+                        .done(function(){
+                        });
+
+                      }
+                    });
+                 });
             });
              this.$('#sust-button').click(function(){
                 var current_order = self.ts_model.get('selectedOrder')
@@ -1104,6 +1122,32 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         order_line_selected: function(){
         },
         order_line_refreshed: function(){
+        },
+        load_order_from_server: function(order_id){
+            var self=this;
+          //  if (!flag){
+              //  this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model}));
+            //}
+            this.open_order =  this.ts_model.get('selectedOrder')
+            var loaded = self.ts_model.fetch('sale.order',
+                                            ['supplier_id','contact_id','note','comercial','customer_comment','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
+                                            [
+                                                ['id', '=', order_id],
+                                                ['chanel', '=', 'telesale']
+                                            ])
+                .then(function(orders){
+                    var order = orders[0];
+                    self.order_fetch = order;
+                    return self.ts_model.fetch('sale.order.line',
+                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note', 'discount'],
+                                                [
+                                                    ['order_id', '=', order_id],
+                                                 ]);
+                }).then(function(order_lines){
+                        self.ts_model.build_order(self.order_fetch, self.open_order, order_lines); //build de order model
+                        self.ts_widget.new_order_screen.data_order_widget.refresh();
+                })
+            return loaded
         },
     });
 
@@ -1178,19 +1222,23 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       self.pvp_ref += line.get('pvp_ref') * line.get('qty');
                       self.base += line.get_price_without_tax('total');
                       self.iva += line.get_tax();
-                      self.total += line.get_price_with_tax();
+                      // self.total += line.get_price_with_tax();
+                      // self.margin += (line.get('pvp') - product_obj.standard_price) * line.get('qty');
                     // }
                     // else{
                     //     self.sum_fresh += line.get_price_without_tax('total');
                     // }
+
                 }
             }, this));
-            this.order_model.set('total_base', my_round(self.base, 2));
-            this.order_model.set('total_iva', my_round(self.iva, 2));
-            this.order_model.set('total', my_round(self.total, 2));
-            this.order_model.set('total_weight', my_round(self.weight, 2));
-            this.order_model.set('total_discount', my_round(self.discount, 2));
-            var discount_per = (0).toFixed(2) + "%";
+            self.total += my_round(self.base, 2) + my_round(self.iva, 2);
+            self.base = my_round(self.base, 2);
+            this.order_model.set('total_base',self.base);
+            this.order_model.set('total_iva', self.iva);
+            this.order_model.set('total', self.total);
+            this.order_model.set('total_weight', self.weight);
+            this.order_model.set('total_discount', self.discount);
+            var discount_per = (0) + "%";
             // if (self.pvp_ref != 0){
             //     var discount_num = (self.discount/self.pvp_ref) * 100 ;
             //     if (discount_num < 0)
@@ -1202,17 +1250,17 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
               // Le volvemos a sumamos el descuento porque la base viene sin el
                 var discount_num = (self.discount/(self.base + self.discount) ) * 100 ;
                 if (discount_num < 0)
-                    var discount_per = "+" + my_round( discount_num * (-1) , 2).toFixed(2) + "%";
+                    var discount_per = "+" +  discount_num * (-1)  + "%";
                 else
-                    var discount_per = my_round( discount_num , 2).toFixed(2) + "%";
+                    var discount_per =  discount_num.toFixed(2)  + "%";
             }
             this.order_model.set('total_discount_per', discount_per);
-            this.order_model.set('total_margin', my_round(self.margin, 2));
-            var margin_per = (0).toFixed(2) + "%";
+            this.order_model.set('total_margin', self.margin);
+            var margin_per = (0) + "%";
             var margin_per_num = 0
             if (self.base != 0) {
-                margin_per_num = my_round( ((self.base - self.sum_cost) / self.base) * 100 , 2)
-                margin_per = margin_per_num.toFixed(2) + "%"
+                margin_per_num = ((self.base - self.sum_cost) / self.base) * 100
+                margin_per = my_round(margin_per_num, 2).toFixed(2) + "%"
             }
             this.order_model.set('total_margin_per', margin_per);
             this.order_model.set('total_boxes', self.sum_box); //integer
@@ -1233,13 +1281,16 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         confirmCurrentOrder: function() {
             var currentOrder = this.order_model;
             currentOrder.set('action_button', 'confirm')
-            if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
-                alert(_t('You cant confirm an order which state is diferent than draft.'));
-            }
-            else if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+            // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
+            //     alert(_t('You cant confirm an order which state is diferent than draft.'));
+            // }
+            // else  if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+            if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
                     alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
             }
            else if ( currentOrder.check() ){
+                var partner_id = this.ts_model.db.partner_name_id[currentOrder.get('partner')]
+                delete this.ts_model.db.cache_sold_lines[partner_id];
                 this.ts_model.push_order(currentOrder.exportAsJSON());
             }
         },
@@ -1254,13 +1305,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
         },
         saveCurrentOrder: function() {
-            debugger;
             var currentOrder = this.order_model;
             currentOrder.set('action_button', 'save')
-            if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
-                alert(_t('You cant save as draft an order which state is diferent than draft.'));
-            }
-            else if ( currentOrder.check() ){
+            // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
+            //     alert(_t('You cant save as draft an order which state is diferent than draft.'));
+            // }
+            // else if ( currentOrder.check() ){
+            if ( currentOrder.check() ){
                 this.ts_model.push_order(currentOrder.exportAsJSON());
             }
         },
@@ -1444,17 +1495,30 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         renderElement: function() {
             var self=this;
             this._super();
-            this.$('#add-line').off("click").click(_.bind(this.add_line_to_order, this));
+            // this.$('#add-line').off("click").click(_.bind(this.add_line_to_order, this));
+            this.$('#add-line').off("click").click(_.bind(this.add_product_to_order, this));
 
         },
-        add_line_to_order: function() {
+        // add_line_to_order: function() {
+        //     var self=this;
+        //     self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line], true)
+        //     //in get_last_order_lines we unbid add event of currentOrderLines to render faster
+        //     self.ts_widget.new_order_screen.order_widget.bind_orderline_events();
+        //     self.ts_widget.new_order_screen.order_widget.renderElement()
+        //     self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
+        //
+        // },
+        add_product_to_order: function() {
+            // this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model, contact_name: 'aaa' }));
             var self=this;
-            self.ts_model.get('selectedOrder').add_lines_to_current_order([self.sold_line], true)
-            //in get_last_order_lines we unbid add event of currentOrderLines to render faster
-            self.ts_widget.new_order_screen.order_widget.bind_orderline_events();
-            self.ts_widget.new_order_screen.order_widget.renderElement()
-            self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
-
+            var product_id = this.sold_line.product_id[0]
+            if (product_id){
+                var current_order= this.ts_model.get('selectedOrder')
+                current_order.addProductLine(product_id);
+                // this.ts_widget.screen_selector.set_current_screen('new_order');
+                // $('button#button_no').click();
+                // current_order.selectLine(current_order.get('orderLines').last());
+            }
         },
     });
 
@@ -1477,6 +1541,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 this.line_widgets[i].destroy();
             }
             this.line_widgets = [];
+            // sold lines tiene ahora objetos con info de producto
             var sold_lines = this.ts_model.get("sold_lines").models || []
 
             var $lines_content = this.$('.soldproductlines');

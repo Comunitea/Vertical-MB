@@ -11,21 +11,21 @@
 
     <t t-name="Product-Reserved-Widget">
             <div class="product-reserved-search">
-                <div class="col-xs-4 fullheight centerinside">
+                <div class="col-xs-5 fullheight centerinside">
                     <div class="centerthis">
                         <label for="customer">Customer:</label>
-                        <input type="text" id="input-customer" name="customer" class="tab1"/>
+                        <input type="text" id="input-customer" name="customer" class="tab1 customer"/>
                     </div>
                 </div>
 
-                <div class="col-xs-4 fullheight centerinside">
+                <div class="col-xs-5 fullheight centerinside">
                     <div class="centerthis">
                         <label for="customer">Product:</label>
-                        <input type="text" id="input-product" name="customer"/>
+                        <input type="text" id="input-product" name="customer" class="customer"/>
                     </div>
                 </div>
 
-                <div class="col-xs-4 fullheight centerinside">
+                <div class="col-xs-2 fullheight centerinside">
                     <div class="centerthis">
                         <button id="search-reserved">SEARCH</button>
                     </div>

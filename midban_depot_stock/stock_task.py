@@ -113,6 +113,7 @@ class stock_task(osv.Model):
         for pick in pick_objs:
             if pick.state not in ['done', 'draft', 'cancel']:
                 pick.approve_pack_operations2(self.id)
+
         if self.type == 'picking':
             # self.wave_id.done()
             self.wave_id.state = wave_final_state
