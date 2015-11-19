@@ -30,6 +30,8 @@ import operator
 import functools
 from openerp.tools.float_utils import float_round
 import math
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class temp_type(osv.Model):
@@ -304,6 +306,7 @@ products do not require units for validation'),
 
     def write(self, cr, uid, ids, vals, context=None):
         ''' We don't need to no control change of uom if not validated product'''
+        _logger.debug("CMNT WRITE del template")
         if isinstance(ids, (int, long)):
             ids = [ids]
 
@@ -505,15 +508,18 @@ class ProductTemplate(models.Model):
     log_base_id = fields2.Many2one('product.uom', 'Logistic Base',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic base',
-                                   default=_get_kg_unit)
+                                   #default=_get_kg_unit
+                                    )
     log_box_id = fields2.Many2one('product.uom', 'Logistic Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic box',
-                                  default=_get_box_unit)
+                                  #default=_get_box_unit
+                                   )
     log_unit_id = fields2.Many2one('product.uom', 'Logistic Unit',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic unit',
-                                   default=_get_unit_unit)
+                                   #default=_get_unit_unit
+                                    )
 
     base_use_sale = fields2.Boolean('Can be used on sales',
                                     help='Allows you to sale in the defined'
@@ -551,7 +557,7 @@ class ProductTemplate(models.Model):
                                     help='Price per gross weight in a sale')
 
     @api.one
-    @api.depends('list_price', 'standard_price', 'weight')
+    #@api.depends('list_price', 'standard_price', 'weight')
     def _get_buysale_euro_weight(self):
         """
         Calculate the price per gross weight in a purchase or a sale
@@ -576,6 +582,7 @@ class ProductTemplate(models.Model):
         # in product.template to variants. We need to show default_code2 in no
         # active products
         """
+        _logger.debug("CMNT WRITE del template")
         for product in self:
             log_base_id = vals['log_base_id'] if 'log_base_id' in vals \
                           else product.log_base_id.id
@@ -723,6 +730,7 @@ class ProductTemplate(models.Model):
         """
         Calc name str
         """
+        _logger.debug("CMNT _get_is_var_coeff")
         self.is_var_coeff = self.var_coeff_un or self.var_coeff_ca
 
 
@@ -945,6 +953,7 @@ class product_product(models.Model):
     @api.multi
     def _get_unit_ratios(self, unit, supplier_id):
         uom_id = self.uom_id.id
+        unit_obj = self.env['product.uom'].browse(unit)
         res = 1
         if unit == uom_id:
             return res
@@ -980,9 +989,11 @@ class product_product(models.Model):
         if uom_id == supp.log_box_id.id:
             res_uom = 1 * (kg_un * (un_ca or 1.0))
         if res == 0 or res_uom == 0:
+            fail_unit = unit_obj.name if res == 0 else self.uom_id.name
+            supp_or_sale = _('sale') if res == 0 else _('supplier')
             raise except_orm(_('Error'), _('The product unit of measure %s is \
-                             not related with any logistic \
-                             unit for product %s' % (self.uom_id.name,
+                             not related with any %s logistic \
+                             unit for product %s' % (fail_unit, supp_or_sale,
                                                      self.name)))
 
         return res * res_uom
@@ -1135,15 +1146,18 @@ class ProductSupplierinfo(models.Model):
     log_base_id = fields2.Many2one('product.uom', 'Logistic Base',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic base',
-                                   default=_get_kg_unit)
+                                   #default=_get_kg_unit
+                                    )
     log_box_id = fields2.Many2one('product.uom', 'Logistic Box',
                                   help='The defined unit of measure will be'
                                   ' related with the logistic unit',
-                                  default=_get_box_unit)
+                                  #default=_get_box_unit
+                                   )
     log_unit_id = fields2.Many2one('product.uom', 'Logistic Unit',
                                    help='The defined unit of measure will be'
                                    ' related with the logistic box',
-                                   default=_get_unit_unit)
+                                   #default=_get_unit_unit
+                                    )
 
     base_use_purchase = fields2.Boolean('Can be used on purchases',
                                         help='Allows you to buy in the defined'
@@ -1184,6 +1198,7 @@ class ProductSupplierinfo(models.Model):
         This method compares unit of measure and logistic unit of measure when
         a product is modified.
         """
+        _logger.debug("CMNT WRITE del spplier info")
         for product in self:
             log_base_id = vals['log_base_id'] if 'log_base_id' in vals \
                           else product.log_base_id.id
@@ -1285,6 +1300,7 @@ class ProductSupplierinfo(models.Model):
         """
         Calc name str
         """
+        _logger.debug("CMNT _get_is_var_coeff sup")
         for supp_prod in self:
             supp_prod.is_var_coeff = supp_prod.var_coeff_un or \
                 supp_prod.var_coeff_ca

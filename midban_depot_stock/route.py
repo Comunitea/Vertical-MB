@@ -377,6 +377,7 @@ class route_detail(models.Model):
         """
         Calc name str
         """
+        print "_get_detail_name_str"
         for detail in self:
             detail.detail_name_str = detail.route_id.code + " " + detail.date
 
@@ -394,7 +395,8 @@ class route_detail(models.Model):
     call_ids = fields.One2many('crm.phonecall', 'detail_id', 'Call list')
     comercial_id = fields.Many2one('res.users', 'Comercial',
                                     related='route_id.comercial_id',
-                                    readonly=True)
+                                    readonly=True,
+                                    store=True)
     delivery_man_id = fields.Many2one('res.users', 'Delivery Man')
     route_type = fields.Selection([('auto_sale', 'Auto Sale'),
                                    ('comercial', 'Comercial'),

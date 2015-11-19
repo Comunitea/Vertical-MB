@@ -75,12 +75,13 @@ class stock_task(osv.Model):
 
     @api.one
     def finish_partial_task(self):
+
         if self.type != 'picking':
             pick_ids = list(set([x.picking_id.id for x in self.operation_ids]))
         else:
             pick_ids = list(set([x.id for x in self.wave_id.picking_ids]))
 
-        # When we call butom after the returned view of the wizard
+        # When we call button after the returned view of the wizard
         # 'active_model': 'stock.task' and we get an error with assert
         # in do_transfer method.
         # Changed it allways to stock.picking
@@ -106,7 +107,8 @@ class stock_task(osv.Model):
                     if op.to_revised and op.to_process:
                         final_state = 'to_revised'
                         wave_final_state = 'in_progress'
-                filter_ids.append(pick.id)
+                if not to_revised:
+                    filter_ids.append(pick.id)
 
             pick_objs = pick_t.browse(filter_ids)
 
@@ -158,7 +160,7 @@ class stock_task(osv.Model):
                         picking.write({'operator_id': False,
                                        'machine_id': False,
                                        'wave_id': False})
-                        picking.do_unreserve()
+                        # picking.do_unreserve()
                     task.wave_id.refresh()
                     task.wave_id.cancel_picking()
                 task.operation_ids.write(op_vals)

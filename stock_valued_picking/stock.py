@@ -20,7 +20,9 @@
 ##############################################################################
 from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
-
+import time
+import logging
+_logger = logging.getLogger(__name__)
 
 class stock_picking(models.Model):
 
@@ -28,27 +30,28 @@ class stock_picking(models.Model):
 
     amount_untaxed = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='Untaxed Amount', readonly=True, store=True)
+        string='Untaxed Amount', readonly=True, store=False)
     amount_tax = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='Taxes', readonly=True, store=True)
+        string='Taxes', readonly=True, store=False)
     amount_total = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='Total', readonly=True, store=True)
+        string='Total', readonly=True, store=False)
     amount_gross = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='amount gross', readonly=True, store=True)
+        string='amount gross', readonly=True, store=False)
     amount_discounted = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='Sale price', readonly=True, store=True)
+        string='Sale price', readonly=True, store=False)
     external_note = fields.Text(
         ' External Notes')
 
     @api.multi
-    @api.depends('move_lines', 'partner_id')
+    #@api.depends('move_lines.price_subtotal')
     def _amount_all(self):
+        init_t = time.time()
         for picking in self:
-            if not picking.sale_id:
+            if not picking.sale_id or not picking.picking_type_code in ['outgoing', 'incoming']:
                 picking.amount_tax = picking.amount_untaxed = \
                     picking.amount_gross = 0.0
                 continue
@@ -91,7 +94,7 @@ class stock_picking(models.Model):
             picking.amount_total = picking.amount_untaxed + picking.amount_tax
             picking.amount_discounted = picking.amount_gross - \
                 picking.amount_untaxed
-
+        _logger.debug("CMNT _amount_all %s", time.time() - init_t)
 
 class stock_move(models.Model):
 
@@ -100,32 +103,30 @@ class stock_move(models.Model):
     price_subtotal = fields.Float(
         compute='_get_subtotal', string="Subtotal",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     order_price_unit = fields.Float(
         compute='_get_subtotal', string="Price unit",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     cost_subtotal = fields.Float(
         compute='_get_subtotal', string="Cost subtotal",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     margin = fields.Float(
         compute='_get_subtotal', string="Margin",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     percent_margin = fields.Float(
         compute='_get_subtotal', string="% margin",
         digits=dp.get_precision('Sale Price'), readonly=True,
-        store=True)
+        store=False)
     discount = fields.Float(compute='_get_subtotal', string="Disc. (%)",
-                            digits=(4, 2), readonly=True, store=True)
+                            digits=(4, 2), readonly=True, store=False)
 
     @api.multi
-    @api.depends('product_id', 'product_uom_qty',
-                 'procurement_id.sale_line_id',
-                 'procurement_id.sale_line_id.discount',
-                 'procurement_id.sale_line_id.price_unit')
+    #@api.depends('product_uom_qty')
     def _get_subtotal(self):
+        init_t = time.time()
         for move in self:
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
@@ -162,3 +163,4 @@ class stock_move(models.Model):
                         (move.margin / move.price_subtotal) * 100
                 else:
                     move.percent_margin = 0
+        _logger.debug("CMNT _get_subtotal %s", time.time() - init_t)

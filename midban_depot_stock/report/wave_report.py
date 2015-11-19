@@ -24,7 +24,7 @@ from openerp.osv import fields, osv
 from openerp import models, api
 
 
-class sale_report(osv.osv):
+class wave_report(osv.osv):
     _name = "wave.report"
     _description = "Group picks of waves"
     _auto = False
@@ -207,7 +207,6 @@ class sale_report(osv.osv):
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
-                     operation.uos_id,
                      wave.id,
                      customer_id,
                      pack_id,
@@ -250,7 +249,6 @@ class sale_report(osv.osv):
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,
-                     operation.uos_id,
                      wave.id,
                      customer_id,
                      pack_id,

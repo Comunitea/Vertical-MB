@@ -20,6 +20,8 @@
 ##############################################################################
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime
+import logging
+_logger = logging.getLogger(__name__)
 
 class product_template(models.Model):
 
@@ -37,6 +39,7 @@ class product_template(models.Model):
 
     @api.multi
     def write(self, vals):
+        _logger.debug("CMNT WRITE del template")
         if vals.get('max_discount', False):
             vals['last_edit'] = datetime.now()
         return super(product_template, self).write(vals)

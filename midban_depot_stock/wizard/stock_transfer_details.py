@@ -61,17 +61,20 @@ class stock_transfer_details(models.TransientModel):
     @api.multi
     def do_detailed_transfer(self):
         # Revisamos para apuntar en todas las operaciones las Uos
-        for item in self.item_ids:
-            item.review_packop()
+
+        ### CMNT se comenta par arendimiento REVISAR
+        # for item in self.item_ids:
+        #     item.review_packop()
         res = super(stock_transfer_details, self).do_detailed_transfer()
 
         # Calculate the operations for the next chained picking
-        related_pick = self.picking_id.move_lines and\
-                       self.picking_id.move_lines[0].move_dest_id and\
-                       self.picking_id.move_lines[0].move_dest_id.picking_id
-        if related_pick:
-            related_pick.do_prepare_partial()
-            related_pick.write({'midban_operations': True})
+        # related_pick = self.picking_id.move_lines and\
+        #                self.picking_id.move_lines[0].move_dest_id and\
+        #                self.picking_id.move_lines[0].move_dest_id.picking_id
+        # if related_pick:
+        #     #### CMNT REVISAR QUITAR  DE AQUI PARA AGILIZAR PISTOLA
+        #     related_pick.do_prepare_partial()
+        #     related_pick.write({'midban_operations': True})
         if self.picking_id.picking_type_code == 'incoming':
             return {
                 'name': _('Print Tags'),
