@@ -173,7 +173,10 @@ class sale_order(osv.Model):
                                         type' % route_name))
                 selected_record = False
                 customer_item = self.pool.get('customer.list')
-                selected_record = customer_item.search(cr, uid, [('customer_id', '=', order.partner_id.id)], context)[0]
+                selected_record = customer_item.search(cr, uid,
+                                   [('customer_id', '=', order.partner_id.id),
+                                    ('detail_id', '=', order.route_detail_id.id)],
+                                    context)
                 # for record in order.route_detail_id.customer_ids:
                 #     if record.customer_id.id == order.partner_id.id:
                 #         selected_record = record
