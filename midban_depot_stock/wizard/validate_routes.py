@@ -31,7 +31,6 @@ class ValidateRoutes(models.TransientModel):
 
     @api.multi
     def validate(self):
-        import ipdb; ipdb.set_trace()
         init_t = time.time()
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
@@ -109,18 +108,23 @@ class ValidateRoutes(models.TransientModel):
             #                      _('Picking %s wmust be outgoing type and  \
             #                        related with a sale' % pick.name))
 
-            if not pick.route_detail_id:
-                raise except_orm(_('Error'),
-                                 _('Picking %s without has not route detatl \
-                                   assigned' % pick.name))
+            # if not pick.route_detail_id:
+            #     raise except_orm(_('Error'),
+            #                      _('Picking %s without has not route detatl \
+            #                        assigned' % pick.name))
             if pick.group_id:
                 domain = [('state', 'in', ['confirmed', 'assigned']),
                           ('group_id', '=', pick.group_id.id),
                           ('picking_type_id', '=', wh.pick_type_id.id)]
                 pick_objs = self.env['stock.picking'].search(domain)
-                pick_objs.write({'route_detail_id': pick.route_detail_id.id})
-                for p in pick_objs:
-                    res += p
+
+            # Autosale outs havent group id
+            elif pick.move_lines and pick.move_lines[0].move_orig_ids:
+                pick_objs = pick.move_lines[0].move_orig_ids[0].picking_id
+            pick_objs.write({'route_detail_id': pick.route_detail_id.id})
+            for p in pick_objs:
+                res += p
+
         return res
 
     def _split_pick_by_cameras(self, pick):

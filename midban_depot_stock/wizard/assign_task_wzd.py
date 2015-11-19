@@ -857,7 +857,6 @@ class assign_task_wzd(osv.TransientModel):
         DUPLICADO Y MODIFICADO PARA BUSCAR ALBARANES VALIDADOS CON RUTA Y POR
         CÁMARA
         """
-
         if context is None:
             context = {}
         pick_obj = self.pool.get('stock.picking')
