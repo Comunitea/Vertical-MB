@@ -82,7 +82,7 @@ class wave_report(osv.osv):
             res[item.id]['operation_ids'] = list(set(item_res))
             res[item.id]['to_process'] = process
             res[item.id]['visited'] = visited
-        _logger.debug("CMNT time _get_operation_ids %s" + time.time() - init_t)
+        _logger.debug("CMNT time _get_operation_ids %s", time.time() - init_t)
         return res
 
     def _set_operation_ids(self, cr, uid, ids, field_name, values, args,
@@ -105,7 +105,7 @@ class wave_report(osv.osv):
                     pack_op_obj.write(cr, uid, [vals_id], vals)
                 elif vals_action == 2:
                     pack_op_obj.unlink(cr, uid, [vals_id])
-        _logger.debug("CMNT time _set_operation_ids %s" + time.time() - init_t)
+        _logger.debug("CMNT time _set_operation_ids %s" , time.time() - init_t)
         return True
 
     _columns = {
