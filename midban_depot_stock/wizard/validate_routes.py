@@ -31,6 +31,7 @@ class ValidateRoutes(models.TransientModel):
 
     @api.multi
     def validate(self):
+        import ipdb; ipdb.set_trace()
         init_t = time.time()
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
@@ -103,10 +104,10 @@ class ValidateRoutes(models.TransientModel):
         wh = self.env['stock.warehouse'].search([])[0]
         res = self.env['stock.picking']
         for pick in out_pickings:
-            if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
-                raise except_orm(_('Error'),
-                                 _('Picking %s wmust be outgoing type and  \
-                                   related with a sale' % pick.name))
+            # if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
+            #     raise except_orm(_('Error'),
+            #                      _('Picking %s wmust be outgoing type and  \
+            #                        related with a sale' % pick.name))
 
             if not pick.route_detail_id:
                 raise except_orm(_('Error'),
