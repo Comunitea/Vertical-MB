@@ -953,6 +953,7 @@ class product_product(models.Model):
     @api.multi
     def _get_unit_ratios(self, unit, supplier_id):
         uom_id = self.uom_id.id
+        unit_obj = self.env['product.uom'].browse(unit)
         res = 1
         if unit == uom_id:
             return res
@@ -988,9 +989,11 @@ class product_product(models.Model):
         if uom_id == supp.log_box_id.id:
             res_uom = 1 * (kg_un * (un_ca or 1.0))
         if res == 0 or res_uom == 0:
+            fail_unit = unit_obj.name if res == 0 else self.uom_id.name
+            supp_or_sale = _('sale') if res == 0 else _('supplier')
             raise except_orm(_('Error'), _('The product unit of measure %s is \
-                             not related with any logistic \
-                             unit for product %s' % (self.uom_id.name,
+                             not related with any %s logistic \
+                             unit for product %s' % (fail_unit, supp_or_sale,
                                                      self.name)))
 
         return res * res_uom

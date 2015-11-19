@@ -160,7 +160,7 @@ class stock_task(osv.Model):
                         picking.write({'operator_id': False,
                                        'machine_id': False,
                                        'wave_id': False})
-                        picking.do_unreserve()
+                        # picking.do_unreserve()
                     task.wave_id.refresh()
                     task.wave_id.cancel_picking()
                 task.operation_ids.write(op_vals)

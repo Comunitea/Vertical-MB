@@ -428,7 +428,7 @@
                     <field name="min_date" readonly="True" string="Delivery Date" invisible="1"/>
                     <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
-                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
+                    <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
                     <field name="validated"/>
                     <field name="state" readonly="True" invisible="1"/>
@@ -475,8 +475,7 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_picking_replanning_route_tree"/>
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/>
-            <!--<field name="domain">[('picking_type_code', '=', 'outgoing'), ('state','not in',('draft','cancel', 'done'))]</field>-->
-            <field name="domain"> [('picking_type_code', '=', 'outgoing'),('state','in',['waiting',]),('validated', '=' , False)] </field>
+            <field name="domain">[('picking_type_code', '=', 'outgoing'),('state','not in',('draft','cancel','done')),('reviewed', '=' , False)]</field>
             <field name="context">{}</field>
         </record>
 

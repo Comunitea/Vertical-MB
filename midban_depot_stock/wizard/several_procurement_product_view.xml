@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="several_procurement_product_view" model="ir.ui.view">
+            <field name="name">several.procurement.product.view</field>
+            <field name="model">several.procurement.product</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Procurement Products">
+                    <sheet>
+                        <group>
+                            <field name="warehouse_id"/>
+                        </group>
+                        <group string="Products To Procure">
+                            <field name="item_product_ids" nolabel="1" colspan="4">
+                                <tree string="Tags" editable="top">
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="uom_id"/>
+                                    <field name="date_planned"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+
+                    <footer>
+                        <button name="make_procurements" string="Ask New Products" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+
+                 </form>
+            </field>
+        </record>
+
+        <record id="action_several_procurement_product" model="ir.actions.act_window">
+            <field name="name">Procurement Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">several.procurement.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem action="action_several_procurement_product" id="menu_several_procurement_product"  name="Procurement Products" parent="stock.menu_stock_product" sequence="600"/>
+
+
+
+    </data>
+</openerp>
