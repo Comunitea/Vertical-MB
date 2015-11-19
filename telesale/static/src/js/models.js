@@ -385,10 +385,9 @@ function openerp_ts_models(instance, module){
             var day = date.getDate();
             var month = date.getMonth() + 1;
             var year = date.getFullYear();
-            var hours = date.getHours();
+            var hours = date.getUTCHours();
             var minutes = date.getMinutes();
             var seconds = date.getSeconds();
-            debugger;
             if (month < 10) month = "0" + month;
             if (day < 10) day = "0" + day;
             if (hours < 10) hours = "0" + hours;
