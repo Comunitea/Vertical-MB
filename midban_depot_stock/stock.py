@@ -521,11 +521,22 @@ class StockPackage(models.Model):
         self.packed_lot_id = lot_id
         _logger.debug("CMNT _get_package_lot_id %s", time.time() - init_t)
 
+    @api.one
+    def _get_unreserved_qty(self):
+        unreserved_qty = 0.0
+        for quant in self.quant_ids:
+            if not quant.reservation_id:
+                unreserved_qty += quant.qty
+        self.unreserved_qty = unreserved_qty
+
     packed_lot_id = fields2.Many2one('stock.production.lot',
                                      string="Packed Lot",
                                      compute=_get_package_lot_id,
                                      readonly=True,
                                      store=True)
+    unreserved_qty = fields2.Float('Unreserved Qty',
+                                   compute=_get_unreserved_qty,
+                                   readonly=True)
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

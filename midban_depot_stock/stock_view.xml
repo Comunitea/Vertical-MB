@@ -116,6 +116,7 @@
                     </group>
                     <group string="Pack Quantities">
                         <field name="packed_qty"/>
+                        <field name="unreserved_qty"/>
                         <field name="uom_id"/>
                         <field name="uos_qty"/>
                         <field name="uos_id"/>
