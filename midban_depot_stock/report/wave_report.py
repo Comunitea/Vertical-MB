@@ -24,7 +24,7 @@ from openerp.osv import fields, osv
 from openerp import models, api
 
 
-class sale_report(osv.osv):
+class wave_report(osv.osv):
     _name = "wave.report"
     _description = "Group picks of waves"
     _auto = False
