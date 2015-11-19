@@ -314,7 +314,7 @@ class stock_picking(osv.Model):
                     }
                     pending_ops_values.append(op_vals)
             else:
-                pending_ops.append += op
+                pending_ops += op
                 op_vals = {
                     'product_id': op.product_id.id,
                     'product_uom_id': op.product_uom_id.id,
