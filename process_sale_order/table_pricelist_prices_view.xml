@@ -64,18 +64,17 @@
         </record>
         <!-- Menu variable pricelist under Sales/Configuration/Pricelists menu -->
         <menuitem id="menu_table_pricelist_prices"
-                  action="action_table_pricelist_prices" 
-                  name=" Table pricelist prices" 
+                  action="action_table_pricelist_prices"
+                  name=" Table pricelist prices"
                   parent="product.menu_product_pricelist_main"
                   groups="product.group_sale_pricelist"
                   sequence="100"/>
         <!-- Menu variable pricelist under Purchases/Configuration/Pricelists menu -->
         <menuitem id="menu_table_pricelist_prices_purchase"
-                  action="action_table_pricelist_prices" 
-                  name="Table pricelist prices" 
+                  action="action_table_pricelist_prices"
+                  name="Table pricelist prices"
                   parent="purchase.menu_purchase_config_pricelist"
                   groups="product.group_sale_pricelist"
                   sequence="100"/>
     </data>
 </openerp>
-
