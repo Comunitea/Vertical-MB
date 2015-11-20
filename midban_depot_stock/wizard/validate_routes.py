@@ -25,6 +25,7 @@ import time
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class ValidateRoutes(models.TransientModel):
 
     _name = 'validate.routes'
@@ -38,10 +39,10 @@ class ValidateRoutes(models.TransientModel):
         pick_pickings = self._get_pickings_from_outs(out_pickings)
         unasigned_picks_lst = []
         for pick in pick_pickings:
-            # if not pick.route_detail_id:
-            #     raise except_orm(_('Error'),
-            #                      _('Picking %s without has not route detail \
-            #                        assigned' % pick.name))
+            if not pick.route_detail_id:
+                raise except_orm(_('Error'),
+                                 _('Picking %s without has not route detail \
+                                    assigned' % pick.name))
 
             # Put unassigned moves inside a new picking
             unassigned_pick = False
@@ -63,8 +64,9 @@ class ValidateRoutes(models.TransientModel):
                         unasigned_picks_lst.append(unassigned_pick)
                         _logger.debug("CMNT create unassigned pick: %s",
                                       time.time() - assing_unp)
-                    unassigned_moves.append(move.id)
-                    #move.picking_id = unassigned_pick.id
+                    unassigned_moves.\
+                        extend(self._separate_unavailable_qty(move))
+                    # move.picking_id = unassigned_pick.id
             if len(unassigned_moves):
                 assing_un = time.time()
                 moves = self.env['stock.move'].browse(unassigned_moves).\
@@ -99,14 +101,48 @@ class ValidateRoutes(models.TransientModel):
         _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
         return
 
+    def _separate_unavailable_qty(self, move):
+        unassigned_moves = []
+
+        # Separar la parte disponible de la que no.
+        # la no disponible va a un albarán aparte
+        if move.partially_available:
+            aval_qty = move.reserved_availability
+            unaval_qty = move.product_uom_qty - aval_qty
+            prod = move.product_id
+            uos_id = move.product_uos.id
+            unaval_uos_qty = prod.uom_qty_to_uos_qty(unaval_qty,
+                                                     uos_id)
+            copy_vals = {
+                'product_uom_qty': unaval_qty,
+                'product_uos_qty': unaval_uos_qty,
+                'move_dest_id': move.move_dest_id.id
+            }
+            new_move = move.copy(copy_vals)
+            new_move.action_confirm()
+            unassigned_moves.append(new_move.id)
+            move.product_uom_qty = aval_qty
+
+
+            aval_uos_qty = prod.uom_qty_to_uos_qty(aval_qty,
+                                                   uos_id)
+            move.write({'product_uom_qty': aval_qty,
+                        'product_uos_qty': aval_uos_qty})
+            move.action_assign()
+        else:
+            unassigned_moves.append(move.id)
+        return unassigned_moves
+
     def _get_pickings_from_outs(self, out_pickings):
         wh = self.env['stock.warehouse'].search([])[0]
         res = self.env['stock.picking']
         for pick in out_pickings:
-            # if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
-            #     raise except_orm(_('Error'),
-            #                      _('Picking %s wmust be outgoing type and  \
-            #                        related with a sale' % pick.name))
+            #  if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
+            if not pick.picking_type_code == 'outgoing':
+                raise except_orm(_('Error'),
+                                 _('Picking %s must be outgoing type and  \
+                                    related with a sale or \
+                                    autosale' % pick.name))
 
             # if not pick.route_detail_id:
             #     raise except_orm(_('Error'),
@@ -144,14 +180,14 @@ class ValidateRoutes(models.TransientModel):
                 ops_by_cam[camera_loc] = self.env['stock.pack.operation']
             ops_by_cam[camera_loc] += op
             for x in op.linked_move_operation_ids:
-                if x.move_id not in  moves_by_cam[camera_loc]:
+                if x.move_id not in moves_by_cam[camera_loc]:
                     moves_by_cam[camera_loc] += x.move_id
 
         first = True
         for cam in moves_by_cam:
             if first:  # Skip first moves, we get the original picking
                 first = False
-                pick.camera_id = cam
+                pick.camera_id = cam  # OPTIMIZAR??
                 splited_picks += pick
                 continue
             copy_values = {'move_lines': [],
@@ -160,9 +196,9 @@ class ValidateRoutes(models.TransientModel):
                            'group_id': pick.group_id.id}
             new_pick = pick.copy(copy_values)
             for move in moves_by_cam[cam]:
-                move.picking_id = new_pick  # Assign move to new pick
+                move.picking_id = new_pick  # OPTIMIZAR?Assign move to new pick
             for op in ops_by_cam[cam]:
-                op.picking_id = new_pick
+                op.picking_id = new_pick  # OPTIMIZAR??
             new_pick.camera_id = cam  # Write the camera
             splited_picks += new_pick
         return splited_picks
