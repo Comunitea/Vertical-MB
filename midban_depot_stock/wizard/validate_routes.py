@@ -25,6 +25,7 @@ import time
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class ValidateRoutes(models.TransientModel):
 
     _name = 'validate.routes'
@@ -63,8 +64,9 @@ class ValidateRoutes(models.TransientModel):
                         unasigned_picks_lst.append(unassigned_pick)
                         _logger.debug("CMNT create unassigned pick: %s",
                                       time.time() - assing_unp)
-                    unassigned_moves.append(move.id)
-                    #move.picking_id = unassigned_pick.id
+                    unassigned_moves.\
+                        extend(self._separate_unavailable_qty(move))
+                    # move.picking_id = unassigned_pick.id
             if len(unassigned_moves):
                 assing_un = time.time()
                 moves = self.env['stock.move'].browse(unassigned_moves).\
@@ -98,6 +100,38 @@ class ValidateRoutes(models.TransientModel):
             return action
         _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
         return
+
+    def _separate_unavailable_qty(self, move):
+        unassigned_moves = []
+
+        # Separar la parte disponible de la que no.
+        # la no disponible va a un albarán aparte
+        if move.partially_available:
+            aval_qty = move.reserved_availability
+            unaval_qty = move.product_uom_qty - aval_qty
+            prod = move.product_id
+            uos_id = move.product_uos.id
+            unaval_uos_qty = prod.uom_qty_to_uos_qty(unaval_qty,
+                                                     uos_id)
+            copy_vals = {
+                'product_uom_qty': unaval_qty,
+                'product_uos_qty': unaval_uos_qty,
+                'move_dest_id': move.move_dest_id.id
+            }
+            new_move = move.copy(copy_vals)
+            new_move.action_confirm()
+            unassigned_moves.append(new_move.id)
+            move.product_uom_qty = aval_qty
+
+
+            aval_uos_qty = prod.uom_qty_to_uos_qty(aval_qty,
+                                                   uos_id)
+            move.write({'product_uom_qty': aval_qty,
+                        'product_uos_qty': aval_uos_qty})
+            move.action_assign()
+        else:
+            unassigned_moves.append(move.id)
+        return unassigned_moves
 
     def _get_pickings_from_outs(self, out_pickings):
         wh = self.env['stock.warehouse'].search([])[0]

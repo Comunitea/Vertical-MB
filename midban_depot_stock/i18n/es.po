@@ -3481,7 +3481,7 @@ msgstr "Vagón"
 #. module: midban_depot_stock
 #: view:validate.routes:midban_depot_stock.validate_routes_form
 msgid "Validate"
-msgstr "Validate"
+msgstr "Validar"
 
 #. module: midban_depot_stock
 #: view:validate.routes:midban_depot_stock.validate_routes_form
