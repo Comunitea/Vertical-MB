@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-30 15:51+0000\n"
-"PO-Revision-Date: 2015-09-30 15:51+0000\n"
+"POT-Creation-Date: 2015-11-12 18:20+0000\n"
+"PO-Revision-Date: 2015-11-12 18:20+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -112,6 +112,11 @@ msgstr "Código"
 #: selection:products.supplier,product_state:0
 msgid "Comercial validation pending"
 msgstr "Validación comercial pendiente"
+
+#. module: purchase_preorder
+#: view:website:purchase_preorder.replenishement_purchase_order
+msgid "Composition"
+msgstr "Composición"
 
 #. module: purchase_preorder
 #: view:print.purchase.report.wzd:purchase_preorder.print_purchase_report_view_form
@@ -224,7 +229,8 @@ msgid "End Date:"
 msgstr "Fecha fin:"
 
 #. module: purchase_preorder
-#: code:addons/purchase_preorder/report/purchase_order_parser.py:122
+#: code:addons/purchase_preorder/report/purchase_order_parser.py:147
+#: code:addons/purchase_preorder/report/purchase_order_parser.py:218
 #, python-format
 msgid "Error"
 msgstr "Error"
@@ -296,11 +302,6 @@ msgstr "En entrada"
 #: field:products.supplier,incoming_qty:0
 msgid "Incoming qty."
 msgstr "Cant. entradas."
-
-#. module: purchase_preorder
-#: model:ir.model,name:purchase_preorder.model_product_supplierinfo
-msgid "Information about a product supplier"
-msgstr "Información de un proveedor de producto"
 
 #. module: purchase_preorder
 #: field:products.supplier,jan_consu_cur:0
@@ -466,7 +467,7 @@ msgid "Net net cost"
 msgstr "Coste neto neto"
 
 #. module: purchase_preorder
-#: code:addons/purchase_preorder/report/purchase_order_parser.py:123
+#: code:addons/purchase_preorder/report/purchase_order_parser.py:148
 #, python-format
 msgid "No products founded for the search domain"
 msgstr "No se encontraron productos con el criterio de busqueda actual"
@@ -517,7 +518,7 @@ msgstr "Palets"
 #. module: purchase_preorder
 #: view:website:purchase_preorder.replenishement_purchase_order
 msgid "Period Sales"
-msgstr "Period Sales"
+msgstr "Período Ventas"
 
 #. module: purchase_preorder
 #: field:purchase.order,preorder_id:0
@@ -857,11 +858,6 @@ msgid "Unit or Kg"
 msgstr "Unidad o Kg"
 
 #. module: purchase_preorder
-#: view:website:purchase_preorder.replenishement_purchase_order
-msgid "Units"
-msgstr "Unidades"
-
-#. module: purchase_preorder
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_tree
 #: view:products.supplier:purchase_preorder.product_supplier_preorder_tree_full
 #: view:purchase.preorder:purchase_preorder.purchase_preorder_form
@@ -885,5 +881,12 @@ msgstr "Stock virtual conservativo"
 
 #. module: purchase_preorder
 #: view:website:purchase_preorder.replenishement_purchase_order
-msgid "Warehouse Replenishement List"
-msgstr "Listado de reaprovisionamiento almacenes"
+msgid "Warehouse Replenishement List:"
+msgstr "Lista Reaprovisionamiento de Almacén:"
+
+#. module: purchase_preorder
+#: code:addons/purchase_preorder/report/purchase_order_parser.py:219
+#, python-format
+msgid "You must print it from a wizard"
+msgstr "You must print it from a wizard"
+

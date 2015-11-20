@@ -7,24 +7,36 @@
             <!-- <button class="probe">Call list content</button> -->
             <div class="filter-calls">
 
-                    <div class="col-xs-4 fullheight centerinside">
+                    <div class="col-xs-3 fullheight centerinside">
                       <div class="centerthis">
                         <label for="date_call">Date:</label>
                          <input type="date" id="date-call-search" name="date_call" t-att-value="widget.ts_model.getCurrentDateStr()" class="noclass tab1"/>
                       </div>
                     </div>
-                    <div class="col-xs-4 fullheight centerinside">
+                    <div class="col-xs-3 fullheight centerinside">
                       <div class="centerthis">
                         <label for="state">State:</label>
                         <select id="state-select">
+                            <option value="any">Any</option>
                             <option selected="selected" value="open">Pending</option>
                             <option value="done">Done</option>
                             <option value="cancel">Cancelled</option>
-                            <option value="any">Any</option>
                         </select>
                       </div>
                     </div>
-                    <div class="col-xs-4 fullheight centerinside">
+                    <div class="col-xs-3 fullheight centerinside">
+                      <div class="centerthis">
+                        <label for="date_call">Route:</label>
+                         <!-- <input type="text" id="route-search" name="route_call" class="noclass tab1"/> -->
+                        <select id="route_search">
+                          <option t-att-value="0">Any</option>
+                          <t t-foreach="widget.ts_model.get('routes_names')" t-as="code">
+                            <option t-att-value="widget.ts_model.db.route_name_id[code]"><span t-esc="code"/></option>
+                          </t>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-xs-3 fullheight centerinside">
                       <div class="centerthis">
                         <button id="create-call">Create</button>
                       </div>
@@ -48,6 +60,7 @@
                         <th class="call-head-comment">Comment</th>
                         <th class="call-head-duration">Duration</th>
                         <th class="call-head-state">State</th>
+                        <th class="call-head-route">Route</th>
 <!--                         <th class="call-head-edit">Edit</th> -->
                         <th class="call-head-do_call">Do call</th>
                     </thead>
@@ -102,6 +115,9 @@
                     </t>
                 </span>
             </td>
+            <td class="call-cell-route">
+              <span class="call-cell"><t t-esc="widget.call.route_id[1]"/></span>
+            </td>
             <!-- <td class="call-cell-edit">
                 <button class="save-call">Edit</button>
             </td> -->
@@ -124,6 +140,7 @@
                 </t>
 
             </td>
+
         </tr>
     </t>
 

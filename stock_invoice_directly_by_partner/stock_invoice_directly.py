@@ -28,9 +28,9 @@ class res_partner(osv.Model):
     _inherit = 'res.partner'
 
     _columns = {
-        'invoice_method': fields.selection([('a', 'invoice directly'),
-                                            ('b', 'unknow2'),
-                                            ('c', 'unknow3')]),
+        'invoice_method': fields.selection([('a', 'Directamente'),
+                                            ('b', 'Quincenal'),
+                                            ('c', 'Mensual')]),
     }
 
 class stock_picking(osv.osv):

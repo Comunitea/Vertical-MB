@@ -39,7 +39,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
                     var order = orders[0];
                     self.order_fetch = order;
                     return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note'],
+                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note', 'discount'],
                                                 [
                                                     ['order_id', '=', order_id],
                                                  ]);
@@ -136,6 +136,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
             var partner_id = this.ts_model.db.partner_name_id[partner_name];
             if (!partner_id){
                 alert(_t("Customer " + "'"+partner_name+"'" + " does not exist."));
+                this.$('#input-customer').focus();
             }
             else{
                 $.when(this.load_partner_orders(partner_id,date_start,date_end))

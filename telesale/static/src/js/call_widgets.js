@@ -53,11 +53,11 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
 
                 model.call("read",[call_id, ["state"]]).then(function(res){
                     if (res.state == "calling"){  // call already in course
-                        alert(_t("This call is in course by other person"));
+                        alert(_t("This call is in course by another person"));
                     }
                     else if(res.state == "open"){  // set call on course
                         var model = new instance.web.Model("crm.phonecall");
-                        var date_init = self.ts_model.parse_str_date_to_utc(self.ts_model.getCurrentFullDateStr())  //set dat in UTC from write in correct GMT0 openerp
+                        var date_init = self.ts_model.parse_str_date_to_utc(self.ts_model.getUTCDateStr())  //set dat in UTC from write in correct GMT0 openerp
                         //set date to calculate duration from server
                         model.call("write",[[res.id], {'state': "calling", 'date': date_init}],{context:new instance.web.CompoundContext()}).then(function(result){
                             self.ts_model.set('call_id', call_id);  //set id of current call
@@ -197,7 +197,7 @@ function openerp_ts_call_widgets(instance, module){ //module is instance.point_o
                     self.ts_widget.screen_selector.close_popup('add_call_popup');
 
                 })
-
+            this.$('#close-finish-call-popup').off('click').click();
         },
     });
 

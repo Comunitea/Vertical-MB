@@ -116,6 +116,7 @@
                     </group>
                     <group string="Pack Quantities">
                         <field name="packed_qty"/>
+                        <field name="unreserved_qty"/>
                         <field name="uom_id"/>
                         <field name="uos_qty"/>
                         <field name="uos_id"/>
@@ -420,13 +421,15 @@
                 <tree string="Outgoing Pickings" editable="top" colors="red:route_detail_id == False" create="false" delete="false">
                     <field name="name"  readonly="True"/>
                     <field name="partner_id" readonly="True"/>
+                    <field name="partner_street" readonly="True"/>
+                    <field name="partner_city" readonly="True"/>
                     <field name="sale_id" readonly="True"/>
                     <field name="orig_planned_date" readonly="True"/>
                     <field name="order_note" readonly="True" string="Order Notes"/>
-                    <field name="min_date" readonly="True" string="Delivery Date"/>
+                    <field name="min_date" readonly="True" string="Delivery Date" invisible="1"/>
                     <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
-                    <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
+                    <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
                     <field name="validated"/>
                     <field name="state" readonly="True" invisible="1"/>
@@ -473,8 +476,7 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_picking_replanning_route_tree"/>
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/>
-            <!--<field name="domain">[('picking_type_code', '=', 'outgoing'), ('state','not in',('draft','cancel', 'done'))]</field>-->
-            <field name="domain">[('picking_type_code', '=', 'outgoing'), ('state','in',('assigned','partially_available'))]</field>
+            <field name="domain">[('picking_type_code', '=', 'outgoing'),('state','not in',('draft','cancel','done')),('validated', '=' , False)]</field>
             <field name="context">{}</field>
         </record>
 

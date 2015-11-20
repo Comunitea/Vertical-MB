@@ -2,14 +2,14 @@
 <openerp>
     <data>
         <template id="replenishement_purchase_order">
-            <t t-call="report.html_container">
-              <t t-call="report.external_layout">
+            <!-- <t t-call="report.html_container"> -->
+              <!-- <t t-call="report.external_layout"> -->
                 <t t-foreach="docs" t-as="o">
 
                   <div class="page">
 
-                      <h1 align="center">Warehouse Replenishement List</h1>
-                      <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3>
+                      <h3 align="center">Warehouse Replenishement List: <span t-esc="meta_info['print_date']"/></h3>
+                      <!-- <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3> -->
                       <h3>Filter by:</h3>
                       <div>
                            <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>
@@ -40,18 +40,18 @@
                             <tr>
                                 <th class="text-center">Code</th>
                                 <th class="text-center">Name</th>
-                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
+                                <th class="text-center">Composition</th>
                                 <!-- <th class="text-center">Units</th>
                                 <th class="text-center">Base</th> -->
-                                <th class="text-center">Units</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Units</th>
+                                <th class="text-center">Composition</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Units</th>
+                                <th class="text-center">Composition</th>
                                 <th class="text-center">Base</th>
-                                <th class="text-center">Units</th>
+                                <th class="text-center">Composition</th>
                                 <th class="text-center">Base</th>
+                                <th class="text-center">Composition</th>
                                 <th class="text-center">Palets</th>
                                 <th class="text-center">Mantles</th>
                             </tr>
@@ -81,8 +81,8 @@
                         </tbody>
                   </table>
                   </div>
-                </t>
-            </t>
+                <!-- </t> -->
+            <!-- </t> -->
           </t>
 
         </template>

@@ -105,6 +105,7 @@ class ConfirmProcessDelivery(models.TransientModel):
                                                  'partially_available'])
         if not pickings_to_deliver:
             return
+        res= pickings_to_deliver.do_prepare_partial()
         res = pickings_to_deliver.do_transfer()
         self.create_invoice(pickings_to_deliver)
         self.rendered = True

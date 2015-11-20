@@ -23,7 +23,8 @@ import time
 from openerp.tools.translate import _
 from openerp import workflow, exceptions
 from openerp import models, fields as fields2, api
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class supplier_transport(osv.Model):
     """ Supplier transports. In suppliers view you can select it.
@@ -369,6 +370,7 @@ class resPartner(models.Model):
         """
         Get the maximum distance between two service days
         """
+        _logger.debug("CMNT _compute_distance")
         def distance(x, y):
             """
             Returns distance between 2 week days. Monday = 1 Sunday = 7

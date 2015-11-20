@@ -25,7 +25,9 @@ import openerp.addons.decimal_precision as dp
 from lxml import etree
 from openerp.exceptions import ValidationError
 from datetime import datetime, date
-
+import time
+import logging
+_logger = logging.getLogger(__name__)
 
 class stock_picking(osv.Model):
     _inherit = "stock.picking"
@@ -84,6 +86,7 @@ class stock_picking(osv.Model):
                                    help='Picking wave associated to this '
                                         'picking', copy=False)}
 
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
                         submenu=False):
@@ -126,11 +129,20 @@ class stock_picking(osv.Model):
         Overwrited to add update the uos_qty of package_id and
         result_package_id
         """
+        _logger.debug("CMNT do_transfer")
+        init_t = time.time()
         self._regularize_move_quantities()
+        _logger.debug("CMNT tiempo de _regularize_move_quantities: %s",
+                      time.time() - init_t)
+        init_dt = time.time()
+        _logger.debug("CMNT comienza do_transfer heredado")
         res = super(stock_picking, self).do_transfer()
+        _logger.debug("CMNT tiempo de do_transfers: %s",
+                      time.time() - init_dt)
         # Calculate the uos_qty of package when remove qty from it
         for pick in self:
             for op in pick.pack_operation_ids:
+                init_pr = time.time()
                 if (op.package_id and op.product_id and op.uos_id) or \
                         (op.package_id and not op.product_id and op.uos_id
                             and op.result_package_id):
@@ -145,7 +157,7 @@ class stock_picking(osv.Model):
                             get_sale_unit_conversions(op.uos_qty, op.uos_id.id)
                         pack_uos_qty = conv_dic[pack_log_unit]
                     op.package_id.uos_qty -= pack_uos_qty
-
+                    #Si hay paquete destino
                     if op.result_package_id:
                         # Calcular uos_id equivalente
                         if op.uos_id.id == op.result_package_id.uos_id.id:
@@ -159,10 +171,15 @@ class stock_picking(osv.Model):
                                                           op.uos_id.id)
                             pack_uos_qty = conv_dic[pack_log_unit]
                         op.result_package_id.uos_qty += pack_uos_qty
+                _logger.debug("CMNT tiempo de rev de cada operacion: %s",
+                      time.time() - init_pr)
+        _logger.debug("CMNT tiempo total _do_transfers: %s",
+                      time.time() - init_t)
         return res
 
     @api.one
     def _regularize_move_quantities(self):
+        _logger.debug("CMNT _regularize_move_quantities")
         self.recompute_remaining_qty(self)
         operations = []
         for move in self.move_lines:
@@ -266,42 +283,39 @@ class stock_picking(osv.Model):
         assign the new operation to any task, if the operations were assigned
         to a task then we assign the task in the copied operation
         """
-        t_transfer = self.env['stock.transfer_details']
-        t_item = self.env['stock.transfer_details_items']
-        ctx = self._context.copy()
-        ctx.update({'active_model': 'stock.picking'})
-        transfer_obj = t_transfer.with_context(ctx).\
-            create({'picking_id': self.id})
-        transfer_obj = t_transfer.create({'picking_id': self.id})
-        transfer_obj.item_ids.unlink()
-        transfer_obj.packop_ids.unlink()
-        pending_ops_vals = []
-        something_done = False
-        for op in self.pack_operation_ids:
-            if op.to_process and op.task_id and op.task_id.id == task_id:
-                item = {
-                    'packop_id': op.id,
-                    'product_id': op.product_id.id,
-                    'product_uom_id': op.product_uom_id.id,
-                    'quantity': op.product_qty,
-                    'package_id': op.package_id.id,
-                    'lot_id': op.lot_id.id,
-                    'sourceloc_id': op.location_id.id,
-                    'destinationloc_id': op.location_dest_id.id,
-                    'result_package_id': op.result_package_id.id,
-                    'date': op.date,
-                    'owner_id': op.owner_id.id,
-                    'transfer_id': transfer_obj.id,
-                    'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty}
-                t_item.create(item)
-                something_done = True
-            else:
-                assigned_task_id = False  # If marked to not do deassign it
-                if op.to_process and op.task_id:  # Conservate the task
-                    assigned_task_id = op.task_id.id
+        init_t = time.time()
+        _logger.debug("CMNT approve_pack_operations2")
 
-                new_ops_vals = {
+        pending_ops = self.env['stock.pack.operation']
+        pending_ops_values = []
+        something_done = False
+        init_pi = time.time()
+        for op in self.pack_operation_ids:
+            if not op.to_revised:
+                if op.to_process and op.task_id and op.task_id.id == task_id:
+                    something_done = True
+                else:
+                    pending_ops += op
+                    op_vals = {
+                        'product_id': op.product_id.id,
+                        'product_uom_id': op.product_uom_id.id,
+                        'product_qty': op.product_qty,
+                        'package_id': op.package_id.id,
+                        'lot_id': op.lot_id.id,
+                        'location_id': op.location_id.id,
+                        'location_dest_id': op.location_dest_id.id,
+                        'result_package_id': op.result_package_id.id,
+                        'date': op.date,
+                        'owner_id': op.owner_id.id,
+                        'uos_id': op.uos_id.id,
+                        'uos_qty': op.uos_qty,
+                        'to_revised': op.to_revised,
+                        'to_process': op.to_process
+                    }
+                    pending_ops_values.append(op_vals)
+            else:
+                pending_ops += op
+                op_vals = {
                     'product_id': op.product_id.id,
                     'product_uom_id': op.product_uom_id.id,
                     'product_qty': op.product_qty,
@@ -310,27 +324,37 @@ class stock_picking(osv.Model):
                     'location_id': op.location_id.id,
                     'location_dest_id': op.location_dest_id.id,
                     'result_package_id': op.result_package_id.id,
+                    'date': op.date,
                     'owner_id': op.owner_id.id,
-                    'task_id': assigned_task_id,
-                    'to_process': True,
-                    'old_id': op.id,
                     'uos_id': op.uos_id.id,
-                    'uos_qty': op.uos_qty}
-                # To remember the original operation when we scan a barcode
-                # in warehouse_scan_gun_module, because maybe the assigned
-                # operation were deleted by doinf a partial picking.
-                pending_ops_vals.append(new_ops_vals)
+                    'uos_qty': op.uos_qty,
+                    'to_revised': op.to_revised,
+                    'to_process': op.to_process
+                }
+                pending_ops_values.append(op_vals)
+
+        pending_ops.unlink()
+
+        _logger.debug("CMNT tiempo prepara items : %s", time.time() - init_pi)
         if something_done:
-            transfer_obj.do_detailed_transfer()
+            init_ddt = time.time()
+            self.do_transfer()
+            _logger.debug("CMNT tiempo do_transfer: %s", time.time() - init_ddt)
+
             new_pick_obj = self.search([('backorder_id', '=', self.id)])
-            if new_pick_obj and pending_ops_vals:
-                for vals in pending_ops_vals:
-                    vals['picking_id'] = new_pick_obj.id
-                    new_pick_obj.write({'pack_operation_ids': [(0, 0, vals)]})
-        else:
-            for op in self.pack_operation_ids:
-                op.task_id = False  # Write to be able to assign later
-                op.to_process = True  # Write to be to process by default
+            init_bo = time.time()
+            if new_pick_obj and pending_ops_values:
+                for value in pending_ops_values:
+                    value['picking_id'] = new_pick_obj.id
+                    self.env['stock.pack.operation'].with_context(no_recompute=True).create(value)
+            _logger.debug("CMNT tiempo reasigna ops en BO: %s", time.time() - init_bo)
+        # else:
+        #     #REVISAR NO LO TENGO CLARO
+        #     for op in self.pack_operation_ids:
+        #         if not op.to_revised:
+        #             op.task_id = False  # Write to be able to assign later
+        #         #op.to_process = True  # Write to be to process by default,
+        _logger.debug("CMNT tiempo total approve_pack_operations2 : %s", time.time() - init_t)
         return
 
     @api.onchange('route_detail_id')
@@ -358,8 +382,9 @@ class stock_picking(osv.Model):
         """
         Overwrited in order to calculate the correct uos_qty in the operation.
         """
+        init_t = time.time()
         res = super(stock_picking, self).do_prepare_partial()
-
+        _logger.debug("CMNT Tiempo original do_prepare: %s ", time.time() - init_t)
         for picking in self:
             supplier_id = 0
             if picking.picking_type_code == 'incoming' and picking.purchase_id:
@@ -369,58 +394,31 @@ class stock_picking(osv.Model):
                 if move.product_uos_qty and move.product_uos:
                     move_uos_qty = move.product_uos_qty
                     move_uos_id = move.product_uos.id
+                    init_op = time.time()
                     operations = [x.operation_id for x in
                                   move.linked_move_operation_ids]
                     operations = list(set(operations))
+                    _logger.debug("CMNT recuperacion opes: %s", time.time() - init_op)
                     for op in operations:
                         prod = op.operation_product_id
                         var_weight = False
                         if supplier_id:
                             supp = prod.get_product_supp_record(supplier_id)
-                            if supp.is_var_coeff:
-                                var_weight = True
-                        else:
-                            if prod.is_var_coeff:
-                                var_weight = True
-                        op_uom_qty = op.packed_qty
                         op_uos_qty = 0
-                        if op.package_id and not op.product_id:
-                            op_uos_qty = op.package_id.uos_qty
-                        # Variable coeff products
-                        elif op.product_id and var_weight:
-                            moves = list(set([x.move_id for x in
-                                              op.linked_move_operation_ids]))
-                            if len(operations) == 1 and len(moves) == 1:
-                                    op_uos_qty = move_uos_qty
-                            else:
-                                op_coeff = 0
-                                for mv in moves:
-                                    op_coeff = \
-                                        mv.product_uom_qty / mv.product_uos_qty
-                                    apr_uos_qty = op_uom_qty / op_coeff
-
-                                    # dec_part = apr_uos_qty - int(apr_uos_qty)
-                                    # if dec_part > 0.95:
-                                    #     apr_uos_qty = \
-                                    #         int(math.ceil(apr_uos_qty))
-                                    # else:
-                                    #     apr_uos_qty = int(apr_uos_qty)
-
-                                    if apr_uos_qty <= move_uos_qty:
-                                        op_uos_qty += apr_uos_qty
-                                        move_uos_qty -= apr_uos_qty
-                                    else:
-                                        op_uos_qty += move_uos_qty
-                                        break
-                        # Fixed coeff product
-                        elif op.product_id and not var_weight:
-                            op_uos_qty = \
-                                prod.uom_qty_to_uos_qty(op.product_qty,
-                                                        move_uos_id,
-                                                        supplier_id)
+                        init_op = time.time()
+                        op_uos_qty = \
+                            op.operation_product_id.uom_qty_to_uos_qty(op.product_qty,
+                                                    move_uos_id,
+                                                    supplier_id)
+                        _logger.debug("CMNT cinv unid: %s", time.time() - init_op)
                         # Write the calculed uos qty in operation
-                        op.uos_qty = op_uos_qty
-                        op.uos_id = move_uos_id
+                        init_save = time.time()
+                        op.with_context(no_recompute=True).write(
+                            {'uos_qty': op_uos_qty, 'uos_id':move_uos_id })
+                        _logger.debug("CMNT Tiempo save op: %s", time.time() - init_save)
+                        #op.uos_qty = op_uos_qty
+                        #op.uos_id = move_uos_id
+        _logger.debug("CMNT total do_prepare: %s", time.time() - init_t)
         return res
 
 
@@ -437,66 +435,76 @@ class StockPicking(models.Model):
                                 readonly=True,
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
+    partner_street = fields2.Char('Address', related='partner_id.street',
+                                  readonly=True)
+    partner_city = fields2.Char('City', related='partner_id.city',
+                                 readonly=True)
 
-    @api.multi
-    def write(self, vals):
-        """
-        Overwrited in order to write in the picking of type pick the detail
-        route if the pick is not done.
-        """
-        for pick in self:
-            route_detail_id = False
-            if 'route_detail_id' in vals:
-                route_detail_id = vals['route_detail_id']
-            elif pick.route_detail_id:
-                route_detail_id = pick.route_detail_id.id
-
-            if 'validated' in vals:
-                validated = vals['validated']
-            else:
-                validated = pick.validated
-
-            if route_detail_id:
-                t_detail = self.env['route.detail']
-                detail_obj = t_detail.browse(route_detail_id)
-                detail_date = detail_obj.date + " 19:00:00"
-                # pick.min_date = detail_date
-                # Write the route detail date in the min_date of picking
-                vals['min_date'] = detail_date
-
-            # If outgoing picking write the route and the min_date in the
-            # related picking of picking type, also the validated check
-
-            if pick.sale_id and pick.group_id and \
-                    route_detail_id and \
-                    pick.picking_type_code == 'outgoing':
-                domain = [('id', '!=', pick.id),
-                          ('group_id', '=', pick.group_id.id),
-                          ('picking_type_code', '!=', 'outgoing')]
-                pick_objs = self.search(domain)
-                for pick2 in pick_objs:
-                    if pick2.state != 'done':
-                        vals2 = {'route_detail_id': route_detail_id,
-                                 'min_date': detail_date,
-                                 'validated': validated}
-                        pick2.write(vals2)
-        res = super(stock_picking, self).write(vals)
-        return res
+    # Se movió la funcionalidad al asistente de validacion de ruta
+    # @api.multi
+    # def write(self, vals):
+    #     """
+    #     Overwrited in order to write in the picking of type pick the detail
+    #     route if the pick is not done.
+    #     """
+    #     init_t = time.time()
+    #     _logger.debug("CMNT WRITE DE PICKING")
+    #     for pick in self:
+    #
+    #         route_detail_id = False
+    #         if 'route_detail_id' in vals:
+    #             route_detail_id = vals['route_detail_id']
+    #         if 'validated' in vals:
+    #             validated = vals['validated']
+    #         if route_detail_id:
+    #             t_detail = self.env['route.detail']
+    #             detail_obj = t_detail.browse(route_detail_id)
+    #             detail_date = detail_obj.date + " 19:00:00"
+    #             # pick.min_date = detail_date
+    #             # Write the route detail date in the min_date of picking
+    #             vals['min_date'] = detail_date
+    #
+    #         # If outgoing picking write the route and the min_date in the
+    #         # related picking of picking type, also the validated check
+    #
+    #         if pick.sale_id and pick.group_id and \
+    #                 route_detail_id and \
+    #                 pick.picking_type_code == 'outgoing':
+    #             domain = [('id', '!=', pick.id),
+    #                       ('group_id', '=', pick.group_id.id),
+    #                       ('picking_type_code', '!=', 'outgoing'),
+    #                       ('state', '!=', 'done')]
+    #             pick_objs = self.search(domain)
+    #             if pick_objs:
+    #                 vals2 = {'route_detail_id': route_detail_id,
+    #                              'min_date': detail_date,
+    #                              'validated': validated}
+    #                 pick_objs.write(vals2)
+    #     res = super(stock_picking, self).write(vals)
+    #     print "tiempo write picking : " + str(time.time() - init_t)
+    #     return res
 
     @api.one
     @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
     def _get_weight(self):
+        init_t = time.time()
+        _logger.debug("CMNT _get_weight (picking)")
+        if self.picking_type_id.code != 'outgoing':
+            self.total_weight = 0
+            _logger.debug("CMNT _get_weight (picking) fast %s", time.time() - init_t)
+            return
         total_weight = 0
         for move in self.move_lines:
             total_weight += move.product_id.weight * move.product_uom_qty
         self.total_weight = total_weight
+        _logger.debug("CMNT _get_weight (picking) %s", time.time() - init_t)
 
 
 class StockPackage(models.Model):
     _inherit = "stock.quant.package"
     _order = "id desc"
 
-    @api.depends('quant_ids', 'quant_ids.lot_id')
+    @api.depends('quant_ids.lot_id')
     @api.one
     def _get_package_lot_id(self):
         """
@@ -504,18 +512,31 @@ class StockPackage(models.Model):
         We not check childrens packages. # TODO??
         We assume no exist pack of diferents lots, in that case return False.
         """
+        init_t = time.time()
         lot_id = False
         for quant in self.quant_ids:
             lot_id = quant.lot_id and quant.lot_id.id or False
             if lot_id != quant.lot_id.id:  # Founded diferents lots in pack
                 lot_id = False
         self.packed_lot_id = lot_id
+        _logger.debug("CMNT _get_package_lot_id %s", time.time() - init_t)
+
+    @api.one
+    def _get_unreserved_qty(self):
+        unreserved_qty = 0.0
+        for quant in self.quant_ids:
+            if not quant.reservation_id:
+                unreserved_qty += quant.qty
+        self.unreserved_qty = unreserved_qty
 
     packed_lot_id = fields2.Many2one('stock.production.lot',
                                      string="Packed Lot",
                                      compute=_get_package_lot_id,
                                      readonly=True,
                                      store=True)
+    unreserved_qty = fields2.Float('Unreserved Qty',
+                                   compute=_get_unreserved_qty,
+                                   readonly=True)
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
@@ -653,6 +674,7 @@ class stock_package(models.Model):
         """
         Returns a dictionary containing the quants for each product
         """
+        _logger.debug("CMNT get_product_quants")
         if context is None:
             context = {}
         res = {}
@@ -694,6 +716,7 @@ class stock_package(models.Model):
         pack inside the second one and the firsrt is removes because is empty.
         """
         res = super(stock_package, self).write(vals)
+        _logger.debug("CMNT WRITE DE package")
         for pack in self:
             if vals.get('parent_id', False):
                 parent_lots = []
@@ -715,6 +738,7 @@ class stock_pack_operation(models.Model):
     _inherit = "stock.pack.operation"
 
     def _get_real_product(self, cr, uid, ids, name, args, context=None):
+        _logger.debug("CMNT _get_real_product operation")
         if context is None:
             context = {}
         res = {}
@@ -740,6 +764,7 @@ class stock_pack_operation(models.Model):
         We suppose to return a integer number, so we round up the number of
         mantles.
         """
+        _logger.debug("CMNT _get_num_mantles operation")
         # se supone que se pasa desde log_unit a mantos, pero no vale
         # hay que cambiar para tener en cuenta desde cualquiera
         if context is None:
@@ -763,6 +788,7 @@ class stock_pack_operation(models.Model):
         """
         Get the qty inside the package or the qty going to a new package
         """
+        _logger.debug("CMNT _get_qty_package operation")
         if context is None:
             context = {}
         res = {}
@@ -810,7 +836,7 @@ class stock_pack_operation(models.Model):
                                     }
 
     _defaults = {
-        'to_process': True,
+        'to_process': False,
         'do_onchange': True,
         'do_pack': 'do_pack'}
 
@@ -842,7 +868,7 @@ class stock_pack_operation(models.Model):
         """
         Search for quants of param product in his storage locations
         """
-
+        _logger.debug("CMNT _older_refernce_in_storage operation")
         res = False
         t_quant = self.env['stock.quant']
         pick_loc = product.picking_location_id
@@ -862,6 +888,7 @@ class stock_pack_operation(models.Model):
         """
         Return True whe picking is available and no older reference in storage
         """
+        _logger.debug("CMNT _is_picking_loc_available operation")
         res = False
 
         if not product.picking_location_id:
@@ -879,6 +906,7 @@ class stock_pack_operation(models.Model):
 
     @api.one
     def assign_location(self):
+        _logger.debug("CMNT assign_location operation")
         if self.package_id.is_multiproduct:
             multipack_location = self.env['stock.location'].search(
                 [('multipack_location', '=', True)])
@@ -948,10 +976,12 @@ class stock_pack_operation(models.Model):
         pack in the first case and a exception will be raised in the second one
         """
 
-        if vals.get('lot_id', False):
-            for op in self:
-                if op.lot_id.id != vals['lot_id']:
-                    vals['package_id'] = False
+        # if vals.get('lot_id', False):
+        #     for op in self:
+        #         if op.lot_id.id != vals['lot_id']:
+        #             vals['package_id'] = False
+        init_t = time.time()
+        _logger.debug("CMNT WRITE PACK operation")
         if vals.get('product_id', False):
             for op in self:
                 if op.product_id.id != vals['product_id'] and op.product_id:
@@ -966,37 +996,35 @@ class stock_pack_operation(models.Model):
 
     @api.model
     def get_result_package_id(self,vals):
-
-        op = self
+        init_t = time.time()
         vals['result_package_id'] = vals.get('result_package_id', False)
 
-        if not vals['result_package_id']==False:
+        if not vals['result_package_id']== False:
             return vals
 
-        if not (vals.get('location_dest_id', False) and vals.get('package_id', False))== False:
-            pack = False
-            pack_type = vals.get('do_pack', op.do_pack)
-            product_id = vals.get('product_id', op.product_id or False)
-            lot_id = op.lot_id.id if op.lot_id.id else \
-                (op.packed_lot_id.id if op.packed_lot_id.id else False)
-            if not lot_id:
-                lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
+        if not (vals.get('location_dest_id', False) and vals.get('package_id', False)) == False:
+            _logger.debug("CMNT comprobando en _get_result_package_id")
+            pack_in_destination = False
+            pack_type = vals.get('do_pack', self.do_pack)
+            product_id = vals.get('product_id', self.product_id or False)
+            lot_id = self.lot_id and self.lot_id.id or False
+            #if not lot_id:
+            #    lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
             if lot_id:
                 new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
-                pack = new_loc.get_package_of_lot(lot_id)
+                pack_in_destination = new_loc.get_package_of_lot(lot_id)
             #miramos que hace por según haya o no = lote en destino y
             #'pack_type' a do_pack o no_pack (empaquete o no)
 
-
             if not product_id:
                 if pack_type == "do_pack":
-                    if pack:
-                        vals['result_package_id'] = pack.id
+                    if pack_in_destination:
+                        vals['result_package_id'] = pack_in_destination.id
 
             if product_id:
                 if pack_type == "do_pack":
-                    if pack:
-                        vals['result_package_id'] = pack.id
+                    if pack_in_destination:
+                        vals['result_package_id'] = pack_in_destination.id
                     else:
                         new_package_id = self.env['stock.quant.package'].create({})
                         vals['result_package_id'] = new_package_id.id
@@ -1004,6 +1032,7 @@ class stock_pack_operation(models.Model):
                 if pack_type == "no_pack":
                         new_package_id = self.env['stock.quant.package'].create({})
                         vals['result_package_id'] = new_package_id.id
+        _logger.debug("CMNT tiempo en get_result_package_id: %s - %s ", time.time() - init_t, vals)
         return vals
 
     @api.model
@@ -1013,10 +1042,10 @@ class stock_pack_operation(models.Model):
         operation lot we add the qty to this pack by setting it in
         result package id
         """
+        init_t = time.time()
+        _logger.debug("CMNT CREATE PACK operation")
         values_with_result_package_id = self.get_result_package_id(vals)
         op = super(stock_pack_operation, self).create(values_with_result_package_id)
-
-
         # lot_id = op.lot_id.id if op.lot_id.id else \
         #     (op.packed_lot_id.id if op.packed_lot_id.id else False)
         # if lot_id:
@@ -1027,6 +1056,7 @@ class stock_pack_operation(models.Model):
         #         pack = op.location_dest_id.get_package_of_lot(lot_id)
         #         pack_to_create_id = vals.get('result_package_id', False)
         #         op.result_package_id = pack.id if pack else pack_to_create_id
+        _logger.debug("CMNT CREATE PACK operation TIEMPO: %s", time.time() - init_t)
         return op
 
     @api.one
@@ -1125,6 +1155,7 @@ class stock_location(models.Model):
     _inherit = 'stock.location'
 
     def _get_max_per_filled(self, cr, uid, context=None):
+        _logger.debug("CMNT _get_max_per_filled")
         if context is None:
             context = {}
         t_config = self.pool.get('ir.config_parameter')
@@ -1133,6 +1164,7 @@ class stock_location(models.Model):
         return float(param_value)
 
     def _get_location_volume(self, cr, uid, ids, name, args, context=None):
+        _logger.debug("CMNT _get_location_volume")
         if context is None:
             context = {}
         res = {}
@@ -1162,6 +1194,7 @@ class stock_location(models.Model):
         because when you quit some product from a palet, we discount the volume
         mantle by mantle.
         """
+        _logger.debug("CMNT _get_quants_volume")
         t_quant = self.pool.get('stock.quant')
         t_pack = self.pool.get('stock.quant.package')
         if context is None:
@@ -1188,6 +1221,7 @@ class stock_location(models.Model):
         return volume
 
     def _get_available_volume(self, cr, uid, ids, name, args, context=None):
+        _logger.debug("CMNT _get_available_volume")
         if context is None:
             context = {}
         res = {}
@@ -1283,6 +1317,7 @@ class stock_location(models.Model):
 
     def _search_available_volume(self, cr, uid, obj, name, args, context=None):
         """ Function search to use available volume like a filter """
+        _logger.debug("CMNT _search_available_volume")
         if context is None:
             context = {}
         sel_loc_ids = []
@@ -1302,6 +1337,7 @@ class stock_location(models.Model):
 
     def _search_filled_percent(self, cr, uid, obj, name, args, context=None):
         """ Function search to use filled % like a filter. """
+        _logger.debug("CMNT _search_available_volume")
         if context is None:
             context = {}
         sel_loc_ids = []
@@ -1322,6 +1358,7 @@ class stock_location(models.Model):
 
     def get_available_volume_for_product(self, cr, uid, ids, product,
                                          context=None):
+        _logger.debug("CMNT get_available_volume_for_product")
         loc = self.browse(cr, uid, ids, context)[0]
         products = self.pool.get('product.product').search(
             cr, uid, [('picking_location_id', '=', loc.id)], context=context)
@@ -1377,6 +1414,7 @@ class stock_location(models.Model):
 
     def _get_filter_percentage(self, cr, uid, ids, name, args, context=None):
         """ Function search to use filled % like a filter. """
+        _logger.debug("CMNT _get_filter_percentage")
         if context is None:
             context = {}
         res = {}
@@ -1385,6 +1423,7 @@ class stock_location(models.Model):
         return res
 
     def _search_filter_percent(self, cr, uid, obj, name, args, context=None):
+        _logger.debug("CMNT _search_filter_percent")
         if context is None:
             context = {}
         sel_loc_ids = []
@@ -1404,6 +1443,7 @@ class stock_location(models.Model):
 
     def _get_filter_available(self, cr, uid, ids, name, args, context=None):
         """ Function search to use filled % like a filter. """
+        _logger.debug("CMNT _get_filter_available")
         if context is None:
             context = {}
         res = {}
@@ -1412,6 +1452,7 @@ class stock_location(models.Model):
         return res
 
     def _search_filter_aval(self, cr, uid, obj, name, args, context=None):
+        _logger.debug("CMNT _search_filter_available")
         if context is None:
             context = {}
         sel_loc_ids = []
@@ -1430,6 +1471,7 @@ class stock_location(models.Model):
         return res
 
     def _get_current_product_id(self, cr, uid, ids, name, args, context=None):
+        _logger.debug("CMNT _get_current_product_id")
         if context is None:
             context = {}
         res = {}
@@ -1532,6 +1574,7 @@ class stock_location(models.Model):
         """
         Get the first parent location marked as camera.
         """
+        init_t = time.time()
         res = False
         if ids:
             loc_id = ids[0]
@@ -1541,6 +1584,7 @@ class stock_location(models.Model):
                     res = loc.location_id.id
                 else:
                     loc = loc.location_id
+        _logger.debug("CMNT tiempo get_camera %s", time.time()-init_t)
         return res
 
     def get_locations_by_zone(self, cr, uid, ids, zone, add_domain=False,
@@ -1549,6 +1593,8 @@ class stock_location(models.Model):
         Get the camera from the loc_id and get the children locations of
         specified zone ('storage', 'picking')
         """
+        _logger.debug("CMNT get_locations_by_zone")
+
         locations = []
         loc_id = ids[0]
         if context is None:
@@ -1573,6 +1619,7 @@ class stock_location(models.Model):
         Get the first gereal location marked as zone (picking or storage)
         for a child location.
         """
+        init_t = time.time()
         loc_id = False
         loc_id = ids[0]
         if context is None:
@@ -1591,7 +1638,7 @@ class stock_location(models.Model):
             raise exceptions.Warning(_('Error!'), _('No general %s location \
                                                  founded in camera %s.') %
                                      (zone, cam))
-
+        _logger.debug("CMNT _get_general_zone time: %s", time.time() - init_t)
         return loc_id
 
     def on_change_parent_location(self, cr, uid, ids, loc_id, context=None):
@@ -1611,6 +1658,7 @@ class stock_location(models.Model):
                context=None, count=False):
         """ Overwrite in order to search only location of a unique product
             if search_product_id is in context."""
+        init_t = time.time()
         if context is None:
             context = {}
         quant_t = self.pool.get("stock.quant")
@@ -1624,18 +1672,21 @@ class stock_location(models.Model):
                 loc_ids.add(quant.location_id.id)
             loc_ids = list(loc_ids)
             args.append(['id', 'in', loc_ids])
-        return super(stock_location, self).search(cr, uid, args,
+        res = super(stock_location, self).search(cr, uid, args,
                                                   offset=offset,
                                                   limit=limit,
                                                   order=order,
                                                   context=context,
                                                   count=count)
+        _logger.debug("CMNT SEARCH de ubicaciones tiempo: %s ", time.time() - init_t)
+        return res
 
     def name_search(self, cr, uid, name,
                     args=None, operator='ilike', context=None, limit=80):
         """
         Redefine the search to search by company name.
         """
+        _logger.debug("CMNT NAME_SEARCH de ubicaciones")
         if context.get('search_product_id', False):
             loc_ids = self.search(cr, uid, args, context=context)
             args = [('id', 'in', loc_ids)]
@@ -1703,8 +1754,12 @@ class stock_move(models.Model):
         if context is None:
             context = {}
         # TODO: se hace asi?
+        _logger.debug("CMNT WRITE del move %s - %s", vals, context)
+        init_t = time.time()
         res = super(stock_move, self).write(cr, uid, ids, vals,
                                             context=context)
+        _logger.debug("CMNT tiempo write original: %s",
+                     time.time() - init_t)
         # para arrastrar la ruta al albaran desde la venta
         if vals.get('picking_id', False):
             pick_obj = self.pool.get('stock.picking')
@@ -1741,7 +1796,8 @@ class stock_move(models.Model):
                 self.write(cr, uid, [move.move_dest_id.id],
                            propagated_changes_dict,
                            context=context)
-
+        _logger.debug("CMNT tiempo write: %s",
+                      time.time() - init_t)
         return res
 
     def split(self, cr, uid, move, qty, restrict_lot_id=False,
@@ -1941,6 +1997,9 @@ class stock_quant(models.Model):
         If force_quants_location in context wy try to get quants only of
         location
         """
+        _logger.debug("CMNT inicio Aplly_removal")
+        _logger.debug("CMNT ####################")
+        init_t = time.time()
         t_location = self.pool.get('stock.location')
         # When quants already assigned we use the super no midban depot fefo
         already_reserved = False
@@ -1957,9 +2016,8 @@ class stock_quant(models.Model):
                     context=context)
 
                 return sup
-
-            order = 'removal_date, in_date, id'
-
+            #es necesario ordernar antes por package id que por
+            order = 'removal_date, package_id,  in_date, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
@@ -1999,12 +2057,12 @@ class stock_quant(models.Model):
             domain = [('reservation_id', '=', False), ('qty', '>', 0),
                       ('id', 'not in', quants_in_res)]
             if check_global_qty:
-                print res
-                print check_global_qty
                 res += self._quants_get_order(cr, uid, location, product,
                                               check_global_qty, domain, order,
                                               context=context)
-                print res
+            _logger.debug("CMNT ####################")
+            _logger.debug("CMNT return Aplly_removal %s",time.time() -init_t)
+
             return res
         elif context.get('force_quants_location', False):
             res = context['force_quants_location']
@@ -2015,6 +2073,9 @@ class stock_quant(models.Model):
         sup = super(stock_quant, self).\
             apply_removal_strategy(cr, uid, location, product, qty, domain,
                                    removal_strategy, context=context)
+        _logger.debug("CMNT ####################")
+        _logger.debug("CMNT return Aplly_removal: %s", time.time() -init_t)
+
         return sup
 
 

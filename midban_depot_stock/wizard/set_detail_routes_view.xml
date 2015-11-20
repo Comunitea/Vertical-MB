@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="set_details_routes_form_view" model="ir.ui.view">
+            <field name="name">set.detail.routes.form.view</field>
+            <field name="model">set.detail.routes</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Prepare and Validate assigned routes">
+                  <h1>
+                      Set Route Details
+                  </h1>
+                  <p> It will assign the current route detail to the selected routes</p>
+                  <group>
+                      <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"/>
+                  </group>
+                  <footer>
+                      <button string="Set Detail Routes" name="set_details" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Set Detail Routes"
+            res_model="set.detail.routes"
+            src_model="stock.picking"
+            view_id="set_details_routes_form_view"
+            view_mode="form"
+             view_type="form"
+            key2="client_action_multi"
+            target="new"
+            id="set_details_route_action"/>
+    </data>
+</openerp>

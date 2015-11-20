@@ -103,7 +103,10 @@
             </td>
             <td class="cell-unit">
                 <!-- <select class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
-                <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/>
+                <!-- <input type="text" class='col-product_uos mandatory' t-att-value="widget.model.get('product_uos')"/> -->
+                <select class="col-product_uos mandatory">
+                  
+                </select>
             </td>
             <td class="cell-pvp">
                 <input type="text" class='col-price_udv mandatory' t-att-value="widget.model.get('price_udv').toFixed(2)" />
@@ -510,29 +513,29 @@
         </div>
         <div class="col-xs-4 fullheight centerinside">
           <div class="fullheight centerinside fullwidth">
-            <t t-if="widget.order_model.get('state') == 'draft'">
+            <!-- <t t-if="widget.order_model.get('state') == 'draft'"> -->
               <div class="order-button">
                 <div class="fullheight centerinside fullwidth">
                   <div class="centerthis">
-                    <button type="button" class="save-button fullwidth" tabIndex="18">SAVE</button>
+                    <button type="button" class="save-button fullwidth" tabIndex="19">SAVE</button>
                   </div>
                 </div>
               </div>
               <div class="order-button">
                   <div class="fullheight centerinside fullwidth">
                        <div class="centerthis">
-                  <button class="cancel-button fullwidth" tabIndex="19">CANCEL</button>
+                  <button class="cancel-button fullwidth" tabIndex="20">CANCEL</button>
                        </div>
                   </div>
               </div>
               <div class="order-button">
                   <div class="fullheight centerinside fullwidth">
                        <div class="centerthis">
-                  <button class="confirm-button fullwidth" tabIndex="20">CONFIRM</button>
+                  <button class="confirm-button fullwidth" tabIndex="21">CONFIRM</button>
                        </div>
                   </div>
               </div>
-            </t>
+            <!-- </t> -->
           </div>
 
 
@@ -814,6 +817,7 @@
             <div class="fullheight overflow">
                 <table class="sold-product-table">
                     <thead>
+                        <!-- <th class="">Code</th> -->
                         <th class="pc-header-name">Name</th>
                         <th class="pc-header-price">Price</th>
                         <th class="pc-header-add">Add</th>
@@ -828,14 +832,25 @@
 
     <t t-name="Sold-Product-Line-Widget">
         <tr>
+          <!-- <td class="pc-cell-name">
+            <t t-if="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0])">
+              <span class="product-cell"><t t-esc="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0]).default_code"/></span>
+            </t>
+          </td> -->
           <td class="pc-cell-name">
-              <span class="product-cell"><t t-esc="widget.sold_line.product_id[1]"/></span>
+            <!-- <t t-set="code_part" t-value=""/>
+            <t t-if="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0])">
+              <t t-set="code_part" t-value="'[' + widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0]).default_code + '] ' "/>
+            </t> -->
+              <span class="product-cell"><t t-esc="'[' + widget.sold_line.default_code + '] ' + widget.sold_line.product_id[1]"/></span>
           </td>
           <td class="pc-cell-code">
-            <span class="product-cell"><t t-esc="widget.sold_line.price_udv.toFixed(2)"/></span>
+            <span class="product-cell"><t t-esc="widget.sold_line.price_unit.toFixed(2)"/></span>
           </td>
           <td class="pc-cell-stock">
-            <button class="fullwidth" id="add-line">+</button>
+            <t t-if="widget.ts_model.db.get_product_by_id(widget.sold_line.product_id[0])">
+              <button class="fullwidth" id="add-line" tabIndex="18">+</button>
+            </t>
           </td>
       </tr>
     </t>

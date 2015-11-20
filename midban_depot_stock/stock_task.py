@@ -47,7 +47,8 @@ class stock_task(osv.Model):
         'date_end': fields.datetime("Date End", readonly=True),
         'state': fields.selection([('assigned', 'Assigned'),
                                    ('canceled', 'Canceled'),
-                                   ('done', 'Finished')],
+                                   ('done', 'Finished'),
+                                   ('to_revised', 'To Revised')],
                                   'State', readonly=True, required=True),
         'picking_id': fields.many2one('stock.picking', 'Picking',
                                       readonly=True),
@@ -74,12 +75,13 @@ class stock_task(osv.Model):
 
     @api.one
     def finish_partial_task(self):
+
         if self.type != 'picking':
             pick_ids = list(set([x.picking_id.id for x in self.operation_ids]))
         else:
             pick_ids = list(set([x.id for x in self.wave_id.picking_ids]))
 
-        # When we call butom after the returned view of the wizard
+        # When we call button after the returned view of the wizard
         # 'active_model': 'stock.task' and we get an error with assert
         # in do_transfer method.
         # Changed it allways to stock.picking
@@ -89,31 +91,41 @@ class stock_task(osv.Model):
         ctx['active_id'] = len(pick_ids) == 1 and pick_ids[0] or False
         pick_t = self.env['stock.picking'].with_context(ctx)
         pick_objs = pick_t.browse(pick_ids)
-
+        final_state = 'done'
+        wave_final_state = 'done'
         if self.type == 'picking':
             filter_ids = []
+
             for pick in pick_objs:
+                to_revised = False
                 if len(pick.pack_operation_ids) == 1 and \
                         not pick.pack_operation_ids[0].to_process:
                     pick.wave_id = False
                     pick.operator_id = False
                     continue
-                filter_ids.append(pick.id)
+                for op in pick.pack_operation_ids:
+                    if op.to_revised and op.to_process:
+                        final_state = 'to_revised'
+                        wave_final_state = 'in_progress'
+                if not to_revised:
+                    filter_ids.append(pick.id)
+
             pick_objs = pick_t.browse(filter_ids)
 
         for pick in pick_objs:
             if pick.state not in ['done', 'draft', 'cancel']:
                 pick.approve_pack_operations2(self.id)
+
         if self.type == 'picking':
             # self.wave_id.done()
-            self.wave_id.state = 'done'
+            self.wave_id.state = wave_final_state
 
         duration = datetime.now() - \
             datetime.strptime(self.date_start, DEFAULT_SERVER_DATETIME_FORMAT)
         vals = {
             'date_end': time.strftime("%Y-%m-%d %H:%M:%S"),
             'duration': duration.seconds / float(60),
-            'state': 'done',
+            'state': final_state,
             'paused': False}
         return self.write(vals)
 
@@ -148,7 +160,7 @@ class stock_task(osv.Model):
                         picking.write({'operator_id': False,
                                        'machine_id': False,
                                        'wave_id': False})
-                        picking.do_unreserve()
+                        # picking.do_unreserve()
                     task.wave_id.refresh()
                     task.wave_id.cancel_picking()
                 task.operation_ids.write(op_vals)

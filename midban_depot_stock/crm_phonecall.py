@@ -35,13 +35,13 @@ class crm_phonecall(models.Model):
                                ('call_no_done', 'Call not done')],
                               string="Call result",
                               default="not_done")
+    route_id = fields.Many2one('route','Route id', related='detail_id.route_id')
 
     @api.one
     def write(self, vals):
         """
         Modify the state of the call based on the result visit
         """
-        # import ipdb; ipdb.set_trace()
         if vals.get('result', False):
             if vals['result'] in ['sale_done', 'call_no_order']:
                 vals['state'] = 'done'

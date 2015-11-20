@@ -24,7 +24,8 @@ import time
 import random
 from datetime import datetime, timedelta
 from openerp import api
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class assign_task_wzd(osv.TransientModel):
     _name = "assign.task.wzd"
@@ -74,7 +75,7 @@ class assign_task_wzd(osv.TransientModel):
             context = {}
         t_config = self.pool.get('ir.config_parameter')
         param_value = t_config.get_param(cr, uid, 'print.report',
-                                         default='True')
+                                         default='False')
         return True if param_value == 'True' else False
 
     def operator_id_change(self, cr, uid, ids, operator_id=0, context=None):
@@ -455,6 +456,7 @@ class assign_task_wzd(osv.TransientModel):
         for op in t_op.browse(cr, uid, op_ids, context=context):
             if len(assigned_ops) == max_ops:
                 break
+            print u"Asign location para %s"%op.package_id.name
             op.assign_location()
             if wzd_obj.location_ids:
                 camera_id = op.location_dest_id.get_camera()
@@ -475,6 +477,8 @@ class assign_task_wzd(osv.TransientModel):
                                  _('Not found operations of the selected\
                                     cameras fot the picking \
                                     %s' % pick.name))
+        if context.get('gun', False):
+            return task_id
         res = {}
         if wzd_obj.print_report:
             res = self._print_report(cr, uid, ids, task_id=task_id,
@@ -562,7 +566,8 @@ class assign_task_wzd(osv.TransientModel):
             raise osv.except_osv(_('Error'), _('No reposition operations to \
                                                 schedule'))
         t_ops.write(cr, uid, ops_ids, {'task_id': task_id}, context=context)
-
+        if context.get('gun', False):
+            return task_id
         context2 = dict(context)
         context2.update({
             'active_model': 'stock.task',
@@ -855,12 +860,12 @@ class assign_task_wzd(osv.TransientModel):
         DUPLICADO Y MODIFICADO PARA BUSCAR ALBARANES VALIDADOS CON RUTA Y POR
         CÁMARA
         """
-
         if context is None:
             context = {}
         pick_obj = self.pool.get('stock.picking')
         wave_obj = self.pool.get('stock.picking.wave')
         task_obj = self.pool.get("stock.task")
+        oper_obj = self.pool.get("stock.pack.operation")
 
         obj = self.browse(cr, uid, ids[0], context=context)
         # Check if operator has a task on course
@@ -877,6 +882,7 @@ class assign_task_wzd(osv.TransientModel):
         date_planned = obj.date_planned
         start_date = date_planned + " 00:00:00"
         end_date = date_planned + " 23:59:59"
+
         selected_route = obj.trans_route_id and obj.trans_route_id.id or False
         if not selected_route:
             selected_route = self._get_random_route(cr, uid, ids, context)
@@ -889,6 +895,7 @@ class assign_task_wzd(osv.TransientModel):
             ('trans_route_id', '=', selected_route),
             ('validated', '=', True)
         ]
+        _logger.debug("CMNT domain busca pickings%s", domain)
         pickings_to_wave = pick_obj.search(cr, uid, domain, context=context)
         if pickings_to_wave:
             camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
@@ -899,8 +906,8 @@ class assign_task_wzd(osv.TransientModel):
                             'camera_ids': camera_ids,
                             'task_type': 'picking'},
                            context=context)
-            pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
-                                        context=context)
+            #pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
+            #                            context=context)
             vals = {'user_id': obj.operator_id.id,
                     'camera_ids': camera_ids,
                     'trans_route_id': selected_route,
@@ -919,10 +926,14 @@ class assign_task_wzd(osv.TransientModel):
                 'machine_id': machine_id,
             }
             task_id = task_obj.create(cr, uid, vals, context=context)
-            for pick in pick_obj.browse(cr, uid, pickings_to_wave):
-                for op in pick.pack_operation_ids:
-                    op.write({'task_id': task_id})
+            op_ids = oper_obj.search(cr,uid, [('picking_id', 'in', pickings_to_wave)])
+            # for pick in pick_obj.browse(cr, uid, pickings_to_wave):
+            #     for op in pick.pack_operation_ids:
+            #         op.write({'task_id': task_id})
+            oper_obj.write(cr, uid, op_ids, {'task_id': task_id}, context=context)
             res = {}
+            if context.get('gun', False):
+                return task_id
             if obj.print_report:
                 res = self._print_report(cr, uid, ids, wave_id=wave_id,
                                          context=context)
