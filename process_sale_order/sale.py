@@ -23,6 +23,8 @@ import openerp.addons.decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
 from openerp.tools.float_utils import float_round, float_compare
+from openerp.api import Environment
+import threading
 
 
 class QualitativeNote(models.Model):
@@ -289,3 +291,17 @@ class sale_order(models.Model):
     #     res = super(sale_order, self).action_ship_create()
     #
     #     return res
+
+    def action_button_confirm_thread(self, cr, uid, ids, context=None):
+        thread = threading.Thread(
+            target=self._action_button_confirm_thread, args=(cr, uid, ids))
+        thread.start()
+        return True
+
+    def _action_button_confirm_thread(self, cr, uid, ids, context=None):
+         with Environment.manage():
+            new_cr = self.pool.cursor()
+            self.action_button_confirm(new_cr, uid, ids, context=context)
+            new_cr.commit()
+            new_cr.close()
+            return {}
