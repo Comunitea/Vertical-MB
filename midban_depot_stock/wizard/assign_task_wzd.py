@@ -930,7 +930,7 @@ class assign_task_wzd(osv.TransientModel):
             # for pick in pick_obj.browse(cr, uid, pickings_to_wave):
             #     for op in pick.pack_operation_ids:
             #         op.write({'task_id': task_id})
-            oper_obj.write(cr, uid, op_ids, {'task_id': task_id}, contex=context)
+            oper_obj.write(cr, uid, op_ids, {'task_id': task_id}, context=context)
             res = {}
             if context.get('gun', False):
                 return task_id
