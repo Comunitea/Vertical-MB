@@ -82,6 +82,11 @@ class edi(models.Model):
             shutil.copy(src_file, dst_file)
             log.info(_(u'%s: The copy of the file to the backup was '
                        'successful. File %s' % (service.name, file_name)))
+            try:
+                pass
+                # os.remove(src_file)
+            except OSError:
+                log.info('not have permission to delete %s' % src_file)
 
     @api.model
     def _check_fields(self, file_path, root, fields):
@@ -330,10 +335,6 @@ class edi(models.Model):
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             correct.write({'document_id': doc.id})
             self.make_backup(file_path, doc.file_name)
-            try:
-                os.remove(file_path)
-            except OSError:
-                log.info('not have permission to delete %s' % file_path)
         return
 
 # ****************************************************************************
@@ -796,10 +797,6 @@ class edi(models.Model):
             doc.write({'state': 'imported', 'date_process': datetime.now()})
             invoice.write({'document_id': doc.id})
             self.make_backup(file_path, doc.file_name)
-            try:
-                os.remove(file_path)
-            except OSError:
-                log.info('not have permission to delete %s' % file_path)
         return
 
 # ****************************************************************************
