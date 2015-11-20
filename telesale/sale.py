@@ -198,9 +198,17 @@ class sale(osv.osv):
 
                 t_order_line.create(cr, uid, vals)
             if order['action_button'] == 'confirm':
-                wf_service = netsvc.LocalService('workflow')
-                wf_service.trg_validate(uid, 'sale.order', order_id,
-                                        'order_confirm', cr)
+                # wf_service = netsvc.LocalService('workflow')
+                # wf_service.trg_validate(uid, 'sale.order', order_id,
+                #                         'order_confirm', cr)
+                self.action_button_confirm(cr, uid, [order_id],
+                                           context=context)
+            elif order['action_button'] == 'confirm_background':
+                # wf_service = netsvc.LocalService('workflow')
+                # wf_service.trg_validate(uid, 'sale.order', order_id,
+                #                         'order_confirm', cr)
+                self.action_button_confirm_thread(cr, uid, [order_id],
+                                                  context=context)
 
             if 'set_promotion' in order and order['set_promotion']:
                 self.apply_promotions(cr, uid, [order_id], context=context)

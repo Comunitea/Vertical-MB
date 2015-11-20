@@ -1280,7 +1280,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         },
         confirmCurrentOrder: function() {
             var currentOrder = this.order_model;
-            currentOrder.set('action_button', 'confirm')
+            //currentOrder.set('action_button', 'confirm')
+            currentOrder.set('action_button', 'confirm_background')
             // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
             //     alert(_t('You cant confirm an order which state is diferent than draft.'));
             // }
