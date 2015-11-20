@@ -38,10 +38,10 @@ class ValidateRoutes(models.TransientModel):
         pick_pickings = self._get_pickings_from_outs(out_pickings)
         unasigned_picks_lst = []
         for pick in pick_pickings:
-            # if not pick.route_detail_id:
-            #     raise except_orm(_('Error'),
-            #                      _('Picking %s without has not route detail \
-            #                        assigned' % pick.name))
+            if not pick.route_detail_id:
+                raise except_orm(_('Error'),
+                                 _('Picking %s without has not route detail \
+                                    assigned' % pick.name))
 
             # Put unassigned moves inside a new picking
             unassigned_pick = False
@@ -103,10 +103,12 @@ class ValidateRoutes(models.TransientModel):
         wh = self.env['stock.warehouse'].search([])[0]
         res = self.env['stock.picking']
         for pick in out_pickings:
-            # if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
-            #     raise except_orm(_('Error'),
-            #                      _('Picking %s wmust be outgoing type and  \
-            #                        related with a sale' % pick.name))
+            #  if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
+            if not pick.picking_type_code == 'outgoing':
+                raise except_orm(_('Error'),
+                                 _('Picking %s must be outgoing type and  \
+                                    related with a sale or \
+                                    autosale' % pick.name))
 
             # if not pick.route_detail_id:
             #     raise except_orm(_('Error'),
@@ -144,14 +146,14 @@ class ValidateRoutes(models.TransientModel):
                 ops_by_cam[camera_loc] = self.env['stock.pack.operation']
             ops_by_cam[camera_loc] += op
             for x in op.linked_move_operation_ids:
-                if x.move_id not in  moves_by_cam[camera_loc]:
+                if x.move_id not in moves_by_cam[camera_loc]:
                     moves_by_cam[camera_loc] += x.move_id
 
         first = True
         for cam in moves_by_cam:
             if first:  # Skip first moves, we get the original picking
                 first = False
-                pick.camera_id = cam
+                pick.camera_id = cam  # OPTIMIZAR??
                 splited_picks += pick
                 continue
             copy_values = {'move_lines': [],
@@ -160,9 +162,9 @@ class ValidateRoutes(models.TransientModel):
                            'group_id': pick.group_id.id}
             new_pick = pick.copy(copy_values)
             for move in moves_by_cam[cam]:
-                move.picking_id = new_pick  # Assign move to new pick
+                move.picking_id = new_pick  # OPTIMIZAR?Assign move to new pick
             for op in ops_by_cam[cam]:
-                op.picking_id = new_pick
+                op.picking_id = new_pick  # OPTIMIZAR??
             new_pick.camera_id = cam  # Write the camera
             splited_picks += new_pick
         return splited_picks
