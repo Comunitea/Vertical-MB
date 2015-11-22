@@ -897,9 +897,11 @@ class assign_task_wzd(osv.TransientModel):
             ('trans_route_id', '=', selected_route),
             ('validated', '=', True)
         ]
+        _logger.debug("CMNT haste tenerlo preparado para empezar %s", time.time() - init_t)
         _logger.debug("CMNT domain busca pickings%s", domain)
         pickings_to_wave = pick_obj.search(cr, uid, domain, context=context)
         if pickings_to_wave:
+            init_pw = time.time()
             camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
             pick_obj.write(cr, uid, pickings_to_wave,
                            {'operator_id': obj.operator_id.id,
@@ -910,6 +912,7 @@ class assign_task_wzd(osv.TransientModel):
                            context=context)
             #pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
             #                            context=context)
+            _logger.debug("CMNT TIEMPO escribiendo piks: %s", time.time() - init_pw)
             vals = {'user_id': obj.operator_id.id,
                     'camera_ids': camera_ids,
                     'trans_route_id': selected_route,
