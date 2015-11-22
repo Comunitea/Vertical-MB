@@ -385,6 +385,16 @@ class wave_report(osv.osv):
             )""" % (self._table, self._select(), self._subquery_grouped_op(),
                     self._subquery_no_grouped_op(), self._group_by()))
 
+    def create_operations_on_the_fly(self, wave_id, need_qty, pack_id):
+        created_qty = 0.0
+        wave_report = self.browse(wave_id)
+        # for item in self.browse(cr, uid, ids, context=context):
+        #     res[item.id] = False
+        #     if item.location_id:
+        #         res[item.id] = item.location_id.get_camera()
+        print "VOY A CREAR OPERACIONES"
+        return 0.0
+
 
 class wave_report_parser(models.AbstractModel):
     """ Parser to group products in camaras"""

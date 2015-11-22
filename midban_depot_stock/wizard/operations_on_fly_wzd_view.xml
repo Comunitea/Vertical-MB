@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="operations_on_fly_wzd_form" model="ir.ui.view">
+            <field name="name">operations.on.fly.wzd.form</field>
+            <field name="model">operations.on.fly.wzd</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create new operations">
+                    <group string="Select needed quantity from pack">
+                        <field name="needed_qty"/>
+                        <field name="package_id"/>
+                    </group>
+                    <footer>
+                      <button  name="create_operations" type="object" string="Create operations" icon="gtk-execute"/>
+                      <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window name="Create new operations"
+            res_model="operations.on.fly.wzd"
+            src_model="wave.report"
+            view_id="operations_on_fly_wzd_form"
+            view_mode="form"
+            target="new"
+            id="act_operations_on_fly_wzd"/>
+
+    </data>
+</openerp>

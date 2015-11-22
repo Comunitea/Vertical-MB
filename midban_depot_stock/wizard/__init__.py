@@ -30,3 +30,4 @@ from . import validate_routes
 from . import stock_return_picking
 from . import set_detail_routes
 from . import several_procurement_product
+from . import operations_on_fly_wzd

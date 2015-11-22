@@ -7,6 +7,7 @@
          <field name="model">wave.report</field>
          <field name="arch" type="xml">
              <tree string="Picking List">
+                 <button name="%(act_operations_on_fly_wzd)d" type="action" string="Create new operations" icon="gtk-execute" />
                  <field name="order_seq"/>
                  <field name="reference"/>
                  <field name="ean13"/>
