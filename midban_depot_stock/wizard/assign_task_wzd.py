@@ -860,6 +860,8 @@ class assign_task_wzd(osv.TransientModel):
         DUPLICADO Y MODIFICADO PARA BUSCAR ALBARANES VALIDADOS CON RUTA Y POR
         CÁMARA
         """
+        init_t = time.time()
+        _logger.debug("CMNT: get_picking_task")
         if context is None:
             context = {}
         pick_obj = self.pool.get('stock.picking')
@@ -895,26 +897,31 @@ class assign_task_wzd(osv.TransientModel):
             ('trans_route_id', '=', selected_route),
             ('validated', '=', True)
         ]
+        _logger.debug("CMNT haste tenerlo preparado para empezar %s", time.time() - init_t)
         _logger.debug("CMNT domain busca pickings%s", domain)
         pickings_to_wave = pick_obj.search(cr, uid, domain, context=context)
         if pickings_to_wave:
+            init_pw = time.time()
             camera_ids = [(6, 0, [x.id for x in obj.location_ids])]
             pick_obj.write(cr, uid, pickings_to_wave,
                            {'operator_id': obj.operator_id.id,
                             'machine_id': machine_id,
-                            'warehouse_id': obj.warehouse_id.id,
+                            #'warehouse_id': obj.warehouse_id.id,
                             'camera_ids': camera_ids,
                             'task_type': 'picking'},
                            context=context)
             #pick_obj.do_prepare_partial(cr, uid, pickings_to_wave,
             #                            context=context)
+            _logger.debug("CMNT TIEMPO escribiendo piks: %s", time.time() - init_pw)
             vals = {'user_id': obj.operator_id.id,
                     'camera_ids': camera_ids,
                     'trans_route_id': selected_route,
                     'warehouse_id': obj.warehouse_id.id,
                     'machine_id': obj.machine_id.id,
                     'picking_ids': [(6, 0, pickings_to_wave)]}
+            init_wc = time.time()
             wave_id = wave_obj.create(cr, uid, vals, context=context)
+            _logger.debug("CMNT TIEMPO crea Wave: %s", time.time() - init_wc)
             # wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
             # Create task and associate to picking wave
             vals = {
@@ -925,13 +932,22 @@ class assign_task_wzd(osv.TransientModel):
                 'state': 'assigned',
                 'machine_id': machine_id,
             }
+            init_tc = time.time()
             task_id = task_obj.create(cr, uid, vals, context=context)
+            _logger.debug("CMNT TIEMPO crea Stock Task: %s", time.time() - init_tc)
             op_ids = oper_obj.search(cr,uid, [('picking_id', 'in', pickings_to_wave)])
+
             # for pick in pick_obj.browse(cr, uid, pickings_to_wave):
             #     for op in pick.pack_operation_ids:
             #         op.write({'task_id': task_id})
-            oper_obj.write(cr, uid, op_ids, {'task_id': task_id}, context=context)
+            init_op = time.time()
+            ctx = context.copy()
+            ctx["no_recompute"] = True
+            oper_obj.write(cr, uid, op_ids, {'task_id': task_id}, ctx)
+            _logger.debug("CMNT TIEMPO escritura OPs: %s", time.time() - init_op)
             res = {}
+
+            _logger.debug("CMNT TIEMPO total asigna OLA: %s", time.time() - init_t)
             if context.get('gun', False):
                 return task_id
             if obj.print_report:

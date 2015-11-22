@@ -996,7 +996,7 @@ class stock_pack_operation(models.Model):
         #         if op.lot_id.id != vals['lot_id']:
         #             vals['package_id'] = False
         init_t = time.time()
-        _logger.debug("CMNT WRITE PACK operation")
+        _logger.debug("CMNT WRITE PACK operation CONTEXT: %s ", self.env.context)
         if vals.get('product_id', False):
             for op in self:
                 if op.product_id.id != vals['product_id'] and op.product_id:
