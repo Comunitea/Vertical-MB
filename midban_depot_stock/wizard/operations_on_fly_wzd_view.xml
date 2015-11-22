@@ -10,7 +10,8 @@
                 <form string="Create new operations">
                     <group string="Select needed quantity from pack">
                         <field name="needed_qty"/>
-                        <field name="package_id"/>
+                        <field name="product_id"/>
+                        <field name="package_id" context="{'product_id': product_id, 'min_qty': needed_qty}"/>
                     </group>
                     <footer>
                       <button  name="create_operations" type="object" string="Create operations" icon="gtk-execute"/>

@@ -552,6 +552,21 @@ class StockPackage(models.Model):
             args = [('location_id', '=', input_loc.id)]
             recs = self.search(args)
             res = recs.name_get()
+        elif self._context.get('product_id', False):
+            min_qty = self._context.get('min_qty', False)
+            product_id = self._context.get('product_id', False)
+            wh = self.env['stock.warehouse'].search([])[0]
+            stock_loc = wh.lot_stock_id
+            args = [('product_id', '=', product_id),
+                    ('quant_ids', '!=', False),
+                    ('location_id', 'child_of', [stock_loc.id])]
+            recs = self.search(args)
+            for p in recs:
+                if min_qty and p.unreserved_qty < min_qty or not \
+                        p.unreserved_qty:
+                    recs -= p
+            res = recs.name_get()
+
         return res
 
 

@@ -166,3 +166,53 @@ class ProductTemplate(models.Model):
                     self.log_units_available = prod.uom_qty_to_uos_qty(prod.virtual_available, self.log_unit_id.id)
                 else:
                     self.log_units_available = -1.0
+
+
+class ProductUom(models.Model):
+
+    _inherit = 'product.uom'
+
+    def search(self, cr, uid, args, offset=0, limit=None, order=None,
+               context=None, count=False):
+        """ Overwrite in order to search only allowed products for a product
+            if product_id is in context."""
+        if context is None:
+            context = {}
+        if context.get('supp_product_id', False) and context.get('supplier_id',
+                                                                 False):
+            t_prod = self.pool.get('product.product')
+            prod = t_prod.browse(cr, uid, context['supp_product_id'], context)
+            prod_udc_ids = prod.get_purchase_unit_ids(context['supplier_id'])
+            # Because sometimes args = [category = False]
+            args = [['id', 'in', prod_udc_ids]]
+        elif context.get('product_id', False):
+            t_prod = self.pool.get('product.product')
+            prod = t_prod.browse(cr, uid, context['product_id'], context)
+            product_udv_ids = prod.get_sale_unit_ids()
+            # Because sometimes args = [category = False]
+            args = [['id', 'in', product_udv_ids]]
+        return super(ProductUom, self).search(cr, uid, args,
+                                              offset=offset,
+                                              limit=limit,
+                                              order=order,
+                                              context=context,
+                                              count=count)
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        res = super(ProductUom, self).name_search(name, args=args,
+                                                  operator=operator,
+                                                  limit=limit)
+        if self._context.get('supp_product_id', False) and \
+                self._context.get('supplier_id', False):
+            args = args or []
+            recs = self.browse()
+            recs = self.search(args)
+            res = recs.name_get()
+        elif self._context.get('product_id', False):
+            args = args or []
+            recs = self.browse()
+            recs = self.search(args)
+            res = recs.name_get()
+
+        return res

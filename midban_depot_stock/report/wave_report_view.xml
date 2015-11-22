@@ -49,6 +49,7 @@
 
 
                      <separator string="Operations" colspan="4"/>
+                     <button name="%(act_operations_on_fly_wzd)d" type="action" string="Create new operations" icon="gtk-execute" />
                      <field name="operation_ids" colspan="4" nolabel="1">
                         <tree editable="top">
                             <field name="do_onchange" invisible="1"/>
