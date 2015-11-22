@@ -48,6 +48,7 @@ class stock_task(osv.Model):
         'state': fields.selection([('assigned', 'Assigned'),
                                    ('canceled', 'Canceled'),
                                    ('done', 'Finished'),
+                                   ('process', 'Process'),
                                    ('to_revised', 'To Revised')],
                                   'State', readonly=True, required=True),
         'picking_id': fields.many2one('stock.picking', 'Picking',
