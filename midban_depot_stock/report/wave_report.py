@@ -430,6 +430,58 @@ class wave_report(osv.osv):
                 break
         return created_qty
 
+    # def create_operations_on_the_fly(self, wave_id, needed_qty, pack_id):
+    #     created_qty = 0.0
+    #     t_op = self.env['stock.pack.operation']
+    #     t_pa = self.env['stock.quant.package']
+    #     # wave_report = self.browse(wave_id)
+    #     # CHECK STATE OF WAVE
+    #     import ipdb; ipdb.set_trace()
+    #
+    #     op_objs = self.operation_ids
+    #     op_objs = sorted(op_objs, key=lambda op: op.product_qty)
+    #     qty_to_create = needed_qty
+    #     pack = t_pa.browse(pack_id)
+    #     move_pack = False
+    #     if pack.packed_qty == needed_qty:
+    #         move_pack = True
+    #     for op in op_objs:
+    #         import ipdb; ipdb.set_trace()
+    #         op_qty = op.product_qty if op.product_id else \
+    #             op.package_id.packed_qty
+    #         prod = pack.product_id
+    #         if op_qty >= qty_to_create:
+    #             new_qty = op_qty - qty_to_create
+    #             new_uos_qty = prod.uom_qty_to_uos_qty(new_qty, op.uos_id.id)
+    #             copy_vals = {
+    #                 'product_qty': new_qty,
+    #                 'product_uos_qty': new_uos_qty
+    #             }
+    #             new_qty = op_qty - qty_to_create
+    #         else:
+    #             new_qty = op_qty
+    #         new_uos_qty = prod.uom_qty_to_uos_qty(new_qty, op.uos_id.id)
+    #         vals = {
+    #             'poduct_id': False if move_pack else prod.id,
+    #             'product_qty': 1 if move_pack else new_qty,
+    #             'product_uom_id': False if move_pack else prod.uom_id.id,
+    #             'lot_id': False if move_pack else pack.packed_lot_id.id,
+    #             'package_id': pack.id,
+    #             'uos_qty': new_uos_qty,
+    #             'uos_id': pack.uos_id.id,
+    #             'location_id': pack.location_id.id,
+    #             'location_dest_id': op.location_dest_id.id
+    #
+    #         }
+    #         op.write(vals)
+    #         created_qty += new_qty
+    #         qty_to_create -= created_qty
+    #         if op_qty >= qty_to_create:
+    #             qty_to_create -= created_qty
+    #             break
+    #
+    #
+    #     return created_qty
 
 class wave_report_parser(models.AbstractModel):
     """ Parser to group products in camaras"""
