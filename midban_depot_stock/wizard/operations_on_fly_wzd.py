@@ -34,7 +34,8 @@ class OperationsOnFlyWzd(models.TransientModel):
         if not active_ids:
             return res
         wave_repp_obj = self.env['wave.report'].browse(active_ids[0])
-        res.update({'product_id': wave_repp_obj.product_id.id})
+        res.update({'product_id': wave_repp_obj.product_id.id,
+                    'orig_pack_id': wave_repp_obj.pack_id.id})
         return res
 
     needed_qty = fields.Float('Needed Quantity',
@@ -42,7 +43,9 @@ class OperationsOnFlyWzd(models.TransientModel):
                               dp.get_precision('Product Unit of Measure'),
                               required=True)
     product_id = fields.Many2one('product.product', 'Product', readonly=True)
-    package_id = fields.Many2one('stock.quant.package', 'Package',
+    orig_pack_id = fields.Many2one('stock.quant.package', 'Orig Package',
+                                   readonly=True)
+    package_id = fields.Many2one('stock.quant.package', 'New Package',
                                  required=True)
 
     @api.multi
