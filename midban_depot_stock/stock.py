@@ -841,7 +841,7 @@ class stock_pack_operation(models.Model):
         'packed_qty': fields.function(_get_qty_package, type='float',
                                       string='Packed qty',
                                       digits_compute=
-                                      dp.get_precision('Product Unit of Measure')
+                                      dp.get_precision('Product Unit of Measure'),
                                       readonly=True),
         'num_mantles': fields.function(_get_num_mantles,
                                        type='integer',
