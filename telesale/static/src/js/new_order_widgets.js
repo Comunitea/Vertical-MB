@@ -170,10 +170,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         //       self.$('#date_invoice').focus();
                         //     }
                         // }
-                        // self.refresh();
+                        self.refresh();
                         $('#vua-button').click();
                         if(self.order_model.get('orderLines').length == 0){
                             $('.add-line-button').click()
+                        }
+                        else{
+                            this.$('#date_order').focus();
                         }
                         // else{
                         //     $('#date_order').focus();
@@ -387,10 +390,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 //     source: uos
                 // });
                 for (unit in uos){
-                    self.$('.col-product_uos').append($('<option>',{
-                      value: uos[unit],
-                      text: uos[unit]
-                    }))
+                    dic = {
+                        value: uos[unit],
+                        text: uos[unit],
+                    }
+                    if (uos[unit] == self.model.get('product_uos')){
+                        dic['selected'] =  "selected"
+                    }
+                    self.$('.col-product_uos').append($('<option>',dic))
                 }
             }
            //autocomplete products and units from array of names
@@ -461,7 +468,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('product', product_obj.name || "");
                                 self.model.set('taxes_ids', result.value.tax_id || []); //TODO poner impuestos de producto o vacio
                                 self.model.set('unit', self.model.ts_model.db.unit_by_id[result.value.product_uom].name);
-                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : self.model.set('unit'));
+                                self.model.set('product_uos', (result.value.product_uos) ? self.model.ts_model.db.unit_by_id[result.value.product_uos].name : self.model.get('unit'));
                                 self.model.set('qty', 0);
                                 self.model.set('specific_discount', result.value.discount || 0);
                                 self.model.set('weight', my_round(product_obj.weight || 0,2));
@@ -762,7 +769,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                             boxes = value
                         }
                         this.model.set('boxes', my_round(boxes, 4));
-                      // this.refresh('product_uos');
+                      this.refresh('product_uos');
                       }
                     }
                     break;
@@ -787,7 +794,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.set_discounts()
                         uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
                         this.model.set('price_udv', my_round(uos_pu, 2))
-                        // this.refresh('price_udv')
+                        this.refresh('price_udv')
                       }
                     }
                     break;
@@ -1278,22 +1285,50 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             else
                $('#total_order').removeClass('warning-red');
         },
+        // confirmCurrentOrder: function() {
+        //     var currentOrder = this.order_model;
+        //     //currentOrder.set('action_button', 'confirm')
+        //     currentOrder.set('action_button', 'confirm_background')
+        //     // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
+        //     //     alert(_t('You cant confirm an order which state is diferent than draft.'));
+        //     // }
+        //     // else  if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+        //     if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+        //             alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
+        //     }
+        //    else if ( currentOrder.check() ){
+        //         var partner_id = this.ts_model.db.partner_name_id[currentOrder.get('partner')]
+        //         delete this.ts_model.db.cache_sold_lines[partner_id];
+        //         this.ts_model.push_order(currentOrder.exportAsJSON());
+        //     }
+        // },
         confirmCurrentOrder: function() {
+          var self = this;
             var currentOrder = this.order_model;
-            //currentOrder.set('action_button', 'confirm')
-            currentOrder.set('action_button', 'confirm_background')
-            // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
-            //     alert(_t('You cant confirm an order which state is diferent than draft.'));
-            // }
-            // else  if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
-            if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
-                    alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
-            }
-           else if ( currentOrder.check() ){
-                var partner_id = this.ts_model.db.partner_name_id[currentOrder.get('partner')]
-                delete this.ts_model.db.cache_sold_lines[partner_id];
-                this.ts_model.push_order(currentOrder.exportAsJSON());
-            }
+            self.saveCurrentOrder()
+            $.when( self.ts_model.ready2 )
+            .done(function(){
+                var loaded = self.ts_model.fetch('sale.order',
+                                                ['id', 'name'],
+                                                [
+                                                    ['chanel', '=', 'telesale']
+                                                ])
+                    .then(function(orders){
+                       console.log('Entro')
+                        if (orders[0]) {
+                          // var my_id = orders[0].id
+                          (new instance.web.Model('sale.order')).call('confirm_order_background',[orders[0].id],{context:new instance.web.CompoundContext()})
+                              .fail(function(unused, event){
+                                  //don't show error popup if it fails
+                                  console.error('Failed confirm order: ',orders[0].name);
+                              })
+                              .done(function(){
+                                    console.log('Confirmado en segundo plano Yeeeeeah');
+                              });
+
+                        }
+                    });
+             });
         },
         cancelCurrentOrder: function() {
             var currentOrder = this.order_model;

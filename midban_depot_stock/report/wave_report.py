@@ -91,6 +91,8 @@ class wave_report(osv.osv):
                            context=None):
         _logger.debug("CMNT _set_operation_ids")
         init_t = time.time()
+        ctx = context.copy()
+        ctx['no_recompute'] = True
         if values:
             pack_op_obj = self.pool['stock.pack.operation']
 
@@ -101,10 +103,10 @@ class wave_report(osv.osv):
                     # raise exceptions.Warning(_("It is not possible
                     # create new"
                     #                           " records in this field"))
-                    pack_op_obj.create(cr, uid, vals)
+                    pack_op_obj.create(cr, uid, vals, ctx)
                 elif vals_action == 1:
                     vals['changed'] = True
-                    pack_op_obj.write(cr, uid, [vals_id], vals)
+                    pack_op_obj.write(cr, uid, [vals_id], vals, ctx)
                 elif vals_action == 2:
                     pack_op_obj.unlink(cr, uid, [vals_id])
         _logger.debug("CMNT time _set_operation_ids %s", time.time() - init_t)

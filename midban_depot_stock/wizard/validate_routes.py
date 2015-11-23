@@ -193,12 +193,10 @@ class ValidateRoutes(models.TransientModel):
             copy_values = {'move_lines': [],
                            'pack_operation_ids': [],
                            'route_detail_id': pick.route_detail_id.id,
-                           'group_id': pick.group_id.id}
+                           'group_id': pick.group_id.id,
+                           'camera_id':cam }
             new_pick = pick.copy(copy_values)
-            for move in moves_by_cam[cam]:
-                move.picking_id = new_pick  # OPTIMIZAR?Assign move to new pick
-            for op in ops_by_cam[cam]:
-                op.picking_id = new_pick  # OPTIMIZAR??
-            new_pick.camera_id = cam  # Write the camera
+            moves_by_cam[cam].with_context(do_not_propagate=True).write({'picking_id': new_pick})
+            ops_by_cam[cam].with_context(no_recompute=True).write({'picking_id': new_pick})
             splited_picks += new_pick
         return splited_picks

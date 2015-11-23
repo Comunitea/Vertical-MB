@@ -468,8 +468,9 @@ class assign_task_wzd(osv.TransientModel):
                 #                             camera' % pick.name))
                 if not (camera_id in camera_ids):
                     continue
-            op.write({'task_id': task_id})
+
             assigned_ops.append(op)
+        t_op.write(cr, uid, op_ids, {'task_id': task_id})
         if pick:
             pick.write({'task_id': task_id, 'task_type': 'ubication'})
         if not assigned_ops:
