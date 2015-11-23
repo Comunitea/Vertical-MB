@@ -414,7 +414,7 @@ class wave_report(osv.osv):
             'lot_id': False if move_pack else pack.packed_lot_id.id,
             'package_id': pack.id,
             'uos_qty': new_uos_qty,
-            'uos_id': pack.uos_id.id,
+            'uos_id': op.uos_id.id,
             'location_id': pack.location_id.id,
             'location_dest_id': op.location_dest_id.id,
             'picking_id': op.picking_id.id,
