@@ -213,9 +213,10 @@ class wave_report(osv.osv):
                           ON product.id = quant.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  (operation.product_id IS NULL AND
+           WHERE  ((operation.product_id IS NULL AND
             product_template.is_var_coeff = false) or (operation.product_id IS
-            NULL AND product_template.is_var_coeff is null)
+            NULL AND product_template.is_var_coeff is null)) and
+            (picking.state='assigned')
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
@@ -255,9 +256,10 @@ class wave_report(osv.osv):
                           ON product.id = operation.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  (operation.product_id IS NOT NULL AND
+           WHERE  ((operation.product_id IS NOT NULL AND
            product_template.is_var_coeff = false) or (operation.product_id
-           IS NOT NULL AND product_template.is_var_coeff is null)
+           IS NOT NULL AND product_template.is_var_coeff is null)) and
+           (picking.state='assigned')
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,
@@ -304,8 +306,9 @@ class wave_report(osv.osv):
                           ON product.id = quant.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  operation.product_id IS NULL
-           AND product_template.is_var_coeff = true
+           WHERE  (operation.product_id IS NULL
+           AND product_template.is_var_coeff = true) and
+           (picking.state='assigned')
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
@@ -346,8 +349,9 @@ class wave_report(osv.osv):
                           ON product.id = operation.product_id
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
-           WHERE  operation.product_id IS NOT NULL
-           AND product_template.is_var_coeff = true
+           WHERE  (operation.product_id IS NOT NULL
+           AND product_template.is_var_coeff = true) and
+           (picking.state='assigned')
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,

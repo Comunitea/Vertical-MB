@@ -1021,7 +1021,7 @@ class stock_pack_operation(models.Model):
         picking = self.env['stock.picking'].browse(vals.get('picking_id', False))
         wh = self.env['stock.warehouse'].search([])[0]
 
-        pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_pick_id.id, wh.reposition_type_id.id]
+        pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_type_id.id, wh.reposition_type_id.id]
         #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
 
         if picking.picking_type_id.id in pick_types:
