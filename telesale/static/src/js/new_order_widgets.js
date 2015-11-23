@@ -769,7 +769,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                             boxes = value
                         }
                         this.model.set('boxes', my_round(boxes, 4));
-                      // this.refresh('product_uos');
+                      this.refresh('product_uos');
                       }
                     }
                     break;
@@ -794,7 +794,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.set_discounts()
                         uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
                         this.model.set('price_udv', my_round(uos_pu, 2))
-                        // this.refresh('price_udv')
+                        this.refresh('price_udv')
                       }
                     }
                     break;
