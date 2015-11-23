@@ -35,7 +35,9 @@ class crm_phonecall(models.Model):
                                ('call_no_done', 'Call not done')],
                               string="Call result",
                               default="not_done")
-    route_id = fields.Many2one('route','Route id', related='detail_id.route_id')
+    route_id = fields.Many2one('route','Route id',
+                               related='detail_id.route_id')
+    phone = fields.Char('Phone', related="partner_id.phone", readonly=True)
 
     @api.one
     def write(self, vals):

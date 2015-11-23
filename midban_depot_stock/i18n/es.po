@@ -714,6 +714,16 @@ msgid "Customer"
 msgstr "Cliente"
 
 #. module: midban_depot_stock
+#: field:customer.list,phone:0
+msgid "Phone"
+msgstr "Teléfono"
+
+#. module: midban_depot_stock
+#: field:crm.phonecall,phone:0
+msgid "Phone"
+msgstr "Teléfono"
+
+#. module: midban_depot_stock
 #: code:addons/midban_depot_stock/partner.py:279
 #, python-format
 msgid "Customer %s is asigned to a route                                             of other                                             comercial"
