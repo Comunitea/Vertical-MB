@@ -170,10 +170,13 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         //       self.$('#date_invoice').focus();
                         //     }
                         // }
-                        // self.refresh();
+                        self.refresh();
                         $('#vua-button').click();
                         if(self.order_model.get('orderLines').length == 0){
                             $('.add-line-button').click()
+                        }
+                        else{
+                            this.$('#date_order').focus();
                         }
                         // else{
                         //     $('#date_order').focus();
