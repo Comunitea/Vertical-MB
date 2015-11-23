@@ -27,6 +27,7 @@ import logging
 _logger = logging.getLogger(__name__)
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
+import openerp.addons.decimal_precision as dp
 
 
 class wave_report(osv.osv):
