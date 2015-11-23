@@ -473,14 +473,14 @@ class wave_report(osv.osv):
                 new_vals = self._get_new_op_vals(op, op_qty, pack,
                                                  qty_to_create, needed_qty)
                 t_op = t_op.create(new_vals)
-                created_qty = new_vals.get('product_qty', 0.0)
+                created_qty += new_vals.get('product_qty', 0.0)
                 break
             else:
                 sust_vals = self._sust_original_op_vals(op, op_qty, pack,
                                                         qty_to_create,
                                                         needed_qty)
                 op.write(sust_vals)
-                created_qty -= sust_vals.get('product_qty', 0.0)
+                created_qty += sust_vals.get('product_qty', 0.0)
                 qty_to_create -= created_qty
                 if not qty_to_create:
                     break
