@@ -377,15 +377,15 @@ class wave_report(osv.osv):
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
             SELECT %s
-   FROM   ((%s)
-            UNION
+               FROM   ((%s)
+                        UNION
 
-            (%s)
+                        (%s)
 
-                     )SQ
-   GROUP  BY %s
-            )""" % (self._table, self._select(), self._subquery_grouped_op(),
-                    self._subquery_no_grouped_op(), self._group_by()))
+                                 )SQ
+               GROUP  BY %s
+                        )""" % (self._table, self._select(), self._subquery_grouped_op(),
+                                self._subquery_no_grouped_op(), self._group_by()))
 
     def _change_original_op_vals(self, op, op_qty, qty_to_create):
         vals = {}
@@ -442,6 +442,14 @@ class wave_report(osv.osv):
             'location_id': pack.location_id.id,
         }
         return vals
+
+    @api.multi
+    def create_operations_on_the_fly_from_gun(self, my_args):
+        wave_report_id = my_args.get('wave_report_id', False)
+        needed_qty= my_args.get('needed_qty', 0)
+        pack_id= my_args.get('pack_id', False)
+        user_id = my_args.get('user_id', False)
+        return self.create_operations_on_the_fly(wave_report_id, needed_qty, pack_id)
 
     def create_operations_on_the_fly(self, wave_report_id, needed_qty, pack_id):
         created_qty = 0.0
