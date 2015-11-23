@@ -447,7 +447,6 @@ class wave_report(osv.osv):
         created_qty = 0.0
         t_op = self.env['stock.pack.operation']
         t_pa = self.env['stock.quant.package']
-        import ipdb; ipdb.set_trace()
         wave_report = self.browse(wave_report_id)
         if wave_report.wave_id.state in ['done', 'cancel']:
             raise except_orm(_('Error'), _('You can not change operations in \
