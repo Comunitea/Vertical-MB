@@ -139,7 +139,9 @@ class wave_report(osv.osv):
         'uom_id': fields.related('product_id', 'uom_id', type='many2one',
                                  relation='product.uom', string='Stock unit',
                                  readonly=True),
-        'uos_qty': fields.float('UoS quantity', readonly=True),
+        'uos_qty': fields.float('UoS quantity', readonly=True,
+                                digits_compute=
+                                dp.get_precision('Product Unit of Measure')),
         'uos_id': fields.many2one('product.uom', 'Secondary unit',
                                   readonly=True),
         'customer_id': fields.many2one('res.partner', 'Customer',
