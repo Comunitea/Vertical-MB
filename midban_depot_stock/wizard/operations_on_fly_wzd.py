@@ -34,22 +34,26 @@ class OperationsOnFlyWzd(models.TransientModel):
         if not active_ids:
             return res
         wave_repp_obj = self.env['wave.report'].browse(active_ids[0])
-        res.update({'product_id': wave_repp_obj.product_id.id})
+        res.update({'product_id': wave_repp_obj.product_id.id,
+                    'orig_pack_id': wave_repp_obj.pack_id.id})
         return res
 
     needed_qty = fields.Float('Needed Quantity',
                               digits=
                               dp.get_precision('Product Unit of Measure'),
                               required=True)
-    product_id = fields.Many2one('product.product', 'Product')
-    package_id = fields.Many2one('stock.quant.package', 'Package_id')
+    product_id = fields.Many2one('product.product', 'Product', readonly=True)
+    orig_pack_id = fields.Many2one('stock.quant.package', 'Orig Package',
+                                   readonly=True)
+    package_id = fields.Many2one('stock.quant.package', 'New Package',
+                                 required=True)
 
     @api.multi
     def create_operations(self):
         if self.env.context.get('active_ids', []):
             t_wr = self.env["wave.report"]
             report_obj = t_wr.browse(self.env.context['active_ids'][0])
-            report_obj.create_operations_on_the_fly(report_obj.wave_id.id,
+            report_obj.create_operations_on_the_fly(report_obj.id,
                                                     self.needed_qty,
                                                     self.package_id.id)
         return
