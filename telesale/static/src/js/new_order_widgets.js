@@ -1285,22 +1285,50 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             else
                $('#total_order').removeClass('warning-red');
         },
+        // confirmCurrentOrder: function() {
+        //     var currentOrder = this.order_model;
+        //     //currentOrder.set('action_button', 'confirm')
+        //     currentOrder.set('action_button', 'confirm_background')
+        //     // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
+        //     //     alert(_t('You cant confirm an order which state is diferent than draft.'));
+        //     // }
+        //     // else  if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+        //     if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
+        //             alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
+        //     }
+        //    else if ( currentOrder.check() ){
+        //         var partner_id = this.ts_model.db.partner_name_id[currentOrder.get('partner')]
+        //         delete this.ts_model.db.cache_sold_lines[partner_id];
+        //         this.ts_model.push_order(currentOrder.exportAsJSON());
+        //     }
+        // },
         confirmCurrentOrder: function() {
+          var self = this;
             var currentOrder = this.order_model;
-            //currentOrder.set('action_button', 'confirm')
-            currentOrder.set('action_button', 'confirm_background')
-            // if ( (currentOrder.get('erp_state')) && (currentOrder.get('erp_state') != 'draft') ){
-            //     alert(_t('You cant confirm an order which state is diferent than draft.'));
-            // }
-            // else  if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
-            if (currentOrder.get('limit_credit')*1 != 0 && currentOrder.get('customer_debt')*1 + currentOrder.get('total')*1 > currentOrder.get('limit_credit')*1){
-                    alert(_t('You cant confirm this order because you are exceeding customer limit credit. Please save as draft'));
-            }
-           else if ( currentOrder.check() ){
-                var partner_id = this.ts_model.db.partner_name_id[currentOrder.get('partner')]
-                delete this.ts_model.db.cache_sold_lines[partner_id];
-                this.ts_model.push_order(currentOrder.exportAsJSON());
-            }
+            self.saveCurrentOrder()
+            $.when( self.ts_model.ready2 )
+            .done(function(){
+                var loaded = self.ts_model.fetch('sale.order',
+                                                ['id', 'name'],
+                                                [
+                                                    ['chanel', '=', 'telesale']
+                                                ])
+                    .then(function(orders){
+                       console.log('Entro')
+                        if (orders[0]) {
+                          // var my_id = orders[0].id
+                          (new instance.web.Model('sale.order')).call('confirm_order_background',[orders[0].id],{context:new instance.web.CompoundContext()})
+                              .fail(function(unused, event){
+                                  //don't show error popup if it fails
+                                  console.error('Failed confirm order: ',orders[0].name);
+                              })
+                              .done(function(){
+                                    console.log('Confirmado en segundo plano Yeeeeeah');
+                              });
+
+                        }
+                    });
+             });
         },
         cancelCurrentOrder: function() {
             var currentOrder = this.order_model;
