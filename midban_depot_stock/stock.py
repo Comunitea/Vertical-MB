@@ -1750,15 +1750,27 @@ class stock_move(models.Model):
         res['route_detail_id'] = route_detail_id
         return res
 
+    def _get_propagated_change_dict(self, cr, uid, vals, context=None):
+        propagated_changes_dict = super(stock_move, self)._get_propagated_change_dict(cr, uid, vals,
+                                            context=context)
+        #CMNT propagation of quantity uos change. PATCH FOR PERFORMANCE
+        if vals.get('product_uos_qty'):
+            propagated_changes_dict['product_uos_qty'] = \
+                vals['product_uos_qty']
+        if vals.get('product_uos_id'):
+            propagated_changes_dict['product_uos_id'] = \
+                    vals['product_uos_id']
+        return propagated_changes_dict
+
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
             context = {}
         # TODO: se hace asi?
-        _logger.debug("CMNT WRITE del move %s - %s", vals, context)
+        _logger.debug("CMNT WRITE del stock.move %s - %s", vals, context)
         init_t = time.time()
         res = super(stock_move, self).write(cr, uid, ids, vals,
                                             context=context)
-        _logger.debug("CMNT tiempo write original: %s",
+        _logger.debug("CMNT stock.move tiempo write original: %s",
                      time.time() - init_t)
         # para arrastrar la ruta al albaran desde la venta
         if vals.get('picking_id', False):
@@ -1781,22 +1793,24 @@ class stock_move(models.Model):
                         pick_obj.write(cr, uid, vals['picking_id'], vls,
                                        context=context)
 
+        # Se evita toda esta parte añadiend el hook de _get_propagated_change_dict
+        # PAra esto se modificó también el modulo de stock en addons
         # Propagar las unidades de venta...
-        for move in self.browse(cr, uid, ids, context=context):
-            propagated_changes_dict = {}
-            # propagation of quantity sale change
-            if vals.get('product_uos_qty'):
-                propagated_changes_dict['product_uos_qty'] = \
-                    vals['product_uos_qty']
-            if vals.get('product_uos_id'):
-                propagated_changes_dict['product_uos_id'] = \
-                    vals['product_uos_id']
-            if not context.get('do_not_propagate', False) and \
-                    propagated_changes_dict and move.move_dest_id.id:
-                self.write(cr, uid, [move.move_dest_id.id],
-                           propagated_changes_dict,
-                           context=context)
-        _logger.debug("CMNT tiempo write: %s",
+        # for move in self.browse(cr, uid, ids, context=context):
+        #     propagated_changes_dict = {}
+        #     # propagation of quantity sale change
+        #     if vals.get('product_uos_qty'):
+        #         propagated_changes_dict['product_uos_qty'] = \
+        #             vals['product_uos_qty']
+        #     if vals.get('product_uos_id'):
+        #         propagated_changes_dict['product_uos_id'] = \
+        #             vals['product_uos_id']
+        #     if not context.get('do_not_propagate', False) and \
+        #             propagated_changes_dict and move.move_dest_id.id:
+        #         self.write(cr, uid, [move.move_dest_id.id],
+        #                    propagated_changes_dict,
+        #                    context=context)
+        _logger.debug("CMNT stock.move tiempo total write: %s",
                       time.time() - init_t)
         return res
 
