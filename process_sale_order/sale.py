@@ -299,9 +299,18 @@ class sale_order(models.Model):
         return True
 
     def _action_button_confirm_thread(self, cr, uid, ids, context=None):
-         with Environment.manage():
-            new_cr = self.pool.cursor()
-            self.action_button_confirm(new_cr, uid, ids, context=context)
-            new_cr.commit()
-            new_cr.close()
-            return {}
+        try:
+            with Environment.manage():
+                new_cr = self.pool.cursor()
+                self.action_button_confirm(new_cr, uid, ids, context=context)
+                # TODO revisa por qué hay que hacer este commit
+                new_cr.commit()
+                new_cr.close()
+                return {}
+        except ValueError:
+            records = self._get_followers(cr, uid, ids, None, None, context=context)
+            followers = records[ids[0]]['message_follower_ids']
+            self.message_post(cr, uid, ids, "Error en la confirmación de pedido: " + ValueError,
+                    subtype='mt_comment',
+                    partner_ids=followers,
+                    context=context)
