@@ -406,8 +406,11 @@ class stock_picking(osv.Model):
                             supp = prod.get_product_supp_record(supplier_id)
                         op_uos_qty = 0
                         init_op = time.time()
+                        op_qty = op.product_qty
+                        if not op.product_id:
+                            op_qty = op.package_id.packed_qty
                         op_uos_qty = \
-                            op.operation_product_id.uom_qty_to_uos_qty(op.product_qty,
+                            op.operation_product_id.uom_qty_to_uos_qty(op_qty,
                                                     move_uos_id,
                                                     supplier_id)
                         _logger.debug("CMNT cinv unid: %s", time.time() - init_op)
@@ -536,7 +539,9 @@ class StockPackage(models.Model):
                                      store=True)
     unreserved_qty = fields2.Float('Unreserved Qty',
                                    compute=_get_unreserved_qty,
-                                   readonly=True)
+                                   readonly=True,
+                                   digits_compute=
+                                   dp.get_precision('Product Unit of Measure'))
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
@@ -684,7 +689,9 @@ class stock_package(models.Model):
                                            readonly=True,
                                            type="boolean",
                                            string="Is multiproduct"),
-        'uos_qty': fields.float('S.U. qty'),
+        'uos_qty': fields.float('S.U. qty',
+                                digits_compute=
+                                dp.get_precision('Product Unit of Measure')),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
         'uom_id': fields.related('product_id', 'uom_id', type="many2one",
                                  relation="product.uom",
@@ -833,6 +840,8 @@ class stock_pack_operation(models.Model):
                                         readonly=True),
         'packed_qty': fields.function(_get_qty_package, type='float',
                                       string='Packed qty',
+                                      digits_compute=
+                                      dp.get_precision('Product Unit of Measure'),
                                       readonly=True),
         'num_mantles': fields.function(_get_num_mantles,
                                        type='integer',
@@ -847,7 +856,9 @@ class stock_pack_operation(models.Model):
         # unlink the original operation and wee ned to remember it
         # In the scan_gun_warehouse module
         'old_id': fields.integer('Old id', readonly=True),
-        'uos_qty': fields.float('UoS quantity'),
+        'uos_qty': fields.float('UoS quantity',
+                                digits_compute=
+                                dp.get_precision('Product Unit of Measure')),
         'uos_id': fields.many2one('product.uom', 'Secondary unit'),
         'do_onchange': fields.boolean('Do onchange'),
         'changed': fields.boolean('Record changed'),
@@ -1016,9 +1027,17 @@ class stock_pack_operation(models.Model):
 
     @api.model
     def get_result_package_id(self,vals):
-        init_t = time.time()
-        vals['result_package_id'] = vals.get('result_package_id', False)
+        init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
+        picking_id = vals.get('picking_id', False) or self.picking_id.id
+        picking = self.env['stock.picking'].browse(picking_id)
+        wh = self.env['stock.warehouse'].search([])[0]
+        pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_type_id.id, wh.reposition_type_id.id]
+        #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
 
+        if picking.picking_type_id.id in pick_types:
+            return vals
+
+        vals['result_package_id'] = vals.get('result_package_id', False)
         if not vals['result_package_id']== False:
             return vals
 
@@ -1028,8 +1047,8 @@ class stock_pack_operation(models.Model):
             pack_type = vals.get('do_pack', self.do_pack)
             product_id = vals.get('product_id', self.product_id or False)
             lot_id = self.lot_id and self.lot_id.id or False
-            #if not lot_id:
-            #    lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
+            if not lot_id:
+                lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
             if lot_id:
                 new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
                 pack_in_destination = new_loc.get_package_of_lot(lot_id)
