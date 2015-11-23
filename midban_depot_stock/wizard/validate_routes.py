@@ -196,7 +196,9 @@ class ValidateRoutes(models.TransientModel):
                            'group_id': pick.group_id.id,
                            'camera_id':cam }
             new_pick = pick.copy(copy_values)
-            moves_by_cam[cam].with_context(do_not_propagate=True).write({'picking_id': new_pick})
-            ops_by_cam[cam].with_context(no_recompute=True).write({'picking_id': new_pick})
+            #print moves_by_cam[cam]
+            #print ops_by_cam[cam]
+            moves_by_cam[cam].with_context(do_not_propagate=True).write({'picking_id': new_pick.id})
+            ops_by_cam[cam].with_context(no_recompute=True).write({'picking_id': new_pick.id})
             splited_picks += new_pick
         return splited_picks
