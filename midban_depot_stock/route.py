@@ -492,6 +492,7 @@ class customer_list(models.Model):
     customer_id = fields.Many2one('res.partner', 'Customer',
                                   domain=[('customer', '=', True)],
                                   required=True)
+    phone = fields.Char('Phone', related="customer_id.phone", readonly=True)
     sale_id = fields.Many2one('sale.order', 'Order', readonly=True,
                               help='is linked when confirm a order with this\
                               detail route')

@@ -25,6 +25,8 @@ from openerp import models, api
 import time
 import logging
 _logger = logging.getLogger(__name__)
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
 
 
 class wave_report(osv.osv):
@@ -177,8 +179,8 @@ class wave_report(osv.osv):
           SQ.pack_id      as pack_id"""
 
     def _subquery_grouped_op(self):
-        #1º Paquete completo, peso fijo.
-        #2º Cantidad de producto, peso fijo.
+        # 1º Paquete completo, peso fijo.
+        # 2º Cantidad de producto, peso fijo.
         return """SELECT Min(operation.id) AS id,
                   quant.product_id  AS product_id,
                   quant.lot_id      AS lot_id,
@@ -377,25 +379,122 @@ class wave_report(osv.osv):
         tools.drop_view_if_exists(cr, self._table)
         cr.execute("""CREATE or REPLACE VIEW %s as (
             SELECT %s
-   FROM   ((%s)
-            UNION
+               FROM   ((%s)
+                        UNION
 
-            (%s)
+                        (%s)
 
-                     )SQ
-   GROUP  BY %s
-            )""" % (self._table, self._select(), self._subquery_grouped_op(),
-                    self._subquery_no_grouped_op(), self._group_by()))
+                                 )SQ
+               GROUP  BY %s
+                        )""" % (self._table, self._select(), self._subquery_grouped_op(),
+                                self._subquery_no_grouped_op(), self._group_by()))
 
-    def create_operations_on_the_fly(self, wave_id, need_qty, pack_id):
+    def _change_original_op_vals(self, op, op_qty, qty_to_create):
+        vals = {}
+        prod = op.operation_product_id
+        new_qty = op_qty - qty_to_create
+        new_uos_qty = prod.uom_qty_to_uos_qty(new_qty, op.uos_id.id)
+        vals = {
+            'product_id': prod.id,
+            'product_qty': new_qty,
+            'uos_qty': new_uos_qty,
+        }
+        return vals
+
+    def _get_new_op_vals(self, op, op_qty, pack, qty_to_create, needed_qty):
+        vals = {}
+        prod = pack.product_id
+        move_pack = False
+        if pack.packed_qty == needed_qty:
+            move_pack = True
+        new_qty = 1 if move_pack else qty_to_create
+        new_uos_qty = prod.uom_qty_to_uos_qty(new_qty, pack.uos_id.id)
+        vals = {
+            'product_id': False if move_pack else prod.id,
+            'product_qty': 1 if move_pack else new_qty,
+            'product_uom_id': False if move_pack else prod.uom_id.id,
+            'lot_id': False if move_pack else pack.packed_lot_id.id,
+            'package_id': pack.id,
+            'uos_qty': new_uos_qty,
+            'uos_id': op.uos_id.id,
+            'location_id': pack.location_id.id,
+            'location_dest_id': op.location_dest_id.id,
+            'picking_id': op.picking_id.id,
+
+        }
+        return vals
+
+    def _sust_original_op_vals(self, op, op_qty, pack, qty_to_create,
+                               needed_qty):
+        vals = {}
+        prod = pack.product_id
+        move_pack = False
+        if pack.packed_qty == needed_qty:
+            move_pack = True
+        new_qty = 1 if move_pack else op_qty
+        new_uos_qty = prod.uom_qty_to_uos_qty(op.product_qty, pack.uos_id.id)
+        vals = {
+            'product_id': prod.id,
+            'product_qty': new_qty,
+            'product_uom_id': prod.uom_id.id,
+            'lot_id': pack.packed_lot_id.id,
+            'package_id': pack.id,
+            'uos_qty': new_uos_qty,
+            'uos_id': pack.uos_id.id,
+            'location_id': pack.location_id.id,
+        }
+        return vals
+
+    @api.multi
+    def create_operations_on_the_fly_from_gun(self, my_args):
+        wave_report_id = my_args.get('wave_report_id', False)
+        needed_qty= my_args.get('needed_qty', 0)
+        pack_id= my_args.get('pack_id', False)
+        user_id = my_args.get('user_id', False)
+        return self.create_operations_on_the_fly(wave_report_id, needed_qty, pack_id)
+
+    def create_operations_on_the_fly(self, wave_report_id, needed_qty, pack_id):
         created_qty = 0.0
-        wave_report = self.browse(wave_id)
-        # for item in self.browse(cr, uid, ids, context=context):
-        #     res[item.id] = False
-        #     if item.location_id:
-        #         res[item.id] = item.location_id.get_camera()
-        print "VOY A CREAR OPERACIONES"
-        return 0.0
+        t_op = self.env['stock.pack.operation']
+        t_pa = self.env['stock.quant.package']
+        wave_report = self.browse(wave_report_id)
+        if wave_report.wave_id.state in ['done', 'cancel']:
+            raise except_orm(_('Error'), _('You can not change operations in \
+                                            a done or cancelled wave'))
+        op_objs = wave_report.operation_ids
+        op_objs = sorted(op_objs, key=lambda op: op.product_qty)
+        qty_to_create = needed_qty
+        pack = t_pa.browse(pack_id)
+        if not pack:
+            raise except_orm(_('Error'),
+                             _('You must select a pack to add operations'))
+        for op in op_objs:
+            if op.picking_id.state not in ['assigned']:
+                err = _("You can not change operations in picking %s because \
+                         it isn't in ready to transfer \
+                         state" % op.picking_id.name)
+                raise except_orm(_('Error'), err)
+            op_qty = op.product_qty if op.product_id else \
+                op.package_id.packed_qty
+            if op_qty > qty_to_create:
+                change_vals = self._change_original_op_vals(op, op_qty,
+                                                            qty_to_create)
+                op.write(change_vals)
+                new_vals = self._get_new_op_vals(op, op_qty, pack,
+                                                 qty_to_create, needed_qty)
+                t_op = t_op.create(new_vals)
+                created_qty += new_vals.get('product_qty', 0.0)
+                break
+            else:
+                sust_vals = self._sust_original_op_vals(op, op_qty, pack,
+                                                        qty_to_create,
+                                                        needed_qty)
+                op.write(sust_vals)
+                created_qty += sust_vals.get('product_qty', 0.0)
+                qty_to_create -= created_qty
+                if not qty_to_create:
+                    break
+        return created_qty
 
 
 class wave_report_parser(models.AbstractModel):

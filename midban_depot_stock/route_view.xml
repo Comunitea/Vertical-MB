@@ -70,6 +70,7 @@
                                                         <tree editable="top">
                                                             <field name="sequence"/>
                                                             <field name="customer_id"/>
+                                                            <field name="phone"/>
                                                             <field name="sale_id"/>
                                                             <field name="result"/>
                                                         </tree>
@@ -79,6 +80,7 @@
                                                     <field name="call_ids" nolabel="1">
                                                         <tree editable="top">
                                                             <field name="partner_id"/>
+                                                            <field name="phone"/>
                                                             <field name="name"/>
                                                             <field name="result"/>
                                                             <field name="state" readonly="1"/>

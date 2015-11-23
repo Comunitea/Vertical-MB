@@ -8,9 +8,15 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Create new operations">
+                    <p>
+                    It will sustitute the selected quantity from pack in this grouped operations. And it will create one or several operations with the new pack. It will be add a new agrupation</p>
+                    <p>
+                    </p>
                     <group string="Select needed quantity from pack">
                         <field name="needed_qty"/>
-                        <field name="package_id"/>
+                        <field name="product_id" invisible="1"/>
+                        <field name="orig_pack_id" invisible="1"/>
+                        <field name="package_id" context="{'product_id': product_id, 'min_qty': needed_qty, 'package_id': orig_pack_id}"/>
                     </group>
                     <footer>
                       <button  name="create_operations" type="object" string="Create operations" icon="gtk-execute"/>

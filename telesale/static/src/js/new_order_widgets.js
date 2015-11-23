@@ -755,14 +755,14 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         if(uos_id == product_obj.log_base_id[0]){
                             boxes = (value / product_obj.kg_un) / product_obj.un_ca
                         }
-                        else if(uos_id == product_obj.log_unit_id[1]){
+                        else if(uos_id == product_obj.log_unit_id[0]){
                             boxes = value / product_obj.un_ca
                         }
                         else if(uos_id == product_obj.log_box_id[0]){
                             boxes = value
                         }
                         this.model.set('boxes', my_round(boxes, 4));
-                      this.refresh('product_uos');
+                      // this.refresh('product_uos');
                       }
                     }
                     break;
@@ -787,7 +787,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         this.set_discounts()
                         uos_pu = this.getUomUosPrices(prod_name, uos_name,  price_unit)
                         this.model.set('price_udv', my_round(uos_pu, 2))
-                        this.refresh('price_udv')
+                        // this.refresh('price_udv')
                       }
                     }
                     break;
@@ -806,7 +806,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         var uom_pu = this.getUomUosPrices(prod_name, uos_name, 0, value)
                         this.model.set('price_udv', my_round(value, 2));
                         this.model.set('pvp', my_round(uom_pu, 2));
-                        this.refresh('pvp');
+                        // this.refresh('pvp');
                       }
                     }
                     break;
@@ -825,7 +825,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         uos_pu = this.getUomUosPrices(prod_name, uos_name,  value)
                         this.model.set('price_udv', my_round(uos_pu, 2));
                         this.model.set('pvp', my_round(value, 2));
-                        this.refresh('discount');
+                        // this.refresh('discount');
                       }
                     }
                     break;
@@ -866,9 +866,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       }
                       else{
                         this.model.set('discount', value);
-                        if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
-                            this.refresh('code');
-                        }
+                        // if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
+                        //     this.refresh('code');
+                        // }
                       }
                     }
                     break;

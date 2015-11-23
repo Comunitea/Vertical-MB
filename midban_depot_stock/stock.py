@@ -542,6 +542,8 @@ class StockPackage(models.Model):
     def name_search(self, name, args=None, operator='ilike', limit=100):
         """
         Used by task view to show only packs in input location.
+        Used to get only packs for a product with available min_qty give it
+        in context
         """
         res = super(StockPackage, self).name_search(name, args=args,
                                                     operator=operator,
@@ -552,6 +554,24 @@ class StockPackage(models.Model):
             args = [('location_id', '=', input_loc.id)]
             recs = self.search(args)
             res = recs.name_get()
+        elif self._context.get('product_id', False):
+            min_qty = self._context.get('min_qty', False)
+            product_id = self._context.get('product_id', False)
+            package_id = self._context.get('package_id', False)
+            wh = self.env['stock.warehouse'].search([])[0]
+            stock_loc = wh.lot_stock_id
+            args = [('product_id', '=', product_id),
+                    ('quant_ids', '!=', False),
+                    ('location_id', 'child_of', [stock_loc.id])]
+            if package_id:
+                args.append(('id', '!=', package_id))
+            recs = self.search(args)
+            for p in recs:
+                if min_qty and p.unreserved_qty < min_qty or not \
+                        p.unreserved_qty:
+                    recs -= p
+            res = recs.name_get()
+
         return res
 
 
