@@ -1016,9 +1016,18 @@ class stock_pack_operation(models.Model):
 
     @api.model
     def get_result_package_id(self,vals):
-        init_t = time.time()
-        vals['result_package_id'] = vals.get('result_package_id', False)
+        init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
 
+        picking = self.env['stock.picking'].browse(vals.get('picking_id', False))
+        wh = self.env['stock.warehouse'].search([])[0]
+
+        pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_pick_id.id, wh.reposition_type_id.id]
+        #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
+
+        if picking.picking_type_id.id in pick_types:
+            return vals
+
+        vals['result_package_id'] = vals.get('result_package_id', False)
         if not vals['result_package_id']== False:
             return vals
 
@@ -1028,8 +1037,8 @@ class stock_pack_operation(models.Model):
             pack_type = vals.get('do_pack', self.do_pack)
             product_id = vals.get('product_id', self.product_id or False)
             lot_id = self.lot_id and self.lot_id.id or False
-            #if not lot_id:
-            #    lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
+            if not lot_id:
+                lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
             if lot_id:
                 new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
                 pack_in_destination = new_loc.get_package_of_lot(lot_id)
