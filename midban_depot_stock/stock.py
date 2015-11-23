@@ -406,8 +406,11 @@ class stock_picking(osv.Model):
                             supp = prod.get_product_supp_record(supplier_id)
                         op_uos_qty = 0
                         init_op = time.time()
+                        op_qty = op.product_qty
+                        if not op.product_id:
+                            op_qty = op.package_id.packed_qty
                         op_uos_qty = \
-                            op.operation_product_id.uom_qty_to_uos_qty(op.product_qty,
+                            op.operation_product_id.uom_qty_to_uos_qty(op_qty,
                                                     move_uos_id,
                                                     supplier_id)
                         _logger.debug("CMNT cinv unid: %s", time.time() - init_op)
@@ -685,7 +688,9 @@ class stock_package(models.Model):
                                            type="boolean",
                                            string="Is multiproduct"),
         'uos_qty': fields.float('S.U. qty'),
-        'uos_id': fields.many2one('product.uom', 'Secondary unit'),
+        'uos_id': fields.many2one('product.uom', 'Secondary unit',
+                                  digits_compute=
+                                  dp.get_precision('Product Unit of Measure')),
         'uom_id': fields.related('product_id', 'uom_id', type="many2one",
                                  relation="product.uom",
                                  string="Stock unit", readonly=True)}
@@ -1017,11 +1022,10 @@ class stock_pack_operation(models.Model):
     @api.model
     def get_result_package_id(self,vals):
         init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
-
-        picking = self.env['stock.picking'].browse(vals.get('picking_id', False))
+        picking_id = vals.get('picking_id', False) or self.picking_id.id
+        picking = self.env['stock.picking'].browse(picking_id)
         wh = self.env['stock.warehouse'].search([])[0]
-
-        pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_pick_id.id, wh.reposition_type_id.id]
+        pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_type_id.id, wh.reposition_type_id.id]
         #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
 
         if picking.picking_type_id.id in pick_types:
