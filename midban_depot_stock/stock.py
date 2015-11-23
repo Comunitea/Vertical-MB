@@ -542,6 +542,8 @@ class StockPackage(models.Model):
     def name_search(self, name, args=None, operator='ilike', limit=100):
         """
         Used by task view to show only packs in input location.
+        Used to get only packs for a product with available min_qty give it
+        in context
         """
         res = super(StockPackage, self).name_search(name, args=args,
                                                     operator=operator,

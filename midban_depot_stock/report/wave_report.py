@@ -25,6 +25,8 @@ from openerp import models, api
 import time
 import logging
 _logger = logging.getLogger(__name__)
+from openerp.exceptions import except_orm
+from openerp.tools.translate import _
 
 
 class wave_report(osv.osv):
@@ -441,17 +443,28 @@ class wave_report(osv.osv):
         }
         return vals
 
-    def create_operations_on_the_fly(self, wave_id, needed_qty, pack_id):
+    def create_operations_on_the_fly(self, wave_report_id, needed_qty, pack_id):
         created_qty = 0.0
         t_op = self.env['stock.pack.operation']
         t_pa = self.env['stock.quant.package']
-        # wave_report = self.browse(wave_id)
-        # CHECK STATE OF WAVE
-        op_objs = self.operation_ids
+        import ipdb; ipdb.set_trace()
+        wave_report = self.browse(wave_report_id)
+        if wave_report.wave_id.state in ['done', 'cancel']:
+            raise except_orm(_('Error'), _('You can not change operations in \
+                                            a done or cancelled wave'))
+        op_objs = wave_report.operation_ids
         op_objs = sorted(op_objs, key=lambda op: op.product_qty)
         qty_to_create = needed_qty
         pack = t_pa.browse(pack_id)
+        if not pack:
+            raise except_orm(_('Error'),
+                             _('You must select a pack to add operations'))
         for op in op_objs:
+            if op.picking_id.state not in ['assigned']:
+                err = _("You can not change operations in picking %s because \
+                         it isn't in ready to transfer \
+                         state" % op.picking_id.name)
+                raise except_orm(_('Error'), err)
             op_qty = op.product_qty if op.product_id else \
                 op.package_id.packed_qty
             if op_qty > qty_to_create:

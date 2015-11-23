@@ -8,6 +8,10 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Create new operations">
+                    <p>
+                    It will sustitute the selected quantity from pack in this grouped operations. And it will create one or several operations with the new pack. It will be add a new agrupation</p>
+                    <p>
+                    </p>
                     <group string="Select needed quantity from pack">
                         <field name="needed_qty"/>
                         <field name="product_id"/>
