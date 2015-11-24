@@ -29,7 +29,7 @@
     'website': '',
     "depends": ['stock'],
     "data": ["wizard/reassign_stock_wzd_view.xml",
+             "security/ir.model.access.csv",
              "stock_view.xml"],
     "installable": True
 }
-

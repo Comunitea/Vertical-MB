@@ -37,6 +37,7 @@ class ValidateRoutes(models.TransientModel):
         out_pickings = self.env['stock.picking'].browse(active_ids)
 
         pick_pickings = self._get_pickings_from_outs(out_pickings)
+        # TODO ordenar por date (fecha de creación)
         unasigned_picks_lst = []
         for pick in pick_pickings:
             if not pick.route_detail_id:
