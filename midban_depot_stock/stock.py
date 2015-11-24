@@ -1022,11 +1022,16 @@ class stock_pack_operation(models.Model):
                                                " the picking."))
 
         #Hay que reescribir esto, lo hago en una función aparte.
-        vals = self.get_result_package_id(vals)
+        if vals.get('product_id', False) or vals.get('package_id', False) or \
+            vals.get('location_dest_id') or vals.get('do_pack', False):
+                op = self[0]
+                vals = op.get_result_package_id(vals)
+
         return super(stock_pack_operation, self).write(vals)
 
-    @api.model
+    @api.multi
     def get_result_package_id(self,vals):
+
         init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
         picking_id = vals.get('picking_id', False) or self.picking_id.id
         picking = self.env['stock.picking'].browse(picking_id)
