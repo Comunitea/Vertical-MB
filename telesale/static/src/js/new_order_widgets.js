@@ -873,9 +873,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       }
                       else{
                         this.model.set('discount', value);
-                        // if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
-                        //     this.refresh('code');
-                        // }
+                        if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
+                            this.refresh('code');
+                        }
                       }
                     }
                     break;
