@@ -51,13 +51,14 @@ class ValidateRoutes(models.TransientModel):
             for move in pick.move_lines:
                 assing_t = time.time()
                 move.action_assign()
-                _logger.debug("CMNT Assign time: %s",time.time() - assing_t)
+                _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
                 if move.state != 'assigned':
                     if not unassigned_pick:
                         assing_unp = time.time()
                         copy_values = {'move_lines': [],
                                        'pack_operation_ids': [],
                                        'validated': False,
+                                       'unnasigned_pick': True,
                                        'route_detail_id': False,
                                        'group_id': pick.group_id.id}
                         unassigned_pick = pick.copy(copy_values)
