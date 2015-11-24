@@ -25,6 +25,8 @@ from openerp.exceptions import except_orm
 from openerp.tools.float_utils import float_round, float_compare
 from openerp.api import Environment
 import threading
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class QualitativeNote(models.Model):
@@ -292,25 +294,33 @@ class sale_order(models.Model):
     #
     #     return res
 
-    def action_button_confirm_thread(self, cr, uid, ids, context=None):
+    @api.one
+    def action_button_confirm_thread(self):
+        _logger.debug("CMNT PREPARA EL HILO ")
         thread = threading.Thread(
-            target=self._action_button_confirm_thread, args=(cr, uid, ids))
+            target=self._action_button_confirm_thread)
         thread.start()
         return True
 
-    def _action_button_confirm_thread(self, cr, uid, ids, context=None):
-        try:
-            with Environment.manage():
-                new_cr = self.pool.cursor()
-                self.action_button_confirm(new_cr, uid, ids, context=context)
-                # TODO revisa por qué hay que hacer este commit
-                new_cr.commit()
-                new_cr.close()
-                return {}
-        except ValueError:
-            records = self._get_followers(cr, uid, ids, None, None, context=context)
-            followers = records[ids[0]]['message_follower_ids']
-            self.message_post(cr, uid, ids, "Error en la confirmación de pedido: " + ValueError,
-                    subtype='mt_comment',
-                    partner_ids=followers,
-                    context=context)
+    @api.model
+    @api.one
+    def _action_button_confirm_thread(self):
+        _logger.debug("CMNT ENTRA EN EL HILO!!!!!!!!!")
+        new_cr = self.pool.cursor()
+        with Environment.manage():
+            uid, context = self.env.uid, self.env.context
+            env = Environment(new_cr, uid, context)
+            #try:
+            env['sale.order'].browse(self.id).action_button_confirm()
+
+            #except Exception, e:
+            #    _logger.debug("CMNT ERROR EN EL HILO!!!!!!!!! %s", str(e))
+            new_cr.commit()
+            new_cr.close()
+            return {}
+            # records = self._get_followers(cr, uid, ids, None, None, context=context)
+            # followers = records[ids[0]]['message_follower_ids']
+            # self.message_post(cr, uid, ids, "Error en la confirmación de pedido: " + ValueError,
+            #         subtype='mt_comment',
+            #         partner_ids=followers,
+            #         context=context)
