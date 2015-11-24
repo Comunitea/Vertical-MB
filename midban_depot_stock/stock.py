@@ -333,10 +333,9 @@ class stock_picking(osv.Model):
                 }
                 pending_ops_values.append(op_vals)
 
-        pending_ops.unlink()
-
         _logger.debug("CMNT tiempo prepara items : %s", time.time() - init_pi)
         if something_done:
+            pending_ops.unlink()
             init_ddt = time.time()
             self.do_transfer()
             _logger.debug("CMNT tiempo do_transfer: %s", time.time() - init_ddt)
@@ -347,7 +346,8 @@ class stock_picking(osv.Model):
                 for value in pending_ops_values:
                     value['picking_id'] = new_pick_obj.id
                     self.env['stock.pack.operation'].with_context(no_recompute=True).create(value)
-            _logger.debug("CMNT tiempo reasigna ops en BO: %s", time.time() - init_bo)
+                _logger.debug("CMNT tiempo reasigna ops en BO: %s", time.time() - init_bo)
+
         # else:
         #     #REVISAR NO LO TENGO CLARO
         #     for op in self.pack_operation_ids:
