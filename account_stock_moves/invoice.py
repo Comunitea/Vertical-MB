@@ -107,8 +107,8 @@ class account_invoice_line(orm.Model):
                     # calculate and write down the possible price difference
                     # between invoice price and product price
                     for line in res:
-                        #if a == line['account_id'] \
-                        #        and i_line.product_id.id == line['product_id']:
+                        if i_line.product_id.id == line['product_id']:
+
                             if line['price_move'] != i_line.price_subtotal and acc:
                                 price_diff = \
                                     i_line.price_subtotal - line['price_move']
