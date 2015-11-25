@@ -310,11 +310,13 @@ class sale_order(models.Model):
         with Environment.manage():
             uid, context = self.env.uid, self.env.context
             env = Environment(new_cr, uid, context)
-            #try:
-            env['sale.order'].browse(self.id).action_button_confirm()
+            try:
+                env['sale.order'].browse(self.id).action_button_confirm()
 
-            #except Exception, e:
-            #    _logger.debug("CMNT ERROR EN EL HILO!!!!!!!!! %s", str(e))
+            except Exception, e:
+                new_cr.roolback()
+                new_cr.close()
+                _logger.debug("CMNT ERROR EN EL HILO!!!!!!!!! %s", str(e))
             new_cr.commit()
             new_cr.close()
             return {}
