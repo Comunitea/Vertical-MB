@@ -30,8 +30,7 @@ class ReassignStockWzd(models.TransientModel):
 
     _name = "reassign.stock.wzd"
 
-    line_ids = fields.One2many("reassign.stock.line.wzd", "wzd_id", "Lines",
-                               domain=[("state", "=", "assigned")])
+    line_ids = fields.One2many("reassign.stock.line", "wizard_id", "Lines")
 
     @api.model
     def default_get(self, fields):
@@ -104,43 +103,47 @@ class ReassignStockWzd(models.TransientModel):
 
     @api.multi
     def unreserve(self):
-        self.ensure_one()
-        wzd = self
+        # self.ensure_one()
+        # wzd = self
         t_move = self.env["stock.move"]
         to_assign_move = t_move.browse(self.env.context['active_ids'][0])
-        for line in wzd.line_ids:
-            if not line.reassign_qty:
-                continue
-            if line.reassign_qty > line.assigned_qty:
-                # line.move_id.do_unreserve()
-                raise except_orm(_('Error'),
-                                 _('Quantity to reassign greater than \
-                                   unnasigned quantity for picking \
-                                   %s' % line.picking_id.name))
-            self._reassign_quants_for_move(line.move_id, line.reassign_qty)
-            line.move_id.recalculate_move_state()
-            line.move_id.recalculate_move_state()
-            # self._change_operations_for_move(line.move_id, line.reassign_qty)
-            line.move_id.picking_id.delete_picking_package_operations()
-            line.move_id.picking_id.do_prepare_partial()
-            to_assign_move.picking_id.delete_picking_package_operations()
-            to_assign_move.picking_id.do_prepare_partial()
+        for wzd in self:
+            for line in wzd.line_ids:
+                if not line.reassign_qty:
+                    continue
+                if line.reassign_qty > line.assigned_qty:
+                    # line.move_id.do_unreserve()
+                    raise except_orm(_('Error'),
+                                     _('Quantity to reassign greater than \
+                                       unnasigned quantity for picking \
+                                       %s' % line.picking_id.name))
+                self._reassign_quants_for_move(line.move_id, line.reassign_qty)
+                line.move_id.recalculate_move_state()
+                to_assign_move.recalculate_move_state()
+                # self._change_operations_for_move(line.move_id, line.reassign_qty)
+                line.move_id.picking_id.delete_picking_package_operations()
+                line.move_id.picking_id.do_prepare_partial()
+                to_assign_move.picking_id.delete_picking_package_operations()
+                to_assign_move.picking_id.do_prepare_partial()
 
-            line.move_id.picking_id.delete_picking_package_operations()
-            line.move_id.picking_id.do_prepare_partial()
-            # self._put_move_in_validated_picking()
-            to_assign_move.picking_id.delete_picking_package_operations()
-            to_assign_move.picking_id.do_prepare_partial()
-
+                if line.move_id.state == 'assigned':
+                    line.move_id.incomplete = False
+                else:
+                    line.move_id.incomplete = True
+                if to_assign_move.state == 'assigned':
+                    line.move_id.incomplete = False
+                else:
+                    line.move_id.incomplete = True
 
         return True
 
 
 class ReassignStockLineWzd(models.TransientModel):
 
-    _name = "reassign.stock.line.wzd"
+    _name = "reassign.stock.line"
 
-    move_id = fields.Many2one("stock.move", "Move")
+    wizard_id = fields.Many2one('reassign.stock.wzd', "Wzd")
+    move_id = fields.Many2one("stock.move", "Move", readonly=True)
     picking_id = fields.Many2one('stock.picking', 'Pick',
                                  readonly=True)
     product_id = fields.Many2one("product.product", "Product",
@@ -156,7 +159,6 @@ class ReassignStockLineWzd(models.TransientModel):
                               ('confirmed', 'Waiting Availability'),
                               ('assigned', 'Available'),('done', 'Done')],
                               "State", readonly=True)
-    wzd_id = fields.Many2one("reassign.stock.wzd", "Wzd")
     reassign_qty = fields.Float('Qty to treassign',
                                 digits=dp.get_precision
                                 ('Product Unit of Measure'),
