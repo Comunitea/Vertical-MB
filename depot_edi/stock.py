@@ -38,7 +38,7 @@ class stock_picking(models.Model):
 
     num_dispatch_advice = fields.Char('Number dispatch advice', size=64)
     date_dispatch_advice = fields.Date('Date dispatch advice')
-    supplier_pick_number = fields.Char('Number dispatch advice', size=64)
+    supplier_pick_number = fields.Char('Picking Supplier Number', size=64)
     order_date = fields.Date('Date of order', size=64)
     cantemb = fields.Integer('Palet quantity')
     document_id = fields.Many2one('edi.doc', 'EDI Document')

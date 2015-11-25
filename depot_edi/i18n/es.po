@@ -548,9 +548,13 @@ msgstr "No hay impuestos de línea que coincidan con el archivo EDI,"
 
 #. module: depot_edi
 #: field:stock.picking,num_dispatch_advice:0
-#: field:stock.picking,supplier_pick_number:0
 msgid "Number dispatch advice"
 msgstr "Número aviso de expedición"
+
+#. module: depot_edi
+#: field:stock.picking,supplier_pick_number:0
+msgid "Number dispatch advice"
+msgstr "Picking Supplier Number"
 
 #. module: depot_edi
 #: field:edi,output_path:0

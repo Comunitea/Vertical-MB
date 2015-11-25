@@ -1022,7 +1022,7 @@ class stock_pack_operation(models.Model):
                                                " the picking."))
 
         #Hay que reescribir esto, lo hago en una función aparte.
-        if vals.get('product_id', False) or vals.get('package_id', False) or \
+        if vals.get('package_id', False) or \
             vals.get('location_dest_id') or vals.get('do_pack', False):
                 op = self[0]
                 vals = op.get_result_package_id(vals)
