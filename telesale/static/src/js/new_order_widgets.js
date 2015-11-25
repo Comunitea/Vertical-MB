@@ -758,17 +758,25 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                         var boxes = 0.0
                         var product_id = this.ts_model.db.product_name_id[prod_name];
                         var product_obj = this.ts_model.db.get_product_by_id(product_id);
-                        var uos_id = this.ts_model.db.unit_name_id[uos_name];
-                        if(uos_id == product_obj.log_base_id[0]){
-                            boxes = (value / product_obj.kg_un) / product_obj.un_ca
+                        if(value < product_obj.virtual_stock_conservative){
+                            var uos_id = this.ts_model.db.unit_name_id[uos_name];
+                            if(uos_id == product_obj.log_base_id[0]){
+                                boxes = (value / product_obj.kg_un) / product_obj.un_ca
+                            }
+                            else if(uos_id == product_obj.log_unit_id[0]){
+                                boxes = value / product_obj.un_ca
+                            }
+                            else if(uos_id == product_obj.log_box_id[0]){
+                                boxes = value
+                            }
+                            this.model.set('boxes', my_round(boxes, 4));
+                            $('#stock-info').removeClass('warning-red');
                         }
-                        else if(uos_id == product_obj.log_unit_id[0]){
-                            boxes = value / product_obj.un_ca
+                        else{
+                            alert(_t("Value must be lower than Stock"));
+                            $('#stock-info').addClass('warning-red');
+                            this.refresh();
                         }
-                        else if(uos_id == product_obj.log_box_id[0]){
-                            boxes = value
-                        }
-                        this.model.set('boxes', my_round(boxes, 4));
                       this.refresh('product_uos');
                       }
                     }
@@ -873,9 +881,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                       }
                       else{
                         this.model.set('discount', value);
-                        // if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
-                        //     this.refresh('code');
-                        // }
+                        if (this.model.get('n_line') == this.order_widget.orderlinewidgets.length){
+                            this.refresh('code');
+                        }
                       }
                     }
                     break;
