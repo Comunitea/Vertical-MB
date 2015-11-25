@@ -218,8 +218,8 @@ class wave_report(osv.osv):
                           ON product_template.id = product.product_tmpl_id
            WHERE  ((operation.product_id IS NULL AND
             product_template.is_var_coeff = false) or (operation.product_id IS
-            NULL AND product_template.is_var_coeff is null)) and
-            (picking.state in ('assigned', 'partially_available'))
+            NULL AND product_template.is_var_coeff is null))  and
+           (picking.state in ('assigned', 'partially_available', 'done'))
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
@@ -261,8 +261,8 @@ class wave_report(osv.osv):
                           ON product_template.id = product.product_tmpl_id
            WHERE  ((operation.product_id IS NOT NULL AND
            product_template.is_var_coeff = false) or (operation.product_id
-           IS NOT NULL AND product_template.is_var_coeff is null)) and
-           (picking.state in ('assigned', 'partially_available'))
+           IS NOT NULL AND product_template.is_var_coeff is null))  and
+           (picking.state in ('assigned', 'partially_available', 'done'))
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,
@@ -310,8 +310,8 @@ class wave_report(osv.osv):
                   inner join product_template product_template
                           ON product_template.id = product.product_tmpl_id
            WHERE  (operation.product_id IS NULL
-           AND product_template.is_var_coeff = true) and
-           (picking.state in ('assigned', 'partially_available'))
+           AND product_template.is_var_coeff = true)  and
+           (picking.state in ('assigned', 'partially_available', 'done'))
            GROUP  BY quant.product_id,
                      quant.lot_id,
                      operation.location_id,
@@ -354,7 +354,7 @@ class wave_report(osv.osv):
                           ON product_template.id = product.product_tmpl_id
            WHERE  (operation.product_id IS NOT NULL
            AND product_template.is_var_coeff = true) and
-           (picking.state in ('assigned', 'partially_available'))
+           (picking.state in ('assigned', 'partially_available', 'done'))
            GROUP  BY operation.product_id,
                      operation.lot_id,
                      operation.location_id,

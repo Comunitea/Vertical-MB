@@ -640,9 +640,9 @@ function openerp_ts_models(instance, module){
                 });
             }
             return {
-                "priceWithTax": totalTax,
-                "priceWithoutTax": totalNoTax,
-                "tax": taxtotal,
+                "priceWithTax": my_round(totalTax,2),
+                "priceWithoutTax": my_round(totalNoTax,2),
+                "tax": my_round(taxtotal,2),
             };
         },
         // update_pvp: function(){
