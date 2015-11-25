@@ -18,10 +18,11 @@
                             <field name="uom_id"/>
                             <field name="move_id"/>
                             <field name="picking_id"/>
+                            <field name="assigned_qty"/>
                             <field name="reassign_qty"/>
                         </tree>
                     </field>
-                    <button  name="Reassign reserves" type="object" string="Unreserve" icon="gtk-execute"/>
+                    <button  name="unreserve" type="object" string="Reassign reserves" icon="gtk-execute"/>
                     <button string="Cancel" special="cancel" icon="gtk-cancel"/>
                 </form>
             </field>
