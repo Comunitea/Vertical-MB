@@ -271,28 +271,32 @@ class sale_order(models.Model):
     customer_comment = fields.Text('Customer comment',
                                    related='partner_id.comment')
 
-    # @api.multi
-    # def action_ship_create(self):
-    #     """
-    #     It compares lines and shows an error if it found many lines of the
-    #     same product with different units of measure selected.
-    #     """
-    #     t_line = self.env['sale.order.line']
-    #
-    #     for order in self:
-    #         for line in order.order_line:
-    #             domain = [('order_id', '=', order.id),
-    #                       ('product_id', '=', line.product_id.id),
-    #                       ('id', '!=', line.id),
-    #                       ('product_uos', '!=', line.product_uos.id)]
-    #             line_objs = t_line.search(domain)
-    #             if line_objs:
-    #                 raise except_orm(_('Error'),
-    #                                  _("You can't sale product %s in different sale units") % line_objs[0].product_id.name)
-    #
-    #     res = super(sale_order, self).action_ship_create()
-    #
-    #     return res
+    @api.multi
+    def action_ship_create(self):
+        """
+        It compares lines and shows an error if it found many lines of the
+        same product with different units of measure selected.
+        """
+        t_line = self.env['sale.order.line']
+        # TODO COMETAR Y PERMITIRLO, gestionar en do_prepare_partial caso de
+        # 2 movimientos en 1 misma operación, debería separarse en operaciones
+        # por unidad de venta.
+        for order in self:
+            for line in order.order_line:
+                domain = [('order_id', '=', order.id),
+                          ('product_id', '=', line.product_id.id),
+                          ('id', '!=', line.id),
+                          ('product_uos', '!=', line.product_uos.id)]
+                line_objs = t_line.search(domain)
+                if line_objs:
+                    raise except_orm(_('Error'),
+                                     _("You can't sale product %s in \
+                                     different sale units")
+                                     % line_objs[0].product_id.name)
+
+        res = super(sale_order, self).action_ship_create()
+
+        return res
 
     @api.one
     def action_button_confirm_thread(self):
