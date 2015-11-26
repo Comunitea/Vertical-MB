@@ -31,3 +31,36 @@ class stock_move(models.Model):
                              related="procurement_id.sale_line_id.q_note")
     det_note = fields.Char('Details', size=256,
                            related="procurement_id.sale_line_id.detail_note")
+
+    def _get_invoice_line_vals(self, move, partner, inv_type):
+        res = super(stock_move, self)._get_invoice_line_vals(move, partner, inv_type)
+
+        if inv_type == 'out_refund' and not move.procurement_id:
+            sol_obj = self.env['sale.order.line']
+            domain = [
+                ('order_id','=', move.picking_id.sale_id.id),
+                ('product_id', '=', move.product_id.id),
+                ('product_uom_qty', '<=', 0)
+            ]
+            print domain
+            sale_line = False
+            sale_lines = sol_obj.search(domain)
+            if len(sale_lines):
+                sale_line = sale_lines[0]
+            print sale_line
+            return sale_line
+
+            res['invoice_line_tax_id'] = [(6, 0, [x.id for x in sale_line.tax_id])]
+            res['account_analytic_id'] = sale_line.order_id.project_id and sale_line.order_id.project_id.id or False
+            res['discount'] = sale_line.discount
+            if move.product_id.id != sale_line.product_id.id:
+                res['price_unit'] = order.env['product.pricelist'].price_get(
+                     [sale_line.order_id.pricelist_id.id],
+                    move.product_id.id, move.product_uom_qty or 1.0,
+                    sale_line.order_id.partner_id, )[sale_line.order_id.pricelist_id.id]
+            else:
+                res['price_unit'] = sale_line.price_unit
+            #uos_coeff = move.product_uom_qty and move.product_uos_qty / move.product_uom_qty or 1.0
+            #res['price_unit'] = res['price_unit'] / uos_coeff
+        return res
+
