@@ -436,7 +436,7 @@
                     <field name="validated"/>
                     <field name="unnasigned_pick"/>
                     <field name="state" readonly="True" invisible="1"/>
-                    <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
+                    <field name="detail_date" readonly="True" invisible="1"/>
                     <field name="trans_route_id" invisible="1"/>
                     <field name="user_id" invisible="1"/>
                 </tree>
@@ -484,5 +484,66 @@
         </record>
 
         <menuitem action="action_replanning_picking_route" id="menu_replaning_picking_route" name="Replanning Routes" sequence="10" parent="menu_stock_vehicle_route_mgmt"/>
+
+        <!-- Replanning outgoing picking in routes -->
+      <record id="view_delivery_man_route_sheet_tree" model="ir.ui.view">
+          <field name="name">view_picking_replanning_tree_add_route</field>
+          <field name="model">stock.picking</field>
+          <field name="arch" type="xml">
+              <tree string="Route Sheet" create="false" delete="false">
+                  <field name="sale_id" readonly="True"/>
+                  <field name="partner_ref" readonly="True"/>
+                  <field name="partner_id" readonly="True"/>
+                  <field name="partner_street" readonly="True"/>
+                  <field name="partner_city" readonly="True"/>
+                  <field name="partner_phone" readonly="True"/>
+                  <field name="sale_note" readonly="True"/>
+                  <field name="state" readonly="True" invisible="1"/>
+                  <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
+                  <field name="trans_route_id" invisible="1"/>
+                  <field name="user_id" invisible="1"/>
+              </tree>
+          </field>
+       </record>
+
+       <record id="view_delivery_man_route_sheet_flter" model="ir.ui.view">
+          <field name="name">view.delivery.man.route.sheet.flter</field>
+          <field name="model">stock.picking</field>
+          <field name="arch" type="xml">
+            <search string="Search Pickings">
+                <field name="trans_route_id"/>
+                <field name="detail_date"/>
+                <field name="route_detail_id"/>
+                <field name="user_id"/>
+                <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
+                <field name="partner_id" operator="child_of"/>
+                <separator/>
+                    <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Tomorrow" name="filter_today" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Done" name="validated" domain="[('validated', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                     <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
+                     <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
+                     <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
+                     <filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>
+                </group>
+           </search>
+          </field>
+      </record>
+
+      <record id="action_delivery_man_route_sheet" model="ir.actions.act_window">
+          <field name="name">Delivery Sheet</field>
+          <field name="type">ir.actions.act_window</field>
+          <field name="res_model">stock.picking</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">tree,form</field>
+          <field name="view_id" ref="view_delivery_man_route_sheet_tree"/>
+          <field name="search_view_id" ref="view_delivery_man_route_sheet_flter"/>
+          <field name="domain">[('picking_type_code', '=', 'outgoing')]</field>
+          <!-- <field name="context">{}</field> -->
+      </record>
+
+      <menuitem action="action_delivery_man_route_sheet" id="delivery_man_route_sheet" name="Route Sheet" sequence="12" parent="menu_stock_vehicle_route_mgmt"/>
     </data>
 </openerp>
