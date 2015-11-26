@@ -43,8 +43,7 @@ class route(osv.Model):
         'weight': fields.float('Weight'),
         'lot_id': fields.many2one('stock.production.lot', 'Lot'),
         'removal_date': fields.date('Expiry Date'),
-        'company_id': fields.many2one('res.company', 'Company')
-
+        'company_id': fields.many2one('res.company', 'Company'),
     }
 
     _defaults = {
