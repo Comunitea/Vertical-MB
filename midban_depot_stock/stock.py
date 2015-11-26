@@ -445,7 +445,12 @@ class StockPicking(models.Model):
     partner_street = fields2.Char('Address', related='partner_id.street',
                                   readonly=True)
     partner_city = fields2.Char('City', related='partner_id.city',
+                                readonly=True)
+    partner_phone = fields2.Char('Phone', related='partner_id.phone',
                                  readonly=True)
+    partner_ref = fields2.Char('Code', related='partner_id.ref', readonly=True)
+    # EL campo note no le gusta nada por algun motivo
+    sale_note = fields2.Text('Notes', related='sale_id.note2')
 
     # Se movió la funcionalidad al asistente de validacion de ruta
     # @api.multi

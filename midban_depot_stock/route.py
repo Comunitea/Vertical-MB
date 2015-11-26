@@ -61,7 +61,7 @@ class route(models.Model):
                             ('ways', 'Ways'),
                             ('other', 'Other')], 'Type', required=True,
                             default='comercial')
-    comercial_id = fields.Many2one('res.users', 'Comercial')
+    comercial_id = fields.Many2one('res.users', 'Responsible')
     bzip_ids = fields.Many2many('res.better.zip', 'better_zip_routes_rel',
                                 'route_id', 'zip_id', 'Zip codes')
     detail_ids = fields.One2many('route.detail', 'route_id')
@@ -393,7 +393,7 @@ class route_detail(models.Model):
     customer_ids = fields.One2many('customer.list', 'detail_id',
                                    'Customer List')
     call_ids = fields.One2many('crm.phonecall', 'detail_id', 'Call list')
-    comercial_id = fields.Many2one('res.users', 'Comercial',
+    comercial_id = fields.Many2one('res.users', 'Responsible',
                                     related='route_id.comercial_id',
                                     readonly=True,
                                     store=True)

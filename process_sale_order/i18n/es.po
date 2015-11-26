@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-24 16:55+0000\n"
-"PO-Revision-Date: 2015-09-24 16:55+0000\n"
+"POT-Creation-Date: 2015-11-26 08:53+0000\n"
+"PO-Revision-Date: 2015-11-26 08:53+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: process_sale_order
+#: model:ir.ui.menu,name:process_sale_order.menu_table_pricelist_prices
+msgid " Table pricelist prices"
+msgstr " Tabla de precios de tarifas"
 
 #. module: process_sale_order
 #: model:ir.actions.act_window,help:process_sale_order.action_qualitative_note
@@ -33,9 +38,29 @@ msgstr "<p class=\"oe_view_nocontent_create\">\n"
 "            "
 
 #. module: process_sale_order
-#: field:product.template,box_discount:0
-msgid "Box Unit Discount"
-msgstr "Descuento unidad caja"
+#: model:ir.actions.act_window,help:process_sale_order.action_table_pricelist_prices
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Table of prices for app movile\n"
+"                </p><p>\n"
+"                Read only Model\n"
+"                </p>\n"
+"            "
+msgstr "<p class=\"oe_view_nocontent_create\">\n"
+"                Tabla de precios para la app móvil\n"
+"                </p><p>\n"
+"                Modelo de sólo lectura\n"
+"                </p>\n"
+"            "
+
+#. module: process_sale_order
+#: view:table.pricelist.prices:process_sale_order.table_pricelist_prices_view_search
+msgid "Change Filter"
+msgstr "Filtro tarifa variable"
+
+#. module: process_sale_order
+#: field:qualitative.note,code:0
+msgid "Code"
+msgstr "Code"
 
 #. module: process_sale_order
 #: field:sale.order.line,do_onchange:0
@@ -43,10 +68,20 @@ msgid "Do onchange"
 msgstr "Hacer onchange"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/sale.py:249
+#: code:addons/process_sale_order/sale.py:302
 #, python-format
 msgid "Error"
 msgstr "Error"
+
+#. module: process_sale_order
+#: field:qualitative.note,name:0
+msgid "Name"
+msgstr "Name"
+
+#. module: process_sale_order
+#: field:table.pricelist.prices,price:0
+msgid "Price"
+msgstr "Precio"
 
 #. module: process_sale_order
 #: field:sale.order.line,price_udv:0
@@ -54,7 +89,15 @@ msgid "Price UdV"
 msgstr "Precio UdV"
 
 #. module: process_sale_order
+#: view:table.pricelist.prices:process_sale_order.table_pricelist_prices_view_search
+#: field:table.pricelist.prices,pricelist_id:0
+msgid "Pricelist"
+msgstr "Tarifa"
+
+#. module: process_sale_order
 #: model:ir.model,name:process_sale_order.model_product_product
+#: view:table.pricelist.prices:process_sale_order.table_pricelist_prices_view_search
+#: field:table.pricelist.prices,product_id:0
 msgid "Product"
 msgstr "Producto"
 
@@ -62,11 +105,6 @@ msgstr "Producto"
 #: model:ir.model,name:process_sale_order.model_product_template
 msgid "Product Template"
 msgstr "Plantilla de producto"
-
-#. module: process_sale_order
-#: model:ir.model,name:process_sale_order.model_product_uom
-msgid "Product Unit of Measure"
-msgstr "Unidad de medida del producto"
 
 #. module: process_sale_order
 #: model:ir.ui.menu,name:process_sale_order.menu_qualitative_comment
@@ -78,6 +116,16 @@ msgstr "Comentarios cualitativos"
 #: view:qualitative.note:process_sale_order.qualitative_note_view_tree
 msgid "Qualitative Note"
 msgstr "Nota cualitativa"
+
+#. module: process_sale_order
+#: view:table.pricelist.prices:process_sale_order.table_pricelist_prices_view_form
+msgid "Recalculate Table"
+msgstr "Recalcular tabla"
+
+#. module: process_sale_order
+#: field:sale.order.line,product_code:0
+msgid "Reference"
+msgstr "Reference"
 
 #. module: process_sale_order
 #: model:ir.model,name:process_sale_order.model_sale_order
@@ -95,18 +143,37 @@ msgid "Stock Move"
 msgstr "Movimiento de existencias"
 
 #. module: process_sale_order
-#: help:product.template,box_discount:0
-msgid "When you sale this product in boxesThis will be the % discounted over the priceunit. If a box have 10 units and discount is20%, the new box price will be 80 intead of100, imaging price unit equals to 1."
-msgstr "Cuando se vende este producto en cajas, este será el % descontado sobre el precio unitario. Si una caja tiene 10 unidades y su descuento del 20%, el nuevo precio de la caja será 80 en lugar de 100, si consideramos el precio unitario igual a 1"
+#: model:ir.actions.act_window,name:process_sale_order.action_table_pricelist_prices
+msgid "Table Pricelist prices"
+msgstr "Tabla de precios de tarifa"
 
 #. module: process_sale_order
-#: code:addons/process_sale_order/sale.py:250
+#: view:table.pricelist.prices:process_sale_order.table_pricelist_prices_view_form
+msgid "Table of prices"
+msgstr "Tabla de precios"
+
+#. module: process_sale_order
+#: model:ir.ui.menu,name:process_sale_order.menu_table_pricelist_prices_purchase
+msgid "Table pricelist prices"
+msgstr "Tabla de precios de tarifa"
+
+#. module: process_sale_order
+#: field:sale.order,user_id2:0
+msgid "User"
+msgstr "Usuario"
+
+#. module: process_sale_order
+#: view:table.pricelist.prices:process_sale_order.table_pricelist_prices_view_tree
+msgid "Variable Pticelist"
+msgstr "Tarifa variable"
+
+#. module: process_sale_order
+#: code:addons/process_sale_order/sale.py:303
 #, python-format
-msgid "You can't sale product %s in different sale units"
+msgid "You can't sale product %s in                                      different sale units"
 msgstr "No puedes vender el producto %s en diferentes unidades de venta"
 
 #. module: process_sale_order
 #: model:ir.actions.act_window,name:process_sale_order.action_qualitative_note
 msgid "action.qualitative.note"
 msgstr "action.qualitative.note"
-

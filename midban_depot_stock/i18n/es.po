@@ -537,23 +537,27 @@ msgstr "Columnas"
 
 #. module: midban_depot_stock
 #: field:procurement.group,user_id:0
-#: view:route:midban_depot_stock.route_view_search
-#: field:route,comercial_id:0
 #: selection:route,type:0
-#: view:route.detail:midban_depot_stock.route_detail_view_search
-#: field:route.detail,comercial_id:0
-#: view:route.report:midban_depot_stock.view_route_report_search
-#: field:route.report,comercial_id:0
 #: selection:route.report,route_type:0
-#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
 #: field:stock.picking,user_id:0
 msgid "Comercial"
 msgstr "Comercial"
 
 #. module: midban_depot_stock
+#: view:route:midban_depot_stock.route_view_search
+#: field:route,comercial_id:0
+#: view:route.detail:midban_depot_stock.route_detail_view_search
+#: field:route.detail,comercial_id:0
+#: view:route.report:midban_depot_stock.view_route_report_search
+#: field:route.report,comercial_id:0
+#: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: midban_depot_stock
 #: field:tag,company_id:0
 msgid "Company"
-msgstr "Company"
+msgstr "Compañía"
 
 #. module: midban_depot_stock
 #: selection:crm.phonecall,result:0
