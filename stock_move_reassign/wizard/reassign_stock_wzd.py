@@ -68,18 +68,22 @@ class ReassignStockWzd(models.TransientModel):
         t_move = self.env["stock.move"]
         t_quant = self.env["stock.quant"]
         to_assign_move = t_move.browse(self.env.context['active_ids'][0])
-        rounding = to_assign_move.product_id.uom_id.rounding
-        reassign_qty = float_round(reassign_qty,
-                                  precision_rounding=0.01)
+        # rounding = to_assign_move.product_id.uom_id.rounding
+        # reassign_qty = float_round(reassign_qty,
+        #                           precision_rounding=0.01)
         t = 0.0
+        # import ipdb; ipdb.set_trace()
+
         for quant in assigned_move.reserved_quant_ids:
+            reassign_qty = float_round(reassign_qty,
+                                      precision_rounding=0.01)
             quant_qty = float_round(quant.qty,
                                    precision_rounding=0.01)
             print("Cant a reasignar %s" % reassign_qty)
             print("Cant quant %s" %quant_qty)
             if reassign_qty > 0:
                 if float_compare(reassign_qty, quant_qty,
-                                 precision_rounding=rounding) >= 0:
+                                 precision_rounding=0.01) >= 0:
                     quant.reservation_id = to_assign_move.id
                     reassign_qty -= quant_qty
                     t += quant_qty
