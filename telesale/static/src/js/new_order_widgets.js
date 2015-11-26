@@ -81,6 +81,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
             this.$('#coment').blur(_.bind(this.set_value, this, 'coment'))
             this.$('#customer_comment').blur(_.bind(this.set_value, this, 'customer_comment'))
+            this.$('#client_order_ref').blur(_.bind(this.set_value, this, 'client_order_ref'))
             this.$('#supplier').blur(_.bind(this.set_value, this, 'supplier'))
 
             //autocomplete products and units from array of names
@@ -154,7 +155,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                           sup_name = self.ts_model.db.get_supplier_by_id(partner_obj.supplier_ids[0]);
                         }
                         self.order_model.set('supplier', sup_name);
-                        self.order_model.set('customer_comment', partner_obj.comment);
+                        // self.order_model.set('customer_comment', partner_obj.comment);
                         self.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
                         self.order_model.set('customer_debt', my_round(partner_obj.credit,2));
                         contact_obj = self.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
@@ -1145,7 +1146,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             //}
             this.open_order =  this.ts_model.get('selectedOrder')
             var loaded = self.ts_model.fetch('sale.order',
-                                            ['supplier_id','contact_id','note','comercial','customer_comment','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
+                                            ['supplier_id','contact_id','note','comercial','customer_comment','client_order_ref','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
                                             [
                                                 ['id', '=', order_id],
                                                 ['chanel', '=', 'telesale']
