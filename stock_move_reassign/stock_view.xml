@@ -48,29 +48,33 @@
 
                     <field name="picking_id" string="Reference" readonly="True"/>
                     <field name="origin" readonly="True"/>
+                    <field name="date_expected" readonly="True"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="stock_review_unnasigned_moves_search">
+        <record model="ir.ui.view" id="stock_review_unnasigned_moves_filter">
             <field name="name">stock.review.unnasigned.moves.search</field>
             <field name="model">stock.move</field>
-            <field name="inherit_id" ref="stock.view_move_search"/>
             <field name="arch" type="xml">
-                <filter string="Today" position="after">
-                    <filter icon="terp-go-today" string="Incomplete" name="incomplete"
-                            domain="[('incomplete','=', True)]" help="Moves marked as incomplete, maybe you want to reassign stock"/>
-                </filter>
-
+              <search string="Search Pickings">
+                  <filter string="Today" name="filter_today" domain="[('date_expected','&lt;=',time.strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                  <filter string="Tomorrow" name="filter_today" domain="[('date_expected','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+             </search>
             </field>
         </record>
 
-        <act_window name="Unnasigned Move Reviews"
-            res_model="stock.move"
-            view_mode="tree,form"
-            id="act_review_unnasigned_moves"
-            view_id="stock_review_unnasigned_moves_tree"
-            context="{'search_default_today':1}"/>
+        <record id="act_review_unnasigned_moves" model="ir.actions.act_window">
+            <field name="name">Unnasigned Move Reviews</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="stock_review_unnasigned_moves_tree"/>
+            <field name="search_view_id" ref="stock_review_unnasigned_moves_filter"/>
+            <field name="domain">[('incomplete','=', True)]</field>
+            <!-- <field name="context">{}</field> -->
+        </record>
 
         <menuitem action="act_review_unnasigned_moves" id="menu_review_unnasiged_moves"
                   name="Review Unnasigned Moves" sequence="11" parent="midban_depot_stock.menu_stock_vehicle_route_mgmt"/>

@@ -2064,8 +2064,14 @@ class stock_quant(models.Model):
     _inherit = 'stock.quant'
 
     # _columns = {
-    #     'qty': fields.float(digits=dp.get_precision
-    #                         ('Product Unit of Measure')),
+    #     # Añadir 4 decimales de precissión
+    #     'qty': fields.float('Quantity', required=True,
+    #                         digits=dp.get_precision
+    #                         ('Product Unit of Measure'),
+    #                         help="Quantity of products in this quant, in the \
+    #                         default unit of measure of the product",
+    #                         readonly=True,
+    #                         select=True),
     # }
 
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,

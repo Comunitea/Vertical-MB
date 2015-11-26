@@ -24,6 +24,7 @@ from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+from openerp.tools.float_utils import float_compare, float_round
 
 
 class ReassignStockWzd(models.TransientModel):
@@ -67,15 +68,36 @@ class ReassignStockWzd(models.TransientModel):
         t_move = self.env["stock.move"]
         t_quant = self.env["stock.quant"]
         to_assign_move = t_move.browse(self.env.context['active_ids'][0])
-        for q in assigned_move.reserved_quant_ids:
-            if reassign_qty:
-                if reassign_qty >= q.qty:
-                    q.reservation_id = to_assign_move.id
-                    reassign_qty -= q.qty
+        rounding = to_assign_move.product_id.uom_id.rounding
+        reassign_qty = float_round(reassign_qty,
+                                  precision_rounding=0.01)
+        t = 0.0
+        for quant in assigned_move.reserved_quant_ids:
+            quant_qty = float_round(quant.qty,
+                                   precision_rounding=0.01)
+            print("Cant a reasignar %s" % reassign_qty)
+            print("Cant quant %s" %quant_qty)
+            if reassign_qty > 0:
+                if float_compare(reassign_qty, quant_qty,
+                                 precision_rounding=rounding) >= 0:
+                    quant.reservation_id = to_assign_move.id
+                    reassign_qty -= quant_qty
+                    t += quant_qty
+                    print("Reasigno quant")
+
                 else:
-                    new_q = t_quant._quant_split(q, reassign_qty)
-                    new_q.reservation_id = to_assign_move.id
+                    # import ipdb; ipdb.set_trace()
+                    print("Divido quant")
+                    #
+                    t_quant._quant_split(quant, reassign_qty)
+                    quant.reservation_id = to_assign_move.id
+                    t += quant.qty
                     reassign_qty = 0
+                    print("Cantidad nuevo quant: %s" % quant.qty)
+                print("Total asignado: %s" % t)
+                if float_compare(reassign_qty, 0,
+                                 precision_rounding=0.01) == 0:
+                    break
         return
 
     # def _change_operations_for_move(self, assigned_move, reassign_qty):
@@ -101,6 +123,24 @@ class ReassignStockWzd(models.TransientModel):
     #             reassign_qty -= op.qty
     #     return
 
+    def recalculate_state(self, move):
+        reserved = move.reserved_availability
+        uom_qty = move.product_uom_qty
+        if not reserved:
+            move.write({'state': 'confirmed', 'incomplete': True,
+                        'partially_available': False})
+        elif float_compare(reserved, uom_qty, precision_rounding=0.01) == 0:
+            move.write({'state': 'assigned', 'incomplete': False,
+                        'partially_available': False})
+        elif float_compare(reserved, uom_qty, precision_rounding=0.01) < 0:
+            move.write({'state': 'confirmed', 'partially_available': True,
+                        'incomplete': True})
+        else:
+            raise except_orm(_('Error'),
+                             _('reserved quantity (%s) greater than move \
+                                quantity (%s)' % (reserved, uom_qty)))
+        return
+
     @api.multi
     def unreserve(self):
         # self.ensure_one()
@@ -118,22 +158,25 @@ class ReassignStockWzd(models.TransientModel):
                                        unnasigned quantity for picking \
                                        %s' % line.picking_id.name))
                 self._reassign_quants_for_move(line.move_id, line.reassign_qty)
-                line.move_id.recalculate_move_state()
-                to_assign_move.recalculate_move_state()
+                # import ipdb; ipdb.set_trace()
+                # line.move_id.recalculate_move_state()
+                # to_assign_move.recalculate_move_state()
+                self.recalculate_state(line.move_id)
+                self.recalculate_state(to_assign_move)
                 # self._change_operations_for_move(line.move_id, line.reassign_qty)
                 line.move_id.picking_id.delete_picking_package_operations()
                 line.move_id.picking_id.do_prepare_partial()
                 to_assign_move.picking_id.delete_picking_package_operations()
                 to_assign_move.picking_id.do_prepare_partial()
-
-                if line.move_id.state == 'assigned':
-                    line.move_id.incomplete = False
-                else:
-                    line.move_id.incomplete = True
-                if to_assign_move.state == 'assigned':
-                    line.move_id.incomplete = False
-                else:
-                    line.move_id.incomplete = True
+                #
+                # if line.move_id.state == 'assigned':
+                #     line.move_id.incomplete = False
+                # else:
+                #     line.move_id.incomplete = True
+                # if to_assign_move.state == 'assigned':
+                #     line.move_id.incomplete = False
+                # else:
+                #     line.move_id.incomplete = True
 
         return True
 
@@ -148,9 +191,10 @@ class ReassignStockLineWzd(models.TransientModel):
                                  readonly=True)
     product_id = fields.Many2one("product.product", "Product",
                                  readonly=True)
-    product_qty = fields.Float("Quantity", readonly=True,
-                               digits=dp.get_precision
-                               ('Product Unit of Measure'))
+    # product_qty = fields.Float("Quantity", readonly=True,
+    #                            digits=dp.get_precision
+    #                            ('Product Unit of Measure'))
+    product_qty = fields.Float("Quantity", readonly=True)
     uom_id = fields.Many2one("product.uom", "Uom", readonly=True)
     location_id = fields.Many2one("stock.location", "Location", readonly=True)
     partner_id = fields.Many2one("res.partner", "Partner", readonly=True)
@@ -159,11 +203,13 @@ class ReassignStockLineWzd(models.TransientModel):
                               ('confirmed', 'Waiting Availability'),
                               ('assigned', 'Available'),('done', 'Done')],
                               "State", readonly=True)
-    reassign_qty = fields.Float('Qty to treassign',
-                                digits=dp.get_precision
-                                ('Product Unit of Measure'),
-                                default=0.0)
-    assigned_qty = fields.Float('Qty to treassign',
-                                digits=dp.get_precision
-                                ('Product Unit of Measure'),
-                                default=0.0)
+    # reassign_qty = fields.Float('Qty to treassign',
+    #                             digits=dp.get_precision
+    #                             ('Product Unit of Measure'),
+    #                             default=0.0)
+    # assigned_qty = fields.Float('Qty to treassign',
+    #                             digits=dp.get_precision
+    #                             ('Product Unit of Measure'),
+    #                             default=0.0)
+    reassign_qty = fields.Float('Qty to assign')
+    assigned_qty = fields.Float('Qty assigned', readonly=True)
