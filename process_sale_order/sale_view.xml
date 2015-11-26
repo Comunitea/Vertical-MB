@@ -70,6 +70,9 @@
                 <!--xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position='attributes'>
                     <attribute name="invisible">True</attribute>
                 </xpath-->
+                <field name='user_id' position="after">
+                    <field name="user_id2"/>
+                </field>
 
             </field>
         </record>
