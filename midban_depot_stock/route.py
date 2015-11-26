@@ -410,6 +410,39 @@ class route_detail(models.Model):
                                   compute='_get_detail_name_str',
                                   store=True)
 
+    def view_account_moves(self, cr, uid, ids, context=None):
+        '''
+        This function returns an action that display existing picking orders of given purchase order ids.
+        '''
+        if context is None:
+            context = {}
+        mod_obj = self.pool.get('ir.model.data')
+        dummy, action_id = tuple(mod_obj.get_object_reference(cr, uid, 'account_due_list', 'action_invoice_payments'))
+        action = self.pool.get('ir.actions.act_window').read(cr, uid, action_id, context=context)
+
+        partner_ids = []
+        move_obj = self.pool.get('account.move.line')
+        pick_obj = self.pool.get('stock.picking')
+        #for route_detail in self.browse(cr, uid, ids, context=context):
+        print ids
+        pick_ids = pick_obj.search(cr, uid, [('picking_type_id.code', '=', 'outgoing') ,
+                                             ('route_detail_id', 'in', ids)])
+        print "Pickings"
+        print pick_ids
+        partner_ids += [picking.partner_id.id for picking in pick_obj.browse(cr,uid, pick_ids)]
+        print "Partners"
+        print partner_ids
+        domain = [('partner_id', 'in', partner_ids),
+                ('account_id.type', '=', 'receivable'),
+                ('reconcile_id','=', False)]
+        print domain
+        move_ids = move_obj.search(cr, uid, domain, context=context)
+        #override the context to get rid of the default filtering on picking type
+        action['context'] = {}
+        #choose the view_mode accordingly
+        action['domain'] = "[('id','in',[" + ','.join(map(str, move_ids)) + "])]"
+        return action
+
     @api.multi
     def set_cancelled(self):
         self.state = 'cancelled'
