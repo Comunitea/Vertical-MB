@@ -188,22 +188,41 @@ class stock_task(osv.Model):
 
     @api.one
     def add_loc_operation(self, pack_id):
-
-        pack_obj = self.env['stock.quant.package'].browse(pack_id)
         wh = self.env['stock.warehouse'].search([])[0]
-        pick_loc_type_id = wh.ubication_type_id.id
+        pick_ubi_type_id = wh.ubication_type_id.id
+        pick_in_type_id = wh.in_type_id.id
         domain = [
-            ('picking_id.picking_type_id', '=', pick_loc_type_id),
-            ('package_id', '=', pack_obj.id),
+            ('picking_id.picking_type_id', '=', pick_ubi_type_id),
+            ('package_id', '=', pack_id),
             ('picking_id.state', 'in', ['assigned', 'partially_available'])
         ]
-
         op_objs = self.env['stock.pack.operation'].search(domain)
+        time1 = time.time()
         if not op_objs:
-            raise except_orm(_('Error'), _('Not ubication operation mathcing \
-                            with pack %s') % pack_obj.name)
-        op_objs.assign_location()
-        op_objs.task_id = self.id
+            #buscamos el id en un result package id desde recepciones
+            domain = [('result_package_id', '=', pack_id), ('picking_id.picking_type_id', '=', pick_in_type_id)]
+            op = self.env['stock.pack.operation'].search(domain, order = "id desc", limit = 1)
+            if op.picking_id:
+                group_id = op.picking_id.group_id
+                domain = [('group_id', '=', group_id.id), ('picking_type_id', '=', pick_ubi_type_id)]
+                pick_ubi = self.env['stock.picking'].search(domain)
+                pick_ubi.do_prepare_partial()
+                domain = [
+                        ('picking_id.picking_type_id', '=', pick_ubi_type_id),
+                        ('package_id', '=', pack_id),
+                        ('picking_id.state', 'in', ['assigned', 'partially_available'])
+                        ]
+                op_objs = self.env['stock.pack.operation'].search(domain)
+                if not op_objs:
+                    raise except_orm(_('Error'), _('Not ubication operation mathcing \
+                    with pack %s') %pack_id)
+
+        for op in op_objs:
+            op.assign_location()
+        print u"Tiempo empleado %s"%(time.time() - time1)
+        vals = {'task_id': self.id}
+        op_objs.write(vals)
+        #op_objs.task_id = self.id
         return op_objs.id
 
     @api.one

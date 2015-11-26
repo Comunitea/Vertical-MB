@@ -420,7 +420,7 @@ class assign_task_wzd(osv.TransientModel):
         if not camera_ids and wzd_obj.mandatory_camera:
             raise osv.except_osv(_('Error!'),
                                  _('No cameras defined. It is configured \
-                                    to get locations operations by camera\
+                                    toge t locations operations by camera\
                                     mandatorily'))
         max_ops = wzd_obj.max_loc_ops
         # if not max_ops:

@@ -384,6 +384,7 @@ class stock_picking(osv.Model):
         """
         init_t = time.time()
         res = super(stock_picking, self).do_prepare_partial()
+
         _logger.debug("CMNT Tiempo original do_prepare: %s ", time.time() - init_t)
         for picking in self:
             supplier_id = 0
@@ -971,6 +972,8 @@ class stock_pack_operation(models.Model):
                         found = True
                     else:
                         locations.remove(location.id)
+
+
                 if found:
                     self.location_dest_id = location
                 else:
