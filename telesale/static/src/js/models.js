@@ -294,6 +294,7 @@ function openerp_ts_models(instance, module){
             // order_model.set('date_planned', order_obj.date_planned);
             order_model.set('num_order',order_obj.name);
             order_model.set('customer_comment',order_obj.customer_comment || '');
+            order_model.set('client_order_ref',order_obj.client_order_ref || '');
             order_model.set('comercial',partner_obj.user_id[1]);
             order_model.set('coment',order_obj.note || '');
 
@@ -682,6 +683,7 @@ function openerp_ts_models(instance, module){
                 partner: '',
                 supplier: '',
                 customer_comment: '',
+                client_order_ref: '',
                 contact_name: '',
                 date_order: this.getStrDate(),
                 date_invoice: this.getStrDatePlanned(),
@@ -842,6 +844,7 @@ function openerp_ts_models(instance, module){
                 date_planned: this.get('date_planned'),
                 note: this.get('coment'),
                 customer_comment: this.get('customer_comment'),
+                client_order_ref: this.get('client_order_ref'),
                 supplier_id : this.ts_model.db.supplier_from_name_to_id[this.get('supplier')],
                 set_promotion: this.get('set_promotion')
             };
