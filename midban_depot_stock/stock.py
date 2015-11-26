@@ -2000,6 +2000,14 @@ class stock_move(models.Model):
         return res
 
 
+class stockMove(models.Model):
+
+    _inherit = "stock.move"
+
+    incomplete = fields2.Boolean('Incomplete', readonly=True)
+
+
+
 class stock_inventory(models.Model):
 
     _inherit = "stock.inventory"
@@ -2057,6 +2065,17 @@ class stock_picking_wave(models.Model):
 
 class stock_quant(models.Model):
     _inherit = 'stock.quant'
+
+    # _columns = {
+    #     # Añadir 4 decimales de precissión
+    #     'qty': fields.float('Quantity', required=True,
+    #                         digits=dp.get_precision
+    #                         ('Product Unit of Measure'),
+    #                         help="Quantity of products in this quant, in the \
+    #                         default unit of measure of the product",
+    #                         readonly=True,
+    #                         select=True),
+    # }
 
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
                                removal_strategy, context=None):

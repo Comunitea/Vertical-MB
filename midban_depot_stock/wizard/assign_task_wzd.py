@@ -892,7 +892,8 @@ class assign_task_wzd(osv.TransientModel):
         domain = [
             ('picking_type_id', '=', obj.warehouse_id.pick_type_id.id),
             ('camera_id', 'in', loc_ids),
-            ('state', '=', 'assigned'),
+            # ('state', '=', 'assigned'),
+            ('state', 'in', ['assigned', 'partially_available']),
             ('min_date', '>=', start_date),
             ('min_date', '<=', end_date),
             ('trans_route_id', '=', selected_route),

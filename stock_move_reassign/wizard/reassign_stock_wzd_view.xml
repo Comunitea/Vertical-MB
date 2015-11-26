@@ -9,16 +9,20 @@
             <field name="arch" type="xml">
                 <form string="Reassign stock">
                     <field name="line_ids" colspan="4" nolabel="1">
-                        <tree>
+                        <tree editable="top">
                             <field name="partner_id"/>
                             <field name="product_id"/>
-                            <field name="product_qty"/>
-                            <field name="uom_id"/>
                             <field name="location_id"/>
                             <field name="state"/>
+                            <field name="product_qty"/>
+                            <field name="uom_id"/>
+                            <field name="move_id"/>
+                            <field name="picking_id"/>
+                            <field name="assigned_qty"/>
+                            <field name="reassign_qty"/>
                         </tree>
                     </field>
-                    <button  name="unreserve" type="object" string="Unreserve" icon="gtk-execute"/>
+                    <button  name="unreserve" type="object" string="Reassign reserves" icon="gtk-execute"/>
                     <button string="Cancel" special="cancel" icon="gtk-cancel"/>
                 </form>
             </field>

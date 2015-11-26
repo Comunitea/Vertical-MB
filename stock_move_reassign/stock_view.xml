@@ -24,5 +24,60 @@
             </field>
         </record>
 
+
+
+        <record model="ir.ui.view" id="stock_review_unnasigned_moves_tree">
+            <field name="name">stock.review.unnasigned.moves.tree</field>
+            <field name="model">stock.move</field>
+            <field name="priority">151</field>
+            <field name="arch" type="xml">
+                <tree string="Moves" create="false" delete="false">
+
+                    <field name="product_id" readonly="True"/>
+                    <field name="product_uom_qty" readonly="True"/>
+                    <field name="product_uom" string="Unit of Measure" readonly="True"/>
+                    <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
+                    <field name="product_uos" groups="product.group_uos" readonly="True"/>
+                    <field name="location_dest_id" readonly="True"/>
+                    <field name="state" readonly="True"/>
+                    <field name="incomplete" readonly="True"/>
+                    <field name="string_availability_info" readonly="True"/>
+                    <button name="%(stock_reassign_action)d" type="action" icon="gtk-execute" string="Reassign stock" states="confirmed"/>
+
+
+
+                    <field name="picking_id" string="Reference" readonly="True"/>
+                    <field name="origin" readonly="True"/>
+                    <field name="date_expected" readonly="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_review_unnasigned_moves_filter">
+            <field name="name">stock.review.unnasigned.moves.search</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+              <search string="Search Pickings">
+                  <filter string="Today" name="filter_today" domain="[('date_expected','&lt;=',time.strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                  <filter string="Tomorrow" name="filter_today" domain="[('date_expected','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+             </search>
+            </field>
+        </record>
+
+        <record id="act_review_unnasigned_moves" model="ir.actions.act_window">
+            <field name="name">Unnasigned Move Reviews</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="stock_review_unnasigned_moves_tree"/>
+            <field name="search_view_id" ref="stock_review_unnasigned_moves_filter"/>
+            <field name="domain">[('incomplete','=', True)]</field>
+            <!-- <field name="context">{}</field> -->
+        </record>
+
+        <menuitem action="act_review_unnasigned_moves" id="menu_review_unnasiged_moves"
+                  name="Review Unnasigned Moves" sequence="11" parent="midban_depot_stock.menu_stock_vehicle_route_mgmt"/>
+
     </data>
 </openerp>
