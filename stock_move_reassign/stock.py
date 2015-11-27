@@ -30,8 +30,13 @@ class stock_move(models.Model):
 
     _inherit = "stock.move"
 
-    partner_id = fields.Many2one('res.partner', string='Picking',
-                                 related='picking_id.partner_id',
-                                 readonly=True)
-    trans_route_id = fields.Many2one(store=True)
-    route_detail_id = fields.Many2one(store=True)
+    partner_id2 = fields.Many2one('res.partner', string='Customer',
+                                  related='picking_id.partner_id',
+                                  readonly=True,
+                                  store=True)
+    trans_route_id2 = fields.Many2one('route',
+                                      related='picking_id.trans_route_id',
+                                      store=True)
+    route_detail_id2 = fields.Many2one('route.detail',
+                                       related='picking_id.route_detail_id',
+                                       store=True)

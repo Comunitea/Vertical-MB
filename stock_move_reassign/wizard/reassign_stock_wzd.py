@@ -173,16 +173,6 @@ class ReassignStockWzd(models.TransientModel):
                 line.move_id.picking_id.do_prepare_partial()
                 to_assign_move.picking_id.delete_picking_package_operations()
                 to_assign_move.picking_id.do_prepare_partial()
-                #
-                # if line.move_id.state == 'assigned':
-                #     line.move_id.incomplete = False
-                # else:
-                #     line.move_id.incomplete = True
-                # if to_assign_move.state == 'assigned':
-                #     line.move_id.incomplete = False
-                # else:
-                #     line.move_id.incomplete = True
-
         return True
 
 
