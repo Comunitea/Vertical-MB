@@ -123,8 +123,7 @@ class sale(osv.osv):
                 self.cancel_sale_to_draft(cr, uid, order['erp_id'], context)
                 order['erp_state'] = 'draft'
             partner_obj = t_partner.browse(cr, uid, order['partner_id'])
-            import ipdb; ipdb.set_trace()
-            
+
             vals = {
                 'partner_id': partner_obj.id,
                 'pricelist_id': partner_obj.property_product_pricelist.id,
