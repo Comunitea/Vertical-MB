@@ -417,7 +417,7 @@ class route_detail(models.Model):
         if context is None:
             context = {}
         mod_obj = self.pool.get('ir.model.data')
-        dummy, action_id = tuple(mod_obj.get_object_reference(cr, uid, 'account_due_list', 'action_invoice_payments'))
+        dummy, action_id = tuple(mod_obj.get_object_reference(cr, uid, 'midban_depot_stock', 'action_payments_route'))
         action = self.pool.get('ir.actions.act_window').read(cr, uid, action_id, context=context)
 
         partner_ids = []
