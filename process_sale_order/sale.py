@@ -306,7 +306,69 @@ class sale_order(models.Model):
 
         res = super(sale_order, self).action_ship_create()
 
+        sm_obj = self.env['stock.move']
+        for order in self:
+            pick_ids = []
+            for so in self.browse(order.id):
+                for pick in so.picking_ids:
+                    if pick.picking_type_id.code == 'outgoing':
+                        out_pick = pick
+            sale_line_ids = self.env['sale.order.line']
+            if order.procurement_group_id:
+                for proc in order.procurement_group_id.procurement_ids:
+                    if proc.product_qty <= 0:
+                        print "A CANCELAR "
+                        procurement = proc
+                        proc.cancel()
+                        proc.move_ids.unlink()
+                        sale_line_ids += proc.sale_line_id
+                if len(sale_line_ids):
+                    order.generate_returns(sale_line_ids, out_pick)
         return res
+
+    @api.one
+    def generate_returns(self, sale_line_ids, out_pick):
+        sol_obj = self.env['sale.order.line']
+        sm_obj = self.env['stock.move']
+        data_obj = self.env['ir.model.data']
+        #location_dest_id = data_obj.get_object_reference('stock_picking_review', 'stock_location_returns')[1]
+        moves = self.env['stock.move']
+        picking_type = out_pick.picking_type_id.return_picking_type_id
+        for line in sale_line_ids:
+            warehouse = line.order_id.warehouse_id
+            location_id = line.order_id.partner_shipping_id.property_stock_customer.id
+
+            new_move_id = sm_obj.create({
+                'product_id': line.product_id.id,
+                'product_uom_qty': -line.product_uom_qty,
+                'product_uom': line.product_uom.id,
+                'product_uos': line.product_uos.id,
+                'product_uos_qty': -line.product_uos_qty,
+                #'picking_id': new_picking,
+                'state': 'draft',
+                'location_id': location_id,
+                'location_dest_id': picking_type.default_location_dest_id.id,
+                'picking_type_id': picking_type.id,
+                'warehouse_id': line.order_id.warehouse_id.id,
+                'procure_method': 'make_to_stock',
+                'restrict_lot_id': False,
+                'move_dest_id': False,
+                'invoice_state': '2binvoiced',
+                'name': line.product_id.name,
+                'group_id': out_pick.group_id.id
+            })
+            moves += new_move_id
+
+        if len(moves):
+            new_picking = out_pick.copy({
+                'move_lines': [],
+                'picking_type_id': picking_type.id,
+                'state': 'draft'
+            })
+
+            moves.write({'picking_id': new_picking.id})
+            new_picking.action_confirm()
+            new_picking.action_assign()
 
     @api.one
     def action_button_confirm_thread(self):
