@@ -34,27 +34,25 @@ class stock_move(models.Model):
 
     def _get_invoice_line_vals(self, move, partner, inv_type):
         res = super(stock_move, self)._get_invoice_line_vals(move, partner, inv_type)
-
-        if inv_type == 'out_refund' and not move.procurement_id:
+        if (inv_type == 'out_refund' and not move.procurement_id) or \
+                (inv_type == 'out_invoice' and move.location_id.usage == 'customer'):
             sol_obj = self.env['sale.order.line']
             domain = [
                 ('order_id','=', move.picking_id.sale_id.id),
                 ('product_id', '=', move.product_id.id),
                 ('product_uom_qty', '<=', 0)
             ]
-            print domain
+            if inv_type == 'out_invoice' and move.location_id.usage == 'customer':
+                res["quantity"] = -res["quantity"]
             sale_line = False
             sale_lines = sol_obj.search(domain)
             if len(sale_lines):
                 sale_line = sale_lines[0]
-            print sale_line
-            return sale_line
-
             res['invoice_line_tax_id'] = [(6, 0, [x.id for x in sale_line.tax_id])]
             res['account_analytic_id'] = sale_line.order_id.project_id and sale_line.order_id.project_id.id or False
             res['discount'] = sale_line.discount
             if move.product_id.id != sale_line.product_id.id:
-                res['price_unit'] = order.env['product.pricelist'].price_get(
+                res['price_unit'] = self.env['product.pricelist'].price_get(
                      [sale_line.order_id.pricelist_id.id],
                     move.product_id.id, move.product_uom_qty or 1.0,
                     sale_line.order_id.partner_id, )[sale_line.order_id.pricelist_id.id]

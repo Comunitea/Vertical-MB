@@ -354,15 +354,16 @@ class sale_order(models.Model):
                 'restrict_lot_id': False,
                 'move_dest_id': False,
                 'invoice_state': '2binvoiced',
-                'name': line.product_id.name
+                'name': line.product_id.name,
+                'group_id': out_pick.group_id.id
             })
             moves += new_move_id
+
         if len(moves):
             new_picking = out_pick.copy({
                 'move_lines': [],
                 'picking_type_id': picking_type.id,
-                'state': 'draft',
-                'group_id': out_pick.group_id.id
+                'state': 'draft'
             })
 
             moves.write({'picking_id': new_picking.id})

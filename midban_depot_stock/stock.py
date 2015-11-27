@@ -493,7 +493,7 @@ class StockPicking(models.Model):
     #                              'validated': validated}
     #                 pick_objs.write(vals2)
     #     res = super(stock_picking, self).write(vals)
-    #     print "tiempo write picking : " + str(time.time() - init_t)
+    #
     #     return res
 
     @api.one
@@ -1897,12 +1897,15 @@ class stock_move(models.Model):
                                                              partner, inv_type,
                                                              context=context)
         sale_line = move.procurement_id.sale_line_id
+        coef = 1
+        if inv_type == 'out_invoice' and move.location_id.usage == 'customer':
+            coef = -1
         res["uos_id"] = move.product_uom.id
         if move.product_uos and move.product_uos != move.product_uom and \
                 move.product_uos_qty:
             res["second_uom_id"] = move.product_uos.id
-            res["quantity_second_uom"] = move.product_uos_qty
-        res["quantity"] = move.product_uom_qty
+            res["quantity_second_uom"] = coef * move.product_uos_qty
+        res["quantity"] = coef * move.product_uom_qty
         res['stock_move_id'] = move.id
         if sale_line:
             res["price_unit"] = sale_line.price_unit
