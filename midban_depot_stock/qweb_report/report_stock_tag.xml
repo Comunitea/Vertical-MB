@@ -2,56 +2,57 @@
 <openerp>
     <data>
         <template id="report_stock_tag">
-          <style type="text/css">
-           .head span{
-             font-size:11px;
-           }
-           .middle span{
-             font-size:20px;
-           }
-           .h2 .middle span {
-             font-size: 22px;}
+            <style type="text/css">
+                .head span{
+                font-size:11px;
+                }
+                .middle span{
+                font-size:20px;
+                }
+                .h2 .middle span {
+                font-size: 22px;}
 
-           .middle strong{
-             font-size:24px;
-           }
-           .content{
-               position:relative;
-               min-height:150mm;
-               width:100mm;
-               margin:0;
-               padding:0;
-               <!-- border:solid 1px; -->
-           }
-           .content .head{
-               position:relative;
-               height:30mm;
-               margin:0;
-               width:100mm;
-              <!-- border:solid 1px; -->
-           }
-           .content .middle{
-               position:relative;
-               height: 50mm;
-               width:100mm;
-               <!-- border:solid 1px; -->
-               margin:0;
-           }
-           .content .bottom{
-               position:relative;
-               height: 70mm;
-               width:100mm;
-               <!-- border:solid 1px; -->
-               margin:0;
-               text-align : center;
-           }
-         </style>
+                .middle strong{
+                font-size:24px;
+                }
+                .content{
+                position:relative;
+                min-height:150mm;
+                width:100mm;
+                margin:0;
+                padding:0;
+                <!-- border:solid 1px; -->
+                }
+                .content .head{
+                position:relative;
+                height:30mm;
+                margin:0;
+                width:100mm;
+                <!-- border:solid 1px; -->
+                }
+                .content .middle{
+                position:relative;
+                height: 50mm;
+                width:100mm;
+                <!-- border:solid 1px; -->
+                margin:0;
+                }
+                .content .bottom{
+                position:relative;
+                height: 70mm;
+                width:100mm;
+                <!-- border:solid 1px; -->
+                margin:0;
+                text-align : center;
+                }
+            </style>
             <!-- <t t-call="report.html_container"> -->
-                <t t-foreach="docs" t-as="o">
-                   <!--  <t t-call="report.external_layout"> -->
-                        <div class="page">
-                            <div class="content">
-                                <div class="head">
+            <t t-foreach="docs" t-as="o">
+                <!--  <t t-call="report.external_layout"> -->
+                <div class="page">
+                    <div class="content">
+                        <div class="head">
+                             <div class="head">
                                       <span t-field="o.company_id.partner_id.name"/><br/>
                                       <span t-field="o.company_id.partner_id.street"/><br/>
                                       <span t-field="o.company_id.partner_id.zip"/> - <span t-field="o.company_id.partner_id.city"/> - <span t-field="o.company_id.partner_id.state_id.name"/><br/>
@@ -59,23 +60,24 @@
                                       <span t-field="o.company_id.partner_id.website"/><br/>
                                 </div>
 
-                                 <div class="middle">
+                                <div class="middle">
                                       <h2 t-esc="o.product_id.name"/>
                                       <h1 t-esc="o.default_code"/>
-                                      <p><strong>LOT:     </strong><span t-field="o.lot_id"/></p>
-                                      <p><strong>EXPIRY DATE: </strong>  <span t-field="o.removal_date"/></p>
-                                   </div>
+                                      <span>UT: </span><strong><span t-field="o.package_id.packed_qty"/></strong><span> </span><span t-field="o.package_id.uom_id"/><br/>
+                                      <span>LOT: </span><strong><span t-field="o.lot_id"/></strong><br/>
+                                      <span>EXPIRY DATE: </span><strong><span t-field="o.removal_date"/></strong>
+                                </div>
 
-                                    <div class="bottom text-center">
-                                       <h1 align = "center" t-esc="o.package_id.name"/>
+                                <div class="bottom text-center">
+                                       <h1 align="center" t-esc="o.package_id.name"/>
                                        <img t-att-src="'data:image/png;base64,%s' % barcode('Code128','' + o.package_id.name or 'PK', 1200, 200)" style="width:350px;height:100px"/>
-                                       <h1 align = "center" t-esc="o.package_id and o.package_id.location_id.bcd_name or False"/>
-                                    </div>
-                                  </div>
-                        </div>
-                    </t>
-                <!--  </t> -->
-             <!-- </t> -->
+                                       <h2 align="center" t-esc="o.package_id.location_id.bcd_name"/>
+                                </div>
+                    </div>
+                </div>
+            </t>
+            <!--  </t> -->
+            <!-- </t> -->
         </template>
     </data>
 </openerp>

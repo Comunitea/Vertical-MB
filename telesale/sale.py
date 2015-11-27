@@ -123,6 +123,8 @@ class sale(osv.osv):
                 self.cancel_sale_to_draft(cr, uid, order['erp_id'], context)
                 order['erp_state'] = 'draft'
             partner_obj = t_partner.browse(cr, uid, order['partner_id'])
+            import ipdb; ipdb.set_trace()
+            
             vals = {
                 'partner_id': partner_obj.id,
                 'pricelist_id': partner_obj.property_product_pricelist.id,
@@ -137,6 +139,7 @@ class sale(osv.osv):
                 or False,
                 'note': 'note' in order and order['note'] or False,
                 'customer_comment': 'customer_comment' in order and order['customer_comment'] or False,
+                'client_order_ref': 'client_order_ref' in order and order['client_order_ref'] or False,
                 # 'name': t_sequence.get(cr, uid, 'telesale.order') or '/',
                 'supplier_id': 'supplier_id' in order and order['supplier_id'] or False
             }
