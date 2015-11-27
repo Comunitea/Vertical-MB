@@ -32,23 +32,21 @@
             <field name="priority">151</field>
             <field name="arch" type="xml">
                 <tree string="Moves" create="false" delete="false">
-
+                    <field name="picking_id" string="Reference" readonly="True"/>
+                    <field name="partner_id" readonly="True"/>
                     <field name="product_id" readonly="True"/>
                     <field name="product_uom_qty" readonly="True"/>
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
                     <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
                     <field name="product_uos" groups="product.group_uos" readonly="True"/>
-                    <field name="location_dest_id" readonly="True"/>
+                    <!-- <field name="location_dest_id" readonly="True"/> -->
                     <field name="state" readonly="True"/>
-                    <field name="incomplete" readonly="True"/>
                     <field name="string_availability_info" readonly="True"/>
+                    <field name="date_expected"/>
                     <button name="%(stock_reassign_action)d" type="action" icon="gtk-execute" string="Reassign stock" states="confirmed"/>
 
-
-
-                    <field name="picking_id" string="Reference" readonly="True"/>
-                    <field name="origin" readonly="True"/>
-                    <field name="date_expected" readonly="True"/>
+                    <field name="route_detail_id" invisible="1"/>
+                    <field name="trans_route_id" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -58,8 +56,22 @@
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
               <search string="Search Pickings">
-                <filter string="Today" name="filter_today" domain="[('date_expected','&lt;=',time.strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
-                <filter string="Tomorrow" name="filter_today" domain="[('date_expected','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <field name="picking_id"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="date_expected"/>
+                <field name="route_detail_id"/>
+                <field name="trans_route_id"/>
+                <separator/>
+                    <filter string="Today" name="filter_today" domain="[('date_expected','&lt;=',time.strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Tomorrow" name="filter_today" domain="[('date_expected','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                         <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
+                         <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
+                         <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
+                         <filter name="groupby_product_id" string="Product" context="{'group_by':'product_id'}"/>
+                </group>
              </search>
             </field>
         </record>

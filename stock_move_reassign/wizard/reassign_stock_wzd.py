@@ -71,7 +71,7 @@ class ReassignStockWzd(models.TransientModel):
         rounding = to_assign_move.product_id.uom_id.rounding
         # reassign_qty = float_round(reassign_qty,
         #                           precision_rounding=0.01)
-        t = 0.0
+        # t = 0.0
         # import ipdb; ipdb.set_trace()
 
         for quant in assigned_move.reserved_quant_ids:
@@ -80,26 +80,26 @@ class ReassignStockWzd(models.TransientModel):
             # quant_qty = float_round(quant.qty,
 
             quant_qty = quant.qty
-            print("Cant a reasignar %s" % reassign_qty)
-            print("Cant quant %s" %quant_qty)
+            # print("Cant a reasignar %s" % reassign_qty)
+            # print("Cant quant %s" %quant_qty)
             if reassign_qty > 0:
                 if float_compare(reassign_qty, quant_qty,
                                  precision_rounding=rounding) >= 0:
                     quant.reservation_id = to_assign_move.id
                     reassign_qty -= quant_qty
-                    t += quant_qty
-                    print("Reasigno quant")
+                    # t += quant_qty
+                    # print("Reasigno quant")
 
                 else:
                     # import ipdb; ipdb.set_trace()
-                    print("Divido quant")
+                    # print("Divido quant")
                     #
                     t_quant._quant_split(quant, reassign_qty)
                     quant.reservation_id = to_assign_move.id
-                    t += quant.qty
+                    # t += quant.qty
                     reassign_qty = 0
-                    print("Cantidad nuevo quant: %s" % quant.qty)
-                print("Total asignado: %s" % t)
+                    # print("Cantidad nuevo quant: %s" % quant.qty)
+                # print("Total asignado: %s" % t)
                 if float_compare(reassign_qty, 0,
                                  precision_rounding=rounding) == 0:
                     break

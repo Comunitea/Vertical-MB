@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 Comunitea Servicos Tecnológicos All Rights Reserved
-#    $Omar Castiñeira Saavedra <omar@comunitea.com>$
+#    Copyright (C) 2015 Pexego All Rights Reserved
+#    $Jesús Ventosinos Mayor <jesus@pexego.es>$
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as published
@@ -18,18 +18,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp import models, fields, api
+from openerp.addons.decimal_precision import decimal_precision as dp
+from openerp.tools.translate import _
+from openerp.exceptions import except_orm
+import time
+import logging
+_logger = logging.getLogger(__name__)
 
-{
-    'name': 'Stock move reassign',
-    'version': '1.0',
-    'category': 'Stock',
-    'description': """Allow to change move assignation from move inside
- picking. Release other assigned quants for allowing assign current move""",
-    'author': 'Comunitea Servicios Tecnológicos',
-    'website': '',
-    "depends": ['stock', 'midban_depot_stock'],
-    "data": ["wizard/reassign_stock_wzd_view.xml",
-             "security/ir.model.access.csv",
-             "stock_view.xml"],
-    "installable": True
-}
+class stock_move(models.Model):
+
+    _inherit = "stock.move"
+
+    partner_id = fields.Many2one('res.partner', string='Picking',
+                                 related='picking_id.partner_id',
+                                 readonly=True)
+    trans_route_id = fields.Many2one(store=True)
+    route_detail_id = fields.Many2one(store=True)
