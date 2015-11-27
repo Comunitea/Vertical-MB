@@ -68,6 +68,7 @@
         'sale_view.xml',
         'account_view.xml',
         'stock_report.xml',
+        'payment_view.xml',
         "wizard/stock_transfer_details.xml",
         "wizard/create_tag_wizard_view.xml",
         "wizard/create_camera_locations_view.xml",
