@@ -58,8 +58,8 @@
             <field name="model">stock.move</field>
             <field name="arch" type="xml">
               <search string="Search Pickings">
-                  <filter string="Today" name="filter_today" domain="[('date_expected','&lt;=',time.strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
-                  <filter string="Tomorrow" name="filter_today" domain="[('date_expected','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter string="Today" name="filter_today" domain="[('date_expected','&lt;=',time.strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                <filter string="Tomorrow" name="filter_today" domain="[('date_expected','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('date_expected','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
              </search>
             </field>
         </record>
