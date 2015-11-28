@@ -32,20 +32,23 @@
             <field name="priority">151</field>
             <field name="arch" type="xml">
                 <tree string="Moves" create="false" delete="false">
+                    <button name="%(stock_reassign_action)d" type="action" icon="gtk-execute" string="Reassign stock" states="confirmed"/>
+
                     <field name="product_id" readonly="True"/>
+                    <field name="string_availability_info" readonly="True" invisible="0"/>
+                    <field name="product_uom_qty" readonly="True" string="Asked Quantity"/>
+                    <field name="product_uom" readonly="True" string="Stock Unit" />
+                    <field name="product_uos_qty" groups="product.group_uos" readonly="True" string="Asked Quantity"/>
+                    <field name="product_uos" groups="product.group_uos" readonly="True" string="Sale Unit"/>
                     <field name="partner_id2" readonly="True"/>
-                    <field name="picking_id" string="Picking" readonly="True"/>
+                    <field name="picking_id" readonly="True" string="From Picking" />
                     <field name="date" string="Created Date"/>
-                    <field name="date_expected"/>
+                    <field name="date_expected" string="Scheduled Date"/>
                     <field name="route_detail_id2" invisible="0"/>
                     <field name="trans_route_id2" invisible="1"/>
-                    <field name="product_uom_qty" readonly="True"/>
-                    <field name="product_uom" string="Unit of Measure" readonly="True"/>
-                    <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
-                    <field name="product_uos" groups="product.group_uos" readonly="True"/>
                     <field name="state" readonly="True" invisible="1"/>
-                    <field name="string_availability_info" readonly="True" invisible="0"/>
-                    <button name="%(stock_reassign_action)d" type="action" icon="gtk-execute" string="Reassign stock" states="confirmed"/>
+
+
 
                 </tree>
             </field>
@@ -92,7 +95,7 @@
             <field name="view_id" ref="stock_review_unnasigned_moves_tree"/>
             <field name="search_view_id" ref="stock_review_unnasigned_moves_filter"/>
             <field name="domain">[('incomplete','=', True)]</field>
-            <!-- <field name="context">{}</field> -->
+             <field name="context">{'search_default_groupby_partner_id': 1, 'search_default_groupby_product_id': 1}</field>
         </record>
 
         <menuitem action="act_review_unnasigned_moves" id="menu_review_unnasiged_moves"

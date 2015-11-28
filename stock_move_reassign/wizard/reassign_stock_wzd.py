@@ -31,6 +31,21 @@ class ReassignStockWzd(models.TransientModel):
 
     _name = "reassign.stock.wzd"
 
+    @api.depends('line_ids')
+    @api.one
+    def _get_total_assigned(self):
+        res = 0.0
+        for l in self.line_ids:
+            res += l.reassign_qty
+        self.total_reassigned_qty= res
+        self.pending_qty = self.unassigned_qty - res
+
+
+    for_partner_id = fields.Many2one('res.partner', 'For Customer', readonly=True)
+    unassigned_qty = fields.Float("Unassigned Quantity", readonly=True)
+    pending_qty = fields.Float("Pending to assign", compute=_get_total_assigned, readonly=True)
+    total_reassigned_qty = fields.Float("Total Reassigned", compute=_get_total_assigned, readonly=True)
+
     line_ids = fields.One2many("reassign.stock.line", "wizard_id", "Lines")
 
     @api.model
@@ -49,6 +64,8 @@ class ReassignStockWzd(models.TransientModel):
                 ('location_id', '=', move.location_id.id)]
             assigned_moves = move_obj.search(domain)
             res['line_ids'] = []
+            res['for_partner_id'] = move.partner_id.id
+            res['unassigned_qty'] = move.product_qty - move.reserved_availability
             for amove in assigned_moves:
                 line = {
                     'move_id': amove.id,
@@ -60,7 +77,7 @@ class ReassignStockWzd(models.TransientModel):
                     'location_id': amove.location_id.id,
                     'partner_id': amove.partner_id.id,
                     'state': amove.state,
-                    'reassign_qty': move.remaining_qty
+                    'reassign_qty': 0.00
                 }
                 res['line_ids'].append(line)
         return res
@@ -207,5 +224,6 @@ class ReassignStockLineWzd(models.TransientModel):
     #                             digits=dp.get_precision
     #                             ('Product Unit of Measure'),
     #                             default=0.0)
-    reassign_qty = fields.Float('Qty to assign')
     assigned_qty = fields.Float('Qty assigned', readonly=True)
+    reassign_qty = fields.Float('Qty to assign')
+

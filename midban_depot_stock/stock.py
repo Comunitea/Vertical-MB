@@ -439,10 +439,6 @@ class StockPicking(models.Model):
                                 readonly=True,
                                 help="If checked the picking will be "
                                 "considered when you get a picking task")
-    unnasigned_pick = fields2.Boolean('Unnasigned Pick', default=False,
-                                      readonly=True,
-                                      help="Checked if move lines have not \
-                                      any stock reservation")
     partner_street = fields2.Char('Address', related='partner_id.street',
                                   readonly=True)
     partner_city = fields2.Char('City', related='partner_id.city',
