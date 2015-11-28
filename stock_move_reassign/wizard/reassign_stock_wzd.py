@@ -42,6 +42,7 @@ class ReassignStockWzd(models.TransientModel):
             domain = [
                 ('id', '!=', move.id),
                 ('product_id', '=', move.product_id.id),
+                ('picking_id.wave_id', '=', False),
                 '|',
                 ('state', '=', 'assigned'),
                 ('partially_available', '=', True),
