@@ -285,11 +285,13 @@ function openerp_ts_models(instance, module){
             var state = order_obj.state
             order_model.set('state', state);
             order_model.set('date_invoice', order_obj.date_invoice);
-            var only_date = order_obj.date_planned.split(' ');
-            if(only_date.length > 1){
-              order_model.set('date_planned', only_date[0]);
-            }else {
-              order_model.set('date_planned', order_obj.date_planned);
+            if (order_obj.date_planned){
+                var only_date = order_obj.date_planned.split(' ');
+                if(only_date.length > 1){
+                  order_model.set('date_planned', only_date[0]);
+                }else {
+                  order_model.set('date_planned', order_obj.date_planned);
+                }
             }
             // order_model.set('date_planned', order_obj.date_planned);
             order_model.set('num_order',order_obj.name);
