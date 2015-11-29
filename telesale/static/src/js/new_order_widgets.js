@@ -1148,8 +1148,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var loaded = self.ts_model.fetch('sale.order',
                                             ['supplier_id','contact_id','note','comercial','customer_comment','client_order_ref','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
                                             [
-                                                ['id', '=', order_id],
-                                                ['chanel', '=', 'telesale']
+                                                ['id', '=', order_id]
                                             ])
                 .then(function(orders){
                     var order = orders[0];

@@ -32,8 +32,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
             var loaded = self.ts_model.fetch('sale.order',
                                             ['supplier_id','contact_id','note','comercial','customer_comment','client_order_ref','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
                                             [
-                                                ['id', '=', order_id],
-                                                ['chanel', '=', 'telesale']
+                                                ['id', '=', order_id]
                                             ])
                 .then(function(orders){
                     var order = orders[0];
@@ -112,7 +111,7 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
         },
         load_partner_orders: function(partner_id,date_start,date_end){
             var self=this;
-            var domain =   [['partner_id', '=', partner_id],['chanel', '=', 'telesale']]
+            var domain =   [['partner_id', '=', partner_id]]
             if (date_start != ""){
                 domain.push(['date_order', '>=', date_start])
             }
