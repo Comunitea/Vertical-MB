@@ -123,8 +123,7 @@ class ValidateRoutes(models.TransientModel):
                 assing_t = time.time()
                 move.action_assign()
                 _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
-                if move.state != 'assigned':
-                    move.incomplete = True
+                # No me hace falta marcarlo como incompleto
             _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
             _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
             # Create as many picks as cameras involved and validate_it.

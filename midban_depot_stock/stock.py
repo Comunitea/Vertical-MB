@@ -1999,14 +1999,6 @@ class stock_move(models.Model):
         return res
 
 
-class stockMove(models.Model):
-
-    _inherit = "stock.move"
-
-    incomplete = fields2.Boolean('Incomplete', readonly=True)
-
-
-
 class stock_inventory(models.Model):
 
     _inherit = "stock.inventory"

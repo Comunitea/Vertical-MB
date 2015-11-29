@@ -413,6 +413,7 @@ class route_detail(models.Model):
                                    ('ways', 'Ways'),
                                    ('other', 'Other')], 'Type',
                                   related='route_id.type',
+                                  store=True,
                                   readonly=True)
     detail_name_str = fields.Char("Detail name", readonly=True,
                                   compute='_get_detail_name_str',

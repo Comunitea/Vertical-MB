@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-28 16:19+0000\n"
-"PO-Revision-Date: 2015-11-28 16:19+0000\n"
+"POT-Creation-Date: 2015-11-29 19:17+0000\n"
+"PO-Revision-Date: 2015-11-29 19:17+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -557,7 +557,7 @@ msgstr "Comercial"
 #. module: midban_depot_stock
 #: field:tag,company_id:0
 msgid "Company"
-msgstr "Compañía"
+msgstr "Company"
 
 #. module: midban_depot_stock
 #: selection:crm.phonecall,result:0
@@ -719,20 +719,10 @@ msgid "Customer"
 msgstr "Cliente"
 
 #. module: midban_depot_stock
-#: field:customer.list,phone:0
-msgid "Phone"
-msgstr "Teléfono"
-
-#. module: midban_depot_stock
-#: field:crm.phonecall,phone:0
-msgid "Phone"
-msgstr "Teléfono"
-
-#. module: midban_depot_stock
 #: code:addons/midban_depot_stock/partner.py:279
 #, python-format
 msgid "Customer %s is asigned to a route                                             of other                                             comercial"
-msgstr "El cliente %s está asignado a otra ruta de diferente comercial"
+msgstr "Customer %s está asignado a otra ruta de diferente comercial"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/partner.py:129
@@ -961,6 +951,11 @@ msgid "Detail route for day %s with state is %s can not                         
 msgstr "El detalle de la ruta para el día %s cuyo estado es %s no puede ser borrado. Sólo rutas pendientes pueden ser eliminadas"
 
 #. module: midban_depot_stock
+#: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_tree
+msgid "Address"
+msgstr "Dirección"
+
+#. module: midban_depot_stock
 #: selection:stock.pack.operation,do_pack:0
 #: field:transfer.line,do_pack:0
 #: selection:transfer.line,do_pack:0
@@ -1075,7 +1070,7 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:127
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:134
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:117
-#: code:addons/midban_depot_stock/wizard/validate_routes.py:184
+#: code:addons/midban_depot_stock/wizard/validate_routes.py:183
 #, python-format
 msgid "Error"
 msgstr "Error"
@@ -1088,7 +1083,7 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/stock.py:1657
 #: code:addons/midban_depot_stock/stock.py:1681
 #: code:addons/midban_depot_stock/stock.py:1691
-#: code:addons/midban_depot_stock/stock.py:2159
+#: code:addons/midban_depot_stock/stock.py:2151
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:214
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:231
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:240
@@ -1451,11 +1446,6 @@ msgstr "En la primera parte puedes transferir productos provenientes de un paque
 #: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form
 msgid "In the second part you can move entire packs between locations."
 msgstr "En la segunda parte puedes mover palets enteros entre las ubicaciones."
-
-#. module: midban_depot_stock
-#: field:stock.move,incomplete:0
-msgid "Incomplete"
-msgstr "Incompleto"
 
 #. module: midban_depot_stock
 #: field:partner.route.info,init_date:0
@@ -1969,7 +1959,7 @@ msgid "No pickings to put in a                                                  
 msgstr "No hay albaranes que poner en la ola"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:2159
+#: code:addons/midban_depot_stock/stock.py:2151
 #, python-format
 msgid "No quants to force the                                                     assignament"
 msgstr "No hay quants necesarios para forzar la asignación al movimiento"
@@ -2177,7 +2167,7 @@ msgstr "Operador:"
 #: field:customer.list,sequence:0
 #: field:partner.route.info,sequence:0
 msgid "Order"
-msgstr "Pedido"
+msgstr "Orden"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_delivery_list
@@ -2215,6 +2205,11 @@ msgstr "Fecha planificada pedido"
 #: selection:stock.machine,type:0
 msgid "Order Prepare"
 msgstr "Preparar pedido"
+
+#. module: midban_depot_stock
+#: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_tree
+msgid "Order notes"
+msgstr "Notas pedido"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_customer_list
@@ -2297,7 +2292,7 @@ msgstr "Lote paquete"
 #. module: midban_depot_stock
 #: field:transfer.line,result_package_id:0
 msgid "Packed Pack"
-msgstr "Paquete contenido"
+msgstr "Packed Pack"
 
 #. module: midban_depot_stock
 #: field:stock.pack.operation,packed_qty:0
@@ -2365,6 +2360,11 @@ msgid "Pending"
 msgstr "Pendiente"
 
 #. module: midban_depot_stock
+#: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_tree
+msgid "Phone"
+msgstr "Teléfono"
+
+#. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_crm_phonecall
 msgid "Phonecall"
 msgstr "Llamada telefónica"
@@ -2387,7 +2387,7 @@ msgid "Picking"
 msgstr "Albarán"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/validate_routes.py:185
+#: code:addons/midban_depot_stock/wizard/validate_routes.py:184
 #, python-format
 msgid "Picking %s must be outgoing type and                                      related with a sale or                                     autosale"
 msgstr "Picking %s must be outgoing type and                                      related with a sale or                                     autosale"
@@ -2396,7 +2396,7 @@ msgstr "Picking %s must be outgoing type and                                    
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:118
 #, python-format
 msgid "Picking %s without has not route detail                                     assigned"
-msgstr "El albarán %s no tiene detalle de ruta asignado"
+msgstr "Picking %s without has not route detail                                     assigned"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
@@ -2488,6 +2488,11 @@ msgstr "Albaranes"
 #: field:item.product,date_planned:0
 msgid "Planned Date"
 msgstr "Fecha planificada"
+
+#. module: midban_depot_stock
+#: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_tree
+msgid "Poblation"
+msgstr "Población"
 
 #. module: midban_depot_stock
 #: model:ir.actions.act_window,name:midban_depot_stock.action_validate_routes
@@ -2589,7 +2594,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:2017
+#: code:addons/midban_depot_stock/stock.py:2009
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -2705,6 +2710,7 @@ msgstr "Registro cambiado"
 
 #. module: midban_depot_stock
 #: field:out.picking.report,reference:0
+#: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_tree
 #: field:tag,default_code:0
 #: field:tag.item,default_code:0
 #: field:wave.report,reference:0
@@ -2812,7 +2818,7 @@ msgstr "Reimprimir tarea"
 #: field:route,comercial_id:0
 #: field:route.detail,comercial_id:0
 msgid "Responsible"
-msgstr "Responsible"
+msgstr "Responsable"
 
 #. module: midban_depot_stock
 #: view:route.report:midban_depot_stock.view_route_report_search

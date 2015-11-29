@@ -492,12 +492,12 @@
           <field name="arch" type="xml">
               <tree string="Route Sheet" create="false" delete="false">
                   <field name="sale_id" readonly="True"/>
-                  <field name="partner_ref" readonly="True"/>
+                  <field name="partner_ref" readonly="True" string="Reference"/>
                   <field name="partner_id" readonly="True"/>
-                  <field name="partner_street" readonly="True"/>
-                  <field name="partner_city" readonly="True"/>
-                  <field name="partner_phone" readonly="True"/>
-                  <field name="sale_note" readonly="True"/>
+                  <field name="partner_street" readonly="True" string="Address"/>
+                  <field name="partner_city" readonly="True" string="Poblation"/>
+                  <field name="partner_phone" readonly="True" string="Phone"/>
+                  <field name="sale_note" readonly="True" string="Order notes"/>
                   <field name="state" readonly="True" invisible="1"/>
                   <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
                   <field name="trans_route_id" invisible="1"/>
@@ -514,7 +514,7 @@
                 <field name="trans_route_id"/>
                 <field name="detail_date"/>
                 <field name="route_detail_id"/>
-                <field name="user_id"/>
+                <field name="create_uid" string="Comercial"/>
                 <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
                 <field name="partner_id" operator="child_of"/>
                 <separator/>
@@ -541,7 +541,7 @@
           <field name="view_mode">tree,form</field>
           <field name="view_id" ref="view_delivery_man_route_sheet_tree"/>
           <field name="search_view_id" ref="view_delivery_man_route_sheet_flter"/>
-          <field name="domain">[('picking_type_code', '=', 'outgoing')]</field>
+          <field name="domain">[('picking_type_code', '=', 'outgoing'), ('state', 'not in', ['draft', 'cancel', 'done'])]</field>
           <!-- <field name="context">{}</field> -->
       </record>
 
