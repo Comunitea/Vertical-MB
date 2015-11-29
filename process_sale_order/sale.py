@@ -270,16 +270,16 @@ class sale_order(models.Model):
 
     customer_comment = fields.Text('Customer comment',
                                    related='partner_id.comment')
-    user_id2 = fields.Many2one('res.users', 'User')
+    # user_id2 = fields.Many2one('res.users', 'User')
 
-    @api.model
-    def create(self, vals):
-        """
-        Overwrited in order to write user that create the sale order.
-        """
-        vals.update({'user_id2': self._uid})
-        res = super(sale_order, self).create(vals)
-        return res
+    # @api.model
+    # def create(self, vals):
+    #     """
+    #     Overwrited in order to write user that create the sale order.
+    #     """
+    #     vals.update({'user_id2': self._uid})
+    #     res = super(sale_order, self).create(vals)
+    #     return res
 
     @api.multi
     def action_ship_create(self):

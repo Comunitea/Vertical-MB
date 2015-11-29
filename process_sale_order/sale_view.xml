@@ -71,7 +71,7 @@
                     <attribute name="invisible">True</attribute>
                 </xpath-->
                 <field name='user_id' position="after">
-                    <field name="user_id2"/>
+                    <field name="create_uid" string="Created by"/>
                 </field>
 
             </field>

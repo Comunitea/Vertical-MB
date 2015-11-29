@@ -21,7 +21,6 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-
                 <field name="min_date" position="before">
                     <field name="orig_planned_date" attrs="{'invisible': [('sale_id', '=', False)]}"/>
                     <field name="validated" attrs="{'invisible': [('sale_id', '=', False)]}"/>
@@ -464,7 +463,8 @@
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
                          <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
                          <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
-                         <filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>
+                         <filter name="groupby_user_id" string="Comercial" context="{'group_by':'create_uid'}"/>
+                         <!--<filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>-->
                     </group>
                </search>
             </field>
@@ -526,7 +526,8 @@
                      <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
                      <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
                      <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
-                     <filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>
+                     <!--<filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>-->
+                     <filter name="groupby_user_id" string="Comercial" context="{'group_by':'create_uid'}"/>
                 </group>
            </search>
           </field>
