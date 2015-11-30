@@ -239,7 +239,12 @@ class sale(osv.osv):
             ('state', 'not in', ['cancel', 'done'])]
         order_obj = self.search(domain, limit=1, order='id desc')
         if order_obj:
-            res = order_obj.id
+            domain = [('group_id', '=', order_obj.procurement_group_id.id),
+                      ('picking_type_code', '=', 'internal'),
+                      ('wave_id', '!=', False)]
+            pick_obj = self.env['stock.picking'].search(domain)
+            if not pick_obj:
+                res = order_obj.id
         return res
 
     # def check_not_in_picking_order(self, cr, uid, client_id, context=None):
