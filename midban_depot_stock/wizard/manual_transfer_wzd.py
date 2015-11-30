@@ -71,11 +71,12 @@ class manual_transfer_wzd(models.TransientModel):
         t_move = self.env['stock.move']
         # Create a picking to put the entire transfer of internal type
         pick_obj = self._create_pick()
+        ops_val = []
         for field_o2m in [self.prod_line_ids, self.pack_line_ids]:
             for line in field_o2m:
                 # We want to move a entire multiproduct pack, we need to create
                 # one move and assign it for each product inside the pack
-                if not line.product_id and line.package_id.is_multiproduct:
+                if (not line.product_id and line.package_id.is_multiproduct):
                     quants_by_product = line.package_id.get_products_quants()
                     for product in quants_by_product:
                         quants_lst = quants_by_product[product]
@@ -98,8 +99,8 @@ class manual_transfer_wzd(models.TransientModel):
                         # Move will be the our calculed quants reserved
                         move_obj.action_assign()
                     # Create the operation to move a multiproduct pack
-                    op_vals = line.get_operation_vals(pick_obj)
-                    self.env['stock.pack.operation'].create(op_vals)
+                    ops_vals = line.get_operation_vals(pick_obj)
+                    self.env['stock.pack.operation'].create(ops_vals)
                 else:
                     # Get operation and related move
                     ops_vals, move_vals = line.get_move_ops_vals(pick_obj)

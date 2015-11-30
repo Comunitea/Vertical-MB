@@ -401,27 +401,28 @@ class stock_picking(osv.Model):
                     operations = list(set(operations))
                     _logger.debug("CMNT recuperacion opes: %s", time.time() - init_op)
                     for op in operations:
-                        prod = op.operation_product_id
-                        var_weight = False
-                        if supplier_id:
-                            supp = prod.get_product_supp_record(supplier_id)
-                        op_uos_qty = 0
-                        init_op = time.time()
-                        op_qty = op.product_qty
-                        if not op.product_id:
-                            op_qty = op.package_id.packed_qty
-                        op_uos_qty = \
-                            op.operation_product_id.uom_qty_to_uos_qty(op_qty,
-                                                    move_uos_id,
-                                                    supplier_id)
-                        _logger.debug("CMNT cinv unid: %s", time.time() - init_op)
-                        # Write the calculed uos qty in operation
-                        init_save = time.time()
-                        op.with_context(no_recompute=True).write(
-                            {'uos_qty': op_uos_qty, 'uos_id':move_uos_id })
-                        _logger.debug("CMNT Tiempo save op: %s", time.time() - init_save)
-                        #op.uos_qty = op_uos_qty
-                        #op.uos_id = move_uos_id
+                        if not op.package_id.is_multiproduct:
+                            prod = op.operation_product_id
+                            var_weight = False
+                            if supplier_id:
+                                supp = prod.get_product_supp_record(supplier_id)
+                            op_uos_qty = 0
+                            init_op = time.time()
+                            op_qty = op.product_qty
+                            if not op.product_id:
+                                op_qty = op.package_id.packed_qty
+                            op_uos_qty = \
+                                op.operation_product_id.uom_qty_to_uos_qty(op_qty,
+                                                        move_uos_id,
+                                                        supplier_id)
+                            _logger.debug("CMNT cinv unid: %s", time.time() - init_op)
+                            # Write the calculed uos qty in operation
+                            init_save = time.time()
+                            op.with_context(no_recompute=True).write(
+                                {'uos_qty': op_uos_qty, 'uos_id':move_uos_id })
+                            _logger.debug("CMNT Tiempo save op: %s", time.time() - init_save)
+                            #op.uos_qty = op_uos_qty
+                            #op.uos_id = move_uos_id
         _logger.debug("CMNT total do_prepare: %s", time.time() - init_t)
         return res
 
