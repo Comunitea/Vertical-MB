@@ -113,6 +113,12 @@ class ValidateRoutes(models.TransientModel):
         # Está bien o ordeno por la min_date del out, es decir ordeno los outs
         pick_pickings = sorted(pick_pickings_tmp, key=lambda p: p.date)
         for pick in pick_pickings:
+            # import ipdb; ipdb.set_trace()
+            print("----------------------------------------------------------------------------")
+            print("----------------------------------------------------------------------------")
+            print("SEGUIMIENTO DEL ALBARAN ", pick.name)
+            print("----------------------------------------------------------------------------")
+            print("----------------------------------------------------------------------------")
             if not pick.route_detail_id:
                 raise except_orm(_('Error'),
                                  _('Picking %s without has not route detail \
@@ -123,22 +129,43 @@ class ValidateRoutes(models.TransientModel):
                 assing_t = time.time()
                 move.action_assign()
                 _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
+                print("*****************")
+                print("move ASIGNADO")
+                print(time.time() - assing_t)
+                print("*****************")
                 # No me hace falta marcarlo como incompleto
             _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
             _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
+            print("*****************")
+            print("albaran ASIGNADO")
+            print(time.time() - assing_t)
+            print("*****************")
             # Create as many picks as cameras involved and validate_it.
             split_t = time.time()
             picks_by_cam = self._split_pick_by_cameras(pick)
             _logger.debug("CMNT Split : %s", time.time() - split_t)
-
+            print("*****************")
+            print("albaran DIVIDIDO")
+            print(time.time() - split_t)
+            print("*****************")
             route_detail = pick.route_detail_id
             detail_date = route_detail.date + " 19:00:00"
             vals2 = {'route_detail_id': route_detail.id,
                      'min_date': detail_date,
                      'validated': True}
             picks_tot = picks_by_cam + out_pickings
+            write_t = time.time()
             picks_tot.write(vals2)
+            print("*****************")
+            print("ALBARAN VALIDADO--> fecha planificada fecha detalle y validado")
+            print(time.time() - write_t)
+            print("*****************")
         _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
+        print("*****************")
+        print("albaran escritura fecha planificada fecha detalle y validado")
+        print(time.time() - init_t)
+        print("*****************")
+        # import ipdb; ipdb.set_trace()
         return
 
     def _separate_unavailable_qty(self, move):
