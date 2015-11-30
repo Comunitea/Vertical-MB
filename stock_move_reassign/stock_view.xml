@@ -73,8 +73,8 @@
                 <filter icon="terp-go-today" string="Created Today" domain="[('date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59))), ('date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]" help="Moves created Today"/>
 
                 <filter icon="terp-go-today" string="Planned Today" domain="[('date_expected','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59))), ('date_expected','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]" help="Moves planned for Today"/>
-                <filter icon="terp-go-today" string="Partially available" domain="[('partially_available': True)]" help="Moves planned for Today"/>
-                <filter icon="terp-go-today" string="Not available" domain="[('partially_available': False)]" help="Moves planned for Today"/>
+                <filter icon="terp-go-today" string="Partially available" domain="[('partially_available', '=', True)]" help="Moves planned for Today"/>
+                <filter icon="terp-go-today" string="Not available" domain="[('partially_available', '=', False)]" help="Moves planned for Today"/>
                 <separator/>
                 <group expand="0" string="Group By">
                <filter string="Transport Route" context="{'group_by':'trans_route_id2'}"/>

@@ -32,8 +32,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
             var loaded = self.ts_model.fetch('sale.order',
                                             ['supplier_id','contact_id','note','comercial','customer_comment','client_order_ref','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],  //faltan los impuestos etc
                                             [
-                                                ['id', '=', order_id],
-                                                ['chanel', '=', 'telesale']
+                                                ['id', '=', order_id]
                                             ])
                 .then(function(orders){
                     var order = orders[0];
@@ -115,7 +114,8 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
         load_partner_orders: function(date_start,date_end){
            // HAY QUE CONTROLAR LAS FECHAS CON UTC, HORARIO DE INVIERNO -1H VERANO -2H
             var self=this;
-            var domain =   [['create_uid', '=', this.ts_model.get('user').id],['chanel', '=', 'telesale']]
+//            var domain =   [['create_uid', '=', this.ts_model.get('user').id],['chanel', '=', 'telesale']]
+            var domain =   []
             if (date_start != ""){
                 utc_date_start = self.ts_model.parse_str_date_to_utc(date_start + " 00:00:00")
                 domain.push(['date_order', '>=', utc_date_start])

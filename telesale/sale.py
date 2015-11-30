@@ -103,7 +103,6 @@ class sale(osv.osv):
     _defaults = {
         'chanel': 'erp'
     }
-
     def create_order_from_ui(self, cr, uid, orders, context=None):
         t_partner = self.pool.get("res.partner")
         t_order = self.pool.get("sale.order")
@@ -225,6 +224,45 @@ class sale(osv.osv):
         self.action_button_confirm_thread(cr, uid, [order_id],
                                           context=context)
         return True
+
+    @api.model
+    def check_not_in_picking_order(self, client_id):
+        """
+        """
+        # NO ESTÁ COGIENDO BIEN LA FECHA, NO LA RECUPERA EN TIMEZONE Y AL HACER EL BROWSE TAMPOCO
+        # LA DE LA VIEJA API TAMPOCO FUNCIONA BIEN
+        res = False
+        date_today = time.strftime('%Y-%m-%d') + ' 00:00:00'
+        domain = [
+            ('partner_id', '=', client_id),
+            ('date_order', '>=', date_today),
+            ('state', 'not in', ['cancel', 'done'])]
+        order_obj = self.search(domain, limit=1, order='id desc')
+        if order_obj:
+            domain = [('group_id', '=', order_obj.procurement_group_id.id),
+                      ('picking_type_code', '=', 'internal'),
+                      ('wave_id', '!=', False)]
+            pick_obj = self.env['stock.picking'].search(domain)
+            if not pick_obj:
+                res = order_obj.id
+        return res
+
+    # def check_not_in_picking_order(self, cr, uid, client_id, context=None):
+    #     """
+    #     """
+    #     if context is None:
+    #         context = {}
+    #     res = False
+    #     date_today = time.strftime('%Y-%m-%d') + ' 00:00:00'
+    #     domain = [
+    #         ('partner_id', '=', client_id),
+    #         ('date_order', '>=', date_today),
+    #         ('state', 'not in', ['cancel', 'done'])]
+    #
+    #     order_id = self.search(cr, uid, domain, limit=1, order='id desc', context=context)
+    #     if order_id:
+    #         res = order_id[0]
+    #     return res
 
 
 class sale_order_line(osv.osv):

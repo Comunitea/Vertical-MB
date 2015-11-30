@@ -147,42 +147,56 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                     else{
                         partner_obj = self.ts_model.db.get_partner_by_id(partner_id);
-                        var cus_name = self.ts_model.getComplexName(partner_obj);
-                        self.order_model.set('partner', cus_name);
-                        self.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
-                        var sup_name = ''
-                        if (partner_obj.indirect_customer && !$.isEmptyObject(partner_obj.supplier_ids)){
-                          sup_name = self.ts_model.db.get_supplier_by_id(partner_obj.supplier_ids[0]);
-                        }
-                        self.order_model.set('supplier', sup_name);
-                        // self.order_model.set('customer_comment', partner_obj.comment);
-                        self.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
-                        self.order_model.set('customer_debt', my_round(partner_obj.credit,2));
-                        contact_obj = self.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
-                        self.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
-                        self.order_model.set('contact_name', contact_obj.name);
-                        self.check_partner_routes(partner_id);
+                        var model = new instance.web.Model('sale.order');
+                        model.call("check_not_in_picking_order",[partner_id],{context:new instance.web.CompoundContext()})
+                        .then(function(order_id){
+                            var do_onchange = true
+                            if (order_id){
+//                                var r = confirm(_t("There is a order for client " + partner_obj.name + "¿Do you want open the order?"))
+                                var r = confirm(_t("Ya hay un pedido para el cliente " + partner_obj.name + "¿Deseas abrir el pedido?"))
+                                if (r == true){
+                                    do_onchange = false
+                                    $.when( self.load_order_from_server(order_id) )
+                                    .done(function(){
+                                    });
+                                }
+                            }
+                            if (do_onchange){
+                                var cus_name = self.ts_model.getComplexName(partner_obj);
+                                self.order_model.set('partner', cus_name);
+                                self.order_model.set('partner_code', partner_obj.ref ? partner_obj.ref : "");
+                                var sup_name = ''
+                                if (partner_obj.indirect_customer && !$.isEmptyObject(partner_obj.supplier_ids)){
+                                  sup_name = self.ts_model.db.get_supplier_by_id(partner_obj.supplier_ids[0]);
+                                }
+                                self.order_model.set('supplier', sup_name);
+                                // self.order_model.set('customer_comment', partner_obj.comment);
+                                self.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
+                                self.order_model.set('customer_debt', my_round(partner_obj.credit,2));
+                                contact_obj = self.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself
+                                self.order_model.set('comercial', partner_obj.user_id ? partner_obj.user_id[1] : "");
+                                self.order_model.set('contact_name', contact_obj.name);
+                                self.check_partner_routes(partner_id);
 
-                        // else{
-                        //     if (key == "partner") {
-                        //       self.$('#partner_code').focus();
-                        //     }
-                        //     else {
-                        //       self.$('#date_invoice').focus();
-                        //     }
-                        // }
-                        self.refresh();
-                        $('#vua-button').click();
-                        if(self.order_model.get('orderLines').length == 0){
-                            $('.add-line-button').click()
-                        }
-                        else{
-                            this.$('#date_order').focus();
-                        }
-                        // else{
-                        //     $('#date_order').focus();
-                        // }
-                        // self.refresh();
+                                // else{
+                                //     if (key == "partner") {
+                                //       self.$('#partner_code').focus();
+                                //     }
+                                //     else {
+                                //       self.$('#date_invoice').focus();
+                                //     }
+                                // }
+                                self.refresh();
+                                $('#vua-button').click();
+                                if(self.order_model.get('orderLines').length == 0){
+                                    $('.add-line-button').click()
+                                }
+                                else{
+                                    self.$('#date_order').focus();
+                                }
+
+                            }
+                        });
                     }
                 });
             }
@@ -195,6 +209,31 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // if (key == "date_order"){
             //   this.$('#partner_code').focus();
             // }
+        },
+        load_order_from_server: function(order_id){
+            var self=this;
+          //  if (!flag){
+              //  this.ts_model.get('orders').add(new module.Order({ ts_model: self.ts_model}));
+            //}
+            this.open_order =  this.ts_model.get('selectedOrder')
+            var loaded = self.ts_model.fetch('sale.order',
+                                            ['supplier_id','contact_id','note','comercial','customer_comment','client_order_ref','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
+                                            [
+                                                ['id', '=', order_id]
+                                            ])
+                .then(function(orders){
+                    var order = orders[0];
+                    self.order_fetch = order;
+                    return self.ts_model.fetch('sale.order.line',
+                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note', 'discount'],
+                                                [
+                                                    ['order_id', '=', order_id],
+                                                 ]);
+                }).then(function(order_lines){
+                        self.ts_model.build_order(self.order_fetch, self.open_order, order_lines); //build de order model
+                        self.ts_widget.new_order_screen.data_order_widget.refresh();
+                })
+            return loaded
         },
         refresh: function(){
             this.renderElement();
@@ -1148,8 +1187,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var loaded = self.ts_model.fetch('sale.order',
                                             ['supplier_id','contact_id','note','comercial','customer_comment','client_order_ref','name','partner_id','date_order','state','amount_total','date_invoice', 'date_planned', 'date_invoice'],
                                             [
-                                                ['id', '=', order_id],
-                                                ['chanel', '=', 'telesale']
+                                                ['id', '=', order_id]
                                             ])
                 .then(function(orders){
                     var order = orders[0];
