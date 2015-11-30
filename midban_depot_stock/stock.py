@@ -493,6 +493,16 @@ class StockPicking(models.Model):
     #
     #     return res
 
+
+    # DESABILITAMOS MENSAJERÍA PARA STOCK PICKING
+    @api.model
+    def create(self, data):
+        return super(StockPicking, self.with_context(tracking_disable=True)).create(data)
+
+    @api.multi
+    def write(self, data):
+        return super(StockPicking, self.with_context(tracking_disable=True)).write(data)
+
     @api.one
     @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
     def _get_weight(self):

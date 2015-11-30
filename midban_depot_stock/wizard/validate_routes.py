@@ -139,7 +139,6 @@ class ValidateRoutes(models.TransientModel):
             picks_tot = picks_by_cam + out_pickings
             picks_tot.write(vals2)
         _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
-        _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
         return
 
     def _separate_unavailable_qty(self, move):
