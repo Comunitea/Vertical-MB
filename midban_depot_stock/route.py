@@ -371,23 +371,25 @@ class route_detail(models.Model):
     _rec_name = 'route_id'
     _order = 'date'
 
-    # @api.multi
-    # @api.depends('route_id', 'date')
-    # def _get_detail_name_str(self):
-    #     """
-    #     Calc name str
-    #     """
-    #     print "_get_detail_name_str"
-    #     for detail in self:
-    #         detail.detail_name_str = detail.route_id.code + " " + detail.date
-
-    @api.one
+    @api.multi
+    @api.depends('route_id', 'date')
     def _get_detail_name_str(self):
         """
         Calc name str
         """
+
         print "_get_detail_name_str"
-        self.detail_name_str = self.route_id.code + " " + self.date
+        for detail in self:
+            detail.detail_name_str = detail.route_id.code + " " + detail.date
+
+    # @api.one
+    # def _get_detail_name_str(self):
+    #     """
+    #     Calc name str
+    #     """
+    #     import ipdb; ipdb.set_trace()
+    #     print "_get_detail_name_str"
+    #     self.detail_name_str = self.route_id.code + " " + self.date
 
     route_id = fields.Many2one('route', 'Route', required=True)
     date = fields.Date('Date', required=True)
