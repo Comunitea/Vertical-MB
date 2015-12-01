@@ -19,8 +19,8 @@
                                     <field name="day_id"/>
                                     <field name="type"/>
                                     <field name="regularity"/>
-                                    <field name="last_date"/>
-                                    <field name="next_date"/>
+                                    <field name="last_date" string="Last Date"/>
+                                    <field name="next_date" string="Next Date"/>
                                     <field name="init_date"/>
                                 </tree>
                             </field>

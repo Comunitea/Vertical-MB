@@ -34,7 +34,7 @@ msgstr "Cancelar"
 #. module: stock_picking_batch
 #: selection:confirm.process.delivery,journal_type:0
 msgid "Create Customer Invoice"
-msgstr "Create Customer Invoice"
+msgstr "Crear factura cliente"
 
 #. module: stock_picking_batch
 #: selection:confirm.process.delivery,journal_type:0
@@ -44,12 +44,12 @@ msgstr "Crear factura de proveedor"
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,create_uid:0
 msgid "Created by"
-msgstr "Created by"
+msgstr "Creaado por"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,create_date:0
 msgid "Created on"
-msgstr "Created on"
+msgstr "Creado el"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,journal_id:0
@@ -79,12 +79,12 @@ msgstr "Tipo de diario"
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,write_uid:0
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "ültima actualización por"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,write_date:0
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Última actualización el"
 
 #. module: stock_picking_batch
 #: model:ir.actions.report.xml,name:stock_picking_batch.action_report_picking_batch
@@ -98,8 +98,8 @@ msgstr "¿Procesar todos los albaranes seleccionados?"
 
 #. module: stock_picking_batch
 #: model:ir.actions.act_window,name:stock_picking_batch.action_stock_picking_process
-msgid "Process delivery (batch)"
-msgstr "Procesar albaranes (en lote)"
+msgid "Generate Customers Pickings"
+msgstr "Generar albaranes cliente"
 
 #. module: stock_picking_batch
 #: selection:confirm.process.delivery,journal_type:0
