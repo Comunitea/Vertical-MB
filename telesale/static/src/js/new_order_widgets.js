@@ -170,7 +170,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                   sup_name = self.ts_model.db.get_supplier_by_id(partner_obj.supplier_ids[0]);
                                 }
                                 self.order_model.set('supplier', sup_name);
-                                // self.order_model.set('customer_comment', partner_obj.comment);
+                                self.order_model.set('customer_comment', partner_obj.comment);
                                 self.order_model.set('limit_credit', my_round(partner_obj.credit_limit,2));
                                 self.order_model.set('customer_debt', my_round(partner_obj.credit,2));
                                 contact_obj = self.ts_model.db.get_partner_contact(partner_id); //If no contacts return itself

@@ -936,7 +936,7 @@ function openerp_ts_models(instance, module){
             var self=this;
             // var customer_id = this.ts_model.db.partner_name_id[this.get('partner')];
             if($('#partner').val()){
-                if(this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
+                if(this.selected_orderline && this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
                   $('.remove-line-button').click()
                 }
                 $('.add-line-button').click()

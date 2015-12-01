@@ -54,7 +54,6 @@ class sale_order(osv.Model):
                                         select=True,
                                         help="Date propaged to shecduled \
                                               date of related picking"),
-        'note2': fields.text('Note'),
     }
 
     @api.onchange('route_detail_id')
