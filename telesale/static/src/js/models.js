@@ -368,7 +368,7 @@ function openerp_ts_models(instance, module){
               domain.push(['route_id', '=', parseInt(route)])
             }
             var context = new instance.web.CompoundContext()
-            self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration','route_id'],domain,context)
+            self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','customer_phone', 'state','duration','route_id'],domain,context)
             .then(function(calls){
                 if (!$.isEmptyObject(calls)){
                     for (key in calls){

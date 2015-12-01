@@ -225,7 +225,8 @@ class crm_phonecall(osv.Model):
                                    ('cancel', 'Cancelled'),
                                    ('done', 'Held')],
                                   string='Status', size=16, readonly=True,
-                                  track_visibility='onchange',)
+                                  track_visibility='onchange'),
+        'customer_phone': fields.related('partner_id', 'phone', type='char', string='Customer phone', readonly=True)
     }
 
 

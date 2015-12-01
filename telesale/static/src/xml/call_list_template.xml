@@ -84,7 +84,8 @@
                 <span class="call-cell"><t t-esc="widget.call.contact_name"/></span>
             </td>
             <td class="call-cell-phone">
-                <span class="call-cell"><t t-esc="widget.call.partner_phone"/></span>
+                <!--<span class="call-cell"><t t-esc="widget.call.partner_phone"/></span>-->
+                <span class="call-cell"><t t-esc="widget.call.customer_phone"/></span>
             </td>
             <td class="call-cell-comment">
                 <span class="call-cell"><t t-esc="widget.call.name"/></span>
