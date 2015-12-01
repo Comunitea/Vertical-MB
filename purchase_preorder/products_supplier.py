@@ -46,8 +46,8 @@ class ProductsSupplier(models.Model):
     product_uoc = fields.Many2one('product.uom', 'Unit of Buy')
     supplier_uoc = fields.Char('Supplier Unidad de Compra')
     test = fields.Boolean()
-    kgrs = fields.Float ("Quantity Kgrs")
-    tm = fields.Float ('TM', compute = _get_tm)
+    kgrs = fields.Float("Quantity Kgrs")
+    tm = fields.Float('TM', compute = _get_tm)
     last_tm = fields.Float ('Last TM')
 
 
@@ -56,7 +56,8 @@ class ProductsSupplier(models.Model):
     @api.model
     @api.onchange ('product_uoc')
     def _check_product_uoc(self):
-
+        if not self.product_id:
+            return
         product_id = self.product_id
         supplier_id = self.supplier_id
         self._check_uoc_qty()
@@ -65,6 +66,8 @@ class ProductsSupplier(models.Model):
 
     @api.model
     def _conv_boxes_logis (self, flag):
+        if not self.product_id:
+            return
         # Convierte de product_uoc a mantles o palets
         product_id = self.product_id
         supplier_id = self.supplier_id
@@ -81,10 +84,12 @@ class ProductsSupplier(models.Model):
     @api.model
     @api.onchange('product_uoc_qty')
     def _check_uoc_qty(self):
-
-        if self.last_tm == self._context['tm']:
+        if not self.product_id:
             return
-        self.last_tm = self._context['tm']
+        if self._context.get('tm', False):
+            if self.last_tm == self._context['tm']:
+                return
+            self.last_tm = self._context['tm']
 
         mantles = self._conv_boxes_logis('mantles') * self.product_uoc_qty
         palets =  self._conv_boxes_logis('palets') * self.product_uoc_qty
@@ -104,13 +109,16 @@ class ProductsSupplier(models.Model):
 
 
     @api.model
-    @api.onchange ('palets', 'mantles')
+    @api.onchange('palets', 'mantles')
     def _check_qtys(self):
-        if self.last_tm == self._context['tm']:
+        if not self.product_id:
             return
-        self.last_tm = self._context['tm']
+        if self._context.get('tm', False):
+            if self.last_tm == self._context['tm']:
+                return
+            self.last_tm = self._context['tm']
 
-        flag = self._context['change']
+        flag = self._context.get('change', False)
         product_id = self.product_id
         supplier_id = self.supplier_id
         supp = product_id.get_product_supp_record(supplier_id.id)
