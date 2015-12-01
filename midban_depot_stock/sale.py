@@ -207,7 +207,7 @@ class sale_order(osv.Model):
                 if pick.state not in ['draft', 'cancel', 'done'] and pick.validated_state != 'no_validated':
                     raise except_orm(_('Error'), _('The related pick %s has been validated or load confirmed. You must'
                                                    ' cancell manually first' % pick.name))
-        return super(sale_order).action_cancel()
+        return super(sale_order, self).action_cancel()
 
     @api.multi
     def write(self, vals):
