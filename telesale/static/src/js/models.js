@@ -371,12 +371,14 @@ function openerp_ts_models(instance, module){
             self.fetch('crm.phonecall',['date','partner_id','name','partner_phone','state','duration','route_id'],domain,context)
             .then(function(calls){
                 if (!$.isEmptyObject(calls)){
-
                     for (key in calls){
                         calls[key].date = self.parse_utc_to_str_date(calls[key].date); //set dates in browser timezone
                         calls[key].duration = self.parse_duration_watch_format(calls[key].duration); //set dates in browser timezone
-                        calls[key].partner_phone = self.db.get_partner_contact(calls[key].partner_id[0]).phone|| "-" //set phone of contact
-                        calls[key].contact_name = self.db.get_partner_contact(calls[key].partner_id[0]).name //add contact name to phone
+                        var contact = self.db.get_partner_contact(calls[key].partner_id[0])
+                        if (contact){
+                            calls[key].partner_phone = contact.phone|| "-" //set phone of contact
+                            calls[key].contact_name = contact.name //add contact name to phone
+                        }
                     }
                 }
                 self.get('calls').reset(calls);

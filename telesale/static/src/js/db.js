@@ -233,7 +233,9 @@ function openerp_ts_db(instance, module){
             return undefined;
         },
         get_partner_contact: function(partner_id){
+            res = undefined
             var partner_obj = this.get_partner_by_id(partner_id);
+            if (partner_obj) {
             var res = partner_obj;
             for(var i = 0, len = partner_obj.child_ids.length; i < len; i++){
                 var contact = this.get_partner_by_id(partner_obj.child_ids[i]);
@@ -241,6 +243,7 @@ function openerp_ts_db(instance, module){
                     res = contact
                     break;
                 }
+            }
             }
             return res;
         },
