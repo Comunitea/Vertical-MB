@@ -198,6 +198,18 @@ class sale_order(osv.Model):
         return res
 
     @api.multi
+    def action_cancel(self):
+        """
+        No cancel a order if there is a picking that is in validated_state = 'validated or loaded'
+        """
+        for sale in self:
+            for pick in sale.picking_ids:
+                if pick.state not in ['draft', 'cancel', 'done'] and pick.validated_state != 'no_validated':
+                    raise except_orm(_('Error'), _('The related pick %s has been validated or load confirmed. You must'
+                                                   ' cancell manually first' % pick.name))
+        return super(sale_order).action_cancel()
+
+    @api.multi
     def write(self, vals):
         """
         Overwrited in order to write the read_only date_planned when a

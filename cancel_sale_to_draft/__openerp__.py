@@ -32,7 +32,7 @@
     * Depends of OCA repository, and nan_partner_risk
     """,
     "images": [],
-    "depends": ["sale", "sale_order_back2draft", "nan_partner_risk"],
+    "depends": ["sale", "sale_order_back2draft", "nan_partner_risk", "midban_depot_stock"],
     "data": [
         'views/sale_view.xml',
     ],

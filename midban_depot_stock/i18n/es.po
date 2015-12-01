@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-01 01:24+0000\n"
-"PO-Revision-Date: 2015-12-01 01:24+0000\n"
+"POT-Creation-Date: 2015-12-01 09:15+0000\n"
+"PO-Revision-Date: 2015-12-01 09:15+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -572,7 +572,7 @@ msgid "Comunicate"
 msgstr "Comunica"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:285
+#: code:addons/midban_depot_stock/sale.py:297
 #, python-format
 msgid "Configuration Error!"
 msgstr "¡Error de configuración!"
@@ -584,9 +584,8 @@ msgstr "Configuración pasillos"
 
 #. module: midban_depot_stock
 #: view:confirm.load.wzd:midban_depot_stock.confirm_loads_form
-#: model:ir.actions.act_window,name:midban_depot_stock.confirm_load_wzd_action
-msgid "Confirm/Undo Load"
-msgstr "Confirmar/Desacer carga"
+msgid "Confirm Load"
+msgstr "Confirmar carga"
 
 #. module: midban_depot_stock
 #: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
@@ -597,6 +596,11 @@ msgstr "Confirmar operaciones"
 #: view:confirm.load.wzd:midban_depot_stock.confirm_loads_form
 msgid "Confirm load?"
 msgstr "Confirmar carga?"
+
+#. module: midban_depot_stock
+#: model:ir.actions.act_window,name:midban_depot_stock.confirm_load_wzd_action
+msgid "Confirm/Undo Load"
+msgstr "Confirmar/Desacer carga"
 
 #. module: midban_depot_stock
 #: field:stock.transfer_details_items,do_onchange:0
@@ -1063,6 +1067,7 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/route.py:334
 #: code:addons/midban_depot_stock/sale.py:166
 #: code:addons/midban_depot_stock/sale.py:172
+#: code:addons/midban_depot_stock/sale.py:208
 #: code:addons/midban_depot_stock/stock_task.py:222
 #: code:addons/midban_depot_stock/stock_task.py:236
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:567
@@ -1527,7 +1532,7 @@ msgstr "Se comprobará la disponibilidad de los albaranes de tipo picking relaci
 #. module: midban_depot_stock
 #: view:confirm.load.wzd:midban_depot_stock.confirm_loads_form
 msgid "It will be marked the out and pick pickings as loaded, so you can ask for a picking task."
-msgstr "Se marcaran los albaranes de picking en estado de validación carga confirmada, se habilitarán para pedir tarea de picking"
+msgstr "It will be marked the out and pick pickings as loaded, so you can ask for a picking task."
 
 #. module: midban_depot_stock
 #: view:operations.on.fly.wzd:midban_depot_stock.operations_on_fly_wzd_form
@@ -2060,7 +2065,7 @@ msgid "Not camera defined in wizard"
 msgstr "No hay camara definida en el asistente"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:280
+#: code:addons/midban_depot_stock/sale.py:292
 #, python-format
 msgid "Not enough stock ! : "
 msgstr "¡No hay suficiente stock! : "
@@ -2438,7 +2443,7 @@ msgstr "El albarán %s debería estar en estado de validación:validado"
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:51
 #, python-format
 msgid "Picking %s without has not route detail                                     assigned"
-msgstr "EL albarán %s no tiene ningún detalle de ruta asignado"
+msgstr "Picking %s without has not route detail                                     assigned"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
@@ -3414,6 +3419,12 @@ msgid "The location to replenish %s is not child                                
 msgstr "La ubicación a reposicionar %s no es hija de una ubicación tipo cámara, debes configurarla bien"
 
 #. module: midban_depot_stock
+#: code:addons/midban_depot_stock/sale.py:208
+#, python-format
+msgid "The related pick %s has been validated or load confirmed. You must cancell manually first"
+msgstr "El albarán relacionado %s ha sido validado o se ha confirmado la carga. Debes cancelarlo manualmente primero"
+
+#. module: midban_depot_stock
 #: help:stock.config.settings,min_loc_replenish:0
 msgid "The task wizard will assign the operations that cover tne indicated nº of locations to replenish. Maybe will be transfer several replenish pickings"
 msgstr "El asistente de tareas asignará el número de operaciones necesario que cubra el nº de ubicaciones a reponer. Quizás se haga una transferencia de varios albaranes de reposición"
@@ -3737,10 +3748,6 @@ msgstr "Confirma que desea validar todas las rutas asignadas?"
 #: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_flter
 #: view:stock.picking:midban_depot_stock.view_picking_internal_search_add_route
 #: view:stock.picking:midban_depot_stock.view_picking_replanning_route_filter
-msgid "Validated"
-msgstr "Validados"
-
-#. module: midban_depot_stock
 #: selection:stock.picking,validated_state:0
 msgid "Validated"
 msgstr "Validado"
@@ -4017,7 +4024,7 @@ msgid "You must select a pack to add operations"
 msgstr "You must select a pack to add operations"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:274
+#: code:addons/midban_depot_stock/sale.py:286
 #, python-format
 msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
 "The real stock is                           %.2f %s. (without reservations)"
