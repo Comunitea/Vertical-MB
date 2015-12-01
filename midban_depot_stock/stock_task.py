@@ -192,10 +192,10 @@ class stock_task(osv.Model):
         pick_ubi_type_id = wh.ubication_type_id.id
         pick_in_type_id = wh.in_type_id.id
         #tenemos que mirar si es un multipack
-        pack_id = self.env['stock.quant.package'].browse(pack_id)
-        if pack_id.parent_id:
-            pack_id = pack_id.parent_id.id
-
+        pack_id_ = self.env['stock.quant.package'].browse(pack_id)
+        if pack_id_.parent_id:
+            pack_id_ = pack_id_.parent_id
+        pack_id = pack_id_.id
         domain = [
             ('picking_id.picking_type_id', '=', pick_ubi_type_id),
             ('package_id', '=', pack_id),
