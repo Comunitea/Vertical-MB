@@ -30,79 +30,6 @@ class ValidateRoutes(models.TransientModel):
 
     _name = 'validate.routes'
 
-    # @api.multi
-    # def validate(self):
-    #     init_t = time.time()
-    #     active_ids = self.env.context['active_ids']
-    #     out_pickings = self.env['stock.picking'].browse(active_ids)
-    #
-    #     pick_pickings = self._get_pickings_from_outs(out_pickings)
-    #     # TODO ordenar por date (fecha de creación)
-    #     unasigned_picks_lst = []
-    #     for pick in pick_pickings:
-    #         if not pick.route_detail_id:
-    #             raise except_orm(_('Error'),
-    #                              _('Picking %s without has not route detail \
-    #                                 assigned' % pick.name))
-    #
-    #         # Put unassigned moves inside a new picking
-    #         unassigned_pick = False
-    #         assing_tot = time.time()
-    #         unassigned_moves = []
-    #         for move in pick.move_lines:
-    #             assing_t = time.time()
-    #             move.action_assign()
-    #             _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
-    #             if move.state != 'assigned':
-    #                 if not unassigned_pick:
-    #                     assing_unp = time.time()
-    #                     copy_values = {'move_lines': [],
-    #                                    'pack_operation_ids': [],
-    #                                    'validated': False,
-    #                                    'unnasigned_pick': True,
-    #                                    'route_detail_id': False,
-    #                                    'group_id': pick.group_id.id}
-    #                     unassigned_pick = pick.copy(copy_values)
-    #                     unasigned_picks_lst.append(unassigned_pick)
-    #                     _logger.debug("CMNT create unassigned pick: %s",
-    #                                   time.time() - assing_unp)
-    #                 unassigned_moves.\
-    #                     extend(self._separate_unavailable_qty(move))
-    #                 # move.picking_id = unassigned_pick.id
-    #         if len(unassigned_moves):
-    #             assing_un = time.time()
-    #             moves = self.env['stock.move'].browse(unassigned_moves).\
-    #                     write({'picking_id': unassigned_pick.id})
-    #             _logger.debug("CMNT write unassigned: %s", time.time() - assing_un)
-    #         _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
-    #         _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
-    #         # Create as many picks as cameras involved and validate_it.
-    #         split_t = time.time()
-    #         picks_by_cam = self._split_pick_by_cameras(pick)
-    #         _logger.debug("CMNT Split : %s", time.time() - split_t)
-    #
-    #         route_detail = pick.route_detail_id
-    #         detail_date = route_detail.date + " 19:00:00"
-    #         vals2 = {'route_detail_id': route_detail.id,
-    #                  'min_date': detail_date,
-    #                  'validated': True}
-    #         picks_tot = picks_by_cam + out_pickings
-    #         picks_tot.write(vals2)
-    #     unassigned_ids = []
-    #     if unasigned_picks_lst:
-    #         for p in unasigned_picks_lst:
-    #             unassigned_ids.append(p.id)
-    #             p.write ({'route_detail_id': False})
-    #         # Display the created pickings
-    #         action_obj = self.env.ref('stock.action_picking_tree')
-    #         action = action_obj.read()[0]
-    #         action['domain'] = str([('id', 'in', unassigned_ids)])
-    #         action['context'] = {}
-    #         _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
-    #         return action
-    #     _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
-    #     return
-
     @api.multi
     def validate(self):
         init_t = time.time()
@@ -152,7 +79,7 @@ class ValidateRoutes(models.TransientModel):
             detail_date = route_detail.date + " 19:00:00"
             vals2 = {'route_detail_id': route_detail.id,
                      'min_date': detail_date,
-                     'validated': True}
+                     'validated_state': 'validated'}
             picks_tot = picks_by_cam + out_pickings
             write_t = time.time()
             picks_tot.write(vals2)

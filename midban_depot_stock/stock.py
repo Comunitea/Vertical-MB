@@ -436,10 +436,14 @@ class StockPicking(models.Model):
         string='Total Weight', readonly=True, store=True,
         help="Calculed as the total of stock qty in moves * "
         "product gross weight")
-    validated = fields2.Boolean('Validated', default=False,
-                                readonly=True,
-                                help="If checked the picking will be "
-                                "considered when you get a picking task")
+    validated_state = fields2.Selection([('no_validated', 'Not Validated'),
+                                         ('validated', 'Validated'),
+                                         ('loaded', 'Load Confirmed')],'Validated State',
+                                         default='no_validated',
+                                         readonly=True,
+                                         help="No validated is initial state, when validated "
+                                        "state the stock is assigned, after review or reassign "
+                                        "you can confirm the charge")
     partner_street = fields2.Char('Address', related='partner_id.street',
                                   readonly=True)
     partner_city = fields2.Char('City', related='partner_id.city',

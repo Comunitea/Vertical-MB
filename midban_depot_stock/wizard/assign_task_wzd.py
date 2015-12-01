@@ -611,7 +611,7 @@ class assign_task_wzd(osv.TransientModel):
             ('picking_id.wave_id', '=', False),
             ('picking_id.operator_id', '=', False),
             ('picking_id.trans_route_id', '!=', False),
-            ('picking_id.validated', '=', True),
+            ('picking_id.validated_state', '=', 'loaded'),
         ]
         move_ids = move_obj.search(cr, uid, domain, context=context)
         if not move_ids:
@@ -897,7 +897,7 @@ class assign_task_wzd(osv.TransientModel):
             ('min_date', '>=', start_date),
             ('min_date', '<=', end_date),
             ('trans_route_id', '=', selected_route),
-            ('validated', '=', True)
+            ('validated_state', '=', 'loaded')
         ]
         _logger.debug("CMNT haste tenerlo preparado para empezar %s", time.time() - init_t)
         _logger.debug("CMNT domain busca pickings%s", domain)
