@@ -15,10 +15,6 @@
                 <field name='date_order' position="after">
                     <field name="date_planned" attrs="{'readonly': [('route_detail_id', '!=', False)]}"/>
                 </field>
-                <!-- Avoid class oe_inline to print in pdf the Route sheet -->
-                <field name='note' position="replace">
-                    <field name="note2"/>
-                </field>
              </field>
          </record>
 

@@ -546,7 +546,7 @@
           <field name="view_id" ref="view_delivery_man_route_sheet_tree"/>
           <field name="search_view_id" ref="view_delivery_man_route_sheet_flter"/>
           <field name="domain">[('picking_type_code', '=', 'outgoing'), ('state', 'not in', ['draft', 'cancel', 'done'])]</field>
-          <!-- <field name="context">{}</field> -->
+           <field name="context">{'search_default_loaded': 1}</field>
       </record>
 
       <menuitem action="action_delivery_man_route_sheet" id="delivery_man_route_sheet" name="Route Sheet" sequence="12" parent="menu_stock_vehicle_route_mgmt"/>

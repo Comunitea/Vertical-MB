@@ -115,7 +115,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
            // HAY QUE CONTROLAR LAS FECHAS CON UTC, HORARIO DE INVIERNO -1H VERANO -2H
             var self=this;
 //            var domain =   [['create_uid', '=', this.ts_model.get('user').id],['chanel', '=', 'telesale']]
-            var domain =   []
+            var domain =   [['create_uid', '=', this.ts_model.get('user').id]]
             if (date_start != ""){
                 utc_date_start = self.ts_model.parse_str_date_to_utc(date_start + " 00:00:00")
                 domain.push(['date_order', '>=', utc_date_start])
