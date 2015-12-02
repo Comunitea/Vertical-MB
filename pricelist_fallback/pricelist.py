@@ -32,6 +32,7 @@ class product_pricelist(osv.Model):
                                                               pricelist,
                                                               products_by_qty_by_partner,
                                                             context = context)
+        print products_by_qty_by_partner
         print "RES!!!!!!"
         print res
         results = {}
@@ -41,11 +42,14 @@ class product_pricelist(osv.Model):
                 print product_id
                 for terna in products_by_qty_by_partner:
                     print terna
-                    if terna[0] == product_id:
-                        new_res = self._price_get_multi(cr, uid, pricelist.fallback_pricelist_id,
-                                              [terna], context=context)[0]
-                        print "new_res"
-                        print new_res
-                        res[product_id] = new_res[product_id]
+                    for product in terna[0]:
+                        print product
+                        if product.id == product_id:
+                            new_res = self._price_rule_get_multi(cr, uid, pricelist.fallback_pricelist_id,
+                                                  [terna], context=context)
+                            print "new_res"
+                            print new_res
+                            res[product_id] = new_res[product_id]
+        print "RETURN!!!!"
         print res
         return res
