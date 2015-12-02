@@ -195,8 +195,8 @@ class route(models.Model):
         res = super(route, self).copy(default=default)
         # create a new partner_info model equals to the old
         for p_info in self.partner_ids:
-            new_p_info = p_info.copy()
-            new_p_info.route_id = res.id
+            new_p_info = p_info.with_context(no_compute=True).copy({'route_id': res.id})
+            # new_p_info.route_id = res.id
         return res
 
     @api.multi
@@ -377,8 +377,6 @@ class route_detail(models.Model):
         """
         Calc name str
         """
-
-        print "_get_detail_name_str"
         for detail in self:
             detail.detail_name_str = detail.route_id.code + " " + detail.date
 
@@ -387,7 +385,6 @@ class route_detail(models.Model):
     #     """
     #     Calc name str
     #     """
-    #     import ipdb; ipdb.set_trace()
     #     print "_get_detail_name_str"
     #     self.detail_name_str = self.route_id.code + " " + self.date
 
