@@ -39,8 +39,9 @@ class ValidateRoutes(models.TransientModel):
         pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
         # Está bien o ordeno por la min_date del out, es decir ordeno los outs
         pick_pickings = sorted(pick_pickings_tmp, key=lambda p: p.date)
+        validate_write_batch = {}
         for pick in pick_pickings:
-            # import ipdb; ipdb.set_trace()
+            itera_t = time.time()
             print("----------------------------------------------------------------------------")
             print("----------------------------------------------------------------------------")
             print("SEGUIMIENTO DEL ALBARAN ", pick.name)
@@ -61,11 +62,12 @@ class ValidateRoutes(models.TransientModel):
                 print(time.time() - assing_t)
                 print("*****************")
                 # No me hace falta marcarlo como incompleto
+
             _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
             _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
             print("*****************")
             print("albaran ASIGNADO")
-            print(time.time() - assing_t)
+            print(time.time() - assing_tot)
             print("*****************")
             # Create as many picks as cameras involved and validate_it.
             split_t = time.time()
@@ -75,59 +77,39 @@ class ValidateRoutes(models.TransientModel):
             print("albaran DIVIDIDO")
             print(time.time() - split_t)
             print("*****************")
-            route_detail = pick.route_detail_id
-            detail_date = route_detail.date + " 19:00:00"
-            vals2 = {'route_detail_id': route_detail.id,
-                     'min_date': detail_date,
-                     'validated_state': 'validated'}
             dev_pickings = self.get_dev_pickings_from_out(out_pickings)
             picks_tot = picks_by_cam + out_pickings + dev_pickings
+            route_detail = pick.route_detail_id
+            if not route_detail.id in validate_write_batch:
+                detail_date = route_detail.date + " 19:00:00"
+                vals2 = {'route_detail_id': route_detail.id,
+                         'min_date': detail_date,
+                         'validated_state': 'validated'}
+                validate_write_batch[route_detail.id] = (picks_tot, vals2)
 
-            write_t = time.time()
-            picks_tot.write(vals2)
+            # picks_tot.write(vals2)
             print("*****************")
-            print("ALBARAN VALIDADO--> fecha planificada fecha detalle y validado")
-            print(time.time() - write_t)
+            print("TIEMPO ITERACIÓN")
+            print(time.time() - itera_t)
             print("*****************")
-        _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
+        # import ipdb; ipdb.set_trace()
+        # _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
+        for det_id in validate_write_batch.keys():
+
+            picks = validate_write_batch[det_id][0]
+            vals = validate_write_batch[det_id][1]
+            last_write = time.time()
+            picks.write(vals)
+            print("*****************")
+            print("Ultima escritura")
+            print(time.time() - last_write)
+            print("*****************")
         print("*****************")
         print("albaran escritura fecha planificada fecha detalle y validado")
         print(time.time() - init_t)
         print("*****************")
         # import ipdb; ipdb.set_trace()
         return
-
-    def _separate_unavailable_qty(self, move):
-        unassigned_moves = []
-
-        # Separar la parte disponible de la que no.
-        # la no disponible va a un albarán aparte
-        if move.partially_available:
-            aval_qty = move.reserved_availability
-            unaval_qty = move.product_uom_qty - aval_qty
-            prod = move.product_id
-            uos_id = move.product_uos.id
-            unaval_uos_qty = prod.uom_qty_to_uos_qty(unaval_qty,
-                                                     uos_id)
-            copy_vals = {
-                'product_uom_qty': unaval_qty,
-                'product_uos_qty': unaval_uos_qty,
-                'move_dest_id': move.move_dest_id.id
-            }
-            new_move = move.copy(copy_vals)
-            new_move.action_confirm()
-            unassigned_moves.append(new_move.id)
-            move.product_uom_qty = aval_qty
-
-
-            aval_uos_qty = prod.uom_qty_to_uos_qty(aval_qty,
-                                                   uos_id)
-            move.write({'product_uom_qty': aval_qty,
-                        'product_uos_qty': aval_uos_qty})
-            move.action_assign()
-        else:
-            unassigned_moves.append(move.id)
-        return unassigned_moves
 
     def get_dev_pickings_from_out(self, out_pickings):
         res = self.env['stock.picking']
@@ -164,7 +146,7 @@ class ValidateRoutes(models.TransientModel):
             # Autosale outs havent group id
             elif pick.move_lines and pick.move_lines[0].move_orig_ids:
                 pick_objs = pick.move_lines[0].move_orig_ids[0].picking_id
-            pick_objs.write({'route_detail_id': pick.route_detail_id.id})
+            # pick_objs.write({'route_detail_id': pick.route_detail_id.id})
             for p in pick_objs:
                 res += p
 
