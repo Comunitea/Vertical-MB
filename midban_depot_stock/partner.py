@@ -87,7 +87,7 @@ class partner_route_info(models.Model):
                              related='route_id.type')
 
     @api.onchange('partner_id', 'route_id')
-    @api.multi
+    @api.one
     def onchange_partner_id(self):
         """
         Warning if you select a customer which zip code is not in the route
@@ -148,7 +148,7 @@ class partner_route_info(models.Model):
         routes = []
         if route_new:
             routes.append(route_new)
-        if route_old:
+        if route_old and route_new.id != route_old.id:
             routes.append(route_old)
         for route in routes:
             today = time.strftime(FORMAT)
@@ -188,7 +188,7 @@ class partner_route_info(models.Model):
         Overwrite to Check there if partnerzip code is in route zip code, if
         configured like that
         """
-        if self._context.get('no_compute'):
+        if self._context.get('no_compute') or len(vals.keys()) == 1 and vals.get('sequence'):
             return super(partner_route_info, self).write(vals)
         t_route = self.env['route']
         t_partner = self.env['res.partner']
