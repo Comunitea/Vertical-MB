@@ -23,7 +23,8 @@ import openerp.addons.decimal_precision as dp
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 from datetime import datetime
-
+from openerp.tools.float_utils import float_round
+from openerp.tools.float_utils import float_compare
 
 class manual_transfer_wzd(models.TransientModel):
 
@@ -68,6 +69,7 @@ class manual_transfer_wzd(models.TransientModel):
         quants with reservation_id in domain we search again with the super and
         we need get the same quants as first time).
         """
+
         t_move = self.env['stock.move']
         # Create a picking to put the entire transfer of internal type
         pick_obj = self._create_pick()
@@ -177,8 +179,10 @@ class transfer_lines(models.TransientModel):
             assigned_qty = 0
             rst_qty = line_qty
             for quant in quants_objs:
-                if assigned_qty < line_qty:
-                    if rst_qty >= quant.qty:
+                if float_compare(assigned_qty, line_qty, precision_rounding = product.uom_id.rounding)==-1:
+                #if assigned_qty < line_qty:
+                    if float_compare(rst_qty, quant.qty, precision_rounding = product.uom_id.rounding)!=-1:
+                    #if rst_qty >= quant.qty:
                         res.append((quant, quant.qty))
                         assigned_qty += quant.qty
                     else:
@@ -186,7 +190,8 @@ class transfer_lines(models.TransientModel):
                         assigned_qty += rst_qty
                     rst_qty = line_qty - assigned_qty
 
-            if assigned_qty < line_qty:
+            if float_compare(assigned_qty, line_qty, precision_rounding = product.uom_id.rounding)==-1:
+                #if assigned_qty < line_qty:
                 raise except_orm(_('Error'), _('Not enought stock available\
                                  for product %s, and quantity of \
                                  %s units' % (product.name, line_qty)))
