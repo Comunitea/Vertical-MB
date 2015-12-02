@@ -21,6 +21,8 @@
 from openerp import models, fields, api
 from openerp.addons.stock_account.wizard.stock_invoice_onshipping \
     import JOURNAL_TYPE_MAP
+from openerp.tools.translate import _
+from openerp.exceptions import except_orm
 
 
 class ConfirmProcessDelivery(models.TransientModel):
@@ -96,18 +98,41 @@ class ConfirmProcessDelivery(models.TransientModel):
         invoices = self.env['account.invoice'].browse(invoice_ids)
         invoices.signal_workflow('invoice_open')
 
+    # @api.multi
+    # def confirm(self):
+    #     picking_ids = self.env.context['active_ids']
+    #     pickings = self.env['stock.picking'].browse(picking_ids)
+    #     pickings_to_deliver = pickings.filtered(lambda r: r.state in
+    #                                             ['assigned',
+    #                                              'partially_available'])
+    #     if not pickings_to_deliver:
+    #         return
+    #     res= pickings_to_deliver.do_prepare_partial()
+    #     res = pickings_to_deliver.do_transfer()
+    #     self.create_invoice(pickings_to_deliver)
+    #     self.rendered = True
+    #     return self.env['report'].get_action(
+    #         pickings_to_deliver, 'stock_picking_batch.report_picking_batch')
+
     @api.multi
     def confirm(self):
         picking_ids = self.env.context['active_ids']
         pickings = self.env['stock.picking'].browse(picking_ids)
-        pickings_to_deliver = pickings.filtered(lambda r: r.state in
-                                                ['assigned',
-                                                 'partially_available'])
-        if not pickings_to_deliver:
-            return
-        res= pickings_to_deliver.do_prepare_partial()
-        res = pickings_to_deliver.do_transfer()
-        self.create_invoice(pickings_to_deliver)
+        picks_to_print = self.env['stock.picking']
+        picks_to_process = self.env['stock.picking']
+        for pick in pickings:
+            if pick.state in ['assigned', 'partially_available']:
+                picks_to_process += pick
+            elif pick.state == 'done':
+                picks_to_print += pick
+            else:
+                raise except_orm(_('Error'),
+                                 _('Pick %s is in a invalid state: %s' % (pick.name, pick.state)))
+        if picks_to_process:
+            picks_to_process.do_prepare_partial()
+            picks_to_process.do_transfer()
+            self.create_invoice(picks_to_process)
         self.rendered = True
+        all_picks = picks_to_print + picks_to_process
         return self.env['report'].get_action(
-            pickings_to_deliver, 'stock_picking_batch.report_picking_batch')
+            all_picks, 'stock_picking_batch.report_picking_batch')
