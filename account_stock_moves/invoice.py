@@ -60,7 +60,10 @@ class account_invoice_line(orm.Model):
                         move.product_id.standard_price, round=False)
                     moves_price += price_unit * qty
             res['price_move'] = moves_price
-            res['price_unit'] = moves_price / total_qty
+            if total_qty > 0:
+                res['price_unit'] = moves_price / total_qty
+            else:
+                res['price_unit'] = 0
         return res
 
     def move_line_get(self, cr, uid, invoice_id, context=None):

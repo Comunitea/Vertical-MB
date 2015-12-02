@@ -80,7 +80,9 @@ class ValidateRoutes(models.TransientModel):
             vals2 = {'route_detail_id': route_detail.id,
                      'min_date': detail_date,
                      'validated_state': 'validated'}
-            picks_tot = picks_by_cam + out_pickings
+            dev_pickings = self.get_dev_pickings_from_out(out_pickings)
+            picks_tot = picks_by_cam + out_pickings + dev_pickings
+
             write_t = time.time()
             picks_tot.write(vals2)
             print("*****************")
@@ -126,6 +128,17 @@ class ValidateRoutes(models.TransientModel):
         else:
             unassigned_moves.append(move.id)
         return unassigned_moves
+
+    def get_dev_pickings_from_out(self, out_pickings):
+        res = self.env['stock.picking']
+        for pick in out_pickings:
+            if pick.group_id:
+                domain = [('group_id', '=', pick.group_id.id),
+                        ('picking_type_id', '=', pick.picking_type_id.return_picking_type_id.id)]
+                pick_objs = self.env['stock.picking'].search(domain)
+        for p in pick_objs:
+            res += p
+        return res
 
     def _get_pickings_from_outs(self, out_pickings):
         wh = self.env['stock.warehouse'].search([])[0]
