@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-01 09:15+0000\n"
-"PO-Revision-Date: 2015-12-01 09:15+0000\n"
+"POT-Creation-Date: 2015-12-01 19:04+0000\n"
+"PO-Revision-Date: 2015-12-01 19:04+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -450,6 +450,7 @@ msgstr "Cancelada"
 #. module: midban_depot_stock
 #: selection:route.detail,state:0
 #: selection:route.report,detail_state:0
+#: view:stock.task:midban_depot_stock.stock_task_view_search
 msgid "Cancelled"
 msgstr "Cancelado"
 
@@ -572,7 +573,7 @@ msgid "Comunicate"
 msgstr "Comunica"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:297
+#: code:addons/midban_depot_stock/sale.py:296
 #, python-format
 msgid "Configuration Error!"
 msgstr "¡Error de configuración!"
@@ -945,7 +946,7 @@ msgid "Detail name"
 msgstr "Nombre detalle"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:167
+#: code:addons/midban_depot_stock/sale.py:166
 #, python-format
 msgid "Detail of route must be assigned to                                     confirm the order"
 msgstr "El detalle de la ruta debe estar asignado para confirmar el pedido"
@@ -956,7 +957,7 @@ msgid "Detail route"
 msgstr "Detalle ruta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:173
+#: code:addons/midban_depot_stock/sale.py:172
 #, python-format
 msgid "Detail route %s must be of delivery                                         type"
 msgstr "El detalle de la ruta %s debe ser de tipo envío"
@@ -1065,9 +1066,9 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/route.py:275
 #: code:addons/midban_depot_stock/route.py:329
 #: code:addons/midban_depot_stock/route.py:334
-#: code:addons/midban_depot_stock/sale.py:166
-#: code:addons/midban_depot_stock/sale.py:172
-#: code:addons/midban_depot_stock/sale.py:208
+#: code:addons/midban_depot_stock/sale.py:165
+#: code:addons/midban_depot_stock/sale.py:171
+#: code:addons/midban_depot_stock/sale.py:207
 #: code:addons/midban_depot_stock/stock_task.py:222
 #: code:addons/midban_depot_stock/stock_task.py:236
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:567
@@ -1545,6 +1546,11 @@ msgid "LOT:"
 msgstr "LOTE:"
 
 #. module: midban_depot_stock
+#: view:res.partner:midban_depot_stock.view_partner_form_route
+msgid "Last Date"
+msgstr "Última fecha"
+
+#. module: midban_depot_stock
 #: field:item.create.route,last_pending_date:0
 msgid "Last Pending Date"
 msgstr "Última fecha pendiente"
@@ -1897,6 +1903,11 @@ msgid "New Package"
 msgstr "Paquete nuevo"
 
 #. module: midban_depot_stock
+#: view:res.partner:midban_depot_stock.view_partner_form_route
+msgid "Next Date"
+msgstr "Siguiente fecha"
+
+#. module: midban_depot_stock
 #: field:product.template,no_gluten:0
 msgid "No Gluten"
 msgstr "Sin gluten"
@@ -1926,7 +1937,7 @@ msgid "No customers assigned to the route"
 msgstr "No hay clientes asignados a la ruta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:120
+#: code:addons/midban_depot_stock/sale.py:119
 #, python-format
 msgid "No delivery routes assigned in                                   the customer. You will not confirm the                                    order"
 msgstr "No hay rutas de reparto asignadas al cliente. No podrás confirmar el pedido"
@@ -2065,7 +2076,7 @@ msgid "Not camera defined in wizard"
 msgstr "No hay camara definida en el asistente"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:292
+#: code:addons/midban_depot_stock/sale.py:291
 #, python-format
 msgid "Not enough stock ! : "
 msgstr "¡No hay suficiente stock! : "
@@ -2105,11 +2116,6 @@ msgstr "No responde"
 #, python-format
 msgid "Not ubication operation mathcing                     with pack %s"
 msgstr "No hay operación de ubicación que coincida con %s"
-
-#. module: midban_depot_stock
-#: field:sale.order,note2:0
-msgid "Note"
-msgstr "Nota"
 
 #. module: midban_depot_stock
 #: view:website:midban_depot_stock.report_picking_list
@@ -3419,7 +3425,7 @@ msgid "The location to replenish %s is not child                                
 msgstr "La ubicación a reposicionar %s no es hija de una ubicación tipo cámara, debes configurarla bien"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:208
+#: code:addons/midban_depot_stock/sale.py:207
 #, python-format
 msgid "The related pick %s has been validated or load confirmed. You must cancell manually first"
 msgstr "El albarán relacionado %s ha sido validado o se ha confirmado la carga. Debes cancelarlo manualmente primero"
@@ -3886,7 +3892,7 @@ msgstr "Aviso"
 #: code:addons/midban_depot_stock/partner.py:128
 #: code:addons/midban_depot_stock/partner.py:138
 #: code:addons/midban_depot_stock/route.py:95
-#: code:addons/midban_depot_stock/sale.py:119
+#: code:addons/midban_depot_stock/sale.py:118
 #, python-format
 msgid "Warning!"
 msgstr "¡Advertencia!"
@@ -4024,7 +4030,7 @@ msgid "You must select a pack to add operations"
 msgstr "You must select a pack to add operations"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/sale.py:286
+#: code:addons/midban_depot_stock/sale.py:285
 #, python-format
 msgid "You plan to sell %.2f %s but you only have %.2f %s                           available in conservative !\n"
 "The real stock is                           %.2f %s. (without reservations)"

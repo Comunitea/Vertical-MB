@@ -188,6 +188,7 @@ class stock_task(osv.Model):
 
     @api.one
     def add_loc_operation(self, pack_id):
+
         wh = self.env['stock.warehouse'].search([])[0]
         pick_ubi_type_id = wh.ubication_type_id.id
         pick_in_type_id = wh.in_type_id.id

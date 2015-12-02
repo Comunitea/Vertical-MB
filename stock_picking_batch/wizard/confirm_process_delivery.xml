@@ -35,7 +35,7 @@
         </record>
 
        <record id="action_stock_picking_process" model="ir.actions.act_window">
-            <field name="name">Process delivery (batch)</field>
+            <field name="name">Generate Ciustomers Pickings</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">confirm.process.delivery</field>
            <field name="src_model">stock.picking</field>
@@ -47,7 +47,7 @@
         </record>
 
         <record id="ir_stock_picking_process" model="ir.values">
-            <field name="name">Process delivery (batch)</field>
+            <field name="name">Generate Customers Pickings</field>
             <field name="key2">client_action_multi</field>
             <field name="model">stock.picking</field>
             <field name="value" eval="'ir.actions.act_window,%d'%action_stock_picking_process" />

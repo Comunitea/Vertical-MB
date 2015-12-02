@@ -188,6 +188,8 @@ class partner_route_info(models.Model):
         Overwrite to Check there if partnerzip code is in route zip code, if
         configured like that
         """
+        if self._context.get('no_compute'):
+            return super(partner_route_info, self).write(vals)
         t_route = self.env['route']
         t_partner = self.env['res.partner']
         partner_id = vals.get('partner_id', False) and vals['partner_id'] or \
@@ -238,6 +240,8 @@ class partner_route_info(models.Model):
         Overwrite to Check there if partnerzip code is in route zip code, if
         configured like that
         """
+        if self._context.get('no_compute'):
+            return super(partner_route_info, self).create(vals)
         t_route = self.env['route']
         t_partner = self.env['res.partner']
         partner_id = vals.get('partner_id', False) and vals['partner_id'] or \

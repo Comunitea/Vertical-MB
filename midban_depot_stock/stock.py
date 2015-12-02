@@ -452,7 +452,7 @@ class StockPicking(models.Model):
                                  readonly=True)
     partner_ref = fields2.Char('Code', related='partner_id.ref', readonly=True)
     # EL campo note no le gusta nada por algun motivo
-    sale_note = fields2.Text('Notes', related='sale_id.note2')
+    sale_note = fields2.Text('Notes', related='sale_id.note')
 
     # Se movió la funcionalidad al asistente de validacion de ruta
     # @api.multi

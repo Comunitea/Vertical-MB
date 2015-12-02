@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-28 13:03+0000\n"
-"PO-Revision-Date: 2015-10-28 13:03+0000\n"
+"POT-Creation-Date: 2015-12-01 17:42+0000\n"
+"PO-Revision-Date: 2015-12-01 17:42+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,19 +16,19 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:483
+#: code:addons/depot_edi/edi.py:487
 #, python-format
 msgid " for product "
 msgstr " para producto "
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:815
+#: code:addons/depot_edi/edi.py:818
 #, python-format
 msgid "%s: File not found in folder. File: %s"
 msgstr "%s: Fichero no encontrado en la carpeta. Fichero: %s"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:855
+#: code:addons/depot_edi/edi.py:858
 #, python-format
 msgid "%s: Importing files"
 msgstr "%s: Importando ficheros"
@@ -40,7 +40,7 @@ msgid "%s: The copy of the file to the backup was successful. File %s"
 msgstr "%s: La copia del fichero a backup fue un éxito. Fichero %s"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:104
+#: code:addons/depot_edi/edi.py:109
 #, python-format
 msgid ". in file: "
 msgstr ". en fichero: "
@@ -61,7 +61,7 @@ msgid "Backup path"
 msgstr "Ruta backup"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:421
+#: code:addons/depot_edi/edi.py:425
 #, python-format
 msgid "Can not create a invoice for purchase: "
 msgstr "No se puede crear una factura para la compra: "
@@ -141,73 +141,73 @@ msgid "Description"
 msgstr "Descripción"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:591
+#: code:addons/depot_edi/edi.py:595
 #, python-format
 msgid "Diferent Comments in the invoice"
 msgstr "Comentarios diferentes en la factura"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:613
+#: code:addons/depot_edi/edi.py:617
 #, python-format
 msgid "Diferent Due dates"
 msgstr "Diferentes fecha de vencimiento"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:567
+#: code:addons/depot_edi/edi.py:571
 #, python-format
 msgid "Diferent Invoice dates"
 msgstr "Diferente fecha de factura"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:630
+#: code:addons/depot_edi/edi.py:634
 #, python-format
 msgid "Diferent amount Total"
 msgstr "Diferente importe total de la factura"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:626
+#: code:addons/depot_edi/edi.py:630
 #, python-format
 msgid "Diferent amount tax"
 msgstr "Diferente importe impuestos de factura"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:622
+#: code:addons/depot_edi/edi.py:626
 #, python-format
 msgid "Diferent amount untaxed"
 msgstr "Diferente importe de base en la factura"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:548
+#: code:addons/depot_edi/edi.py:552
 #, python-format
 msgid "Diferent buyer gln and partner of company gln"
 msgstr "Diferente gln de comprador y empresa de la compañía"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:557
+#: code:addons/depot_edi/edi.py:561
 #, python-format
 msgid "Diferent invoice supplier number"
 msgstr "Diferente nº factura de proveedor"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:413
+#: code:addons/depot_edi/edi.py:417
 #, python-format
 msgid "Diferent picking number: "
 msgstr "Diferente número de albarán: "
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:550
+#: code:addons/depot_edi/edi.py:554
 #, python-format
 msgid "Different Supplier gln"
 msgstr "Diferente GLN de proveedor"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:650
+#: code:addons/depot_edi/edi.py:654
 #, python-format
 msgid "Differnt tax base %s not matching with invoice"
 msgstr "Diferente base impuesto %s no coincide con la factura"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:654
+#: code:addons/depot_edi/edi.py:658
 #, python-format
 msgid "Differnt tax import %s not matching with invoice"
 msgstr "Diferente importe impuesto %s no coincide con la factura"
@@ -331,7 +331,7 @@ msgstr "Fin Recepción"
 #. module: depot_edi
 #: code:addons/depot_edi/account.py:226
 #: code:addons/depot_edi/account.py:240
-#: code:addons/depot_edi/edi.py:223
+#: code:addons/depot_edi/edi.py:228
 #, python-format
 msgid "Error"
 msgstr "Error"
@@ -432,7 +432,7 @@ msgid "Importado"
 msgstr "Importado"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:481
+#: code:addons/depot_edi/edi.py:485
 #, python-format
 msgid "Impossible find tax with code "
 msgstr "Imposible encontrar impuesto con código "
@@ -503,45 +503,45 @@ msgid "Name"
 msgstr "Nombre"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:776
+#: code:addons/depot_edi/edi.py:780
 #, python-format
 msgid "Not found corect NODO value                           in the INVOIC file "
 msgstr "No encontrado valor correcto para NODO en el archivo INVOIC"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:247
+#: code:addons/depot_edi/edi.py:252
 #, python-format
 msgid "Not found product in the picking moves: "
 msgstr "No encontrado producto en los movimientos del albarán: "
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:242
+#: code:addons/depot_edi/edi.py:247
 #, python-format
 msgid "Not found product with EAN: "
 msgstr "No encontrado producto con EAN: "
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:201
-#: code:addons/depot_edi/edi.py:406
+#: code:addons/depot_edi/edi.py:206
+#: code:addons/depot_edi/edi.py:410
 #, python-format
 msgid "Not found purchase order with number "
 msgstr "No encontrado pedido de compra con número "
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:668
+#: code:addons/depot_edi/edi.py:672
 #, python-format
 msgid "Not found reference % for product"
 msgstr "No encontrada referencia % para el producto"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:206
-#: code:addons/depot_edi/edi.py:410
+#: code:addons/depot_edi/edi.py:211
+#: code:addons/depot_edi/edi.py:414
 #, python-format
 msgid "Not found stock picking  for purchase: "
 msgstr "No encontrado albarán para la compra: "
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:687
+#: code:addons/depot_edi/edi.py:691
 #, python-format
 msgid "Not invoice line taxes matching with EDI file,"
 msgstr "No hay impuestos de línea que coincidan con el archivo EDI,"
@@ -550,11 +550,6 @@ msgstr "No hay impuestos de línea que coincidan con el archivo EDI,"
 #: field:stock.picking,num_dispatch_advice:0
 msgid "Number dispatch advice"
 msgstr "Número aviso de expedición"
-
-#. module: depot_edi
-#: field:stock.picking,supplier_pick_number:0
-msgid "Number dispatch advice"
-msgstr "Picking Supplier Number"
 
 #. module: depot_edi
 #: field:edi,output_path:0
@@ -675,6 +670,11 @@ msgid "State"
 msgstr "Estado"
 
 #. module: depot_edi
+#: field:stock.picking,supplier_pick_number:0
+msgid "Supplier Picking Number"
+msgstr "Nº albarán del proveedor"
+
+#. module: depot_edi
 #: field:edi,path:0
 msgid "System path"
 msgstr "Ruta importación"
@@ -722,7 +722,7 @@ msgid "The supplier has not gln"
 msgstr "El proveedor no tiene GLN"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:255
+#: code:addons/depot_edi/edi.py:260
 #, python-format
 msgid "The value of CENVFAC field is not an                             integer"
 msgstr "EL valor de CENVFAC fieldno es un entero"
@@ -780,13 +780,14 @@ msgid "field default_code of product                                        not 
 msgstr "El campo referencia del producto no está configurado"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:373
+#: code:addons/depot_edi/edi.py:377
 #, python-format
 msgid "not found attribs: NUMLINEA or TIPART. in file:"
 msgstr "No encontrados atributos: NUMLINEA o TIPART. en fichero:"
 
 #. module: depot_edi
-#: code:addons/depot_edi/edi.py:103
+#: code:addons/depot_edi/edi.py:108
 #, python-format
 msgid "not found fields: "
 msgstr "Campos no encontrados: "
+
