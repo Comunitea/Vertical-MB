@@ -28,6 +28,7 @@ _logger = logging.getLogger(__name__)
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+from openerp.tools import float_compare
 
 
 class wave_report(osv.osv):
@@ -405,10 +406,11 @@ class wave_report(osv.osv):
             'product_id': prod.id,
             'product_qty': new_qty,
             'uos_qty': new_uos_qty,
+            'lot_id': op.package_id.packed_lot_id.id
         }
         return vals
 
-    def _get_new_op_vals(self, op, op_qty, pack, qty_to_create, needed_qty):
+    def _get_new_op_vals(self, op, op_qty, pack, qty_to_create, needed_qty, task_id):
         vals = {}
         prod = pack.product_id
         move_pack = False
@@ -427,6 +429,7 @@ class wave_report(osv.osv):
             'location_id': pack.location_id.id,
             'location_dest_id': op.location_dest_id.id,
             'picking_id': op.picking_id.id,
+            'task_id': task_id
 
         }
         return vals
@@ -484,11 +487,12 @@ class wave_report(osv.osv):
             op_qty = op.product_qty if op.product_id else \
                 op.package_id.packed_qty
             if op_qty > qty_to_create:
+                task_id = op.task_id.id
                 change_vals = self._change_original_op_vals(op, op_qty,
                                                             qty_to_create)
                 op.write(change_vals)
                 new_vals = self._get_new_op_vals(op, op_qty, pack,
-                                                 qty_to_create, needed_qty)
+                                                 qty_to_create, needed_qty, task_id)
                 t_op = t_op.create(new_vals)
                 created_qty += new_vals.get('product_qty', 0.0)
                 break
