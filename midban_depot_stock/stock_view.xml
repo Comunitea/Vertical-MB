@@ -545,7 +545,7 @@
           <field name="view_mode">tree,form</field>
           <field name="view_id" ref="view_delivery_man_route_sheet_tree"/>
           <field name="search_view_id" ref="view_delivery_man_route_sheet_flter"/>
-          <field name="domain">[('picking_type_code', '=', 'outgoing'), ('state', 'not in', ['draft', 'cancel', 'done'])]</field>
+          <field name="domain">[('state', 'not in', ['draft', 'cancel', 'done'])]</field>
           <!-- <field name="context">{}</field> -->
       </record>
 

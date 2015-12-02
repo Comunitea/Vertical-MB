@@ -20,16 +20,15 @@
 ##############################################################################
 
 {
-    'name': 'Change Lot in Packages',
+    'name': 'Pricelist Fall Back',
     'version': '1.0',
-    'category': 'stock',
+    'category': 'product',
     'description': """""",
     'author': 'COMUNITEA',
     'website': '',
-    "depends": ['midban_depot_stock'],
+    "depends": ['product'],
     "data": [
-        'wizard/change_package.xml',
-        'stock_package_view.xml'
+        'pricelist.xml'
         ],
 
     "installable": True
