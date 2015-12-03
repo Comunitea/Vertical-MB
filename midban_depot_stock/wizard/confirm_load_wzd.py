@@ -39,7 +39,6 @@ class ConfirmLoadWzd(models.TransientModel):
         action['domain'] = str([('id', 'in', out_pickings._ids)])
         action['context'] = {}
         return action
-        return
 
     @api.multi
     def undo_load(self):
