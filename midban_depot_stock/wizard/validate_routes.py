@@ -108,8 +108,12 @@ class ValidateRoutes(models.TransientModel):
         print("albaran escritura fecha planificada fecha detalle y validado")
         print(time.time() - init_t)
         print("*****************")
-        # import ipdb; ipdb.set_trace()
-        return
+        # Display the validated picks
+        action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
+        action = action_obj.read()[0]
+        action['domain'] = str([('id', 'in', out_pickings._ids)])
+        action['context'] = {}
+        return action
 
     def get_dev_pickings_from_out(self, out_pickings):
         res = self.env['stock.picking']

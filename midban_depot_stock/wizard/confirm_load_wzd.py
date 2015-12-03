@@ -33,6 +33,12 @@ class ConfirmLoadWzd(models.TransientModel):
         pick_pickings = self._get_pickings_from_outs(out_pickings)
         picks_tot = pick_pickings + out_pickings
         picks_tot.write({'validated_state': 'loaded'})
+         # Display the validated picks
+        action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
+        action = action_obj.read()[0]
+        action['domain'] = str([('id', 'in', picks_tot._ids)])
+        action['context'] = {}
+        return action
         return
 
     @api.multi
@@ -42,6 +48,12 @@ class ConfirmLoadWzd(models.TransientModel):
         pick_pickings = self._get_pickings_from_outs(out_pickings, mode='undo')
         picks_tot = pick_pickings + out_pickings
         picks_tot.write({'validated_state': 'validated'})
+         # Display the validated picks
+        action_obj = self.env.ref('midban_depot_stock.action_delivery_man_route_sheet')
+        action = action_obj.read()[0]
+        action['domain'] = str([('id', 'in', picks_tot._ids)])
+        action['context'] = {}
+        return action
         return
 
     def _get_pickings_from_outs(self, out_pickings, mode='confirm'):
