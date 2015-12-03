@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#   * stock_picking_batch
+#	* stock_picking_batch
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-30 16:34+0000\n"
-"PO-Revision-Date: 2015-09-30 16:34+0000\n"
+"POT-Creation-Date: 2015-12-02 21:09+0000\n"
+"PO-Revision-Date: 2015-12-02 21:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -30,6 +30,10 @@ msgstr "Procesar albaranes en lote"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#. module: stock_picking_batch
+#: view:confirm.process.delivery:stock_picking_batch.confirm_process_delivery_form
+msgid "Close"
+msgstr "Close"
 
 #. module: stock_picking_batch
 #: selection:confirm.process.delivery,journal_type:0
@@ -44,17 +48,28 @@ msgstr "Crear factura de proveedor"
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,create_uid:0
 msgid "Created by"
-msgstr "Creaado por"
+msgstr "Created by"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,create_date:0
 msgid "Created on"
-msgstr "Creado el"
+msgstr "Created on"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,journal_id:0
 msgid "Destination Journal"
 msgstr "Diario destino"
+
+#. module: stock_picking_batch
+#: code:addons/stock_picking_batch/wizard/confirm_process_delivery.py:129
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: stock_picking_batch
+#: model:ir.actions.act_window,name:stock_picking_batch.action_stock_picking_process
+msgid "Generate Ciustomers Pickings"
+msgstr "Generar albaranes cliente"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,group:0
@@ -79,12 +94,18 @@ msgstr "Tipo de diario"
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,write_uid:0
 msgid "Last Updated by"
-msgstr "ültima actualización por"
+msgstr "Last Updated by"
 
 #. module: stock_picking_batch
 #: field:confirm.process.delivery,write_date:0
 msgid "Last Updated on"
-msgstr "Última actualización el"
+msgstr "Last Updated on"
+
+#. module: stock_picking_batch
+#: code:addons/stock_picking_batch/wizard/confirm_process_delivery.py:130
+#, python-format
+msgid "Pick %s is in a invalid state: %s"
+msgstr "El albarán %s está en un estado invalido de: %s"
 
 #. module: stock_picking_batch
 #: model:ir.actions.report.xml,name:stock_picking_batch.action_report_picking_batch
@@ -97,11 +118,6 @@ msgid "Process all the selected deliveries?"
 msgstr "¿Procesar todos los albaranes seleccionados?"
 
 #. module: stock_picking_batch
-#: model:ir.actions.act_window,name:stock_picking_batch.action_stock_picking_process
-msgid "Generate Customers Pickings"
-msgstr "Generar albaranes cliente"
-
-#. module: stock_picking_batch
 #: selection:confirm.process.delivery,journal_type:0
 msgid "Refund Purchase"
 msgstr "Refund Purchase"
@@ -110,6 +126,11 @@ msgstr "Refund Purchase"
 #: selection:confirm.process.delivery,journal_type:0
 msgid "Refund Sale"
 msgstr "Refund Sale"
+
+#. module: stock_picking_batch
+#: field:confirm.process.delivery,rendered:0
+msgid "Rendered"
+msgstr "Rendered"
 
 #. module: stock_picking_batch
 #: view:confirm.process.delivery:stock_picking_batch.confirm_process_delivery_form

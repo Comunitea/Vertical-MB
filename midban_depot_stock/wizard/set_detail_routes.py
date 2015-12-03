@@ -57,4 +57,9 @@ class SetDetailRoutes(models.TransientModel):
                             'min_date': detail_date})
         # TODO ÑAPA parece que picks_totals no hace el out junto no lo escribe al out
         out_pickings.write({'min_date': detail_date})
-        return
+        # Display the assigned picks
+        action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
+        action = action_obj.read()[0]
+        action['domain'] = str([('id', 'in', out_pickings._ids)])
+        action['context'] = {}
+        return action

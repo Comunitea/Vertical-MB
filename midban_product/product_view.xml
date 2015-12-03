@@ -37,7 +37,6 @@
                     <field name="doorstep_price"/>
                     <field name="nook_price"/>
                 </field>
-
                 <field name="sale_ok" position="before">
                     <div>
                         <button name="%(action_process_unregister_product)d" string="Unregister"
@@ -176,6 +175,7 @@
                 </label>
 
                 <field name="standard_price" position="after">
+                    <field name="purchase_price"/>
                     <field name="buy_euro_weight"/>
                     <field name="margin" readonly="True"/>
                     <field name="last_purchase_price"/>

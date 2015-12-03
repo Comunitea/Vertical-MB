@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
+        <!-- Se necesita tener en la plantilla de cada modelo el css de las dos-->
+        <!-- porque solo aplica el del primer tipo de de cocumento que le llegue-->
         <template id="report_picking_batch">
             <t t-foreach="docs" t-as="o">
                 <t t-if="not o.invoice_id">

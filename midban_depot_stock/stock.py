@@ -31,7 +31,7 @@ _logger = logging.getLogger(__name__)
 
 class stock_picking(osv.Model):
     _inherit = "stock.picking"
-    _order = "name desc"
+    _order = "id desc"
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        readonly=True, copy=False,
@@ -1029,7 +1029,6 @@ class stock_pack_operation(models.Model):
         If we change lot_id or product_id in a create operation, we quit the
         pack in the first case and a exception will be raised in the second one
         """
-
         # if vals.get('lot_id', False):
         #     for op in self:
         #         if op.lot_id.id != vals['lot_id']:
@@ -1037,12 +1036,19 @@ class stock_pack_operation(models.Model):
         init_t = time.time()
         _logger.debug("CMNT WRITE PACK operation CONTEXT: %s ", self.env.context)
         if vals.get('product_id', False):
+
             for op in self:
+                product = op.product_id or op.package_id.product_id
+                vals['product_uom_id'] = product.uom_id.id
+                if not op.product_id and op.package_id:
+                    vals['lot_id'] = op.package_id.packed_lot_id.id
+
                 if op.product_id.id != vals['product_id'] and op.product_id:
                     raise exceptions.Warning(_("Cannot change product once "
                                                "operation is created, delete "
                                                "this and crate another one in"
                                                " the picking."))
+
 
         #Hay que reescribir esto, lo hago en una función aparte.
         if vals.get('package_id', False) or vals.get('lot_id', False) or\
@@ -2205,6 +2211,19 @@ class stock_production_lot(models.Model):
                                          'lot_id', 'partner_id',
                                          'Related suppliers',
                                          domain=[('supplier', '=', True)])}
+
+
+class SrockProductionLot(models.Model):
+
+    _inherit = "stock.production.lot"
+
+    # No pone la traducción ni poniendolo en la vista. Así que en español
+    total_lot_qty = fields2.Float('Cantidad total',
+                                  compute='_get_lot_qty', readonly=False)
+
+    @api.one
+    def _get_lot_qty(self):
+        self.total_lot_qty = sum([x.qty for x in self.quant_ids])
 
 ###############################################################################
 ###############################################################################
