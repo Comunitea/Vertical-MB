@@ -12,6 +12,11 @@
             <field name="field">nook_price</field>
         </record>
 
+        <record id="purchase_price" model="product.price.type">
+            <field name="name">Purchase Price</field>
+            <field name="field">purchase_price</field>
+        </record>
+
         <record id="list1" model="product.pricelist">
             <field name="name">Doorstep Pricelist</field>
             <field name="type">sale</field>

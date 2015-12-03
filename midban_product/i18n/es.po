@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* midban_product
+#       * midban_product
 #
 msgid ""
 msgstr ""
@@ -587,6 +587,12 @@ msgstr "Sin gluten"
 #: field:product.template,nook_price:0
 msgid "Nook Price"
 msgstr "Precio rincón"
+
+#. module: midban_product
+#: model:product.price.type,name:midban_product.purchase_price
+#: field:product.template,purchase_price:0
+msgid "Purchase Price"
+msgstr "Precio de compra"
 
 #. module: midban_product
 #: model:product.pricelist,name:midban_product.list2
