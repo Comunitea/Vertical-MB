@@ -133,7 +133,7 @@ class StockPicking(models.Model):
         'payment.mode',
         compute='_get_payment_mode',
         string='Payment Mode',
-        store=True,
+        store=False,
         )
     delivery_id = fields.Many2one(related='route_detail_id.comercial_id',
                                    store=True, string='Delivery Person')
@@ -170,7 +170,7 @@ class StockPicking(models.Model):
             if picking.group_id:
                 sale_ids = sale_obj.search([('procurement_group_id', '=', picking.group_id.id)])
                 if sale_ids:
-                    picking.payment_mode = sale_ids[0].payment_mode_id
+                    picking.payment_mode = sale_ids[0].payment_mode_id.id
 
     @api.multi
     #@api.depends('amount_total_acc')
@@ -199,6 +199,11 @@ class StockPicking(models.Model):
         res = []
         for pick in self:
         # Cancel assignment of existing chained assigned move
+            invoice_st = 'none'
+            if pick.invoice_state in ['invoiced','2binvoiced']:
+                invoice_st = '2binvoiced'
+            else:
+                invoice_st = 'none'
             moves_to_unreserve = []
             if pick.picking_type_id.code != 'outgoing':
                 raise except_orm(_('Error!'), _('Fast return'
@@ -206,7 +211,7 @@ class StockPicking(models.Model):
                                                 ' outgoing pickings!'))
             for move in pick.move_lines:
                 to_check_moves = [move.move_dest_id] if move.move_dest_id.id else []
-                to_check_moves = [move.move_dest_id] if move.move_dest_id.id else []
+                #to_check_moves = [move.move_dest_id] if move.move_dest_id.id else []
                 while to_check_moves:
                     current_move = to_check_moves.pop()
                     if current_move.state not in ('done', 'cancel') and current_move.reserved_quant_ids:
@@ -223,6 +228,8 @@ class StockPicking(models.Model):
             #Create new picking for returned products
             pick_type_id = pick.picking_type_id.return_picking_type_id and pick.picking_type_id.return_picking_type_id.id or pick.picking_type_id.id
             moves = self.env['stock.move']
+
+
             for move in pick.move_lines:
                 new_qty = move.product_uos_qty - move.accepted_qty
                 new_uom_qty = move.product_uom_qty - move.product_uom_acc_qty
@@ -253,15 +260,18 @@ class StockPicking(models.Model):
                         'procure_method': 'make_to_stock',
                         'restrict_lot_id': lot_id,
                         'move_dest_id': move_dest_id,
-                        'invoice_state': 'none'
+                        'invoice_state': invoice_st
                     })
                     moves += new_move_id
+
             if len(moves):
                 new_picking = pick.copy({
                     'move_lines': [],
                     'picking_type_id': pick_type_id,
                     'state': 'draft',
                     'origin': pick.name,
+                    'task_type': 'ubication',
+                    'invoice_state': invoice_st
                 })
                 res.append(new_picking.id)
                 for move in moves:

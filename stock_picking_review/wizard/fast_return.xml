@@ -10,8 +10,14 @@
             <field name="arch" type="xml">
                 <form string="Fast returns">
                     <h1>
-                      Generate all return pickings?
-                  </h1>
+                        Generate all return pickings?
+                    </h1>
+                    <h2 >
+                        Solo se generarán rectificativas de las entregas ya facturadas.
+                    </h2>
+                    <group>
+                        <field name="journal_id" domain="[('type','=',journal_type)]"/>
+                    </group>
                   <footer>
                       <button string="Return" name="fast_return" type="object" class="oe_highlight"/>
                       or
