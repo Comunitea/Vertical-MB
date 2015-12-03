@@ -36,7 +36,7 @@ class ConfirmLoadWzd(models.TransientModel):
          # Display the validated picks
         action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
         action = action_obj.read()[0]
-        action['domain'] = str([('id', 'in', picks_tot._ids)])
+        action['domain'] = str([('id', 'in', out_pickings._ids)])
         action['context'] = {}
         return action
         return
@@ -51,7 +51,7 @@ class ConfirmLoadWzd(models.TransientModel):
          # Display the validated picks
         action_obj = self.env.ref('midban_depot_stock.action_delivery_man_route_sheet')
         action = action_obj.read()[0]
-        action['domain'] = str([('id', 'in', picks_tot._ids)])
+        action['domain'] = str([('id', 'in', out_pickings._ids)])
         action['context'] = {}
         return action
         return
