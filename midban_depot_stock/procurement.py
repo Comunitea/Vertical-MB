@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp.osv import osv, fields
+from openerp import api
 
 
 class procurement_order(osv.osv):
@@ -34,3 +35,12 @@ class procurement_order(osv.osv):
                                          store=True,
                                          readonly=True),
     }
+
+    # DESABILITAMOS MENSAJERÍA PARA PROCUREMENT ORDER
+    @api.model
+    def create(self, data):
+        return super(procurement_order, self.with_context(tracking_disable=True)).create(data)
+
+    @api.multi
+    def write(self, data):
+        return super(procurement_order, self.with_context(tracking_disable=True)).write(data)

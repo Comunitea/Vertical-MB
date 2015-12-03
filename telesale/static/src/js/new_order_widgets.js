@@ -75,7 +75,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
             // this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
-            this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
+            this.$('#partner').change(_.bind(this.set_value, this, 'partner'))
+//            this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
             this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
             this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
@@ -1086,26 +1087,27 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                 }
             });
             this.$('#promo-button').click(function(){
-                var current_order = self.ts_model.get('selectedOrder')
-                current_order.set('set_promotion', true)
-                self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder()
-                $.when( self.ts_model.ready2 )
-                .done(function(){
-                var loaded = self.ts_model.fetch('sale.order',
-                                                ['id', 'name'],
-                                                [
-                                                    ['chanel', '=', 'telesale']
-                                                ])
-                    .then(function(orders){
-                        if (orders[0]) {
-                        var my_id = orders[0].id
-                        $.when( self.load_order_from_server(my_id) )
-                        .done(function(){
-                        });
-
-                      }
-                    });
-                 });
+//                var current_order = self.ts_model.get('selectedOrder')
+//                current_order.set('set_promotion', true)
+//                self.ts_widget.new_order_screen.totals_order_widget.saveCurrentOrder()
+//                $.when( self.ts_model.ready2 )
+//                .done(function(){
+//                var loaded = self.ts_model.fetch('sale.order',
+//                                                ['id', 'name'],
+//                                                [
+//                                                    ['chanel', '=', 'telesale']
+//                                                ])
+//                    .then(function(orders){
+//                        if (orders[0]) {
+//                        var my_id = orders[0].id
+//                        $.when( self.load_order_from_server(my_id) )
+//                        .done(function(){
+//                        });
+//
+//                      }
+//                    });
+//                 });
+            alert("Esta funcionalidad está desabilitada. Las promociones se aplicarán cuando confirmes el pedido")
             });
              this.$('#sust-button').click(function(){
                 var current_order = self.ts_model.get('selectedOrder')
@@ -1352,6 +1354,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
         confirmCurrentOrder: function() {
           var self = this;
             var currentOrder = this.order_model;
+            currentOrder.set('set_promotion', true)  // Aplicar promociones al confirmar
             self.saveCurrentOrder()
             $.when( self.ts_model.ready2 )
             .done(function(){
