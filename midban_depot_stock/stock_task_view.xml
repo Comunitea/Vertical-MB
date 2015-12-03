@@ -9,7 +9,7 @@
                 <form string="Warehouse Tasks">
                     <header>
                        <!--  <button name="finish_task"  string="Finish Task" states="assigned" type="object" class="oe_highlight"/> -->
-                        <button name="finish_partial_task"  string="Finish Partial Task" states="assigned" type="object" class="oe_highlight"/>
+                        <button name="finish_partial_task"  string="Finish Partial Task" states="assigned,process" type="object" class="oe_highlight"/>
                         <button name="finish_partial_task"  string="Finish Revised Task" states="to_revised" type="object" class="oe_highlight"/>
                         <button name="cancel_task"  string="Cancel Task" states="assigned" type="object"/>
 <!--                         <button name="assign_task"  string="Open Task" states="canceled" type="object"/>

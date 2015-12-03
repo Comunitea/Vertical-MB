@@ -1045,12 +1045,14 @@ class stock_pack_operation(models.Model):
                                                " the picking."))
 
         #Hay que reescribir esto, lo hago en una función aparte.
-        if vals.get('package_id', False) or \
+        if vals.get('package_id', False) or vals.get('lot_id', False) or\
             vals.get('location_dest_id') or vals.get('do_pack', False):
-                op = self[0]
-                vals = op.get_result_package_id(vals)
-
-        return super(stock_pack_operation, self).write(vals)
+                for op in self:
+                    vals = op.get_result_package_id(vals)
+                    super(stock_pack_operation, op).write(vals)
+                    #op.write()
+        else:
+            return super(stock_pack_operation, self).write(vals)
 
     @api.multi
     def get_result_package_id(self,vals):
@@ -1066,18 +1068,20 @@ class stock_pack_operation(models.Model):
         if picking.picking_type_id.id in pick_types:
             return vals
 
-        vals['result_package_id'] = vals.get('result_package_id', False)
-        if not vals['result_package_id']== False:
+        #vals['result_package_id'] =
+        if vals.get('result_package_id', False):
             return vals
 
-        if not (vals.get('location_dest_id', False) and vals.get('package_id', False)) == False:
+        if vals.get('location_dest_id', False):
             _logger.debug("CMNT comprobando en _get_result_package_id")
             pack_in_destination = False
-            pack_type = vals.get('do_pack', self.do_pack)
+            pack_type = vals.get('do_pack', self.do_pack or 'do_pack')
             product_id = vals.get('product_id', self.product_id or False)
-            lot_id = self.lot_id and self.lot_id.id or False
-            if not lot_id:
+            lot_id = vals.get('lot_id', self.lot_id and self.lot_id.id or False)
+            if not lot_id and vals.get('package_id', False):
                 lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
+            if not lot_id:
+                lot_id=self.package_id and self.package_id.lot_id and self.package_id.lot_id.id
             if lot_id:
                 new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
                 pack_in_destination = new_loc.get_package_of_lot(lot_id)
@@ -2095,6 +2099,10 @@ class stock_quant(models.Model):
         """
         _logger.debug("CMNT inicio Aplly_removal")
         _logger.debug("CMNT ####################")
+        print "removal"
+        print location
+        print location.usage
+        print removal_strategy
         init_t = time.time()
         t_location = self.pool.get('stock.location')
         # When quants already assigned we use the super no midban depot fefo
@@ -2106,7 +2114,8 @@ class stock_quant(models.Model):
         if removal_strategy == 'depot_fefo' and not already_reserved and not \
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
-            if not pick_loc_obj:
+            if location.usage not in ['view', 'internal'] or not pick_loc_obj:
+                print "busqueda normal"
                 sup = super(stock_quant, self).apply_removal_strategy(
                     cr, uid, location, product, qty, domain, 'fefo',
                     context=context)
@@ -2169,6 +2178,7 @@ class stock_quant(models.Model):
         sup = super(stock_quant, self).\
             apply_removal_strategy(cr, uid, location, product, qty, domain,
                                    removal_strategy, context=context)
+        print sup
         _logger.debug("CMNT ####################")
         _logger.debug("CMNT return Aplly_removal: %s", time.time() -init_t)
 
