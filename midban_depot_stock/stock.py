@@ -2202,6 +2202,19 @@ class stock_production_lot(models.Model):
                                          'Related suppliers',
                                          domain=[('supplier', '=', True)])}
 
+
+class SrockProductionLot(models.Model):
+
+    _inherit = "stock.production.lot"
+
+    # No pone la traducción ni poniendolo en la vista. Así que en español
+    total_lot_qty = fields2.Float('Cantidad total',
+                                  compute='_get_lot_qty', readonly=False)
+
+    @api.one
+    def _get_lot_qty(self):
+        self.total_lot_qty = sum([x.qty for x in self.quant_ids])
+
 ###############################################################################
 ###############################################################################
 
