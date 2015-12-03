@@ -390,7 +390,7 @@ class sale_order(models.Model):
                 env['sale.order'].browse(self.id).action_button_confirm()
 
             except Exception, e:
-                new_cr.roolback()
+                new_cr.rollback()
                 new_cr.close()
                 _logger.debug("CMNT ERROR EN EL HILO!!!!!!!!! %s", str(e))
             new_cr.commit()
