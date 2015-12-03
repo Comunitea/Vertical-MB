@@ -51,6 +51,7 @@ function openerp_ts_summary_orders_widgets(instance, module){ //module is instan
                     }else{
                         self.ts_model.build_order(self.order_fetch, self.open_order, order_lines); //build de order model
                         self.ts_widget.new_order_screen.data_order_widget.refresh();  // show screen and order model refreshed.
+//                        self.ts_widget.new_order_screen.totals_order_widget.changeTotals();
                     }
                 })
         },

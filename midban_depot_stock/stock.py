@@ -31,7 +31,7 @@ _logger = logging.getLogger(__name__)
 
 class stock_picking(osv.Model):
     _inherit = "stock.picking"
-    _order = "name desc"
+    _order = "id desc"
     _columns = {
         'operator_id': fields.many2one('res.users', 'Operator',
                                        readonly=True, copy=False,
