@@ -967,39 +967,46 @@ class stock_pack_operation(models.Model):
                                          _('Impossible found the multipack'
                                            ' location'))
             self.location_dest_id = multipack_location
+            return
         if self.operation_product_id:
             product = self.operation_product_id
-            if self._is_picking_loc_available(product, self.packed_qty):
-                #cambio para que si no hay, coja por defecto
-                if product.picking_location_id:
-                    self.location_dest_id = product.picking_location_id.id
-                else:
-                    self.location_dest_id = self.env.ref("stock.virtual_picking_location").id
+            self.location_dest_id = product.picking_location_id or self.env['stock.location'].search([('special_location', '=', True)])
+            return
+
+        self.location_dest_id = self.env['stock.location'].search([('special_location', '=', True)])
+        return
+
+        if self._is_picking_loc_available(product, self.packed_qty):
+            #cambio para que si no hay, coja por defecto
+            if product.picking_location_id:
+                self.location_dest_id = product.picking_location_id.id
             else:
-                locations = product.picking_location_id.get_locations_by_zone(
-                    'storage')
-                found = False
-                while not found and locations:
-                    location = self._search_closest_pick_location(product,
-                                                                  locations)
-                    my_volume = product.get_volume_for(self.packed_qty)
-                    avail, fill = product.picking_location_id.get_available_volume_for_product(product)
-                    if location and avail > my_volume:
-                        found = True
-                    else:
-                        locations.remove(location.id)
-
-
-                if found:
-                    self.location_dest_id = location
+                self.location_dest_id = self.env.ref("stock.virtual_picking_location").id
+        else:
+            locations = product.picking_location_id.get_locations_by_zone(
+                'storage')
+            found = False
+            while not found and locations:
+                location = self._search_closest_pick_location(product,
+                                                              locations)
+                my_volume = product.get_volume_for(self.packed_qty)
+                avail, fill = product.picking_location_id.get_available_volume_for_product(product)
+                if location and avail > my_volume:
+                    found = True
                 else:
-                    special_location = self.env['stock.location'].search(
-                        [('special_location', '=', True)])
-                    if not special_location:
-                        raise exceptions.Warning(_('Location not found'),
-                                                 _('Impossible found an'
-                                                   ' special location'))
-                    self.location_dest_id = special_location
+                    locations.remove(location.id)
+
+
+            if found:
+                self.location_dest_id = location
+            else:
+                special_location = self.env['stock.location'].search(
+                    [('special_location', '=', True)])
+                if not special_location:
+                    raise exceptions.Warning(_('Location not found'),
+                                             _('Impossible found an'
+                                               ' special location'))
+                self.location_dest_id = special_location
 
     @api.one
     def update_product_in_move(self):
@@ -1029,7 +1036,7 @@ class stock_pack_operation(models.Model):
         If we change lot_id or product_id in a create operation, we quit the
         pack in the first case and a exception will be raised in the second one
         """
-        # if vals.get('lot_id', False):
+                # if vals.get('lot_id', False):
         #     for op in self:
         #         if op.lot_id.id != vals['lot_id']:
         #             vals['package_id'] = False
@@ -1041,7 +1048,7 @@ class stock_pack_operation(models.Model):
                 product = op.product_id or op.package_id.product_id
                 vals['product_uom_id'] = product.uom_id.id
                 if not op.product_id and op.package_id:
-                    vals['lot_id'] = op.package_id.packed_lot_id.id
+                    vals['lot_id'] = op.packa
 
                 if op.product_id.id != vals['product_id'] and op.product_id:
                     raise exceptions.Warning(_("Cannot change product once "

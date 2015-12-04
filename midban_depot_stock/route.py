@@ -435,10 +435,10 @@ class route_detail(models.Model):
         print ids
         pick_ids = pick_obj.search(cr, uid, [('picking_type_id.code', '=', 'outgoing') ,
                                              ('route_detail_id', 'in', ids)])
-        print "Pickings"
+        print u"Pickings"
         print pick_ids
         partner_ids += [picking.partner_id.id for picking in pick_obj.browse(cr,uid, pick_ids)]
-        print "Partners"
+        print u"Partners"
         print partner_ids
         domain = [('partner_id', 'in', partner_ids),
                 ('account_id.type', '=', 'receivable'),

@@ -398,7 +398,7 @@ class stock_transfer_details_items(models.TransientModel):
             self.quantity = self.uos_qty
 
         if not variable:
-            print "Changing"
+            print u"Changing"
             picking_id = self._context.get('picking_id', [])
             picking = self.env['stock.picking'].browse(picking_id)
             supplier_id = 0

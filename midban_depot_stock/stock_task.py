@@ -81,7 +81,6 @@ class stock_task(osv.Model):
             pick_ids = list(set([x.picking_id.id for x in self.operation_ids]))
         else:
             pick_ids = list(set([x.id for x in self.wave_id.picking_ids]))
-
         # When we call button after the returned view of the wizard
         # 'active_model': 'stock.task' and we get an error with assert
         # in do_transfer method.
@@ -188,15 +187,20 @@ class stock_task(osv.Model):
 
     @api.one
     def add_loc_operation(self, pack_id):
-
         res = False
         wh = self.env['stock.warehouse'].search([])[0]
+        wh_input_stock_loc_id = wh.wh_input_stock_loc_id.id
+        wh_loc_stock_id = wh.lot_stock_id
         pick_ubi_type_id = wh.ubication_type_id.id
         pick_in_type_id = wh.in_type_id.id
         #tenemos que mirar si es un multipack
         pack_id_ = self.env['stock.quant.package'].browse(pack_id)
         if pack_id_.parent_id:
             pack_id_ = pack_id_.parent_id
+
+        if pack_id_.location_id.id != wh_input_stock_loc_id:
+            #Solo ubico entradas
+            return -1
         pack_id = pack_id_.id
         domain = [
             ('picking_id.picking_type_id', '=', pick_ubi_type_id),
@@ -205,7 +209,11 @@ class stock_task(osv.Model):
         ]
         op_objs = self.env['stock.pack.operation'].search(domain)
         time1 = time.time()
+        if op_objs:
+            op = op_objs[0]
+            print u'Add_loc_operation: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
         if not op_objs:
+            print u'Add_loc_operation: PAck %s'%pack_id_.name
             #buscamos el id en un result package id desde recepciones
             domain = [('result_package_id', '=', pack_id), ('picking_id.picking_type_id', '=', pick_in_type_id)]
             op = self.env['stock.pack.operation'].search(domain, order = "id desc", limit = 1)
@@ -223,9 +231,16 @@ class stock_task(osv.Model):
                 if not op_objs:
                     raise except_orm(_('Error'), _('Not ubication operation mathcing \
                     with pack %s') %pack_id)
+            print u'Add_loc_operation para el paquete %s y la op %s(se han creado las operaciones desde albaran de entrada'%(pack_id.name, op_objs[0].id)
         if op_objs:
             for op in op_objs:
-                op.assign_location()
+                #Si ya tiene una distinta se mantiene
+                if (op.location_dest_id.id ==  False or op.location_dest_id.id == wh_loc_stock_id.id) and not op.to_process:
+                    op.assign_location()
+                    print u'Se añadió: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
+                else:
+                    print u'Se mantiene: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
+
                 res = op.id
             vals = {'task_id': self.id}
             op_objs.write(vals)
@@ -240,5 +255,5 @@ class stock_task(osv.Model):
             raise except_orm(_('Error'),
                              _('No packs defined to add operations'))
         for pack in self.pack_ids:
-            self.add_loc_operation(pack.id)
-        return
+            res = self.add_loc_operation(pack.id)
+        return res
