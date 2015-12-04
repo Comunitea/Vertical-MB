@@ -97,22 +97,23 @@ class FastReturn(models.TransientModel):
         pick_ids = [p.id for p in picks if p.invoice_state == '2binvoiced'
                     and p.partner_id.invoice_method == 'a']
         print pick_ids
-        invoice_wzd_vals = {
-            'journal_id': self.journal_id.id,
-            'journal_type': self.journal_type,
-            'group': False,
-            'invoice_date': False
-        }
-        invoice_wzd = self.env['stock.invoice.onshipping'].create(
-            invoice_wzd_vals)
-        invoice_ids = invoice_wzd.with_context(active_ids=pick_ids).create_invoice()
-        invoices = self.env['account.invoice'].browse(invoice_ids)
-        for invoice in invoices:
-            rect_inv_id = invoice.picking_ids[0].move_lines[0].\
-                origin_returned_move_id.picking_id.invoice_id.id
-            print "Factura recitificativa"
-            print rect_inv_id
-            vals = {'origin_invoices_ids': [(6, 0, [rect_inv_id,])]}
-            print vals
-            invoice.write(vals)
-        invoices.signal_workflow('invoice_open')
+        if pick_ids:
+            invoice_wzd_vals = {
+                'journal_id': self.journal_id.id,
+                'journal_type': self.journal_type,
+                'group': False,
+                'invoice_date': False
+            }
+            invoice_wzd = self.env['stock.invoice.onshipping'].create(
+                invoice_wzd_vals)
+            invoice_ids = invoice_wzd.with_context(active_ids=pick_ids).create_invoice()
+            invoices = self.env['account.invoice'].browse(invoice_ids)
+            for invoice in invoices:
+                rect_inv_id = invoice.picking_ids[0].move_lines[0].\
+                    origin_returned_move_id.picking_id.invoice_id.id
+                print "Factura recitificada"
+                print rect_inv_id
+                vals = {'origin_invoices_ids': [(6, 0, [rect_inv_id,])]}
+                print vals
+                invoice.write(vals)
+            invoices.signal_workflow('invoice_open')

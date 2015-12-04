@@ -229,7 +229,6 @@ class StockPicking(models.Model):
             pick_type_id = pick.picking_type_id.return_picking_type_id and pick.picking_type_id.return_picking_type_id.id or pick.picking_type_id.id
             moves = self.env['stock.move']
 
-
             for move in pick.move_lines:
                 new_qty = move.product_uos_qty - move.accepted_qty
                 new_uom_qty = move.product_uom_qty - move.product_uom_acc_qty
@@ -260,7 +259,7 @@ class StockPicking(models.Model):
                         'procure_method': 'make_to_stock',
                         'restrict_lot_id': lot_id,
                         'move_dest_id': move_dest_id,
-                        'invoice_state': invoice_st
+                        #'invoice_state': invoice_st
                     })
                     moves += new_move_id
 
