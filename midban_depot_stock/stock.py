@@ -958,6 +958,7 @@ class stock_pack_operation(models.Model):
 
     @api.one
     def assign_location(self):
+        #import ipdb; ipdb.set_trace()
         _logger.debug("CMNT assign_location operation")
         if self.package_id.is_multiproduct:
             multipack_location = self.env['stock.location'].search(
@@ -1061,6 +1062,7 @@ class stock_pack_operation(models.Model):
         if vals.get('package_id', False) or vals.get('lot_id', False) or\
             vals.get('location_dest_id') or vals.get('do_pack', False):
                 for op in self:
+                    #if op.picking_id.picking_type_id.id != 6:
                     vals = op.get_result_package_id(vals)
                     super(stock_pack_operation, op).write(vals)
                     #op.write()
@@ -1069,7 +1071,7 @@ class stock_pack_operation(models.Model):
 
     @api.multi
     def get_result_package_id(self,vals):
-
+        #import ipdb; ipdb.set_trace()
         init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
         picking_id = vals.get('picking_id', False) or self.picking_id.id
         picking = self.env['stock.picking'].browse(picking_id)
@@ -1081,6 +1083,7 @@ class stock_pack_operation(models.Model):
         if picking.picking_type_id.id in pick_types:
             return vals
 
+
         #vals['result_package_id'] =
         if vals.get('result_package_id', False):
             return vals
@@ -1091,10 +1094,10 @@ class stock_pack_operation(models.Model):
             pack_type = vals.get('do_pack', self.do_pack or 'do_pack')
             product_id = vals.get('product_id', self.product_id or False)
             lot_id = vals.get('lot_id', self.lot_id and self.lot_id.id or False)
-            if not lot_id and vals.get('package_id', False):
-                lot_id=self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
             if not lot_id:
-                lot_id=self.package_id and self.package_id.lot_id and self.package_id.lot_id.id
+                lot_id = self.packed_lot_id.id or False
+            if not lot_id and vals.get('package_id', False):
+                lot_id = self.env['stock.quant.package'].browse(vals.get('package_id', False)).packed_lot_id.id
             if lot_id:
                 new_loc = self.env['stock.location'].browse(vals['location_dest_id'])
                 pack_in_destination = new_loc.get_package_of_lot(lot_id)

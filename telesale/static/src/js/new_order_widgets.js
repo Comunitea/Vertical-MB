@@ -75,8 +75,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
             // this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
-            this.$('#partner').change(_.bind(this.set_value, this, 'partner'))
-//            this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
+//            this.$('#partner').change(_.bind(this.set_value, this, 'partner'))
+            this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
             this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
             this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
@@ -99,7 +99,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
         },
         set_value: function(key) {
-            var value = this.$('#'+key).val();
+            var value = this.$('#'+key).val();;
+            if (value == self.order_model.get('partner') ) {
+                return;
+             }
             this.order_model.set(key, value);
             this.perform_onchange(key, value);
         },
@@ -107,14 +110,19 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             self = this
             var model = new instance.web.Model('res.partner');
             model.call("any_detail_founded",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
-            // .then(function(result){
-            //     if (!result){
-            //         alert(_t("Customer has no assigned any delivery route"));
-            //         self.order_model.set('partner', "");
-            //         self.order_model.set('partner_code', "");
-            //         self.refresh();
-            //     }
-            // });
+             .then(function(result){
+                 if (!result){
+//                     alert(_t("Customer has no assigned any delivery route"));
+//                     self.order_model.set('partner', "");
+//                     self.order_model.set('partner_code', "");
+//                     self.refresh();
+                 }
+                 else{;
+                    self.order_model.set('date_planned', result['detail_date'])
+                    self.order_model.set('date_invoice', result['detail_date'])
+                    self.refresh();
+                 }
+             });
         },
         get_supplier_names: function(partner_obj) {
             self = this
