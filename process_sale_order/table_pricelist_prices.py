@@ -37,8 +37,10 @@ class table_pricelist_prices(osv.Model):
                               readonly=True,),
     }
 
-    @api.multi
+    @api.one
+    @api.model
     def recalculate_table(self):
+        print "REACALCULA"
         self.ensure_one()
         t_product = self.env["product.product"]
         t_pricelist = self.env["product.pricelist"]
@@ -69,7 +71,6 @@ class table_pricelist_prices(osv.Model):
                 else:
                     if price != rec_table.price:
                         rec_table.price = price
-
         return True
 
     # def recalculate_table(self, cr, uid, ids, context=None):
