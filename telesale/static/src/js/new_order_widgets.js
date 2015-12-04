@@ -1406,7 +1406,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // }
             // else if ( currentOrder.check() ){
             if ( currentOrder.check() ){
-                this.ts_model.push_order(currentOrder.exportAsJSON());
+//                this.ts_model.push_order(currentOrder.exportAsJSON());
+//               NO HACEMOS QUE PASE POR EL FLUJO DE LA BOLITA ROJA, ESTÁ DESABILITADA
+                this.ts_model._flush2(currentOrder.exportAsJSON());
             }
         },
 

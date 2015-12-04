@@ -225,6 +225,7 @@ function openerp_ts_models(instance, module){
             }
         },
         push_order: function(record) {
+            debugger;
             this.db.add_order(record);
             this.flush();
         },
@@ -268,6 +269,30 @@ function openerp_ts_models(instance, module){
                     //remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
+                    self.get('selectedOrder').destroy(); // remove order from UI
+                    self.ready2.resolve()
+                });
+        },
+         _flush2: function(record) {
+            var self = this;
+            var last_id = self.db.load('last_order_id',0);
+            var order = {id: last_id + 1, data: record};
+            console.log(order)
+            self.set('nbr_pending_operations',orders.length);
+            if(!order){
+                return;
+            }
+            self.ready2 = $.Deferred();
+            //try to push an order to the server
+            // shadow : true is to prevent a spinner to appear in case of timeout
+            (new instance.web.Model('sale.order')).call('create_order_from_ui',[[order]],{context:new instance.web.CompoundContext()})
+                .fail(function(unused, event){
+                    //don't show error popup if it fails
+                    alert('Ocurrió un fallo en al mandar el pedido al servidor');
+                    self.ready2.reject()
+                })
+                .done(function(){
+                    //remove from db if success
                     self.get('selectedOrder').destroy(); // remove order from UI
                     self.ready2.resolve()
                 });
