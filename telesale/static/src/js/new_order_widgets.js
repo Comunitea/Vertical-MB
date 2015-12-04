@@ -75,8 +75,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.order_model = this.ts_model.get('selectedOrder');
             this._super();
             // this.$('#partner_code').blur(_.bind(this.set_value, this, 'partner_code'))
-            this.$('#partner').change(_.bind(this.set_value, this, 'partner'))
-//            this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
+//            this.$('#partner').change(_.bind(this.set_value, this, 'partner'))
+            this.$('#partner').blur(_.bind(this.set_value, this, 'partner'))
             this.$('#date_invoice').blur(_.bind(this.set_value, this, 'date_invoice'))
             this.$('#date_order').blur(_.bind(this.set_value, this, 'date_order'))
             this.$('#date_planned').blur(_.bind(this.set_value, this, 'date_planned'))
@@ -99,7 +99,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 
         },
         set_value: function(key) {
-            var value = this.$('#'+key).val();
+            var value = this.$('#'+key).val();;
+            if (value == self.order_model.get('partner') ) {
+                return;
+             }
             this.order_model.set(key, value);
             this.perform_onchange(key, value);
         },
