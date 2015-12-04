@@ -20,9 +20,10 @@
                     <field name="product_uom_qty" readonly="True"/>
                      <field name="product_uom_acc_qty" />
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
-                    <field name="cost_subtotal" sum="Total"/>
+                    <field name="price_subtotal" sum="Subtotal"/>
+                    <field name="price_subtotal_accepted" sum="Subtotal aceptado"/>
                     <field name="state" readonly="True"/>
-                    <button name="action_done" states="confirmed,assigned" string="Process" type="object" groups="stock.group_stock_user" icon="gtk-go-forward" help="Done"/>
+                    <!--button name="action_done" states="confirmed,assigned" string="Process" type="object" groups="stock.group_stock_user" icon="gtk-go-forward" help="Done"/-->
                 </tree>
             </field>
         </record>
@@ -35,14 +36,15 @@
                 <tree string="Moves" editable="top" delete="false">
 
                     <field name="product_id" readonly="True"/>
-                     <field name="product_uos_qty" groups="product.group_uos" readonly="True"/>
+                     <field name="product_uos_qty"  readonly="True"/>
                     <field name="accepted_qty" />
-                    <field name="product_uos" groups="product.group_uos" readonly="True"/>
+                    <field name="product_uos" readonly="True"/>
                     <!--field name="rejected" /-->
                     <field name="product_uom_qty" readonly="True"/>
                     <field name="product_uom_acc_qty" />
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
-                    <field name="cost_subtotal" sum="Total"/>
+                    <field name="price_subtotal" sum="Subtotal"/>
+                    <field name="price_subtotal_accepted" sum="Subtotal aceptado"/>
 
                 </tree>
             </field>

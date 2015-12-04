@@ -21,15 +21,37 @@
 from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+from openerp.addons.stock_account.wizard.stock_invoice_onshipping \
+    import JOURNAL_TYPE_MAP
 
 class FastReturn(models.TransientModel):
 
     _name = 'fast.return'
 
+    @api.model
+    def _get_journal(self):
+        journal_obj = self.env['account.journal']
+        journal_type = self._get_journal_type()
+        journals = journal_obj.search([('type', '=', journal_type)])
+        return journals and journals[0] or False
+
+    @api.model
+    def _get_journal_type(self):
+        return JOURNAL_TYPE_MAP.get(('incoming', 'customer'), ['sale_refund'])[0]
+
+    journal_id = fields.Many2one('account.journal', 'Destination Journal',
+                                 required=True, default=_get_journal)
+    journal_type = fields.Selection(
+        [('purchase_refund', 'Refund Purchase'),
+         ('purchase', 'Create Supplier Invoice'),
+         ('sale_refund', 'Refund Sale'), ('sale', 'Create Customer Invoice')],
+        'Journal Type', readonly=True, default=_get_journal_type)
+
     @api.multi
     def fast_return(self):
         pickings = self.env['stock.picking'].browse(self.env.context['active_ids'])
         picking_ids = pickings.fast_returns()
+        self.create_invoice(picking_ids)
 
         data_pool = self.env['ir.model.data']
 
@@ -70,3 +92,27 @@ class FastReturn(models.TransientModel):
         #     return action
         # return True
 
+    def create_invoice(self, pickings):
+        picks = self.env['stock.picking'].browse(pickings)
+        pick_ids = [p.id for p in picks if p.invoice_state == '2binvoiced'
+                    and p.partner_id.invoice_method == 'a']
+        print pick_ids
+        invoice_wzd_vals = {
+            'journal_id': self.journal_id.id,
+            'journal_type': self.journal_type,
+            'group': False,
+            'invoice_date': False
+        }
+        invoice_wzd = self.env['stock.invoice.onshipping'].create(
+            invoice_wzd_vals)
+        invoice_ids = invoice_wzd.with_context(active_ids=pick_ids).create_invoice()
+        invoices = self.env['account.invoice'].browse(invoice_ids)
+        for invoice in invoices:
+            rect_inv_id = invoice.picking_ids[0].move_lines[0].\
+                origin_returned_move_id.picking_id.invoice_id.id
+            print "Factura recitificativa"
+            print rect_inv_id
+            vals = {'origin_invoices_ids': [(6, 0, [rect_inv_id,])]}
+            print vals
+            invoice.write(vals)
+        invoices.signal_workflow('invoice_open')

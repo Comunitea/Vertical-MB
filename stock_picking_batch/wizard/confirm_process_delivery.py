@@ -90,7 +90,8 @@ class ConfirmProcessDelivery(models.TransientModel):
         invoice_wzd_vals = {
             'journal_id': self.journal_id.id,
             'journal_type': self.journal_type,
-            'group': self.group, 'invoice_date': self.invoice_date
+            'group': self.group,
+            'invoice_date': self.invoice_date
         }
         invoice_wzd = self.env['stock.invoice.onshipping'].create(
             invoice_wzd_vals)
