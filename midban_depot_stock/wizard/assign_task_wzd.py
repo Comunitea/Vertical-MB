@@ -926,6 +926,8 @@ class assign_task_wzd(osv.TransientModel):
             _logger.debug("CMNT TIEMPO crea Wave: %s", time.time() - init_wc)
             # wave_obj.confirm_picking(cr, uid, [wave_id], context=context)
             # Create task and associate to picking wave
+            wave_pick = pick_obj.browse(cr, uid, pickings_to_wave[0], context=context)
+            selected_detail_id = wave_pick.route_detail_id.id
             vals = {
                 'user_id': obj.operator_id.id,
                 'type': 'picking',
@@ -933,6 +935,7 @@ class assign_task_wzd(osv.TransientModel):
                 'wave_id': wave_id,
                 'state': 'assigned',
                 'machine_id': machine_id,
+                'route_detail_id': selected_detail_id
             }
             init_tc = time.time()
             task_id = task_obj.create(cr, uid, vals, context=context)
