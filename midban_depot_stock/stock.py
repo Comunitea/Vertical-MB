@@ -291,6 +291,7 @@ class stock_picking(osv.Model):
         something_done = False
         init_pi = time.time()
         for op in self.pack_operation_ids:
+            print u'Operacion para paquete %s'%op.package_id.name
             if not op.to_revised:
                 if op.to_process and op.task_id and op.task_id.id == task_id:
                     something_done = True
@@ -384,7 +385,6 @@ class stock_picking(osv.Model):
         """
         init_t = time.time()
         res = super(stock_picking, self).do_prepare_partial()
-
         _logger.debug("CMNT Tiempo original do_prepare: %s ", time.time() - init_t)
         for picking in self:
             supplier_id = 0
@@ -1061,37 +1061,37 @@ class stock_pack_operation(models.Model):
         #Hay que reescribir esto, lo hago en una función aparte.
         if vals.get('package_id', False) or vals.get('lot_id', False) or\
             vals.get('location_dest_id') or vals.get('do_pack', False):
-                for op in self:
-                    #if op.picking_id.picking_type_id.id != 6:
-                    vals = op.get_result_package_id(vals)
-                    super(stock_pack_operation, op).write(vals)
-                    #op.write()
+            for op in self:
+                #if op.picking_id.picking_type_id.id != 6:
+                vals = op.get_result_package_id(vals)
+                res = super(stock_pack_operation, op).write(vals)
+                #op.write()
+            return res
         else:
             return super(stock_pack_operation, self).write(vals)
 
     @api.multi
     def get_result_package_id(self,vals):
-        #import ipdb; ipdb.set_trace()
         init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
         picking_id = vals.get('picking_id', False) or self.picking_id.id
         picking = self.env['stock.picking'].browse(picking_id)
         wh = self.env['stock.warehouse'].search([])[0]
-
+        pack_type = vals.get('do_pack', self.do_pack or 'do_pack')
         pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_type_id.id, wh.reposition_type_id.id]
         #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
+        #REVISAR PARA REPOSICIONES
 
         if picking.picking_type_id.id in pick_types:
             return vals
-
-
         #vals['result_package_id'] =
+
         if vals.get('result_package_id', False):
             return vals
 
         if vals.get('location_dest_id', False):
             _logger.debug("CMNT comprobando en _get_result_package_id")
             pack_in_destination = False
-            pack_type = vals.get('do_pack', self.do_pack or 'do_pack')
+
             product_id = vals.get('product_id', self.product_id or False)
             lot_id = vals.get('lot_id', self.lot_id and self.lot_id.id or False)
             if not lot_id:
@@ -1108,6 +1108,9 @@ class stock_pack_operation(models.Model):
                 if pack_type == "do_pack":
                     if pack_in_destination:
                         vals['result_package_id'] = pack_in_destination.id
+                    else:
+                        if self.package_id:
+                            vals['result_package_id'] = False
 
             if product_id:
                 if pack_type == "do_pack":
@@ -1120,6 +1123,12 @@ class stock_pack_operation(models.Model):
                 if pack_type == "no_pack":
                         new_package_id = self.env['stock.quant.package'].create({})
                         vals['result_package_id'] = new_package_id.id
+
+        elif pack_type == "no_pack" and self.package_id:
+             vals['result_package_id'] = False
+
+
+
         _logger.debug("CMNT tiempo en get_result_package_id: %s - %s ", time.time() - init_t, vals)
         return vals
 
