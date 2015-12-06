@@ -65,7 +65,9 @@ class stock_task(osv.Model):
         'pack_ids': fields.many2many('stock.quant.package', 'task_pack_rel',
                                      'task_id', 'pack_id', string="Add packs",
                                      help="Search packs in ubication pìckings "
-                                     "and adds the operation to task")
+                                     "and adds the operation to task"),
+        'route_detail_id': fields.many2one('route.detail', 'Route Detail',
+                                           readonly=True)
     }
     _defaults = {
         'state': 'assigned',

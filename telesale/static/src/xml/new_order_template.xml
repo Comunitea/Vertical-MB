@@ -293,7 +293,7 @@
                         <div class="fullheight centerinside fullwidth">
                           <div class="centerthis">
                             <label for="date_invoice">Date invoice:</label>
-                            <input  class="  mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.ts_model.getCurrentDatePlannedStr()" tabIndex="4"/>
+                            <input  class="  mandatory" type="date" id='date_invoice' name="date_invoice" t-att-value="widget.order_model.get('date_invoice')" tabIndex="4"/>
                           </div>
                         </div>
                     </div>

@@ -86,7 +86,7 @@ class ConfirmLoadWzd(models.TransientModel):
             # Autosale outs havent group id
             elif pick.move_lines and pick.move_lines[0].move_orig_ids:
                 pick_objs = pick.move_lines[0].move_orig_ids[0].picking_id
-            pick_objs.write({'route_detail_id': pick.route_detail_id.id})
+            # pick_objs.write({'route_detail_id': pick.route_detail_id.id})
             for p in pick_objs:
                 res += p
 

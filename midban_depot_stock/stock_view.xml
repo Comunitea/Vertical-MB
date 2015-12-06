@@ -452,6 +452,7 @@
                     <field name="partner_city" readonly="True"/>
                     <field name="sale_id" readonly="True"/>
                     <field name="orig_planned_date" readonly="True"/>
+                    <field name="min_date" readonly="True"/>
                     <field name="order_note" readonly="True" string="Order Notes"/>
                     <field name="min_date" readonly="True" string="Delivery Date" invisible="1"/>
                     <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
@@ -516,7 +517,7 @@
 
         <!-- Replanning outgoing picking in routes -->
       <record id="view_delivery_man_route_sheet_tree" model="ir.ui.view">
-          <field name="name">view_picking_replanning_tree_add_route</field>
+          <field name="name">view_delivery_man_route_sheet_tree</field>
           <field name="model">stock.picking</field>
           <field name="arch" type="xml">
               <tree string="Route Sheet" create="false" delete="false">
@@ -530,6 +531,7 @@
                   <field name="state" readonly="True" invisible="1"/>
                   <!-- <field name="detail_date" readonly="True" invisible="1"/> -->
                   <field name="trans_route_id" invisible="1"/>
+                  <field name="route_detail_id" invisible="1"/>
                   <field name="user_id" invisible="1"/>
               </tree>
           </field>

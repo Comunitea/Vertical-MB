@@ -225,6 +225,7 @@ function openerp_ts_models(instance, module){
             }
         },
         push_order: function(record) {
+            debugger;
             this.db.add_order(record);
             this.flush();
         },
@@ -268,6 +269,30 @@ function openerp_ts_models(instance, module){
                     //remove from db if success
                     self.db.remove_order(order.id);
                     self._flush(index);
+                    self.get('selectedOrder').destroy(); // remove order from UI
+                    self.ready2.resolve()
+                });
+        },
+         _flush2: function(record) {
+            var self = this;
+            var last_id = self.db.load('last_order_id',0);
+            var order = {id: last_id + 1, data: record};
+            console.log(order)
+            self.set('nbr_pending_operations',orders.length);
+            if(!order){
+                return;
+            }
+            self.ready2 = $.Deferred();
+            //try to push an order to the server
+            // shadow : true is to prevent a spinner to appear in case of timeout
+            (new instance.web.Model('sale.order')).call('create_order_from_ui',[[order]],{context:new instance.web.CompoundContext()})
+                .fail(function(unused, event){
+                    //don't show error popup if it fails
+                    alert('Ocurrió un fallo en al mandar el pedido al servidor');
+                    self.ready2.reject()
+                })
+                .done(function(){
+                    //remove from db if success
                     self.get('selectedOrder').destroy(); // remove order from UI
                     self.ready2.resolve()
                 });
@@ -322,7 +347,8 @@ function openerp_ts_models(instance, module){
                                  unit:line.product_uom[1],
                                  qty:line.product_uom_qty,
                                  pvp:my_round(line.price_unit,2), //TODO poner precio del producto???
-                                 total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+//                                 total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+                                 total: my_round(line.product_uom_qty * line.price_unit * (1 - line.discount /100)),
                                 //  discount: my_round( ((line.pvp_ref == 0) ? 0: 1 - (line.price_unit / line.pvp_ref)), 2 ),
                                  discount: my_round(line.discount, 2) || 0.0,
                                  weight: my_round(prod_obj.weight * line.product_uom_qty,2),
@@ -909,7 +935,8 @@ function openerp_ts_models(instance, module){
                                  unit:prod_obj.uom_id[1] || line.product_uom[1], //current product unit
                                  qty:my_round(l_qty), //order line qty
                                  pvp: my_round(line.current_pvp ? line.current_pvp : 0, 2), //current pvp
-                                 total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+//                                 total: my_round(line.current_pvp ? (line.product_uom_qty * line.current_pvp) * (1 - line.discount /100) : 0 ,2),
+                                 total: my_round(line.product_uom_qty * line.price_unit * (1 - line.discount /100)),
                                  discount: my_round( line.discount || 0.0, 2 ),
                                  weight: my_round(line.product_uom_qty * prod_obj.weight,2),
                                  margin: my_round(( (line.current_pvp != 0 && prod_obj.product_class == "normal") ? ( (line.current_pvp - prod_obj.standard_price) / line.current_pvp)  : 0 ), 2),

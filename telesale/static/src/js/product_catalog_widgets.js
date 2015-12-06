@@ -67,54 +67,58 @@ function openerp_ts_product_catalog_widgets(instance, module){ //module is insta
             this.bind_order_events(); // SET this.order_model = this.ts_model.get('selectedOrder') and his widgets
         },
         bind_order_events: function(){
+            console.log("No se muy bien para qwue linko el disparo al partner, no debería")
             this.order_model.bind('change:partner', this.search_products_to_sell, this);
         },
         search_products_to_sell: function(){
 
             var self = this;
             var search_string = ""
-            // var customer_name = this.order_model.get('partner');
+            var customer_name = this.order_model.get('partner');
             var products_list = [];
-            // var loaded = $.Deferred()
-            // var partner_id = this.ts_model.db.partner_name_id[customer_name];
-            // if (partner_id) {
-            //     var model = new instance.web.Model('res.partner');
-            //     model.call("search_products_to_sell",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
-            //     .then(function(result){
-            //         self.ts_model.set('products_names', [])
-            //         self.ts_model.set('products_codes', [])
-            //         for (key in result){
-            //             var product_obj = self.ts_model.db.get_product_by_id(result[key])
-            //             if (product_obj){
-            //                 products_list.push(product_obj);
-            //                 search_string += self.ts_model.db._product_search_string(product_obj)
-            //                 self.ts_model.get('products_names').push(product_obj.name);
-            //                 self.ts_model.get('products_codes').push(product_obj.default_code);
-            //             }
-            //
-            //         }
-            //         self.ts_model.set('product_search_string', search_string)
-            //         self.ts_model.get('products').reset(products_list)
-            //         loaded.resolve()
-            //     });
-            // return loaded
-            // }
-            self.ts_model.set('products_names', [])
-            self.ts_model.set('products_codes', [])
-            for(id in self.ts_model.db.product_by_id){
-               var product_obj = self.ts_model.db.get_product_by_id(id)
-               if(product_obj){
-                   products_list.push(product_obj);
-                   search_string += self.ts_model.db._product_search_string(product_obj)
-                   self.ts_model.get('products_names').push(product_obj.name);
-                   self.ts_model.get('products_codes').push(product_obj.default_code);
-               }
-            }
-            self.ts_model.set('product_search_string', search_string)
-            self.ts_model.get('products').reset(products_list)
+             var loaded = $.Deferred()
+             var partner_id = this.ts_model.db.partner_name_id[customer_name];
+             console.log("1.BUSCO PRODUCTOS")
+             if (partner_id) {
+                 var model = new instance.web.Model('res.partner');
+                 model.call("search_products_to_sell",[partner_id])  //TODO revisar:devuelve ids que no estan activos (proceso de baja)
+                 .then(function(result){
+                     console.log("2.ENCUENTRO PRODUCTOS")
+                     console.log(result)
+                     self.ts_model.set('products_names', [])
+                     self.ts_model.set('products_codes', [])
+                     for (key in result){
+                         var product_obj = self.ts_model.db.get_product_by_id(result[key])
+                         if (product_obj){
+                             products_list.push(product_obj);
+                             search_string += self.ts_model.db._product_search_string(product_obj)
+                             self.ts_model.get('products_names').push(product_obj.name);
+                             self.ts_model.get('products_codes').push(product_obj.default_code);
+                         }
+
+                     }
+                     self.ts_model.set('product_search_string', search_string)
+                     self.ts_model.get('products').reset(products_list)
+                     loaded.resolve()
+                 });
+             return loaded
+             }
+//            self.ts_model.set('products_names', [])
+//            self.ts_model.set('products_codes', [])
+//            for(id in self.ts_model.db.product_by_id){
+//               var product_obj = self.ts_model.db.get_product_by_id(id)
+//               if(product_obj){
+//                   products_list.push(product_obj);
+//                   search_string += self.ts_model.db._product_search_string(product_obj)
+//                   self.ts_model.get('products_names').push(product_obj.name);
+//                   self.ts_model.get('products_codes').push(product_obj.default_code);
+//               }
+//            }
+//            self.ts_model.set('product_search_string', search_string)
+//            self.ts_model.get('products').reset(products_list)
         },
         change_selected_order: function() {
-
+            console.log('Se dispara el cambio de pedido seleccionado')
             this.order_model.unbind('change:partner');
             this.order_model = this.ts_model.get('selectedOrder');
             this.bind_order_events();
