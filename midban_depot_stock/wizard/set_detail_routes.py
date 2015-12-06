@@ -28,38 +28,43 @@ class SetDetailRoutes(models.TransientModel):
     _name = 'set.detail.routes'
     route_detail_id = fields.Many2one('route.detail', 'Detail route')
 
-    # @api.multi
-    # def set_details(self):
-    #     active_ids = self.env.context['active_ids']
-    #     out_pickings = self.env['stock.picking'].browse(active_ids)
-    #
-    #     out_pickings.write({'route_detail_id': self.route_detail_id.id})
-    #     return
-
     @api.multi
     def set_details(self):
-        t_pick = self.env['stock.picking']
         active_ids = self.env.context['active_ids']
-        out_pickings = t_pick.browse(active_ids)
-        # Escribir min_date de la tuta en los de picks
-        wh = self.env['stock.warehouse'].search([])[0]
-        picks_totals = out_pickings
-        detail_date = self.route_detail_id.date + " 19:00:00"
+        out_pickings = self.env['stock.picking'].browse(active_ids)
 
-        for pick in out_pickings:
-            if pick.group_id:
-                domain = [('state', 'in', ['confirmed', 'assigned']),
-                          ('group_id', '=', pick.group_id.id),
-                          ('picking_type_id', '=', wh.pick_type_id.id)]
-                pick_objs = t_pick.search(domain)
-                picks_totals += pick_objs
-        picks_totals.write({'route_detail_id': self.route_detail_id.id,
-                            'min_date': detail_date})
-        # TODO ÑAPA parece que picks_totals no hace el out junto no lo escribe al out
-        out_pickings.write({'min_date': detail_date})
+        out_pickings.write({'route_detail_id': self.route_detail_id.id})
         # Display the assigned picks
         action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
         action = action_obj.read()[0]
         action['domain'] = str([('id', 'in', out_pickings._ids)])
         action['context'] = {}
         return action
+
+    # @api.multi
+    # def set_details(self):
+    #     t_pick = self.env['stock.picking']
+    #     active_ids = self.env.context['active_ids']
+    #     out_pickings = t_pick.browse(active_ids)
+    #     # Escribir min_date de la tuta en los de picks
+    #     wh = self.env['stock.warehouse'].search([])[0]
+    #     picks_totals = out_pickings
+    #     detail_date = self.route_detail_id.date + " 19:00:00"
+    #
+    #     for pick in out_pickings:
+    #         if pick.group_id:
+    #             domain = [('state', 'in', ['confirmed', 'assigned']),
+    #                       ('group_id', '=', pick.group_id.id),
+    #                       ('picking_type_id', '=', wh.pick_type_id.id)]
+    #             pick_objs = t_pick.search(domain)
+    #             picks_totals += pick_objs
+    #     picks_totals.write({'route_detail_id': self.route_detail_id.id,
+    #                         'min_date': detail_date})
+    #     # TODO ÑAPA parece que picks_totals no hace el out junto no lo escribe al out
+    #     out_pickings.write({'min_date': detail_date})
+    #     # Display the assigned picks
+    #     action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
+    #     action = action_obj.read()[0]
+    #     action['domain'] = str([('id', 'in', out_pickings._ids)])
+    #     action['context'] = {}
+    #     return action

@@ -455,48 +455,46 @@ class StockPicking(models.Model):
     sale_note = fields2.Text('Notes', related='sale_id.note')
 
     # Se movió la funcionalidad al asistente de validacion de ruta
-    # @api.multi
-    # def write(self, vals):
-    #     """
-    #     Overwrited in order to write in the picking of type pick the detail
-    #     route if the pick is not done.
-    #     """
-    #     init_t = time.time()
-    #     _logger.debug("CMNT WRITE DE PICKING")
-    #     for pick in self:
-    #
-    #         route_detail_id = False
-    #         if 'route_detail_id' in vals:
-    #             route_detail_id = vals['route_detail_id']
-    #         if 'validated' in vals:
-    #             validated = vals['validated']
-    #         if route_detail_id:
-    #             t_detail = self.env['route.detail']
-    #             detail_obj = t_detail.browse(route_detail_id)
-    #             detail_date = detail_obj.date + " 19:00:00"
-    #             # pick.min_date = detail_date
-    #             # Write the route detail date in the min_date of picking
-    #             vals['min_date'] = detail_date
-    #
-    #         # If outgoing picking write the route and the min_date in the
-    #         # related picking of picking type, also the validated check
-    #
-    #         if pick.sale_id and pick.group_id and \
-    #                 route_detail_id and \
-    #                 pick.picking_type_code == 'outgoing':
-    #             domain = [('id', '!=', pick.id),
-    #                       ('group_id', '=', pick.group_id.id),
-    #                       ('picking_type_code', '!=', 'outgoing'),
-    #                       ('state', '!=', 'done')]
-    #             pick_objs = self.search(domain)
-    #             if pick_objs:
-    #                 vals2 = {'route_detail_id': route_detail_id,
-    #                              'min_date': detail_date,
-    #                              'validated': validated}
-    #                 pick_objs.write(vals2)
-    #     res = super(stock_picking, self).write(vals)
-    #
-    #     return res
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrited in order to write in the picking of type pick the detail
+        route if the pick is not done.
+        """
+        init_t = time.time()
+        _logger.debug("CMNT WRITE DE PICKING")
+        for pick in self:
+
+            route_detail_id = False
+            if 'route_detail_id' in vals:
+                route_detail_id = vals['route_detail_id']
+            if route_detail_id:
+                t_detail = self.env['route.detail']
+                detail_obj = t_detail.browse(route_detail_id)
+                detail_date = detail_obj.date + " 19:00:00"
+                # pick.min_date = detail_date
+                # Write the route detail date in the min_date of picking
+                vals['min_date'] = detail_date
+
+            # If outgoing picking write the route and the min_date in the
+            # related picking of picking type, also the validated check
+
+                if pick.sale_id and pick.group_id and \
+                        route_detail_id != pick.route_detail_id.id and \
+                        pick.picking_type_code == 'outgoing':
+                    domain = [('id', '!=', pick.id),
+                              ('group_id', '=', pick.group_id.id),
+                              ('picking_type_code', '!=', 'outgoing'),
+                              ('state', '!=', 'done')]
+                    pick_objs = self.search(domain)
+                    if pick_objs:
+                        print("PROPAAAAAAGOOOOOOOOOOOOOO")
+                        vals2 = {'route_detail_id': route_detail_id,
+                                     'min_date': detail_date}
+                        pick_objs.write(vals2)
+        res = super(StockPicking, self.with_context(tracking_disable=True)).write(vals)
+
+        return res
 
 
     # DESABILITAMOS MENSAJERÍA PARA STOCK PICKING
@@ -504,9 +502,9 @@ class StockPicking(models.Model):
     def create(self, data):
         return super(StockPicking, self.with_context(tracking_disable=True)).create(data)
 
-    @api.multi
-    def write(self, data):
-        return super(StockPicking, self.with_context(tracking_disable=True)).write(data)
+    # @api.multi
+    # def write(self, data):
+    #     return super(StockPicking, self.with_context(tracking_disable=True)).write(data)
 
     @api.one
     @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
