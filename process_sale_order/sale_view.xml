@@ -88,7 +88,7 @@
            <field name="inherit_id" ref="sale.view_order_form"/>
            <field name="arch" type="xml">
                <field name='partner_id' position="after">
-                   <field name="customer_comment"/>
+                   <field name="customer_comment" string="Customer comment"/>
                    <!-- <field name="route_detail_id" domain="[('route_type', '=', 'delivery')]"
                           attrs="{'readonly': [('state', 'in', [('progress,' 'manual', 'shipping_except', 'invoice_except', 'done')])]}"/> -->
                </field>
