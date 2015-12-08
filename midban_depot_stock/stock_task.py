@@ -27,6 +27,8 @@ from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 from openerp import api
 import time
+from openerp import api, models
+from openerp import fields as fields2
 
 
 class stock_task(osv.Model):
@@ -259,3 +261,19 @@ class stock_task(osv.Model):
         for pack in self.pack_ids:
             res = self.add_loc_operation(pack.id)
         return res
+
+
+class StockTask(models.Model):
+    _inherit = 'stock.task'
+
+    @api.one
+    def _get_progress_info(self):
+        res = ''
+        if self.wave_id:
+            total_op = len(self.wave_id.wave_report_ids)
+            done_lst = [x.id for x in self.wave_id.wave_report_ids if x.to_process]
+            done_op = len(done_lst)
+            res = str(done_op) + ' / ' + str(total_op)
+        self.progress_info = res
+
+    progress_info = fields2.Char('Completadas', compute="_get_progress_info", readonly=True)

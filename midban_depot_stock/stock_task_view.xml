@@ -23,6 +23,7 @@
                                 <field name="picking_id"/>
                                 <field name="wave_id" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
                                 <field name="route_detail_id" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
+                                <field name="progress_info" attrs="{'invisible': [('type', '!=', 'picking')]}"/>
                                 <field name="pack_ids" widget="many2many_tags" context="{'incoming_loc_packages': True}"
                                        attrs="{'invisible': [('type', '!=', 'ubication')]}"/>
                                 <button name="add_location_operations" string="Add Operations"
@@ -78,6 +79,7 @@
                     <field name="state"/>
                     <field name="paused"/>
                     <field name="route_detail_id"/>
+                    <field name="progress_info"/>
                 </tree>
             </field>
         </record>
