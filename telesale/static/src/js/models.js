@@ -902,7 +902,6 @@ function openerp_ts_models(instance, module){
           }
         },
         add_lines_to_current_order: function(order_lines, fromsoldprodhistory){
-            debugger;
             this.get('orderLines').unbind();  //unbind to render all the lines once, then in OrderWideget we bind again
             if(this.selected_orderline && this.selected_orderline.get('code') == "" && this.selected_orderline.get('product') == "" ){
               $('.remove-line-button').click()

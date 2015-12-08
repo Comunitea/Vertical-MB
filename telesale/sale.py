@@ -113,7 +113,7 @@ class sale(osv.osv):
         create_mail = False
         if context is None:
             context = {}
-
+        # context.update(tracking_disable=True)
         for rec in orders:
             order = rec['data']
             if order['erp_id'] and order['erp_state'] != 'draft':
@@ -145,11 +145,11 @@ class sale(osv.osv):
                 order_obj = t_order.browse(cr, uid, order['erp_id'], context)
                 if 'note' in order and order['note'] and (order_obj.note != order['note']):
                     create_mail = True
-                t_order.write(cr, uid, [order['erp_id']], vals)
+                t_order.write(cr, uid, [order['erp_id']], vals, context=context)
                 order_id = order['erp_id']
             else:
                 vals['name'] = t_sequence.get(cr, uid, 'telesale.order') or '/'
-                order_id = t_order.create(cr, uid, vals)
+                order_id = t_order.create(cr, uid, vals, context=context)
                 if order['note']:
                     create_mail = True
             if create_mail:
