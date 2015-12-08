@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-03 09:41+0000\n"
-"PO-Revision-Date: 2015-12-03 09:41+0000\n"
+"POT-Creation-Date: 2015-12-08 02:44+0000\n"
+"PO-Revision-Date: 2015-12-08 02:44+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -455,7 +455,7 @@ msgid "Cancelled"
 msgstr "Cancelado"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1047
+#: code:addons/midban_depot_stock/stock.py:1056
 #, python-format
 msgid "Cannot change product once operation is created, delete this and crate another one in the picking."
 msgstr "No se puede cambiar el producto una vez la operación está creada. Bórrala y crea otra nueva en el picking."
@@ -482,7 +482,7 @@ msgid "Check route in sale order"
 msgstr "Comprobar ruta en pedidos de venta"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1022
+#: code:addons/midban_depot_stock/stock.py:1031
 #, python-format
 msgid "Check the available quantity of new lot."
 msgstr "Compruebe la cantidad disponible del nuevo lote."
@@ -1069,13 +1069,13 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/sale.py:165
 #: code:addons/midban_depot_stock/sale.py:171
 #: code:addons/midban_depot_stock/sale.py:207
-#: code:addons/midban_depot_stock/stock_task.py:224
-#: code:addons/midban_depot_stock/stock_task.py:240
+#: code:addons/midban_depot_stock/stock_task.py:234
+#: code:addons/midban_depot_stock/stock_task.py:257
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:567
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:706
-#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:65
-#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:73
-#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:79
+#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:64
+#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:72
+#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:78
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:169
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:172
 #: code:addons/midban_depot_stock/wizard/create_camera_locations.py:182
@@ -1088,7 +1088,8 @@ msgstr "Introduce detalles de la transferencia"
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:127
 #: code:addons/midban_depot_stock/wizard/order_camera_locations.py:134
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:51
-#: code:addons/midban_depot_stock/wizard/validate_routes.py:135
+#: code:addons/midban_depot_stock/wizard/validate_routes.py:57
+#: code:addons/midban_depot_stock/wizard/validate_routes.py:140
 #, python-format
 msgid "Error"
 msgstr "Error"
@@ -1097,11 +1098,11 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/product.py:117
 #: code:addons/midban_depot_stock/product.py:119
 #: code:addons/midban_depot_stock/route.py:154
-#: code:addons/midban_depot_stock/stock.py:898
-#: code:addons/midban_depot_stock/stock.py:1678
+#: code:addons/midban_depot_stock/stock.py:899
 #: code:addons/midban_depot_stock/stock.py:1702
-#: code:addons/midban_depot_stock/stock.py:1712
-#: code:addons/midban_depot_stock/stock.py:2172
+#: code:addons/midban_depot_stock/stock.py:1726
+#: code:addons/midban_depot_stock/stock.py:1736
+#: code:addons/midban_depot_stock/stock.py:2202
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:214
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:231
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:240
@@ -1123,7 +1124,7 @@ msgstr "Error"
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:546
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:618
 #: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:881
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:964
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:967
 #: code:addons/midban_depot_stock/wizard/create_tag_wizard.py:130
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:296
 #: code:addons/midban_depot_stock/wizard/reposition_wizard.py:410
@@ -1187,6 +1188,11 @@ msgstr "Finalizar tarea"
 #: selection:stock.task,state:0
 msgid "Finished"
 msgstr "Finalizada"
+
+#. module: midban_depot_stock
+#: view:stock.picking:midban_depot_stock.view_delivery_man_route_sheet_tree
+msgid "From"
+msgstr "Desde"
 
 #. module: midban_depot_stock
 #: field:stock.picking,cross_dock:0
@@ -1430,13 +1436,13 @@ msgid "Imposible to schedule dates between %s and                               
 msgstr "Imposible planificar fechas entre %s y %s con un intervalo de %s semana(s)"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1000
+#: code:addons/midban_depot_stock/stock.py:1009
 #, python-format
 msgid "Impossible found an special location"
 msgstr "Imposible encontrar una ubicación especial"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:967
+#: code:addons/midban_depot_stock/stock.py:969
 #, python-format
 msgid "Impossible found the multipack location"
 msgstr "Imposible encontrar una ubicación para multipacks"
@@ -1672,8 +1678,8 @@ msgid "Location Zone"
 msgstr "Zona de la ubicación"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:966
-#: code:addons/midban_depot_stock/stock.py:999
+#: code:addons/midban_depot_stock/stock.py:968
+#: code:addons/midban_depot_stock/stock.py:1008
 #, python-format
 msgid "Location not found"
 msgstr "Ubicación no encontrada"
@@ -1943,13 +1949,13 @@ msgid "No delivery routes assigned in                                   the cust
 msgstr "No hay rutas de reparto asignadas al cliente. No podrás confirmar el pedido"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:898
+#: code:addons/midban_depot_stock/stock.py:899
 #, python-format
 msgid "No empty locations."
 msgstr "No hay ubicaciones libres."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1712
+#: code:addons/midban_depot_stock/stock.py:1736
 #, python-format
 msgid "No general %s location                                                  founded in camera %s."
 msgstr "La zona %s de la ubicación no encontrada en la cámara %s."
@@ -1980,7 +1986,7 @@ msgid "No max volume defined in                                                 
 msgstr "No hay volumen máximo definido en el almacén"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock_task.py:241
+#: code:addons/midban_depot_stock/stock_task.py:258
 #, python-format
 msgid "No packs defined to add operations"
 msgstr "No hay paquetes definidos para añadir operaciones"
@@ -1992,13 +1998,13 @@ msgid "No picking location matching with                                     spe
 msgstr "Sin ubicaciones válidas para capacidad especificada."
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:964
+#: code:addons/midban_depot_stock/wizard/assign_task_wzd.py:967
 #, python-format
 msgid "No pickings to put in a                                                  wave"
 msgstr "No hay albaranes que poner en la ola"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:2172
+#: code:addons/midban_depot_stock/stock.py:2202
 #, python-format
 msgid "No quants to force the                                                     assignament"
 msgstr "No hay quants necesarios para forzar la asignación al movimiento"
@@ -2113,7 +2119,7 @@ msgid "Not responding"
 msgstr "No responde"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock_task.py:224
+#: code:addons/midban_depot_stock/stock_task.py:234
 #, python-format
 msgid "Not ubication operation mathcing                     with pack %s"
 msgstr "No hay operación de ubicación que coincida con %s"
@@ -2428,20 +2434,20 @@ msgid "Picking"
 msgstr "Albarán"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:66
-#: code:addons/midban_depot_stock/wizard/validate_routes.py:136
+#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:65
+#: code:addons/midban_depot_stock/wizard/validate_routes.py:141
 #, python-format
 msgid "Picking %s must be outgoing type and                                      related with a sale or                                     autosale"
 msgstr "Picking %s must be outgoing type and                                      related with a sale or                                     autosale"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:74
+#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:73
 #, python-format
 msgid "Picking %s should be loaded"
 msgstr "El albarán %s debería estar en estado de validación: carga confirmada"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:80
+#: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:79
 #, python-format
 msgid "Picking %s should be validated"
 msgstr "El albarán %s debería estar en estado de validación:validado"
@@ -2451,6 +2457,12 @@ msgstr "El albarán %s debería estar en estado de validación:validado"
 #, python-format
 msgid "Picking %s without has not route detail                                     assigned"
 msgstr "Picking %s without has not route detail                                     assigned"
+
+#. module: midban_depot_stock
+#: code:addons/midban_depot_stock/wizard/validate_routes.py:58
+#, python-format
+msgid "Picking %s: You can only validate unvalidated pickings"
+msgstr "En el albarán %s: Solo puedes validar albaranes en que no hayan sido validados"
 
 #. module: midban_depot_stock
 #: view:stock.location:midban_depot_stock.view_location_search_add_filled_percent
@@ -2643,7 +2655,7 @@ msgid "Product"
 msgstr "Producto"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:2030
+#: code:addons/midban_depot_stock/stock.py:2055
 #, python-format
 msgid "Product Category"
 msgstr "Categoría producto"
@@ -2926,6 +2938,8 @@ msgstr "Fecha ruta"
 
 #. module: midban_depot_stock
 #: view:route:midban_depot_stock.route_view_form
+#: view:stock.task:midban_depot_stock.stock_task_view_search
+#: field:stock.task,route_detail_id:0
 msgid "Route Detail"
 msgstr "Detalle de ruta"
 
@@ -3888,8 +3902,8 @@ msgid "Warehouse:"
 msgstr "Almacén:"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:376
-#: code:addons/midban_depot_stock/stock.py:1021
+#: code:addons/midban_depot_stock/stock.py:377
+#: code:addons/midban_depot_stock/stock.py:1030
 #, python-format
 msgid "Warning"
 msgstr "Aviso"
@@ -3985,7 +3999,7 @@ msgid "You are assigning a route for a                                         p
 msgstr "You are assigning a route for a                                         partner closed  day "
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:377
+#: code:addons/midban_depot_stock/stock.py:378
 #, python-format
 msgid "You are assigning a route for a partner closed  day "
 msgstr "You are assigning a route for a partner closed  day "
@@ -4083,14 +4097,14 @@ msgid "Zone"
 msgstr "Zona"
 
 #. module: midban_depot_stock
-#: code:addons/midban_depot_stock/stock.py:1703
+#: code:addons/midban_depot_stock/stock.py:1727
 #, python-format
 msgid "Zone %s not exist."
 msgstr "La zona %s no existe."
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/product.py:119
-#: code:addons/midban_depot_stock/stock.py:1678
+#: code:addons/midban_depot_stock/stock.py:1702
 #, python-format
 msgid "Zone not exist."
 msgstr "La zona no existe."

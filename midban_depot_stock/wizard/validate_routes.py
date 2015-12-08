@@ -52,6 +52,11 @@ class ValidateRoutes(models.TransientModel):
                                  _('Picking %s without has not route detail \
                                     assigned' % pick.name))
 
+            if pick.validated_state != 'no_validated' or \
+                    pick.state not in ['confirmed']:
+                raise except_orm(_('Error'),
+                                 _('Picking %s: You can only validate unvalidated pickings' % pick.name))
+
             assing_tot = time.time()
             for move in pick.move_lines:
                 assing_t = time.time()

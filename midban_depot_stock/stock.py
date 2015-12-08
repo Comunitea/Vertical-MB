@@ -291,6 +291,7 @@ class stock_picking(osv.Model):
         something_done = False
         init_pi = time.time()
         for op in self.pack_operation_ids:
+            print u'Operacion para paquete %s'%op.package_id.name
             if not op.to_revised:
                 if op.to_process and op.task_id and op.task_id.id == task_id:
                     something_done = True
@@ -384,7 +385,6 @@ class stock_picking(osv.Model):
         """
         init_t = time.time()
         res = super(stock_picking, self).do_prepare_partial()
-
         _logger.debug("CMNT Tiempo original do_prepare: %s ", time.time() - init_t)
         for picking in self:
             supplier_id = 0
@@ -453,50 +453,51 @@ class StockPicking(models.Model):
     partner_ref = fields2.Char('Code', related='partner_id.ref', readonly=True)
     # EL campo note no le gusta nada por algun motivo
     sale_note = fields2.Text('Notes', related='sale_id.note')
+    partner_id = fields2.Many2one(auto_join=True)
+    init_hour = fields2.Float('From Hour', related='partner_id.times_delivery.time_start', readonly=True)
+    end_hour = fields2.Float('From Hour',  related='partner_id.times_delivery.time_end', readonly=True)
 
     # Se movió la funcionalidad al asistente de validacion de ruta
-    # @api.multi
-    # def write(self, vals):
-    #     """
-    #     Overwrited in order to write in the picking of type pick the detail
-    #     route if the pick is not done.
-    #     """
-    #     init_t = time.time()
-    #     _logger.debug("CMNT WRITE DE PICKING")
-    #     for pick in self:
-    #
-    #         route_detail_id = False
-    #         if 'route_detail_id' in vals:
-    #             route_detail_id = vals['route_detail_id']
-    #         if 'validated' in vals:
-    #             validated = vals['validated']
-    #         if route_detail_id:
-    #             t_detail = self.env['route.detail']
-    #             detail_obj = t_detail.browse(route_detail_id)
-    #             detail_date = detail_obj.date + " 19:00:00"
-    #             # pick.min_date = detail_date
-    #             # Write the route detail date in the min_date of picking
-    #             vals['min_date'] = detail_date
-    #
-    #         # If outgoing picking write the route and the min_date in the
-    #         # related picking of picking type, also the validated check
-    #
-    #         if pick.sale_id and pick.group_id and \
-    #                 route_detail_id and \
-    #                 pick.picking_type_code == 'outgoing':
-    #             domain = [('id', '!=', pick.id),
-    #                       ('group_id', '=', pick.group_id.id),
-    #                       ('picking_type_code', '!=', 'outgoing'),
-    #                       ('state', '!=', 'done')]
-    #             pick_objs = self.search(domain)
-    #             if pick_objs:
-    #                 vals2 = {'route_detail_id': route_detail_id,
-    #                              'min_date': detail_date,
-    #                              'validated': validated}
-    #                 pick_objs.write(vals2)
-    #     res = super(stock_picking, self).write(vals)
-    #
-    #     return res
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrited in order to write in the picking of type pick the detail
+        route if the pick is not done.
+        """
+        init_t = time.time()
+        _logger.debug("CMNT WRITE DE PICKING")
+        for pick in self:
+
+            route_detail_id = False
+            if 'route_detail_id' in vals:
+                route_detail_id = vals['route_detail_id']
+            if route_detail_id:
+                t_detail = self.env['route.detail']
+                detail_obj = t_detail.browse(route_detail_id)
+                detail_date = detail_obj.date + " 19:00:00"
+                # pick.min_date = detail_date
+                # Write the route detail date in the min_date of picking
+                vals['min_date'] = detail_date
+
+            # If outgoing picking write the route and the min_date in the
+            # related picking of picking type, also the validated check
+
+                if pick.sale_id and pick.group_id and \
+                        route_detail_id != pick.route_detail_id.id and \
+                        pick.picking_type_code == 'outgoing':
+                    domain = [('id', '!=', pick.id),
+                              ('group_id', '=', pick.group_id.id),
+                              ('picking_type_code', '!=', 'outgoing'),
+                              ('state', '!=', 'done')]
+                    pick_objs = self.search(domain)
+                    if pick_objs:
+                        print("PROPAAAAAAGOOOOOOOOOOOOOO")
+                        vals2 = {'route_detail_id': route_detail_id,
+                                     'min_date': detail_date}
+                        pick_objs.write(vals2)
+        res = super(StockPicking, self.with_context(tracking_disable=True)).write(vals)
+
+        return res
 
 
     # DESABILITAMOS MENSAJERÍA PARA STOCK PICKING
@@ -504,9 +505,9 @@ class StockPicking(models.Model):
     def create(self, data):
         return super(StockPicking, self.with_context(tracking_disable=True)).create(data)
 
-    @api.multi
-    def write(self, data):
-        return super(StockPicking, self.with_context(tracking_disable=True)).write(data)
+    # @api.multi
+    # def write(self, data):
+    #     return super(StockPicking, self.with_context(tracking_disable=True)).write(data)
 
     @api.one
     @api.depends('move_lines.product_uom_qty', 'move_lines.product_id',
@@ -1061,37 +1062,37 @@ class stock_pack_operation(models.Model):
         #Hay que reescribir esto, lo hago en una función aparte.
         if vals.get('package_id', False) or vals.get('lot_id', False) or\
             vals.get('location_dest_id') or vals.get('do_pack', False):
-                for op in self:
-                    #if op.picking_id.picking_type_id.id != 6:
-                    vals = op.get_result_package_id(vals)
-                    super(stock_pack_operation, op).write(vals)
-                    #op.write()
+            for op in self:
+                #if op.picking_id.picking_type_id.id != 6:
+                vals = op.get_result_package_id(vals)
+                res = super(stock_pack_operation, op).write(vals)
+                #op.write()
+            return res
         else:
             return super(stock_pack_operation, self).write(vals)
 
     @api.multi
     def get_result_package_id(self,vals):
-        #import ipdb; ipdb.set_trace()
         init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
         picking_id = vals.get('picking_id', False) or self.picking_id.id
         picking = self.env['stock.picking'].browse(picking_id)
         wh = self.env['stock.warehouse'].search([])[0]
-
+        pack_type = vals.get('do_pack', self.do_pack or 'do_pack')
         pick_types = [wh.in_type_id.id, wh.pick_type_id.id, wh.out_type_id.id, wh.reposition_type_id.id]
         #Las operaciones no internas, picks y ubicaciones se supone que no tienen result_package ...
+        #REVISAR PARA REPOSICIONES
 
         if picking.picking_type_id.id in pick_types:
             return vals
-
-
         #vals['result_package_id'] =
+
         if vals.get('result_package_id', False):
             return vals
 
         if vals.get('location_dest_id', False):
             _logger.debug("CMNT comprobando en _get_result_package_id")
             pack_in_destination = False
-            pack_type = vals.get('do_pack', self.do_pack or 'do_pack')
+
             product_id = vals.get('product_id', self.product_id or False)
             lot_id = vals.get('lot_id', self.lot_id and self.lot_id.id or False)
             if not lot_id:
@@ -1108,6 +1109,9 @@ class stock_pack_operation(models.Model):
                 if pack_type == "do_pack":
                     if pack_in_destination:
                         vals['result_package_id'] = pack_in_destination.id
+                    else:
+                        if self.package_id:
+                            vals['result_package_id'] = False
 
             if product_id:
                 if pack_type == "do_pack":
@@ -1120,6 +1124,12 @@ class stock_pack_operation(models.Model):
                 if pack_type == "no_pack":
                         new_package_id = self.env['stock.quant.package'].create({})
                         vals['result_package_id'] = new_package_id.id
+
+        elif pack_type == "no_pack" and self.package_id:
+             vals['result_package_id'] = False
+
+
+
         _logger.debug("CMNT tiempo en get_result_package_id: %s - %s ", time.time() - init_t, vals)
         return vals
 
@@ -1935,8 +1945,9 @@ class stock_move(models.Model):
         if inv_type == 'out_invoice' and move.location_id.usage == 'customer':
             coef = -1
         res["uos_id"] = move.product_uom.id
-        if move.product_uos and move.product_uos != move.product_uom and \
-                move.product_uos_qty:
+        # if move.product_uos and move.product_uos != move.product_uom and \
+        #         move.product_uos_qty:
+        if move.product_uos:
             res["second_uom_id"] = move.product_uos.id
             res["quantity_second_uom"] = coef * move.product_uos_qty
         res["quantity"] = coef * move.product_uom_qty

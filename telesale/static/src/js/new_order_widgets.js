@@ -144,8 +144,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             var self=this;
             if (!value) {return;}
             if (key == "partner_code" || key == "partner"){
+              console.log("ONCHANGE DEL PARTNER")
               $.when( self.ts_widget.product_catalog_screen.product_catalog_widget.search_products_to_sell() )
               .done(function(){
+                    console.log("YA HE ENCONTRADO LOS PRODUCTOS")
                     partner_id = (key == "partner_code") ? self.ts_model.db.partner_ref_id[value] : self.ts_model.db.partner_name_id[value];
                     if (!partner_id){
                         var alert_msg = (key == "partner_code") ? _t("Customer code '" + value + "' does not exist") : _t("Customer name '" + value + "' does not exist");
@@ -451,6 +453,7 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             }
            //autocomplete products and units from array of names
             var products_ref = this.ts_model.get('products_codes')
+
             this.$('.col-code').autocomplete({
                 source: products_ref,
             });
@@ -458,6 +461,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             this.$('.col-product').autocomplete({
                 source: product_names,
             });
+            console.log("ACTUALIZADO LINEA PRODUCTOS")
+            console.log(product_names)
             /*this.$('.col-unit').autocomplete({
                 source:this.ts_model.get('units_names')
             });*/
@@ -1406,7 +1411,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
             // }
             // else if ( currentOrder.check() ){
             if ( currentOrder.check() ){
-                this.ts_model.push_order(currentOrder.exportAsJSON());
+//                this.ts_model.push_order(currentOrder.exportAsJSON());
+//               NO HACEMOS QUE PASE POR EL FLUJO DE LA BOLITA ROJA, ESTÁ DESABILITADA
+                this.ts_model._flush2(currentOrder.exportAsJSON());
             }
         },
 

@@ -1,4 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
 access_reassign_stock_wzd,access_reassign_stock_wzd,model_reassign_stock_wzd,base.group_user,1,1,1,1
-access_reassign_stock_line_wzd,access_reassign_stock_line_wzd,model_reassign_stock_line,base.group_user,1,1,1,1

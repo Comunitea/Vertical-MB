@@ -65,7 +65,9 @@ class stock_task(osv.Model):
         'pack_ids': fields.many2many('stock.quant.package', 'task_pack_rel',
                                      'task_id', 'pack_id', string="Add packs",
                                      help="Search packs in ubication pìckings "
-                                     "and adds the operation to task")
+                                     "and adds the operation to task"),
+        'route_detail_id': fields.many2one('route.detail', 'Route Detail',
+                                           readonly=True)
     }
     _defaults = {
         'state': 'assigned',
@@ -187,19 +189,18 @@ class stock_task(osv.Model):
 
     @api.one
     def add_loc_operation(self, pack_id):
-
         res = False
         wh = self.env['stock.warehouse'].search([])[0]
-        wh_input_stock_loc_id = wh.wh_input_stock_loc_id.id
-        wh_loc_stock_id = wh.lot_stock_id
-        pick_ubi_type_id = wh.ubication_type_id.id
-        pick_in_type_id = wh.in_type_id.id
+        wh_input_stock_loc_id = wh.wh_input_stock_loc_id #Playa
+        wh_loc_stock_id = wh.lot_stock_id #Existencias
+        pick_ubi_type_id = wh.ubication_type_id.id #Tarea de Ubicación
+        wh_in_type_id = wh.in_type_id #Entrada
         #tenemos que mirar si es un multipack
         pack_id_ = self.env['stock.quant.package'].browse(pack_id)
         if pack_id_.parent_id:
             pack_id_ = pack_id_.parent_id
 
-        if pack_id_.location_id.id != wh_input_stock_loc_id:
+        if pack_id_.location_id.id != wh_input_stock_loc_id.id:
             #Solo ubico entradas
             return -1
         pack_id = pack_id_.id
@@ -214,9 +215,9 @@ class stock_task(osv.Model):
             op = op_objs[0]
             print u'Add_loc_operation: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
         if not op_objs:
-            print u'Add_loc_operation: PAck %s'%pack_id_.name
+            print u'Add_loc_operation. y : Pack %s'%pack_id_.name
             #buscamos el id en un result package id desde recepciones
-            domain = [('result_package_id', '=', pack_id), ('picking_id.picking_type_id', '=', pick_in_type_id)]
+            domain = [('result_package_id', '=', pack_id), ('picking_id.picking_type_id', '=', wh_in_type_id.id)]
             op = self.env['stock.pack.operation'].search(domain, order = "id desc", limit = 1)
             if op.picking_id:
                 group_id = op.picking_id.group_id
@@ -231,8 +232,8 @@ class stock_task(osv.Model):
                 op_objs = self.env['stock.pack.operation'].search(domain)
                 if not op_objs:
                     raise except_orm(_('Error'), _('Not ubication operation mathcing \
-                    with pack %s') %pack_id)
-            print u'Add_loc_operation para el paquete %s y la op %s(se han creado las operaciones desde albaran de entrada'%(pack_id.name, op_objs[0].id)
+                    with pack %s') %pack_id_.name)
+            print u'Add_loc_operation para el paquete %s y la op %s(se han creado las operaciones desde albaran de entrada'%(pack_id_.name, op_objs[0].id)
         if op_objs:
             for op in op_objs:
                 #Si ya tiene una distinta se mantiene

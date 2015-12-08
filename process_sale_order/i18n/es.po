@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-29 16:31+0000\n"
-"PO-Revision-Date: 2015-11-29 16:31+0000\n"
+"POT-Creation-Date: 2015-12-07 20:02+0000\n"
+"PO-Revision-Date: 2015-12-07 20:02+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -63,6 +63,16 @@ msgid "Code"
 msgstr "Code"
 
 #. module: process_sale_order
+#: view:sale.order:process_sale_order.midban_sale_view_order_form
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: process_sale_order
+#: view:sale.order:process_sale_order.view_order_form_add_customer_comment
+msgid "Customer comment"
+msgstr "Nota del cliente"
+
+#. module: process_sale_order
 #: field:sale.order.line,do_onchange:0
 msgid "Do onchange"
 msgstr "Hacer onchange"
@@ -77,11 +87,6 @@ msgstr "Error"
 #: field:qualitative.note,name:0
 msgid "Name"
 msgstr "Name"
-
-#. module: process_sale_order
-#: view:sale.order:process_sale_order.midban_sale_view_order_form
-msgid "Created by"
-msgstr "Creado por"
 
 #. module: process_sale_order
 #: field:table.pricelist.prices,price:0
