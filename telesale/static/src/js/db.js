@@ -239,7 +239,7 @@ function openerp_ts_db(instance, module){
             var res = partner_obj;
             for(var i = 0, len = partner_obj.child_ids.length; i < len; i++){
                 var contact = this.get_partner_by_id(partner_obj.child_ids[i]);
-                if (contact.type == 'contact'){
+                if (contact && contact.type == 'contact'){
                     res = contact
                     break;
                 }
