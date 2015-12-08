@@ -267,7 +267,7 @@ class route(models.Model):
             # To include end date in rrules
             if dt_end.weekday() == day_number:
                 dt_end = dt_end + timedelta(days=1)
-            rrules = rrule(WEEKLY, interval=interval,
+            rrules = rrule(WEEKLY, dtstart=dt_sta, interval=interval,
                            byweekday=day_number).between(dt_sta, dt_end,
                                                          inc=True)
             customer_dates = [datetime.strftime(x, FORMAT) for x in rrules]
