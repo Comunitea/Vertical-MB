@@ -509,10 +509,10 @@ class StockPicking(models.Model):
         return super(StockPicking, self.with_context(tracking_disable=True)).write(data)
 
     @api.one
-    @api.depends('move_lines.product_uom_qty', 'move_lines.product_id')
+    @api.depends('move_lines.product_uom_qty', 'move_lines.product_id',
+                 'move_lines.state',)
     def _get_weight(self):
         init_t = time.time()
-        _logger.debug("CMNT _get_weight (picking)")
         if self.picking_type_id.code != 'outgoing':
             self.total_weight = 0
             _logger.debug("CMNT _get_weight (picking) fast %s", time.time() - init_t)

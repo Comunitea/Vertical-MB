@@ -33,7 +33,7 @@ wizard if the delivery is to be invoiced.
     """,
     'author': 'COMUNITEA',
     'website': '',
-    'depends': ['delivery', 'stock', 'midban_partner', 'midban_depot_stock'],
+    'depends': ['stock', 'midban_partner', 'midban_depot_stock'],
     'data': [],
     'demo': [],
     'installable': True,

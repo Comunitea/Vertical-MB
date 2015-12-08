@@ -347,7 +347,7 @@
             <field name="res_model">products.supplier</field>
             <field name="view_id" ref="purchase_preorder.product_supplier_preorder_tree_full"/>
             <field name="view_type">tree</field>
-            <field name='views_mode'>tree, form</field>
+            <field name='view_mode'>tree, form</field>
             <field name="target">new</field>
 
         </record>

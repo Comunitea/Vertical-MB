@@ -50,6 +50,9 @@ class sale_order_line(models.Model):
     detail_note = fields.Char('Details', size=256)
     product_code = fields.Char('Reference', size=32)
 
+    def unlink(self):
+        res = super(sale_order, self).unlink()
+
     def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
                                   qty=0, uom=False, qty_uos=0, uos=False,
                                   name='', partner_id=False, lang=False,
@@ -280,6 +283,10 @@ class sale_order(models.Model):
     #     vals.update({'user_id2': self._uid})
     #     res = super(sale_order, self).create(vals)
     #     return res
+
+
+    def write(self, vals):
+        res = super(sale_order, self).write(vals)
 
     @api.multi
     def action_ship_create(self):
