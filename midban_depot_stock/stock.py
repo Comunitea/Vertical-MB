@@ -453,6 +453,9 @@ class StockPicking(models.Model):
     partner_ref = fields2.Char('Code', related='partner_id.ref', readonly=True)
     # EL campo note no le gusta nada por algun motivo
     sale_note = fields2.Text('Notes', related='sale_id.note')
+    partner_id = fields2.Many2one(auto_join=True)
+    init_hour = fields2.Float('From Hour', related='partner_id.times_delivery.time_start', readonly=True)
+    end_hour = fields2.Float('From Hour',  related='partner_id.times_delivery.time_end', readonly=True)
 
     # Se movió la funcionalidad al asistente de validacion de ruta
     @api.multi

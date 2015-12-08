@@ -99,8 +99,8 @@
                             <group string="Delivery Orders Time Slot">
                                 <field name="times_delivery" nolabel="1">
                                     <tree editable="top">
-                                        <field name="time_start" widget="float_time" string="From"/>
-                                        <field name="time_end" widget="float_time" string="To"/>
+                                        <field name="time_start" widget="float_time"/>
+                                        <field name="time_end" widget="float_time"/>
                                     </tree>
                                 </field>
                             </group>

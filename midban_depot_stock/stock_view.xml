@@ -521,9 +521,11 @@
           <field name="model">stock.picking</field>
           <field name="arch" type="xml">
               <tree string="Route Sheet" create="false" delete="false">
-                  <field name="sale_id" readonly="True"/>
+                  <!--<field name="sale_id" readonly="True"/>-->
                   <field name="partner_ref" readonly="True" string="Reference"/>
                   <field name="partner_id" readonly="True"/>
+                  <field name="init_hour" widget="float_time" string="Desde"/>
+                  <field name="end_hour" widget="float_time" string="Hasta"/>
                   <field name="partner_street" readonly="True" string="Address"/>
                   <field name="partner_city" readonly="True" string="Poblation"/>
                   <field name="partner_phone" readonly="True" string="Phone"/>
