@@ -40,6 +40,7 @@ class stock_invoice_onshipping(models.TransientModel):
     #     return res
 
     def create_invoice(self, cr, uid, ids, context=None):
+
         context = dict(context or {})
         data = self.browse(cr, uid, ids[0], context=context)
         if data.group_fiscal:
