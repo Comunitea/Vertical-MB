@@ -1942,8 +1942,9 @@ class stock_move(models.Model):
         if inv_type == 'out_invoice' and move.location_id.usage == 'customer':
             coef = -1
         res["uos_id"] = move.product_uom.id
-        if move.product_uos and move.product_uos != move.product_uom and \
-                move.product_uos_qty:
+        # if move.product_uos and move.product_uos != move.product_uom and \
+        #         move.product_uos_qty:
+        if move.product_uos:
             res["second_uom_id"] = move.product_uos.id
             res["quantity_second_uom"] = coef * move.product_uos_qty
         res["quantity"] = coef * move.product_uom_qty
