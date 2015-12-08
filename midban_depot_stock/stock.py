@@ -46,13 +46,14 @@ class stock_picking(osv.Model):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route', auto_join=True),
         'trans_route_id': fields.related('route_detail_id', 'route_id',
                                          string='Transport Route',
                                          type="many2one",
                                          relation="route",
                                          store=True,
-                                         readonly=True),
+                                         readonly=True,
+                                         auto_join=True),
         'orig_planned_date': fields.related('sale_id', 'date_planned',
                                             type="datetime", store=True,
                                             string='Order Planned Date',
@@ -456,6 +457,8 @@ class StockPicking(models.Model):
     partner_id = fields2.Many2one(auto_join=True)
     init_hour = fields2.Float('From Hour', related='partner_id.times_delivery.time_start', readonly=True)
     end_hour = fields2.Float('From Hour',  related='partner_id.times_delivery.time_end', readonly=True)
+    sale_id = fields2.Many2one(auto_join=True)
+
 
     # Se movió la funcionalidad al asistente de validacion de ruta
     @api.multi

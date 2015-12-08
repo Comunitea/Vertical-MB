@@ -524,6 +524,7 @@
                   <!--<field name="sale_id" readonly="True"/>-->
                   <field name="partner_ref" readonly="True" string="Reference"/>
                   <field name="partner_id" readonly="True"/>
+                  <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                   <field name="init_hour" widget="float_time" string="Desde"/>
                   <field name="end_hour" widget="float_time" string="Hasta"/>
                   <field name="partner_street" readonly="True" string="Address"/>
