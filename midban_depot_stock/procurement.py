@@ -27,7 +27,8 @@ class procurement_order(osv.osv):
 
     _columns = {
         'route_detail_id': fields.many2one('route.detail', 'Detail Route',
-                                           domain=[('state', '=', 'active')]),
+                                           domain=[('state', '=', 'active')],
+                                           auto_join=True),
         'trans_route_id': fields.related('route_detail_id', 'route_id',
                                          string='Route',
                                          type="many2one",
