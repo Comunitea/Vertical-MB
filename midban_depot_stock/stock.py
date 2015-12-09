@@ -514,6 +514,7 @@ class StockPicking(models.Model):
         """
         init_t = time.time()
         _logger.debug("CMNT WRITE DE PICKING")
+        vals2 = vals
         for pick in self:
 
             route_detail_id = False
