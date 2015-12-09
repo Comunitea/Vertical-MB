@@ -2194,9 +2194,8 @@ class stock_quant(models.Model):
                 already_reserved = True
                 removal_strategy = 'fefo'
 
-
         #No quiero quants que no pertenezcan a ningún paquete.
-        domain.add ('package_id', '!=', False)
+        domain.append(('package_id', '!=', False))
 
         if removal_strategy == 'depot_fefo' and not already_reserved and not \
                 ('force_quants_location' in context):
