@@ -50,8 +50,8 @@ class sale_order_line(models.Model):
     detail_note = fields.Char('Details', size=256)
     product_code = fields.Char('Reference', size=32)
 
-    def unlink(self):
-        res = super(sale_order, self).unlink()
+    # def unlink(self):
+    #     res = super(sale_order, self).unlink()
 
     def product_id_change_with_wh(self, cr, uid, ids, pricelist, product,
                                   qty=0, uom=False, qty_uos=0, uos=False,
@@ -286,7 +286,7 @@ class sale_order(models.Model):
 
 
     def write(self, vals):
-        res = super(sale_order, self).write(vals)
+        return super(sale_order, self).write(vals)
 
     @api.multi
     def action_ship_create(self):
