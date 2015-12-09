@@ -962,7 +962,6 @@ class stock_pack_operation(models.Model):
 
     @api.one
     def assign_location(self):
-        #import ipdb; ipdb.set_trace()
         _logger.debug("CMNT assign_location operation")
         if self.package_id.is_multiproduct:
             multipack_location = self.env['stock.location'].search(
@@ -2127,6 +2126,8 @@ class stock_quant(models.Model):
         If force_quants_location in context wy try to get quants only of
         location
         """
+
+
         _logger.debug("CMNT inicio Aplly_removal")
         _logger.debug("CMNT ####################")
         print "removal"
@@ -2141,6 +2142,11 @@ class stock_quant(models.Model):
             if x[0] == 'reservation_id' and x[2]:
                 already_reserved = True
                 removal_strategy = 'fefo'
+
+
+        #No quiero quants que no pertenezcan a ningún paquete.
+        domain.add ('package_id', '!=', False)
+
         if removal_strategy == 'depot_fefo' and not already_reserved and not \
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
