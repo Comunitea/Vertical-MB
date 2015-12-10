@@ -2262,7 +2262,11 @@ class stock_quant(models.Model):
                 removal_strategy = 'fefo'
 
         #No quiero quants que no pertenezcan a ningún paquete.
-        domain.append(('package_id', '!=', False))
+        #Buscar esto import
+        #import ipdb; ipdb.set_trace()
+        #lista de ids donde no se puede buscar producto sin paquete.
+        #if location != self.pool.get('stock.warehouse').browse(cr, uid, [1]).wh_output_stock_loc_id
+        #domain.append(('package_id', '!=', False))
 
         if removal_strategy == 'depot_fefo' and not already_reserved and not \
                 ('force_quants_location' in context):
