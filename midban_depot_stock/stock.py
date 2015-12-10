@@ -2523,7 +2523,7 @@ class stock_config_settings(models.TransientModel):
         param_obj.value = 'True' if self.pick_by_volume else 'False'
 
     @api.multi
-    def get_print_report(self, fields):
+    def get_default_print_report(self, fields):
         domain = [('key', '=', 'print.report')]
         param_obj = self.env['ir.config_parameter'].search(domain)
         value = True if param_obj.value == 'True' else False
