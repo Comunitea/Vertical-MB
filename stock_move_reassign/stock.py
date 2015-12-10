@@ -34,9 +34,9 @@ class stock_move(models.Model):
                                   related='picking_id.partner_id',
                                   readonly=True,
                                   store=True)
-    trans_route_id2 = fields.Many2one('route',
-                                      related='picking_id.trans_route_id',
-                                      store=True)
-    route_detail_id2 = fields.Many2one('route.detail',
-                                       related='picking_id.route_detail_id',
-                                       store=True)
+    # trans_route_id2 = fields.Many2one('route',
+    #                                   related='picking_id.trans_route_id',
+    #                                   store=True)
+    # route_detail_id2 = fields.Many2one('route.detail',
+    #                                    related='picking_id.route_detail_id',
+    #                                    store=True)

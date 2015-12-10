@@ -46,24 +46,27 @@ class stock_picking(osv.Model):
                                        ('reposition', 'Reposition'),
                                        ('picking', 'Picking')],
                                       'Task Type', readonly=True),
-        'route_detail_id': fields.many2one('route.detail', 'Detail Route', auto_join=True),
-        'trans_route_id': fields.related('route_detail_id', 'route_id',
-                                         string='Transport Route',
-                                         type="many2one",
-                                         relation="route",
-                                         store=True,
-                                         readonly=True,
-                                         auto_join=True),
-        'orig_planned_date': fields.related('sale_id', 'date_planned',
-                                            type="datetime", store=True,
-                                            string='Order Planned Date',
-                                            readonly=True),
-        'detail_date': fields.related('route_detail_id', 'date',
-                                      string='Route Date',
-                                      type="date",
-                                      relation="route.detail",
-                                      store=True,
-                                      readonly=True),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
+                                           auto_join=True),
+        # 'trans_route_id': fields.related('route_detail_id', 'route_id',
+        #                                  string='Transport Route',
+        #                                  type="many2one",
+        #                                  relation="route",
+        #                                  store=True,
+        #                                  readonly=True,
+        #                                  auto_join=True),
+        'trans_route_id': fields.many2one('route', string="Route",
+                                          readonly=True, auto_join=True),
+        # 'orig_planned_date': fields.related('sale_id', 'date_planned',
+        #                                     type="datetime", store=True,
+        #                                     string='Order Planned Date',
+        #                                     readonly=True),
+        # 'detail_date': fields.related('route_detail_id', 'date',
+        #                               string='Route Date',
+        #                               type="date",
+        #                               relation="route.detail",
+        #                               store=True,
+        #                               readonly=True),
         'camera_ids': fields.many2many('stock.location',
                                        'pick_cameras_rel',
                                        'pick_id',
@@ -373,6 +376,7 @@ class stock_picking(osv.Model):
             close_days = [wd.sequence for wd in self.partner_id.close_days]
             route_wd = route_date.weekday()
             self.min_date = self.route_detail_id.date + " 19:00:00"
+            self.trans_route_id = self.trans_route_id.id
             if close_days and (route_wd+1) in close_days:
                 return {
                     'warning': {'title': _("Warning"),
@@ -506,50 +510,95 @@ class StockPicking(models.Model):
     #     print("********************************************")
     #     return res
 
+    # @api.multi
+    # def write(self, vals):
+    #     """
+    #     Overwrited in order to write in the picking of type pick the detail
+    #     route if the pick is not done.
+    #     """
+    #     init_t = time.time()
+    #     _logger.debug("CMNT WRITE DE PICKING")
+    #     vals2 = vals
+    #     for pick in self:
+    #
+    #         route_detail_id = False
+    #         if 'route_detail_id' in vals:
+    #             route_detail_id = vals['route_detail_id']
+    #         if route_detail_id:
+    #             t_detail = self.env['route.detail']
+    #             detail_obj = t_detail.browse(route_detail_id)
+    #             detail_date = detail_obj.date + " 19:00:00"
+    #             # pick.min_date = detail_date
+    #             # Write the route detail date in the min_date of picking
+    #             vals['min_date'] = detail_date
+    #
+    #         # If outgoing picking write the route and the min_date in the
+    #         # related picking of picking type, also the validated check
+    #
+    #             if pick.sale_id and pick.group_id and \
+    #                     route_detail_id != pick.route_detail_id.id and \
+    #                     pick.picking_type_code == 'outgoing':
+    #                 domain = [('id', '!=', pick.id),
+    #                           ('group_id', '=', pick.group_id.id),
+    #                           ('picking_type_code', '!=', 'outgoing'),
+    #                           ('state', '!=', 'done')]
+    #                 pick_objs = self.search(domain)
+    #                 if pick_objs:
+    #                     vals2 = {'route_detail_id': route_detail_id,
+    #                              'min_date': detail_date}
+    #                     self += pick_objs
+    #                     # pick_objs.write(vals2)
+    #     res = super(StockPicking, self.with_context(tracking_disable=True)).write(vals2)
+    #     # print("********************************************")
+    #     # print("********************************************")
+    #     # print(time.time() - init_t)
+    #     # print("********************************************")
+    #     # print("********************************************")
+    #     return res
+
     @api.multi
     def write(self, vals):
         """
-        Overwrited in order to write in the picking of type pick the detail
-        route if the pick is not done.
+        Inherit to write the route and route detail in the related, pickings
+        and moves.
         """
         init_t = time.time()
-        _logger.debug("CMNT WRITE DE PICKING")
-        vals2 = vals
-        for pick in self:
+        move_set = self.env['stock.move']
+        detail_obj = False
+        move_set = self.env['stock.move']
+        if vals.get('route_detail_id', False):
+            route_detail_id = vals['route_detail_id']
+            detail_obj =  self.env['route.detail'].browse(route_detail_id)
+            detail_date = detail_obj.date + " 19:00:00"
+            vals.update({
+                'min_date': detail_date,
+                'trans_route_id': detail_obj.route_id.id,
+            })
+            for pick in self:
+                if pick.route_detail_id and pick.route_detail_id == \
+                        detail_obj.id:
+                    continue  # Skipe rewrite the same detail, is expensive
+                for move in pick.move_lines:
+                    if move not in move_set:
+                        move_set += move
+                    for move2 in move.move_orig_ids:
+                        if move2.picking_id not in self:
+                            self += move2.picking_id
+                        if move2 not in move_set:
+                            move_set += move2  # Add to the set the pikc
+        # Write all moves related the route and the detail
+        if move_set and detail_obj:
+            move_set.write({'route_detail_id':detail_obj.id,
+                            'trans_route_id:': detail_obj.route_id.id})
 
-            route_detail_id = False
-            if 'route_detail_id' in vals:
-                route_detail_id = vals['route_detail_id']
-            if route_detail_id:
-                t_detail = self.env['route.detail']
-                detail_obj = t_detail.browse(route_detail_id)
-                detail_date = detail_obj.date + " 19:00:00"
-                # pick.min_date = detail_date
-                # Write the route detail date in the min_date of picking
-                vals['min_date'] = detail_date
-
-            # If outgoing picking write the route and the min_date in the
-            # related picking of picking type, also the validated check
-
-                if pick.sale_id and pick.group_id and \
-                        route_detail_id != pick.route_detail_id.id and \
-                        pick.picking_type_code == 'outgoing':
-                    domain = [('id', '!=', pick.id),
-                              ('group_id', '=', pick.group_id.id),
-                              ('picking_type_code', '!=', 'outgoing'),
-                              ('state', '!=', 'done')]
-                    pick_objs = self.search(domain)
-                    if pick_objs:
-                        vals2 = {'route_detail_id': route_detail_id,
-                                 'min_date': detail_date}
-                        self += pick_objs
-                        # pick_objs.write(vals2)
-        res = super(StockPicking, self.with_context(tracking_disable=True)).write(vals2)
-        # print("********************************************")
-        # print("********************************************")
-        # print(time.time() - init_t)
-        # print("********************************************")
-        # print("********************************************")
+        # Self is the original self plus the related pickings in the move
+        res = super(StockPicking,
+                    self.with_context(tracking_disable=True)).write(vals)
+        print("********************************************")
+        print("TIEMPO WRITE MIDBAN DEPOT STOCK PICKING")
+        print(time.time() - init_t)
+        print("********************************************")
+        print("********************************************")
         return res
 
 
@@ -1880,25 +1929,31 @@ class stock_move(models.Model):
     _inherit = "stock.move"
 
     _columns = {
-        'trans_route_id': fields.related('procurement_id', 'trans_route_id',
-                                         readonly=True,
-                                         string='Transport Route',
-                                         relation="route",
-                                         type="many2one"),
-        'route_detail_id': fields.related('procurement_id', 'route_detail_id',
-                                          readonly=True,
-                                          string='Detail Route',
-                                          relation="route.detail",
-                                          type="many2one"),
+        # 'trans_route_id': fields.related('procurement_id', 'trans_route_id',
+        #                                  readonly=True,
+        #                                  string='Transport Route',
+        #                                  relation="route",
+        #                                  type="many2one"),
+        # 'route_detail_id': fields.related('procurement_id', 'route_detail_id',
+        #                                   readonly=True,
+        #                                   string='Detail Route',
+        #                                   relation="route.detail",
+        #                                   type="many2one"),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
+                                           auto_join=True),
+        'trans_route_id': fields.many2one('route', string="Route",
+                                          readonly=True, auto_join=True),
         'orig_op': fields.many2one('stock.pack.operation', 'op'),
         'wait_receipt_qty': fields.float('Quantity pending receipt')}
 
     def _prepare_procurement_from_move(self, cr, uid, move, context=None):
         res = super(stock_move, self).\
             _prepare_procurement_from_move(cr, uid, move, context=context)
-        route_detail_id = move.route_detail_id and move.route_detail_id.id or \
+        route_detail = move.route_detail_id and move.route_detail_id or \
             False
-        res['route_detail_id'] = route_detail_id
+        if route_detail:
+            res['route_detail_id'] = route_detail.id
+            res['trans_route_id'] = route_detail.route_id.id
         return res
 
     def _get_propagated_change_dict(self, cr, uid, vals, context=None):
@@ -1913,57 +1968,69 @@ class stock_move(models.Model):
                     vals['product_uos_id']
         return propagated_changes_dict
 
-    def write(self, cr, uid, ids, vals, context=None):
-        if context is None:
-            context = {}
-        # TODO: se hace asi?
-        _logger.debug("CMNT WRITE del stock.move %s - %s", vals, context)
-        init_t = time.time()
-        res = super(stock_move, self).write(cr, uid, ids, vals,
-                                            context=context)
-        _logger.debug("CMNT stock.move tiempo write original: %s",
-                     time.time() - init_t)
-        # para arrastrar la ruta al albaran desde la venta
-        if vals.get('picking_id', False):
-            pick_obj = self.pool.get('stock.picking')
-            proc_obj = self.pool.get('procurement.order')
-            for move in self.browse(cr, uid, ids, context=context):
-                procurement = False
-                if vals.get('procurement_id', False):
-                    procurement = vals['procurement_id']
-                else:
-                    procurement = move.procurement_id and \
-                        move.procurement_id.id or False
-
-                if procurement:
-                    procurement = proc_obj.browse(cr, uid, procurement,
-                                                  context=context)
-                    if procurement.route_detail_id:
-                        vls = {'route_detail_id':
-                               procurement.route_detail_id.id}
-                        pick_obj.write(cr, uid, vals['picking_id'], vls,
-                                       context=context)
-
-        # Se evita toda esta parte añadiend el hook de _get_propagated_change_dict
-        # PAra esto se modificó también el modulo de stock en addons
-        # Propagar las unidades de venta...
-        # for move in self.browse(cr, uid, ids, context=context):
-        #     propagated_changes_dict = {}
-        #     # propagation of quantity sale change
-        #     if vals.get('product_uos_qty'):
-        #         propagated_changes_dict['product_uos_qty'] = \
-        #             vals['product_uos_qty']
-        #     if vals.get('product_uos_id'):
-        #         propagated_changes_dict['product_uos_id'] = \
-        #             vals['product_uos_id']
-        #     if not context.get('do_not_propagate', False) and \
-        #             propagated_changes_dict and move.move_dest_id.id:
-        #         self.write(cr, uid, [move.move_dest_id.id],
-        #                    propagated_changes_dict,
-        #                    context=context)
-        _logger.debug("CMNT stock.move tiempo total write: %s",
-                      time.time() - init_t)
+    def _prepare_picking_assign(self, cr, uid, move, context=None):
+        """ Prepares a new picking for this move as it could not be assigned to
+        another picking. This method is designed to be inherited.
+        """
+        res = super(stock_move, self)._prepare_picking_assign(cr, uid, move,
+                                                              context=context)
+        res.update({'route_detail_id': move.route_detail_id.id,
+                    'trans_route_id': move.trans_route_id.id})
         return res
+
+    # def write(self, cr, uid, ids, vals, context=None):
+    #     if context is None:
+    #         context = {}
+    #     # TODO: se hace asi?
+    #     _logger.debug("CMNT WRITE del stock.move %s - %s", vals, context)
+    #     init_t = time.time()
+    #     res = super(stock_move, self).write(cr, uid, ids, vals,
+    #                                         context=context)
+    #     _logger.debug("CMNT stock.move tiempo write original: %s",
+    #                  time.time() - init_t)
+    #     # para arrastrar la ruta al albaran desde la venta
+    #     if vals.get('picking_id', False):
+    #         pick_obj = self.pool.get('stock.picking')
+    #         proc_obj = self.pool.get('procurement.order')
+    #         for move in self.browse(cr, uid, ids, context=context):
+    #             procurement = False
+    #             if vals.get('procurement_id', False):
+    #                 procurement = vals['procurement_id']
+    #             else:
+    #                 procurement = move.procurement_id and \
+    #                     move.procurement_id.id or False
+    #
+    #             if procurement:
+    #                 procurement = proc_obj.browse(cr, uid, procurement,
+    #                                               context=context)
+    #                 if procurement.route_detail_id:
+    #                     vls = {
+    #                         'route_detail_id':procurement.route_detail_id.id,
+    #                         'trans_route_id':procurement.trans_route_id.id
+    #                     }
+    #                     pick_obj.write(cr, uid, vals['picking_id'], vls,
+    #                                    context=context)
+    #
+    #     # Se evita toda esta parte añadiend el hook de _get_propagated_change_dict
+    #     # PAra esto se modificó también el modulo de stock en addons
+    #     # Propagar las unidades de venta...
+    #     # for move in self.browse(cr, uid, ids, context=context):
+    #     #     propagated_changes_dict = {}
+    #     #     # propagation of quantity sale change
+    #     #     if vals.get('product_uos_qty'):
+    #     #         propagated_changes_dict['product_uos_qty'] = \
+    #     #             vals['product_uos_qty']
+    #     #     if vals.get('product_uos_id'):
+    #     #         propagated_changes_dict['product_uos_id'] = \
+    #     #             vals['product_uos_id']
+    #     #     if not context.get('do_not_propagate', False) and \
+    #     #             propagated_changes_dict and move.move_dest_id.id:
+    #     #         self.write(cr, uid, [move.move_dest_id.id],
+    #     #                    propagated_changes_dict,
+    #     #                    context=context)
+    #     _logger.debug("CMNT stock.move tiempo total write: %s",
+    #                   time.time() - init_t)
+    #     return res
 
     def split(self, cr, uid, move, qty, restrict_lot_id=False,
               restrict_partner_id=False, context=None):

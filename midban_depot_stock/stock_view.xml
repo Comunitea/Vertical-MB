@@ -22,7 +22,7 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <field name="min_date" position="before">
-                    <field name="orig_planned_date" attrs="{'invisible': [('sale_id', '=', False)]}"/>
+                    <!--<field name="orig_planned_date" attrs="{'invisible': [('sale_id', '=', False)]}"/>-->
                     <field name="validated_state" attrs="{'invisible': [('sale_id', '=', False)]}"/>
                 </field>
                 <!-- Show only when no custom operations" -->
@@ -325,10 +325,10 @@
                 </field>
 
                 <button name="confirm_picking" position="attributes">
-                    <attribute name="invisible">True</attribute>
+                    <attribute name="invisible">False</attribute>
                 </button>
                 <button name="done" position="attributes">
-                    <attribute name="invisible">True</attribute>
+                    <attribute name="invisible">False</attribute>
                 </button>
             </field>
         </record>
@@ -451,7 +451,7 @@
                     <field name="partner_street" readonly="True"/>
                     <field name="partner_city" readonly="True"/>
                     <field name="sale_id" readonly="True"/>
-                    <field name="orig_planned_date" readonly="True"/>
+                    <!--<field name="orig_planned_date" readonly="True"/>-->
                     <field name="min_date" readonly="True"/>
                     <field name="order_note" readonly="True" string="Order Notes"/>
                     <field name="min_date" readonly="True" string="Delivery Date" invisible="1"/>
@@ -461,7 +461,7 @@
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
                     <field name="validated_state"/>
                     <field name="state" readonly="True" invisible="1"/>
-                    <field name="detail_date" readonly="True" invisible="1"/>
+                    <!--<field name="detail_date" readonly="True" invisible="1"/>-->
                     <field name="trans_route_id" invisible="1"/>
                     <field name="user_id" invisible="1"/>
                 </tree>
@@ -475,7 +475,6 @@
             <field name="arch" type="xml">
                 <search string="Search Pickings">
                     <!-- <field name="detail_date"/> -->
-                    <field name="detail_date"/>
                     <field name="route_detail_id"/>
                     <field name="trans_route_id"/>
                     <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
@@ -546,7 +545,7 @@
           <field name="arch" type="xml">
             <search string="Search Pickings">
                 <field name="trans_route_id"/>
-                <field name="detail_date"/>
+                <!--<field name="detail_date"/>-->
                 <field name="route_detail_id"/>
                 <field name="create_uid" string="Comercial"/>
                 <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
