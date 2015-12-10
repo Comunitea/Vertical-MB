@@ -66,18 +66,18 @@
           <record model="ir.ui.view" id="stock_picking_review_search">
             <field name="name">stock.picking.review.search</field>
             <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
+            <field name="inherit_id" ref="midban_depot_stock.view_picking_internal_search_add_route"/>
             <field name="arch" type="xml">
-                <filter name="filter_today" position="before">
+                <filter string="Detail Route" position="before">
                     <filter icon="terp-go-today" string="Not Reviewed" name="not_reviewed"
                             domain="[('reviewed','=',False)]" help="Orders not reviewed "/>
                     <filter icon="terp-go-today" string="Review Today" name="review_today"
                             domain="[('reviewed','=',False),('date_done','&lt;=',time.strftime('%Y-%m-%d')),('date_done','&gt;=',time.strftime('%Y-%m-%d'))]" help="Orders processed Today"/>
                 </filter>
-                <group string="Group By" position="inside">
-                    <filter name="group_by_delivery_id" string="Delivery person"
-                        context="{'group_by': 'delivery_id'}"/>
-                </group>
+                <!--<group string="Group By" position="inside">-->
+                    <!--<filter name="group_by_delivery_id" string="Delivery person"-->
+                        <!--context="{'group_by': 'delivery_id'}"/>-->
+                <!--</group>-->
 
             </field>
         </record>
@@ -182,7 +182,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="stock_picking_review_tree"/>
-            <field name="search_view_id" ref="midban_depot_stock.view_picking_replanning_route_filter"/>
+            <field name="search_view_id" ref="midban_depot_stock.view_picking_internal_search_add_route"/>
             <field name="domain">[('picking_type_id.code', '=', 'outgoing'), ('state', '=', 'done')]</field>
             <field name="context">{'search_default_review_today':1}</field>
         </record>
