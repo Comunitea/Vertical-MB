@@ -126,7 +126,7 @@ class product_template(osv.Model):
                                      'Temp type', help="Informative field that"
                                      "should be the same as the picking"
                                      "location temperature type",
-                                     required=True),
+                                     required=False),
         'consignment': fields.boolean('Consignment'),
         'temperature': fields.float("Temperature", digits=(8, 2)),
         'bulk': fields.boolean("Bulk"),  # granel
@@ -584,43 +584,51 @@ class ProductTemplate(models.Model):
         # active products
         """
         _logger.debug("CMNT WRITE del template")
-        for product in self:
-            log_base_id = vals['log_base_id'] if 'log_base_id' in vals \
-                          else product.log_base_id.id
-            log_unit_id = vals['log_unit_id'] if 'log_unit_id' in vals \
-                          else product.log_unit_id.id
-            log_box_id = vals['log_box_id'] if 'log_box_id' in vals \
-                         else product.log_box_id.id
-            uom_id = vals['uom_id'] if 'uom_id' in vals \
-                     else product.uom_id.id
-            # uos_id = vals.get('uos_id', False) \
-            #               and vals['uos_id'] or product.uos_id.id
-            if not((uom_id == log_base_id) or (uom_id == log_unit_id) \
-                   or (uom_id == log_box_id)):
-                   raise except_orm(_('Error'),
-                                    _('Product uom not in logistic' \
-                                      ' units %s') % product.uom_id.name)
-            # if not((uos_id == log_base_id) or (uos_id == log_unit_id) \
-            #        or (uos_id == log_box_id)):
-            #        raise except_orm(_('Error'),
-            #                         _('Product uos not in logistic' \
-            #                           ' units %s') % product.uos_id.name)
-            unit_error = False
-            if log_base_id:
-                if (log_base_id == log_unit_id) or \
-                   (log_base_id == log_box_id):
-                    unit_error = True
-            if log_unit_id:
-                if (log_unit_id == log_base_id) or \
-                   (log_unit_id == log_box_id):
-                    unit_error = True
-            if log_box_id:
-                if (log_box_id == log_base_id) or \
-                   (log_box_id == log_unit_id):
-                    unit_error = True
-            if unit_error:
-                raise except_orm(_('Error'),
-                                 _('Product logistic units are wrong'))
+        check_type = True
+        if vals.get('type', False):
+            if vals['type'] != 'product':
+                check_type = False
+        else:
+            if self.type != 'product':
+                 check_type = False
+        if check_type:
+            for product in self:
+                log_base_id = vals['log_base_id'] if 'log_base_id' in vals \
+                              else product.log_base_id.id
+                log_unit_id = vals['log_unit_id'] if 'log_unit_id' in vals \
+                              else product.log_unit_id.id
+                log_box_id = vals['log_box_id'] if 'log_box_id' in vals \
+                             else product.log_box_id.id
+                uom_id = vals['uom_id'] if 'uom_id' in vals \
+                         else product.uom_id.id
+                # uos_id = vals.get('uos_id', False) \
+                #               and vals['uos_id'] or product.uos_id.id
+                if not((uom_id == log_base_id) or (uom_id == log_unit_id) \
+                       or (uom_id == log_box_id)):
+                       raise except_orm(_('Error'),
+                                        _('Product uom not in logistic' \
+                                          ' units %s') % product.uom_id.name)
+                # if not((uos_id == log_base_id) or (uos_id == log_unit_id) \
+                #        or (uos_id == log_box_id)):
+                #        raise except_orm(_('Error'),
+                #                         _('Product uos not in logistic' \
+                #                           ' units %s') % product.uos_id.name)
+                unit_error = False
+                if log_base_id:
+                    if (log_base_id == log_unit_id) or \
+                       (log_base_id == log_box_id):
+                        unit_error = True
+                if log_unit_id:
+                    if (log_unit_id == log_base_id) or \
+                       (log_unit_id == log_box_id):
+                        unit_error = True
+                if log_box_id:
+                    if (log_box_id == log_base_id) or \
+                       (log_box_id == log_unit_id):
+                        unit_error = True
+                if unit_error:
+                    raise except_orm(_('Error'),
+                                     _('Product logistic units are wrong'))
 
         if vals.get('default_code', False):
             vals['default_code2'] = vals['default_code']
@@ -648,41 +656,48 @@ class ProductTemplate(models.Model):
         # in product.template to variants. We need to show default_code2 in no
         # active products
         """
-        log_base_id = vals.get('log_base_id', False) and vals['log_base_id']
-        log_unit_id = vals.get('log_unit_id', False) and vals['log_unit_id']
-        log_box_id = vals.get('log_box_id', False) and vals['log_box_id']
-        uom_id = vals.get('uom_id', False) and vals['uom_id']
-        # uos_id = vals.get('uos_id', False) and vals['uos_id']
+        check_type = True
+        # Auto register the product if type equals to service or consumible
+        if vals.get('type', False) and vals['type'] != 'product':
+            check_type = False
+            vals['state2'] = 'registered'
+            vals['active'] = True
+        if check_type:
+            log_base_id = vals.get('log_base_id', False) and vals['log_base_id']
+            log_unit_id = vals.get('log_unit_id', False) and vals['log_unit_id']
+            log_box_id = vals.get('log_box_id', False) and vals['log_box_id']
+            uom_id = vals.get('uom_id', False) and vals['uom_id']
+            # uos_id = vals.get('uos_id', False) and vals['uos_id']
 
-        if not((uom_id == log_base_id) or (uom_id == log_unit_id) \
-               or (uom_id == log_box_id)):
-               uom_obj = self.env['product.uom'].browse(uom_id)
-               raise except_orm(_('Error'),
-                                _('Product uom not in logistic' \
-                                  ' units %s') % uom_obj.name)
-        # if uos_id:
-            # if not((uos_id == log_base_id) or (uos_id == log_unit_id) \
-            #        or (uos_id == log_box_id)):
-            #        raise except_orm(_('Error'),
-            #                         _('Product uos not in logistic' \
-            #                           ' units %s') % product.uom_id.name)
+            if not((uom_id == log_base_id) or (uom_id == log_unit_id) \
+                   or (uom_id == log_box_id)):
+                   uom_obj = self.env['product.uom'].browse(uom_id)
+                   raise except_orm(_('Error'),
+                                    _('Product uom not in logistic' \
+                                      ' units %s') % uom_obj.name)
+            # if uos_id:
+                # if not((uos_id == log_base_id) or (uos_id == log_unit_id) \
+                #        or (uos_id == log_box_id)):
+                #        raise except_orm(_('Error'),
+                #                         _('Product uos not in logistic' \
+                #                           ' units %s') % product.uom_id.name)
 
-        unit_error = False
-        if log_base_id:
-            if (log_base_id == log_unit_id) or \
-               (log_base_id == log_box_id):
-                unit_error = True
-        if log_unit_id:
-            if (log_unit_id == log_base_id) or \
-               (log_unit_id == log_box_id):
-                unit_error = True
-        if log_box_id:
-            if (log_box_id == log_base_id) or \
-               (log_box_id == log_unit_id):
-                unit_error = True
-        if unit_error:
-            raise except_orm(_('Error'),
-                             _('Product logistic units are wrong'))
+            unit_error = False
+            if log_base_id:
+                if (log_base_id == log_unit_id) or \
+                   (log_base_id == log_box_id):
+                    unit_error = True
+            if log_unit_id:
+                if (log_unit_id == log_base_id) or \
+                   (log_unit_id == log_box_id):
+                    unit_error = True
+            if log_box_id:
+                if (log_box_id == log_base_id) or \
+                   (log_box_id == log_unit_id):
+                    unit_error = True
+            if unit_error:
+                raise except_orm(_('Error'),
+                                 _('Product logistic units are wrong'))
 
         if vals.get('default_code', False):
             vals['default_code2'] = vals['default_code']
