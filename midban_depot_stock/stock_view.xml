@@ -93,6 +93,7 @@
                 <!-- Readonly min_date when detail route setted -->
                  <field name="min_date" position="attributes">
                         <attribute name="attrs">{'readonly': [('route_detail_id', '!=', False)]}</attribute>
+                        <attribute name="widget">date</attribute>
                 </field>
                 <xpath expr="//field[@name='pack_operation_ids']/tree/field[@name='lot_id']" position="attributes">
                     <attribute name="on_change">onchange_lot_id(lot_id)</attribute>
@@ -365,6 +366,46 @@
             </field>
         </record>
 
+        <!--<record id="view_lot_form_widget_date" model="ir.ui.view">-->
+            <!--<field name="name">view_lot_form_widget_date</field>-->
+            <!--<field name="model">stock.production.lot</field>-->
+            <!--<field name="inherit_id"-->
+                   <!--ref="product_expiry.view_move_form_expiry"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="use_date" position="attributes">-->
+                    <!--<atrribute name="widget">date</atrribute>-->
+                <!--</field>-->
+                <!--<field name="removal_date" position="attributes">-->
+                    <!--<atrribute name="widget">date</atrribute>-->
+                <!--</field>-->
+                <!--<field name="life_date" position="attributes">-->
+                    <!--<atrribute name="widget">date</atrribute>-->
+                <!--</field>-->
+                <!--<field name="alert_date" position="attributes">-->
+                    <!--<atrribute name="widget">date</atrribute>-->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+        <record model="ir.ui.view" id="product_expiry.view_move_form_expiry">
+            <field name="name">stock.production.lot.form</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form" />
+            <field name="arch" type="xml">
+            <xpath expr="//group[@name='main_group']" position="after">
+                <group string="Dates">
+                    <group>
+                        <field name="use_date" widget="date"/>
+                        <field name="removal_date" widget="date"/>
+                    </group>
+                    <group>
+                    	<field name="life_date" widget="date"/>
+                        <field name="alert_date" widget="date"/>
+                    </group>
+                </group>
+            </xpath>
+            </field>
+        </record>
+
         <record id="custom_view_production_lot_tree" model="ir.ui.view">
             <field name="name">custom.view.production.lot.tree</field>
             <field name="model">stock.production.lot</field>
@@ -372,7 +413,7 @@
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
                     <field name="total_lot_qty"/>
-                    <field name="removal_date"/>
+                    <field name="removal_date" widget="date"/>
                 </field>
 
                 <field name="create_date" position="attributes">
@@ -452,9 +493,9 @@
                     <field name="partner_city" readonly="True"/>
                     <field name="sale_id" readonly="True"/>
                     <!--<field name="orig_planned_date" readonly="True"/>-->
-                    <field name="min_date" readonly="True"/>
+                    <field name="min_date" readonly="True" widget="date"/>
+
                     <field name="order_note" readonly="True" string="Order Notes"/>
-                    <field name="min_date" readonly="True" string="Delivery Date" invisible="1"/>
                     <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
                     <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"
