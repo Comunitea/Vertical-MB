@@ -53,7 +53,8 @@
                         <field name="product_class" string="Sale Type"/>
                         <field name="ean14"/>
                         <field name="ean_consum"/>
-                        <field name="temp_type"/>
+                        <field name="temp_type"
+                               attrs="{'required': [('type','=','product')]}"/>
                         <field name="temperature"/>
                     </group>
                     <group string="Product Information">
