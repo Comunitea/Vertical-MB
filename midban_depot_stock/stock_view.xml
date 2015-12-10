@@ -292,6 +292,9 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
+                    <tree position="attributes">
+                         <attribute name="colors">red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'</attribute>
+                    </tree>
                     <field name="state" position="after">
                         <field name="route_detail_id"/>
                     </field>
@@ -486,7 +489,7 @@
             <field name="model">stock.picking</field>
             <field name="priority">151</field>
             <field name="arch" type="xml">
-                <tree string="Outgoing Pickings" editable="top" colors="red:route_detail_id == False" create="false" delete="false">
+                <tree string="Outgoing Pickings" editable="top" colors="red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'" create="false" delete="false">
                     <field name="name"  readonly="True"/>
                     <field name="partner_id" readonly="True"/>
                     <field name="partner_street" readonly="True"/>
@@ -550,7 +553,8 @@
             <field name="view_id" ref="view_picking_replanning_route_tree"/>
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/>
             <field name="domain">[('picking_type_code', '=', 'outgoing'),('state','not in',('draft','cancel','done'))]</field>
-             <field name="context">{'search_default_not_validated': 1}</field>
+             <!--<field name="context">{'search_default_not_validated': 1}</field>-->
+             <field name="context">{}</field>
         </record>
 
         <menuitem action="action_replanning_picking_route" id="menu_replaning_picking_route" name="Replanning Routes" sequence="10" parent="menu_stock_vehicle_route_mgmt"/>
