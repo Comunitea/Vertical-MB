@@ -359,7 +359,9 @@ function openerp_ts_models(instance, module){
                                  detail: line.detail_note || "",
                                  product_uos: line['product_uos'][1] || "",
                                  product_uos_qty: line['product_uos_qty'] || 0.0,
-                                 price_udv: line['price_udv'] || 0.0
+                                 price_udv: line['price_udv'] || 0.0,
+                                 tourism: line['tourism'] ? line['tourism'][0]
+                                  : false
                                 }
                 var line = new module.Orderline(line_vals);
                 order_model.get('orderLines').add(line);
@@ -568,6 +570,7 @@ function openerp_ts_models(instance, module){
             margin: 0,
             taxes_ids: [],
             temperature: 0,
+            tourism: false,
         },
         initialize: function(options){
             this.ts_model = options.ts_model;
@@ -615,7 +618,8 @@ function openerp_ts_models(instance, module){
                 tax_ids: this.get('taxes_ids'),
                 pvp_ref: this.get('pvp_ref'),
                 detail_note: this.get('detail') || "",
-                discount: this.get('discount') || 0.0
+                discount: this.get('discount') || 0.0,
+                tourism: this.get('tourism') || false
             };
         },
         get_price_without_tax: function(){
@@ -945,7 +949,9 @@ function openerp_ts_models(instance, module){
                                  detail: line["detail_note"] || "",
                                  product_uos: line['product_uos'][1] || "",
                                  product_uos_qty: line['product_uos_qty'] || 0.0,
-                                 price_udv: line['price_udv'] || 0.0
+                                 price_udv: line['price_udv'] || 0.0,
+                                 tourism: line['tourism'] ? line[tourism][0]
+                                  : false
                                 }
                 var line = new module.Orderline(line_vals);
                 this.get('orderLines').add(line);

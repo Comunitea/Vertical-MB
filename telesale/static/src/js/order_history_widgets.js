@@ -38,7 +38,15 @@ function openerp_ts_order_history_widgets(instance, module){ //module is instanc
                     var order = orders[0];
                     self.order_fetch = order;
                     return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note', 'discount'],
+                                                ['product_id','product_uom',
+                                                'product_uom_qty',
+                                                'product_uos',
+                                                'product_uos_qty',
+                                                'price_udv','price_unit',
+                                                'price_subtotal','tax_id',
+                                                'pvp_ref','current_pvp',
+                                                'q_note', 'detail_note',
+                                                'discount', 'tourism'],
                                                 [
                                                     ['order_id', '=', order_id],
                                                  ]);
