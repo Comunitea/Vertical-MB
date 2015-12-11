@@ -431,6 +431,47 @@ class stock_picking(osv.Model):
         _logger.debug("CMNT total do_prepare: %s", time.time() - init_t)
         return res
 
+    def _create_backorder(self, cr, uid, picking, backorder_moves=[], context=None):
+        """ Move all non-done lines into a new backorder picking. If the key 'do_only_split' is given in the context, then move all lines not in context.get('split', []) instead of all non-done lines.
+        """
+        backorder_id = super(stock_picking, self)._create_backorder(cr, uid, picking,
+                                                           backorder_moves=backorder_moves,
+                                                           context=context)
+        if backorder_id:
+            backorder = self.browse(cr,uid, backorder_id,context=context)
+            if backorder.backorder_id.picking_type_code == 'outgoing':
+                vals = {
+                    'route_detail_id': False,
+                    'validated_state': 'validated'
+                }
+                self.write(cr, uid, [backorder_id], vals, context=context)
+        return backorder_id
+
+
+        # if not backorder_moves:
+        #     backorder_moves = picking.move_lines
+        # backorder_move_ids = [x.id for x in backorder_moves if x.state not in ('done', 'cancel')]
+        # if 'do_only_split' in context and context['do_only_split']:
+        #     backorder_move_ids = [x.id for x in backorder_moves if x.id not in context.get('split', [])]
+        #
+        # if backorder_move_ids:
+        #     backorder_id = self.copy(cr, uid, picking.id, {
+        #         'name': '/',
+        #         'move_lines': [],
+        #         'pack_operation_ids': [],
+        #         'backorder_id': picking.id,
+        #     })
+        #     backorder = self.browse(cr, uid, backorder_id, context=context)
+        #     self.message_post(cr, uid, picking.id, body=_("Back order <em>%s</em> <b>created</b>.") % (backorder.name), context=context)
+        #     move_obj = self.pool.get("stock.move")
+        #     move_obj.write(cr, uid, backorder_move_ids, {'picking_id': backorder_id}, context=context)
+        #
+        #     if not picking.date_done:
+        #         self.write(cr, uid, [picking.id], {'date_done': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)}, context=context)
+        #     self.action_confirm(cr, uid, [backorder_id], context=context)
+        #     return backorder_id
+        # return False
+
 
 class StockPicking(models.Model):
 
@@ -566,30 +607,32 @@ class StockPicking(models.Model):
         move_set = self.env['stock.move']
         detail_obj = False
         move_set = self.env['stock.move']
-        if vals.get('route_detail_id', False):
+        route_detail_id = False
+        if 'route_detail_id' in vals:
             route_detail_id = vals['route_detail_id']
+        if route_detail_id:
             detail_obj =  self.env['route.detail'].browse(route_detail_id)
             detail_date = detail_obj.date + " 19:00:00"
             vals.update({
                 'min_date': detail_date,
                 'trans_route_id': detail_obj.route_id.id,
             })
-            for pick in self:
-                if pick.route_detail_id and pick.route_detail_id == \
-                        detail_obj.id:
-                    continue  # Skipe rewrite the same detail, is expensive
-                for move in pick.move_lines:
-                    if move not in move_set:
-                        move_set += move
-                    for move2 in move.move_orig_ids:
-                        if move2.picking_id not in self:
-                            self += move2.picking_id
-                        if move2 not in move_set:
-                            move_set += move2  # Add to the set the pikc
+        for pick in self:
+            if detail_obj and pick.route_detail_id and pick.route_detail_id == \
+                    detail_obj.id:
+                continue  # Skipe rewrite the same detail, is expensive
+            for move in pick.move_lines:
+                if move not in move_set:
+                    move_set += move
+                for move2 in move.move_orig_ids:
+                    if move2.picking_id not in self:
+                        self += move2.picking_id
+                    if move2 not in move_set:
+                        move_set += move2  # Add to the set the pikc
         # Write all moves related the route and the detail
-        if move_set and detail_obj:
-            move_set.write({'route_detail_id':detail_obj.id,
-                            'trans_route_id:': detail_obj.route_id.id})
+        if move_set:
+            move_set.write({'route_detail_id':detail_obj and detail_obj.id or False,
+                            'trans_route_id:': detail_obj and detail_obj.route_id.id or False})
 
         # Self is the original self plus the related pickings in the move
         res = super(StockPicking,
