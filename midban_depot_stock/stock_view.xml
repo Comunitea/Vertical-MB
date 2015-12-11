@@ -293,7 +293,7 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                     <tree position="attributes">
-                         <attribute name="colors">gray:backorder_id;red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'</attribute>
+                         <attribute name="colors">orange:backorder_id and validated_state != 'loaded';red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'</attribute>
                     </tree>
                     <field name="state" position="after">
                         <field name="route_detail_id"/>
@@ -490,7 +490,7 @@
             <field name="priority">151</field>
             <field name="arch" type="xml">
                 <tree string="Outgoing Pickings" editable="top"
-                      colors="gray:backorder_id;red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'" create="false" delete="false">
+                      colors="orange:backorder_id and validated_state != 'loaded';red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'" create="false" delete="false">
                     <field name="name"  readonly="True"/>
                     <field name="sale_id" readonly="True"/>
                      <field name="min_date" readonly="True" widget="date"/>

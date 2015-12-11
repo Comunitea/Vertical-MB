@@ -2448,7 +2448,7 @@ msgstr "Albarán"
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:141
 #, python-format
 msgid "Picking %s must be outgoing type and                                      related with a sale or                                     autosale"
-msgstr "Picking %s must be outgoing type and                                      related with a sale or                                     autosale"
+msgstr "El albarán %s debe ser de tipo salida y relacionado con una venta o autoventa"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:73
@@ -3775,7 +3775,7 @@ msgstr "Vagón"
 #. module: midban_depot_stock
 #: view:validate.routes:midban_depot_stock.validate_routes_form
 msgid "Validate"
-msgstr "Validate"
+msgstr "Validar"
 
 #. module: midban_depot_stock
 #: view:validate.routes:midban_depot_stock.validate_routes_form
@@ -4007,13 +4007,13 @@ msgstr "Escrito sólo por el asistente de reposición, para obtener tareas de re
 #: code:addons/midban_depot_stock/partner.py:139
 #, python-format
 msgid "You are assigning a route for a                                         partner closed  day "
-msgstr "You are assigning a route for a                                         partner closed  day "
+msgstr "Estás asignando una ruta para un dia de cierre de cliente "
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/stock.py:379
 #, python-format
 msgid "You are assigning a route for a partner closed  day "
-msgstr "You are assigning a route for a partner closed  day "
+msgstr "Estás asignando una ruta para un dia de cierre de cliente "
 
 #. module: midban_depot_stock
 #: view:stock.transfer_details:midban_depot_stock.custom_view_transfer_details_2
@@ -4024,13 +4024,13 @@ msgstr "Puedes modificar las operaciones propuestas antes de llevarlas a la ubic
 #: code:addons/midban_depot_stock/report/wave_report.py:472
 #, python-format
 msgid "You can not change operations in                                             a done or cancelled wave"
-msgstr "You can not change operations in                                             a done or cancelled wave"
+msgstr "No puedes cancelar operaciones en una hola realizada o cancelada"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/report/wave_report.py:483
 #, python-format
 msgid "You can not change operations in picking %s because                          it isn't in ready to transfer                          state"
-msgstr "You can not change operations in picking %s because                          it isn't in ready to transfer                          state"
+msgstr "No puedes cambiar operaciones en el albarán %s porque no está en el estado de listo para transferir"
 
 #. module: midban_depot_stock
 #: view:manual.transfer.wzd:midban_depot_stock.manual_transfer_wzd_view_form

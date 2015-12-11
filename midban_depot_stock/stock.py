@@ -2088,6 +2088,8 @@ class stock_move(models.Model):
                 not in ('done', 'cancel'):
             self.write(cr, uid, move.move_dest_id.id,
                        {'wait_receipt_qty': move.wait_receipt_qty})
+        if not move.wait_receipt_qty:
+            return False
         res = super(stock_move, self).split(cr, uid, move, qty,
                                             restrict_lot_id,
                                             restrict_partner_id,
@@ -2096,8 +2098,10 @@ class stock_move(models.Model):
             self.write(cr, uid, move.id,
                        {'product_uos_qty': uos_qty - move.wait_receipt_qty})
             split_ids = self.search(cr, uid, [('split_from', '=', move.id)])
+            new_uom_split_qty = move.product_id.uos_qty_to_uom_qty(move.wait_receipt_qty, move.product_uos.id)
             self.write(cr, uid, split_ids,
-                       {'product_uos_qty': move.wait_receipt_qty})
+                       {'product_uos_qty': move.wait_receipt_qty,
+                        'product_uom_qty': new_uom_split_qty})
         return res
 
     def _get_invoice_line_vals(self, cr, uid, move, partner, inv_type,
