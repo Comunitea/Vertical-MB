@@ -293,7 +293,7 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                     <tree position="attributes">
-                         <attribute name="colors">red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'</attribute>
+                         <attribute name="colors">gray:backorder_id;red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'</attribute>
                     </tree>
                     <field name="state" position="after">
                         <field name="route_detail_id"/>
@@ -489,21 +489,24 @@
             <field name="model">stock.picking</field>
             <field name="priority">151</field>
             <field name="arch" type="xml">
-                <tree string="Outgoing Pickings" editable="top" colors="red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'" create="false" delete="false">
+                <tree string="Outgoing Pickings" editable="top"
+                      colors="gray:backorder_id;red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'" create="false" delete="false">
                     <field name="name"  readonly="True"/>
+                    <field name="sale_id" readonly="True"/>
+                     <field name="min_date" readonly="True" widget="date"/>
                     <field name="partner_id" readonly="True"/>
                     <field name="partner_street" readonly="True"/>
                     <field name="partner_city" readonly="True"/>
-                    <field name="sale_id" readonly="True"/>
                     <!--<field name="orig_planned_date" readonly="True"/>-->
-                    <field name="min_date" readonly="True" widget="date"/>
 
-                    <field name="order_note" readonly="True" string="Order Notes"/>
                     <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
+
+                    <field name="order_note" readonly="True" string="Order Notes"/>
+                    <field name="backorder_id" readonly="True"/>
+                    <field name="validated_state"/>
                     <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
-                    <field name="validated_state"/>
                     <field name="state" readonly="True" invisible="1"/>
                     <!--<field name="detail_date" readonly="True" invisible="1"/>-->
                     <field name="trans_route_id" invisible="1"/>
