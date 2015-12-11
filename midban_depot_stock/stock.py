@@ -1117,7 +1117,9 @@ class stock_pack_operation(models.Model):
             return
         if self.operation_product_id:
             product = self.operation_product_id
-            self.location_dest_id = product.picking_location_id or self.env['stock.location'].search([('special_location', '=', True)])
+            self.location_dest_id = product.picking_location_id or \
+                self.env['stock.location'].search([('bcd_code', '=', '000000000')], limit = 1) or \
+                self.env['stock.location'].search([('special_location', '=', True)], limit = 1)
             return
 
         self.location_dest_id = self.env['stock.location'].search([('special_location', '=', True)])
