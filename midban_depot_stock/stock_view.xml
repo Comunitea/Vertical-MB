@@ -534,6 +534,7 @@
                         <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
                         <filter string="Validated" name="validated" domain="[('validated_state', '=', 'validated')]"/>
                         <filter string="Load Confirmed" name="loaded" domain="[('validated_state', '=', 'loaded')]"/>
+                        <filter string="Entregas parciales" name="partiall" domain="[('backorder_id', '!=', False)]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>

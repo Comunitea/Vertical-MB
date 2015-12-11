@@ -65,6 +65,10 @@ class ConfirmLoadWzd(models.TransientModel):
                                  _('Picking %s must be outgoing type and  \
                                     related with a sale or \
                                     autosale' % pick.name))
+            if not pick.route_detail_id:
+                raise except_orm(_('Error'),
+                                 _('Picking %s without has not route detatl \
+                                   assigned' % pick.name))
             if mode == 'undo':
                 if pick.validated_state == 'validated':
                     continue
