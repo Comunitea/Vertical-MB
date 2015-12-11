@@ -37,19 +37,22 @@ class sale_order(osv.Model):
     _inherit = 'sale.order'
 
     _columns = {
-        'trans_route_id': fields.related('route_detail_id', 'route_id',
-                                         string='Route',
-                                         type="many2one",
-                                         relation="route",
-                                         store=True,
-                                         readonly=True),
-        'detail_date': fields.related('route_detail_id', 'date',
-                                      string='Route Date',
-                                      type="date",
-                                      relation="route.detail",
-                                      store=True,
-                                      readonly=True),
-        'route_detail_id': fields.many2one('route.detail', 'Detail Route'),
+        # 'trans_route_id': fields.related('route_detail_id', 'route_id',
+        #                                  string='Route',
+        #                                  type="many2one",
+        #                                  relation="route",
+        #                                  store=True,
+        #                                  readonly=True),
+        # 'detail_date': fields.related('route_detail_id', 'date',
+        #                               string='Route Date',
+        #                               type="date",
+        #                               relation="route.detail",
+        #                               store=True,
+        #                               readonly=True),
+        'route_detail_id': fields.many2one('route.detail', 'Detail Route',
+                                           auto_join=True),
+        'trans_route_id': fields.many2one('route', string="Route",
+                                          readonly=True, auto_join=True),
         'date_planned': fields.datetime('Scheduled Date',
                                         select=True,
                                         help="Date propaged to shecduled \
@@ -66,6 +69,7 @@ class sale_order(osv.Model):
         """
         if self.route_detail_id:
             self.date_planned = self.route_detail_id.date + " 19:00:00"
+            self.trans_route_id = self.route_detail_id.route_id.id
 
     def _get_date_planned(self, cr, uid, order, line, start_date,
                           context=None):
@@ -102,11 +106,13 @@ class sale_order(osv.Model):
             detail_obj = part.get_next_route_detail(route_type='delivery')
             if detail_obj:
                 res['value']['route_detail_id'] = detail_obj.id
+                res['value']['trans_route_id'] = detail_obj.route_id.id
                 res['value']['date_planned'] = detail_obj.date + \
                     " 19:00:00"
             else:
                 res['value']['route_detail_id'] = False
                 res['value']['date_planned'] = False
+                res['value']['trans_route_id'] = False
 
         if part and not res['value'].get('route_detail_id', False):
             t_config = self.pool.get('ir.config_parameter')
@@ -115,6 +121,7 @@ class sale_order(osv.Model):
             if param_value == 'True':
                 res['value']['route_detail_id'] = False
                 res['value']['date_planned'] = False
+                res['value']['trans_route_id'] = False
                 res['warning'] = {'title': _('Warning!'),
                                   'message': _('No delivery routes assigned in\
                                    the customer. You will not confirm the \
@@ -131,8 +138,8 @@ class sale_order(osv.Model):
         res = super(sale_order, self).\
             _prepare_order_line_procurement(cr, uid, order, line,
                                             group_id=group_id, context=context)
-        # res['trans_route_id'] = order.trans_route_id and \
-        #     order.trans_route_id.id or False
+        res['trans_route_id'] = order.trans_route_id and \
+            order.trans_route_id.id or False
         res['route_detail_id'] = order.route_detail_id and \
             order.route_detail_id.id or False
         return res
@@ -214,12 +221,21 @@ class sale_order(osv.Model):
         Overwrited in order to write the read_only date_planned when a
         detail_route is setted.
         """
-        for order in self:
-            if vals.get('route_detail_id', False):
-                t_detail = self.env['route.detail']
-                detail_obj = t_detail.browse(vals['route_detail_id'])
-                detail_date = detail_obj.date + " 19:00:00"
-                order.date_planned = detail_date
+        # for order in self:
+        #     if vals.get('route_detail_id', False):
+        #         t_detail = self.env['route.detail']
+        #         detail_obj = t_detail.browse(vals['route_detail_id'])
+        #         detail_date = detail_obj.date + " 19:00:00"
+        #         order.date_planned = detail_date
+        # res = super(sale_order, self).write(vals)
+
+        # OPTIMIZAMOS
+        if vals.get('route_detail_id', False):
+            t_detail = self.env['route.detail']
+            detail_obj = t_detail.browse(vals['route_detail_id'])
+            detail_date = detail_obj.date + " 19:00:00"
+            vals.update({'date_planned': detail_date,
+                         'trans_route_id': detail_obj.route_id.id})
         res = super(sale_order, self).write(vals)
         return res
 

@@ -49,6 +49,7 @@
         "stock_valued_picking",
         "process_sale_order",  # Because of management of variable weigth
         "process_purchase_order",  # Because of management of variable weigth
+        "web_dialog_size"  # In order to maximize wizard windows
     ],
     "data": [
         'res_users_view.xml',

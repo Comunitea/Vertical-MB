@@ -69,7 +69,7 @@ class stock_task(osv.Model):
                                      help="Search packs in ubication pìckings "
                                      "and adds the operation to task"),
         'route_detail_id': fields.many2one('route.detail', 'Route Detail',
-                                           readonly=True)
+                                           readonly=True, auto_join=True)
     }
     _defaults = {
         'state': 'assigned',

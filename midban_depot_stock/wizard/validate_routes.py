@@ -191,6 +191,7 @@ class ValidateRoutes(models.TransientModel):
             copy_values = {'move_lines': [],
                            'pack_operation_ids': [],
                            'route_detail_id': pick.route_detail_id.id,
+                           'trans_route_id': pick.route_detail_id.route_id.id,
                            'group_id': pick.group_id.id,
                            'camera_id':cam }
             new_pick = pick.copy(copy_values)

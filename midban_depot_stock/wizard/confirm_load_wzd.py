@@ -78,7 +78,7 @@ class ConfirmLoadWzd(models.TransientModel):
                     raise except_orm(_('Error'),
                                  _("Picking %s should be validated" % pick.name))
             if pick.group_id:
-                domain = [('state', 'in', ['confirmed', 'assigned']),
+                domain = [('state', 'in', ['partially_available', 'confirmed', 'assigned']),
                           ('group_id', '=', pick.group_id.id),
                           ('picking_type_id', '=', wh.pick_type_id.id)]
                 pick_objs = self.env['stock.picking'].search(domain)

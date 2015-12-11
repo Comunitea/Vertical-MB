@@ -227,6 +227,16 @@ class res_partner(osv.Model):
         'min_palets': 0
     }
 
+    @api.one
+    @api.constrains('ref')
+    def product_unique_ref(self):
+        if self.ref:
+            founded_partner = self.search([('ref', '=', self.ref)], limit=1)
+            if founded_partner:
+                raise Warning(_('Partner %s is already assigned to reference %s')
+                              % (founded_partner.name, self.ref))
+        return
+
     def name_search(self, cr, uid, name, args=None, operator='ilike',
                     context=None, limit=100):
         if not args:

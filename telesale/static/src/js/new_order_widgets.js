@@ -236,7 +236,15 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     var order = orders[0];
                     self.order_fetch = order;
                     return self.ts_model.fetch('sale.order.line',
-                                                ['product_id','product_uom','product_uom_qty','product_uos', 'product_uos_qty','price_udv','price_unit','price_subtotal','tax_id','pvp_ref','current_pvp', 'q_note', 'detail_note', 'discount'],
+                                                ['product_id','product_uom',
+                                                'product_uom_qty',
+                                                'product_uos',
+                                                'product_uos_qty',
+                                                'price_udv','price_unit',
+                                                'price_subtotal','tax_id',
+                                                'pvp_ref','current_pvp',
+                                                'q_note', 'detail_note',
+                                                'discount', 'tourism'],
                                                 [
                                                     ['order_id', '=', order_id],
                                                  ]);
@@ -515,6 +523,9 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                             var model = new instance.web.Model("sale.order.line");
                             model.call("product_id_change_with_wh",[[],pricelist_id,product_id],kwargs)
                             .then(function(result){
+                                console.log
+                                ("tuuuuuuuuuuuuuuuuuuuuuuuuuuuuuurusmo")
+                                console.log(result)
                                 var product_obj = self.ts_model.db.get_product_by_id(product_id);
                                 var uom_obj = self.ts_model.db.get_unit_by_id(product_obj.uom_id[0])
                                 self.model.set('fresh_price', my_round(result.value.last_price_fresh || 0,2));
@@ -532,6 +543,8 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 self.model.set('pvp_ref', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? result.value.price_unit : 0,2 ));
                                 self.model.set('pvp', my_round( (product_obj.product_class == "normal") ? (result.value.price_unit || 0) : (result.value.last_price_fresh || 0), 2));
                                 self.model.set('margin', my_round( (result.value.price_unit != 0 && product_obj.product_class == "normal") ? ( (result.value.price_unit - product_obj.standard_price) / result.value.price_unit) : 0 , 2));
+                                self.model.set('tourism', result.value.tourism || false);
+
 
                                 // COMENTADO PARA QUE NO SAQUE EL AVISO SIEMPRE
                                 // if ( (1 > product_obj.virtual_stock_conservative) && (product_obj.product_class == "normal")){

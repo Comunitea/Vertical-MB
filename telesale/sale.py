@@ -194,9 +194,9 @@ class sale(osv.osv):
                     'pvp_ref': line.get('pvp_ref', 0.0),
                     'q_note': line.get('qnote', False),
                     'detail_note': line.get('detail_note', False),
-                    'discount': line.get('discount', 0.0)
+                    'discount': line.get('discount', 0.0),
+                    'tourism': line.get('tourism', 0.0),
                 }
-
                 t_order_line.create(cr, uid, vals)
             if order['action_button'] == 'confirm':
                 # wf_service = netsvc.LocalService('workflow')
