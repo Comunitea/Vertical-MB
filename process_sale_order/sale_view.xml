@@ -77,11 +77,6 @@
             </field>
         </record>
 
-
-
-
-
-
         <record id="view_order_form_add_customer_comment" model="ir.ui.view">
            <field name="name">sale.order.form.customer_comment</field>
            <field name="model">sale.order</field>
@@ -95,6 +90,9 @@
                <!-- <field name='date_order' position="after">
                    <field name="date_planned" attrs="{'readonly': [('route_detail_id', '!=', False)]}"/>
                </field> -->
+               <field name="note" position="before">
+                    <label for="note"/>
+               </field>
             </field>
         </record>
 
