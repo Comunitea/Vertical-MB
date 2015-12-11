@@ -2084,12 +2084,16 @@ class stock_move(models.Model):
         producto con coeff variable
         """
         uos_qty = move.product_uos_qty
+        if not move.wait_receipt_qty and move.product_id.is_var_coeff:
+            move.write({'product_uom_qty': move.product_uom_qty - qty})
+            if move.move_dest_id:
+                move.move_dest_id.write({'product_uos_qty': uos_qty })
+            return False
         if move.move_dest_id and move.propagate and move.move_dest_id.state \
                 not in ('done', 'cancel'):
             self.write(cr, uid, move.move_dest_id.id,
                        {'wait_receipt_qty': move.wait_receipt_qty})
-        if not move.wait_receipt_qty:
-            return False
+
         res = super(stock_move, self).split(cr, uid, move, qty,
                                             restrict_lot_id,
                                             restrict_partner_id,
