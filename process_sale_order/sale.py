@@ -126,7 +126,6 @@ class sale_order_line(models.Model):
             else:
                 self.product_code = False
 
-
     @api.onchange('product_uos_qty')
     def product_uos_qty_onchange(self):
         """
@@ -226,6 +225,22 @@ class sale_order_line(models.Model):
         res = super(sale_order_line, self).create(vals)
         return res
 
+    def no_onchange_price_unit(self, product_id, price_unit, product_uos):
+        """
+        We change the product_uom_qty
+        """
+        product = product_id
+        if product:
+            prod = self.env['product.product'].browse(product)
+            uos = product_uos
+            uos_id = product_uos
+            uom_pu, uos_pu = \
+                prod.get_uom_uos_prices(uos_id,
+                                           custom_price_unit=price_unit)
+            # Avoid trigger onchange_price_udv, because is already calculed
+            price_udv = uos_pu
+        return price_udv
+
     @api.onchange('price_unit')
     def onchange_price_unit(self):
         """
@@ -284,9 +299,58 @@ class sale_order(models.Model):
     #     res = super(sale_order, self).create(vals)
     #     return res
 
+    def change_price_vals(self, vals):
+        if len(self) > 1:
+            return vals
+        else:
+            if self.chanel != 'tablet':
 
+                return vals
+        sol_obj = self.env['sale.order.line']
+        pricelist = vals.get('pricelist_id', False) or self.pricelist_id and self.pricelist_id.id
+        partner_id = vals.get('partner_id', False) or self.partner_id and self.partner_id.id
+        if vals.get('order_line', False):
+            for line_est in vals['order_line']:
+                if line_est[0] in [0, 1]:
+                    line=line_est[2]
+                    if line_est[0] == 1:
+                        line_obj = sol_obj.browse (line_est[1])
+                        product_id = line.get('product_id', False) or line_obj.product_id and line_obj.product_id.id
+                        product_uom_qty = line.get('product_uom_qty', False) or line_obj.product_uom_qty
+                        product_uom = line.get('product_uom', False) or line_obj.product_uom and line_obj.product_uom.id
+                        product_uos = line.get('product_uos', False) or line_obj.product_uos and line_obj.product_uos.id
+                    else:
+                        product_id = line.get('product_id', False)
+                        product_uom_qty = line.get('product_uom_qty', False)
+                        product_uom = line.get('product_uom', False)
+                        product_uos = line.get('product_uos', False)
+
+                    vals_mod = sol_obj.product_id_change_with_wh(pricelist, product_id, product_uom_qty,
+                                                                 product_uom, line.get('product_uos_qty', False),
+                                                                 line.get('product_uos', False), partner_id = partner_id)
+                    if vals_mod['value'].get('discount', False):
+                        line['discount'] = vals_mod['value']['discount']
+                    if vals_mod['value'].get('tourism', False):
+                        line['tourism'] = vals_mod['value']['tourism']
+                    if vals_mod['value'].get('price_unit', False):
+                        line['price_unit'] = vals_mod['value']['price_unit']
+                        res = sol_obj.no_onchange_price_unit(product_id, line['price_unit'],product_uos)
+                        line['price_udv'] = res
+        return vals
+
+    @api.model
     def write(self, vals):
+        #if vals.get('chanel', False) == 'tablet':
+        vals = self.change_price_vals(vals)
         return super(sale_order, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        if vals.get('chanel', False) == 'tablet':
+            vals = self.change_price_vals(vals)
+        #vals.update({'user_id2': self._uid})
+        res = super(sale_order, self).create(vals)
+        return res
 
     @api.multi
     def action_ship_create(self):
@@ -295,10 +359,13 @@ class sale_order(models.Model):
         same product with different units of measure selected.
         """
         t_line = self.env['sale.order.line']
-        # TODO COMETAR Y PERMITIRLO, gestionar en do_prepare_partial caso de
+        # TODO COMETNAR Y PERMITIRLO, gestionar en do_prepare_partial caso de
         # 2 movimientos en 1 misma operación, debería separarse en operaciones
         # por unidad de venta.
         for order in self:
+            #PARA CALCULAR PROMOS SIEMPRE
+
+            order.apply_promotions()
             for line in order.order_line:
                 domain = [('order_id', '=', order.id),
                           ('product_id', '=', line.product_id.id),
@@ -324,7 +391,7 @@ class sale_order(models.Model):
             if order.procurement_group_id:
                 for proc in order.procurement_group_id.procurement_ids:
                     if proc.product_qty <= 0:
-                        print "A CANCELAR "
+                        #print "A CANCELAR "
                         procurement = proc
                         proc.cancel()
                         proc.move_ids.unlink()
@@ -384,6 +451,14 @@ class sale_order(models.Model):
             target=self._action_button_confirm_thread)
         thread.start()
         return True
+
+    # @api.model
+    # def action_button_confirm(self):
+    #     print "Confirm heredado"
+    #     if self.chanel == 'tablet':
+    #         print "CONFIRMO DESDE TABLET"
+    #         self.apply_promotions()
+    #     return super(sale_order, self).action_button_confirm()
 
     @api.model
     @api.one

@@ -211,8 +211,8 @@ class sale(osv.osv):
             #     self.action_button_confirm_thread(cr, uid, [order_id],
             #                                       context=context)
 
-            if 'set_promotion' in order and order['set_promotion']:
-                self.apply_promotions(cr, uid, [order_id], context=context)
+            #if 'set_promotion' in order and order['set_promotion']:
+            #    self.apply_promotions(cr, uid, [order_id], context=context)
         return order_ids
 
     def cancel_order_from_ui(self, cr, uid, order_id, context=None):
