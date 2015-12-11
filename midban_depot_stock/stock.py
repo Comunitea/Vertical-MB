@@ -1197,7 +1197,7 @@ class stock_pack_operation(models.Model):
                 product = op.product_id or op.package_id.product_id
                 vals['product_uom_id'] = product.uom_id.id
                 if not op.product_id and op.package_id:
-                    vals['lot_id'] = op.packa
+                    vals['lot_id'] = op.package_id.packed_lot_id.id
 
                 if op.product_id.id != vals['product_id'] and op.product_id:
                     raise exceptions.Warning(_("Cannot change product once "
