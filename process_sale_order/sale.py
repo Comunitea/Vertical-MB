@@ -303,8 +303,7 @@ class sale_order(models.Model):
         if len(self) > 1:
             return vals
         else:
-            if self.chanel != 'tablet':
-
+            if  vals.get('chanel', False) != 'tablet' and self.chanel != 'tablet':
                 return vals
         sol_obj = self.env['sale.order.line']
         pricelist = vals.get('pricelist_id', False) or self.pricelist_id and self.pricelist_id.id
