@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import fields, osv
 from openerp import api, models, _, exceptions
+from openerp.exceptions import except_orm
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 from lxml import etree
@@ -438,11 +439,18 @@ class stock_picking(osv.Model):
                                                            backorder_moves=backorder_moves,
                                                            context=context)
         if backorder_id:
+            wh_id = self.pool.get('stock.warehouse').search(cr ,uid, [], context=context)[0]
+            wh = self.pool.get('stock.warehouse').browse(cr, uid, wh_id, context=context)
             backorder = self.browse(cr,uid, backorder_id,context=context)
             if backorder.backorder_id.picking_type_code == 'outgoing':
                 vals = {
                     'route_detail_id': False,
-                    'validated_state': 'validated'
+                    'validated_state': 'no_validated'
+                }
+                self.write(cr, uid, [backorder_id], vals, context=context)
+            elif backorder.backorder_id.picking_type_id.id == wh.pick_type_id.id:
+                vals = {
+                    'validated_state': 'validated'  # maintain detail route but no prepared to load into the gun
                 }
                 self.write(cr, uid, [backorder_id], vals, context=context)
         return backorder_id
@@ -596,6 +604,24 @@ class StockPicking(models.Model):
     #     # print("********************************************")
     #     # print("********************************************")
     #     return res
+    @api.multi
+    def get_related_origin_pickings(self, check_outgoing=False):
+        """
+        :return: Recordset of pickings related, taked from the origin moves
+        """
+        res = self.env['stock.picking']
+        for pick in self:
+            if check_outgoing and not pick.picking_type_code == 'outgoing':
+                raise except_orm(_('Error'),
+                                 _('Picking %s must be outgoing type and  \
+                                    related with a sale or \
+                                    autosale' % pick.name))
+            for move in pick.move_lines:
+                for orig_move in move.move_orig_ids:
+                    if orig_move.picking_id not in res:
+                        res += orig_move.picking_id
+        return res
+
 
     @api.multi
     def write(self, vals):
