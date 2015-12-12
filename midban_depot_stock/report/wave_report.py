@@ -65,8 +65,7 @@ class wave_report(osv.osv):
                             (not item.customer_id or  item.customer_id.id == op.picking_id.partner_id.id):
                         if op.package_id:
                             if op.package_id.id == item.pack_id.id and\
-                                    (not item.uos_id or op.uos_id == item.uos_id) and\
-                                    op.op_package_id == item.op_package_id:
+                                    (not item.uos_id or op.uos_id == item.uos_id) :
                                 item_res.append(op.id)
                                 if not op.to_process:
                                     process = False
@@ -75,8 +74,7 @@ class wave_report(osv.osv):
                         else:
                             if op.product_id == item.product_id and \
                                     op.lot_id == item.lot_id and\
-                                    (not item.uos_id or op.uos_id == item.uos_id) and\
-                                    op.op_package_id == item.op_package_id:
+                                    (not item.uos_id or op.uos_id == item.uos_id) :
                                 item_res.append(op.id)
                                 if not op.to_process:
                                     process = False
@@ -150,8 +148,6 @@ class wave_report(osv.osv):
                                        readonly=True),
         'pack_id': fields.many2one('stock.quant.package', 'Pack',
                                    readonly=True),
-        'op_package_id': fields.many2one('stock.quant.package', 'OP Package',
-                                   readonly=True),
         'to_process': fields.function(_get_operation_ids, type="boolean",
                                          string="Processed (All Ops)",
                                          relation="stock.pack.operation",
@@ -178,7 +174,6 @@ class wave_report(osv.osv):
           SQ.uos_id          AS uos_id,
           SQ.customer_id       AS customer_id,
           SQ.is_package         as is_package,
-          SQ.op_package_id as op_package_id,
           SQ.to_process as to_process,
           SQ.pack_id      as pack_id"""
 
@@ -198,7 +193,6 @@ class wave_report(osv.osv):
                   quant.package_id as pack_id,
                   0 as customer_id,
                   true as is_package,
-                  op_package_id as op_package_id,
                   operation.to_process as to_process
 
 
@@ -230,7 +224,6 @@ class wave_report(osv.osv):
                      sequence,
                      order_seq,
                      is_package,
-                     op_package_id,
                      operation.to_process
            UNION
            SELECT Min(operation.id)          AS id,
@@ -246,7 +239,6 @@ class wave_report(osv.osv):
                   operation.package_id as pack_id,
                   0 as customer_id,
                   false as is_package,
-                  op_package_id as op_package_id,
                   operation.to_process as to_process
 
            FROM   stock_pack_operation operation
@@ -272,7 +264,6 @@ class wave_report(osv.osv):
                      pack_id,
                      sequence,
                      is_package,
-                     op_package_id,
                      operation.to_process,
                      order_seq"""
 
@@ -292,7 +283,6 @@ class wave_report(osv.osv):
                   quant.package_id as pack_id,
                   picking.partner_id as customer_id,
                   true as is_package,
-                  op_package_id as op_package_id,
                   operation.to_process as to_process
 
            FROM   stock_quant quant
@@ -323,7 +313,6 @@ class wave_report(osv.osv):
                      sequence,
                      order_seq,
                      is_package,
-                     op_package_id,
                      operation.to_process
            UNION
            SELECT Min(operation.id)          AS id,
@@ -339,7 +328,6 @@ class wave_report(osv.osv):
                   operation.package_id as pack_id,
                   picking.partner_id as customer_id,
                   false as is_package,
-                  op_package_id as op_package_id,
                   operation.to_process as to_process
 
            FROM   stock_pack_operation operation
@@ -365,7 +353,6 @@ class wave_report(osv.osv):
                      pack_id,
                      sequence,
                      is_package,
-                     op_package_id,
                      order_seq,
                      operation.to_process"""
 
@@ -379,7 +366,6 @@ class wave_report(osv.osv):
              SQ.uos_id,
              SQ.pack_id,
              SQ.is_package,
-             SQ.op_package_id,
              SQ.to_process,
              SQ.customer_id"""
 
