@@ -447,10 +447,12 @@ class stock_picking(osv.Model):
                     'route_detail_id': False,
                     'validated_state': 'no_validated'
                 }
+                backorder.do_unreserve()
                 self.write(cr, uid, [backorder_id], vals, context=context)
             elif backorder.backorder_id.picking_type_id.id == wh.pick_type_id.id:
+                val_state = 'loaded' if backorder.pack_operation_ids else 'validated'
                 vals = {
-                    'validated_state': 'validated'  # maintain detail route but no prepared to load into the gun
+                    'validated_state': val_state  # maintain detail route but no prepared to load into the gun
                 }
                 self.write(cr, uid, [backorder_id], vals, context=context)
         return backorder_id
