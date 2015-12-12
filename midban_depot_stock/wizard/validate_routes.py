@@ -120,7 +120,7 @@ class ValidateRoutes(models.TransientModel):
         if to_revalidate:
             to_revalidate.action_assign()
             to_revalidate.do_prepare_partial()
-            picks_tot = out_pickings + to_revalidate
+            picks_tot = out_pickings
             picks_tot.write({'validated_state': 'validated'})
         print("*****************")
         print("albaran escritura fecha planificada fecha detalle y validado")
