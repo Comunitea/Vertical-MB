@@ -643,20 +643,21 @@ class StockPicking(models.Model):
                 'min_date': detail_date,
                 'trans_route_id': detail_obj.route_id.id,
             })
-        for pick in self:
-            if detail_obj and pick.route_detail_id and pick.route_detail_id == \
-                    detail_obj.id:
-                continue  # Skipe rewrite the same detail, is expensive
-            for move in pick.move_lines:
-                if move not in move_set:
-                    move_set += move
-                for move2 in move.move_orig_ids:
-                    if move2.picking_id not in self:
-                        self += move2.picking_id
-                    if move2 not in move_set:
-                        move_set += move2  # Add to the set the pikc
+        if vals.get('validated_state', False) or vals.get('route_detail_id', False):  #Propagate changes
+            for pick in self:
+                if detail_obj and pick.route_detail_id and pick.route_detail_id == \
+                        detail_obj.id:
+                    continue  # Skipe rewrite the same detail, is expensive
+                for move in pick.move_lines:
+                    if move not in move_set:
+                        move_set += move
+                    for move2 in move.move_orig_ids:
+                        if move2.picking_id not in self:
+                            self += move2.picking_id
+                        if move2 not in move_set:
+                            move_set += move2  # Add to the set the pikc
         # Write all moves related the route and the detail
-        if move_set:
+        if move_set and vals.get('route_detail_id', False):  # only if route detail in vals
             move_set.write({'route_detail_id':detail_obj and detail_obj.id or False,
                             'trans_route_id:': detail_obj and detail_obj.route_id.id or False})
 
