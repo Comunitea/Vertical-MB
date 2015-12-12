@@ -303,8 +303,7 @@ class sale_order(models.Model):
         if len(self) > 1:
             return vals
         else:
-            if self.chanel != 'tablet':
-
+            if  vals.get('chanel', False) != 'tablet' and self.chanel != 'tablet':
                 return vals
         sol_obj = self.env['sale.order.line']
         pricelist = vals.get('pricelist_id', False) or self.pricelist_id and self.pricelist_id.id
@@ -317,6 +316,7 @@ class sale_order(models.Model):
                         line_obj = sol_obj.browse (line_est[1])
                         product_id = line.get('product_id', False) or line_obj.product_id and line_obj.product_id.id
                         product_uom_qty = line.get('product_uom_qty', False) or line_obj.product_uom_qty
+                        product_uos_qty = line.get('product_uom_qty', False) or line_obj.product_uos_qty
                         product_uom = line.get('product_uom', False) or line_obj.product_uom and line_obj.product_uom.id
                         product_uos = line.get('product_uos', False) or line_obj.product_uos and line_obj.product_uos.id
                     else:
@@ -324,10 +324,11 @@ class sale_order(models.Model):
                         product_uom_qty = line.get('product_uom_qty', False)
                         product_uom = line.get('product_uom', False)
                         product_uos = line.get('product_uos', False)
+                        product_uos_qty = line.get('product_uos_qty', False)
 
                     vals_mod = sol_obj.product_id_change_with_wh(pricelist, product_id, product_uom_qty,
                                                                  product_uom, line.get('product_uos_qty', False),
-                                                                 line.get('product_uos', False), partner_id = partner_id)
+                                                                  product_uos, partner_id = partner_id)
                     if vals_mod['value'].get('discount', False):
                         line['discount'] = vals_mod['value']['discount']
                     if vals_mod['value'].get('tourism', False):
