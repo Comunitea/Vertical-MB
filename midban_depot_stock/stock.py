@@ -2332,8 +2332,6 @@ class stock_quant(models.Model):
         If force_quants_location in context wy try to get quants only of
         location
         """
-
-
         _logger.debug("CMNT inicio Aplly_removal")
         _logger.debug("CMNT ####################")
         print "removal"
@@ -2367,7 +2365,7 @@ class stock_quant(models.Model):
 
                 return sup
             #es necesario ordernar antes por package id que por
-            order = 'removal_date, package_id,  in_date, id'
+            order = 'removal_date, in_date, package_id, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
