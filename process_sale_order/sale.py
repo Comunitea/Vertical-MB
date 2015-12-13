@@ -339,6 +339,27 @@ class sale_order(models.Model):
                         line['price_udv'] = res
         return vals
 
+    #FUNCIONES PARA LLAMAR DESDE TABLET
+    @api.model
+    def create_and_confirm(self, vals):
+        if vals.get('chanel', False) == 'tablet':
+            vals = self.change_price_vals(vals)
+        #vals.update({'user_id2': self._uid})
+        res = super(sale_order, self).create(vals)
+        if res:
+            self.action_button_confirm()
+        return res
+
+    @api.model
+    def easy_change(self, vals):
+        self.cancel_sale_to_draft()
+        vals = self.change_price_vals(vals)
+        res =  super(sale_order, self).write(vals)
+        if res:
+            self.action_button_confirm()
+        return res
+
+
     @api.model
     def write(self, vals):
         #if vals.get('chanel', False) == 'tablet':
