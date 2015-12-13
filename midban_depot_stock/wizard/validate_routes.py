@@ -139,11 +139,12 @@ class ValidateRoutes(models.TransientModel):
             pick_objs = self.env['stock.picking']
             if pick.group_id:
                 domain = [('group_id', '=', pick.group_id.id),
-                        ('picking_type_id', '=', pick.picking_type_id.return_picking_type_id.id)]
+                          ('state', 'not in', ['cancel', 'done']),
+                          ('picking_type_id', '=', pick.picking_type_id.return_picking_type_id.id)]
                 pick_objs = self.env['stock.picking'].search(domain)
-            # Autosale outs havent group id
-            elif pick.move_lines and pick.move_lines[0].move_orig_ids:
-                pick_objs = pick.move_lines[0].move_orig_ids[0].picking_id
+            # # Autosale outs havent group id
+            # elif pick.move_lines and pick.move_lines[0].move_orig_ids:
+            #     pick_objs = pick.move_lines[0].move_orig_ids[0].picking_id
             for p in pick_objs:
                 res += p
         return res
