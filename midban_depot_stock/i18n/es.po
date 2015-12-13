@@ -1545,7 +1545,7 @@ msgstr "Se comprobará la disponibilidad de los albaranes de tipo picking relaci
 #. module: midban_depot_stock
 #: view:confirm.load.wzd:midban_depot_stock.confirm_loads_form
 msgid "It will be marked the out and pick pickings as loaded, so you can ask for a picking task."
-msgstr "It will be marked the out and pick pickings as loaded, so you can ask for a picking task."
+msgstr "Se marcarán las salidas y los albaranes de picking como carga confirmada, así que podrán ser asignados a una tarea de picking."
 
 #. module: midban_depot_stock
 #: view:operations.on.fly.wzd:midban_depot_stock.operations_on_fly_wzd_form
@@ -2460,7 +2460,7 @@ msgstr "El albarán %s debería estar en estado de validación: carga confirmada
 #: code:addons/midban_depot_stock/wizard/confirm_load_wzd.py:79
 #, python-format
 msgid "Picking %s should be validated"
-msgstr "El albarán %s debería estar en estado de validación:validado"
+msgstr "El albarán %s debería estar validado antes de confirmar la carga"
 
 #. module: midban_depot_stock
 #: code:addons/midban_depot_stock/wizard/validate_routes.py:52
@@ -2620,12 +2620,12 @@ msgstr "Impreso"
 #. module: midban_depot_stock
 #: selection:stock.task,state:0
 msgid "Process"
-msgstr "Process"
+msgstr "En proceso"
 
 #. module: midban_depot_stock
 #: field:wave.report,to_process:0
 msgid "Processed (All Ops)"
-msgstr "Processed (All Ops)"
+msgstr "Todas procesadas"
 
 #. module: midban_depot_stock
 #: model:ir.model,name:midban_depot_stock.model_procurement_order

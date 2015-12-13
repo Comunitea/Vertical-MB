@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import fields, osv
 from openerp import api, models, _, exceptions
+from openerp.exceptions import except_orm
 from openerp import fields as fields2
 import openerp.addons.decimal_precision as dp
 from lxml import etree
@@ -438,11 +439,20 @@ class stock_picking(osv.Model):
                                                            backorder_moves=backorder_moves,
                                                            context=context)
         if backorder_id:
+            wh_id = self.pool.get('stock.warehouse').search(cr ,uid, [], context=context)[0]
+            wh = self.pool.get('stock.warehouse').browse(cr, uid, wh_id, context=context)
             backorder = self.browse(cr,uid, backorder_id,context=context)
             if backorder.backorder_id.picking_type_code == 'outgoing':
                 vals = {
                     'route_detail_id': False,
-                    'validated_state': 'validated'
+                    'validated_state': 'no_validated'
+                }
+                backorder.do_unreserve()
+                self.write(cr, uid, [backorder_id], vals, context=context)
+            elif backorder.backorder_id.picking_type_id.id == wh.pick_type_id.id:
+                val_state = 'loaded' if backorder.pack_operation_ids else 'validated'
+                vals = {
+                    'validated_state': val_state  # maintain detail route but no prepared to load into the gun
                 }
                 self.write(cr, uid, [backorder_id], vals, context=context)
         return backorder_id
@@ -596,6 +606,24 @@ class StockPicking(models.Model):
     #     # print("********************************************")
     #     # print("********************************************")
     #     return res
+    @api.multi
+    def get_related_origin_pickings(self, check_outgoing=False):
+        """
+        :return: Recordset of pickings related, taked from the origin moves
+        """
+        res = self.env['stock.picking']
+        for pick in self:
+            if check_outgoing and not pick.picking_type_code == 'outgoing':
+                raise except_orm(_('Error'),
+                                 _('Picking %s must be outgoing type and  \
+                                    related with a sale or \
+                                    autosale' % pick.name))
+            for move in pick.move_lines:
+                for orig_move in move.move_orig_ids:
+                    if orig_move.picking_id not in res:
+                        res += orig_move.picking_id
+        return res
+
 
     @api.multi
     def write(self, vals):
@@ -617,20 +645,21 @@ class StockPicking(models.Model):
                 'min_date': detail_date,
                 'trans_route_id': detail_obj.route_id.id,
             })
-        for pick in self:
-            if detail_obj and pick.route_detail_id and pick.route_detail_id == \
-                    detail_obj.id:
-                continue  # Skipe rewrite the same detail, is expensive
-            for move in pick.move_lines:
-                if move not in move_set:
-                    move_set += move
-                for move2 in move.move_orig_ids:
-                    if move2.picking_id not in self:
-                        self += move2.picking_id
-                    if move2 not in move_set:
-                        move_set += move2  # Add to the set the pikc
+        if vals.get('validated_state', False) or vals.get('route_detail_id', False):  #Propagate changes
+            for pick in self:
+                if detail_obj and pick.route_detail_id and pick.route_detail_id == \
+                        detail_obj.id:
+                    continue  # Skipe rewrite the same detail, is expensive
+                for move in pick.move_lines:
+                    if move not in move_set:
+                        move_set += move
+                    for move2 in move.move_orig_ids:
+                        if move2.picking_id not in self:
+                            self += move2.picking_id
+                        if move2 not in move_set:
+                            move_set += move2  # Add to the set the pikc
         # Write all moves related the route and the detail
-        if move_set:
+        if move_set and vals.get('route_detail_id', False):  # only if route detail in vals
             move_set.write({'route_detail_id':detail_obj and detail_obj.id or False,
                             'trans_route_id:': detail_obj and detail_obj.route_id.id or False})
 
@@ -1190,14 +1219,21 @@ class stock_pack_operation(models.Model):
         #         if op.lot_id.id != vals['lot_id']:
         #             vals['package_id'] = False
         init_t = time.time()
+        if vals.get('package_id', False):
+            vals_package = self.env['stock.quant.package'].browse(vals['package_id'])
+
+
         _logger.debug("CMNT WRITE PACK operation CONTEXT: %s ", self.env.context)
         if vals.get('product_id', False):
-
             for op in self:
                 product = op.product_id or op.package_id.product_id
                 vals['product_uom_id'] = product.uom_id.id
-                if not op.product_id and op.package_id:
-                    vals['lot_id'] = op.package_id.packed_lot_id.id
+
+                if not op.product_id and not vals.get('lot_id', False):
+                    if vals.get('package_id', False):
+                        vals['lot_id'] = self.env['stock.quant.package'].browse(vals['package_id']).packed_lot_id.id
+                    elif op.package_id:
+                        vals['lot_id'] = op.package_id.packed_lot_id.id
 
                 if op.product_id.id != vals['product_id'] and op.product_id:
                     raise exceptions.Warning(_("Cannot change product once "
@@ -1205,10 +1241,9 @@ class stock_pack_operation(models.Model):
                                                "this and crate another one in"
                                                " the picking."))
 
-
         #Hay que reescribir esto, lo hago en una función aparte.
         if vals.get('package_id', False) or vals.get('lot_id', False) or\
-            vals.get('location_dest_id') or vals.get('do_pack', False):
+            vals.get('location_dest_id', False) or vals.get('do_pack', False):
             for op in self:
                 #if op.picking_id.picking_type_id.id != 6:
                 vals = op.get_result_package_id(vals)
@@ -2297,8 +2332,6 @@ class stock_quant(models.Model):
         If force_quants_location in context wy try to get quants only of
         location
         """
-
-
         _logger.debug("CMNT inicio Aplly_removal")
         _logger.debug("CMNT ####################")
         print "removal"
@@ -2332,7 +2365,7 @@ class stock_quant(models.Model):
 
                 return sup
             #es necesario ordernar antes por package id que por
-            order = 'removal_date, package_id,  in_date, id'
+            order = 'removal_date, in_date, package_id, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')

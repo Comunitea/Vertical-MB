@@ -36,10 +36,12 @@ class ValidateRoutes(models.TransientModel):
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
 
-        pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
+        # pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
+        pick_pickings_tmp = out_pickings.get_related_origin_pickings(check_outgoing=True)
         # Está bien o ordeno por la min_date del out, es decir ordeno los outs
         pick_pickings = sorted(pick_pickings_tmp, key=lambda p: p.date)
         validate_write_batch = {}
+        to_revalidate = self.env['stock.picking']
         for pick in pick_pickings:
             itera_t = time.time()
             print("----------------------------------------------------------------------------")
@@ -52,24 +54,28 @@ class ValidateRoutes(models.TransientModel):
                                  _('Picking %s without has not route detail \
                                     assigned' % pick.name))
 
+            if pick.camera_id:  # El albarán a sido separado en cámaras
+                to_revalidate += pick
+                continue
+
             if pick.validated_state != 'no_validated' or \
                     pick.state not in ['confirmed']:
                 raise except_orm(_('Error'),
                                  _('Picking %s: You can only validate unvalidated pickings' % pick.name))
 
             assing_tot = time.time()
-            for move in pick.move_lines:
-                assing_t = time.time()
-                move.action_assign()
-                _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
-                print("*****************")
-                print("move ASIGNADO")
-                print(time.time() - assing_t)
-                print("*****************")
-                # No me hace falta marcarlo como incompleto
-
-            _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
-            _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
+            # for move in pick.move_lines:
+            #     assing_t = time.time()
+            #     move.action_assign()
+            #     _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
+            #     print("*****************")
+            #     print("move ASIGNADO")
+            #     print(time.time() - assing_t)
+            #     print("*****************")
+            #     # No me hace falta marcarlo como incompleto
+            pick.action_assign()
+            # _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
+            # _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
             print("*****************")
             print("albaran ASIGNADO")
             print(time.time() - assing_tot)
@@ -88,7 +94,7 @@ class ValidateRoutes(models.TransientModel):
             if not route_detail.id in validate_write_batch:
                 detail_date = route_detail.date + " 19:00:00"
                 vals2 = {'route_detail_id': route_detail.id,
-                         'min_date': detail_date,
+                         # 'min_date': detail_date,
                          'validated_state': 'validated'}
                 validate_write_batch[route_detail.id] = (picks_tot, vals2)
 
@@ -99,6 +105,7 @@ class ValidateRoutes(models.TransientModel):
             print("*****************")
         # import ipdb; ipdb.set_trace()
         # _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
+
         for det_id in validate_write_batch.keys():
 
             picks = validate_write_batch[det_id][0]
@@ -109,6 +116,12 @@ class ValidateRoutes(models.TransientModel):
             print("Ultima escritura")
             print(time.time() - last_write)
             print("*****************")
+
+        if to_revalidate:
+            to_revalidate.action_assign()
+            to_revalidate.do_prepare_partial()
+            picks_tot = out_pickings
+            picks_tot.write({'validated_state': 'validated'})
         print("*****************")
         print("albaran escritura fecha planificada fecha detalle y validado")
         print(time.time() - init_t)
