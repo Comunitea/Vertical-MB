@@ -573,7 +573,7 @@ class ProductTemplate(models.Model):
             raise Warning(_('Need a logistic unit in sales'))
         return
 
-    @api.multi
+    @api.one
     def write(self, vals):
         """
         This method compares unit of measure and logistic unit of measure when
