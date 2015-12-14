@@ -897,6 +897,7 @@ class assign_task_wzd(osv.TransientModel):
             ('min_date', '>=', start_date),
             ('min_date', '<=', end_date),
             ('trans_route_id', '=', selected_route),
+            ('wave_id', "=", False),
             ('validated_state', '=', 'loaded')
         ]
         _logger.debug("CMNT haste tenerlo preparado para empezar %s", time.time() - init_t)
