@@ -353,13 +353,14 @@ class stock_picking(osv.Model):
                     value['picking_id'] = new_pick_obj.id
                     self.env['stock.pack.operation'].with_context(no_recompute=True).create(value)
                 _logger.debug("CMNT tiempo reasigna ops en BO: %s", time.time() - init_bo)
-
-        # else:
-        #     #REVISAR NO LO TENGO CLARO
-        #     for op in self.pack_operation_ids:
-        #         if not op.to_revised:
-        #             op.task_id = False  # Write to be able to assign later
-        #         #op.to_process = True  # Write to be to process by default,
+        else:
+            #REVISAR NO LO TENGO CLARO
+            for op in self.pack_operation_ids:
+                if not op.to_revised:
+                    op.task_id = False  # Write to be able to assign later
+                #op.to_process = True  # Write to be to process by default,
+            if self.wave_id:
+                self.wave_id = False
         _logger.debug("CMNT tiempo total approve_pack_operations2 : %s", time.time() - init_t)
         return
 
