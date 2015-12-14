@@ -444,7 +444,6 @@ class stock_picking(osv.Model):
             backorder = self.browse(cr,uid, backorder_id,context=context)
             if backorder.backorder_id.picking_type_code == 'outgoing':
                 vals = {
-                    'route_detail_id': False,
                     'validated_state': 'no_validated'
                 }
                 backorder.do_unreserve()
