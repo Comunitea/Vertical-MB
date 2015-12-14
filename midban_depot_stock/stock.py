@@ -1136,8 +1136,7 @@ class stock_pack_operation(models.Model):
     def assign_location(self):
         _logger.debug("CMNT assign_location operation")
         if self.package_id.is_multiproduct:
-            multipack_location = self.env['stock.location'].search(
-                [('multipack_location', '=', True)])
+            multipack_location = self.env['stock.location'].search([('multipack_location', '=', True)])
             if not multipack_location:
                 raise exceptions.Warning(_('Location not found'),
                                          _('Impossible found the multipack'
