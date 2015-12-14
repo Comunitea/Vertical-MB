@@ -22,7 +22,7 @@ from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
-from openerp.tools.float_utils import float_round, float_compare
+from openerp.tools.float_utils import float_round, float_compare, float_is_zero
 from openerp.api import Environment
 import threading
 import logging
@@ -312,6 +312,7 @@ class sale_order(models.Model):
             for line_est in vals['order_line']:
                 if line_est[0] in [0, 1]:
                     line=line_est[2]
+
                     if line_est[0] == 1:
                         line_obj = sol_obj.browse (line_est[1])
                         product_id = line.get('product_id', False) or line_obj.product_id and line_obj.product_id.id
@@ -327,16 +328,20 @@ class sale_order(models.Model):
                         product_uos_qty = line.get('product_uos_qty', False)
 
                     vals_mod = sol_obj.product_id_change_with_wh(pricelist, product_id, product_uom_qty,
-                                                                 product_uom, line.get('product_uos_qty', False),
-                                                                  product_uos, partner_id = partner_id)
+                                                                product_uom, line.get('product_uos_qty', False),
+                                                                product_uos, partner_id = partner_id)
                     if vals_mod['value'].get('discount', False):
                         line['discount'] = vals_mod['value']['discount']
                     if vals_mod['value'].get('tourism', False):
                         line['tourism'] = vals_mod['value']['tourism']
                     if vals_mod['value'].get('price_unit', False):
-                        line['price_unit'] = vals_mod['value']['price_unit']
-                        res = sol_obj.no_onchange_price_unit(product_id, line['price_unit'],product_uos)
-                        line['price_udv'] = res
+                        if not float_is_zero(line['price_unit'],
+                                         precision_digits=2):  # Si es cero
+                            # no se cambia el precio
+                            line['price_unit'] = vals_mod['value']['price_unit']
+                            res = sol_obj.no_onchange_price_unit(product_id,
+                                                                line['price_unit'],product_uos)
+                            line['price_udv'] = res
         return vals
 
     #FUNCIONES PARA LLAMAR DESDE TABLET
