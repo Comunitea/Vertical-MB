@@ -543,6 +543,7 @@
                          <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
                          <filter name="groupby_user_id" string="Comercial" context="{'group_by':'create_uid'}"/>
                          <filter name="groupby_val_state" string="Validated State" context="{'group_by':'validated_state'}"/>
+                         <filter name="groupby_state" string="State" context="{'group_by':'state'}"/>
                          <!--<filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>-->
                     </group>
                </search>
