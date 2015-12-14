@@ -33,7 +33,7 @@ class ConfirmProcessDelivery(models.TransientModel):
     def _get_journal(self):
         journal_obj = self.env['account.journal']
         journal_type = self._get_journal_type()
-        journals = journal_obj.search([('type', '=', journal_type)])
+        journals = journal_obj.search([('type', '=', journal_type)],order='id')
         return journals and journals[0] or False
 
     @api.model
