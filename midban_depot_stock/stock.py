@@ -353,13 +353,14 @@ class stock_picking(osv.Model):
                     value['picking_id'] = new_pick_obj.id
                     self.env['stock.pack.operation'].with_context(no_recompute=True).create(value)
                 _logger.debug("CMNT tiempo reasigna ops en BO: %s", time.time() - init_bo)
-
-        # else:
-        #     #REVISAR NO LO TENGO CLARO
-        #     for op in self.pack_operation_ids:
-        #         if not op.to_revised:
-        #             op.task_id = False  # Write to be able to assign later
-        #         #op.to_process = True  # Write to be to process by default,
+        else:
+            #REVISAR NO LO TENGO CLARO
+            for op in self.pack_operation_ids:
+                if not op.to_revised:
+                    op.task_id = False  # Write to be able to assign later
+                #op.to_process = True  # Write to be to process by default,
+            if self.wave_id:
+                self.wave_id = False
         _logger.debug("CMNT tiempo total approve_pack_operations2 : %s", time.time() - init_t)
         return
 
@@ -444,7 +445,6 @@ class stock_picking(osv.Model):
             backorder = self.browse(cr,uid, backorder_id,context=context)
             if backorder.backorder_id.picking_type_code == 'outgoing':
                 vals = {
-                    'route_detail_id': False,
                     'validated_state': 'no_validated'
                 }
                 backorder.do_unreserve()
@@ -647,7 +647,7 @@ class StockPicking(models.Model):
             })
         if vals.get('validated_state', False) or vals.get('route_detail_id', False):  #Propagate changes
             for pick in self:
-                if detail_obj and pick.route_detail_id and pick.route_detail_id == \
+                if detail_obj and pick.route_detail_id and pick.route_detail_id.id == \
                         detail_obj.id:
                     continue  # Skipe rewrite the same detail, is expensive
                 for move in pick.move_lines:

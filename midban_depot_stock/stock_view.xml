@@ -505,9 +505,10 @@
                     <field name="order_note" readonly="True" string="Order Notes"/>
                     <field name="backorder_id" readonly="True"/>
                     <field name="validated_state"/>
+                    <field name="state" readonly="True" invisible="0"/>
                     <field name="route_detail_id" domain="[('route_type', 'in', ('delivery', 'auto_sale'))]"
                            attrs="{'readonly': [('state', 'in', [('assigned', 'done')])]}"/>
-                    <field name="state" readonly="True" invisible="1"/>
+
                     <!--<field name="detail_date" readonly="True" invisible="1"/>-->
                     <field name="trans_route_id" invisible="1"/>
                     <field name="user_id" invisible="1"/>
@@ -542,6 +543,7 @@
                          <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
                          <filter name="groupby_user_id" string="Comercial" context="{'group_by':'create_uid'}"/>
                          <filter name="groupby_val_state" string="Validated State" context="{'group_by':'validated_state'}"/>
+                         <filter name="groupby_state" string="State" context="{'group_by':'state'}"/>
                          <!--<filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>-->
                     </group>
                </search>
