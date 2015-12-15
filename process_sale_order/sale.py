@@ -399,7 +399,7 @@ class sale_order(models.Model):
                         partner.comercial,
                                                             user.name)
                     print "***************************************************"
-                    return ids[0]
+                    return so
             else:
                 return []
         else:
