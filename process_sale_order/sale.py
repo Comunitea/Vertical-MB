@@ -24,6 +24,10 @@ from openerp.tools.translate import _
 from openerp.exceptions import except_orm
 from openerp.tools.float_utils import float_round, float_compare, float_is_zero
 from openerp.api import Environment
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+import time
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import threading
 import logging
 _logger = logging.getLogger(__name__)
@@ -372,10 +376,43 @@ class sale_order(models.Model):
         return super(sale_order, self).write(vals)
 
     @api.model
+    def check_duplicate(self, vals):
+        date_from =  time.strftime("%x")
+        domain = [('partner_shipping_id','=',
+                   vals.get('partner_shipping_id', False)),
+                ('partner_id', '=', vals.get('partner_id',False)),
+                ('date_order', '>=', date_from)]
+        ids = self.search(domain)
+
+        if len(ids):
+            products_vals = [vals_line[2]['product_id'] for vals_line in vals[
+                    'order_line']]
+            for so in ids:
+                products = [line.product_id.id for line in so.order_line]
+                if set(products) == set(products_vals):
+                    user = self.env['res.users'].browse(vals['user_id'])
+                    partner = self.env['res.partner'].browse(vals[
+                                                                 'partner_id'])
+                    print "***************************************************"
+                    print "** INTENTANDO INTRODUCIR PEDIDO DUPLICADO   *******"
+                    print u" Cliente: %s  //  Comercial: %s"%(
+                        partner.comercial,
+                                                            user.name)
+                    print "***************************************************"
+                    return ids[0]
+            else:
+                return []
+        else:
+            return []
+
+    @api.model
     def create(self, vals):
         if vals.get('chanel', False) == 'tablet':
+            res = self.check_duplicate(vals)
+            if len(res):
+                return res
             vals = self.change_price_vals(vals)
-        #vals.update({'user_id2': self._uid})
+        #vals.update({'user_id2': sel>=f._uid})
         res = super(sale_order, self).create(vals)
         return res
 
