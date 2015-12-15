@@ -34,6 +34,7 @@
                               <!--   <field name="package_id" groups="stock.group_tracking_lot"/> -->
                                 <field name="var_weight" invisible="1"/>
                                 <field name="do_onchange" invisible="1"/>
+                                <field name="product_ref" readonly ="1"/>
                                 <field name="product_id" required="True"  context="{'uom':product_uom_id}" on_change="product_id_change(product_id,product_uom_id,context)"/>
                                 <field name="quantity"/>
                                 <button name="split_quantities" string="Split" type="object" icon="STOCK_PREFERENCES" attrs="{'invisible': [('quantity', '=', 1)]}"/>
