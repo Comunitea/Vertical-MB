@@ -631,7 +631,7 @@ class StockPicking(models.Model):
         Inherit to write the route and route detail in the related, pickings
         and moves.
         """
-        import ipdb; ipdb.set_trace()
+        #import ipdb; ipdb.set_trace()
         init_t = time.time()
         move_set = self.env['stock.move']
         detail_obj = False

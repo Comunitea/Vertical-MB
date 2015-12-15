@@ -494,9 +494,11 @@ class sale_order(models.Model):
             new_move_id = sm_obj.create({
                 'product_id': line.product_id.id,
                 'product_uom_qty': -line.product_uom_qty,
+                'product_uom_acc_qty': -line.product_uom_qty,
                 'product_uom': line.product_uom.id,
                 'product_uos': line.product_uos.id,
                 'product_uos_qty': -line.product_uos_qty,
+                'accepted_qty': -line.product_uos_qty,
                 #'picking_id': new_picking,
                 'state': 'draft',
                 'location_id': location_id,
