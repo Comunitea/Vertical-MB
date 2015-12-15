@@ -354,16 +354,16 @@ class sale_order(models.Model):
         if vals.get('chanel', False) == 'tablet':
             vals = self.change_price_vals(vals)
         #vals.update({'user_id2': self._uid})
-        res = super(sale_order, self).create(vals)
+        res = self.create(vals)
         if res:
-            self.action_button_confirm()
+            res.action_button_confirm()
         return res
 
     @api.model
     def easy_change(self, vals):
         self.cancel_sale_to_draft()
         vals = self.change_price_vals(vals)
-        res =  super(sale_order, self).write(vals)
+        res =  self.write(vals)
         if res:
             self.action_button_confirm()
         return res
