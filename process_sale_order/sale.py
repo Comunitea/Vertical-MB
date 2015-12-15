@@ -373,7 +373,11 @@ class sale_order(models.Model):
     def write(self, vals):
         #if vals.get('chanel', False) == 'tablet':
         vals = self.change_price_vals(vals)
-        return super(sale_order, self).write(vals)
+        res = super(sale_order, self).write(vals)
+        if res:
+            self.recalculate_taxes()
+        return res
+
 
     @api.model
     def check_duplicate(self, vals):
@@ -390,14 +394,14 @@ class sale_order(models.Model):
             for so in ids:
                 products = [line.product_id.id for line in so.order_line]
                 if set(products) == set(products_vals):
-                    user = self.env['res.users'].browse(vals['user_id'])
-                    partner = self.env['res.partner'].browse(vals[
-                                                                 'partner_id'])
+                    user = self.env['res.users'].browse(vals.get('user_id',
+                                                                 False))
+                    partner = self.env['res.partner'].browse(vals.get(
+                                                                 'partner_id', False))
                     print "***************************************************"
                     print "** INTENTANDO INTRODUCIR PEDIDO DUPLICADO   *******"
                     print u" Cliente: %s  //  Comercial: %s"%(
-                        partner.comercial,
-                                                            user.name)
+                        partner and partner.comercial, user and user.name)
                     print "***************************************************"
                     return so
             else:
@@ -414,7 +418,18 @@ class sale_order(models.Model):
             vals = self.change_price_vals(vals)
         #vals.update({'user_id2': sel>=f._uid})
         res = super(sale_order, self).create(vals)
+        if res:
+            res.recalculate_taxes()
         return res
+
+    @api.one
+    @api.model
+    def recalculate_taxes(self):
+        if self.chanel == 'tablet' and self.fiscal_position:
+            print "pedido de tablet"
+            print "Recalcula impuestos"
+            for line in self.order_line:
+                line.tax_id = self.fiscal_position.map_tax(line.tax_id)
 
     @api.multi
     def action_ship_create(self):
