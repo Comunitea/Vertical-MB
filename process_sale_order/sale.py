@@ -398,12 +398,12 @@ class sale_order(models.Model):
                                                                  False))
                     partner = self.env['res.partner'].browse(vals.get(
                                                                  'partner_id', False))
-                    print "***************************************************"
-                    print "** INTENTANDO INTRODUCIR PEDIDO DUPLICADO   *******"
-                    print u" Cliente: %s  //  Comercial: %s"%(
-                        partner and partner.comercial, user and user.name)
-                    print "***************************************************"
-                    return so
+                    # print "***************************************************"
+                    # print "** INTENTANDO INTRODUCIR PEDIDO DUPLICADO   *******"
+                    # print u" Cliente: %s  //  Comercial: %s"%(
+                    #     partner and partner.comercial, user and user.name)
+                    # print "***************************************************"
+                    # return so
             else:
                 return []
         else:
