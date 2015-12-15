@@ -117,7 +117,6 @@ class ConfirmProcessDelivery(models.TransientModel):
 
     @api.multi
     def confirm(self):
-        import ipdb; ipdb.set_trace()
         picking_ids = self.env.context['active_ids']
         pickings = self.env['stock.picking'].browse(picking_ids)
         picks_to_print = self.env['stock.picking']
