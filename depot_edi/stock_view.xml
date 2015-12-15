@@ -26,6 +26,7 @@
                     <field name="num_dispatch_advice"/>
                     <field name="date_dispatch_advice"/>
                     <field name="supplier_pick_number"/>
+                    <field name="supplier_ref_number"/>
                     <field name="order_date"/>
                 </field>
                 <page string="Additional Info" position="after">
@@ -57,6 +58,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
                 <field name="supplier_pick_number"/>
+                <field name="supplier_ref_number"/>
             </xpath>
         </field>
         </record>

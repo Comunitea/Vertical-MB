@@ -631,7 +631,6 @@ class StockPicking(models.Model):
         Inherit to write the route and route detail in the related, pickings
         and moves.
         """
-        #import ipdb; ipdb.set_trace()
         init_t = time.time()
         move_set = self.env['stock.move']
         detail_obj = False
@@ -2369,8 +2368,8 @@ class stock_quant(models.Model):
                     context=context)
 
                 return sup
-            #es necesario ordernar antes por package id que por
-            order = 'removal_date, in_date, package_id, id'
+            #es necesario ordernar antes poqr package id que por
+            order = 'life_date, in_date, package_id, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
