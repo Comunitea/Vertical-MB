@@ -527,7 +527,7 @@
                     <!-- <field name="detail_date"/> -->
                     <field name="route_detail_id"/>
                     <field name="trans_route_id"/>
-                    <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('ref','ilike',self)]"/>
+                    <field name="name" string="Outgoing pickings" filter_domain="[('name','ilike',self)]"/>
                     <field name="partner_id" operator="child_of"/>
                     <field name="sale_id"/>
                     <separator/>
@@ -574,6 +574,7 @@
           <field name="arch" type="xml">
               <tree string="Route Sheet" create="false" delete="false">
                   <!--<field name="sale_id" readonly="True"/>-->
+                  <field name="name" invisible="True"/>
                   <field name="partner_ref" readonly="True" string="Reference"/>
                   <field name="partner_id" readonly="True"/>
                   <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
@@ -601,7 +602,7 @@
                 <!--<field name="detail_date"/>-->
                 <field name="route_detail_id"/>
                 <field name="create_uid" string="Comercial"/>
-                <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('ref','ilike',self)]"/>
+                <field name="name" string="Outgoing pickings" filter_domain="[('name','ilike',self)]"/>
                 <field name="partner_id"/>
                 <separator/>
                     <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
