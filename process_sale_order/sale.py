@@ -339,7 +339,7 @@ class sale_order(models.Model):
                     if vals_mod['value'].get('tourism', False):
                         line['tourism'] = vals_mod['value']['tourism']
                     if vals_mod['value'].get('price_unit', False):
-                        if not float_is_zero(line['price_unit'],
+                        if line.get('price_unit', False) and not float_is_zero(line['price_unit'],
                                          precision_digits=2):  # Si es cero
                             # no se cambia el precio
                             line['price_unit'] = vals_mod['value']['price_unit']

@@ -493,14 +493,16 @@
                       colors="orange:backorder_id and validated_state != 'loaded';red:route_detail_id == False;blue:validated_state=='validated';green:validated_state=='loaded' and state!='done'" create="false" delete="false">
                     <field name="name"  readonly="True"/>
                     <field name="sale_id" readonly="True"/>
-                     <field name="min_date" readonly="True" widget="date"/>
+                    <field name="create_uid" readonly="True"/>
+                    <field name="min_date" readonly="True" widget="date"/>
                     <field name="partner_id" readonly="True"/>
                     <field name="partner_street" readonly="True"/>
                     <field name="partner_city" readonly="True"/>
                     <!--<field name="orig_planned_date" readonly="True"/>-->
 
-                    <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
                     <field name="total_weight" sum="Total Weight" readonly="True"/>
+                    <field name="amount_total" string="Import Total" sum="Total Tax Included" readonly="True"/>
+
 
                     <field name="order_note" readonly="True" string="Order Notes"/>
                     <field name="backorder_id" readonly="True"/>
@@ -525,7 +527,7 @@
                     <!-- <field name="detail_date"/> -->
                     <field name="route_detail_id"/>
                     <field name="trans_route_id"/>
-                    <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
+                    <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('ref','ilike',self)]"/>
                     <field name="partner_id" operator="child_of"/>
                     <field name="sale_id"/>
                     <separator/>
@@ -541,7 +543,7 @@
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>
                          <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
                          <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
-                         <filter name="groupby_user_id" string="Comercial" context="{'group_by':'create_uid'}"/>
+                         <filter name="groupby_user_id" string="Usuario" context="{'group_by':'create_uid'}"/>
                          <filter name="groupby_val_state" string="Validated State" context="{'group_by':'validated_state'}"/>
                          <filter name="groupby_state" string="State" context="{'group_by':'state'}"/>
                          <!--<filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>-->
@@ -599,7 +601,7 @@
                 <!--<field name="detail_date"/>-->
                 <field name="route_detail_id"/>
                 <field name="create_uid" string="Comercial"/>
-                <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('client_order_ref','ilike',self)]"/>
+                <field name="name" string="Outgoing pickings" filter_domain="['|',('name','ilike',self),('ref','ilike',self)]"/>
                 <field name="partner_id"/>
                 <separator/>
                     <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
@@ -613,7 +615,7 @@
                      <filter name="groupby_detail" string="Detail Route" context="{'group_by':'route_detail_id'}"/>
                      <filter name="groupby_partner_id" string="Customer" context="{'group_by':'partner_id'}"/>
                      <!--<filter name="groupby_user_id" string="Comercial" context="{'group_by':'user_id'}"/>-->
-                     <filter name="groupby_user_id" string="Comercial" context="{'group_by':'create_uid'}"/>
+                     <filter name="groupby_user_id" string="Usuario" context="{'group_by':'create_uid'}"/>
                 </group>
            </search>
           </field>
