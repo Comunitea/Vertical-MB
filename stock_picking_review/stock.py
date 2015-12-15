@@ -331,11 +331,11 @@ class StockPicking(models.Model):
                             qty = line.accepted_qty
 
                         val1 += line.price_subtotal_accepted
-
-                        line_obj = self.pool['sale.order.line']
-                        for c in sale_line.tax_id.compute_all( price, qty, line.product_id,
-                                sale_line.order_id.partner_id)['taxes']:
-                            val += c.get('amount', 0.0)
+                        if sale_line and line.state != 'cancel':
+                            line_obj = self.env['sale.order.line']
+                            for c in sale_line.tax_id.compute_all( price, qty, line.product_id,
+                                    sale_line.order_id.partner_id)['taxes']:
+                                val += c.get('amount', 0.0)
 
                     else:
                         continue

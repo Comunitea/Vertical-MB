@@ -129,22 +129,25 @@
                         <h1>
                             <field name="name" class="oe_inline" attrs="{'invisible': [('name','=','/')]}" readonly="1"/>
                         </h1>
-                        <group>
-                            <group>
+                        <group col="6" colspan="6">
+                            <group col="2">
                                 <field name="partner_id"/>
-                                <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                                <field name="payment_mode"/>
                                 <field name="amount_total"/>
                                 <field name="amount_total_acc"/>
-                                <field name="payment_mode"/>
                                 <field name="receipt_amount"/>
                             </group>
-                            <group>
+                            <group col="2">
                                 <field name="reviewed" />
                                 <field name="route_detail_id" />
                                 <field name="date"/>
                                 <field name="min_date"/>
+                            </group>
+                            <group col="2">
+                                <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                                <field name="sale_id" readonly="True"/>
+                                <field name="invoice_id" readonly="True"/>
                                 <field name="origin" placeholder="e.g. PO0032" class="oe_inline"/>
-
                             </group>
                         </group>
                         <notebook>
