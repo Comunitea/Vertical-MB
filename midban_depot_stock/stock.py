@@ -631,6 +631,7 @@ class StockPicking(models.Model):
         Inherit to write the route and route detail in the related, pickings
         and moves.
         """
+        import ipdb; ipdb.set_trace()
         init_t = time.time()
         move_set = self.env['stock.move']
         detail_obj = False
@@ -666,6 +667,11 @@ class StockPicking(models.Model):
         # Self is the original self plus the related pickings in the move
         res = super(StockPicking,
                     self.with_context(tracking_disable=True)).write(vals)
+
+        # ÑAPA, por algun motivo no escibe bien la ruta en el albarán de salida
+        # Hay que hacerlo s veces (misterioso)
+        if detail_obj:
+            self[0].min_date = detail_obj.date + " 19:00:00"
         print("********************************************")
         print("TIEMPO WRITE MIDBAN DEPOT STOCK PICKING")
         print(time.time() - init_t)

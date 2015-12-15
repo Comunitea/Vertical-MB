@@ -529,6 +529,7 @@
                     <field name="trans_route_id"/>
                     <field name="name" string="Outgoing pickings" filter_domain="[('name','ilike',self)]"/>
                     <field name="partner_id" operator="child_of"/>
+                    <field name="create_uid" string="Usuario"/>
                     <field name="sale_id"/>
                     <separator/>
                         <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
