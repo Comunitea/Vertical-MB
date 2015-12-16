@@ -19,6 +19,8 @@
 #
 ##############################################################################
 from openerp import models, fields, api
+from openerp.tools.float_utils import float_round
+import openerp.addons.decimal_precision as dp
 
 
 class manual_transfer_wzd(models.TransientModel):
@@ -78,3 +80,49 @@ class ItemProduct(models.TransientModel):
                              related="product_id.uom_id", readonly=True)
     date_planned = fields.Date('Planned Date', required=True,
                                default=fields.Date.today())
+    uos_qty = fields.Float('Quantity (S.U.)',
+                           digits_compute=dp.
+                           get_precision('Product Unit of Measure'),
+                                         required=True)
+    uos_id = fields.Many2one('product.uom', 'Second Unit',
+                             required=True)
+
+    @api.onchange('uos_id')
+    def product_uos_onchange(self):
+        """
+        We change the product_uom_qty
+        """
+        product = self.product_id
+        if product:
+            # Change Uom Qty
+            uos_id = self.uos_id.id
+            uos_qty = self.uos_qty
+            log_unit = product.get_uos_logistic_unit(uos_id)
+            self.qty = product.uos_qty_to_uom_qty(uos_qty, uos_id)
+
+    @api.onchange('uos_qty')
+    def product_uos_qty_onchange(self):
+        """
+        We change the product_uom_qty
+        """
+        product = self.product_id
+        if product:
+            uos_id = self.uos_id.id
+            uos_qty = float_round(self.uos_qty,
+                              precision_rounding=self.uos_id.rounding,
+                              rounding_method='UP')
+            self.uos_qty = uos_qty
+            self.qty = product.uos_qty_to_uom_qty(uos_qty, uos_id)
+
+    @api.onchange('product_id')
+    def product_id_onchange(self):
+        """
+        We change the product_uom_qty
+        """
+        product = self.product_id
+        if product:
+            product_udv_ids = product.get_sale_unit_ids()
+            if product_udv_ids:
+                self.uos_qty = 1.0
+                self.uos_id = product_udv_ids[0]
+
