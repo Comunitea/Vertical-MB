@@ -15,8 +15,10 @@
                             <field name="item_product_ids" nolabel="1" colspan="4">
                                 <tree string="Tags" editable="top">
                                     <field name="product_id"/>
-                                    <field name="qty"/>
-                                    <field name="uom_id"/>
+                                    <field name="uos_qty"  string="Cantidad"/>
+                                    <field name="uos_id" string="Unidad de venta" context="{'product_id': product_id}"/>
+                                    <field name="qty"  string="Cantidad"/>
+                                    <field name="uom_id"  string="Unidad de stock"/>
                                     <field name="date_planned"/>
                                 </tree>
                             </field>

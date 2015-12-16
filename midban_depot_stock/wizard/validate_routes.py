@@ -30,14 +30,117 @@ class ValidateRoutes(models.TransientModel):
 
     _name = 'validate.routes'
 
+    # @api.multi
+    # def validate(self):
+    #     init_t = time.time()
+    #     active_ids = self.env.context['active_ids']
+    #     out_pickings = self.env['stock.picking'].browse(active_ids)
+    #
+    #     # pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
+    #     pick_pickings_tmp = out_pickings.get_related_origin_pickings(check_outgoing=True)
+    #     # Está bien o ordeno por la min_date del out, es decir ordeno los outs
+    #     pick_pickings = sorted(pick_pickings_tmp, key=lambda p: p.date)
+    #     validate_write_batch = {}
+    #     to_revalidate = self.env['stock.picking']
+    #     for pick in pick_pickings:
+    #         itera_t = time.time()
+    #         print("----------------------------------------------------------------------------")
+    #         print("----------------------------------------------------------------------------")
+    #         print("SEGUIMIENTO DEL ALBARAN ", pick.name)
+    #         print("----------------------------------------------------------------------------")
+    #         print("----------------------------------------------------------------------------")
+    #         if not pick.route_detail_id:
+    #             raise except_orm(_('Error'),
+    #                              _('Picking %s without has not route detail \
+    #                                 assigned' % pick.name))
+    #
+    #         if pick.camera_id:  # El albarán a sido separado en cámaras
+    #             to_revalidate += pick
+    #             continue
+    #
+    #         if pick.validated_state != 'no_validated' or \
+    #                 pick.state not in ['confirmed']:
+    #             raise except_orm(_('Error'),
+    #                              _('Picking %s: You can only validate unvalidated pickings' % pick.name))
+    #
+    #         assing_tot = time.time()
+    #         # for move in pick.move_lines:
+    #         #     assing_t = time.time()
+    #         #     move.action_assign()
+    #         #     _logger.debug("CMNT Assign time: %s", time.time() - assing_t)
+    #         #     print("*****************")
+    #         #     print("move ASIGNADO")
+    #         #     print(time.time() - assing_t)
+    #         #     print("*****************")
+    #         #     # No me hace falta marcarlo como incompleto
+    #         pick.action_assign()
+    #         # _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
+    #         # _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
+    #         print("*****************")
+    #         print("albaran ASIGNADO")
+    #         print(time.time() - assing_tot)
+    #         print("*****************")
+    #         # Create as many picks as cameras involved and validate_it.
+    #         split_t = time.time()
+    #         picks_by_cam = self._split_pick_by_cameras(pick)
+    #         _logger.debug("CMNT Split : %s", time.time() - split_t)
+    #         print("*****************")
+    #         print("albaran DIVIDIDO")
+    #         print(time.time() - split_t)
+    #         print("*****************")
+    #         dev_pickings = self.get_dev_pickings_from_out(out_pickings)
+    #         picks_tot = picks_by_cam + out_pickings + dev_pickings
+    #         route_detail = pick.route_detail_id
+    #         if not route_detail.id in validate_write_batch:
+    #             detail_date = route_detail.date + " 19:00:00"
+    #             vals2 = {'route_detail_id': route_detail.id,
+    #                      # 'min_date': detail_date,
+    #                      'validated_state': 'validated'}
+    #             validate_write_batch[route_detail.id] = (picks_tot, vals2)
+    #
+    #         # picks_tot.write(vals2)
+    #         print("*****************")
+    #         print("TIEMPO ITERACIÓN")
+    #         print(time.time() - itera_t)
+    #         print("*****************")
+    #     # import ipdb; ipdb.set_trace()
+    #     # _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
+    #
+    #     for det_id in validate_write_batch.keys():
+    #
+    #         picks = validate_write_batch[det_id][0]
+    #         vals = validate_write_batch[det_id][1]
+    #         last_write = time.time()
+    #         picks.write(vals)
+    #         print("*****************")
+    #         print("Ultima escritura")
+    #         print(time.time() - last_write)
+    #         print("*****************")
+    #
+    #     if to_revalidate:
+    #         to_revalidate.action_assign()
+    #         to_revalidate.do_prepare_partial()
+    #         picks_tot = out_pickings
+    #         picks_tot.write({'validated_state': 'validated'})
+    #     print("*****************")
+    #     print("albaran escritura fecha planificada fecha detalle y validado")
+    #     print(time.time() - init_t)
+    #     print("*****************")
+    #     # Display the validated picks
+    #     action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
+    #     action = action_obj.read()[0]
+    #     action['domain'] = str([('id', 'in', out_pickings._ids)])
+    #     action['context'] = {}
+    #     return action
+
     @api.multi
     def validate(self):
         init_t = time.time()
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
 
-        # pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
-        pick_pickings_tmp = out_pickings.get_related_origin_pickings(check_outgoing=True)
+        pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
+        # pick_pickings_tmp = out_pickings.get_related_origin_pickings(check_outgoing=True)
         # Está bien o ordeno por la min_date del out, es decir ordeno los outs
         pick_pickings = sorted(pick_pickings_tmp, key=lambda p: p.date)
         validate_write_batch = {}
@@ -58,8 +161,7 @@ class ValidateRoutes(models.TransientModel):
                 to_revalidate += pick
                 continue
 
-            if pick.validated_state != 'no_validated' or \
-                    pick.state not in ['confirmed']:
+            if pick.validated_state != 'no_validated':
                 raise except_orm(_('Error'),
                                  _('Picking %s: You can only validate unvalidated pickings' % pick.name))
 
@@ -73,7 +175,8 @@ class ValidateRoutes(models.TransientModel):
             #     print(time.time() - assing_t)
             #     print("*****************")
             #     # No me hace falta marcarlo como incompleto
-            pick.action_assign()
+            if pick.state != 'assigned':
+                pick.action_assign()
             # _logger.debug("CMNT Assign time cada completo: %s", time.time() - assing_t)
             # _logger.debug("CMNT Assign time total: %s", time.time() - assing_tot)
             print("*****************")
@@ -88,15 +191,15 @@ class ValidateRoutes(models.TransientModel):
             print("albaran DIVIDIDO")
             print(time.time() - split_t)
             print("*****************")
-            dev_pickings = self.get_dev_pickings_from_out(out_pickings)
-            picks_tot = picks_by_cam + out_pickings + dev_pickings
-            route_detail = pick.route_detail_id
-            if not route_detail.id in validate_write_batch:
-                detail_date = route_detail.date + " 19:00:00"
-                vals2 = {'route_detail_id': route_detail.id,
-                         # 'min_date': detail_date,
-                         'validated_state': 'validated'}
-                validate_write_batch[route_detail.id] = (picks_tot, vals2)
+            # dev_pickings = self.get_dev_pickings_from_out(out_pickings)
+            # picks_tot = picks_by_cam + out_pickings + dev_pickings
+            # route_detail = pick.route_detail_id
+            # if not route_detail.id in validate_write_batch:
+            #     detail_date = route_detail.date + " 19:00:00"
+            #     vals2 = {'route_detail_id': route_detail.id,
+            #              # 'min_date': detail_date,
+            #              'validated_state': 'validated'}
+            #     validate_write_batch[route_detail.id] = (picks_tot, vals2)
 
             # picks_tot.write(vals2)
             print("*****************")
@@ -106,18 +209,23 @@ class ValidateRoutes(models.TransientModel):
         # import ipdb; ipdb.set_trace()
         # _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
 
+        for pick in out_pickings:
+            route_detail = pick.route_detail_id
+            if not route_detail.id in validate_write_batch:
+                validate_write_batch[route_detail.id] = self.env['stock.picking']
+            validate_write_batch[route_detail.id] += pick
         for det_id in validate_write_batch.keys():
 
             picks = validate_write_batch[det_id][0]
-            vals = validate_write_batch[det_id][1]
             last_write = time.time()
-            picks.write(vals)
+            picks.write({'route_detail_id': det_id,
+                         'validated_state': 'validated'})
             print("*****************")
             print("Ultima escritura")
             print(time.time() - last_write)
             print("*****************")
-
         if to_revalidate:
+            to_revalidate.do_unreserve()
             to_revalidate.action_assign()
             to_revalidate.do_prepare_partial()
             picks_tot = out_pickings
@@ -132,6 +240,8 @@ class ValidateRoutes(models.TransientModel):
         action['domain'] = str([('id', 'in', out_pickings._ids)])
         action['context'] = {}
         return action
+
+
 
     def get_dev_pickings_from_out(self, out_pickings):
         res = self.env['stock.picking']
@@ -166,7 +276,7 @@ class ValidateRoutes(models.TransientModel):
             #                      _('Picking %s without has not route detatl \
             #                        assigned' % pick.name))
             if pick.group_id:
-                domain = [('state', 'in', ['confirmed', 'assigned']),
+                domain = [('state', 'in', ['confirmed', 'partially_available', 'assigned']),
                           ('group_id', '=', pick.group_id.id),
                           ('picking_type_id', '=', wh.pick_type_id.id)]
                 pick_objs = self.env['stock.picking'].search(domain)

@@ -403,7 +403,7 @@ class sale_order(models.Model):
                     # print u" Cliente: %s  //  Comercial: %s"%(
                     #     partner and partner.comercial, user and user.name)
                     # print "***************************************************"
-                    # return so
+                    return so
             else:
                 return []
         else:

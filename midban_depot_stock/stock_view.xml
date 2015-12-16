@@ -529,16 +529,22 @@
                     <field name="trans_route_id"/>
                     <field name="name" string="Outgoing pickings" filter_domain="[('name','ilike',self)]"/>
                     <field name="partner_id" operator="child_of"/>
-                    <field name="create_uid" string="Usuario"/>
+                    <field name="create_uid" string="Usuario" filter_domain="[('name','ilike',self)]"/>
                     <field name="sale_id"/>
                     <separator/>
                         <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                     <separator/>
                         <filter string="Tomorrow" name="filter_tomorrow" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <separator/>
+                        <!--<filter string="Hoy y mañana" name="filter_tomorrow_todat" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=0)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>-->
                         <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
                         <filter string="Validated" name="validated" domain="[('validated_state', '=', 'validated')]"/>
                         <filter string="Load Confirmed" name="loaded" domain="[('validated_state', '=', 'loaded')]"/>
+                    <separator/>
                         <filter string="Entregas parciales" name="partiall" domain="[('backorder_id', '!=', False)]"/>
+                        <filter string="No Entregas parciales" name="no_partiall" domain="[('backorder_id', '=', False)]"/>
+                    <separator/>
+                        <filter string="Pendiente de picking" name="waiting_state" domain="[('state', '=', 'waiting')]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                          <filter string="Transport Route" context="{'group_by':'trans_route_id'}"/>

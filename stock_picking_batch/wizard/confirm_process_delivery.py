@@ -127,8 +127,9 @@ class ConfirmProcessDelivery(models.TransientModel):
             elif pick.state == 'done':
                 picks_to_print += pick
             else:
-                raise except_orm(_('Error'),
-                                 _('Pick %s is in a invalid state: %s' % (pick.name, pick.state)))
+                # raise except_orm(_('Error'),
+                #                  _('Pick %s is in a invalid state: %s' % (pick.name, pick.state)))
+                continue
         if picks_to_process:
             picks_to_process.do_prepare_partial()
             picks_to_process.do_transfer()
