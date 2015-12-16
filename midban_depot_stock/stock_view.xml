@@ -401,7 +401,7 @@
                         <field name="removal_date" widget="date"/>
                     </group>
                     <group>
-                    	<field name="life_date" widget="date"/>
+                        <field name="life_date" widget="date"/>
                         <field name="alert_date" widget="date"/>
                     </group>
                 </group>
@@ -532,11 +532,12 @@
                     <field name="create_uid" string="Usuario" filter_domain="[('name','ilike',self)]"/>
                     <field name="sale_id"/>
                     <separator/>
-                        <filter string="Today" name="filter_today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d'))]"/>
+                        <filter string="Today" name="filter_today" domain="[('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('min_date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                      <separator/>
-                        <filter string="Tomorrow" name="filter_tomorrow" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                        <filter string="Tomorrow" name="filter_tomorrow" domain="[('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00')), ('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                     <separator/>
-                        <!--<filter string="Hoy y mañana" name="filter_tomorrow_today" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=0)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>-->
+                        <filter string="Hoy y mañana" name="filter_tomorrow_today"
+                            domain="[('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
                         <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
                         <filter string="Validated" name="validated" domain="[('validated_state', '=', 'validated')]"/>
                         <filter string="Load Confirmed" name="loaded" domain="[('validated_state', '=', 'loaded')]"/>
