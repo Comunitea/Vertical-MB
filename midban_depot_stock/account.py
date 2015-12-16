@@ -209,6 +209,8 @@ class AccountInvoice(models.Model):
 
     trans_route_id = fields.Many2one('route', 'Transport route',
                                      compute='_get_route_id', store=True)
+    route_detail_id = fields.Many2one('route.detail', 'Route Detail',
+                                      compute='_get_route_id', store=False)
 
     @api.one
     @api.depends('pick_ids', 'invoice_line')
@@ -216,3 +218,5 @@ class AccountInvoice(models.Model):
         _logger.debug("CMNT _get_route_id")
         self.trans_route_id = self.pick_ids and \
             self.pick_ids[0].trans_route_id or False
+        self.route_detail_id = self.pick_ids and \
+            self.pick_ids[0].route_detail_id or False
