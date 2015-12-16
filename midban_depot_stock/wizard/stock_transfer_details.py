@@ -181,10 +181,11 @@ class stock_transfer_details(models.TransientModel):
                 supp = prod.get_product_supp_record(supplier_id)
                 if supp.is_var_coeff:
                     var_weight = True
+                product_ref = supp.product_code or False
             else:
                 if prod.is_var_coeff:
                     var_weight = True
-
+                product_ref = op.product_id.default_code
             if op.linked_move_operation_ids or (op.uos_id and op.uos_qty):
                 if (op.uos_id and op.uos_qty):
                     uos_id = op.uos_id.id
@@ -198,6 +199,7 @@ class stock_transfer_details(models.TransientModel):
             item = {
                 'packop_id': op.id,
                 'product_id': op.product_id.id,
+                'product_ref': product_ref or False,
                 'product_uom_id': op.product_uom_id.id,
                 'quantity': op.product_qty,
                 'package_id': op.package_id.id,
@@ -216,7 +218,9 @@ class stock_transfer_details(models.TransientModel):
             }
             if op.product_id:
                 items.append(item)
-        res.update(item_ids=items, picking_id=picking.id)
+            sorted_items = sorted(items, key=lambda p: p['product_ref'])
+
+        res.update(item_ids=sorted_items, picking_id=picking.id)
         return res
 
 
@@ -248,7 +252,7 @@ class stock_transfer_details_items(models.TransientModel):
     pack_uos_id = fields.Many2one('product.uom', 'Secondary unit',
                                   related='package_id.uos_id',
                                   readonly=True)
-
+    product_ref = fields.Char('Ref.')
     @api.one
     def split_in_packs(self):
         """
