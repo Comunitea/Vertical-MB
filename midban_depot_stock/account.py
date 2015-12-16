@@ -31,9 +31,9 @@ class account_invoice_line(osv.osv):
     _columns = {
         'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
         'second_uom_id': fields.many2one("product.uom", "Second Uom",
-                                         readonly=True),
+                                         readonly=False),
         'quantity_second_uom':
-        fields.float("Qty Second Uom", readonly=True,
+        fields.float("Qty Second Uom", readonly=False,
                      digits_compute=dp.get_precision('Product Unit of Measure')
                      )
     }
