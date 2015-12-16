@@ -648,7 +648,7 @@ class StockPicking(models.Model):
         if vals.get('validated_state', False) or vals.get('route_detail_id', False):  #Propagate changes
             for pick in self:
                 if detail_obj and pick.route_detail_id and pick.route_detail_id.id == \
-                        detail_obj.id:
+                        detail_obj.id and not vals.get('validated_state', False):  # If validated state we need propagate
                     continue  # Skipe rewrite the same detail, is expensive
                 for move in pick.move_lines:
                     if move not in move_set:
