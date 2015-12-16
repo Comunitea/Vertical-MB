@@ -2369,7 +2369,7 @@ class stock_quant(models.Model):
 
                 return sup
             #es necesario ordernar antes poqr package id que por
-            order = 'life_date, in_date, package_id, id'
+            order = 'removal_date, in_date, package_id, id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
