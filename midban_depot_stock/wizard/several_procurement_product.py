@@ -49,10 +49,12 @@ class manual_transfer_wzd(models.TransientModel):
         self.ensure_one()
         wzd_proc = self.env['make.procurement']
         proc_ids = []
+        pick_ids = set()
+        second_units = {}
         for item in self.item_product_ids:
             vals = {
-                'qty': item.qty,
                 'product_id': item.product_id.id,
+                'qty': item.qty,
                 'uom_id': item.uom_id.id,
                 'warehouse_id': self.warehouse_id.id,
                 'date_planned': item.date_planned
@@ -61,11 +63,16 @@ class manual_transfer_wzd(models.TransientModel):
             res = wzd_proc_obj.make_procurement()
             if res and res.get('res_id', False):
                 proc_ids.append(res['res_id'])
-
-        # Display the created procurements
-        action_obj = self.env.ref('procurement.procurement_action')
+                second_units[res['res_id']] = (item.uos_qty, item.uos_id.id)
+        # Display the created picking
+        for proc in self.env['procurement.order'].browse(proc_ids):
+            for move in proc.move_ids:
+                move.write({'product_uos_qty': second_units[proc.id][0],
+                            'product_uos':second_units[proc.id][1]})
+                pick_ids.add(move.picking_id.id)
+        action_obj = self.env.ref('stock.action_picking_tree')
         action = action_obj.read()[0]
-        action['domain'] = str([('id', 'in', proc_ids)])
+        action['domain'] = str([('id', 'in', list(pick_ids))])
         action['context'] = {}
         return action
 
@@ -74,10 +81,11 @@ class ItemProduct(models.TransientModel):
     _name = 'item.product'
 
     wzd_id = fields.Many2one('several.procurement.product', 'Wizard')
-    qty = fields.Float('Quantity', required=True, default=1.0)
+    qty = fields.Float('Quantity', readonly=True)
     product_id = fields.Many2one('product.product', 'Product', required=True)
     uom_id = fields.Many2one('product.uom', 'Unit of Measure',
-                             related="product_id.uom_id", readonly=True)
+                             related="product_id.uom_id", required=True,
+                             readonly=True)
     date_planned = fields.Date('Planned Date', required=True,
                                default=fields.Date.today())
     uos_qty = fields.Float('Quantity (S.U.)',
@@ -86,6 +94,47 @@ class ItemProduct(models.TransientModel):
                                          required=True)
     uos_id = fields.Many2one('product.uom', 'Second Unit',
                              required=True)
+
+    @api.multi
+    def write(self, vals):
+        """
+        Overwrite to recalculate the product_uom_qty and product_uom
+        because they are readonly in the view and the onchange
+        value is not in the vals dict
+        """
+        res = False
+        for line in self:
+            if vals.get('product_id', False):
+                prod = self.env['product.product'].browse(vals['product_id'])
+            else:
+                prod = line.product_id
+            if prod:
+                uos_qty = vals.get('uos_qty', False) and \
+                    vals['uos_qty'] or line.uos_qty
+                uos_id = vals.get('uos_id', False) and \
+                    vals['uos_id'] or line.uos_id.id
+                vals['qty'] = uos_qty / prod._get_factor(uos_id)
+                vals['uom_id'] = prod.uom_id.id
+            res = super(ItemProduct, line).write(vals)
+        return res
+
+    @api.model
+    def create(self, vals):
+        """
+        Overwrite to recalculate the product_uom_qty and product_uos_qty
+        because of sometimes they are readonly in the view and the onchange
+        value is not in the vals dict
+        """
+        if vals.get('product_id', False):
+            prod = self.env['product.product'].browse(vals['product_id'])
+            uos_qty = vals.get('uos_qty', False) and \
+                vals['uos_qty'] or 0.0
+            uos_id = vals.get('uos_id', False) and \
+                vals['uos_id'] or False
+            vals['qty'] = prod.uos_qty_to_uom_qty(uos_qty, uos_id)
+            vals['uom_id'] = prod.uom_id.id
+        res = super(ItemProduct, self).create(vals)
+        return res
 
     @api.onchange('uos_id')
     def product_uos_onchange(self):

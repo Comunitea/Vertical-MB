@@ -536,7 +536,7 @@
                      <separator/>
                         <filter string="Tomorrow" name="filter_tomorrow" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <separator/>
-                        <!--<filter string="Hoy y mañana" name="filter_tomorrow_todat" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=0)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>-->
+                        <!--<filter string="Hoy y mañana" name="filter_tomorrow_today" domain="[('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=0)).strftime('%%Y-%%m-%%d')),('min_date','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>-->
                         <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
                         <filter string="Validated" name="validated" domain="[('validated_state', '=', 'validated')]"/>
                         <filter string="Load Confirmed" name="loaded" domain="[('validated_state', '=', 'loaded')]"/>
