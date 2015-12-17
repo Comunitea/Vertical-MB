@@ -283,7 +283,7 @@
                         <div class="fullheight centerinside fullwidth">
                           <div class="centerthis">
                             <label for="date_planned">Date Planned:</label>
-                            <input class="  mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.order_model.get('date_planned')" tabIndex="3"/>
+                            <input class="mandatory"  type="date" id='date_planned' name="date_planned" t-att-value="widget.order_model.get('date_planned')" tabIndex="3"/>
                           </div>
                         </div>
                     </div>
