@@ -538,7 +538,8 @@
                     <separator/>
                         <filter string="Hoy y mañana" name="filter_tomorrow_today"
                             domain="[('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
-                        <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
+                    <separator/>
+                    <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
                         <filter string="Validated" name="validated" domain="[('validated_state', '=', 'validated')]"/>
                         <filter string="Load Confirmed" name="loaded" domain="[('validated_state', '=', 'loaded')]"/>
                     <separator/>
