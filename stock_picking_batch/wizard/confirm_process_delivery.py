@@ -128,7 +128,8 @@ class ConfirmProcessDelivery(models.TransientModel):
         picks_to_process = self.env['stock.picking']
         for pick in pickings:
             if pick.picking_type_id.code  == 'outgoing' and \
-                    pick.picking_type_id.location_dest_id.usage == 'customer':
+                    pick.picking_type_id.default_location_dest_id.usage == \
+                    'customer':
             # NOS ASEGURAMOS DE PROCESAR SOLO ALBARANESS DE SALIDA A CLIENTES
                 if pick.state in ['assigned', 'partially_available']:
                     picks_to_process += pick

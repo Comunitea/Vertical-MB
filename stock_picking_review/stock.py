@@ -22,6 +22,7 @@ from openerp import models, fields, api
 from openerp.addons.decimal_precision import decimal_precision as dp
 from openerp.tools.translate import _
 from openerp.exceptions import except_orm
+from openerp.tools.float_utils import float_is_zero
 import time
 import logging
 _logger = logging.getLogger(__name__)
@@ -125,9 +126,11 @@ class stock_move(models.Model):
         res = super(stock_move, self)._get_invoice_line_vals(cr, uid, move,
                                                              partner, inv_type,
                                                              context=context)
-        if not move.accepted_qty:
-            return res
-        else:
+        if move.picking_id.state == 'done' and move.picking_id.reviewed:
+            # Solo se cogen las cantidades aceptadas para
+            # albaranes  finalizados y revisados. Con esto nos aseguramios
+            # el comportamiento normal en caso de no pasar por l proceso de
+            # devolución
             sale_line = move.procurement_id.sale_line_id
 
             if move.product_uos and move.product_uos != move.product_uom and \
@@ -215,7 +218,7 @@ class StockPicking(models.Model):
         for pick in self:
         # Cancel assignment of existing chained assigned move
             invoice_st = 'none'
-            if pick.invoice_state in ['invoiced','2binvoiced']:
+            if pick.invoice_state in ['invoiced']:
                 invoice_st = '2binvoiced'
             else:
                 invoice_st = 'none'
@@ -243,10 +246,22 @@ class StockPicking(models.Model):
             #Create new picking for returned products
             pick_type_id = pick.picking_type_id.return_picking_type_id and pick.picking_type_id.return_picking_type_id.id or pick.picking_type_id.id
             moves = self.env['stock.move']
-
+            if pick.invoice_state in ['invoiced']:
+                invoice_st = '2binvoiced'
+            else:
+                invoice_st = 'none'
             for move in pick.move_lines:
+
+
                 new_qty = move.product_uos_qty - move.accepted_qty
                 new_uom_qty = move.product_uom_qty - move.product_uom_acc_qty
+                if pick.invoice_state == '2binvoiced' and \
+                                pick.state in ['done'] and\
+                    float_is_zero( move.accepted_qty, precision_digits=0):
+                    # Si la cantidad aceptada es cero esta linea no debe
+                # facturarse
+                    move.invoice_state = 'none'
+
                 if new_qty:
                     # The return of a return should be linked with the original's destination move if it was not cancelled
                     if move.origin_returned_move_id.move_dest_id.id and move.origin_returned_move_id.move_dest_id.state != 'cancel':
@@ -274,7 +289,7 @@ class StockPicking(models.Model):
                         'procure_method': 'make_to_stock',
                         'restrict_lot_id': lot_id,
                         'move_dest_id': move_dest_id,
-                        #'invoice_state': invoice_st
+                        'invoice_state': invoice_st
                     })
                     moves += new_move_id
 
@@ -285,6 +300,7 @@ class StockPicking(models.Model):
                     'state': 'draft',
                     'origin': pick.name,
                     'task_type': 'ubication',
+                    'invoice_id': False,
                     'invoice_state': invoice_st
                 })
                 res.append(new_picking.id)
