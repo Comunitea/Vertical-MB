@@ -227,7 +227,7 @@
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_stock_picking_type">
+                            <div t-attf-class="oe_kanban_card oe_kanban_stock_picking_type">
                                 <div class="oe_kanban_content">
                                     <h4 class="text-center"><strong><field name="route_id"/></strong></h4>
                                     <div class="oe_items_list oe_kanban_ellipsis">
@@ -261,6 +261,9 @@
                     <field name="state"/>
                     <field name="comercial_id"/>
                     <field name="route_type"/>
+                    <separator/>
+                        <filter string="Hoy" name="filter_today" domain="[('date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                     <separator/>
                     <group expand="1" string="Group By...">
                         <filter string="Date" domain="[]" context="{'group_by': 'date'}"/>
                         <filter string="Comercial" domain="[]" context="{'group_by': 'comercial_id'}"/>
@@ -271,6 +274,19 @@
                 </search>
             </field>
         </record>
+
+
+        <record id="action_detail_kanban" model="ir.actions.act_window">
+            <field name="name">Estado de rutas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.detail</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban</field>
+            <field name="context">{'search_default_filter_today':1}</field>
+        </record>
+
+        <menuitem action="action_detail_kanban" id="menu_details_routes_kanban" name="Estado de rutas" sequence="10" parent="menu_stock_vehicle_route_mgmt"/>
+
 
         <record id="action_detail_route" model="ir.actions.act_window">
             <field name="name">Routes details</field>
