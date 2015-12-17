@@ -426,8 +426,6 @@ class sale_order(models.Model):
     @api.model
     def recalculate_taxes(self):
         if self.chanel == 'tablet' and self.fiscal_position:
-            print "pedido de tablet"
-            print "Recalcula impuestos"
             for line in self.order_line:
                 line.tax_id = self.fiscal_position.map_tax(line.tax_id)
 

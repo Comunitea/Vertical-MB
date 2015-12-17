@@ -216,6 +216,41 @@
             </field>
         </record>
 
+        <record id="route_detail_view_kanban" model="ir.ui.view">
+            <field name="name">route.detail.view.kanban</field>
+            <field name="model">route.detail</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey" create="0">
+                    <field name="route_id"/>
+                    <field name="total_pick_number"/>
+                    <field name="processed_pick_number"/>
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_stock_picking_type">
+                                <div class="oe_kanban_content">
+                                    <h4 class="text-center"><strong><field name="route_id"/></strong></h4>
+                                    <div class="oe_items_list oe_kanban_ellipsis">
+                                        <div>
+                                                <field name="total_pick_number"/> Pickings totales
+                                        </div>
+                                        <div >
+                                                <field name="processed_pick_number"/> Pickings procesadoa
+                                        </div>
+                                    </div>
+                                    <div class="oe_picking_type_gauge">
+                                        <field name="rate_processed" widget="gauge" style="width:150px; height: 110px;" options="{'levelcolors': ['#a9d70b', '#f9c802', '#ff0000'],}">Procesadas (%)</field>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+        </field>
+        </record>
+
+
         <record id="route_detail_view_search" model="ir.ui.view">
             <field name="name">route.detail.view.search</field>
             <field name="model">route.detail</field>

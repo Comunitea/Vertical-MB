@@ -213,7 +213,6 @@ class AccountInvoice(models.Model):
                                       compute='_get_route_id', store=False)
 
     @api.one
-    @api.depends('pick_ids', 'invoice_line')
     def _get_route_id(self):
         _logger.debug("CMNT _get_route_id")
         self.trans_route_id = self.pick_ids and \
