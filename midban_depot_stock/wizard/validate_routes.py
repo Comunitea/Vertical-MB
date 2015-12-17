@@ -138,7 +138,6 @@ class ValidateRoutes(models.TransientModel):
         init_t = time.time()
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
-
         pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
         # pick_pickings_tmp = out_pickings.get_related_origin_pickings(check_outgoing=True)
         # Está bien o ordeno por la min_date del out, es decir ordeno los outs
@@ -206,17 +205,18 @@ class ValidateRoutes(models.TransientModel):
             print("TIEMPO ITERACIÓN")
             print(time.time() - itera_t)
             print("*****************")
-        # import ipdb; ipdb.set_trace()
         # _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
 
         for pick in out_pickings:
-            route_detail = pick.route_detail_id
-            if not route_detail.id in validate_write_batch:
-                validate_write_batch[route_detail.id] = self.env['stock.picking']
-            validate_write_batch[route_detail.id] += pick
+            route_detail_id = pick.route_detail_id.id
+            if not route_detail_id in validate_write_batch:
+                validate_write_batch[route_detail_id] = self.env['stock.picking']
+
+            validate_write_batch[route_detail_id] += pick
+
         for det_id in validate_write_batch.keys():
 
-            picks = validate_write_batch[det_id][0]
+            picks = validate_write_batch[det_id]
             last_write = time.time()
             picks.write({'route_detail_id': det_id,
                          'validated_state': 'validated'})
