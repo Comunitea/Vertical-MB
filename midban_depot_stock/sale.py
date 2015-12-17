@@ -239,6 +239,17 @@ class sale_order(osv.Model):
         res = super(sale_order, self).write(vals)
         return res
 
+    @api.model
+    def create(self, vals):
+         if vals.get('route_detail_id', False):
+            t_detail = self.env['route.detail']
+            detail_obj = t_detail.browse(vals['route_detail_id'])
+            detail_date = detail_obj.date + " 19:00:00"
+            vals.update({'date_planned': detail_date,
+                         'trans_route_id': detail_obj.route_id.id})
+         res = super(sale_order, self).create(vals)
+         return res
+
     def _prepare_procurement_group(self, cr, uid, order, context=None):
         """
         In order to pass the comercial to the picking
