@@ -571,7 +571,7 @@
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/>
             <field name="domain">[('picking_type_code', '=', 'outgoing'),('state','not in',('draft','cancel','done'))]</field>
              <!--<field name="context">{'search_default_not_validated': 1}</field>-->
-             <field name="context">{'search_default_filter_tomorrow_today':1}</field>
+             <!--<field name="context">{'search_default_filter_tomorrow_today':1}</field>-->
         </record>
 
         <menuitem action="action_replanning_picking_route" id="menu_replaning_picking_route" name="Replanning Routes" sequence="10" parent="menu_stock_vehicle_route_mgmt"/>
