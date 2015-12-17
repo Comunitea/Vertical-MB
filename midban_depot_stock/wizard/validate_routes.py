@@ -138,7 +138,6 @@ class ValidateRoutes(models.TransientModel):
         init_t = time.time()
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
-        import ipdb; ipdb.set_trace()
         pick_pickings_tmp = self._get_pickings_from_outs(out_pickings)
         # pick_pickings_tmp = out_pickings.get_related_origin_pickings(check_outgoing=True)
         # Está bien o ordeno por la min_date del out, es decir ordeno los outs
@@ -206,7 +205,6 @@ class ValidateRoutes(models.TransientModel):
             print("TIEMPO ITERACIÓN")
             print(time.time() - itera_t)
             print("*****************")
-        import ipdb; ipdb.set_trace()
         # _logger.debug("CMNT TOTAL VALIDAR: %s", time.time() - init_t)
 
         for pick in out_pickings:
@@ -216,7 +214,6 @@ class ValidateRoutes(models.TransientModel):
 
             validate_write_batch[route_detail_id] += pick
 
-        import ipdb; ipdb.set_trace()
         for det_id in validate_write_batch.keys():
 
             picks = validate_write_batch[det_id]
@@ -227,7 +224,6 @@ class ValidateRoutes(models.TransientModel):
             print("Ultima escritura")
             print(time.time() - last_write)
             print("*****************")
-        import ipdb; ipdb.set_trace()
         if to_revalidate:
             to_revalidate.do_unreserve()
             to_revalidate.action_assign()
