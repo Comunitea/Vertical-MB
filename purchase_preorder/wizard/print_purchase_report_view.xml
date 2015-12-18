@@ -19,6 +19,8 @@
                     </group>
                     <group>
                         <field name="filter_options"/>
+                        <field name="show_to_buy" string="Solo para comprar"/>
+                        <field name="product_temp_ids" widget="many2many_tags" string="Temperaturas de producto"/>
                     </group>
                     <group>
                     <group string="Suppliers" attrs="{'invisible': [('filter_options','=','products')]}">
