@@ -152,6 +152,12 @@ class sale(osv.osv):
                 order_id = t_order.create(cr, uid, vals, context=context)
                 if order['note']:
                     create_mail = True
+            if order_id:
+                order_obj = t_order.browse(cr, uid, order_id, context)
+                if order_obj.route_detail_id and order.get('date_planned', False) \
+                        and order_obj.route_detail_id.date != order['date_planned']:
+                    order_obj.write({'route_detail_id': False,
+                                     'trans_route_id:': False})
             if create_mail:
                 vals = {
                     'body': order['note'],

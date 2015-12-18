@@ -36,7 +36,7 @@ class stock_picking(models.Model):
         string='Taxes', readonly=True, store=False)
     amount_total = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='Total', readonly=True, store=True)
+        string='Total', readonly=True, store=False)
     amount_gross = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
         string='amount gross', readonly=True, store=False)
