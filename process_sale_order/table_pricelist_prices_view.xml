@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form string="Table of prices">
                     <header>
-                        <button name="recalculate_table"  string="Recalculate Table" type="object" class="oe_highlight"/>
+                        <button name="recalculate_table_btn"  string="Recalculate Table" type="object" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <group>

@@ -38,10 +38,11 @@ class table_pricelist_prices(osv.Model):
     }
 
     @api.one
+    def recalculate_table_btn(self):
+        return self.recalculate_table()
+
     @api.model
     def recalculate_table(self):
-        print "REACALCULA"
-        self.ensure_one()
         t_product = self.env["product.product"]
         t_pricelist = self.env["product.pricelist"]
         domain = [('sale_ok', '=', True)]
