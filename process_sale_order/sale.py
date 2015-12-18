@@ -352,15 +352,17 @@ class sale_order(models.Model):
     @api.model
     def create_and_confirm(self, vals):
         if vals.get('chanel', False) == 'tablet':
+
             vals = self.change_price_vals(vals)
         #vals.update({'user_id2': self._uid})
         res = self.create(vals)
         if res:
             res.action_button_confirm()
-        return res
+            return res.id
+        return False
 
-    @api.model
-    def easy_change(self, vals):
+    @api.multi
+    def easy_modification(self, vals):
         self.cancel_sale_to_draft()
         vals = self.change_price_vals(vals)
         res =  self.write(vals)
@@ -369,7 +371,7 @@ class sale_order(models.Model):
         return res
 
 
-    @api.model
+    @api.multi
     def write(self, vals):
         #if vals.get('chanel', False) == 'tablet':
         vals = self.change_price_vals(vals)
@@ -409,9 +411,18 @@ class sale_order(models.Model):
         else:
             return []
 
+
+    @api.model
+    def log_tablet(self, msg):
+        _logger.debug("CMNT ENTRADA - LOG TABLET %s ", msg)
+        logfile_tablet = open('log_tablet.log', 'w')
+        logfile_tablet.write("%s\n"%msg)
+        logfile_tablet.close()
+
     @api.model
     def create(self, vals):
         if vals.get('chanel', False) == 'tablet':
+
             res = self.check_duplicate(vals)
             if len(res):
                 return res
