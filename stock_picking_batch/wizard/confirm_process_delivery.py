@@ -42,14 +42,18 @@ class ConfirmProcessDelivery(models.TransientModel):
         pick_obj = self.env['stock.picking']
         pickings = pick_obj.browse(res_ids)
         pick = pickings and pickings[0]
-        if not pick or not pick.move_lines:
-            return 'sale'
-        type = pick.picking_type_id.code
-        if type == 'incoming':
-            usage = pick.move_lines[0].location_id.usage
-        else:
-            usage = pick.move_lines[0].location_dest_id.usage
-        return JOURNAL_TYPE_MAP.get((type, usage), ['sale'])[0]
+        #### MIRA SOLO EL PRIMER PICKING
+        # PARA ESTE PROCESO EN LOTE VAMOS A GARANTIZAR QUE SOLO SE USAN
+        # DIARIOS DE VENTAS
+        # if not pick or not pick.move_lines:
+        #     return 'sale'
+        # type = pick.picking_type_id.code
+        # if type == 'incoming':
+        #     usage = pick.move_lines[0].location_id.usage
+        # else:
+        #     usage = pick.move_lines[0].location_dest_id.usage
+        # return JOURNAL_TYPE_MAP.get((type, usage), ['sale'])[0]
+        return 'sale'
 
     journal_id = fields.Many2one('account.journal', 'Destination Journal',
                                  required=True, default=_get_journal)
@@ -87,6 +91,7 @@ class ConfirmProcessDelivery(models.TransientModel):
     def create_invoice(self, pickings):
         pick_ids = [p.id for p in pickings if p.invoice_state == '2binvoiced'
                     and p.partner_id.invoice_method == 'a']
+
         invoice_wzd_vals = {
             'journal_id': self.journal_id.id,
             'journal_type': self.journal_type,
@@ -122,14 +127,18 @@ class ConfirmProcessDelivery(models.TransientModel):
         picks_to_print = self.env['stock.picking']
         picks_to_process = self.env['stock.picking']
         for pick in pickings:
-            if pick.state in ['assigned', 'partially_available']:
-                picks_to_process += pick
-            elif pick.state == 'done':
-                picks_to_print += pick
-            else:
-                # raise except_orm(_('Error'),
-                #                  _('Pick %s is in a invalid state: %s' % (pick.name, pick.state)))
-                continue
+            if pick.picking_type_id.code  == 'outgoing' and \
+                    pick.picking_type_id.default_location_dest_id.usage == \
+                    'customer':
+            # NOS ASEGURAMOS DE PROCESAR SOLO ALBARANESS DE SALIDA A CLIENTES
+                if pick.state in ['assigned', 'partially_available']:
+                    picks_to_process += pick
+                elif pick.state == 'done':
+                    picks_to_print += pick
+                else:
+                    # raise except_orm(_('Error'),
+                    #                  _('Pick %s is in a invalid state: %s' % (pick.name, pick.state)))
+                    continue
         if picks_to_process:
             picks_to_process.do_prepare_partial()
             picks_to_process.do_transfer()

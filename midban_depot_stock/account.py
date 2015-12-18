@@ -31,9 +31,9 @@ class account_invoice_line(osv.osv):
     _columns = {
         'stock_move_id': fields.many2one('stock.move', 'Stock Move'),
         'second_uom_id': fields.many2one("product.uom", "Second Uom",
-                                         readonly=True),
+                                         readonly=False),
         'quantity_second_uom':
-        fields.float("Qty Second Uom", readonly=True,
+        fields.float("Qty Second Uom", readonly=False,
                      digits_compute=dp.get_precision('Product Unit of Measure')
                      )
     }
@@ -209,10 +209,13 @@ class AccountInvoice(models.Model):
 
     trans_route_id = fields.Many2one('route', 'Transport route',
                                      compute='_get_route_id', store=True)
+    route_detail_id = fields.Many2one('route.detail', 'Route Detail',
+                                      compute='_get_route_id', store=False)
 
     @api.one
-    @api.depends('pick_ids', 'invoice_line')
     def _get_route_id(self):
         _logger.debug("CMNT _get_route_id")
         self.trans_route_id = self.pick_ids and \
             self.pick_ids[0].trans_route_id or False
+        self.route_detail_id = self.pick_ids and \
+            self.pick_ids[0].route_detail_id or False

@@ -116,6 +116,11 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
 //                     self.order_model.set('partner', "");
 //                     self.order_model.set('partner_code', "");
 //                     self.refresh();
+
+                       var tomorrow_date = self.ts_model.getCurrentDatePlannedStr()
+                       self.order_model.set('date_planned', tomorrow_date)
+                       self.order_model.set('date_invoice', tomorrow_date)
+                       self.refresh();
                  }
                  else{;
                     self.order_model.set('date_planned', result['detail_date'])
@@ -193,10 +198,6 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                                 //     if (key == "partner") {
                                 //       self.$('#partner_code').focus();
                                 //     }
-                                //     else {
-                                //       self.$('#date_invoice').focus();
-                                //     }
-                                // }
                                 self.refresh();
                                 $('#vua-button').click();
                                 if(self.order_model.get('orderLines').length == 0){
@@ -211,6 +212,10 @@ function openerp_ts_new_order_widgets(instance, module){ //module is instance.po
                     }
                 });
             }
+            if (key == "date_planned"){
+                self.order_model.set('date_invoice', value)
+                self.refresh()
+             }
             // if (key == "date_invoice"){
             //   this.$('#date_planed').focus();
             // }

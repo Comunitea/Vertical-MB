@@ -529,7 +529,7 @@
                     <field name="trans_route_id"/>
                     <field name="name" string="Outgoing pickings" filter_domain="[('name','ilike',self)]"/>
                     <field name="partner_id" operator="child_of"/>
-                    <field name="create_uid" string="Usuario" filter_domain="[('name','ilike',self)]"/>
+                    <field name="create_uid" string="Usuario"/>
                     <field name="sale_id"/>
                     <separator/>
                         <filter string="Today" name="filter_today" domain="[('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('min_date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59'))]"/>
@@ -538,7 +538,8 @@
                     <separator/>
                         <filter string="Hoy y mañana" name="filter_tomorrow_today"
                             domain="[('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('min_date','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
-                        <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
+                    <separator/>
+                    <filter string="Not Validated" name="not_validated" domain="[('validated_state', '=', 'no_validated')]"/>
                         <filter string="Validated" name="validated" domain="[('validated_state', '=', 'validated')]"/>
                         <filter string="Load Confirmed" name="loaded" domain="[('validated_state', '=', 'loaded')]"/>
                     <separator/>
@@ -570,7 +571,7 @@
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/>
             <field name="domain">[('picking_type_code', '=', 'outgoing'),('state','not in',('draft','cancel','done'))]</field>
              <!--<field name="context">{'search_default_not_validated': 1}</field>-->
-             <field name="context">{}</field>
+             <!--<field name="context">{'search_default_filter_tomorrow_today':1}</field>-->
         </record>
 
         <menuitem action="action_replanning_picking_route" id="menu_replaning_picking_route" name="Replanning Routes" sequence="10" parent="menu_stock_vehicle_route_mgmt"/>

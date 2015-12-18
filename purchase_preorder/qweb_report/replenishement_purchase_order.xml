@@ -1,6 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!--<template id="replenishement_purchase_order">-->
+            <!--&lt;!&ndash; <t t-call="report.html_container"> &ndash;&gt;-->
+              <!--&lt;!&ndash; <t t-call="report.external_layout"> &ndash;&gt;-->
+                <!--<t t-foreach="docs" t-as="o">-->
+
+                  <!--<div class="page">-->
+
+                      <!--<h3 align="center">Warehouse Replenishement List: <span t-esc="meta_info['print_date']"/></h3>-->
+                      <!--&lt;!&ndash; <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3> &ndash;&gt;-->
+                      <!--<h3>Filter by:</h3>-->
+                      <!--<div>-->
+                           <!--<b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>-->
+                      <!--</div>-->
+
+                      <!--<div t-if="meta_info['supplier_names']">-->
+                          <!--<b>Suppliers: </b>  <span t-esc="meta_info['supplier_names']"/>-->
+                      <!--</div>-->
+                      <!--<div t-if="meta_info['category_names']">-->
+                          <!--<b>Categories: </b>  <span t-esc="meta_info['category_names']"/>-->
+                      <!--</div>-->
+                      <!--<div t-if="meta_info['filter_products']">-->
+                          <!--<b>Specific Products.</b>-->
+                      <!--</div>-->
+                      <!--<br/>-->
+                      <!--<table class="table table-bordered">-->
+                        <!--<thead>-->
+                            <!--<tr>-->
+                                <!--<th class="text-center" colspan="2">Products</th>-->
+                                <!--<th class="text-center" colspan="2">Period Sales</th>-->
+                                <!--&lt;!&ndash; <th class="text-center" colspan="2">Pending Sales</th> &ndash;&gt;-->
+                                <!--<th class="text-center" colspan="2">In Stock</th>-->
+                                <!--<th class="text-center" colspan="2" >Incoming</th>-->
+                                <!--<th class="text-center" colspan="2" >Outgoing</th>-->
+                                <!--<th class="text-center" colspan="2" >Difference</th>-->
+                                <!--<th class="text-center" colspan="2" >To Purchase</th>-->
+                            <!--</tr>-->
+                            <!--<tr>-->
+                                <!--<th class="text-center">Code</th>-->
+                                <!--<th class="text-center">Name</th>-->
+                                <!--<th class="text-center">Base</th>-->
+                                <!--<th class="text-center">Composition</th>-->
+                                <!--&lt;!&ndash; <th class="text-center">Units</th>-->
+                                <!--<th class="text-center">Base</th> &ndash;&gt;-->
+                                <!--<th class="text-center">Base</th>-->
+                                <!--<th class="text-center">Composition</th>-->
+                                <!--<th class="text-center">Base</th>-->
+                                <!--<th class="text-center">Composition</th>-->
+                                <!--<th class="text-center">Base</th>-->
+                                <!--<th class="text-center">Composition</th>-->
+                                <!--<th class="text-center">Base</th>-->
+                                <!--<th class="text-center">Composition</th>-->
+                                <!--<th class="text-center">Palets</th>-->
+                                <!--<th class="text-center">Mantles</th>-->
+                            <!--</tr>-->
+
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                            <!--<tr t-foreach="stocks" t-as="d">-->
+                                <!--<td> <span t-esc="d['code']"/> </td>-->
+                                <!--<td> <span t-esc="d['name']"/> </td>-->
+                                <!--<td> <span t-esc="d['sales'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['sales'][1]"/> </td>-->
+                                <!--&lt;!&ndash; <td> <span t-esc="d['pending'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['pending'][1]"/> </td> &ndash;&gt;-->
+                                <!--<td> <span t-esc="d['stock'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['stock'][1]"/> </td>-->
+                                <!--<td> <span t-esc="d['incoming'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['incoming'][1]"/> </td>-->
+                                <!--<td> <span t-esc="d['outgoing'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['outgoing'][1]"/> </td>-->
+                                <!--<td> <span t-esc="d['diff'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['diff'][1]"/> </td>-->
+                                <!--<td> <span t-esc="d['to_order'][0]"/> </td>-->
+                                <!--<td> <span t-esc="d['to_order'][1]"/> </td>-->
+                            <!--</tr>-->
+
+
+                        <!--</tbody>-->
+                  <!--</table>-->
+                  <!--</div>-->
+                <!--&lt;!&ndash; </t> &ndash;&gt;-->
+            <!--&lt;!&ndash; </t> &ndash;&gt;-->
+          <!--</t>-->
+
+        <!--</template>-->
+
         <template id="replenishement_purchase_order">
             <!-- <t t-call="report.html_container"> -->
               <!-- <t t-call="report.external_layout"> -->
@@ -28,30 +114,23 @@
                       <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th class="text-center" colspan="2">Products</th>
-                                <th class="text-center" colspan="2">Period Sales</th>
-                                <!-- <th class="text-center" colspan="2">Pending Sales</th> -->
-                                <th class="text-center" colspan="2">In Stock</th>
-                                <th class="text-center" colspan="2" >Incoming</th>
-                                <th class="text-center" colspan="2" >Outgoing</th>
-                                <th class="text-center" colspan="2" >Difference</th>
-                                <th class="text-center" colspan="2" >To Purchase</th>
+                                <th class="text-center" colspan="3">Products</th>
+                                <th class="text-center">Ventas periodo</th>
+                                <th class="text-center">In Stock</th>
+                                <th class="text-center">Incoming</th>
+                                <th class="text-center">Outgoing</th>
+                                <th class="text-center">Difference</th>
+                                <th class="text-center" colspan="2">To Purchase</th>
                             </tr>
                             <tr>
                                 <th class="text-center">Code</th>
                                 <th class="text-center">Name</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Composition</th>
-                                <!-- <th class="text-center">Units</th>
-                                <th class="text-center">Base</th> -->
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Composition</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Composition</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Composition</th>
-                                <th class="text-center">Base</th>
-                                <th class="text-center">Composition</th>
+                                <th class="text-center">Unidad stock</th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
                                 <th class="text-center">Palets</th>
                                 <th class="text-center">Mantles</th>
                             </tr>
@@ -59,22 +138,16 @@
                         </thead>
                         <tbody>
                             <tr t-foreach="stocks" t-as="d">
-                                <td> <span t-esc="d['code']"/> </td>
-                                <td> <span t-esc="d['name']"/> </td>
-                                <td> <span t-esc="d['sales'][0]"/> </td>
-                                <td> <span t-esc="d['sales'][1]"/> </td>
-                                <!-- <td> <span t-esc="d['pending'][0]"/> </td>
-                                <td> <span t-esc="d['pending'][1]"/> </td> -->
-                                <td> <span t-esc="d['stock'][0]"/> </td>
-                                <td> <span t-esc="d['stock'][1]"/> </td>
-                                <td> <span t-esc="d['incoming'][0]"/> </td>
-                                <td> <span t-esc="d['incoming'][1]"/> </td>
-                                <td> <span t-esc="d['outgoing'][0]"/> </td>
-                                <td> <span t-esc="d['outgoing'][1]"/> </td>
-                                <td> <span t-esc="d['diff'][0]"/> </td>
-                                <td> <span t-esc="d['diff'][1]"/> </td>
-                                <td> <span t-esc="d['to_order'][0]"/> </td>
-                                <td> <span t-esc="d['to_order'][1]"/> </td>
+                                <td class="text-center"> <span t-esc="d['code']"/> </td>
+                                <td class="text-center"> <span t-esc="d['name']"/> </td>
+                                <td class="text-center"> <span t-esc="d['stock_unit']"/> </td>
+                                <td class="text-center"> <span t-esc="d['sales']"/> </td>
+                                <td class="text-center"> <span t-esc="d['stock']"/> </td>
+                                <td class="text-center"> <span t-esc="d['incoming']"/> </td>
+                                <td class="text-center"> <span t-esc="d['outgoing']"/> </td>
+                                <td class="text-center"> <span t-esc="d['diff']"/> </td>
+                                <td class="text-center"> <span t-esc="d['to_order'][0]"/> </td>
+                                <td class="text-center"> <span t-esc="d['to_order'][1]"/> </td>
                             </tr>
 
 

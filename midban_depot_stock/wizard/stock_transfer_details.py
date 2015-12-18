@@ -111,6 +111,8 @@ class stock_transfer_details(models.TransientModel):
         res = super(stock_transfer_details, self).wizard_view()
 
         if self.picking_id.picking_type_code == 'incoming' and \
+                self.picking_id.picking_type_id.default_location_src_id\
+                        .usage != 'customer' and \
                 not self.picking_id.midban_operations:
             ref = 'midban_depot_stock.custom_view_transfer_details'
             view = self.env.ref(ref)
@@ -128,6 +130,8 @@ class stock_transfer_details(models.TransientModel):
                 'context': self.env.context,
             }
         elif self.picking_id.picking_type_code == 'incoming' and \
+                self.picking_id.picking_type_id.default_location_src_id\
+                        .usage != 'customer' and \
                 self.picking_id.midban_operations:
             ref = 'midban_depot_stock.custom_view_transfer_details_2'
             view = self.env.ref(ref)
@@ -170,7 +174,7 @@ class stock_transfer_details(models.TransientModel):
         if picking.picking_type_code == 'incoming' and picking.purchase_id:
             supplier_id = picking.partner_id.id
 
-        items = []
+        items = sorted_items = []
         for op in picking.pack_operation_ids:
             prod = op.product_id
             uos_id = op.product_uom_id.id
@@ -219,7 +223,6 @@ class stock_transfer_details(models.TransientModel):
             if op.product_id:
                 items.append(item)
             sorted_items = sorted(items, key=lambda p: p['product_ref'])
-
         res.update(item_ids=sorted_items, picking_id=picking.id)
         return res
 

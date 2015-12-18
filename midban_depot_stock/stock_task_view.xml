@@ -114,13 +114,20 @@
                     <field name="machine_id" string="Machine"/>
                     <field name="date_start" string="Date Start"/>
                     <field name="date_end" string="Date End"/>
-                    <field name="date_end" string="picking_id"/>
                     <field name="state" string="State"/>
                     <field name="paused" string="Paused"/>
                     <filter string="Assigned" domain="[('state', '=', 'assigned')]"/>
                     <filter string="Finished" domain="[('state', '=', 'done')]"/>
                     <filter string="Cancelled" domain="[('state', '=', 'canceled')]"/>
                     <filter string="Paused" domain="[('paused', '=', True)])"/>
+                    <separator/>
+                        <filter string="Hoy" name="filter_today" domain="[('date_start','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('date_start','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                     <separator/>
+                        <filter string="Mañana" name="filter_tomorrow" domain="[('date_start','&gt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 00:00:00')), ('date_start','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                    <separator/>
+                        <filter string="Hoy y mañana" name="filter_tomorrow_today"
+                            domain="[('date_start','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00')), ('date_start','&lt;=',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+
                     <group expand="1" string="Group By...">
                         <filter string="User" domain="[]" context="{'group_by': 'user_id'}"/>
                         <filter string="State" domain="[]" context="{'group_by': 'state'}"/>
@@ -138,9 +145,9 @@
             <field name="res_model">stock.task</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_filter_today':1}</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                Click to add a Task.
                 </p><p>
                 It should be created by a wizard and not manually.
                 </p>

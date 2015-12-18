@@ -380,6 +380,37 @@ class route_detail(models.Model):
         for detail in self:
             detail.detail_name_str = detail.route_id.code + " " + detail.date
 
+    @api.multi
+    def _get_pick_number(self):
+        picking_obj = self.env['stock.picking']
+        warehouse_id = self.env[' stock.warehouse '].search()[0]
+        for detail in self:
+            pickings_pend = picking_obj.search([('route_detail_id', '=',
+                                               self.id),
+                                           ('picking_type_id', '=',
+                                            warehouse_id.pick_type_id.id),
+                                                ('state', 'in',
+                                                 ['confirmed', 'assigned',
+                                                  'partially_available'])])
+            pickings_done= picking_obj.search([('route_detail_id', '=',
+                                               self.id),
+                                           ('picking_type_id', '=',
+                                            warehouse_id.pick_type_id.id),
+                                                ('state', 'in',
+                                                 ['done',])])
+            pickings_oher= picking_obj.search([('route_detail_id', '=',
+                                               self.id),
+                                           ('picking_type_id', '=',
+                                            warehouse_id.pick_type_id.id),
+                                                ('state', 'not in',
+                                                 ['done', 'confirmed', 'assigned',
+                                                  'partially_available'])])
+            self.total_pick_number =len(pickings_pend) + len(pickings_done) \
+                                    + len(pickings_oher)
+            self.processed_pick_number = len(pickings_done)
+            self.rate_processed = self.processed_pick_number / self.total_pick_number
+
+
     # @api.one
     # def _get_detail_name_str(self):
     #     """
@@ -417,6 +448,21 @@ class route_detail(models.Model):
     detail_name_str = fields.Char("Detail name", readonly=True,
                                   compute='_get_detail_name_str',
                                   store=True)
+    total_pick_number = fields.Char("Nº de pickings", readonly=True,
+                                  compute='_get_pick_number',
+                                  store=False)
+    total_op_numberv = fields.Char("Nº de operaciones", readonly=True,
+                                  compute='_get_pick_number',
+                                  store=False)
+    processed_pick_number = fields.Char("Pickings procesados", readonly=True,
+                                  compute='_get_pick_number',
+                                  store=False)
+    processed_op_number = fields.Char("Operaciones procesadas", readonly=True,
+                                  compute='_get_pick_number',
+                                    store=False)
+    rate_processed = fields.Char("Ratio rocesadas", readonly=True,
+                                  compute='_get_pick_number',
+                                    store=False)
 
     def view_account_moves(self, cr, uid, ids, context=None):
         '''
