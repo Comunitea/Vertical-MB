@@ -351,24 +351,37 @@ class sale_order(models.Model):
     #FUNCIONES PARA LLAMAR DESDE TABLET
     @api.model
     def create_and_confirm(self, vals):
-        if vals.get('chanel', False) == 'tablet':
-
-            vals = self.change_price_vals(vals)
-        #vals.update({'user_id2': self._uid})
         res = self.create(vals)
         if res:
             res.action_button_confirm()
+            _logger.info("MIDBAN. Respuesta a create_and_confirm <%s> "
+                         %(res))
             return res.id
+        _logger.info("MIDBAN. Respuesta ERROR!! create_and_confirm <%s> "
+                         %(res))
         return False
 
     @api.multi
+    def clean_vals(self, vals):
+        if vals:
+            if vals.get('name', False):
+                del vals['name']
+            if vals.get('id', False):
+                del vals['id']
+        return vals
+
+    @api.multi
     def easy_modification(self, vals):
+        vals = self.clean_vals(vals)
         self.cancel_sale_to_draft()
-        vals = self.change_price_vals(vals)
-        res =  self.write(vals)
+        res = self.write(vals)
         if res:
-            self.action_button_confirm()
+            for order in self:
+                order.action_button_confirm()
+        _logger.info("MIDBAN. Respuesta a easy_modification <%s> "
+                         %(res))
         return res
+
 
 
     @api.multi
@@ -419,6 +432,8 @@ class sale_order(models.Model):
         logfile_tablet.write("%s\n"%msg)
         logfile_tablet.close()
 
+
+
     @api.model
     def create(self, vals):
         if vals.get('chanel', False) == 'tablet':
@@ -434,7 +449,6 @@ class sale_order(models.Model):
         return res
 
     @api.one
-    @api.model
     def recalculate_taxes(self):
         if self.chanel == 'tablet' and self.fiscal_position:
             for line in self.order_line:
