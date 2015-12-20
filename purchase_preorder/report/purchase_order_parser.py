@@ -225,7 +225,7 @@ import time
 #         if not filter_products:
 #             supplier_names = ', '.join([x.name for x in
 #                                         self.env['res.partner'].
-#                                         browse(data['supplier_ids'])])
+#                                         browse(data['supplier_ids'])])fes final
 #
 #             category_names = ', '.join([x.name for x in
 #                                        self.env['product.category'].
@@ -253,12 +253,20 @@ class purchase_order_parser(models.AbstractModel):
     """
     _name = 'report.purchase_preorder.replenishement_purchase_order'
 
-    def _get_products_suppliers(self, fields, supplier_ids=[], cat_ids=[], product_temp_ids=[]):
+    def _get_products_suppliers(self, fields, wh_id, from_range=[], supplier_ids=[], cat_ids=[], product_temp_ids=[]):
         """
         Function that searches for products you can sell the supplier.
         """
         prod_dics = []
         prod_supp_info = self.env['product.supplierinfo']
+        if from_range and from_range[0] and from_range[1]:
+            supplier_ids = []
+            supplier_objs = self.env['res.partner'].search([('supplier', '=', True)])
+            for sup in supplier_objs:
+                if sup.ref and sup.ref.isdigit() \
+                        and int(sup.ref) >= from_range[0] \
+                        and int(sup.ref) <= from_range[1]:
+                    supplier_ids.append(sup.id)
         if supplier_ids:
             domain = [('name', 'in', supplier_ids)]
             prod_sup_objs = prod_supp_info.search(domain)
@@ -272,7 +280,7 @@ class purchase_order_parser(models.AbstractModel):
                 domain.append(('temp_type', 'in', product_temp_ids))
             if cat_ids:
                 domain.append(('categ_id', 'child_of', cat_ids))
-            prod_dics = self.env['product.template'].search_read(domain,
+            prod_dics = self.env['product.template'].with_context(warehouse=wh_id).search_read(domain,
                                                                  fields)
         return prod_dics
 
@@ -324,6 +332,11 @@ class purchase_order_parser(models.AbstractModel):
     def get_report_data(self, data):
         res = []
         prod_dics = []
+        t_prod = self.env['product.template']
+        wh_objs = self.env['stock.warehouse'].search([])
+        wh_id = False
+        if wh_objs:
+            wh_id = wh_objs[0].id
         # Get products to give in the report
         fields = ['name', 'default_code', 'qty_available', 'incoming_qty',
                   'outgoing_qty', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa',
@@ -333,11 +346,13 @@ class purchase_order_parser(models.AbstractModel):
                       ('type', '=', 'product')]
             if data['product_temp_ids']:
                 domain.append(('temp_type', 'in', data['product_temp_ids']))
-            prod_dics = self.env['product.template'].search_read(domain,
+            prod_dics = t_prod.with_context(warehouse=wh_id).search_read(domain,
                                                                  fields)
 
-        elif data.get('supplier_ids', False):
+        elif data.get('supplier_ids', False) or data.get('from_range', False):
             prod_dics = self._get_products_suppliers(fields,
+                                                     wh_id,
+                                                     data['from_range'],
                                                      data['supplier_ids'],
                                                      data['category_ids'],
                                                      data['product_temp_ids'])
@@ -345,7 +360,7 @@ class purchase_order_parser(models.AbstractModel):
         elif data.get('category_ids', False):
             domain = [('categ_id', 'child_of', data['category_ids']),
                       ('type', '=', 'product')]
-            prod_dics = self.env['product.template'].search_read(domain,
+            prod_dics = t_prod.with_context(warehouse=wh_id).search_read(domain,
                                                                  fields)
 
         if not prod_dics:
@@ -387,7 +402,7 @@ class purchase_order_parser(models.AbstractModel):
                       INNER JOIN sale_order so ON so.id = sol.order_id
                       INNER JOIN product_product p ON p.id = sol.product_id
                       INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
-                      WHERE so.state = 'history'
+                      WHERE so.state in ('history', 'done')
                       AND so.date_order >= %s
                       AND so.date_order <= %s
                       AND pt.id = %s
@@ -440,6 +455,8 @@ class purchase_order_parser(models.AbstractModel):
             'supplier_names': supplier_names,
             'category_names': category_names,
             'filter_products': filter_products,
+            'filter_range': data['filter_range'],
+            'from_range': data['from_range']
         }
         docargs = {
             'doc_ids': [],

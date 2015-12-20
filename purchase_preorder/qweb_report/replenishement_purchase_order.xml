@@ -101,8 +101,12 @@
                            <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>
                       </div>
 
-                      <div t-if="meta_info['supplier_names']">
+                      <div t-if="meta_info['supplier_names'] and not meta_info['filter_range']">
                           <b>Suppliers: </b>  <span t-esc="meta_info['supplier_names']"/>
+                      </div>
+                      <div t-if="meta_info['filter_range']">
+                          <!--<b>Referencia proveedores: </b>  <span t-esc=" 'Desde ' + str(meta_info['from_range'][0]) + ' hasta + str(meta_info['from_range'][1])'"/>-->
+                          <b>Referencia proveedores: Desde el </b> <span t-esc="meta_info['from_range'][0]"/> <b>Hasta el </b> <span t-esc="meta_info['from_range'][1]"/>
                       </div>
                       <div t-if="meta_info['category_names']">
                           <b>Categories: </b>  <span t-esc="meta_info['category_names']"/>
