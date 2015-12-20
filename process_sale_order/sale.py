@@ -348,11 +348,20 @@ class sale_order(models.Model):
                             line['price_udv'] = res
         return vals
 
+
     #FUNCIONES PARA LLAMAR DESDE TABLET
+
+    @api.one
+    def check_route(self):
+        if self.route_detail_id:
+            if self.route_detail_id.date != self.date_planned:
+                self.date_planned = self.route_detail_id.date
+
     @api.model
     def create_and_confirm(self, vals):
         res = self.create(vals)
         if res:
+            res.check_route()
             res.action_button_confirm()
             _logger.info("MIDBAN. Respuesta a create_and_confirm <%s> "
                          %(res))
@@ -396,7 +405,7 @@ class sale_order(models.Model):
 
     @api.model
     def check_duplicate(self, vals):
-        date_from =  time.strftime("%x")
+        date_from = time.strftime("%x")
         domain = [('partner_shipping_id','=',
                    vals.get('partner_shipping_id', False)),
                 ('partner_id', '=', vals.get('partner_id',False)),
@@ -413,11 +422,9 @@ class sale_order(models.Model):
                                                                  False))
                     partner = self.env['res.partner'].browse(vals.get(
                                                                  'partner_id', False))
-                    # print "***************************************************"
-                    # print "** INTENTANDO INTRODUCIR PEDIDO DUPLICADO   *******"
-                    # print u" Cliente: %s  //  Comercial: %s"%(
-                    #     partner and partner.comercial, user and user.name)
-                    # print "***************************************************"
+                    print "***************************************************"
+                    print "** INTENTANDO INTRODUCIR PEDIDO DUPLICADO   *******"
+                    print "***************************************************"
                     return so
             else:
                 return []
@@ -437,13 +444,14 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('chanel', False) == 'tablet':
-
             res = self.check_duplicate(vals)
             if len(res):
+                _logger.debug("MIDBAN: DETECTADO DUPLICADO")
                 return res
             vals = self.change_price_vals(vals)
         #vals.update({'user_id2': sel>=f._uid})
         res = super(sale_order, self).create(vals)
+        _logger.debug("MIDBAN: CREADO PEDIDO EN SUPER")
         if res:
             res.recalculate_taxes()
         return res
