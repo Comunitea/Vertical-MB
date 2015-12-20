@@ -402,7 +402,7 @@ class purchase_order_parser(models.AbstractModel):
                       INNER JOIN sale_order so ON so.id = sol.order_id
                       INNER JOIN product_product p ON p.id = sol.product_id
                       INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
-                      WHERE so.state in ('history', 'done')
+                      WHERE so.state in ('history')
                       AND so.date_order >= %s
                       AND so.date_order <= %s
                       AND pt.id = %s
