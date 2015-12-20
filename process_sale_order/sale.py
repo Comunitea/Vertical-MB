@@ -355,7 +355,7 @@ class sale_order(models.Model):
     def check_route(self):
         if self.route_detail_id:
             if self.route_detail_id.date != self.date_planned:
-                self.date_planned = self.route_detail_id.date
+                self.date_planned = self.route_detail_id.date + " 19:00:00"
 
     @api.model
     def create_and_confirm(self, vals):
