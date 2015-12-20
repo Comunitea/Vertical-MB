@@ -88,6 +88,21 @@
         <!--</template>-->
 
         <template id="replenishement_purchase_order">
+        <style type="text/css">
+        .table2{
+         width: 100%;
+        }
+        .table2 td{
+         font-size: 13px;
+        }
+        b{
+            font-size: 14px;
+            font-weight: bold;
+        }
+        span{
+            font-size: 13px;
+        }
+        </style>
             <!-- <t t-call="report.html_container"> -->
               <!-- <t t-call="report.external_layout"> -->
                 <t t-foreach="docs" t-as="o">
@@ -115,7 +130,7 @@
                           <b>Specific Products.</b>
                       </div>
                       <br/>
-                      <table class="table table-bordered">
+                      <table class="table2 table-bordered">
                         <thead>
                             <tr>
                                 <th class="text-center" colspan="3">Products</th>

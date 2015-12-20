@@ -47,7 +47,7 @@ class print_purchase_report(models.TransientModel):
                                         'wzd_id', 'tmp_id', 'Temperature')
     from_ref = fields.Integer("Fom ref")
     to_ref = fields.Integer("To ref")
-    filter_range = fields.Boolean("Filter Rangue")
+    filter_range = fields.Boolean("Filter Rangue", default=True)
 
     @api.multi
     def generate_print_purchase_report(self):
