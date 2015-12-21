@@ -88,6 +88,21 @@
         <!--</template>-->
 
         <template id="replenishement_purchase_order">
+        <style type="text/css">
+        .table2{
+         width: 100%;
+        }
+        .table2 td{
+         font-size: 13px;
+        }
+        b{
+            font-size: 14px;
+            font-weight: bold;
+        }
+        span{
+            font-size: 13px;
+        }
+        </style>
             <!-- <t t-call="report.html_container"> -->
               <!-- <t t-call="report.external_layout"> -->
                 <t t-foreach="docs" t-as="o">
@@ -101,8 +116,12 @@
                            <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>
                       </div>
 
-                      <div t-if="meta_info['supplier_names']">
+                      <div t-if="meta_info['supplier_names'] and not meta_info['filter_range']">
                           <b>Suppliers: </b>  <span t-esc="meta_info['supplier_names']"/>
+                      </div>
+                      <div t-if="meta_info['filter_range']">
+                          <!--<b>Referencia proveedores: </b>  <span t-esc=" 'Desde ' + str(meta_info['from_range'][0]) + ' hasta + str(meta_info['from_range'][1])'"/>-->
+                          <b>Referencia proveedores: Desde el </b> <span t-esc="meta_info['from_range'][0]"/> <b>Hasta el </b> <span t-esc="meta_info['from_range'][1]"/>
                       </div>
                       <div t-if="meta_info['category_names']">
                           <b>Categories: </b>  <span t-esc="meta_info['category_names']"/>
@@ -111,7 +130,7 @@
                           <b>Specific Products.</b>
                       </div>
                       <br/>
-                      <table class="table table-bordered">
+                      <table class="table2 table-bordered">
                         <thead>
                             <tr>
                                 <th class="text-center" colspan="3">Products</th>

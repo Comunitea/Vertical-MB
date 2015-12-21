@@ -45,6 +45,9 @@ class print_purchase_report(models.TransientModel):
     show_to_buy = fields.Boolean('Show to buy', default=True)
     product_temp_ids = fields.Many2many('temp.type', 'wzd_temp_type_rel',
                                         'wzd_id', 'tmp_id', 'Temperature')
+    from_ref = fields.Integer("Fom ref")
+    to_ref = fields.Integer("To ref")
+    filter_range = fields.Boolean("Filter Rangue", default=True)
 
     @api.multi
     def generate_print_purchase_report(self):
@@ -57,7 +60,9 @@ class print_purchase_report(models.TransientModel):
             'product_ids': [x.id for x in self.product_ids],
             'supplier_ids': [x.id for x in self.supplier_ids],
             'show_to_buy': self.show_to_buy,
-            'product_temp_ids': [x.id for x in self.product_temp_ids]
+            'product_temp_ids': [x.id for x in self.product_temp_ids],
+            'filter_range': self.filter_range,
+            'from_range': [self.from_ref, self.to_ref]
         }
         a['data'] = data_dic
         return a

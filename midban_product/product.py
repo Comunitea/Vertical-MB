@@ -836,9 +836,12 @@ class product_product(models.Model):
         elif uos_id == self.log_box_id.id:
             return 'box'
         else:
-            raise except_orm(_('Error'), _('The product unit of measure %s is \
+            raise except_orm(_('Error'), _('The product [%s]%s unit of '
+                                           'measure %s '
+                                           'is \
                              not related with any logistic \
-                             unit' % self.uom_id.name))
+                             unit' % self.name,
+                                           self.default_code,self.uom_id.name))
 
     @api.multi
     def get_uom_uos_prices(self, uos_id, custom_price_unit=0.0,

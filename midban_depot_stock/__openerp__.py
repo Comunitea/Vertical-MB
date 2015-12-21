@@ -81,6 +81,7 @@
         "wizard/several_procurement_product_view.xml",
         "wizard/operations_on_fly_wzd_view.xml",
         "wizard/confirm_load_wzd.xml",
+        "wizard/revert_routes.xml",
         'stock_view.xml',
         'procurement_view.xml',
         'crm_phonecall_view.xml',

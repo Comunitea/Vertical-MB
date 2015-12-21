@@ -24,7 +24,11 @@
                     </group>
                     <group>
                     <group string="Suppliers" attrs="{'invisible': [('filter_options','=','products')]}">
-                        <field name="supplier_ids" nolabel="1" widget="many2many_tags"/>
+                        <field name="filter_range" string="Filtrar por rango de referencias"/>
+                        <field name="from_ref" string="Desde referencia" attrs="{'invisible': [('filter_range','=', False)]}"/>
+                        <field name="to_ref" string="Hasta referencia" attrs="{'invisible': [('filter_range','=', False)]}"/>
+                        <field name="supplier_ids" nolabel="1" widget="many2many_tags" attrs="{'invisible': [('filter_range','=', True)]}"/>
+
                     </group>
                     <group string="Categories"  attrs="{'invisible': [('filter_options','=','products')]}">
                         <field name="category_ids" nolabel="1" widget="many2many_tags"/>

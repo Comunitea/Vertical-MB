@@ -11,6 +11,9 @@
                     <field name="min_rotation"/>
                     <field name="under_rotation" invisible="1"/>
                 </group>
+                <field name="virtual_available" position="before">
+                    <field name="outgoing_qty"/>
+                </field>
             </field>
         </record>
     </data>
