@@ -31,7 +31,10 @@ class ConfirmLoadWzd(models.TransientModel):
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
         pick_pickings = self._get_pickings_from_outs(out_pickings)
-        picks_tot = pick_pickings + out_pickings
+        if out_pickings == pick_pickings:
+            picks_tot = pick_pickings
+        else:
+            picks_tot = pick_pickings + out_pickings
         picks_tot.write({'validated_state': 'loaded'})
          # Display the validated picks
         action_obj = self.env.ref('midban_depot_stock.action_replanning_picking_route')
@@ -60,11 +63,19 @@ class ConfirmLoadWzd(models.TransientModel):
         res = self.env['stock.picking']
         for pick in out_pickings:
             #  if not (pick.sale_id and pick.picking_type_code == 'outgoing'):
-            if not pick.picking_type_code == 'outgoing':
+            if pick.picking_type_id.id == 5:
+                if pick.backorder_id == False:
+                    raise except_orm(_('Error'),
+                                 _('Picking %s must be outgoing type and  \
+                                    related with a sale or \
+                                    autosale' % pick.name))
+
+            if not pick.picking_type_code == 'outgoing' and pick.picking_type_id.id != 5:
                 raise except_orm(_('Error'),
                                  _('Picking %s must be outgoing type and  \
                                     related with a sale or \
                                     autosale' % pick.name))
+
             if not pick.route_detail_id:
                 raise except_orm(_('Error'),
                                  _('Picking %s without has not route detatl \
@@ -81,11 +92,23 @@ class ConfirmLoadWzd(models.TransientModel):
                 if pick.validated_state != 'validated':
                     raise except_orm(_('Error'),
                                  _("Picking %s should be validated" % pick.name))
-            if pick.group_id:
+
+            if pick.group_id and pick.picking_type_code == 'outgoing':
                 domain = [('state', 'in', ['partially_available', 'confirmed', 'assigned']),
                           ('group_id', '=', pick.group_id.id),
                           ('picking_type_id', '=', wh.pick_type_id.id)]
                 pick_objs = self.env['stock.picking'].search(domain)
+
+
+            elif pick.group_id and pick.picking_type_id.id == 5:
+                domain = [
+                          ('group_id', '=', pick.group_id.id),
+                          ('validated_state', '=', 'loaded'),
+                          ('picking_type_code', '=', 'outgoing')]
+                pick_objs = self.env['stock.picking'].search(domain, order = 'id desc')
+                if pick_objs:
+                    if pick_objs[0].validated_state == 'loaded':
+                        pick_objs = pick
 
             # Autosale outs havent group id
             elif pick.move_lines and pick.move_lines[0].move_orig_ids:

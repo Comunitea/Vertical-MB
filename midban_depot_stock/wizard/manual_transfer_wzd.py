@@ -69,7 +69,6 @@ class manual_transfer_wzd(models.TransientModel):
         quants with reservation_id in domain we search again with the super and
         we need get the same quants as first time).
         """
-
         t_move = self.env['stock.move']
         # Create a picking to put the entire transfer of internal type
         pick_obj = self._create_pick()

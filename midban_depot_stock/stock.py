@@ -147,6 +147,11 @@ class stock_picking(osv.Model):
         # Calculate the uos_qty of package when remove qty from it
         for pick in self:
             for op in pick.pack_operation_ids:
+                if op.product_id:
+                    product = op.product_id.short_name or False
+                else:
+                    product = op.package_id.product_id.short_name or False
+                print u"Producto : %s"%product
                 init_pr = time.time()
                 if (op.package_id and op.product_id and op.uos_id) or \
                         (op.package_id and not op.product_id and op.uos_id
@@ -162,6 +167,7 @@ class stock_picking(osv.Model):
                             get_sale_unit_conversions(op.uos_qty, op.uos_id.id)
                         pack_uos_qty = conv_dic[pack_log_unit]
                     op.package_id.uos_qty -= pack_uos_qty
+
                     #Si hay paquete destino
                     if op.result_package_id:
                         # Calcular uos_id equivalente
@@ -1244,6 +1250,7 @@ class stock_pack_operation(models.Model):
                                                "operation is created, delete "
                                                "this and crate another one in"
                                                " the picking."))
+        return super(stock_pack_operation, self).write(vals)
 
         #Hay que reescribir esto, lo hago en una función aparte.
         if vals.get('package_id', False) or vals.get('lot_id', False) or\
@@ -1259,6 +1266,7 @@ class stock_pack_operation(models.Model):
 
     @api.multi
     def get_result_package_id(self,vals):
+
         init_t = time.time()#siempre que sea do_pack empaqueta (si hay) en pacquete destino
         picking_id = vals.get('picking_id', False) or self.picking_id.id
         picking = self.env['stock.picking'].browse(picking_id)
@@ -2323,16 +2331,8 @@ class stock_picking_wave(models.Model):
 class stock_quant(models.Model):
     _inherit = 'stock.quant'
 
-    # _columns = {
-    #     # Añadir 4 decimales de precissión
-    #     'qty': fields.float('Quantity', required=True,
-    #                         digits=dp.get_precision
-    #                         ('Product Unit of Measure'),
-    #                         help="Quantity of products in this quant, in the \
-    #                         default unit of measure of the product",
-    #                         readonly=True,
-    #                         select=True),
-    # }
+    _columns = {'life_date' : fields.related('lot_id', 'life_date')}
+
 
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
                                removal_strategy, context=None):
@@ -2344,6 +2344,7 @@ class stock_quant(models.Model):
         If force_quants_location in context wy try to get quants only of
         location
         """
+
         _logger.debug("CMNT inicio Aplly_removal")
         _logger.debug("CMNT ####################")
         print "removal"
@@ -2365,19 +2366,20 @@ class stock_quant(models.Model):
         #lista de ids donde no se puede buscar producto sin paquete.
         #if location != self.pool.get('stock.warehouse').browse(cr, uid, [1]).wh_output_stock_loc_id
         #domain.append(('package_id', '!=', False))
-
+        domain.append (('package_id', '!=', False))
+        domain.append (('lot_id', '!=', False))
         if removal_strategy == 'depot_fefo' and not already_reserved and not \
                 ('force_quants_location' in context):
             pick_loc_obj = product.picking_location_id
             if location.usage not in ['view', 'internal'] or not pick_loc_obj:
-                print "busqueda normal"
+                print "busqueda normal %s"%domain
                 sup = super(stock_quant, self).apply_removal_strategy(
                     cr, uid, location, product, qty, domain, 'fefo',
                     context=context)
 
                 return sup
             #es necesario ordernar antes poqr package id que por
-            order = 'removal_date, in_date, package_id, id'
+            order = 'life_date, in_date, package_id'
             if not context.get('from_reserve', False):
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
@@ -2397,6 +2399,8 @@ class stock_quant(models.Model):
 
             # Search quants in storage location
             domain = [('reservation_id', '=', False), ('qty', '>', 0)]
+            domain.append (('package_id', '!=', False))
+            domain.append (('lot_id', '!=', False))
             if context.get('from_reserve', False):
                 check_storage_qty = qty
                 res = []
@@ -2416,6 +2420,8 @@ class stock_quant(models.Model):
                     quants_in_res.append(record[0].id)
             domain = [('reservation_id', '=', False), ('qty', '>', 0),
                       ('id', 'not in', quants_in_res)]
+            domain.append (('package_id', '!=', False))
+            domain.append (('lot_id', '!=', False))
             if check_global_qty:
                 res += self._quants_get_order(cr, uid, location, product,
                                               check_global_qty, domain, order,
