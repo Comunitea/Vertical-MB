@@ -2256,6 +2256,14 @@ class stock_move(models.Model):
                 move.picking_id.write({'user_id': pg.user_id.id})
         return res
 
+    @api.multi
+    def action_assign(self):
+        for move in self:
+            if move.state == 'assigned' and move.linked_move_operation_ids:
+                self -= move
+        res = super(stock_move, self).action_assign()
+        return res
+
 
 class stock_inventory(models.Model):
 
