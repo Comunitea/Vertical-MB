@@ -51,6 +51,7 @@ class stock_picking(models.Model):
     def _amount_all(self):
         init_t = time.time()
         for picking in self:
+            print "Calcula Picking"
             val1 = 0
             val = 0.0
             if not picking.sale_id or not picking.picking_type_code in ['outgoing', 'incoming']:
@@ -69,11 +70,11 @@ class stock_picking(models.Model):
                 price_disc_unit = (price_unit * (1 - (line.discount) / 100.0))
                 if line.product_id.is_var_coeff:
                     price = price_disc_unit
-                    qty =  line.product_uom_acc_qty
+                    qty = line.product_uom_qty
                 else:
                     price = price_disc_unit
-                    qty = line.accepted_qty
-                val1 += line.price_subtotal_accepted
+                    qty = line.product_uos_qty
+                val1 += line.price_subtotal
 
                 price_unit = line.procurement_id.sale_line_id.price_unit
                 quantity = line.product_uom_qty
@@ -134,6 +135,7 @@ class stock_move(models.Model):
     def _get_subtotal(self):
         init_t = time.time()
         for move in self:
+            print "Subtotal movimiento"
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
                 move.discount = move.procurement_id.sale_line_id.discount or \
@@ -155,10 +157,10 @@ class stock_move(models.Model):
                 price_disc_unit = (price_unit * (1 - (move.discount) / 100.0))
                 price = price_disc_unit
                 if move.product_id.is_var_coeff:
-                    qty =  move.product_uom_acc_qty
+                    qty = move.product_uom_qty
                 else:
 
-                    qty = move.accepted_qty
+                    qty = move.product_uos_qty
                 # if move.product_id.is_var_coeff:
                 #     move.price_subtotal = price_disc_unit * \
                 #         move.product_uom_qty

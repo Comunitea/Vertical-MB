@@ -20,6 +20,9 @@
                     <field name="product_uom_qty" readonly="True"/>
                      <field name="product_uom_acc_qty" />
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
+                    <field name="change_price" />
+                    <field name="new_price_unit" attrs="{'invisible':[('change_price','=',False)]}"/>
+                    <field name="new_discount" attrs="{'invisible':[('change_price','=',False)]}"/>
                     <field name="price_subtotal" sum="Subtotal"/>
                     <field name="price_subtotal_accepted" sum="Subtotal aceptado"/>
                     <field name="state" readonly="True"/>
@@ -43,6 +46,9 @@
                     <field name="product_uom_qty" readonly="True"/>
                     <field name="product_uom_acc_qty" />
                     <field name="product_uom" string="Unit of Measure" readonly="True"/>
+                    <!--field name="change_price" />
+                    <field name="new_price_unit" attrs="{'invisible':[('change_price','=',False)]}"/>
+                    <field name="new_discount" attrs="{'invisible':[('change_price','=',False)]}"/-->
                     <field name="price_subtotal" sum="Subtotal"/>
                     <field name="price_subtotal_accepted" sum="Subtotal aceptado"/>
 
