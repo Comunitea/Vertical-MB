@@ -109,7 +109,7 @@
 
                   <div class="page">
 
-                      <h3 align="center">Provvedor: <span t-esc="o"/></h3>
+                      <h3 align="center">Proveedor: <span t-esc="o"/></h3>
                       <!-- <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3> -->
                       <div>
                            <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>

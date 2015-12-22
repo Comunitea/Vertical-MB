@@ -333,15 +333,16 @@ class purchase_order_parser(models.AbstractModel):
         wh_id = False
         if wh_objs:
             wh_id = wh_objs[0].id
-        if data.get('product_ids', False):
-            # domain = [('id', 'in', data['product_ids']),
-            #           ('type', '=', 'product')]
-            # if data['product_temp_ids']:
-            #     domain.append(('temp_type', 'in', data['product_temp_ids']))
-            # prod_dics = t_prod.with_context(warehouse=wh_id).search_read(domain,
-            #                                                      fields)
+        if data.get('filter_options', False) and data['filter_options']== 'products':
             raise except_orm(_("Error"),
-                             _("No permitido filtrar por productos de momento"))
+                                 _("No permitido filtrar por productos de momento"))
+            #if data.get('product_ids', False):
+                # domain = [('id', 'in', data['product_ids']),
+                #           ('type', '=', 'product')]
+                # if data['product_temp_ids']:
+                #     domain.append(('temp_type', 'in', data['product_temp_ids']))
+                # prod_dics = t_prod.with_context(warehouse=wh_id).search_read(domain,
+                #                                                      fields)
 
         elif data.get('supplier_ids', False) or data.get('from_range', False):
             supplier_ids = self._get_supplier_ids(data)
@@ -395,11 +396,18 @@ class purchase_order_parser(models.AbstractModel):
         fetch = self._cr.fetchall()
 
         prod_ids = [x[0] for x in fetch]
-        prod_read = self.env['product.template'].with_context(warehouse=wh_id).browse(prod_ids).read(['uom_id','qty_available', 'outgoing_qty', 'incoming_qty', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa'])
+        fields = ['uom_id','qty_available', 'outgoing_qty', 'incoming_qty',
+                  'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'temp_type']
+        prod_read = self.env['product.template'].with_context(warehouse=wh_id).browse(prod_ids).read(fields)
         prod_data = {}
         for rec in prod_read:
             prod_data[rec['id']] = rec
         for rec in fetch:
+            if data.get('product_temp_ids', False):
+                if prod_data[rec[0]]['temp_type'] and \
+                        prod_data[rec[0]]['temp_type'][0] \
+                        not in data['product_temp_ids']:
+                    continue
             dic_data = {
                 'code': rec[1],
                 'name':rec[2],
@@ -411,10 +419,15 @@ class purchase_order_parser(models.AbstractModel):
             }
             dic_data['diff'] = self._get_diff(dic_data)
             dic_data['to_order'] = self._get_to_order_touple(dic_data['diff'], prod_data[rec[0]])
-            if rec[5] not in by_supplier:
-                by_supplier[rec[5]] = []
-            by_supplier[rec[5]].append(dic_data)
+            if (not data.get('show_to_buy', False)) or \
+                    (data.get('show_to_buy', False) and \
+                    dic_data['to_order'][0] > 0 or \
+                    dic_data['to_order'][1] > 0):
+                if rec[5] not in by_supplier:
+                    by_supplier[rec[5]] = []
+                by_supplier[rec[5]].append(dic_data)
         return by_supplier
+
 
     @api.multi
     def render_html(self, data=None):

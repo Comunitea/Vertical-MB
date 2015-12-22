@@ -62,7 +62,8 @@ class print_purchase_report(models.TransientModel):
             'show_to_buy': self.show_to_buy,
             'product_temp_ids': [x.id for x in self.product_temp_ids],
             'filter_range': self.filter_range,
-            'from_range': [self.from_ref, self.to_ref]
+            'from_range': [self.from_ref, self.to_ref],
+            'filter_options': self.filter_options
         }
         a['data'] = data_dic
         return a
