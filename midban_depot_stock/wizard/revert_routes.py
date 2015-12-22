@@ -42,8 +42,8 @@ class RevertRoutes(models.TransientModel):
         validate_write_batch = {}
         to_revalidate = self.env['stock.picking']
         #REASIGNA RUTA Y COLOCA ESTADO COMO NO VALIDADO
-        out_pickings.route_detail_id = self.route_detail_id.id
-        out_pickings.validated_state = "no_validated"
+        out_pickings.write({"route_detail_id": self.route_detail_id.id, "validated_state": "no_validated"})
+        #out_pickings.validated_state = "no_validated"
         for pick in pick_pickings:
             if pick.state != 'done':
                 pick.do_unreserve()
