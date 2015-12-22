@@ -68,7 +68,7 @@
 }
 
 .openerp .oe_kanban_view .oe_kanban_stock_route {
-    width: 345px;
+    width: 300px;
     cursor: default;
     min-height: 345px !important;
 }
@@ -99,10 +99,10 @@
     height: 20px;
     width: 66px !important;
 }
-.openerp .oe_kanban_view .oe_kanban_stock_route .oe_picking_type_gauge {
-    position: absolute;
+.openerp .oe_kanban_view .oe_kanban_stock_route .oe_stock_route_gauge {
+
     left: 10px;
-    top: 100px;
+    top: 150px;
 }
 .openerp .oe_stock_scan_image {
    opacity: 0.2;

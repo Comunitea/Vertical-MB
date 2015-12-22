@@ -35,6 +35,7 @@ class route_detail(models.Model):
     @api.multi
     def _get_pick_number(self):
         picking_obj = self.env['stock.picking']
+        move_obj = self.env['stock.move']
         task_obj = self.env['stock.task']
         warehouse_id = self.env['stock.warehouse'].search([])[0]
 
@@ -58,7 +59,7 @@ class route_detail(models.Model):
             if not dict_ops.get(str(term[0]), False):
                 dict_ops[str(term[0])] = {}
                 dict_ops[str(term[0])][str(term[1])] = [0, 0]
-                if term[2]:
+                if term[3]:
                     dict_ops[str(term[0])][str(term[1])][0] = term[2]
                 else:
                     dict_ops[str(term[0])][str(term[1])][1] = term[2]
@@ -66,7 +67,7 @@ class route_detail(models.Model):
                 if not dict_ops[str(term[0])].get(str(term[1]), False):
                     dict_ops[str(term[0])][str(term[1])] = [0, 0]
 
-                if term[2]:
+                if term[3]:
                     dict_ops[str(term[0])][str(term[1])][0] = term[2]
                 else:
                     dict_ops[str(term[0])][str(term[1])][1] = term[2]
@@ -75,6 +76,16 @@ class route_detail(models.Model):
 
         for detail in self:
             detail.warehouse_id = warehouse_id.id
+
+            error_moves = move_obj.search([('availability', '<',
+                                            'reserved_availabiliyt'),
+                                           ('picking_id.route_detail_id', '=',
+                                               detail.id),
+                                           ('picking_type_id', '=',
+                                            warehouse_id.pick_type_id.id),
+                                                ('state', 'in',
+                                                 ['assigned',])])
+
             outs = picking_obj.search([('route_detail_id', '=',
                                                detail.id),
                                            ('picking_type_id', '=',
@@ -105,7 +116,7 @@ class route_detail(models.Model):
                                            ('picking_type_id', '=',
                                             warehouse_id.pick_type_id.id),
                                                 ('state', 'in',
-                                                 ['assigned',
+                                                 ['confirmed', 'assigned',
                                                   'partially_available'])
                                                    ])
             pickings_done = picking_obj.search([('route_detail_id', '=',
@@ -140,6 +151,7 @@ class route_detail(models.Model):
             detail.task_process = int(len(tasks_process))
             detail.task_work = int(len(tasks_work))
             detail.task_tot = int(len(tasks_tot))
+            detail.error_moves = int(len(error_moves))
 
 
             #Calculo de operaciones
@@ -147,21 +159,34 @@ class route_detail(models.Model):
             total_ops = 0
             done_ops = 0
             pending_ops = 0
-            percent_ops = 0
+            percent_ops = 0.0
             if detail_ops:
                 for cam in detail_ops.values():
                     print cam
                     total_ops += cam[0] + cam[1]
                     done_ops += cam[0]
-                    pending_ops += cam[0]
-                if total_ops > 0:
-                    percent_ops = (done_ops / total_ops) * 100
-
+                    pending_ops += cam[1]
+                if total_ops != 0:
+                    percent_ops = (float(done_ops) / float(total_ops)) * 100
+            print "DETAIL " + detail.route_id.name
+            print total_ops
+            print done_ops
+            print percent_ops
             detail.total_ops = total_ops
             detail.done_ops = done_ops
             detail.pending_ops = pending_ops
-            detail.percent_ops = percent_ops
+            detail.percent_ops = int(percent_ops)
 
+            #CALcula color
+            if done_ops != total_ops:
+                detail.color = 2
+            else:
+                if detail.total_number == detail.ready_number + \
+                        detail.processed_number and \
+                                detail.pending_pick_number == 0:
+                    detail.color = 4
+                else:
+                    detail.color = 3
 
     color = fields.Integer('Color')
     warehouse_id = fields.Many2one('stock.warehouse','Almacen' )
@@ -212,5 +237,9 @@ class route_detail(models.Model):
                                   compute='_get_pick_number',
                                     store=False)
     percent_ops = fields.Float("Ratio operacions procesadas", readonly=True,
+                                  compute='_get_pick_number',
+                                    store=False)
+    error_moves = fields.Integer("Reservas erroneas",
+                                        readonly=True,
                                   compute='_get_pick_number',
                                     store=False)

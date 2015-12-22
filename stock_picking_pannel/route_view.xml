@@ -60,7 +60,7 @@
             <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
             <field name="domain">[('route_detail_id', '=', [active_id]),('picking_type_id', '=', 5),('state', 'in',
-                                                 ['assigned','partially_available'])]</field>
+                                                 ['confirmed', 'assigned','partially_available'])]</field>
         </record>
 
         <record id="action_tasks" model="ir.actions.act_window">
@@ -73,7 +73,6 @@
             <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
             <field name="domain">[('route_detail_id', '=', [active_id])]</field>
         </record>
-
 
 
         <record id="route_detail_view_kanban" model="ir.ui.view">
@@ -124,12 +123,17 @@
                                                 <field name="no_confirmed_pick_number"/> Albaranes NO confirmados
                                             </a>
                                         </div>
+                                        <div >
+
+                                                <srtrong><field name="error_moves"/> Reservas erroneas </srtrong>
+
+                                        </div>
                                     </div>
-                                    <div class="oe_picking_type_gauge">
-                                        <field name="percent_ops" widget="gauge" style="width:2000px; height: 150px;" options="{'levelcolors': ['#ff0000', '#f9c802', '#a9d70b'],}">Procesadas (%)</field>
+                                    <div class="oe_stock_route_gauge">
+                                        <field name="percent_ops" widget="gauge" style="width:200px; height: 150px;" options="{'levelcolors': ['#ff0000', '#f9c802', '#a9d70b'],}">Procesadas (%)</field>
                                     </div>
                                     <div >
-                                        <strong><field name="done_ops"/> de <field name="total_ops"/> relizadas</strong>
+                                        <strong><field name="done_ops"/> de <field name="total_ops"/> realizadas</strong>
                                     </div>
                                     <div >
                                         <a name="%(action_pick_pending)d" type="action">
@@ -139,7 +143,7 @@
 
                                     <div >
                                         <a name="%(action_tasks)d" type="action">
-                                         Tareas <field name="task_total"/> / <field name="task_work"/> / <strong><field name="task_process"/></strong>
+                                         Tareas: <field name="task_total"/> / <field name="task_work"/> / <strong><field name="task_process"/></strong>
                                         </a>
                                     </div>
                                 </div>
