@@ -227,15 +227,27 @@ class res_partner(osv.Model):
         'min_palets': 0
     }
 
-    @api.one
-    @api.constrains('ref')
-    def product_unique_ref(self):
-        if self.ref:
-            founded_partner = self.search([('ref', '=', self.ref)], limit=1)
+    @api.constrains('ref', 'customer')
+    def check_customer_ref(self):
+        for partner in self.filtered(lambda record: record.customer is True and record.ref):
+            founded_partner = self.search([('customer', '=', True),
+                                           ('ref', '=', partner.ref),
+                                           ('id', '!=', partner.id)], limit=1)
             if founded_partner:
-                raise Warning(_('Partner %s is already assigned to reference %s')
-                              % (founded_partner.name, self.ref))
-        return
+                raise Warning(
+                    _('Partner %s is already assigned to reference %s') %
+                    (founded_partner.name, self.ref))
+
+    @api.constrains('ref', 'supplier')
+    def check_supplier_ref(self):
+        for partner in self.filtered(lambda record: record.supplier is True and record.ref):
+            founded_partner = self.search([('supplier', '=', True),
+                                           ('ref', '=', partner.ref),
+                                           ('id', '!=', partner.id)], limit=1)
+            if founded_partner:
+                raise Warning(
+                    _('Partner %s is already assigned to reference %s') %
+                    (founded_partner.name, self.ref))
 
     def name_search(self, cr, uid, name, args=None, operator='ilike',
                     context=None, limit=100):
@@ -255,7 +267,6 @@ class res_partner(osv.Model):
             ids = [x[0] for x in partners]
 
         return self.name_get(cr, uid, ids, context=context)
-
 
     def create(self, cr, uid, vals, context=None):
         """
@@ -346,7 +357,17 @@ class res_partner(osv.Model):
                     _('Cannot activate a customer without vat'))
             message = _("Registered")
             self._update_history(cr, uid, ids, context, partner, message)
-            partner.write({'state2': 'registered', 'active': True})
+            write_vals = {'state2': 'registered', 'active': True}
+            if not partner.ref and partner.is_company:
+                type = ''
+                if partner.customer:
+                    type = 'customer'
+                if partner.supplier:
+                    type = 'supplier'
+                code = 'res.partner.%s' % type
+                new_ref = self.pool['ir.sequence'].get(cr, uid, code)
+                write_vals['ref'] = new_ref
+            partner.write(write_vals)
         return True
 
     def register_again(self, cr, uid, ids, context=None):

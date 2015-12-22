@@ -30,5 +30,23 @@
             <field name="name">Domingo</field>
             <field name="sequence">7</field>
         </record>
+        <record id="res_partner_cust_sequence_type" model='ir.sequence.type'>
+            <field name="name">Customer partners</field>
+            <field name="code">res.partner.customer</field>
+        </record>
+        <record id="res_partner_supp_sequence_type" model='ir.sequence.type'>
+            <field name="name">Supplier partners</field>
+            <field name="code">res.partner.supplier</field>
+        </record>
+        <record id="seq_res_partner_customer" model="ir.sequence">
+            <field name="name">Customer partner</field>
+            <field name="code">res.partner.customer</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_res_partner_supplier" model="ir.sequence">
+            <field name="name">Supplier partner</field>
+            <field name="code">res.partner.supplier</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </openerp>

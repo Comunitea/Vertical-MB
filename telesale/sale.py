@@ -231,6 +231,32 @@ class sale(osv.osv):
                                           context=context)
         return True
 
+    # @api.model
+    # def check_not_in_picking_order(self, client_id):
+    #     """
+    #     """
+    #     # NO ESTÁ COGIENDO BIEN LA FECHA, NO LA RECUPERA EN TIMEZONE Y AL HACER EL BROWSE TAMPOCO
+    #     # LA DE LA VIEJA API TAMPOCO FUNCIONA BIEN
+    #     res = False
+    #     import ipdb; ipdb.set_trace()
+    #     domain = [
+    #         ('partner_id', '=', client_id),
+    #         ('state', 'in', ['draft', 'sent', 'waiting_date', 'progress'])
+    #     ]
+    #     order_obj = self.search(domain, limit=1, order='id desc')
+    #     wh = self.env['stock.warehouse'].search([])[0]
+    #     pick_type_id = wh.pick_type_id.id
+    #     if order_obj:
+    #         domain = [('group_id', '=', order_obj.procurement_group_id.id),
+    #                   ('picking_type_id', '=', pick_type_id),
+    #                   '|',
+    #                   ('validated_state', '!=', 'no_validated')
+    #                   ('state', 'not_in', ['draft', 'confirmed'])]
+    #         pick_obj = self.env['stock.picking'].search(domain)
+    #         if not pick_obj.id:
+    #             res = order_obj.id
+    #     return res
+
     @api.model
     def check_not_in_picking_order(self, client_id):
         """

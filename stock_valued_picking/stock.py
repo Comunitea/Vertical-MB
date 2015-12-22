@@ -24,6 +24,7 @@ import time
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class stock_picking(models.Model):
 
     _inherit = "stock.picking"
@@ -35,8 +36,8 @@ class stock_picking(models.Model):
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
         string='Taxes', readonly=True, store=False)
     amount_total = fields.Float(
-        compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
-        string='Total', readonly=True, store=False)
+        compute='_amount_total', digits_compute=dp.get_precision('Sale Price'),
+        string='Total', readonly=True, store=True)
     amount_gross = fields.Float(
         compute='_amount_all', digits_compute=dp.get_precision('Sale Price'),
         string='amount gross', readonly=True, store=False)
@@ -47,10 +48,10 @@ class stock_picking(models.Model):
         ' External Notes')
 
     @api.multi
-    #@api.depends('move_lines.price_subtotal')
     def _amount_all(self):
         init_t = time.time()
         for picking in self:
+            print "Calcula Picking"
             val1 = 0
             val = 0.0
             if not picking.sale_id or not picking.picking_type_code in ['outgoing', 'incoming']:
@@ -69,11 +70,11 @@ class stock_picking(models.Model):
                 price_disc_unit = (price_unit * (1 - (line.discount) / 100.0))
                 if line.product_id.is_var_coeff:
                     price = price_disc_unit
-                    qty =  line.product_uom_acc_qty
+                    qty = line.product_uom_qty
                 else:
                     price = price_disc_unit
-                    qty = line.accepted_qty
-                val1 += line.price_subtotal_accepted
+                    qty = line.product_uos_qty
+                val1 += line.price_subtotal
 
                 price_unit = line.procurement_id.sale_line_id.price_unit
                 quantity = line.product_uom_qty
@@ -97,10 +98,58 @@ class stock_picking(models.Model):
                 picking.amount_untaxed = round(val1, 2)
                 picking.amount_gross = round(amount_gross, 2)
 
-            picking.amount_total = picking.amount_untaxed + picking.amount_tax
             picking.amount_discounted = picking.amount_gross - \
                 picking.amount_untaxed
         _logger.debug("CMNT _amount_all %s", time.time() - init_t)
+
+    @api.multi
+    @api.depends('move_lines.price_subtotal')
+    def _amount_total(self):
+        for picking in self:
+            val1 = 0
+            val = 0.0
+            if not picking.sale_id or not picking.picking_type_code in \
+                    ['outgoing', 'incoming']:
+                continue
+            taxes = amount_gross = amount_untaxed = 0.0
+            cur = picking.partner_id.property_product_pricelist \
+                and picking.partner_id.property_product_pricelist.currency_id \
+                or False
+            for line in picking.move_lines:
+                if line.product_id.is_var_coeff:
+                    price_unit = line.procurement_id.sale_line_id.price_unit
+                else:
+                    price_unit = line.procurement_id.sale_line_id.price_udv
+                price_disc_unit = (price_unit * (1 - (line.discount) / 100.0))
+                if line.product_id.is_var_coeff:
+                    price = price_disc_unit
+                    qty = line.product_uom_qty
+                else:
+                    price = price_disc_unit
+                    qty = line.product_uos_qty
+                val1 += line.price_subtotal
+
+                price_unit = line.procurement_id.sale_line_id.price_unit
+                quantity = line.product_uom_qty
+                sale_line = line.procurement_id.sale_line_id
+                if sale_line and line.state != 'cancel':
+                    for c in sale_line.tax_id.compute_all(
+                            price, qty,
+                            line.product_id,
+                            sale_line.order_id.partner_id)['taxes']:
+                        val += c.get('amount', 0.0)
+
+                    amount_gross += (price_unit * qty)
+                else:
+                    continue
+            if cur:
+                amount_tax = cur.round(val)
+                amount_untaxed = cur.round(val1)
+            else:
+                amount_tax = round(val, 2)
+                amount_untaxed = round(val1, 2)
+            picking.amount_total = amount_untaxed + amount_tax
+
 
 class stock_move(models.Model):
 
@@ -134,6 +183,7 @@ class stock_move(models.Model):
     def _get_subtotal(self):
         init_t = time.time()
         for move in self:
+            print "Subtotal movimiento"
             if move.procurement_id.sale_line_id:
                 cost_price = move.product_id.standard_price or 0.0
                 move.discount = move.procurement_id.sale_line_id.discount or \
@@ -155,10 +205,10 @@ class stock_move(models.Model):
                 price_disc_unit = (price_unit * (1 - (move.discount) / 100.0))
                 price = price_disc_unit
                 if move.product_id.is_var_coeff:
-                    qty =  move.product_uom_acc_qty
+                    qty = move.product_uom_qty
                 else:
 
-                    qty = move.accepted_qty
+                    qty = move.product_uos_qty
                 # if move.product_id.is_var_coeff:
                 #     move.price_subtotal = price_disc_unit * \
                 #         move.product_uom_qty

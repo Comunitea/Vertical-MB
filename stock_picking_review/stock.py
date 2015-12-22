@@ -55,6 +55,9 @@ class stock_move(models.Model):
         compute='_get_subtotal_accepted', string="% margin Accepted",
         digits=dp.get_precision('Sale Price'), readonly=True,
         store=False)
+    change_price = fields.Boolean("Cambio precio")
+    new_price_unit = fields.Float("Nuevo precio (Udm)")
+    new_discount = fields.Float("Nuevo descuento")
 
     @api.onchange('accepted_qty')
     def accepted_qty_onchange(self):
@@ -137,8 +140,12 @@ class stock_move(models.Model):
                     move.accepted_qty:
                 res["quantity_second_uom"] = move.accepted_qty
             res["quantity"] = move.product_uom_acc_qty
-            if sale_line:
-                res["price_unit"] = sale_line.price_unit
+            if move.change_price:
+                res["price_unit"] = move.new_price_unit * (1 - \
+                    move.discount/100)
+            else:
+                if sale_line:
+                    res["price_unit"] = sale_line.price_unit
         return res
 
 
@@ -281,6 +288,8 @@ class StockPicking(models.Model):
                         'product_uos_qty': new_qty,
                         #'picking_id': new_picking,
                         'state': 'draft',
+                        'accepted_qty': new_qty,
+                        'product_uom_acc_qty': new_uom_qty,
                         'location_id': move.location_dest_id.id,
                         'location_dest_id': location_dest_id,
                         'picking_type_id': pick_type_id,
