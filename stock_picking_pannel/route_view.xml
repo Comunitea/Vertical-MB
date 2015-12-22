@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="stock assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/stock_picking_pannel/static/src/css/stock.css"/>
+        </xpath>
+        </template>
+
+         <record id="action_detail_total" model="ir.actions.act_window">
+            <field name="name">Albaranes en ruta</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
+            <field name="domain">[('route_detail_id', '=', [active_id]),('picking_type_id', '=', 2)]</field>
+        </record>
+
+        <record id="action_detail_ready" model="ir.actions.act_window">
+            <field name="name">Albaranes preparados para processar (atención a picking pendiente!)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
+            <field name="domain">[('route_detail_id', '=', [active_id]),('picking_type_id', '=', 2),('state', 'in',['assigned', 'partially_available'])]</field>
+        </record>
+
+        <record id="action_detail_done" model="ir.actions.act_window">
+            <field name="name">Albaranes ya procesados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
+            <field name="domain">[('route_detail_id', '=', [active_id]),('picking_type_id', '=', 2), ('state', 'in',['done',])]</field>
+        </record>
+
+        <record id="action_detail_no_confirmed" model="ir.actions.act_window">
+            <field name="name">Albaranes NO confirmados (no entran en ruta)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
+            <field name="domain">[('route_detail_id', '=', [active_id]),('picking_type_id', '=', 2),('validated_state', '!=', 'loaded')]</field>
+        </record>
+
+        <record id="action_pick_pending" model="ir.actions.act_window">
+            <field name="name">Pick pendientes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
+            <field name="domain">[('route_detail_id', '=', [active_id]),('picking_type_id', '=', 5),('state', 'in',
+                                                 ['assigned','partially_available'])]</field>
+        </record>
+
+        <record id="action_tasks" model="ir.actions.act_window">
+            <field name="name">Tareas de la ruta</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <!--field name="view_id" ref="view_picking_replanning_route_tree"/>
+            <field name="search_view_id" ref="view_picking_replanning_route_filter"/-->
+            <field name="domain">[('route_detail_id', '=', [active_id])]</field>
+        </record>
+
+
+
+        <record id="route_detail_view_kanban" model="ir.ui.view">
+            <field name="name">route.detail.view.kanban</field>
+            <field name="model">route.detail</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey" create="0">
+                    <field name="color"/>
+                    <field name="route_id"/>
+                    <field name="total_number"/>
+                    <field name="ready_number"/>
+                    <field name="processed_number"/>
+                    <field name="pending_pick_number"/>
+                    <field name="no_confirmed_pick_number"/>
+                    <field name="percent_ops"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_stock_route">
+                                <div class="oe_dropdown_toggle oe_dropdown_kanban" groups="stock.group_stock_manager">
+                                    <span class="oe_e">í</span>
+                                    <ul class="oe_dropdown_menu">
+                                        <t t-if="widget.view.is_action_enabled('edit')"><li><a type="edit">Edit...</a></li></t>
+                                        <t t-if="widget.view.is_action_enabled('delete')"><li><a type="delete">Delete</a></li></t>
+                                        <t t-if="widget.view.is_action_enabled('edit')"><li><ul class="oe_kanban_colorpicker" data-field="color"/></li></t>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <h4 class="text-center"><strong><field name="route_id"/></strong></h4>
+                                    <div class="oe_items_list oe_kanban_ellipsis">
+                                        <div>
+                                            <a name="%(action_detail_total)d" type="action">
+                                                <field name="total_number"/> Albaranes en ruta (Total)
+                                            </a>
+                                        </div>
+                                        <div >
+                                            <a name="%(action_detail_ready)d" type="action">
+                                                <field name="ready_number"/> Albaranes para ser procesados
+                                            </a>
+                                        </div>
+                                        <div >
+                                            <a name="%(action_detail_done)d" type="action">
+                                                <field name="processed_number"/> Albaranes ya procesados
+                                            </a>
+                                        </div>
+
+                                        <div >
+                                            <a name="%(action_detail_no_confirmed)d" type="action">
+                                                <field name="no_confirmed_pick_number"/> Albaranes NO confirmados
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="oe_picking_type_gauge">
+                                        <field name="percent_ops" widget="gauge" style="width:2000px; height: 150px;" options="{'levelcolors': ['#ff0000', '#f9c802', '#a9d70b'],}">Procesadas (%)</field>
+                                    </div>
+                                    <div >
+                                        <strong><field name="done_ops"/> de <field name="total_ops"/> relizadas</strong>
+                                    </div>
+                                    <div >
+                                        <a name="%(action_pick_pending)d" type="action">
+                                        <strong><field name="pending_pick_number"/> Picking pendientes (REVISAR)</strong>
+                                        </a>
+                                    </div>
+
+                                    <div >
+                                        <a name="%(action_tasks)d" type="action">
+                                         Tareas <field name="task_total"/> / <field name="task_work"/> / <strong><field name="task_process"/></strong>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+        </field>
+        </record>
+
+        <record id="action_detail_kanban" model="ir.actions.act_window">
+            <field name="name">Estado de rutas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">route.detail</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban</field>
+            <field name="domain">[('route_type', '=', 'delivery')]</field>
+            <field name="context">{'search_default_filter_today':1}</field>
+        </record>
+
+        <menuitem action="action_detail_kanban" id="menu_details_routes_kanban" name="Estado de rutas" sequence="10" parent="midban_depot_stock.menu_stock_vehicle_route_mgmt"/>
+
+
+
+    </data>
+</openerp>

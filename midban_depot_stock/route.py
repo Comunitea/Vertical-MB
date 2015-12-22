@@ -380,53 +380,7 @@ class route_detail(models.Model):
         for detail in self:
             detail.detail_name_str = detail.route_id.code + " " + detail.date
 
-    @api.multi
-    def _get_pick_number(self):
-        picking_obj = self.env['stock.picking']
-        warehouse_id = self.env['stock.warehouse'].search([])[0]
 
-        query_ops= """SELECT count(stock_pack_operation.to_process) as
-        num, stock_picking.route_detail_id, stock_pack_operation.to_process,
-        stock_picking.camera_id FROM stock_pack_operation INNER JOIN
-        stock_picking on stock_pack_operation.picking_id = stock_picking.id
-        WHERE stock_picking.picking_type_id=%s  AND route_detail_id in (%s)
-         GROUP BY stock_picking.route_detail_id, stock_picking.camera_id,
-         stock_pack_operation.to_process ORDER BY route_detail_id, camera_id,
-        to_process""" % (warehouse_id.pick_type_id.id,
-                    ",".join([str(int(x.id)) for x in self]) )
-
-        self.env.cr.execute(query_ops)
-        res = self.env.cr.fetchall()
-        for term in res:
-            pass
-
-        for detail in self:
-            pickings_pend = picking_obj.search([('route_detail_id', '=',
-                                               detail.id),
-                                           ('picking_type_id', '=',
-                                            warehouse_id.pick_type_id.id),
-                                                ('state', 'in',
-                                                 ['confirmed', 'assigned',
-                                                  'partially_available'])])
-            pickings_done= picking_obj.search([('route_detail_id', '=',
-                                               detail.id),
-                                           ('picking_type_id', '=',
-                                            warehouse_id.pick_type_id.id),
-                                                ('state', 'in',
-                                                 ['done',])])
-            pickings_oher= picking_obj.search([('route_detail_id', '=',
-                                               detail.id),
-                                           ('picking_type_id', '=',
-                                            warehouse_id.pick_type_id.id),
-                                                ('state', 'not in',
-                                                 ['done', 'confirmed', 'assigned',
-                                                  'partially_available'])])
-            detail.total_pick_number = int(len(pickings_pend) + len(
-                    pickings_done)  + len(pickings_oher))
-            detail.processed_pick_number = int(len(pickings_done))
-            if detail.total_pick_number != 0:
-                detail.rate_processed = detail.processed_pick_number / \
-                                        detail.total_pick_number
 
 
     # @api.one
@@ -466,23 +420,6 @@ class route_detail(models.Model):
     detail_name_str = fields.Char("Detail name", readonly=True,
                                   compute='_get_detail_name_str',
                                   store=True)
-    total_pick_number = fields.Integer("Nº de pickings", readonly=True,
-                                  compute='_get_pick_number',
-                                  store=False)
-    total_op_numberv = fields.Integer("Nº de operaciones", readonly=True,
-                                  compute='_get_pick_number',
-                                  store=False)
-    processed_pick_number = fields.Integer("Pickings procesados",
-                                           readonly=True,
-                                  compute='_get_pick_number',
-                                  store=False)
-    processed_op_number = fields.Integer("Operaciones procesadas",
-                                        readonly=True,
-                                  compute='_get_pick_number',
-                                    store=False)
-    rate_processed = fields.Float("Ratio rocesadas", readonly=True,
-                                  compute='_get_pick_number',
-                                    store=False)
 
     def view_account_moves(self, cr, uid, ids, context=None):
         '''
