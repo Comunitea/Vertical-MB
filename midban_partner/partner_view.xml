@@ -46,7 +46,10 @@
                                     class="oe_link" attrs="{'invisible': [('state2','!=','unregistered')]}"/>
                     </div>
                     <group>
-                        <field name="ref"/>
+                        <label for="ref"/>
+                        <h2>
+                            <field name="ref"/>
+                        </h2>
                     </group>
                 </field>
                 <notebook position="inside">
