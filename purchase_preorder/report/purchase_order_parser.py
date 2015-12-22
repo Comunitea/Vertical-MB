@@ -396,29 +396,36 @@ class purchase_order_parser(models.AbstractModel):
         fetch = self._cr.fetchall()
 
         prod_ids = [x[0] for x in fetch]
-        prod_read = self.env['product.template'].with_context(warehouse=wh_id).browse(prod_ids).read(['uom_id','qty_available', 'outgoing_qty', 'incoming_qty', 'kg_un', 'un_ca', 'ca_ma', 'ma_pa'])
+        fields = ['uom_id','qty_available', 'outgoing_qty', 'incoming_qty',
+                  'kg_un', 'un_ca', 'ca_ma', 'ma_pa', 'temp_type']
+        prod_read = self.env['product.template'].with_context(warehouse=wh_id).browse(prod_ids).read(fields)
         prod_data = {}
         for rec in prod_read:
             prod_data[rec['id']] = rec
         for rec in fetch:
-                dic_data = {
-                    'code': rec[1],
-                    'name':rec[2],
-                    'stock_unit':prod_data[rec[0]]['uom_id'][1],
-                    'sales':rec[4],
-                    'stock': prod_data[rec[0]]['qty_available'],
-                    'incoming': prod_data[rec[0]]['incoming_qty'],
-                    'outgoing': prod_data[rec[0]]['outgoing_qty'],
-                }
-                dic_data['diff'] = self._get_diff(dic_data)
-                dic_data['to_order'] = self._get_to_order_touple(dic_data['diff'], prod_data[rec[0]])
-                if (not data.get('show_to_buy', False)) or \
-                        (data.get('show_to_buy', False) and \
-                        dic_data['to_order'][0] > 0 or \
-                        dic_data['to_order'][1] > 0):
-                    if rec[5] not in by_supplier:
-                        by_supplier[rec[5]] = []
-                    by_supplier[rec[5]].append(dic_data)
+            if data.get('product_temp_ids', False):
+                if prod_data[rec[0]]['temp_type'] and \
+                        prod_data[rec[0]]['temp_type'][0] \
+                        not in data['product_temp_ids']:
+                    continue
+            dic_data = {
+                'code': rec[1],
+                'name':rec[2],
+                'stock_unit':prod_data[rec[0]]['uom_id'][1],
+                'sales':rec[4],
+                'stock': prod_data[rec[0]]['qty_available'],
+                'incoming': prod_data[rec[0]]['incoming_qty'],
+                'outgoing': prod_data[rec[0]]['outgoing_qty'],
+            }
+            dic_data['diff'] = self._get_diff(dic_data)
+            dic_data['to_order'] = self._get_to_order_touple(dic_data['diff'], prod_data[rec[0]])
+            if (not data.get('show_to_buy', False)) or \
+                    (data.get('show_to_buy', False) and \
+                    dic_data['to_order'][0] > 0 or \
+                    dic_data['to_order'][1] > 0):
+                if rec[5] not in by_supplier:
+                    by_supplier[rec[5]] = []
+                by_supplier[rec[5]].append(dic_data)
         return by_supplier
 
 
