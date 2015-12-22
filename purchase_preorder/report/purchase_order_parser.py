@@ -22,6 +22,7 @@ from openerp import models, api
 from openerp.exceptions import except_orm
 from openerp.tools.translate import _
 import time
+import time
 
 
 # class purchase_order_parser(models.AbstractModel):
@@ -257,6 +258,7 @@ class purchase_order_parser(models.AbstractModel):
         """
         Function that searches for products you can sell the supplier.
         """
+        get_supplier_t = time.time()
         prod_dics = []
         prod_supp_info = self.env['product.supplierinfo']
         if from_range and from_range[0] and from_range[1]:
@@ -282,6 +284,10 @@ class purchase_order_parser(models.AbstractModel):
                 domain.append(('categ_id', 'child_of', cat_ids))
             prod_dics = self.env['product.template'].with_context(warehouse=wh_id).search_read(domain,
                                                                  fields)
+        print("************************************************************")
+        print("Obtener proveedores")
+        print(time.time() -get_supplier_t)
+        print("************************************************************")
         return prod_dics
 
     def _get_stock(self, prod, mode):
@@ -372,8 +378,13 @@ class purchase_order_parser(models.AbstractModel):
         t_sm = self.env['stock.move']
         t_sol = self.env['sale.order.line']
         t_un = self.env['product.uom']
+        print len(prod_dics)
         for prod in prod_dics:
-            stock_unit = t_un.browse(prod['uom_id'][0]).name
+            print("************************************************************")
+            print("producto %s" %  prod['name'])
+            print("************************************************************")
+            t_ita = time.time()
+            stock_unit = t_un.browse(prod['uom_id'][1])
             dic_data = {'code': prod['default_code'],
                         'name': prod['name'],
                         'stock_unit': stock_unit,
@@ -393,6 +404,9 @@ class purchase_order_parser(models.AbstractModel):
                 ('picking_id.picking_type_code', '=', 'outgoing'),
                 ('procurement_id.sale_line_id', '!=', False)
             ]
+            # SQL2 = ""
+            #     select
+            # ""
             past_sales_objs = t_sm.search(past_sales_domain)
             uom_qty = 0.0
             for move in past_sales_objs:
@@ -423,6 +437,10 @@ class purchase_order_parser(models.AbstractModel):
                     res.append(dic_data)
             else:
                 res.append(dic_data)
+            print("************************************************************")
+            print("Iteración:")
+            print(time.time() - t_ita)
+            print("************************************************************")
         return res
 
     @api.multi
