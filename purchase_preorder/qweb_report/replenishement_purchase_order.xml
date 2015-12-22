@@ -109,9 +109,8 @@
 
                   <div class="page">
 
-                      <h3 align="center">Warehouse Replenishement List: <span t-esc="meta_info['print_date']"/></h3>
+                      <h3 align="center">Provvedor: <span t-esc="o"/></h3>
                       <!-- <h3 align="center"><span t-esc="meta_info['print_date']"/> </h3> -->
-                      <h3>Filter by:</h3>
                       <div>
                            <b>Start Date: </b> <span t-esc="meta_info['start_date']"/> <b>End Date: </b> <span t-esc="meta_info['end_date']"/>
                       </div>
@@ -156,15 +155,15 @@
 
                         </thead>
                         <tbody>
-                            <tr t-foreach="stocks" t-as="d">
+                            <tr t-foreach="stocks[o]" t-as="d">
                                 <td class="text-center"> <span t-esc="d['code']"/> </td>
                                 <td class="text-center"> <span t-esc="d['name']"/> </td>
                                 <td class="text-center"> <span t-esc="d['stock_unit']"/> </td>
-                                <td class="text-center"> <span t-esc="d['sales']"/> </td>
-                                <td class="text-center"> <span t-esc="d['stock']"/> </td>
-                                <td class="text-center"> <span t-esc="d['incoming']"/> </td>
-                                <td class="text-center"> <span t-esc="d['outgoing']"/> </td>
-                                <td class="text-center"> <span t-esc="d['diff']"/> </td>
+                                <td class="text-center"> <span t-esc="round(d['sales'], 2)"/> </td>
+                                <td class="text-center"> <span t-esc="round(d['stock'], 2)"/> </td>
+                                <td class="text-center"> <span t-esc="round(d['incoming'], 2)"/> </td>
+                                <td class="text-center"> <span t-esc="round(d['outgoing'], 2)"/> </td>
+                                <td class="text-center"> <span t-esc="round(d['diff'], 2)"/> </td>
                                 <td class="text-center"> <span t-esc="d['to_order'][0]"/> </td>
                                 <td class="text-center"> <span t-esc="d['to_order'][1]"/> </td>
                             </tr>
