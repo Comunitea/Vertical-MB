@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="revert_routes_form" model="ir.ui.view">
+            <field name="name">revert.routes.form</field>
+            <field name="model">revert.routes</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Volver a estado NO VALIDADO">
+                  <h1>
+                      Rever assigned routes?
+                  </h1>
+                  <p> .
+                  </p>
+                    <field name="route_detail_id"/>
+                  <footer>
+                      <button string="Revertir" name="revert" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+       <record id="action_revert_routes" model="ir.actions.act_window">
+            <field name="name">Revert Routes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">revert.routes</field>
+            <field name="src_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="revert_routes_form"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record id="ir_revert_routes" model="ir.values">
+            <field name="name">Revert Routes</field>
+            <field name="key2">client_action_multi</field>
+            <field name="model">stock.picking</field>
+            <field name="value" eval="'ir.actions.act_window,%d'%action_revert_routes" />
+        </record>
+
+    </data>
+</openerp>
