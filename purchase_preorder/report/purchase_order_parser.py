@@ -396,21 +396,39 @@ class purchase_order_parser(models.AbstractModel):
                         'diff': 0.0000,
                         'to_order': (0.0000, 0.0000),
                         }
-            past_sales_domain = [
-                ('picking_id.min_date', '>=', data['start_date']),
-                ('picking_id.min_date', '<=', data['end_date']),
-                ('state', '=', 'done'),
-                ('product_id.product_tmpl_id', '=', prod['id']),
-                ('picking_id.picking_type_code', '=', 'outgoing'),
-                ('procurement_id.sale_line_id', '!=', False)
-            ]
-            # SQL2 = ""
-            #     select
-            # ""
-            past_sales_objs = t_sm.search(past_sales_domain)
-            uom_qty = 0.0
-            for move in past_sales_objs:
-                uom_qty += move.product_uom_qty
+            # past_sales_domain = [
+            #     ('picking_id.min_date', '>=', data['start_date']),
+            #     ('picking_id.min_date', '<=', data['end_date']),
+            #     ('state', '=', 'done'),
+            #     ('product_id.product_tmpl_id', '=', prod['id']),
+            #     ('picking_id.picking_type_code', '=', 'outgoing'),
+            #     ('procurement_id.sale_line_id', '!=', False)
+            # ]
+            # past_sales_objs = t_sm.search(past_sales_domain)
+            # uom_qty = 0.0
+            # for move in past_sales_objs:
+            #     uom_qty += move.product_uom_qty
+
+            SQL = """
+                SELECT sum(product_uom_qty)
+                FROM stock_move sm
+                INNER JOIN stock_picking sp ON sp.id = sm.picking_id
+                INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
+                INNER JOIN product_product p ON p.id = sm.product_id
+                INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
+                WHERE sp.state = 'done'
+                AND sp.min_date >= %s
+                AND sp.min_date <= %s
+                AND pt.id = %s
+                AND pro.sale_line_id IS NOT NULL
+            """
+
+            self._cr.execute(SQL,(data['start_date'], data['end_date'],
+                                  prod['id']))
+            fetch = self._cr.fetchall()
+            uom_qty = 0
+            if fetch and fetch[0] and fetch[0][0] is not None:
+                uom_qty += fetch[0][0]
             SQL = """ SELECT sum(product_uom_qty)
                       FROM sale_order_line sol
                       INNER JOIN sale_order so ON so.id = sol.order_id
