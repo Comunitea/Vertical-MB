@@ -2344,7 +2344,6 @@ class stock_quant(models.Model):
         If force_quants_location in context wy try to get quants only of
         location
         """
-
         _logger.debug("CMNT inicio Aplly_removal")
         _logger.debug("CMNT ####################")
         print "removal"
@@ -2366,10 +2365,10 @@ class stock_quant(models.Model):
         #lista de ids donde no se puede buscar producto sin paquete.
         #if location != self.pool.get('stock.warehouse').browse(cr, uid, [1]).wh_output_stock_loc_id
         #domain.append(('package_id', '!=', False))
-        domain.append (('package_id', '!=', False))
-        domain.append (('lot_id', '!=', False))
         if removal_strategy == 'depot_fefo' and not already_reserved and not \
                 ('force_quants_location' in context):
+            domain.append (('package_id', '!=', False))
+            domain.append (('lot_id', '!=', False))
             pick_loc_obj = product.picking_location_id
             if location.usage not in ['view', 'internal'] or not pick_loc_obj:
                 print "busqueda normal %s"%domain
@@ -2381,6 +2380,7 @@ class stock_quant(models.Model):
             #es necesario ordernar antes poqr package id que por
             order = 'life_date, in_date, package_id'
             if not context.get('from_reserve', False):
+
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
                 pick_loc = pick_loc_id and \
