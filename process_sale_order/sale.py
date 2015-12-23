@@ -27,6 +27,7 @@ from openerp.api import Environment
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import time
+import datetime
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import threading
 import logging
@@ -353,10 +354,18 @@ class sale_order(models.Model):
 
     @api.one
     def check_route(self):
-        if self.route_detail_id:
-            if self.route_detail_id.date != self.date_planned:
-                self.date_planned = self.route_detail_id.date + " 19:00:00"
 
+        if self.route_detail_id:
+            date_route = datetime.datetime.strptime(self.route_detail_id.date,
+                                   '%Y-%m-%d').date()
+            date_planned = datetime.datetime.strptime(self.date_planned,
+                                   '%Y-%m-%d %H:%M:%S').date()
+            if date_route != date_planned:
+                #self.date_planned = self.route_detail_id.date + " 19:00:00"
+                self.trans_route_id = False
+                self.route_detail_id =  False
+            else:
+                self.date_planned = self.route_detail_id.date + " 19:00:00"
     @api.model
     def create_and_confirm(self, vals):
         res = self.create(vals)
@@ -444,10 +453,10 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('chanel', False) == 'tablet':
-            res = self.check_duplicate(vals)
-            if len(res):
-                _logger.debug("MIDBAN: DETECTADO DUPLICADO")
-                return res
+            #res = self.check_duplicate(vals)
+            #if len(res):
+             #   _logger.debug("MIDBAN: DETECTADO DUPLICADO")
+             #   return res
             vals = self.change_price_vals(vals)
         #vals.update({'user_id2': sel>=f._uid})
         res = super(sale_order, self).create(vals)
