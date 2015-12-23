@@ -2380,7 +2380,7 @@ class stock_quant(models.Model):
             #es necesario ordernar antes poqr package id que por
             order = 'life_date, in_date, package_id'
             if not context.get('from_reserve', False):
-
+                print u'Buscamos en Picking'
                 # Search quants in picking location
                 pick_loc_id = pick_loc_obj.get_general_zone('picking')
                 pick_loc = pick_loc_id and \
@@ -2392,7 +2392,6 @@ class stock_quant(models.Model):
                     if record[0] is None:
                         check_storage_qty += record[1]
                         res.remove(record)
-
             storage_id = pick_loc_obj.get_general_zone('storage')
             storage_loc = storage_id and \
                 t_location.browse(cr, uid, storage_id) or False
@@ -2404,10 +2403,22 @@ class stock_quant(models.Model):
             if context.get('from_reserve', False):
                 check_storage_qty = qty
                 res = []
+            print u'Buscamos en Storage'
             if check_storage_qty and storage_loc:
                 res += self._quants_get_order(cr, uid, storage_loc, product,
                                               check_storage_qty, domain, order,
                                               context=context)
+            #Buscamos en playa tb
+            ##################
+            print u'Buscamos en Playa'
+            wh_input_stock_loc_id = self.pool.get('stock.warehouse').browse(cr, uid, 1).wh_input_stock_loc_id
+            domain = [('reservation_id', '=', False), ('qty', '>', 0),
+                      ('package_id', '!=', False),('lot_id', '!=', False)]
+            if check_storage_qty and wh_input_stock_loc_id:
+                res += self._quants_get_order(cr, uid, wh_input_stock_loc_id, product,
+                                              check_storage_qty, domain, order,
+                                              context=context)
+            ##################
             #Pending qty?
             check_global_qty = 0.0
             quants_in_res = []
