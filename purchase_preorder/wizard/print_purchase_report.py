@@ -48,6 +48,10 @@ class print_purchase_report(models.TransientModel):
     from_ref = fields.Integer("Fom ref")
     to_ref = fields.Integer("To ref")
     filter_range = fields.Boolean("Filter Rangue", default=True)
+    query_history = fields.Boolean("Search in History", default=False,
+                                   help="Consulta las ventas que están en estado"
+                                        " history y no tienen albaranes."
+                                        "Si no está activo la busquedá serrá mas rápida")
 
     @api.multi
     def generate_print_purchase_report(self):
@@ -63,7 +67,8 @@ class print_purchase_report(models.TransientModel):
             'product_temp_ids': [x.id for x in self.product_temp_ids],
             'filter_range': self.filter_range,
             'from_range': [self.from_ref, self.to_ref],
-            'filter_options': self.filter_options
+            'filter_options': self.filter_options,
+            'query_history': self.query_history,
         }
         a['data'] = data_dic
         return a
