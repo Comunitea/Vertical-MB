@@ -42,7 +42,14 @@ class print_purchase_report(models.TransientModel):
                                       string='Filter by',
                                       required=True,
                                       default='supp_categ')
-    show_to_buy = fields.Boolean('Show to buy', default=True)
+
+    show_positive = fields.Boolean('Solo diferencia positiva', default=True)
+    show_to_buy = fields.Selection([('all', 'Cualquier linea'),
+                                    ('man_pal', 'Mantos y pales en positivo'),
+                                    ('diff_pos', 'Diferencia en positiva')],
+                                    string='Show to buy',
+                                    required=True,
+                                    default='all')
     product_temp_ids = fields.Many2many('temp.type', 'wzd_temp_type_rel',
                                         'wzd_id', 'tmp_id', 'Temperature')
     from_ref = fields.Integer("Fom ref")
@@ -64,6 +71,7 @@ class print_purchase_report(models.TransientModel):
             'product_ids': [x.id for x in self.product_ids],
             'supplier_ids': [x.id for x in self.supplier_ids],
             'show_to_buy': self.show_to_buy,
+            'show_positive': self.show_positive,
             'product_temp_ids': [x.id for x in self.product_temp_ids],
             'filter_range': self.filter_range,
             'from_range': [self.from_ref, self.to_ref],

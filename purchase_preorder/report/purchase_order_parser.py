@@ -70,67 +70,127 @@ class purchase_order_parser(models.AbstractModel):
         return supplier_ids
 
     @api.multi
-    def _get_query_to_execute(self, data, select_query):
+    def _get_query_to_execute(self, data, select_query, prod_ids=False):
         SQL = ""
         if select_query == 'supp':
-            if data.get('query_history', False):
-                print("Supp con historial")
-                SQL = """
-                SELECT sub.id,sub.code,sub.name,sub.uom,sum(sub.sum_uom), sub.pname from(
-                    SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
-                        FROM stock_move sm
-                        INNER JOIN stock_picking sp ON sp.id = sm.picking_id
-                        INNER JOIN stock_picking_type spt ON spt.id = sp.picking_type_id
-                        INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
-                        INNER JOIN product_product p ON p.id = sm.product_id
-                        INNER JOIN product_template pt ON pt.id  = p.product_tmpl_id AND pt.active = True and pt.type = 'product'
-                        INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
-                        INNER JOIN res_partner part ON psupp.name = part.id
-                        WHERE sp.state = 'done'
-                        AND spt.code = 'outgoing'
-                        AND sp.min_date >= %s
-                        AND sp.min_date <= %s
-                        AND part.id in %s
-                        AND pro.sale_line_id IS NOT NULL
-                        GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name
-                    UNION
-                    SELECT pt.id as id, p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sol.product_uom_qty) as sum_uom, part.name as pname
-                       FROM sale_order_line sol
-                       INNER JOIN sale_order so ON so.id = sol.order_id
-                       INNER JOIN product_product p ON p.id = sol.product_id
-                       INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
-                       INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
-                       INNER JOIN res_partner part ON psupp.name = part.id
-                       WHERE so.state in ('history')
-                       AND so.date_order  >= %s
-                       AND so.date_order  <= %s
-                       AND part.id in %s
-                      GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name) as sub
-                GROUP by sub.id,sub.code,sub.name,sub.uom,sub.pname order by sub.name
-                """
+            if not prod_ids:
+                if data.get('query_history', False):
+                    # print("Supp con historial")
+                    SQL = """
+                    SELECT sub.id,sub.code,sub.name,sub.uom,sum(sub.sum_uom), sub.pname from(
+                        SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
+                            FROM stock_move sm
+                            INNER JOIN stock_picking sp ON sp.id = sm.picking_id
+                            INNER JOIN stock_picking_type spt ON spt.id = sp.picking_type_id
+                            INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
+                            INNER JOIN product_product p ON p.id = sm.product_id
+                            INNER JOIN product_template pt ON pt.id  = p.product_tmpl_id AND pt.active = True and pt.type = 'product'
+                            INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
+                            INNER JOIN res_partner part ON psupp.name = part.id
+                            WHERE sp.state = 'done'
+                            AND spt.code = 'outgoing'
+                            AND sp.min_date >= %s
+                            AND sp.min_date <= %s
+                            AND part.id in %s
+                            AND pro.sale_line_id IS NOT NULL
+                            GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name
+                        UNION
+                        SELECT pt.id as id, p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sol.product_uom_qty) as sum_uom, part.name as pname
+                           FROM sale_order_line sol
+                           INNER JOIN sale_order so ON so.id = sol.order_id
+                           INNER JOIN product_product p ON p.id = sol.product_id
+                           INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
+                           INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
+                           INNER JOIN res_partner part ON psupp.name = part.id
+                           WHERE so.state in ('history')
+                           AND so.date_order  >= %s
+                           AND so.date_order  <= %s
+                           AND part.id in %s
+                          GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name) as sub
+                    GROUP by sub.id,sub.code,sub.name,sub.uom,sub.pname order by sub.name
+                    """
+                else:
+                    # print("Supp sin historial")
+                    SQL = """
+                        SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
+                            FROM stock_move sm
+                            INNER JOIN stock_picking sp ON sp.id = sm.picking_id
+                            INNER JOIN stock_picking_type spt ON spt.id = sp.picking_type_id
+                            INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
+                            INNER JOIN product_product p ON p.id = sm.product_id
+                            INNER JOIN product_template pt ON pt.id  = p.product_tmpl_id AND pt.active = True and pt.type = 'product'
+                            INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
+                            INNER JOIN res_partner part ON psupp.name = part.id
+                            WHERE sp.state = 'done'
+                            AND spt.code = 'outgoing'
+                            AND sp.min_date >= %s
+                            AND sp.min_date <= %s
+                            AND part.id in %s
+                            AND pro.sale_line_id IS NOT NULL
+                            GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name
+                    """
             else:
-                print("Supp sin historial")
-                SQL = """
-                    SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
-                        FROM stock_move sm
-                        INNER JOIN stock_picking sp ON sp.id = sm.picking_id
-                        INNER JOIN stock_picking_type spt ON spt.id = sp.picking_type_id
-                        INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
-                        INNER JOIN product_product p ON p.id = sm.product_id
-                        INNER JOIN product_template pt ON pt.id  = p.product_tmpl_id AND pt.active = True and pt.type = 'product'
-                        INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
-                        INNER JOIN res_partner part ON psupp.name = part.id
-                        WHERE sp.state = 'done'
-                        AND spt.code = 'outgoing'
-                        AND sp.min_date >= %s
-                        AND sp.min_date <= %s
-                        AND part.id in %s
-                        AND pro.sale_line_id IS NOT NULL
-                        GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name
-                """
+                if data.get('query_history', False):
+                    # print("Supp sin historial y por productos de categoría")
+                    SQL = """
+                    SELECT sub.id,sub.code,sub.name,sub.uom,sum(sub.sum_uom), sub.pname from(
+                        SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
+                            FROM stock_move sm
+                            INNER JOIN stock_picking sp ON sp.id = sm.picking_id
+                            INNER JOIN stock_picking_type spt ON spt.id = sp.picking_type_id
+                            INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
+                            INNER JOIN product_product p ON p.id = sm.product_id
+                            INNER JOIN product_template pt ON pt.id  = p.product_tmpl_id AND pt.active = True and pt.type = 'product'
+                            INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
+                            INNER JOIN res_partner part ON psupp.name = part.id
+                            WHERE sp.state = 'done'
+                            AND spt.code = 'outgoing'
+                            AND sp.min_date >= %s
+                            AND sp.min_date <= %s
+                            AND part.id in %s
+                            AND pt.id in %s
+                            AND pro.sale_line_id IS NOT NULL
+                            GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name
+                        UNION
+                        SELECT pt.id as id, p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sol.product_uom_qty) as sum_uom, part.name as pname
+                           FROM sale_order_line sol
+                           INNER JOIN sale_order so ON so.id = sol.order_id
+                           INNER JOIN product_product p ON p.id = sol.product_id
+                           INNER JOIN product_template pt ON pt.id = p.product_tmpl_id
+                           INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
+                           INNER JOIN res_partner part ON psupp.name = part.id
+                           WHERE so.state in ('history')
+                           AND so.date_order  >= %s
+                           AND so.date_order  <= %s
+                           AND part.id in %s
+                           AND pt.id in %s
+                          GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name) as sub
+                    GROUP by sub.id,sub.code,sub.name,sub.uom,sub.pname order by sub.name
+                    """
+                else:
+                    # print("Supp sin historial y por productos de categoría")
+                    SQL = """
+                        SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
+                            FROM stock_move sm
+                            INNER JOIN stock_picking sp ON sp.id = sm.picking_id
+                            INNER JOIN stock_picking_type spt ON spt.id = sp.picking_type_id
+                            INNER JOIN procurement_order pro ON pro.id = sm.procurement_id
+                            INNER JOIN product_product p ON p.id = sm.product_id
+                            INNER JOIN product_template pt ON pt.id  = p.product_tmpl_id AND pt.active = True and pt.type = 'product'
+                            INNER JOIN product_supplierinfo psupp ON psupp.product_tmpl_id = pt.id
+                            INNER JOIN res_partner part ON psupp.name = part.id
+                            WHERE sp.state = 'done'
+                            AND spt.code = 'outgoing'
+                            AND sp.min_date >= %s
+                            AND sp.min_date <= %s
+                            AND part.id in %s
+                            AND pt.id in %s
+                            AND pro.sale_line_id IS NOT NULL
+                            GROUP by pt.id,p.default_code,pt.name,pt.uom_id,pt.active, part.name
+                    """
         elif select_query == 'prod':
             if data.get('query_history', False):
-                print("Prod con historial")
+                # print("Prod con historial")
                 SQL = """
                 SELECT sub.id,sub.code,sub.name,sub.uom,sum(sub.sum_uom), sub.pname from(
                     SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
@@ -165,7 +225,7 @@ class purchase_order_parser(models.AbstractModel):
                 GROUP by sub.id,sub.code,sub.name,sub.uom,sub.pname order by sub.name
                 """
             else:
-                print("Prod sin historial")
+                # print("Prod sin historial")
                 SQL = """
                     SELECT pt.id as id,p.default_code as code,pt.name as name,pt.uom_id as uom,sum(sm.product_uom_qty) as sum_uom, part.name as pname
                         FROM stock_move sm
@@ -190,18 +250,32 @@ class purchase_order_parser(models.AbstractModel):
     def _by_supplier_query(self, data, wh_id, supplier_ids):
         fetch = []
         t_prod = self.env['product.template'].with_context(warehouse=wh_id)
-        SQL = self._get_query_to_execute(data, 'supp')
+
+        # SI A MAYORES HAY QUE FILTRAR POR CATEGORÍA
+        cat_ids = data.get('category_ids', []) and data['category_ids'] or []
+        prod_ids = []  # Productos hijos de las categorías indicadas
+        if cat_ids:
+           domain = [('categ_id', 'child_of', cat_ids),
+                     ('type', '=', 'product')]
+           prod_objs = t_prod.search(domain)
+           prod_ids_lst = [x.id for x in prod_objs]
+           prod_ids = tuple(prod_ids_lst)
+        SQL = self._get_query_to_execute(data, 'supp', prod_ids=prod_ids)
         start_date = data['start_date'] + " 00:00:00"
         end_date =  data['end_date'] + " 23:59:59"
         supplier_touple = tuple(supplier_ids)
         if data.get('query_history', False):
-            self._cr.execute(SQL,(start_date, end_date, supplier_touple, start_date, end_date, supplier_touple))
+            if not prod_ids:
+                self._cr.execute(SQL,(start_date, end_date, supplier_touple, start_date, end_date, supplier_touple))
+            else: # Filtramos por productos específicos de la categoría
+                self._cr.execute(SQL,(start_date, end_date, supplier_touple, prod_ids, start_date, end_date, supplier_touple, prod_ids))
         else:
-            self._cr.execute(SQL,(start_date, end_date, supplier_touple))
+            if not prod_ids:
+                self._cr.execute(SQL,(start_date, end_date, supplier_touple))
+            else: # Filtramos por productos específicos de la categoría
+                self._cr.execute(SQL,(start_date, end_date, supplier_touple, prod_ids))
         fetch = self._cr.fetchall()
         return fetch
-
-
 
     @api.multi
     def _by_products_query(self, data, wh_id, prod_ids):
@@ -218,6 +292,26 @@ class purchase_order_parser(models.AbstractModel):
         fetch = self._cr.fetchall()
         return fetch
 
+    def _discard_rec(self, rec, prod_data, data):
+        discard = False
+        if data.get('product_temp_ids', False):
+            if prod_data[rec[0]]['temp_type'] and \
+                    prod_data[rec[0]]['temp_type'][0] \
+                    not in data['product_temp_ids']:
+                discard = True
+        return discard
+
+    def _discard_dic_data(self, dic_data, data):
+        discard = False
+        mode = False
+        if data.get('show_to_buy', False):
+            mode = data['show_to_buy']
+        if mode == 'man_pal' and not (dic_data['to_order'][0] > 0 or dic_data['to_order'][1] > 0):
+            discard = True
+        elif mode == 'diff_pos' and not (dic_data['diff'] > 0):
+            discard = True
+        return discard
+
     def _process_query_result(self, data, wh_id, prod_ids, fetch):
         by_supplier = {}
         t_prod = self.env['product.template'].with_context(warehouse=wh_id)
@@ -228,11 +322,8 @@ class purchase_order_parser(models.AbstractModel):
         for rec in prod_read:
             prod_data[rec['id']] = rec
         for rec in fetch:
-            if data.get('product_temp_ids', False):
-                if prod_data[rec[0]]['temp_type'] and \
-                        prod_data[rec[0]]['temp_type'][0] \
-                        not in data['product_temp_ids']:
-                    continue
+            if self._discard_rec(rec, prod_data, data):
+                continue
             dic_data = {
                 'code': rec[1],
                 'name':rec[2],
@@ -244,14 +335,13 @@ class purchase_order_parser(models.AbstractModel):
             }
             dic_data['diff'] = self._get_diff(dic_data)
             dic_data['to_order'] = self._get_to_order_touple(dic_data['diff'], prod_data[rec[0]])
-            if (not data.get('show_to_buy', False)) or \
-                    (data.get('show_to_buy', False) and \
-                    dic_data['to_order'][0] > 0 or \
-                    dic_data['to_order'][1] > 0):
+            # Si no tiene marca para o tiene y los valores cumplen la condición, añado.
+            if not self._discard_dic_data(dic_data, data):
                 if rec[5] not in by_supplier:
                     by_supplier[rec[5]] = []
                 by_supplier[rec[5]].append(dic_data)
         return by_supplier
+
     @api.multi
     def get_report_data(self, data):
         """
@@ -270,7 +360,8 @@ class purchase_order_parser(models.AbstractModel):
         self.env['product.template'].with_context(warehouse=wh_id)
         supplier_ids = False
         prod_objs = False
-        # FILTRO PORDUCTOS ESPECCÍFICOS
+
+        # FILTRO PORDUCTOS ESPECÍFICOS
         if data.get('filter_options', False) and data['filter_options']== 'products':
             if not data.get('product_ids', False):
                 raise except_orm(_("Error"), _("Seleccione al menos un producto."))
@@ -303,6 +394,7 @@ class purchase_order_parser(models.AbstractModel):
         elif prod_objs:  # Se pidieron o bien productos solos, o bien categ
             prod_ids = [x.id for x in prod_objs]
             fetch = self._by_products_query(data, wh_id, prod_ids)
+
         # PROCESAMOS QUERY AGRUPANDO POR PROVEEDOR
         if fetch:
             prod_ids = [x[0] for x in fetch]

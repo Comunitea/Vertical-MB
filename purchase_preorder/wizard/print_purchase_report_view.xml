@@ -19,8 +19,8 @@
                     </group>
                     <group>
                         <field name="filter_options"/>
-                        <field name="query_history" string="Usar ventas en estado History"/>
-                        <field name="show_to_buy" string="Solo para comprar"/>
+                        <field name="query_history" string="Buscar ventas en estado History"/>
+                        <field name="show_to_buy" string="Mostrar lineas que contengan"/>
                         <field name="product_temp_ids" widget="many2many_tags" string="Temperaturas de producto"/>
                     </group>
                     <group>
