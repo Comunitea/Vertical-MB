@@ -453,10 +453,10 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('chanel', False) == 'tablet':
-            res = self.check_duplicate(vals)
-            if len(res):
-                _logger.debug("MIDBAN: DETECTADO DUPLICADO")
-                return res
+            #res = self.check_duplicate(vals)
+            #if len(res):
+             #   _logger.debug("MIDBAN: DETECTADO DUPLICADO")
+             #   return res
             vals = self.change_price_vals(vals)
         #vals.update({'user_id2': sel>=f._uid})
         res = super(sale_order, self).create(vals)
