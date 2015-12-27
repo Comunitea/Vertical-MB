@@ -302,6 +302,16 @@ class ValidateRoutes(models.TransientModel):
         ops_by_cam = {}
         for op in pick.pack_operation_ids:
             camera_loc = op.location_id.get_camera()
+            if not camera_loc:
+                # si la ubicación encontrada no tiene cámara (PLAYA , p.e.)
+                #Buscamos la cámara de la op de picking
+                if op.product_id: # Si no es paquete (tiens producto(
+                    camera_loc = op.product_id.picking_location_id.get_camera()
+                else:
+                    if op.package_id:   # si es paquete
+                        camera_loc = \
+                            op.package_id.product_id.picking_location_id\
+                                .get_camera()
             if camera_loc not in moves_by_cam:
                 moves_by_cam[camera_loc] = self.env['stock.move']
                 ops_by_cam[camera_loc] = self.env['stock.pack.operation']
