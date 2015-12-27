@@ -132,16 +132,16 @@ class route_detail(models.Model):
                                            ('picking_type_id', '=',
                                             warehouse_id.pick_type_id.id),
                                                 ])
-            tasks_process = picking_obj.search([('route_detail_id', '=',
+            tasks_process = task_obj.search([('route_detail_id', '=',
                                                detail.id),
                                            ('state', '=',
                                             'process'),
                                                 ])
-            tasks_work = picking_obj.search([('route_detail_id', '=',
+            tasks_work = task_obj.search([('route_detail_id', '=',
                                                detail.id),('state', 'in',
                                             ['assigned',])
                                            ])
-            tasks_tot = picking_obj.search([('route_detail_id', '=',
+            tasks_tot = task_obj.search([('route_detail_id', '=',
                                                detail.id),
                                            ])
 
@@ -170,6 +170,10 @@ class route_detail(models.Model):
                     pending_ops += cam[1]
                 if total_ops != 0:
                     percent_ops = (float(done_ops) / float(total_ops)) * 100
+                else:
+                    percent_ops = 100
+            else:
+                percent_ops = 100
          #   print "DETAIL " + detail.route_id.name
          #   print total_ops
          #   print done_ops
@@ -180,7 +184,9 @@ class route_detail(models.Model):
             detail.percent_ops = int(percent_ops)
 
             #CALcula color
-            if done_ops != total_ops:
+            if done_ops != total_ops or detail.task_process != 0  and \
+                            detail.total_number != detail.processed_number\
+                            + detail.no_confirmed_pick_number:
                 detail.color = 2
             else:
                 if detail.total_number == detail.ready_number + \

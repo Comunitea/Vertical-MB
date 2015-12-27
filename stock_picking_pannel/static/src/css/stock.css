@@ -68,7 +68,7 @@
 }
 
 .openerp .oe_kanban_view .oe_kanban_stock_route {
-    width: 300px;
+    width: 250px;
     cursor: default;
     min-height: 345px !important;
 }
