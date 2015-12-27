@@ -278,6 +278,7 @@
                     <filter string="Load Confirmed" name="load_confirmed" domain="[('validated_state', '=', 'loaded')]"/>
                     <separator/>
                     <filter string="Today" domain="[('min_date','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59')),('min_date','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]"/>
+                    <separator/>
                 </field>
                 <filter string="Status" position="before">
                     <filter string="Detail Route" context="{'group_by':'route_detail_id'}"/>
