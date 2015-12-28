@@ -55,6 +55,7 @@ class print_purchase_report(models.TransientModel):
     from_ref = fields.Integer("Fom ref")
     to_ref = fields.Integer("To ref")
     filter_range = fields.Boolean("Filter Rangue", default=True)
+    no_sale = fields.Boolean("Show without sale", default=False)
     query_history = fields.Boolean("Search in History", default=False,
                                    help="Consulta las ventas que están en estado"
                                         " history y no tienen albaranes."
@@ -77,6 +78,7 @@ class print_purchase_report(models.TransientModel):
             'from_range': [self.from_ref, self.to_ref],
             'filter_options': self.filter_options,
             'query_history': self.query_history,
+            'no_sale': self.no_sale
         }
         a['data'] = data_dic
         return a

@@ -343,6 +343,25 @@ class purchase_order_parser(models.AbstractModel):
         return by_supplier
 
     @api.multi
+    def _add_not_sold_prods(self, fetch, supplier_ids, prod_ids):
+        res = fetch
+
+        SQL = """
+            select pt.id, pp.default_code, pt.name, pt.uom_id,  0,  part.name
+            FROM product_supplierinfo ps
+            INNER JOIN product_template pt ON pt.id = ps.product_tmpl_id
+            INNER JOIN product_product pp ON pp.product_tmpl_id = pt.id
+            INNER JOIN res_partner part ON ps.name = part.id
+            WHERE part.id = %s
+            AND pt.id not in %s
+
+        """
+        self._cr.execute(SQL,(tuple(supplier_ids), tuple(prod_ids)))
+        fetch2 = self._cr.fetchall()
+        res.extend(fetch2)
+        return res
+
+    @api.multi
     def get_report_data(self, data):
         """
         :param data: Filters of the wizard
@@ -396,8 +415,12 @@ class purchase_order_parser(models.AbstractModel):
             fetch = self._by_products_query(data, wh_id, prod_ids)
 
         # PROCESAMOS QUERY AGRUPANDO POR PROVEEDOR
+        add_prod = data.get('no_sale', False)
         if fetch:
             prod_ids = [x[0] for x in fetch]
+            if add_prod and supplier_ids:
+                fetch = self._add_not_sold_prods(fetch, supplier_ids, prod_ids)
+                prod_ids = [x[0] for x in fetch]
             by_supplier = self._process_query_result(data, wh_id, prod_ids, fetch)
         return by_supplier
 
