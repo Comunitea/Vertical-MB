@@ -241,7 +241,7 @@ class stock_task(osv.Model):
                 #Si ya tiene una distinta se mantiene
                 if (op.location_dest_id.id ==  False or op.location_dest_id.id == wh_loc_stock_id.id or op.location_dest_id.id == wh_input_stock_loc_id) :#and not op.to_process:
                     op.assign_location()
-                    print u'Se añadió: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
+                    print u'Se añadio: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
                 else:
                     print u'Se mantiene: Pack %s Dest %s (id = %s)'%(op.package_id.name, op.location_dest_id.bcd_name, op.id)
 

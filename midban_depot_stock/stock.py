@@ -2331,8 +2331,8 @@ class stock_picking_wave(models.Model):
 class stock_quant(models.Model):
     _inherit = 'stock.quant'
 
-    _columns = {'life_date' : fields.related('lot_id', 'life_date')}
-
+    _columns = {'life_date' : fields.related('lot_id', 'life_date', type = "datetime")}
+    #life_date = fields2.Datetime(related = 'lot_id.life_date', readonly = True)
 
     def apply_removal_strategy(self, cr, uid, location, product, qty, domain,
                                removal_strategy, context=None):
@@ -2378,7 +2378,7 @@ class stock_quant(models.Model):
 
                 return sup
             #es necesario ordernar antes poqr package id que por
-            order = 'life_date, in_date, package_id'
+            order = 'removal_date, in_date, package_id, qty'
             if not context.get('from_reserve', False):
                 print u'Buscamos en Picking'
                 # Search quants in picking location

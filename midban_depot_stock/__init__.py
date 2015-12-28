@@ -35,4 +35,5 @@ import report
 import tag
 import account
 import crm_phonecall
+
 from . import qweb_report
