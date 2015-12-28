@@ -52,7 +52,7 @@
         </record>
 
         <record id="action_pick_pending" model="ir.actions.act_window">
-            <field name="name">Pick pendientes</field>
+            <field name="name">Picks pendientes</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
             <field name="view_type">form</field>
@@ -140,10 +140,14 @@
                                         <strong><field name="pending_pick_number"/> Picking pendientes (REVISAR)</strong>
                                         </a>
                                     </div>
+                                    <div>
+                                        <strong>Tareas: </strong>
+                                    </div>
 
                                     <div >
                                         <a name="%(action_tasks)d" type="action">
-                                         Tareas: <field name="task_total"/> / <field name="task_work"/> / <strong><field name="task_process"/></strong>
+                                         (<field name="task_total"/> - <field name="task_work"/>)
+                                            <strong>En proceso: <field name="task_process"/></strong>
                                         </a>
                                     </div>
                                 </div>

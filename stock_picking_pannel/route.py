@@ -71,7 +71,7 @@ class route_detail(models.Model):
                     dict_ops[str(term[0])][str(term[1])][0] = term[2]
                 else:
                     dict_ops[str(term[0])][str(term[1])][1] = term[2]
-        print dict_ops
+        #print dict_ops
 
 
         for detail in self:
@@ -89,7 +89,8 @@ class route_detail(models.Model):
             outs = picking_obj.search([('route_detail_id', '=',
                                                detail.id),
                                            ('picking_type_id', '=',
-                                            warehouse_id.out_type_id.id)])
+                                            warehouse_id.out_type_id.id),
+                                       ('state', 'not in',['cancel'])])
 
             outs_ready = picking_obj.search([('route_detail_id', '=',
                                                detail.id),
@@ -109,7 +110,8 @@ class route_detail(models.Model):
                                            ('picking_type_id', '=',
                                             warehouse_id.out_type_id.id),
                                                 ('validated_state', '!=',
-                                                 'loaded')])
+                                                 'loaded'),
+                                            ('state', 'not in',['cancel'])])
 
             pickings_pending = picking_obj.search([('route_detail_id', '=',
                                                detail.id),
@@ -150,7 +152,7 @@ class route_detail(models.Model):
             detail.pending_pick_number = int(len(pickings_pending))
             detail.task_process = int(len(tasks_process))
             detail.task_work = int(len(tasks_work))
-            detail.task_tot = int(len(tasks_tot))
+            detail.task_total = int(len(tasks_tot))
             detail.error_moves = int(len(error_moves))
 
 
@@ -168,10 +170,10 @@ class route_detail(models.Model):
                     pending_ops += cam[1]
                 if total_ops != 0:
                     percent_ops = (float(done_ops) / float(total_ops)) * 100
-            print "DETAIL " + detail.route_id.name
-            print total_ops
-            print done_ops
-            print percent_ops
+         #   print "DETAIL " + detail.route_id.name
+         #   print total_ops
+         #   print done_ops
+         #   print percent_ops
             detail.total_ops = total_ops
             detail.done_ops = done_ops
             detail.pending_ops = pending_ops
