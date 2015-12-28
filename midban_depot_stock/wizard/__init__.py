@@ -33,3 +33,4 @@ from . import several_procurement_product
 from . import operations_on_fly_wzd
 from . import confirm_load_wzd
 from . import revert_routes
+from . import batch_task

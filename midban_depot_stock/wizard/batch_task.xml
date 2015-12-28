@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record id="batch_task_form_" model="ir.ui.view">
+            <field name="name">batch.task.form</field>
+            <field name="model">batch.task</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Operar tareas en lote">
+                  <h1>
+                      Finalizar tareas en lote?
+                  </h1>
+                  <p> .
+                  </p>
+                    <field name="stock_task"/>
+                  <footer>
+                      <button string="Finalizar con estado actual" name="finish_batch_task_not_force" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Finalizar con estado procesado" name="finish_batch_task_force" type="object" class="oe_highlight"/>
+                      or
+                      <button string="Cancel" class="oe_link" special="cancel"/>
+                  </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window
+            name="Batch task"
+            res_model="batch.task"
+            src_model="stock.task"
+            view_id="batch_task_form_"
+            view_mode="form"
+            view_type="form"
+            key2="client_action_multi"
+            target="new"
+            id="batch_task_form_action"/>
+
+       <!--<record id="action_batch_task" model="ir.actions.act_window">-->
+            <!--<field name="name">Batch Task</field>-->
+            <!--<field name="type">ir.actions.act_window</field>-->
+            <!--<field name="res_model">batch.task</field>-->
+            <!--<field name="src_model">stock.task</field>-->
+            <!--<field name="view_type">form</field>-->
+            <!--<field name="view_mode">form</field>-->
+            <!--<field name="view_id" ref="batch_task_form"/>-->
+            <!--<field name="target">new</field>-->
+            <!--<field name="multi">True</field>-->
+        <!--</record>-->
+
+        <!--<record id="ir_batch_task" model="ir.values">-->
+            <!--<field name="name">Batch Task</field>-->
+            <!--<field name="key2">client_action_multi</field>-->
+            <!--<field name="model">stock.task</field>-->
+            <!--<field name="value" eval="'ir.actions.act_window,%d'%action_batch_task"/>-->
+        <!--</record>-->
+
+    </data>
+</openerp>
