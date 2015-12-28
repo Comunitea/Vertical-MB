@@ -259,6 +259,16 @@ class sale_order(osv.Model):
         res['user_id'] = order.user_id.id
         return res
 
+    @api.multi
+    def copy(self, default=None):
+        default.update({
+            'chanel': 'erp',
+            'trans_route_id': False,
+            'route_detail_id': False,
+            'date_planned': False,
+            'date_invoice': False
+        })
+        return super(sale_order, self).copy(default=default)
 
 class sale_order_line(osv.Model):
     _inherit = 'sale.order.line'
