@@ -30,8 +30,17 @@ class SetDetailRoutes(models.TransientModel):
 
     @api.multi
     def set_details(self):
+        # import ipdb; ipdb.set_trace()
+
         active_ids = self.env.context['active_ids']
         out_pickings = self.env['stock.picking'].browse(active_ids)
+
+        for pick in out_pickings:
+            if pick.validated_state == u'loaded':
+                raise except_orm(_('Error'),
+                                 _('You cannot assign a route detail to %s \
+                                    because it has a loaded validated state')
+                                    % pick.name)
 
         out_pickings.write({'route_detail_id': self.route_detail_id.id})
         # Display the assigned picks
